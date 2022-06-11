@@ -7,6 +7,7 @@ configure([
 	project(":backends:gdx-backend-robovm"),
     project(":backends:gdx-backend-moe"),
     project(":backends:gdx-backend-gwt"),
+	project(":backends:gdx-backend-robovm-metalangle"),
 	project(":extensions:gdx-box2d-parent"),
 	project(":extensions:gdx-box2d-parent:gdx-box2d"),
 	project(":extensions:gdx-box2d-parent:gdx-box2d-gwt"),
@@ -119,6 +120,9 @@ configure([
         signing {
             useGpgCmd()
             sign publishing.publications.mavenJava
+
+            if(project.tasks.findByName('jnigen'))
+                sign publishing.publications.mavenPlatform
         }
 
         //Simply using "required" in signing block doesn't work because taskGraph isn't ready yet.

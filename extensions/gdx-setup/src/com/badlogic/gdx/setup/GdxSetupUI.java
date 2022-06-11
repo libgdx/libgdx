@@ -454,7 +454,7 @@ public class GdxSetupUI extends JFrame {
 	class Form extends JPanel {
 		ExternalExtensionsDialog externalExtensionsDialog = new ExternalExtensionsDialog(dependencies);
 		JLabel nameLabel = new JLabel("Project name:");
-		JTextField nameText = new JTextField("my-gdx-game");
+		JTextField nameText = new JTextField("My GDX Game");
 		JLabel packageLabel = new JLabel("Package name:");
 		JTextField packageText = new JTextField("com.mygdx.game");
 		JLabel gameClassLabel = new JLabel("Game class:");

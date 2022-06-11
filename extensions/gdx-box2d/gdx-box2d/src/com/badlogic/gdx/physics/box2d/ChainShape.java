@@ -178,6 +178,16 @@ public class ChainShape extends Shape {
 		return isLooped;
 	}
 
+	/** Clear all vertices in the chain and free the memory. */
+	public void clear() {
+		jniClear(addr);
+	}
+
+	private native void jniClear(long addr); /*
+		b2ChainShape* chain = (b2ChainShape*)addr;
+		chain->Clear();
+	*/
+
 // /// Implement b2Shape. Vertices are cloned using b2Alloc.
 // b2Shape* Clone(b2BlockAllocator* allocator) const;
 //

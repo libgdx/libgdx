@@ -765,6 +765,8 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
+		View view = ((AndroidGraphics)app.getGraphics()).getView();
+		AndroidCursor.setSystemCursor(view, systemCursor);
 	}
 
 	private class AndroidDisplayMode extends DisplayMode {

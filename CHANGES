@@ -1,4 +1,10 @@
-[1.10.1]
+[1.11.1]
+- iOS: Add new MobiVM MetalANGLE backend
+- API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
+- Javadoc: Add "-use" flag to javadoc generation
+
+[1.11.0]
+- [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
 - [BREAKING CHANGE] Removed Maven and Ant build systems. libGDX is now solely built with Gradle. See https://libgdx.com/dev/from-source/ for updated build instructions.
 - [BREAKING CHANGE] Android Moved natives loading out of static init block, see #5795
 - [BREAKING CHANGE] Linux: Shared libraries are now built on Ubuntu 18.04 (up from Ubuntu 16.04)
@@ -47,16 +53,24 @@
 - API Fix: Move vertex array index buffer limit to backends to fix issue with numIndices parameter
 - API Fix: TexturePacker: Fix wrong Y value when using padding
 - API Fix: Lwjgl3Net: Add fallback to xdg-open on Linux if Desktop.BROWSE is unavailable
-- API Addition: Add NWSEResize, NESWResize, AllResize, and NotAllowed SystemCursors
+- API Addition: Add NWSEResize, NESWResize, AllResize, NotAllowed and None SystemCursors
 - API Addition: GWTApplication#getJavaHeap and getNativeHeap are now supported
 - API Addition: Box2D Shape now implements Disposable
-- API Addition: Addes Tooltip#setTouchIndependent; see #6758
+- API Addition: Added ChainShape#clear method
+- API Addition: Added Tooltip#setTouchIndependent; see #6758
 - API Addition: Emulate Timer#isEmpty on GWT
 - API Addition: Bits add copy constructor public Bits (Bits bitsToCpy)
 - API Addition: Added List#drawSelection().
+- API Addition: GwtApplicationConfiguration#xrCompatible 
+- API Fix: setSystemCursor() now works on Android
 - API Fix: getDisplayMode() is now more accurate on Android and GWT.
 - API Addition: JsonValue#iterator(String) to more easily iterate a child that may not exist.
-s
+- API Addition: Added ExtendViewport#setScaling, eg for use with Scaling.contain.
+- API Addition: Added application lifecycle methods to IOSAudio for custom audio implementations.
+- API Addition: Added getBoundingRectangle() to Polyline
+- API Addition: ShapeRenderer#check() has now protected visibility
+- API Addition: Add ability to host GWT module on a different domain than the site, see #6851
+
 [1.10.0]
 - [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.
 - [BREAKING CHANGE] tvOS libraries have been removed. No migration steps required.
