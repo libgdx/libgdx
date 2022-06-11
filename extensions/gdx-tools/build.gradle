@@ -34,7 +34,7 @@ ext {
 
 task dist2DParticles (type: Jar) {
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-	
+
 	from files(sourceSets.main.java.outputDir)
 	from files(sourceSets.main.output.resourcesDir)
 	from {configurations.runtimeClasspath.collect {zipTree(it)}}
