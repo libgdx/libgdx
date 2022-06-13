@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
+import apple.opengles.EAGLContext;
 import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
 import org.moe.natj.general.ann.ByValue;
@@ -51,8 +52,8 @@ public class IOSGLKView extends GLKView {
 		super(peer);
 	}
 
-	public IOSGLKView init (CGRect bounds) {
-		initWithFrame(bounds);
+	public IOSGLKView init (CGRect bounds, EAGLContext context) {
+		initWithFrameContext(bounds, context);
 		return this;
 	}
 
@@ -78,7 +79,7 @@ public class IOSGLKView extends GLKView {
 
 	@Override
 	public void drawRect (@ByValue CGRect cgRect) {
-		graphics.glkViewDrawInRect(this, cgRect);
+		graphics.draw(this, cgRect);
 	}
 
 	public void setGraphics (IOSGraphics graphics) {

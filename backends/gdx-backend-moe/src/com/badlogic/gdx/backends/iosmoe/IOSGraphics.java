@@ -16,55 +16,52 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
-import org.moe.natj.general.NatJ;
-import org.moe.natj.general.Pointer;
-import org.moe.natj.general.ann.ByValue;
-import org.moe.natj.objc.ann.Selector;
-
+import apple.coregraphics.struct.CGPoint;
+import apple.coregraphics.struct.CGSize;
+import apple.foundation.NSSet;
+import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.backends.iosmoe.custom.HWMachine;
 import com.badlogic.gdx.backends.iosrobovm.IOSGLES20;
 import com.badlogic.gdx.backends.iosrobovm.IOSGLES30;
+import com.badlogic.gdx.backends.iosmoe.custom.HWMachine;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.utils.Array;
-
-import apple.NSObject;
-import apple.coregraphics.struct.CGPoint;
 import apple.coregraphics.struct.CGRect;
-import apple.coregraphics.struct.CGSize;
+import apple.NSObject;
 import apple.glkit.GLKView;
 import apple.glkit.GLKViewController;
+import apple.glkit.protocol.GLKViewControllerDelegate;
+import apple.glkit.protocol.GLKViewDelegate;
 import apple.glkit.enums.GLKViewDrawableColorFormat;
 import apple.glkit.enums.GLKViewDrawableDepthFormat;
 import apple.glkit.enums.GLKViewDrawableMultisample;
 import apple.glkit.enums.GLKViewDrawableStencilFormat;
-import apple.glkit.protocol.GLKViewControllerDelegate;
-import apple.glkit.protocol.GLKViewDelegate;
 import apple.opengles.EAGLContext;
 import apple.opengles.enums.EAGLRenderingAPI;
+import apple.uikit.struct.UIEdgeInsets;
+import apple.uikit.UIEvent;
+import org.moe.natj.general.Pointer;
+import org.moe.natj.objc.ObjCRuntime;
+import org.moe.natj.objc.ann.Selector;
 
-public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
+public class IOSGraphics extends AbstractGraphics {
 
 	private static final String tag = "IOSGraphics";
-
-	static {
-		NatJ.register();
-	}
 
 	IOSApplication app;
 	IOSInput input;
 	GL20 gl20;
 	GL30 gl30;
-	int width;
-	int height;
+	IOSScreenBounds screenBounds;
+	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
 	long lastFrameTime;
 	float deltaTime;
 	long framesStart;
@@ -79,6 +76,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	private float ppcY = 0;
 	private float density = 1;
 
+	volatile boolean resume = false;
 	volatile boolean appPaused;
 	private long frameId = -1;
 	private boolean isContinuous = true;
@@ -90,31 +88,14 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	IOSGLKView view;
 	IOSUIViewController viewController;
 
-	@Selector("alloc")
-	public static native IOSGraphics alloc ();
-
-	@Selector("init")
-	public native IOSGraphics init ();
-
-	protected IOSGraphics (Pointer peer) {
-		super(peer);
-	}
-
-	public IOSGraphics init (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input,
-		boolean useGLES30, IOSGLKView view) {
-		this.view = view;
-
-		init();
+	public IOSGraphics (IOSApplication app, IOSApplicationConfiguration config, IOSInput input, boolean useGLES30) {
 		this.config = config;
 
-		final CGRect bounds = app.getBounds();
 		// setup view and OpenGL
-		width = (int)bounds.size().width();
-		height = (int)bounds.size().height();
+		screenBounds = app.computeBounds();
 
 		if (useGLES30) {
 			context = EAGLContext.alloc().initWithAPI(EAGLRenderingAPI.GLES3);
-			;
 			if (context != null)
 				gl20 = gl30 = new IOSGLES30();
 			else
@@ -126,19 +107,21 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			gl30 = null;
 		}
 
-		view.setContext(context);
+		IOSViewDelegate viewDelegate = IOSViewDelegate.alloc().init();
+		// TODO: 13.06.2022 Solve better
+		viewDelegate.setIosGraphics(this);
+		view = IOSGLKView.alloc().init(new CGRect(new CGPoint(0, 0), new CGSize(screenBounds.width, screenBounds.height)), context);
 		view.setGraphics(this);
-
-		view.setDelegate(this);
+		view.setDelegate(viewDelegate);
 		view.setDrawableColorFormat(config.colorFormat);
 		view.setDrawableDepthFormat(config.depthFormat);
 		view.setDrawableStencilFormat(config.stencilFormat);
 		view.setDrawableMultisample(config.multisample);
 		view.setMultipleTouchEnabled(true);
 
-		viewController = IOSUIViewController.alloc().init(app, this);
+		viewController = app.createUIViewController(this);
 		viewController.setView(view);
-		viewController.setDelegate(this);
+		viewController.setDelegate(viewDelegate);
 		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
 
 		this.app = app;
@@ -170,9 +153,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		String machineString = HWMachine.getMachineString();
 		IOSDevice device = config.knownDevices.get(machineString);
-		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to LibGDX");
-		int ppi = device != null ? device.ppi : 163;
-		density = device != null ? device.ppi / 160f : scale;
+		if (device == null) app.error(tag, "Machine ID: " + machineString + " not found, please report to libGDX");
+		int ppi = device != null ? device.ppi : app.guessUnknownPpi();
+		density = ppi / 160f;
 		ppiX = ppi;
 		ppiY = ppi;
 		ppcX = ppiX / 2.54f;
@@ -184,15 +167,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		framesStart = lastFrameTime;
 
 		appPaused = false;
-		return this;
-	}
-
-	public IOSGraphics init (float scale, IOSApplication app, IOSApplicationConfiguration config, IOSInput input,
-		boolean useGLES30) {
-		CGRect bounds = app.getBounds();
-		IOSGLKView view = IOSGLKView.alloc()
-			.init(new CGRect(new CGPoint(0, 0), new CGSize(bounds.size().width(), bounds.size().height())));
-		return init(scale, app, config, input, useGLES30, view);
 	}
 
 	public void resume () {
@@ -205,6 +179,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 				listener.resume();
 			}
 		}
+		resume = true;
 		app.listener.resume();
 	}
 
@@ -223,23 +198,24 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	boolean created = false;
 
-	@Override
-	public void glkViewDrawInRect (GLKView view, @ByValue CGRect rect) {
+	public void draw (GLKView view, CGRect rect) {
 		makeCurrent();
 		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
 		// stores the last known viewport and we reset it here...
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
 		if (!created) {
-			gl20.glViewport(0, 0, width, height);
+			// OpenGL glViewport() function expects backbuffer coordinates instead of logical coordinates
+			gl20.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
 
 			String versionString = gl20.glGetString(GL20.GL_VERSION);
 			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
 			String rendererString = gl20.glGetString(GL20.GL_RENDERER);
 			glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
 
+			updateSafeInsets();
 			app.listener.create();
-			app.listener.resize(width, height);
+			app.listener.resize(getWidth(), getHeight());
 			created = true;
 		}
 		if (appPaused) {
@@ -247,7 +223,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		long time = System.nanoTime();
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		if (!resume) {
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		} else {
+			resume = false;
+			deltaTime = 0;
+		}
 		lastFrameTime = time;
 
 		frames++;
@@ -266,8 +247,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		EAGLContext.setCurrentContext(context);
 	}
 
-	@Override
-	public void glkViewControllerUpdate (GLKViewController glkViewController) {
+	public void update (GLKViewController controller) {
 		makeCurrent();
 		app.processRunnables();
 		// pause the GLKViewController render loop if we are no longer continuous
@@ -278,9 +258,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		isFrameRequested = false;
 	}
 
-	@Override
-	public void glkViewControllerWillPause (GLKViewController controller, boolean pause) {
-
+	public void willPause (GLKViewController controller, boolean pause) {
 	}
 
 	@Override
@@ -321,36 +299,39 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public int getWidth () {
-		return width;
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			return getBackBufferWidth();
+		} else {
+			return screenBounds.width;
+		}
 	}
 
 	@Override
 	public int getHeight () {
-		return height;
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			return getBackBufferHeight();
+		} else {
+			return screenBounds.height;
+		}
 	}
 
 	@Override
 	public int getBackBufferWidth () {
-		return width;
+		return screenBounds.backBufferWidth;
 	}
 
 	@Override
 	public int getBackBufferHeight () {
-		return height;
+		return screenBounds.backBufferHeight;
 	}
 
 	@Override
 	public float getBackBufferScale () {
-		return getBackBufferWidth() / (float)getWidth();
+		return app.pixelsPerPoint;
 	}
 
 	@Override
 	public float getDeltaTime () {
-		return deltaTime;
-	}
-
-	@Override
-	public float getRawDeltaTime () {
 		return deltaTime;
 	}
 
@@ -435,24 +416,45 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		return getDisplayMode();
 	}
 
+	protected void updateSafeInsets () {
+		safeInsetTop = 0;
+		safeInsetLeft = 0;
+		safeInsetRight = 0;
+		safeInsetBottom = 0;
+
+		if (Foundation.getMajorSystemVersion() >= 11) {
+			UIEdgeInsets edgeInsets = viewController.view().safeAreaInsets();
+			safeInsetTop = (int)edgeInsets.top();
+			safeInsetLeft = (int)edgeInsets.left();
+			safeInsetRight = (int)edgeInsets.right();
+			safeInsetBottom = (int)edgeInsets.bottom();
+			if (config.hdpiMode == HdpiMode.Pixels) {
+				safeInsetTop *= app.pixelsPerPoint;
+				safeInsetLeft *= app.pixelsPerPoint;
+				safeInsetRight *= app.pixelsPerPoint;
+				safeInsetBottom *= app.pixelsPerPoint;
+			}
+		}
+	}
+
 	@Override
 	public int getSafeInsetLeft () {
-		return 0;
+		return safeInsetLeft;
 	}
 
 	@Override
 	public int getSafeInsetTop () {
-		return 0;
+		return safeInsetTop;
 	}
 
 	@Override
 	public int getSafeInsetBottom () {
-		return 0;
+		return safeInsetBottom;
 	}
 
 	@Override
 	public int getSafeInsetRight () {
-		return 0;
+		return safeInsetRight;
 	}
 
 	@Override
@@ -470,9 +472,20 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
+	public void setUndecorated (boolean undecorated) {
+	}
+
+	@Override
+	public void setResizable (boolean resizable) {
+	}
+
+	@Override
 	public void setVSync (boolean vsync) {
 	}
 
+	/** Sets the preferred framerate for the application. Default is 60. Is not generally advised to be used on mobile platforms.
+	 *
+	 * @param fps the preferred fps */
 	@Override
 	public void setForegroundFPS (int fps) {
 		viewController.setPreferredFramesPerSecond(fps);
@@ -534,12 +547,37 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public void setSystemCursor (SystemCursor systemCursor) {
 	}
 
-	@Override
-	public void setResizable (boolean resizable) {
-	}
+	private static class IOSViewDelegate extends NSObject implements GLKViewDelegate, GLKViewControllerDelegate {
+		protected IOSViewDelegate(Pointer peer) {
+			super(peer);
+		}
 
-	@Override
-	public void setUndecorated (boolean undecorated) {
+		private IOSGraphics iosGraphics;
+
+		@Selector("alloc")
+		public static native IOSViewDelegate alloc();
+
+		@Selector("init")
+		public native IOSViewDelegate init();
+
+		public void setIosGraphics(IOSGraphics iosGraphics) {
+			this.iosGraphics = iosGraphics;
+		}
+
+		@Override
+		public void glkViewControllerUpdate (GLKViewController controller) {
+			iosGraphics.update(controller);
+		}
+
+		@Override
+		public void glkViewControllerWillPause (GLKViewController controller, boolean pause) {
+			iosGraphics.willPause(controller, pause);
+		}
+
+		@Override
+		public void glkViewDrawInRect (GLKView view, CGRect rect) {
+			iosGraphics.draw(view, rect);
+		}
 	}
 
 	private class IOSDisplayMode extends DisplayMode {

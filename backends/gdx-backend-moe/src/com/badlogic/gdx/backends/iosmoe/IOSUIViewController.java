@@ -1,30 +1,19 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
 
 package com.badlogic.gdx.backends.iosmoe;
 
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
+import apple.foundation.NSSet;
+import apple.glkit.GLKViewController;
+import apple.uikit.UIDevice;
+import apple.uikit.enums.UIInterfaceOrientation;
+import apple.uikit.UIPress;
+import apple.uikit.UIPressesEvent;
+import apple.uikit.enums.UIUserInterfaceIdiom;
 import org.moe.natj.general.NatJ;
 import org.moe.natj.general.Pointer;
 import org.moe.natj.objc.ann.Selector;
-import apple.coregraphics.struct.CGRect;
-import apple.glkit.GLKViewController;
-import apple.uikit.enums.UIInterfaceOrientation;
 
-class IOSUIViewController extends GLKViewController {
-
+public class IOSUIViewController extends GLKViewController {
 	private IOSApplication app;
 	private IOSGraphics graphics;
 
@@ -67,10 +56,13 @@ class IOSUIViewController extends GLKViewController {
 	public long supportedInterfaceOrientations () {
 		long mask = 0;
 		if (app.config.orientationLandscape) {
-			mask |= ((1 << UIInterfaceOrientation.LandscapeLeft) | (1 << UIInterfaceOrientation.LandscapeRight));
+			mask |= (1L << UIInterfaceOrientation.LandscapeLeft) | (1L << UIInterfaceOrientation.LandscapeRight);
 		}
 		if (app.config.orientationPortrait) {
-			mask |= ((1 << UIInterfaceOrientation.Portrait) | (1 << UIInterfaceOrientation.PortraitUpsideDown));
+			mask |= 1L << UIInterfaceOrientation.Portrait;
+			if (UIDevice.currentDevice().userInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
+				mask |= 1L << UIInterfaceOrientation.PortraitUpsideDown;
+			}
 		}
 		return mask;
 	}
@@ -81,26 +73,29 @@ class IOSUIViewController extends GLKViewController {
 	}
 
 	@Override
-	public boolean shouldAutorotateToInterfaceOrientation (long orientation) {
-		// we return "true" if we support the orientation
-		if (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight)
-			return app.config.orientationLandscape;
-		else
-			// assume portrait
-			return app.config.orientationPortrait;
+	public long preferredScreenEdgesDeferringSystemGestures () {
+		return app.config.screenEdgesDeferringSystemGestures;
 	}
 
 	@Override
 	public void viewDidLayoutSubviews () {
 		super.viewDidLayoutSubviews();
 		// get the view size and update graphics
-		CGRect bounds = app.getBounds();
-		graphics.width = (int)bounds.size().width();
-		graphics.height = (int)bounds.size().height();
-		graphics.makeCurrent();
-		if (app.graphics.created) {
-			app.listener.resize(graphics.width, graphics.height);
+		final IOSScreenBounds oldBounds = graphics.screenBounds;
+		final IOSScreenBounds newBounds = app.computeBounds();
+		graphics.screenBounds = newBounds;
+		// Layout may happen without bounds changing, don't trigger resize in that case
+		if (graphics.created && (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height)) {
+			graphics.makeCurrent();
+			graphics.updateSafeInsets();
+			graphics.gl20.glViewport(0, 0, newBounds.backBufferWidth, newBounds.backBufferHeight);
+			if (graphics.config.hdpiMode == HdpiMode.Pixels) {
+				app.listener.resize(newBounds.backBufferWidth, newBounds.backBufferHeight);
+			} else {
+				app.listener.resize(newBounds.width, newBounds.height);
+			}
 		}
+
 	}
 
 	@Override
@@ -111,5 +106,19 @@ class IOSUIViewController extends GLKViewController {
 	@Override
 	public boolean prefersHomeIndicatorAutoHidden () {
 		return app.config.hideHomeIndicator;
+	}
+
+	@Override
+	public void pressesBeganWithEvent (NSSet<? extends UIPress> presses, UIPressesEvent event) {
+		if (presses == null || presses.count() == 0 || !app.input.onKey(presses.objectEnumerator().nextObject().key(), true)) {
+			super.pressesBeganWithEvent(presses, event);
+		}
+	}
+
+	@Override
+	public void pressesEndedWithEvent (NSSet<? extends UIPress> presses, UIPressesEvent event) {
+		if (presses == null || presses.count() == 0 || !app.input.onKey(presses.objectEnumerator().nextObject().key(), false)) {
+			super.pressesEndedWithEvent(presses, event);
+		}
 	}
 }
