@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.iosmoe;
 
 import apple.coregraphics.struct.CGPoint;
 import apple.coregraphics.struct.CGSize;
-import apple.foundation.NSSet;
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -47,9 +46,7 @@ import apple.glkit.enums.GLKViewDrawableStencilFormat;
 import apple.opengles.EAGLContext;
 import apple.opengles.enums.EAGLRenderingAPI;
 import apple.uikit.struct.UIEdgeInsets;
-import apple.uikit.UIEvent;
 import org.moe.natj.general.Pointer;
-import org.moe.natj.objc.ObjCRuntime;
 import org.moe.natj.objc.ann.Selector;
 
 public class IOSGraphics extends AbstractGraphics {
@@ -548,19 +545,19 @@ public class IOSGraphics extends AbstractGraphics {
 	}
 
 	private static class IOSViewDelegate extends NSObject implements GLKViewDelegate, GLKViewControllerDelegate {
-		protected IOSViewDelegate(Pointer peer) {
+		protected IOSViewDelegate (Pointer peer) {
 			super(peer);
 		}
 
 		private IOSGraphics iosGraphics;
 
 		@Selector("alloc")
-		public static native IOSViewDelegate alloc();
+		public static native IOSViewDelegate alloc ();
 
 		@Selector("init")
-		public native IOSViewDelegate init();
+		public native IOSViewDelegate init ();
 
-		public void setIosGraphics(IOSGraphics iosGraphics) {
+		public void setIosGraphics (IOSGraphics iosGraphics) {
 			this.iosGraphics = iosGraphics;
 		}
 

@@ -34,7 +34,6 @@ import apple.coregraphics.struct.CGRect;
 import apple.foundation.NSMutableDictionary;
 import apple.NSObject;
 import apple.foundation.NSProcessInfo;
-import apple.foundation.NSString;
 import apple.uikit.UIApplication;
 import apple.uikit.protocol.UIApplicationDelegate;
 import apple.uikit.UIDevice;
@@ -140,7 +139,7 @@ public class IOSApplication implements Application {
 
 		this.uiWindow = UIWindow.alloc().initWithFrame(UIScreen.mainScreen().bounds());
 		this.uiWindow.makeKeyAndVisible();
-		//uiApp.delegate().setWindow(uiWindow);
+		// uiApp.delegate().setWindow(uiWindow);
 
 		// setup libgdx
 		this.input = createInput();
@@ -384,7 +383,8 @@ public class IOSApplication implements Application {
 		File libraryPath = new File(System.getenv("HOME"), "Library");
 		File finalPath = new File(libraryPath, name + ".plist");
 
-		NSMutableDictionary<String, Object> nsDictionary = NSMutableDictionary.dictionaryWithContentsOfFile(finalPath.getAbsolutePath());
+		NSMutableDictionary<String, Object> nsDictionary = NSMutableDictionary
+			.dictionaryWithContentsOfFile(finalPath.getAbsolutePath());
 
 		// if it fails to get an existing dictionary, create a new one.
 		if (nsDictionary == null) {

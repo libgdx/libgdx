@@ -52,7 +52,8 @@ public class IOSHaptics {
 				Ptr<NSError> nsErrorPtr = PtrFactory.newObjectPtr(NSError.class, 1, true, false);
 				hapticEngine = CHHapticEngine.alloc().initAndReturnError(nsErrorPtr);
 				if (nsErrorPtr.get() != null) {
-					Gdx.app.error("IOSHaptics", "Error creating CHHapticEngine. Haptics will be disabled. " + nsErrorPtr.get().localizedDescription());
+					Gdx.app.error("IOSHaptics",
+						"Error creating CHHapticEngine. Haptics will be disabled. " + nsErrorPtr.get().localizedDescription());
 					hapticsSupport = false;
 					return;
 				}
@@ -66,9 +67,10 @@ public class IOSHaptics {
 						// Try restarting the engine.
 						hapticEngine.startWithCompletionHandler(new Block_startWithCompletionHandler() {
 							@Override
-							public void call_startWithCompletionHandler(NSError error) {
+							public void call_startWithCompletionHandler (NSError error) {
 								if (error == null) return;
-								Gdx.app.error("IOSHaptics", "Error restarting CHHapticEngine. Haptics will be disabled. " + error.localizedDescription());
+								Gdx.app.error("IOSHaptics",
+									"Error restarting CHHapticEngine. Haptics will be disabled. " + error.localizedDescription());
 								hapticsSupport = false;
 
 							}
@@ -117,20 +119,20 @@ public class IOSHaptics {
 	}
 
 	private NSDictionary<String, ?> getChHapticPatternDict (int milliseconds, float intensity) {
-		return (NSDictionary<String, ?>)NSDictionary.dictionaryWithObjectForKey(NSArray.arrayWithObject(NSDictionary.dictionaryWithObjectForKey(NSDictionary.dictionaryWithObjectsForKeys(
-								NSArray.arrayWithObjects(CoreHaptics.CHHapticEventTypeHapticContinuous(), NSNumber.numberWithDouble(0.0),
-										NSNumber.numberWithFloat(milliseconds / 1000f),
-										NSArray.arrayWithObject(NSDictionary.dictionaryWithObjectsForKeys(
-												NSArray.arrayWithObjects(CoreHaptics.CHHapticEventParameterIDHapticIntensity(),
-														NSNumber.numberWithFloat(intensity), null),
-												NSArray.arrayWithObjects(CoreHaptics.CHHapticPatternKeyParameterID(),
-														CoreHaptics.CHHapticPatternKeyParameterValue(), null))), null),
-								NSArray.arrayWithObjects(CoreHaptics.CHHapticPatternKeyEventType(),
-										CoreHaptics.CHHapticPatternKeyTime(),
-										CoreHaptics.CHHapticPatternKeyEventDuration(),
-										CoreHaptics.CHHapticPatternKeyEventParameters(), null)),
-						CoreHaptics.CHHapticPatternKeyEvent())),
-				CoreHaptics.CHHapticPatternKeyPattern());
+		return (NSDictionary<String, ?>)NSDictionary
+			.dictionaryWithObjectForKey(NSArray.arrayWithObject(NSDictionary.dictionaryWithObjectForKey(
+				NSDictionary.dictionaryWithObjectsForKeys(
+					NSArray.arrayWithObjects(CoreHaptics.CHHapticEventTypeHapticContinuous(), NSNumber.numberWithDouble(0.0),
+						NSNumber.numberWithFloat(milliseconds / 1000f),
+						NSArray.arrayWithObject(NSDictionary.dictionaryWithObjectsForKeys(
+							NSArray.arrayWithObjects(CoreHaptics.CHHapticEventParameterIDHapticIntensity(),
+								NSNumber.numberWithFloat(intensity), null),
+							NSArray.arrayWithObjects(CoreHaptics.CHHapticPatternKeyParameterID(),
+								CoreHaptics.CHHapticPatternKeyParameterValue(), null))),
+						null),
+					NSArray.arrayWithObjects(CoreHaptics.CHHapticPatternKeyEventType(), CoreHaptics.CHHapticPatternKeyTime(),
+						CoreHaptics.CHHapticPatternKeyEventDuration(), CoreHaptics.CHHapticPatternKeyEventParameters(), null)),
+				CoreHaptics.CHHapticPatternKeyEvent())), CoreHaptics.CHHapticPatternKeyPattern());
 	}
 
 	public void vibrate (Input.VibrationType vibrationType) {
@@ -149,7 +151,8 @@ public class IOSHaptics {
 			default:
 				throw new IllegalArgumentException("Unknown VibrationType " + vibrationType);
 			}
-			UIImpactFeedbackGenerator uiImpactFeedbackGenerator = UIImpactFeedbackGenerator.alloc().initWithStyle(uiImpactFeedbackStyle);
+			UIImpactFeedbackGenerator uiImpactFeedbackGenerator = UIImpactFeedbackGenerator.alloc()
+				.initWithStyle(uiImpactFeedbackStyle);
 			uiImpactFeedbackGenerator.impactOccurred();
 		}
 	}

@@ -31,7 +31,7 @@ public class OALIOSAudio implements IOSAudio {
 
 	private final IOSApplicationConfiguration config;
 
-	public OALIOSAudio(IOSApplicationConfiguration config) {
+	public OALIOSAudio (IOSApplicationConfiguration config) {
 		this.config = config;
 		if (!config.useAudio) return;
 		OALSimpleAudio audio = OALSimpleAudio.sharedInstance();

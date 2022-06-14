@@ -21,7 +21,6 @@ import apple.avfaudio.protocol.AVAudioPlayerDelegate;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.iosmoe.objectal.OALAudioTrack;
-import apple.NSObject;
 
 /** @author Niklas Therning */
 public class IOSMusic implements Music {
