@@ -54,6 +54,7 @@ task copyIdeaResources(type: Copy) {
 	from "${projectDir}/res"
 	into "${buildDir}/classes/java/main/"
 }
+processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 processResources.dependsOn copyIdeaResources
 
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"

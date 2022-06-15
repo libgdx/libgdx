@@ -24,3 +24,6 @@ sourceSets {
 dependencies {
 	api libraries.robovm
 }
+
+processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+sourcesJar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
