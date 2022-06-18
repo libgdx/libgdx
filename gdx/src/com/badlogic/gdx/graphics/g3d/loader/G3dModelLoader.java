@@ -134,6 +134,8 @@ public class G3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> {
 			return GL20.GL_TRIANGLE_STRIP;
 		} else if (type.equals("LINE_STRIP")) {
 			return GL20.GL_LINE_STRIP;
+		} else if (type.equals("LINE_LOOP")) {
+			return GL20.GL_LINE_LOOP;
 		} else {
 			throw new GdxRuntimeException("Unknown primitive type '" + type
 				+ "', should be one of triangle, trianglestrip, line, linestrip, lineloop or point");
