@@ -44,6 +44,7 @@ ipch/
 *.class
 hs_err_pid*
 Thumbs.db
+*.xcframework
 
 libgdx-*.zip
 libgdx-*.zip.MD5
@@ -76,6 +77,7 @@ libgdx-*.zip.MD5
 #assets generated in tests
 tests/gdx-tests-android/assets/bitmapWrittenFont.fnt
 tests/gdx-tests-android/assets/bitmapWrittenFont.png
+tests/gdx-tests-ios-intel/xcode/IOSTests/custom.xcconfig
 
 #directories created by fetch.xml
 /tests/gdx-tests-android/libs
