@@ -47,18 +47,15 @@ configurations { natives }
 task copyNatives  {
 	doLast {
 		file("xcode/native/ios/").mkdirs();
-		def LD_FLAGS = "LIBGDX_NATIVES = "
 		configurations.natives.files.each { jar ->
-			for (File libFile : jar.listFiles()) {
-				if (libFile.getAbsolutePath().endsWith(".a") && !libFile.getAbsolutePath().contains("/tvos/")) {
-					LD_FLAGS += " -force_load " + libFile.getAbsolutePath()
-				}
+			copy {
+				from jar
+				include "*.xcframework/**"
+				into("xcode/native/ios/")
+				includeEmptyDirs(false)
 			}
-
 		}
-		def outFlags = file("xcode/IOSTests/custom.xcconfig");
-		outFlags.write LD_FLAGS
-
+		file("xcode/IOSTests/custom.xcconfig").write("LIBGDX_NATIVES = -Wl,-all_load")
 		def proguard = file("proguard.append.cfg")
 		if (!proguard.exists()) {
 			proguard = new File("proguard.append.cfg")
@@ -69,8 +66,8 @@ task copyNatives  {
 }
 
 dependencies {
-	compile project(":tests:gdx-tests")
-	compile project(":backends:gdx-backend-moe")
+	implementation project(":tests:gdx-tests")
+	implementation project(":backends:gdx-backend-moe")
 	natives testnatives.ios
 }
 
