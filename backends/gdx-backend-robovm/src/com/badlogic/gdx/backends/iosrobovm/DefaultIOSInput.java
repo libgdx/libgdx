@@ -451,9 +451,9 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		if (textfield == null) createDefaultTextField();
 		softkeyboardActive = visible;
 		if (visible) {
-			UIKeyboardType preferredInputType;
 			if (type == null) type = OnscreenKeyboardType.Default;
 			textfield.setKeyboardType(getIosInputType(type));
+			textfield.reloadInputViews();
 			textfield.becomeFirstResponder();
 			textfield.setDelegate(textDelegate);
 		} else {
