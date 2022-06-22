@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.backends.iosmoe;
 
+import apple.uikit.UIScreen;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import apple.foundation.NSSet;
 import apple.glkit.GLKViewController;
@@ -49,6 +50,7 @@ public class IOSUIViewController extends GLKViewController {
 	@Override
 	public void viewDidAppear (boolean animated) {
 		super.viewDidAppear(animated);
+		view().setContentScaleFactor(UIScreen.mainScreen().nativeScale());
 		if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
 	}
 
