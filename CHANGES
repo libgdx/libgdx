@@ -1,4 +1,5 @@
 [1.11.1]
+- [BREAKING CHANGE] Android: Immersive mode is now true by default. Set `useImmersiveMode` config to `false` to disable it. 
 - [BREAKING CHANGE] iOS: `hideHomeIndicator` set to `false` by default (was `true`).
 - [BREAKING CHANGE] iOS: `screenEdgesDeferringSystemGestures` set to `UIRectEdge.All` by default (was `UIRectEdge.None`).
 - iOS: Add new MobiVM MetalANGLE backend
