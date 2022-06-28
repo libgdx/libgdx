@@ -11,7 +11,6 @@ public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        config.useHaptics = false;
         return new IOSApplication(new %MAIN_CLASS%(), config);
     }
 
