@@ -18,8 +18,8 @@ package com.badlogic.gdx.utils;
 
 import java.util.Arrays;
 
-import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** A quad tree that stores a float for each point.
  * @author Nathan Sweet */
@@ -158,9 +158,9 @@ public class QuadTreeFloat implements Poolable {
 	}
 
 	/** @param results For each entry found within the rectangle, if any, the value, x, and y of the entry are added to this array.
-	 *           See {@link #VALUE}, {@link #X}, {@link #Y}, and {@link #DISTSQR}. */
+	 *           See {@link #VALUE}, {@link #X}, and {@link #Y}. */
 	public void query (Rectangle rect, FloatArray results) {
-		if (!(x < rect.x + rect.width && x + width > rect.x && y < rect.y + rect.height && y + height > rect.y)) return;
+		if (x >= rect.x + rect.width || x + width <= rect.x || y >= rect.y + rect.height || y + height <= rect.y) return;
 		int count = this.count;
 		if (count != -1) {
 			float[] values = this.values;
