@@ -339,9 +339,10 @@ public class Group extends Actor implements Cullable {
 	 * @return the actor removed from this group. */
 	public Actor removeActorAt (int index, boolean unfocus) {
 		Actor actor = children.removeIndex(index);
-		if (unfocus) {
-			Stage stage = getStage();
-			if (stage != null) stage.unfocus(actor);
+		Stage stage = getStage();
+		if (stage != null) {
+			if (unfocus) stage.unfocus(actor);
+			stage.actorRemoved(actor);
 		}
 		actor.setParent(null);
 		actor.setStage(null);
