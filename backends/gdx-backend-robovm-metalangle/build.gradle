@@ -134,3 +134,6 @@ task jnigen() {
 if(OperatingSystem.current() == OperatingSystem.MAC_OS) {
 	jnigenBuild.dependsOn jnigenBuildIOS
 }
+
+processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+sourcesJar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
