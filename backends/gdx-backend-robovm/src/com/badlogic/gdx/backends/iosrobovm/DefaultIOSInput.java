@@ -28,7 +28,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
-import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.Foundation;
@@ -40,7 +39,6 @@ import org.robovm.apple.uikit.UIAlertAction;
 import org.robovm.apple.uikit.UIAlertActionStyle;
 import org.robovm.apple.uikit.UIAlertController;
 import org.robovm.apple.uikit.UIAlertControllerStyle;
-import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIForceTouchCapability;
 import org.robovm.apple.uikit.UIKey;
 import org.robovm.apple.uikit.UIKeyboardHIDUsage;
@@ -123,7 +121,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	float[] R = new float[9];
 	InputProcessor inputProcessor = null;
 
-	boolean hasVibrator;
+	private IOSHaptics haptics;
 	// CMMotionManager motionManager;
 	protected UIAccelerometerDelegate accelerometerDelegate;
 	boolean compassSupported;
@@ -143,13 +141,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		// motionManager = new CMMotionManager();
 		setupAccelerometer();
 		setupCompass();
-		UIDevice device = UIDevice.getCurrentDevice();
-		if (device.getModel().equalsIgnoreCase("iphone")) hasVibrator = true;
-
-		if (app.getVersion() >= 9) {
-			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
-			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
-		}
+		setupHaptics();
+		setupPressure();
 	}
 
 	protected void setupCompass () {
@@ -176,6 +169,17 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			};
 			UIAccelerometer.getSharedAccelerometer().setDelegate(accelerometerDelegate);
 			UIAccelerometer.getSharedAccelerometer().setUpdateInterval(config.accelerometerUpdate);
+		}
+	}
+
+	protected void setupHaptics () {
+		haptics = new IOSHaptics(config.useHaptics);
+	}
+
+	protected void setupPressure () {
+		if (app.getVersion() >= 9) {
+			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
+			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
 		}
 	}
 
@@ -547,17 +551,22 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	@Override
 	public void vibrate (int milliseconds) {
-		AudioServices.playSystemSound(4095);
+		haptics.vibrate(milliseconds, true);
 	}
 
 	@Override
-	public void vibrate (long[] pattern, int repeat) {
-		// FIXME implement this
+	public void vibrate (int milliseconds, boolean fallback) {
+		haptics.vibrate(milliseconds, fallback);
 	}
 
 	@Override
-	public void cancelVibrate () {
-		// FIXME implement this
+	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
+		haptics.vibrate(milliseconds, amplitude, fallback);
+	}
+
+	@Override
+	public void vibrate (VibrationType vibrationType) {
+		haptics.vibrate(vibrationType);
 	}
 
 	@Override
@@ -579,7 +588,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer && config.useAccelerometer) return true;
 		if (peripheral == Peripheral.MultitouchScreen) return true;
-		if (peripheral == Peripheral.Vibrator) return hasVibrator;
+		if (peripheral == Peripheral.Vibrator) return haptics.isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return haptics.isHapticsSupported();
 		if (peripheral == Peripheral.Compass) return compassSupported;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		if (peripheral == Peripheral.Pressure) return pressureSupported;

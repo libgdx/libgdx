@@ -68,18 +68,23 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	IntBuffer tmpBuffer3 = BufferUtils.createIntBuffer(1);
 	IntBuffer tmpBuffer4 = BufferUtils.createIntBuffer(1);
 
-	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
+	GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
+		volatile boolean posted;
+
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
+			if (posted) return;
+			posted = true;
 			Gdx.app.postRunnable(new Runnable() {
 				@Override
 				public void run () {
+					posted = false;
 					updateFramebufferInfo();
 					if (!window.isListenerInitialized()) {
 						return;
 					}
 					window.makeCurrent();
-					gl20.glViewport(0, 0, width, height);
+					gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
 					window.getListener().resize(getWidth(), getHeight());
 					window.getListener().render();
 					GLFW.glfwSwapBuffers(windowHandle);

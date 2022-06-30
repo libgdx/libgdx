@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -26,10 +25,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Build;
 import android.os.Handler;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.view.MotionEvent;
@@ -124,7 +120,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
-	protected final Vibrator vibrator;
+	protected final AndroidHaptics haptics;
 	private boolean compassAvailable = false;
 	private boolean rotationVectorAvailable = false;
 	boolean keyboardAvailable;
@@ -171,7 +167,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		touchHandler = new AndroidTouchHandler();
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
-		vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+		haptics = new AndroidHaptics(context);
 
 		int rotation = getRotation();
 		DisplayMode mode = app.getGraphics().getDisplayMode();
@@ -642,27 +638,23 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	}
 
 	@Override
-	@SuppressLint("MissingPermission")
 	public void vibrate (int milliseconds) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-			vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
-		else
-			vibrator.vibrate(milliseconds);
+		haptics.vibrate(milliseconds);
 	}
 
 	@Override
-	@SuppressLint("MissingPermission")
-	public void vibrate (long[] pattern, int repeat) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-			vibrator.vibrate(VibrationEffect.createWaveform(pattern, repeat));
-		else
-			vibrator.vibrate(pattern, repeat);
+	public void vibrate (int milliseconds, boolean fallback) {
+		haptics.vibrate(milliseconds);
 	}
 
 	@Override
-	@SuppressLint("MissingPermission")
-	public void cancelVibrate () {
-		vibrator.cancel();
+	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
+		haptics.vibrate(milliseconds, amplitude, fallback);
+	}
+
+	@Override
+	public void vibrate (VibrationType vibrationType) {
+		haptics.vibrate(vibrationType);
 	}
 
 	@Override
@@ -835,7 +827,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
-		if (peripheral == Peripheral.Vibrator) return vibrator != null && vibrator.hasVibrator();
+		if (peripheral == Peripheral.Vibrator) return haptics.hasVibratorAvailable();
+		if (peripheral == Peripheral.HapticFeedback) return haptics.hasAmplitudeSupport();
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		if (peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
 		if (peripheral == Peripheral.Pressure) return true;

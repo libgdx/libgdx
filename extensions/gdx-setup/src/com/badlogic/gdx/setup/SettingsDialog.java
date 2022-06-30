@@ -113,7 +113,7 @@ public class SettingsDialog extends JDialog {
 						Desktop desktop = Desktop.getDesktop();
 						try {
 							URI uri = new URI(
-								"https://github.com/libgdx/libgdx/wiki/Improving-workflow-with-Gradle#how-to-remove-gradle-ide-integration-from-your-project");
+								"https://libgdx.com/wiki/articles/improving-workflow-with-gradle#how-to-remove-gradle-ide-integration-from-your-project");
 							desktop.browse(uri);
 						} catch (IOException ex) {
 							ex.printStackTrace();
