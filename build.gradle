@@ -27,7 +27,7 @@ buildscript {
 }
 
 plugins {
-    id "de.undercouch.download" version "5.0.1"
+	id "de.undercouch.download" version "5.0.1"
 }
 
 apply from: "gradle/dependencies.gradle"
@@ -207,7 +207,11 @@ task fetchGlfwAWTARM64(dependsOn: setupExternalNativesDirs, type: Download) {
 	useETag "all"
 }
 
-task fetchExternalNatives(dependsOn: [ fetchAngleNativesZIP, fetchGlfwAWT, fetchGlfwAWTARM64 ] , type: Copy) {
+task fetchExternalNatives(dependsOn: [
+	fetchAngleNativesZIP,
+	fetchGlfwAWT,
+	fetchGlfwAWTARM64
+] , type: Copy) {
 	from zipTree("build/gdx-angle-natives.zip")
 	into "./extensions/gdx-lwjgl3-angle/res"
 	outputs.upToDateWhen { false }
