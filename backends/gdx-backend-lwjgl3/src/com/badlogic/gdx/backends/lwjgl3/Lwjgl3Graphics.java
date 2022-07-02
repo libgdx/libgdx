@@ -446,10 +446,8 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
 				minX = tmpBuffer.get(0);
 				minY = tmpBuffer2.get(0);
-				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
-					Math.max(minX, minX + (tmpBuffer3.get(0) - width) / 2),
-					Math.max(minY, minY + (tmpBuffer4.get(0) - height) / 2), width, height,
-					displayModeBeforeFullscreen.refreshRate);
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, Math.max(minX, minX + (tmpBuffer3.get(0) - width) / 2),
+					Math.max(minY, minY + (tmpBuffer4.get(0) - height) / 2), width, height, displayModeBeforeFullscreen.refreshRate);
 			} else {
 				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width,
 					height, displayModeBeforeFullscreen.refreshRate);
