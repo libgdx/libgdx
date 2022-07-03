@@ -19,7 +19,6 @@ gwt-unitCache/
 war/
 gen/
 gen-external-apklibs/
-armeabi/
 armeabi-v7a/
 arm64-v8a/
 linux32/
@@ -33,7 +32,6 @@ Release/
 x64/
 x86/
 x86_64/
-robovm-build/
 ipch/
 /dist
 

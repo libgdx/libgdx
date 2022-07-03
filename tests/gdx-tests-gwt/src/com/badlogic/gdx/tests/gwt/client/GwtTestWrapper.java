@@ -95,6 +95,7 @@ import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gwt.GwtInputTest;
 import com.badlogic.gdx.tests.gwt.GwtWindowModeTest;
+import com.badlogic.gdx.tests.math.CollisionPlaygroundTest;
 import com.badlogic.gdx.tests.math.OctreeTest;
 import com.badlogic.gdx.tests.net.OpenBrowserExample;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
@@ -186,6 +187,10 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		}, new GwtInstancer() {
 			public GdxTest instance () {
 				return new ComplexActionTest();
+			}
+		}, new GwtInstancer() {
+			public GdxTest instance () {
+				return new CollisionPlaygroundTest();
 			}
 		}, new GwtInstancer() {
 			public GdxTest instance () {

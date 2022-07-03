@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,6 +60,9 @@ public class IOSApplicationConfiguration {
 	/** whether to use the compass, default true **/
 	public boolean useCompass = true;
 
+	/** whether to use the haptics engine, default false. **/
+	public boolean useHaptics = false;
+
 	/** whether or not to allow background music from iPod **/
 	public boolean allowIpod = true;
 
@@ -74,15 +77,16 @@ public class IOSApplicationConfiguration {
 	/** whether the status bar should be visible or not **/
 	public boolean statusBarVisible = false;
 
-	/** whether the home indicator should be hidden or not **/
-	public boolean hideHomeIndicator = true;
+	/** whether the home indicator should auto-hide or not. Be careful that if enabled, leaving the app only takes one swipe
+	 * gesture instead of two and the indicator is never semitransparent. **/
+	public boolean hideHomeIndicator = false;
 
 	/** Whether to override the ringer/mute switch, see https://github.com/libgdx/libgdx/issues/4430 */
 	public boolean overrideRingerSwitch = false;
 
 	/** Edges where app gestures must be fired over system gestures. Prior to iOS 11, UIRectEdge.All was default behaviour if
 	 * status bar hidden, see https://github.com/libgdx/libgdx/issues/5110 **/
-	public UIRectEdge screenEdgesDeferringSystemGestures = UIRectEdge.None;
+	public UIRectEdge screenEdgesDeferringSystemGestures = UIRectEdge.All;
 
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
 	public int maxNetThreads = Integer.MAX_VALUE;
