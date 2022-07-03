@@ -6,26 +6,33 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IOSTestWapper extends AbstractTestWrapper {
 	@Override
 	protected Instancer[] getTestList () {
-		return GdxTests.tests.stream().map(aClass -> new Instancer() {
+		List<Instancer> list = new ArrayList<>();
+		for (Class<? extends GdxTest> aClass : GdxTests.tests) {
+			Instancer instancer = new Instancer() {
 
-			@Override
-			public GdxTest instance () {
-				try {
-					return aClass.getConstructor().newInstance();
-				} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-					e.printStackTrace();
+				@Override
+				public GdxTest instance () {
+					try {
+						return aClass.getConstructor().newInstance();
+					} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+						e.printStackTrace();
+					}
+					return null;
 				}
-				return null;
-			}
 
-			@Override
-			public String getSimpleName () {
-				return aClass.getSimpleName();
-			}
-		}).toArray(Instancer[]::new);
+				@Override
+				public String getSimpleName () {
+					return aClass.getSimpleName();
+				}
+			};
+			list.add(instancer);
+		}
+		return list.toArray(new Instancer[0]);
 	}
 }
