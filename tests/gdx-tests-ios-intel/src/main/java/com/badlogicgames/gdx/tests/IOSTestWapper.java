@@ -14,12 +14,12 @@ public class IOSTestWapper extends AbstractTestWrapper {
 	protected Instancer[] getTestList () {
 		List<Instancer> list = new ArrayList<>();
 		for (Class<? extends GdxTest> aClass : GdxTests.tests) {
+			final Class<? extends GdxTest> testClass = aClass;
 			Instancer instancer = new Instancer() {
-
 				@Override
 				public GdxTest instance () {
 					try {
-						return aClass.getConstructor().newInstance();
+						return testClass.getConstructor().newInstance();
 					} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 						e.printStackTrace();
 					}
@@ -28,7 +28,7 @@ public class IOSTestWapper extends AbstractTestWrapper {
 
 				@Override
 				public String getSimpleName () {
-					return aClass.getSimpleName();
+					return testClass.getSimpleName();
 				}
 			};
 			list.add(instancer);
