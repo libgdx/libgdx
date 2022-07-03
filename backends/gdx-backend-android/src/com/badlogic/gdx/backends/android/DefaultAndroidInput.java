@@ -72,6 +72,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		static final int TOUCH_DRAGGED = 2;
 		static final int TOUCH_SCROLLED = 3;
 		static final int TOUCH_MOVED = 4;
+		static final int TOUCH_CANCELLED = 5;
 
 		long timeStamp;
 		int type;
@@ -424,6 +425,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 						break;
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
+						break;
+					case TouchEvent.TOUCH_CANCELLED:
+						processor.touchCancelled(e.x, e.y, e.pointer, e.button);
 						break;
 					case TouchEvent.TOUCH_MOVED:
 						processor.mouseMoved(e.x, e.y);
@@ -973,12 +977,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	@Override
 	public void onPause () {
 		unregisterSensorListeners();
-
-		// erase pointer ids. this sucks donkeyballs...
-		Arrays.fill(realId, -1);
-
-		// erase touched state. this also sucks donkeyballs...
-		Arrays.fill(touched, false);
 	}
 
 	@Override
