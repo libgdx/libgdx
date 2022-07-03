@@ -91,10 +91,10 @@ public class IOSApplicationConfiguration {
 	public int maxNetThreads = Integer.MAX_VALUE;
 
 	/** The minimal buffer size of the audio device. Below 2048 can lead to buggy behavior. */
-	public int audioDeviceBufferSize = 2048;
+	public int audioDeviceBufferSize = 512;
 
 	/** How many buffers to use for audio device */
-	public int audioDeviceBufferCount = 16;
+	public int audioDeviceBufferCount = 4;
 
 	/** whether to use audio or not. Default is <code>true</code> **/
 	public boolean useAudio = true;

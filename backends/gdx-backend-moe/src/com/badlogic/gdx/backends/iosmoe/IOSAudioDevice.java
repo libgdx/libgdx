@@ -68,7 +68,7 @@ public class IOSAudioDevice implements AudioDevice {
 			while (true) {
 				int i = alSource.buffersProcessed();
 				for (int j = 0; j < i; j++) {
-					ALBuffer alBuffer = alBuffers.remove(j);
+					ALBuffer alBuffer = alBuffers.remove(0);
 					alSource.unqueueBuffer(alBuffer);
 					alBuffersFree.add(alBuffer);
 				}
