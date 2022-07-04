@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
 
@@ -34,7 +33,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,30 +128,18 @@ public class DefaultAndroidAudio implements AndroidAudio {
 	 * @param fd the FileDescriptor from which to create the Music
 	 *
 	 * @see Audio#newMusic(FileHandle) */
-	//todo
-	/*public Music newMusic (FileDescriptor fd) {
-		if (soundPool == null) {
-			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
-		}
-
-		MediaPlayer mediaPlayer = createMediaPlayer();
-		MediaPlayer mediaPlayer2 = createMediaPlayer();
-
-		try {
-			mediaPlayer.setDataSource(fd);
-			mediaPlayer2.setDataSource(fd);
-			mediaPlayer.prepare();
-			mediaPlayer2.prepare();
-
-			AndroidMusic music = new AndroidMusic(this, mediaPlayer, mediaPlayer2);
-			synchronized (musics) {
-				musics.add(music);
-			}
-			return music;
-		} catch (Exception ex) {
-			throw new GdxRuntimeException("Error loading audio from FileDescriptor", ex);
-		}
-	}*/
+	// todo
+	/*
+	 * public Music newMusic (FileDescriptor fd) { if (soundPool == null) { throw new
+	 * GdxRuntimeException("Android audio is not enabled by the application config."); }
+	 * 
+	 * MediaPlayer mediaPlayer = createMediaPlayer(); MediaPlayer mediaPlayer2 = createMediaPlayer();
+	 * 
+	 * try { mediaPlayer.setDataSource(fd); mediaPlayer2.setDataSource(fd); mediaPlayer.prepare(); mediaPlayer2.prepare();
+	 * 
+	 * AndroidMusic music = new AndroidMusic(this, mediaPlayer, mediaPlayer2); synchronized (musics) { musics.add(music); } return
+	 * music; } catch (Exception ex) { throw new GdxRuntimeException("Error loading audio from FileDescriptor", ex); } }
+	 */
 
 	/** {@inheritDoc} */
 	@Override
@@ -213,6 +199,5 @@ public class DefaultAndroidAudio implements AndroidAudio {
 			musics.remove(this);
 		}
 	}
-
 
 }

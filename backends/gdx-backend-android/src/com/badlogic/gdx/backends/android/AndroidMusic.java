@@ -215,10 +215,10 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 	};
 
 	@TargetApi(16)
-	private MediaPlayer.OnCompletionListener createOnCompletionListener(final MediaPlayer next) {
+	private MediaPlayer.OnCompletionListener createOnCompletionListener (final MediaPlayer next) {
 		return new MediaPlayer.OnCompletionListener() {
 			@Override
-			public void onCompletion(MediaPlayer mediaPlayer) {
+			public void onCompletion (MediaPlayer mediaPlayer) {
 				mediaPlayer.reset();
 				try {
 					mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
@@ -242,7 +242,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 				.setUsage(AudioAttributes.USAGE_GAME).build());
 		}
 
-		AndroidFileHandle aHandle = (AndroidFileHandle) file;
+		AndroidFileHandle aHandle = (AndroidFileHandle)file;
 		if (aHandle.type() == Files.FileType.Internal) {
 			try {
 				this.descriptor = aHandle.getAssetFileDescriptor();
