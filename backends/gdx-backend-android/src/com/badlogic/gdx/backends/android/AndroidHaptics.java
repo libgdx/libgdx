@@ -74,22 +74,6 @@ public class AndroidHaptics {
 					throw new IllegalArgumentException("Unknown VibrationType " + vibrationType);
 				}
 				vibrator.vibrate(VibrationEffect.createPredefined(vibrationEffect), audioAttributes);
-			} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				int amplitude;
-				switch (vibrationType) {
-				case LIGHT:
-					amplitude = 50;
-					break;
-				case MEDIUM:
-					amplitude = VibrationEffect.DEFAULT_AMPLITUDE;
-					break;
-				case HEAVY:
-					amplitude = 250;
-					break;
-				default:
-					throw new IllegalArgumentException("Unknown VibrationType " + vibrationType);
-				}
-				vibrator.vibrate(VibrationEffect.createOneShot(25, amplitude));
 			}
 		}
 	}
