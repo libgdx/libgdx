@@ -485,7 +485,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				if (type == OnscreenKeyboardType.Password) {
 					uiTextField.setSecureTextEntry(true);
 				}
-				textfield.reloadInputViews();
+				uiTextField.reloadInputViews();
 			}
 		});
 		uiAlertController.addAction(
