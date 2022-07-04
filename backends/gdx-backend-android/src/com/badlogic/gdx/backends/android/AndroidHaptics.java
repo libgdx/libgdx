@@ -29,17 +29,17 @@ public class AndroidHaptics {
 	private final Vibrator vibrator;
 	private AudioAttributes audioAttributes;
 	private boolean vibratorSupport;
-	private boolean amplitudeSupport;
+	private boolean hapticsSupport;
 
 	public AndroidHaptics (Context context) {
 		vibratorSupport = false;
-		amplitudeSupport = false;
+		hapticsSupport = false;
 		this.vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
 		if (vibrator != null && vibrator.hasVibrator()) {
 			vibratorSupport = true;
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 				if (vibrator.hasAmplitudeControl()) {
-					amplitudeSupport = true;
+					hapticsSupport = true;
 				}
 				this.audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
 					.setUsage(AudioAttributes.USAGE_GAME).build();
@@ -57,7 +57,7 @@ public class AndroidHaptics {
 	}
 
 	public void vibrate (Input.VibrationType vibrationType) {
-		if (amplitudeSupport) {
+		if (hapticsSupport) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 				int vibrationEffect;
 				switch (vibrationType) {
@@ -79,7 +79,7 @@ public class AndroidHaptics {
 	}
 
 	public void vibrate (int milliseconds, int intensity, boolean fallback) {
-		if (amplitudeSupport) {
+		if (hapticsSupport) {
 			intensity = MathUtils.clamp(intensity, 0, 255);
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
 				vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, intensity));
@@ -90,7 +90,7 @@ public class AndroidHaptics {
 		return vibratorSupport;
 	}
 
-	public boolean hasAmplitudeSupport () {
-		return amplitudeSupport;
+	public boolean hasHapticsSupport () {
+		return hapticsSupport;
 	}
 }
