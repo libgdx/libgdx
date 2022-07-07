@@ -205,7 +205,11 @@ public class ParticleEditor extends JFrame {
 	}
 
 	public ParticleEmitter getEmitter () {
-		return effect.getEmitters().get(effectPanel.editIndex);
+		Array<ParticleEmitter> emitters = effect.getEmitters();
+		if (effectPanel.editIndex < emitters.size) {
+			return emitters.get(effectPanel.editIndex);
+		}
+		return emitters.get(0);
 	}
 
 	public void setEnabled (ParticleEmitter emitter, boolean enabled) {
@@ -598,6 +602,10 @@ public class ParticleEditor extends JFrame {
 			ParticleEditor.this.dispatchEvent(new WindowEvent(ParticleEditor.this, WindowEvent.WINDOW_LOST_FOCUS));
 			ParticleEditor.this.dispatchEvent(new WindowEvent(ParticleEditor.this, WindowEvent.WINDOW_GAINED_FOCUS));
 			ParticleEditor.this.requestFocusInWindow();
+			return false;
+		}
+
+		public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {
 			return false;
 		}
 

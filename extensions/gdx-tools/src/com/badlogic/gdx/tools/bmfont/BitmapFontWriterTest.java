@@ -1,24 +1,10 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
 
-package com.badlogic.gdx.tests;
+package com.badlogic.gdx.tools.bmfont;
 
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Color;
-
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -27,20 +13,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.tools.bmfont.BitmapFontWriter;
 import com.badlogic.gdx.tools.hiero.Hiero;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class BitmapFontWriterTest extends GdxTest {
-
+public class BitmapFontWriterTest extends ApplicationAdapter {
 	SpriteBatch spriteBatch;
-
+	ShapeRenderer renderer;
 	BitmapFont generatedFont;
 	BitmapFont loadedFont;
 	BitmapFont font;
-	ShapeRenderer renderer;
 
 	@Override
 	public void create () {
@@ -55,7 +37,8 @@ public class BitmapFontWriterTest extends GdxTest {
 		param.characters = Hiero.EXTENDED_CHARS;
 		param.packer = new PixmapPacker(1024, 1024, Pixmap.Format.RGBA8888, 2, false, new PixmapPacker.SkylineStrategy());
 
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("data/unbom.ttf"));
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
+			Gdx.files.absolute("../../tests/gdx-tests-android/assets/data/unbom.ttf"));
 
 		generatedFont = generator.generateFont(param);
 
@@ -179,8 +162,7 @@ public class BitmapFontWriterTest extends GdxTest {
 		renderer.end();
 	}
 
-	@Override
-	public void dispose () {
-
+	static public void main (String[] args) throws Exception {
+		new LwjglApplication(new BitmapFontWriterTest());
 	}
 }

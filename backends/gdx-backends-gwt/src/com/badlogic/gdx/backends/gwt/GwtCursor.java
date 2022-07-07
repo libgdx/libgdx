@@ -67,7 +67,7 @@ public class GwtCursor implements Cursor {
 		} else if (systemCursor == SystemCursor.Crosshair) {
 			return "crosshair";
 		} else if (systemCursor == SystemCursor.Hand) {
-			return "pointer"; // Don't change to 'hand', 'hand' doesn't work in the newer IEs
+			return "pointer"; // Don't change to 'hand'; 'hand' is non-standard holdover from IE5
 		} else if (systemCursor == SystemCursor.HorizontalResize) {
 			return "ew-resize";
 		} else if (systemCursor == SystemCursor.VerticalResize) {
@@ -82,10 +82,11 @@ public class GwtCursor implements Cursor {
 			return "move";
 		} else if (systemCursor == SystemCursor.NotAllowed) {
 			return "not-allowed";
+		} else if (systemCursor == SystemCursor.None) {
+			return "none";
 		} else {
 			throw new GdxRuntimeException("Unknown system cursor " + systemCursor);
 		}
-
 	}
 
 	@Override

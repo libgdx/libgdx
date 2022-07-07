@@ -1,4 +1,4 @@
-allprojects {
+configure(subprojects - project(":tests:gdx-tests-android")) {
 	tasks.register('uberJar', Jar) {
         archiveClassifier = ''
         archiveVersion = ''
@@ -7,7 +7,7 @@ allprojects {
         from sourceSets.main.output
 		
         dependsOn configurations.compileClasspath
-        //dependsOn "printCompileClasspath"
+
         from {
             configurations.compileClasspath.findAll { 
 				it.name.endsWith('jar') && 

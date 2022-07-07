@@ -139,6 +139,7 @@ public class IOSDevice {
 
 		addDeviceToMap(deviceMap, "SIMULATOR_32", "i386", 264);
 		addDeviceToMap(deviceMap, "SIMULATOR_64", "x86_64", 264);
+		addDeviceToMap(deviceMap, "SIMULATOR_ARM64", "arm64", 264);
 
 		return deviceMap;
 	}

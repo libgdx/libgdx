@@ -18,10 +18,13 @@ apply plugin: "java"
 
 dependencies {
 	api project(":gdx")
+	api libraries.lwjgl3GLES
 }
 
 sourceSets.main.java.srcDirs = ["src"]
 sourceSets.main.resources.srcDirs = ["res"]
+
+tasks.withType(Jar) { duplicatesStrategy = DuplicatesStrategy.INCLUDE }
 
 // Workaround needed for IDEA to have resources on classpath when running tests (like gdx-tests-lwjgl3)
 task copyIdeaResources(type: Copy) {

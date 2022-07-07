@@ -151,7 +151,6 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		}
 
 		createWakeLock(config.useWakelock);
-		hideStatusBar(config);
 
 		// detect an already connected bluetooth keyboardAvailable
 		if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS) input.setKeyboardAvailable(true);
@@ -168,15 +167,6 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		if (use) {
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
-	}
-
-	protected void hideStatusBar (AndroidApplicationConfiguration config) {
-		if (!config.hideStatusBar) return;
-
-		View rootView = getWindow().getDecorView();
-
-		rootView.setSystemUiVisibility(0x0);
-		rootView.setSystemUiVisibility(0x1);
 	}
 
 	@Override

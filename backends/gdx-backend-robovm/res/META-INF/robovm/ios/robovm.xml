@@ -1,0 +1,5 @@
+<config>
+    <frameworks>
+        <framework>OpenGLES</framework>
+    </frameworks>
+</config>

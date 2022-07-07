@@ -96,7 +96,6 @@ public class OpenALAudioDevice implements AudioDevice {
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			alSourcef(sourceID, AL_GAIN, volume);
 			// Fill initial buffers.
-			int queuedBuffers = 0;
 			for (int i = 0; i < bufferCount; i++) {
 				int bufferID = buffers.get(i);
 				int written = Math.min(bufferSize, length);
@@ -106,7 +105,6 @@ public class OpenALAudioDevice implements AudioDevice {
 				alSourceQueueBuffers(sourceID, bufferID);
 				length -= written;
 				offset += written;
-				queuedBuffers++;
 			}
 			alSourcePlay(sourceID);
 			isPlaying = true;
