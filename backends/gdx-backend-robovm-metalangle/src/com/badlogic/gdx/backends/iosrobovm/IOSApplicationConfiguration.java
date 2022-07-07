@@ -36,8 +36,8 @@ public class IOSApplicationConfiguration {
 	/** the multisample format, None is default * */
 	public MGLDrawableMultisample multisample = MGLDrawableMultisample.None;
 
-	/** number of frames per second, 60 is default * */
-	public int preferredFramesPerSecond = 60;
+	/** preferred/max number of frames per second. Set to "0" to indicate max supported by screen. * */
+	public int preferredFramesPerSecond = 0;
 
 	/** whether to use the accelerometer, default true * */
 	public boolean useAccelerometer = true;
