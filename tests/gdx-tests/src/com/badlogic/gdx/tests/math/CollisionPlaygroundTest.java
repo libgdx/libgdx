@@ -325,7 +325,7 @@ public class CollisionPlaygroundTest extends GdxTest implements ApplicationListe
 
 			BoundingBox bounds = new BoundingBox(min, max);
 			Matrix4 transform = new Matrix4().rotate(Vector3.Y, MathUtils.random.nextFloat() * 180).rotate(Vector3.X,
-					MathUtils.random.nextFloat() * 180);
+				MathUtils.random.nextFloat() * 180);
 
 			obb = new OrientedBoundingBox(bounds, transform);
 
@@ -334,8 +334,8 @@ public class CollisionPlaygroundTest extends GdxTest implements ApplicationListe
 			mb.begin();
 			MeshPartBuilder meshPartBuilder = mb.part("obb", GL20.GL_LINES, VertexAttributes.Usage.Position, material);
 			BoxShapeBuilder.build(meshPartBuilder, obb.getCorner000(new Vector3()), obb.getCorner010(new Vector3()),
-					obb.getCorner100(new Vector3()), obb.getCorner110(new Vector3()), obb.getCorner001(new Vector3()),
-					obb.getCorner011(new Vector3()), obb.getCorner101(new Vector3()), obb.getCorner111(new Vector3()));
+				obb.getCorner100(new Vector3()), obb.getCorner110(new Vector3()), obb.getCorner001(new Vector3()),
+				obb.getCorner011(new Vector3()), obb.getCorner101(new Vector3()), obb.getCorner111(new Vector3()));
 
 			instance = new ModelInstance(mb.end());
 		}
