@@ -2,6 +2,10 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
+import org.robovm.apple.coreanimation.CAAction;
+import org.robovm.apple.coreanimation.CALayer;
+import org.robovm.apple.coreanimation.CALayerDelegateAdapter;
+import org.robovm.apple.foundation.NSNull;
 import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.uikit.UIDevice;
@@ -12,6 +16,7 @@ import org.robovm.apple.uikit.UIPressesEvent;
 import org.robovm.apple.uikit.UIRectEdge;
 import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
+import org.robovm.objc.ObjCObject;
 
 public class IOSUIViewController extends GLKViewController {
 	final IOSApplication app;
@@ -27,6 +32,14 @@ public class IOSUIViewController extends GLKViewController {
 		super.viewWillAppear(arg0);
 		// start GLKViewController even though we may only draw a single frame
 		// (we may be in non-continuous mode)
+		for (CALayer layer : getView().getLayer().getSublayers()) {
+			layer.setDelegate(new CALayerDelegateAdapter() {
+				@Override
+				public CAAction getAction (CALayer layer, String event) {
+					return (CAAction)ObjCObject.Marshaler.protocolToObject(CAAction.class, NSNull.getNull().getHandle(), 0);
+				}
+			});
+		}
 		setPaused(false);
 	}
 
