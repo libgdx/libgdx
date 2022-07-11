@@ -5,9 +5,7 @@ package com.badlogic.gdx.backends.iosrobovm;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import org.robovm.apple.coreanimation.CAAction;
 import org.robovm.apple.coreanimation.CALayer;
-import org.robovm.apple.coreanimation.CALayerDelegate;
 import org.robovm.apple.coreanimation.CALayerDelegateAdapter;
-import org.robovm.apple.coregraphics.CGContext;
 import org.robovm.apple.foundation.NSNull;
 import org.robovm.apple.foundation.NSSet;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.MGLKViewController;
@@ -40,6 +38,7 @@ public class IOSUIViewController extends MGLKViewController {
 		// (we may be in non-continuous mode)
 		for (CALayer layer : getView().getLayer().getSublayers()) {
 			layer.setDelegate(new CALayerDelegateAdapter() {
+
 				@Override
 				public CAAction getAction (CALayer layer, String event) {
 					return (CAAction)ObjCObject.Marshaler.protocolToObject(CAAction.class, NSNull.getNull().getHandle(), 0);
