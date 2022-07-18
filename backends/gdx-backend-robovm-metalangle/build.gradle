@@ -108,6 +108,7 @@ task buildMetalANGLE(dependsOn: [
 	extractMetalANGLESimulator
 ], type: Exec) {
 	doFirst {
+		delete("res/META-INF/robovm/ios/libs/MetalANGLE.xcframework")
 		file("res/META-INF/robovm/ios/libs").mkdirs();
 	}
 	commandLine 'xcodebuild', '-create-xcframework', '-framework', 'build/tmp/real/MetalANGLE.framework', '-framework', 'build/tmp/sim/MetalANGLE.framework', '-output', 'res/META-INF/robovm/ios/libs/MetalANGLE.xcframework'
