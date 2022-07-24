@@ -904,6 +904,7 @@ public class ScrollPane extends WidgetGroup {
 
 	/** Disables scrolling in a direction. The widget will be sized to the FlickScrollPane in the disabled direction. */
 	public void setScrollingDisabled (boolean x, boolean y) {
+		if (x == disableX && y == disableY) return;
 		disableX = x;
 		disableY = y;
 		invalidate();
