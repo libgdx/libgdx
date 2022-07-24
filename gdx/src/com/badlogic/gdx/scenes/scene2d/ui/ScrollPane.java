@@ -836,19 +836,16 @@ public class ScrollPane extends WidgetGroup {
 		float amountX = this.amountX;
 		if (centerHorizontal)
 			amountX = x + (width - actorArea.width) / 2;
-		else {
-			if (x + width > amountX + actorArea.width) amountX = x + width - actorArea.width;
-			if (x < amountX) amountX = x;
-		}
+		else
+			amountX = MathUtils.clamp(amountX, x + width - actorArea.width, x);
 		scrollX(MathUtils.clamp(amountX, 0, maxX));
 
 		float amountY = this.amountY;
+		y = maxY - y;
 		if (centerVertical)
-			amountY = maxY - y + (actorArea.height - height) / 2;
-		else {
-			if (amountY > maxY - y - height + actorArea.height) amountY = maxY - y - height + actorArea.height;
-			if (amountY < maxY - y) amountY = maxY - y;
-		}
+			amountY = y + (actorArea.height + height) / 2;
+		else
+			amountY = MathUtils.clamp(amountY, y + height, y + actorArea.height);
 		scrollY(MathUtils.clamp(amountY, 0, maxY));
 	}
 

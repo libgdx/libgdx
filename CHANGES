@@ -14,6 +14,7 @@
 - Fixed glViewport when using HdpiMode.Logical with the LWJGL3 backend.
 - Added Stage#actorRemoved to fire exit events just before an actor is removed.
 - ScrollPane#setScrollingDisabled avoids invalidate() if nothing changed.
+- Fixed incorrect ScrollPane#scrollTo.
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
