@@ -46,7 +46,8 @@ public class TextInputDialogTest extends GdxTest {
 			Gdx.input.getTextInput(new TextInputListener() {
 				@Override
 				public void input (String text) {
-					message = "message: " + text + ", type: " + Input.OnscreenKeyboardType.values()[inputType] + ", touch screen for new dialog";
+					message = "message: " + text + ", type: " + Input.OnscreenKeyboardType.values()[inputType]
+						+ ", touch screen for new dialog";
 				}
 
 				@Override
