@@ -1,7 +1,0 @@
-newmtl cube1_auv
-illum 4
-Kd 1.00 1.00 1.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd ship.png
-Ni 1.00

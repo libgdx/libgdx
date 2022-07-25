@@ -1,3 +1,0 @@
-[submodule "extensions/gdx-freetype/jni/freetype"]
-	path = extensions/gdx-freetype/jni/freetype
-	url = https://github.com/freetype/freetype.git

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">GDX Tests</string>
-    <string name="app_name_fragments">GDX Tests (Fragments)</string>
-    <string name="change_color">Change Color</string>
-    <string name="new_window">New Window</string>
-</resources>
