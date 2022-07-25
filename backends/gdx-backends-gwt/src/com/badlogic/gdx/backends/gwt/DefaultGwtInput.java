@@ -267,6 +267,7 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	public void getTextInput (TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
 		TextInputDialogBox dialog = new TextInputDialogBox(title, text, hint);
 		final TextInputListener capturedListener = listener;
+		dialog.setInputType(getGwtInputType(type));
 		dialog.setListener(new TextInputDialogListener() {
 			@Override
 			public void onPositive (String text) {
@@ -282,6 +283,24 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 				}
 			}
 		});
+	}
+
+	public static String getGwtInputType (OnscreenKeyboardType type) {
+		switch (type) {
+		case NumberPad:
+			return "number";
+		case Email:
+			return "email";
+		case URI:
+			return "url";
+		case Password:
+			return "password";
+		case PhonePad:
+			return "tel";
+		case Default:
+		default:
+			return "text";
+		}
 	}
 
 	@Override
