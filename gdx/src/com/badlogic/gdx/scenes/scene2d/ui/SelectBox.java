@@ -87,7 +87,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		selection.setActor(this);
 		selection.setRequired(true);
 
-		scrollPane = new SelectBoxScrollPane(this);
+		scrollPane = newScrollPane();
 
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
