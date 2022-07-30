@@ -82,6 +82,9 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
+import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleTest;
+import com.badlogic.gdx.tests.gles32.GL32AdvancedBlendingTest;
+import com.badlogic.gdx.tests.gles32.GL32OffsetElementsTest;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -157,6 +160,9 @@ public class GdxTests {
 		Gdx2DTest.class,
 		GestureDetectorTest.class,
 		GLES30Test.class,
+		GL31FrameBufferMultisampleTest.class,
+		GL32AdvancedBlendingTest.class,
+		GL32OffsetElementsTest.class,
 		GLProfilerErrorTest.class,
 		GroupCullingTest.class,
 		GroupFadeTest.class,

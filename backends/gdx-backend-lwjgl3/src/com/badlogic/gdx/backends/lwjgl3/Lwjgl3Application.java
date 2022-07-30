@@ -486,7 +486,9 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, config.depth);
 		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, config.samples);
 
-		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL30) {
+		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL30
+			|| config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL31
+			|| config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL32) {
 			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, config.gles30ContextMajorVersion);
 			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, config.gles30ContextMinorVersion);
 			if (SharedLibraryLoader.isMac) {
