@@ -322,7 +322,6 @@ public class IOSGraphics extends AbstractGraphics {
 
 	@Override
 	public void setGL31 (GL31 gl31) {
-
 	}
 
 	@Override
@@ -337,7 +336,6 @@ public class IOSGraphics extends AbstractGraphics {
 
 	@Override
 	public void setGL32 (GL32 gl32) {
-
 	}
 
 	@Override
