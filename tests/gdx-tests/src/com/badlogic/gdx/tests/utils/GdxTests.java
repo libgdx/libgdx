@@ -84,6 +84,7 @@ import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
 import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleTest;
 import com.badlogic.gdx.tests.gles32.GL32AdvancedBlendingTest;
+import com.badlogic.gdx.tests.gles32.GL32DebugControlTest;
 import com.badlogic.gdx.tests.gles32.GL32OffsetElementsTest;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
@@ -162,6 +163,7 @@ public class GdxTests {
 		GLES30Test.class,
 		GL31FrameBufferMultisampleTest.class,
 		GL32AdvancedBlendingTest.class,
+		GL32DebugControlTest.class,
 		GL32OffsetElementsTest.class,
 		GLProfilerErrorTest.class,
 		GroupCullingTest.class,

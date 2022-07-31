@@ -99,19 +99,6 @@ public class GL32Interceptor extends GL31Interceptor implements GL32 {
 		return v;
 	}
 
-	public void glObjectPtrLabel (long ptr, String label) {
-		calls++;
-		gl32.glObjectPtrLabel(ptr, label);
-		check();
-	}
-
-	public String glGetObjectPtrLabel (long ptr) {
-		calls++;
-		String v = gl32.glGetObjectPtrLabel(ptr);
-		check();
-		return v;
-	}
-
 	public long glGetPointerv (int pname) {
 		calls++;
 		long v = gl32.glGetPointerv(pname);

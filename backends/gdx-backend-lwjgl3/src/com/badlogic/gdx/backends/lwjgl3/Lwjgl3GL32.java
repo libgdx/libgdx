@@ -67,12 +67,16 @@ public class Lwjgl3GL32 extends Lwjgl3GL31 implements GL32 {
 
 	@Override
 	public void glDebugMessageCallback (DebugProc callback) {
-		GL43.glDebugMessageCallback(new GLDebugMessageCallbackI() {
-			@Override
-			public void invoke (int source, int type, int id, int severity, int length, long message, long userParam) {
-				callback.onMessage(source, type, id, severity, MemoryUtil.memUTF8(message, length));
-			}
-		}, 0);
+		if (callback != null) {
+			GL43.glDebugMessageCallback(new GLDebugMessageCallbackI() {
+				@Override
+				public void invoke (int source, int type, int id, int severity, int length, long message, long userParam) {
+					callback.onMessage(source, type, id, severity, MemoryUtil.memUTF8(message, length));
+				}
+			}, 0);
+		} else {
+			GL43.glDebugMessageCallback(null, 0);
+		}
 	}
 
 	@Override
@@ -99,16 +103,6 @@ public class Lwjgl3GL32 extends Lwjgl3GL31 implements GL32 {
 	@Override
 	public String glGetObjectLabel (int identifier, int name) {
 		return GL43.glGetObjectLabel(identifier, name);
-	}
-
-	@Override
-	public void glObjectPtrLabel (long ptr, String label) {
-		GL43.glObjectPtrLabel(ptr, label);
-	}
-
-	@Override
-	public String glGetObjectPtrLabel (long ptr) {
-		return GL43.glGetObjectPtrLabel(ptr);
 	}
 
 	@Override

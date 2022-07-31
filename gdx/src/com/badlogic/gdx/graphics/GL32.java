@@ -346,11 +346,11 @@ public interface GL32 extends GL31 {
 
 	// C function void glObjectPtrLabel ( const void *ptr, GLsizei length, const GLchar *label )
 
-	void glObjectPtrLabel (long ptr, String label);
+// void glObjectPtrLabel (long ptr, String label);
 
 	// C function void glGetObjectPtrLabel ( const void *ptr, GLsizei bufSize, GLsizei *length, GLchar *label )
 
-	String glGetObjectPtrLabel (long ptr);
+// String glGetObjectPtrLabel (long ptr);
 
 	// C function void glGetPointerv ( GLenum pname, void **params )
 
