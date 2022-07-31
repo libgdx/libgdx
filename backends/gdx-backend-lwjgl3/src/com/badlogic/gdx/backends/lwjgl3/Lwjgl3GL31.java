@@ -53,7 +53,6 @@ public class Lwjgl3GL31 extends Lwjgl3GL30 implements GL31 {
 	@Override
 	public void glDrawElementsIndirect (int mode, int type, long indirect) {
 		GL40.glDrawElementsIndirect(mode, type, indirect);
-		;
 	}
 
 	@Override
