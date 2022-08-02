@@ -52,12 +52,14 @@ public class GL31Interceptor extends GL30Interceptor implements GL31 {
 	}
 
 	public void glDrawArraysIndirect (int mode, long indirect) {
+		drawCalls++;
 		calls++;
 		gl31.glDrawArraysIndirect(mode, indirect);
 		check();
 	}
 
 	public void glDrawElementsIndirect (int mode, int type, long indirect) {
+		drawCalls++;
 		calls++;
 		gl31.glDrawElementsIndirect(mode, type, indirect);
 		check();

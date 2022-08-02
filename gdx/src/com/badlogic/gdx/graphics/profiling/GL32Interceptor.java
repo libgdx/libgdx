@@ -156,12 +156,16 @@ public class GL32Interceptor extends GL31Interceptor implements GL32 {
 	}
 
 	public void glDrawElementsBaseVertex (int mode, int count, int type, Buffer indices, int basevertex) {
+		vertexCount.put(count);
+		drawCalls++;
 		calls++;
 		gl32.glDrawElementsBaseVertex(mode, count, type, indices, basevertex);
 		check();
 	}
 
 	public void glDrawRangeElementsBaseVertex (int mode, int start, int end, int count, int type, Buffer indices, int basevertex) {
+		vertexCount.put(count);
+		drawCalls++;
 		calls++;
 		gl32.glDrawRangeElementsBaseVertex(mode, start, end, count, type, indices, basevertex);
 		check();
@@ -169,6 +173,8 @@ public class GL32Interceptor extends GL31Interceptor implements GL32 {
 
 	public void glDrawElementsInstancedBaseVertex (int mode, int count, int type, Buffer indices, int instanceCount,
 		int basevertex) {
+		vertexCount.put(count);
+		drawCalls++;
 		calls++;
 		gl32.glDrawElementsInstancedBaseVertex(mode, count, type, indices, instanceCount, basevertex);
 		check();
@@ -176,6 +182,8 @@ public class GL32Interceptor extends GL31Interceptor implements GL32 {
 
 	public void glDrawElementsInstancedBaseVertex (int mode, int count, int type, int indicesOffset, int instanceCount,
 		int basevertex) {
+		vertexCount.put(count);
+		drawCalls++;
 		calls++;
 		gl32.glDrawElementsInstancedBaseVertex(mode, count, type, indicesOffset, instanceCount, basevertex);
 		check();
