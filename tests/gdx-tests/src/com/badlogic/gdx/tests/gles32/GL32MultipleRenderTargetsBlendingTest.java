@@ -95,7 +95,8 @@ public class GL32MultipleRenderTargetsBlendingTest extends GdxTest {
 		+ "uniform sampler2D u_texture;\n" //
 		+ "void main()\n"//
 		+ "{\n" //
-		+ "  float a = texture2D(u_texture, v_texCoords).a;" + "  gl_FragColor = v_color * vec4(a, a, a, 1.0);\n" //
+		+ "  float a = texture2D(u_texture, v_texCoords).a;\n" //
+		+ "  gl_FragColor = v_color * vec4(a, a, a, 1.0);\n" //
 		+ "}";
 
 	private FrameBuffer fbo;
