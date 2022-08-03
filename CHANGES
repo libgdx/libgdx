@@ -9,7 +9,7 @@
 - API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
 - Fix: Fixed Android and iOS touch cancelled related issues, see #6871.
 - Javadoc: Add "-use" flag to javadoc generation
-- Android: gdx-setup now uses AGP 7.2.1 and SDK 32, requiring Android Studio Chipmunk or IntelliJ IDEA 2022.2 and JDK 11.
+- Android: gdx-setup now uses AGP 7.2.2 and SDK 32, requiring Android Studio Chipmunk or IntelliJ IDEA 2022.2 and JDK 11.
 - libGDX is now built using Java 11 due to new Android requirements. The rest of libGDX can still be built with JDK 8 and runtime compatibility of libGDX projects should be unaffected.
 - Fixed glViewport when using HdpiMode.Logical with the LWJGL3 backend.
 - Added Stage#actorRemoved to fire exit events just before an actor is removed.
