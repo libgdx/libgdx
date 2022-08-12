@@ -30,6 +30,9 @@ public class Align {
 	static public final int bottomLeft = bottom | left;
 	static public final int bottomRight = bottom | right;
 
+	private Align () {
+	}
+
 	static public final boolean isLeft (int align) {
 		return (align & left) != 0;
 	}
@@ -55,19 +58,19 @@ public class Align {
 	}
 
 	static public String toString (int align) {
-		StringBuilder buffer = new StringBuilder(13);
+		StringBuilder builder = new StringBuilder(13);
 		if ((align & top) != 0)
-			buffer.append("top,");
+			builder.append("top,");
 		else if ((align & bottom) != 0)
-			buffer.append("bottom,");
+			builder.append("bottom,");
 		else
-			buffer.append("center,");
+			builder.append("center,");
 		if ((align & left) != 0)
-			buffer.append("left");
+			builder.append("left");
 		else if ((align & right) != 0)
-			buffer.append("right");
+			builder.append("right");
 		else
-			buffer.append("center");
-		return buffer.toString();
+			builder.append("center");
+		return builder.toString();
 	}
 }
