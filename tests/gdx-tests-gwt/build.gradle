@@ -27,6 +27,7 @@ configurations.all {
 }
 
 apply plugin: 'gwt'
+apply plugin: 'war'
 apply plugin: 'org.gretty'
 
 import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
