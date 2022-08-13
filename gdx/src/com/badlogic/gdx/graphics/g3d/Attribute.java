@@ -46,8 +46,8 @@ public abstract class Attribute implements Comparable<Attribute> {
 	}
 
 	/** Call this method to register a custom attribute type, see the wiki for an example. If the alias already exists, then that
-	 * ID will be reused. The alias should be unambiguously and will by default be returned by the call to {@link #toString()}.
-	 * A maximum of 64 attributes can be registered as a long bitmask can only hold 64 bits.
+	 * ID will be reused. The alias should be unambiguously and will by default be returned by the call to {@link #toString()}. A
+	 * maximum of 64 attributes can be registered as a long bitmask can only hold 64 bits.
 	 * @param alias The alias of the type to register, must be different for each direct type, will be used for debugging
 	 * @return the ID of the newly registered type, or the ID of the existing type if the alias was already registered
 	 * @throws GdxRuntimeException if maximum attribute count reached */
