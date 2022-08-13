@@ -10,6 +10,7 @@ import org.robovm.apple.uikit.UIInterfaceOrientationMask;
 import org.robovm.apple.uikit.UIPress;
 import org.robovm.apple.uikit.UIPressesEvent;
 import org.robovm.apple.uikit.UIRectEdge;
+import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 
 public class IOSUIViewController extends GLKViewController {
@@ -32,6 +33,7 @@ public class IOSUIViewController extends GLKViewController {
 	@Override
 	public void viewDidAppear (boolean animated) {
 		super.viewDidAppear(animated);
+		getView().setContentScaleFactor(UIScreen.getMainScreen().getNativeScale());
 		if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
 	}
 
