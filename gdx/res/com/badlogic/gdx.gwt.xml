@@ -442,7 +442,7 @@
 		<include name="utils/ObjectSet.java"/>
 		<include name="utils/OrderedMap.java"/>
 		<include name="utils/OrderedSet.java"/>
-		<include name="utils/PauseableThread.java"/>
+		<exclude name="utils/PauseableThread.java"/> <!-- Reason: Threading -->
 		<include name="utils/PerformanceCounter.java"/>
 		<include name="utils/PerformanceCounters.java"/>
 		<include name="utils/Pool.java"/>
