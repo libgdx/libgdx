@@ -150,7 +150,7 @@ public class IOSApplication implements Application {
 
 		this.uiWindow.setRootViewController(this.graphics.viewController);
 		this.graphics.updateSafeInsets();
-		
+
 		Gdx.app.debug("IOSApplication", "created");
 
 		listener.create();

@@ -146,6 +146,7 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "created");
 		listener.create();
 		listener.resize(this.graphics.getWidth(), this.graphics.getHeight());
+		// make sure the OpenGL view has contents before displaying it
 		this.graphics.view.display();
 		return true;
 	}
