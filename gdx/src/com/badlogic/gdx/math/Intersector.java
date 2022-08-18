@@ -266,8 +266,8 @@ public final class Intersector {
 		float length2 = start.dst2(end);
 		if (length2 == 0) return nearest.set(start);
 		float t = ((point.x - start.x) * (end.x - start.x) + (point.y - start.y) * (end.y - start.y)) / length2;
-		if (t < 0) return nearest.set(start);
-		if (t > 1) return nearest.set(end);
+		if (t <= 0) return nearest.set(start);
+		if (t >= 1) return nearest.set(end);
 		return nearest.set(start.x + t * (end.x - start.x), start.y + t * (end.y - start.y));
 	}
 
@@ -279,8 +279,8 @@ public final class Intersector {
 		float length2 = xDiff * xDiff + yDiff * yDiff;
 		if (length2 == 0) return nearest.set(startX, startY);
 		float t = ((pointX - startX) * (endX - startX) + (pointY - startY) * (endY - startY)) / length2;
-		if (t < 0) return nearest.set(startX, startY);
-		if (t > 1) return nearest.set(endX, endY);
+		if (t <= 0) return nearest.set(startX, startY);
+		if (t >= 1) return nearest.set(endX, endY);
 		return nearest.set(startX + t * (endX - startX), startY + t * (endY - startY));
 	}
 

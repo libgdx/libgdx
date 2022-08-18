@@ -934,15 +934,16 @@ public class Actor {
 		return localCoords;
 	}
 
-	/** Converts coordinates for this actor to those of an ascendant. The ascendant is not required to be the immediate parent. */
+	/** Converts coordinates for this actor to those of an ascendant. The ascendant is not required to be the immediate parent.
+	 * @throws IllegalArgumentException if the specified actor is not an ascendant of this actor. */
 	public Vector2 localToAscendantCoordinates (@Null Actor ascendant, Vector2 localCoords) {
 		Actor actor = this;
 		do {
 			actor.localToParentCoordinates(localCoords);
 			actor = actor.parent;
-			if (actor == ascendant) break;
+			if (actor == ascendant) return localCoords;
 		} while (actor != null);
-		return localCoords;
+		throw new IllegalArgumentException("Actor is not an ascendant: " + ascendant);
 	}
 
 	/** Converts coordinates for this actor to those of another actor, which can be anywhere in the stage. */

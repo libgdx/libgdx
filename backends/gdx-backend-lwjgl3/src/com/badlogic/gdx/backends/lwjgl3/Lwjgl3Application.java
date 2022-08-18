@@ -137,8 +137,10 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) loadANGLE();
 		initializeGlfw();
 		setApplicationLogger(new Lwjgl3ApplicationLogger());
-		if (config.title == null) config.title = listener.getClass().getSimpleName();
+
 		this.config = config = Lwjgl3ApplicationConfiguration.copy(config);
+		if (config.title == null) config.title = listener.getClass().getSimpleName();
+
 		Gdx.app = this;
 		if (!config.disableAudio) {
 			try {
@@ -434,6 +436,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	public Lwjgl3Window newWindow (ApplicationListener listener, Lwjgl3WindowConfiguration config) {
 		Lwjgl3ApplicationConfiguration appConfig = Lwjgl3ApplicationConfiguration.copy(this.config);
 		appConfig.setWindowConfiguration(config);
+		if (appConfig.title == null) appConfig.title = listener.getClass().getSimpleName();
 		return createWindow(appConfig, listener, windows.get(0).getWindowHandle());
 	}
 

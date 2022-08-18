@@ -1,6 +1,0 @@
-<config>	
-	<libs>
-		<lib>libs/libgdx.a</lib>
-		<lib>libs/libObjectAL.a</lib>
-	</libs>
-</config>

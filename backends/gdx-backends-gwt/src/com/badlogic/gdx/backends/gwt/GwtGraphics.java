@@ -88,6 +88,7 @@ public class GwtGraphics extends AbstractGraphics {
 		attributes.setAlpha(config.alpha);
 		attributes.setPremultipliedAlpha(config.premultipliedAlpha);
 		attributes.setPreserveDrawingBuffer(config.preserveDrawingBuffer);
+		attributes.setXrCompatible(config.xrCompatible);
 
 		context = WebGLRenderingContext.getContext(canvas, attributes);
 		context.viewport(0, 0, getWidth(), getHeight());
@@ -229,6 +230,10 @@ public class GwtGraphics extends AbstractGraphics {
 		return $wnd.screen.height;
 	}-*/;
 
+	private native int getColorDepthJSNI () /*-{
+		return $wnd.screen.colorDepth;
+	}-*/;
+
 	private native boolean isFullscreenJSNI () /*-{
 		// Standards compliant check for fullscreen
 		if ("fullscreenElement" in $doc) {
@@ -339,7 +344,8 @@ public class GwtGraphics extends AbstractGraphics {
 	@Override
 	public DisplayMode getDisplayMode () {
 		double density = config.usePhysicalPixels ? getNativeScreenDensity() : 1;
-		return new DisplayMode((int)(getScreenWidthJSNI() * density), (int)(getScreenHeightJSNI() * density), 60, 8) {};
+		return new DisplayMode((int)(getScreenWidthJSNI() * density), (int)(getScreenHeightJSNI() * density), 60,
+			getColorDepthJSNI()) {};
 	}
 
 	@Override

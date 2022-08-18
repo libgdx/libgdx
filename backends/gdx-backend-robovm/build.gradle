@@ -13,7 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+sourceSets {
+	main {
+		resources {
+			srcDir 'res'
+		}
+	}
+}
 
 dependencies {
 	api libraries.robovm
 }
+
+processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+sourcesJar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE

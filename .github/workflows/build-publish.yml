@@ -17,10 +17,12 @@ jobs:
         with:
           fetch-depth: 0
           submodules: 'recursive'
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -45,8 +47,8 @@ jobs:
 
       - name: Pack artifacts
         run: |
-          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
-          zip natives-ios -@ < native-files-list
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*.xcframework"  | grep "libs" > native-files-list
+          zip -r natives-ios -@ < native-files-list
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
@@ -66,10 +68,12 @@ jobs:
         with:
           fetch-depth: 0
           submodules: 'recursive'
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -115,10 +119,11 @@ jobs:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Install cross-compilation toolchains
         run: |
@@ -164,10 +169,11 @@ jobs:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Install cross-compilation toolchains
         run: |
@@ -211,10 +217,11 @@ jobs:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -253,16 +260,18 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -317,8 +326,8 @@ jobs:
 
       - name: Pack natives
         run: |
-          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*-natives.jar"| grep "libs" > native-files-list
-          zip natives -@ < native-files-list
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*-natives.jar" -o -name "*.xcframework" | grep "libs" > native-files-list
+          zip -r natives -@ < native-files-list
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
@@ -348,10 +357,11 @@ jobs:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Download natives artifact
         uses: actions/download-artifact@v2
@@ -378,33 +388,38 @@ jobs:
         with:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
       - name: Release build deploy
         if: github.event_name == 'release' && github.repository_owner == 'libgdx'
         run: ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
 
-
   build-and-upload-runnables:
     runs-on: ubuntu-18.04
+    needs: pack-natives
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
-      - name: Build Runnables
-        run: ./gradlew clean fetchNatives buildRunnables build
+          distribution: 'zulu'
+          java-version: '11'
 
+      - name: Build Runnables
+        run: |
+          ./gradlew clean fetchNatives
+          ./gradlew buildRunnables build
+          
       - name: Upload artifacts to S3
         if: env.AWS_ACCESS_KEY_ID != null
         run: |
           aws s3 cp ./extensions/gdx-tools/build/libs/ s3://libgdx-nightlies/libgdx-runnables/ --recursive
           aws s3 cp ./extensions/gdx-setup/build/libs/ s3://libgdx-nightlies/libgdx-runnables/ --recursive
-
 

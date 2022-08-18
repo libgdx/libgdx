@@ -420,6 +420,10 @@ public class List<T> extends Widget implements Cullable {
 		this.alignment = alignment;
 	}
 
+	public int getAlignment () {
+		return alignment;
+	}
+
 	public void setTypeToSelect (boolean typeToSelect) {
 		this.typeToSelect = typeToSelect;
 	}

@@ -85,7 +85,7 @@ public class ManifoldPoint {
 		id = new ContactID(cp.id);
 	}
 
-	/** Sets this manifold point form the given one
+	/** Sets this manifold point from the given one
 	 * @param cp the point to copy from */
 	public void set (final ManifoldPoint cp) {
 		localPoint.set(cp.localPoint);
