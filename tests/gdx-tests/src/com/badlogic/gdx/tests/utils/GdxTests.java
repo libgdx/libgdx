@@ -108,6 +108,7 @@ public class GdxTests {
 		AnnotationTest.class,
 		AssetManagerTest.class,
 		AtlasIssueTest.class,
+		AudioChangeDeviceTest.class,
 		AudioDeviceTest.class,
 		AudioRecorderTest.class,
 		AudioSoundAndMusicIsolationTest.class,
