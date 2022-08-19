@@ -131,6 +131,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		observerThread = new Thread(new Runnable() {
 
 			private String[] lastAvailableDevices = new String[0];
+
 			@Override
 			public void run () {
 				while (true) {
