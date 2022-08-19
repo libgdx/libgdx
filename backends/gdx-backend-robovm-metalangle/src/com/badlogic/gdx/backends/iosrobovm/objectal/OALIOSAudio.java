@@ -58,6 +58,16 @@ public class OALIOSAudio implements IOSAudio {
 	}
 
 	@Override
+	public boolean switchOutputDevice (String deviceIdentifier) {
+		return true;
+	}
+
+	@Override
+	public String[] getAvailableOutputDevices () {
+		return new String[0];
+	}
+
+	@Override
 	public void didBecomeActive () {
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/g/objectal-for-iphone/c/ubRWltp_i1Q
