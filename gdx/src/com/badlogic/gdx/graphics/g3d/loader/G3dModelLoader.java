@@ -136,7 +136,7 @@ public class G3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> {
 			return GL20.GL_LINE_STRIP;
 		} else {
 			throw new GdxRuntimeException("Unknown primitive type '" + type
-				+ "', should be one of triangle, trianglestrip, line, linestrip, lineloop or point");
+				+ "', should be one of triangle, trianglestrip, line, linestrip or point");
 		}
 	}
 
