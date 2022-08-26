@@ -12,7 +12,8 @@ public final class UIUtils {
 	static public boolean isAndroid = System.getProperty("java.runtime.name").contains("Android");
 	static public boolean isMac = !isAndroid && System.getProperty("os.name").contains("Mac");
 	static public boolean isWindows = !isAndroid && System.getProperty("os.name").contains("Windows");
-	static public boolean isLinux = !isAndroid && System.getProperty("os.name").contains("Linux") || System.getProperty("os.name").contains("FreeBSD");
+	static public boolean isLinux = !isAndroid && System.getProperty("os.name").contains("Linux")
+		|| System.getProperty("os.name").contains("FreeBSD");
 	static public boolean isIos = !isAndroid && (!(isWindows || isLinux || isMac));
 
 	static public boolean left () {
