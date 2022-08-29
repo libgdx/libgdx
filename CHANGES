@@ -15,6 +15,7 @@
 - Added Stage#actorRemoved to fire exit events just before an actor is removed.
 - ScrollPane#setScrollingDisabled avoids invalidate() if nothing changed.
 - Fixed incorrect ScrollPane#scrollTo.
+- API Fix: The cursor can now be catched on Android.
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
