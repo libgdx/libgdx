@@ -202,7 +202,7 @@ public class OpenALAudioDevice implements AudioDevice {
 	}
 
 	public int getLatency () {
-		return (int) ((float) bufferSize / bytesPerSample / channels * bufferCount);
+		return (int)((float)bufferSize / bytesPerSample / channels * bufferCount);
 	}
 
 	@Override
