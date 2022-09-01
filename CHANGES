@@ -16,6 +16,7 @@
 - ScrollPane#setScrollingDisabled avoids invalidate() if nothing changed.
 - Fixed incorrect ScrollPane#scrollTo.
 - API Fix: The cursor can now be catched on Android.
+- Desktop: The return value of AudioDevice#getLatency() is now in samples, and not milliseconds
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
