@@ -112,8 +112,8 @@ public final class MathUtils {
 		double c7 = c5 * c2;
 		double c9 = c7 * c2;
 		double c11 = c9 * c2;
-		return (float)Math.copySign((Math.PI * 0.25)
-			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11), i);
+		return (float)(Math.signum(i) * ((Math.PI * 0.25)
+			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11)));
 	}
 
 	/** Close approximation of the frequently-used trigonometric method atan2, with higher precision than libGDX's atan2
@@ -195,8 +195,8 @@ public final class MathUtils {
 		double c7 = c5 * c2;
 		double c9 = c7 * c2;
 		double c11 = c9 * c2;
-		return (float)Math.copySign((Math.PI * 0.25)
-			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11), i);
+		return Math.signum(i) * (float)((Math.PI * 0.25)
+			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11));
 	}
 
 	// ---
