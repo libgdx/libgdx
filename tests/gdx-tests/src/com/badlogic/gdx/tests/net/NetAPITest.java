@@ -109,9 +109,9 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 					else if (clickedButton == btnDownloadText)
 						url = "https://www.apache.org/licenses/LICENSE-2.0.txt";
 					else if (clickedButton == btnDownloadLarge)
-						url = "https://libgdx.badlogicgames.com/releases/libgdx-1.2.0.zip";
+						url = "https://github.com/libgdx/libgdx/archive/refs/tags/1.11.0.zip";
 					else if (clickedButton == btnDownloadError)
-						url = "https://www.badlogicgames.com/doesnotexist";
+						url = "https://libgdx.com/doesnotexist";
 					else if (clickedButton == btnOpenUri) {
 						Gdx.net.openURI("https://libgdx.com");
 						return;

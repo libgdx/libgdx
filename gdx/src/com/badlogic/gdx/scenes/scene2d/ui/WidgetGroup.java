@@ -92,20 +92,11 @@ public class WidgetGroup extends Group implements Layout {
 
 		Group parent = getParent();
 		if (fillParent && parent != null) {
-			float parentWidth, parentHeight;
 			Stage stage = getStage();
-			if (stage != null && parent == stage.getRoot()) {
-				parentWidth = stage.getWidth();
-				parentHeight = stage.getHeight();
-			} else {
-				parentWidth = parent.getWidth();
-				parentHeight = parent.getHeight();
-			}
-			if (getWidth() != parentWidth || getHeight() != parentHeight) {
-				setWidth(parentWidth);
-				setHeight(parentHeight);
-				invalidate();
-			}
+			if (stage != null && parent == stage.getRoot())
+				setSize(stage.getWidth(), stage.getHeight());
+			else
+				setSize(parent.getWidth(), parent.getHeight());
 		}
 
 		if (!needsLayout) return;
@@ -161,6 +152,13 @@ public class WidgetGroup extends Group implements Layout {
 	}
 
 	public void layout () {
+	}
+
+	/** If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget group is laid
+	 * out. */
+	public Actor hit (float x, float y, boolean touchable) {
+		validate();
+		return super.hit(x, y, touchable);
 	}
 
 	/** If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget group is laid

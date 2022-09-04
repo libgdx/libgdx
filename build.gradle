@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
-apply from: "gradle/dependencies.gradle"
-
 buildscript {
     apply from: "gradle/dependencies.gradle"
 
     repositories {
         mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
         classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
-        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.1"
+        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.3.1"
     }
 }
+
+plugins {
+    id "de.undercouch.download" version "5.0.1"
+}
+
+apply from: "gradle/dependencies.gradle"
 
 ext {
     isReleaseBuild = {
@@ -81,6 +85,7 @@ allprojects {
     }
     tasks.withType(Javadoc) {
         options.encoding = 'UTF-8'
+        options.addBooleanOption('use', true);
     }
     tasks.withType(Test) {
         systemProperty 'file.encoding', 'UTF-8'
@@ -90,7 +95,13 @@ allprojects {
         tasks.withType(Javadoc) {
             options.addStringOption('Xdoclint:none,-missing', '-quiet')
         }
-    }   
+    }
+
+    if (JavaVersion.current().isJava9Compatible()) {
+        tasks.withType(Javadoc) {
+            options.addStringOption("-release", "8");
+        }
+    }
 }
 
 configure(subprojects - project(":tests:gdx-tests-android")) {
@@ -163,35 +174,54 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
     }
 }
 
-task fetchExternalNativesZIP() {
-   doLast {        
+task setupExternalNativesDirs() {
+    doLast {
         file("build").mkdir();
         file("extensions/gdx-lwjgl3-angle/res").mkdirs();
-        new URL('https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip').withInputStream{ i -> file("build/gdx-angle-natives.zip").withOutputStream{ it << i }}
         file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
-        new URL('https://raw.githubusercontent.com/badlogic/glfw/master/libglfw.dylib').withInputStream{ i -> file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64/libglfw.dylib").withOutputStream{ it << i }}
-    }
-    outputs.upToDateWhen { false } 
-}
-
-task fetchExternalNatives(dependsOn: fetchExternalNativesZIP, type: Copy) {
-    from zipTree("build/gdx-angle-natives.zip")
-    into "./extensions/gdx-lwjgl3-angle/res"
-    outputs.upToDateWhen { false } 
-}
-
-task fetchNativesZip(dependsOn: fetchExternalNatives) {
-    doLast {        
-        def zip = file("build/natives.zip");
-        new URL('https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip').withInputStream{ i -> file("build/natives.zip").withOutputStream{ it << i }}        
+        file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosarm64").mkdirs();
     }
     outputs.upToDateWhen { false }
 }
 
-task fetchNatives(dependsOn: fetchNativesZip, type: Copy) {
+task fetchAngleNativesZIP(dependsOn: setupExternalNativesDirs, type: Download) {
+    src 'https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip'
+    dest 'build/gdx-angle-natives.zip'
+    onlyIfModified true
+    useETag "all"
+}
+
+task fetchGlfwAWT(dependsOn: setupExternalNativesDirs, type: Download) {
+    src 'https://raw.githubusercontent.com/badlogic/glfw/master/libglfw.dylib'
+    dest 'extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64/libglfw.dylib'
+    onlyIfModified true
+    useETag "all"
+}
+
+task fetchGlfwAWTARM64(dependsOn: setupExternalNativesDirs, type: Download) {
+    src 'https://raw.githubusercontent.com/badlogic/glfw/master/libglfwarm64.dylib'
+    dest 'extensions/gdx-lwjgl3-glfw-awt-macos/res/macosarm64/libglfwarm64.dylib'
+    onlyIfModified true
+    useETag "all"
+}
+
+task fetchExternalNatives(dependsOn: [ fetchAngleNativesZIP, fetchGlfwAWT, fetchGlfwAWTARM64 ] , type: Copy) {
+    from zipTree("build/gdx-angle-natives.zip")
+    into "./extensions/gdx-lwjgl3-angle/res"
+    outputs.upToDateWhen { false }
+}
+
+task fetchGdxNativesZIP(dependsOn: fetchExternalNatives, type: Download) {
+    src "https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip"
+    dest "build/natives.zip"
+    onlyIfModified true
+    useETag "all"
+}
+
+task fetchNatives(dependsOn: fetchGdxNativesZIP, type: Copy) {
     from zipTree("build/natives.zip")
     into "."
-    outputs.upToDateWhen { false } 
+    outputs.upToDateWhen { false }
 }
 
 apply from: rootProject.file('publish.gradle')

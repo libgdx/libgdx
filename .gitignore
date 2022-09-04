@@ -19,7 +19,6 @@ gwt-unitCache/
 war/
 gen/
 gen-external-apklibs/
-armeabi/
 armeabi-v7a/
 arm64-v8a/
 linux32/
@@ -33,7 +32,6 @@ Release/
 x64/
 x86/
 x86_64/
-robovm-build/
 ipch/
 /dist
 
@@ -69,6 +67,7 @@ libgdx-*.zip.MD5
 
 #the LWJGL3 libs are pulled via fetch.xml
 /backends/gdx-backend-lwjgl3/libs/lwjgl*.jar
+/backends/gdx-backend-robovm-metalangle/res/META-INF/robovm/ios/libs
 
 #ensure gdx-setup.jar works properly
 !/extensions/gdx-setup/src/com/badlogic/gdx/setup/resources/gwt/war

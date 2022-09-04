@@ -74,10 +74,6 @@ public class AndroidApplicationConfiguration {
 	 * FLAG_KEEP_SCREEN_ON under the hood. */
 	public boolean useWakelock = false;
 
-	/** hide status bar buttons on Android 4.x and higher (API 14+). Doesn't work if "android:targetSdkVersion" less 11 or if API
-	 * less 14. default: false **/
-	public boolean hideStatusBar = false;
-
 	/** whether to disable Android audio support. default: false */
 	public boolean disableAudio = false;
 
@@ -92,7 +88,7 @@ public class AndroidApplicationConfiguration {
 	public boolean getTouchEventsForLiveWallpaper = false;
 
 	/** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
-	public boolean useImmersiveMode = false;
+	public boolean useImmersiveMode = true;
 
 	/** Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0. When GL ES
 	 * 3* is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. Requires at least Android 4.3 (API

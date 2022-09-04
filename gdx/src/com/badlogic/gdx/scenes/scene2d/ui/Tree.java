@@ -270,7 +270,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		Color color = getColor();
 		float a = color.a * parentAlpha;
 		batch.setColor(color.r, color.g, color.b, a);
-		draw(batch, color.r, color.g, color.b, a, rootNodes, paddingLeft, plusMinusWidth());
+		drawIcons(batch, color.r, color.g, color.b, a, null, rootNodes, paddingLeft, plusMinusWidth());
 		super.draw(batch, parentAlpha); // Draw node actors.
 	}
 
@@ -283,8 +283,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		}
 	}
 
-	/** Draws selection, icons, and expand icons. */
-	private void draw (Batch batch, float r, float g, float b, float a, Array<N> nodes, float indent, float plusMinusWidth) {
+	/** Draws selection, icons, and expand icons.
+	 * @param parent null for the root nodes.
+	 * @return The Y position of the last visible actor for the nodes. */
+	protected float drawIcons (Batch batch, float r, float g, float b, float a, @Null N parent, Array<N> nodes, float indent,
+		float plusMinusWidth) {
+
 		Rectangle cullingArea = getCullingArea();
 		float cullBottom = 0, cullTop = 0;
 		if (cullingArea != null) {
@@ -292,11 +296,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			cullTop = cullBottom + cullingArea.height;
 		}
 		TreeStyle style = this.style;
-		float x = getX(), y = getY(), expandX = x + indent, iconX = expandX + plusMinusWidth + iconSpacingLeft;
+		float x = getX(), y = getY(), expandX = x + indent, iconX = expandX + plusMinusWidth + iconSpacingLeft, actorY = 0;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			N node = nodes.get(i);
 			Actor actor = node.actor;
-			float actorY = actor.getY(), height = node.height;
+			actorY = actor.getY();
+			float height = node.height;
 			if (cullingArea == null || (actorY + height >= cullBottom && actorY <= cullTop)) {
 				if (selection.contains(node) && style.selection != null) {
 					drawSelection(node, style.selection, batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
@@ -317,12 +322,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 					float iconY = y + actorY + Math.round((height - expandIcon.getMinHeight()) / 2);
 					drawExpandIcon(node, expandIcon, batch, expandX, iconY);
 				}
-			} else if (actorY < cullBottom) {
-				return;
-			}
+			} else if (actorY < cullBottom) //
+				break;
 			if (node.expanded && node.children.size > 0)
-				draw(batch, r, g, b, a, node.children, indent + indentSpacing, plusMinusWidth);
+				drawIcons(batch, r, g, b, a, node, node.children, indent + indentSpacing, plusMinusWidth);
 		}
+		return actorY;
 	}
 
 	protected void drawSelection (N node, Drawable selection, Batch batch, float x, float y, float width, float height) {
@@ -346,17 +351,15 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	 * <code>iconX</code>, and clicking would expand the node.
 	 * @param iconX The X coordinate of the over node's icon. */
 	protected Drawable getExpandIcon (N node, float iconX) {
-		boolean over = false;
 		if (node == overNode //
 			&& Gdx.app.getType() == ApplicationType.Desktop //
 			&& (!selection.getMultiple() || (!UIUtils.ctrl() && !UIUtils.shift())) //
 		) {
-			float mouseX = screenToLocalCoordinates(tmp.set(Gdx.input.getX(), 0)).x;
-			if (mouseX >= 0 && mouseX < iconX) over = true;
-		}
-		if (over) {
-			Drawable icon = node.expanded ? style.minusOver : style.plusOver;
-			if (icon != null) return icon;
+			float mouseX = screenToLocalCoordinates(tmp.set(Gdx.input.getX(), 0)).x + getX();
+			if (mouseX >= 0 && mouseX < iconX) {
+				Drawable icon = node.expanded ? style.minusOver : style.plusOver;
+				if (icon != null) return icon;
+			}
 		}
 		return node.expanded ? style.minus : style.plus;
 	}

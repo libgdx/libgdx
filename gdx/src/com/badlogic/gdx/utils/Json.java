@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** Reads/writes Java objects to/from JSON, automatically. See the wiki for usage:
- * https://github.com/libgdx/libgdx/wiki/Reading-and-writing-JSON
+ * https://libgdx.com/wiki/utils/reading-and-writing-json
  * @author Nathan Sweet */
 public class Json {
 	static private final boolean debug = false;

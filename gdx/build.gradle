@@ -35,12 +35,12 @@ compileJava {
 }
 
 jar {
-	duplicatesStrategy = "warn"
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 dependencies {
 	testImplementation libraries.junit
-	api "com.badlogicgames.gdx:gdx-jnigen-loader:2.2.0"
+	api "com.badlogicgames.gdx:gdx-jnigen-loader:2.3.1"
 }
 
 test {
@@ -49,12 +49,7 @@ test {
 	}
 }
 
-// Workaround needed for IDEA to have resources on classpath when running tests (like gdx-tests-lwjgl3)
-task copyIdeaResources(type: Copy) {
-	from "${projectDir}/res"
-	into "${buildDir}/classes/java/main/"
-}
-processResources.dependsOn copyIdeaResources
+processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 jnigen {
@@ -76,5 +71,9 @@ jnigen {
 	add(IOS) {
 		headerDirs = ["iosgl"]
 		cppExcludes = []
+	}
+	robovm {
+		extraLib("libs/ObjectAL.xcframework/ios-arm64_armv7/libObjectAL.a", "device")
+		extraLib("libs/ObjectAL.xcframework/ios-arm64_x86_64-simulator/libObjectAL.a", "simulator")
 	}
 }

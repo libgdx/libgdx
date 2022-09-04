@@ -70,6 +70,8 @@ public class GwtApplicationConfiguration {
 	public boolean useAccelerometer = true;
 	/** whether to use the gyroscope. default: false **/
 	public boolean useGyroscope = false;
+	/** whether to make the webgl context compatible with WebXR, may have positive performance impact **/
+	public boolean xrCompatible = false;
 
 	/** Creates configuration for a resizable application, using available browser window space minus padding (see
 	 * {@link #padVertical}, {@link #padHorizontal}). */
