@@ -16,6 +16,7 @@
 - ScrollPane#setScrollingDisabled avoids invalidate() if nothing changed.
 - Fixed incorrect ScrollPane#scrollTo.
 - API Fix: The cursor can now be catched on Android.
+- LWJGL3 Fix: Stereo audio can now be played on mono output devices. This may also improve downmixing to stereo and upmixing to surround.
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
