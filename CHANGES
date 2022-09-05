@@ -1,3 +1,6 @@
+- Lwjgl3: Added #recreateWindow to Lwjgl3Application; used to apply changes that require a new window to be created.
+- API Addition: Lwjgl3Graphics now has #setMSAASamples, #setColorBits, #setDepthBits, #setStencilBits, #setBackBufferConfig (these use the aforementioned recreateWindow() method) & #setIdleFPS
+
 [1.11.1]
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
 - [BREAKING CHANGE] Android: Immersive mode is now true by default. Set `useImmersiveMode` config to `false` to disable it. 

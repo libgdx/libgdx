@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,6 +53,10 @@ public class Lwjgl3Window implements Disposable {
 	boolean iconified = false;
 	boolean focused = false;
 	private boolean requestRendering = false;
+	// these are used to stop create() & dispose() from getting called
+	// on the ApplicationListener in the event the window is merely being recreated.
+	private boolean callCreateOnListener = true;
+	private boolean callDisposeOnListener = true;
 
 	private final GLFWWindowFocusCallback focusCallback = new GLFWWindowFocusCallback() {
 		@Override
@@ -165,10 +169,11 @@ public class Lwjgl3Window implements Disposable {
 		this.tmpBuffer2 = BufferUtils.createIntBuffer(1);
 	}
 
-	void create (long windowHandle) {
+	void create (long windowHandle, boolean callCreateOnListener) {
 		this.windowHandle = windowHandle;
 		this.input = application.createInput(this);
 		this.graphics = new Lwjgl3Graphics(this);
+		this.callCreateOnListener = callCreateOnListener;
 
 		GLFW.glfwSetWindowFocusCallback(windowHandle, focusCallback);
 		GLFW.glfwSetWindowIconifyCallback(windowHandle, iconifyCallback);
@@ -233,8 +238,15 @@ public class Lwjgl3Window implements Disposable {
 		}
 	}
 
-	/** Closes this window and pauses and disposes the associated {@link ApplicationListener}. */
 	public void closeWindow () {
+		closeWindow(true);
+	}
+
+	/** Closes this window and pauses and disposes the associated {@link ApplicationListener},
+	 * depending on {@code callDisposeOnListener}.
+	 * @param callDisposeOnListener should the {@link ApplicationListener} be disposed of? */
+	public void closeWindow (boolean callDisposeOnListener) {
+		this.callDisposeOnListener = callDisposeOnListener;
 		GLFW.glfwSetWindowShouldClose(windowHandle, true);
 	}
 
@@ -340,8 +352,8 @@ public class Lwjgl3Window implements Disposable {
 
 	static void setSizeLimits (long windowHandle, int minWidth, int minHeight, int maxWidth, int maxHeight) {
 		GLFW.glfwSetWindowSizeLimits(windowHandle, minWidth > -1 ? minWidth : GLFW.GLFW_DONT_CARE,
-			minHeight > -1 ? minHeight : GLFW.GLFW_DONT_CARE, maxWidth > -1 ? maxWidth : GLFW.GLFW_DONT_CARE,
-			maxHeight > -1 ? maxHeight : GLFW.GLFW_DONT_CARE);
+				minHeight > -1 ? minHeight : GLFW.GLFW_DONT_CARE, maxWidth > -1 ? maxWidth : GLFW.GLFW_DONT_CARE,
+				maxHeight > -1 ? maxHeight : GLFW.GLFW_DONT_CARE);
 	}
 
 	Lwjgl3Graphics getGraphics () {
@@ -413,7 +425,12 @@ public class Lwjgl3Window implements Disposable {
 
 	void initializeListener () {
 		if (!listenerInitialized) {
-			listener.create();
+			//If the window has been created just to change its configuration,
+			//there's no need to call create() on the ApplicationListener,
+			//since it was already called before.
+			if (callCreateOnListener) {
+				listener.create();
+			}
 			listener.resize(graphics.getWidth(), graphics.getHeight());
 			listenerInitialized = true;
 		}
@@ -429,10 +446,19 @@ public class Lwjgl3Window implements Disposable {
 		GLFW.glfwMakeContextCurrent(windowHandle);
 	}
 
+	public void dispose (boolean callDisposeOnListener) {
+		this.callDisposeOnListener = callDisposeOnListener;
+		dispose();
+	}
+
+	/** Disposes of this window and pauses and disposes the associated {@link ApplicationListener},
+	 * depending on {@code callDisposeOnListener}. */
 	@Override
 	public void dispose () {
-		listener.pause();
-		listener.dispose();
+		if (callDisposeOnListener) {
+			listener.pause();
+			listener.dispose();
+		}
 		Lwjgl3Cursor.dispose(this);
 		graphics.dispose();
 		input.dispose();

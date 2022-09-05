@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl3.audio.Lwjgl3Audio;
 import com.badlogic.gdx.backends.lwjgl3.audio.OpenALLwjgl3Audio;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
@@ -159,7 +160,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 		this.sync = new Sync();
 
-		Lwjgl3Window window = createWindow(config, listener, 0);
+		Lwjgl3Window window = createWindow(config, listener, 0, true);
 		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) postLoadANGLE();
 		windows.add(window);
 		try {
@@ -377,7 +378,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			return preferences.get(name);
 		} else {
 			Preferences prefs = new Lwjgl3Preferences(
-				new Lwjgl3FileHandle(new File(config.preferencesDirectory, name), config.preferencesFileType));
+					new Lwjgl3FileHandle(new File(config.preferencesDirectory, name), config.preferencesFileType));
 			preferences.put(name, prefs);
 			return prefs;
 		}
@@ -417,7 +418,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	@Override
 	public Lwjgl3Audio createAudio (Lwjgl3ApplicationConfiguration config) {
 		return new OpenALLwjgl3Audio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
-			config.audioDeviceBufferSize);
+				config.audioDeviceBufferSize);
 	}
 
 	@Override
@@ -437,20 +438,48 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		Lwjgl3ApplicationConfiguration appConfig = Lwjgl3ApplicationConfiguration.copy(this.config);
 		appConfig.setWindowConfiguration(config);
 		if (appConfig.title == null) appConfig.title = listener.getClass().getSimpleName();
-		return createWindow(appConfig, listener, windows.get(0).getWindowHandle());
+		return createWindow(appConfig, listener, windows.get(0).getWindowHandle(), true);
+	}
+
+	/**
+	 * Creates a new {@link Lwjgl3Window} using the already existing {@link Lwjgl3ApplicationConfiguration}
+	 * and {@link ApplicationListener} from the current window and replaces it. Mostly used when
+	 * some settings require the window to be created from scratch, such as MSAA sampling. */
+	public Lwjgl3Window recreateWindow() {
+		return recreateWindow(config);
+	}
+
+	private Lwjgl3Window recreateWindow(Lwjgl3ApplicationConfiguration appConfig) {
+		//Some settings don't work, such as disableAudio, which would require the
+		//Gdx.audio object to be recreated. Changing window size this way is also not recommended
+		//as it can lead to really odd values being passed into the ApplicationListener.resize() method.
+		config.set(appConfig);
+
+		ApplicationListener listener = currentWindow.getListener();
+		InputProcessor inputProcessor = currentWindow.getInput().getInputProcessor();
+		currentWindow.closeWindow(false);
+		Lwjgl3Window recreatedWindow = createWindow(config, listener, currentWindow.getWindowHandle(), false);
+		// the window may not be created immediately, meaning getInput() would return null and crash everything
+		postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				recreatedWindow.getInput().setInputProcessor(inputProcessor);
+			}
+		});
+		return recreatedWindow;
 	}
 
 	private Lwjgl3Window createWindow (final Lwjgl3ApplicationConfiguration config, ApplicationListener listener,
-		final long sharedContext) {
+									   final long sharedContext, final boolean callCreateOnListener) {
 		final Lwjgl3Window window = new Lwjgl3Window(listener, config, this);
 		if (sharedContext == 0) {
 			// the main window is created immediately
-			createWindow(window, config, sharedContext);
+			createWindow(window, config, sharedContext, callCreateOnListener);
 		} else {
 			// creation of additional windows is deferred to avoid GL context trouble
 			postRunnable(new Runnable() {
 				public void run () {
-					createWindow(window, config, sharedContext);
+					createWindow(window, config, sharedContext, callCreateOnListener);
 					windows.add(window);
 				}
 			});
@@ -458,14 +487,14 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		return window;
 	}
 
-	void createWindow (Lwjgl3Window window, Lwjgl3ApplicationConfiguration config, long sharedContext) {
+	void createWindow (Lwjgl3Window window, Lwjgl3ApplicationConfiguration config, long sharedContext, boolean callCreateOnListener) {
 		long windowHandle = createGlfwWindow(config, sharedContext);
-		window.create(windowHandle);
+		window.create(windowHandle, callCreateOnListener);
 		window.setVisible(config.initialVisible);
 
 		for (int i = 0; i < 2; i++) {
 			GL11.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
-				config.initialBackgroundColor.a);
+					config.initialBackgroundColor.a);
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			GLFW.glfwSwapBuffers(windowHandle);
 		}
@@ -518,7 +547,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		if (config.fullscreenMode != null) {
 			GLFW.glfwWindowHint(GLFW.GLFW_REFRESH_RATE, config.fullscreenMode.refreshRate);
 			windowHandle = GLFW.glfwCreateWindow(config.fullscreenMode.width, config.fullscreenMode.height, config.title,
-				config.fullscreenMode.getMonitor(), sharedContextWindow);
+					config.fullscreenMode.getMonitor(), sharedContextWindow);
 		} else {
 			GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, config.windowDecorated ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 			windowHandle = GLFW.glfwCreateWindow(config.windowWidth, config.windowHeight, config.title, 0, sharedContextWindow);
@@ -527,7 +556,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			throw new GdxRuntimeException("Couldn't create window");
 		}
 		Lwjgl3Window.setSizeLimits(windowHandle, config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth,
-			config.windowMaxHeight);
+				config.windowMaxHeight);
 		if (config.fullscreenMode == null) {
 			if (config.windowX == -1 && config.windowY == -1) {
 				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
@@ -547,7 +576,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 				GLFW.glfwGetMonitorWorkarea(monitorHandle, areaXPos, areaYPos, areaWidth, areaHeight);
 
 				GLFW.glfwSetWindowPos(windowHandle, Math.max(0, areaXPos.get(0) + areaWidth.get(0) / 2 - windowWidth / 2),
-					Math.max(0, areaYPos.get(0) + areaHeight.get(0) / 2 - windowHeight / 2));
+						Math.max(0, areaYPos.get(0) + areaHeight.get(0) / 2 - windowHeight / 2));
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
@@ -575,11 +604,11 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		initiateGL(config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20);
 		if (!glVersion.isVersionEqualToOrHigher(2, 0))
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-				+ GL11.glGetString(GL11.GL_VERSION) + "\n" + glVersion.getDebugVersionString());
+					+ GL11.glGetString(GL11.GL_VERSION) + "\n" + glVersion.getDebugVersionString());
 
 		if (config.glEmulation != Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20 && !supportsFBO()) {
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-				+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glVersion.getDebugVersionString());
+					+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glVersion.getDebugVersionString());
 		}
 
 		if (config.debug) {
@@ -613,16 +642,16 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private static boolean supportsFBO () {
 		// FBO is in core since OpenGL 3.0, see https://www.opengl.org/wiki/Framebuffer_Object
 		return glVersion.isVersionEqualToOrHigher(3, 0) || GLFW.glfwExtensionSupported("GL_EXT_framebuffer_object")
-			|| GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object");
+				|| GLFW.glfwExtensionSupported("GL_ARB_framebuffer_object");
 	}
 
 	public enum GLDebugMessageSeverity {
 		HIGH(GL43.GL_DEBUG_SEVERITY_HIGH, KHRDebug.GL_DEBUG_SEVERITY_HIGH, ARBDebugOutput.GL_DEBUG_SEVERITY_HIGH_ARB,
-			AMDDebugOutput.GL_DEBUG_SEVERITY_HIGH_AMD), MEDIUM(GL43.GL_DEBUG_SEVERITY_MEDIUM, KHRDebug.GL_DEBUG_SEVERITY_MEDIUM,
+				AMDDebugOutput.GL_DEBUG_SEVERITY_HIGH_AMD), MEDIUM(GL43.GL_DEBUG_SEVERITY_MEDIUM, KHRDebug.GL_DEBUG_SEVERITY_MEDIUM,
 				ARBDebugOutput.GL_DEBUG_SEVERITY_MEDIUM_ARB, AMDDebugOutput.GL_DEBUG_SEVERITY_MEDIUM_AMD), LOW(
-					GL43.GL_DEBUG_SEVERITY_LOW, KHRDebug.GL_DEBUG_SEVERITY_LOW, ARBDebugOutput.GL_DEBUG_SEVERITY_LOW_ARB,
-					AMDDebugOutput.GL_DEBUG_SEVERITY_LOW_AMD), NOTIFICATION(GL43.GL_DEBUG_SEVERITY_NOTIFICATION,
-						KHRDebug.GL_DEBUG_SEVERITY_NOTIFICATION, -1, -1);
+				GL43.GL_DEBUG_SEVERITY_LOW, KHRDebug.GL_DEBUG_SEVERITY_LOW, ARBDebugOutput.GL_DEBUG_SEVERITY_LOW_ARB,
+				AMDDebugOutput.GL_DEBUG_SEVERITY_LOW_AMD), NOTIFICATION(GL43.GL_DEBUG_SEVERITY_NOTIFICATION,
+				KHRDebug.GL_DEBUG_SEVERITY_NOTIFICATION, -1, -1);
 
 		final int gl43, khr, arb, amd;
 
