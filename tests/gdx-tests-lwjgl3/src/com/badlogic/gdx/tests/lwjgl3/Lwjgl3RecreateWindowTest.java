@@ -1,6 +1,8 @@
 package com.badlogic.gdx.tests.lwjgl3;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
@@ -25,8 +27,18 @@ public class Lwjgl3RecreateWindowTest extends GdxTest {
     private Skin skin;
     private Stage stage;
 
+    private Input input;
+    private Graphics graphics;
+
     @Override
     public void create () {
+        //!!! Recreating a window causes Gdx.input & Gdx.graphics to be constructed
+        //from the window itself. What this means is that if I have a reference to
+        //these objects, then recreate the window, said objects will not point to
+        //the newly created instances, leading to strange results.
+        input = Gdx.input;
+        graphics = Gdx.graphics;
+
         stage = new Stage();
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
         Gdx.input.setInputProcessor(stage);
@@ -74,6 +86,9 @@ public class Lwjgl3RecreateWindowTest extends GdxTest {
         ScreenUtils.clear(1, 0, 0, 1);
         stage.act();
         stage.draw();
+
+        // Uncomment to see the input.getX()/input.getY() values, then recreate the window
+        //System.out.println(input.getX() + "\t" + input.getY() + "\t" + graphics);
     }
 
     @Override
