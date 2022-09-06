@@ -1,3 +1,6 @@
+- Lwjgl3: #recreateWindow now stops itself from creating more than one window
+- API "Addition": removed #setMSAASamples, #setColorBits, #setDepthBits & #setStencilBits
+
 - Lwjgl3: Added #recreateWindow to Lwjgl3Application; used to apply changes that require a new window to be created.
 - API Addition: Lwjgl3Graphics now has #setMSAASamples, #setColorBits, #setDepthBits, #setStencilBits, #setBackBufferConfig (these use the aforementioned recreateWindow() method) & #setIdleFPS
 - POSSIBLE [BREAKING CHANGE] Lwjgl3: #recreateWindow instantiates new Gdx.input & Gdx.graphics, which can be a problem for already existing pointers

@@ -64,7 +64,7 @@ public class Lwjgl3RecreateWindowTest extends GdxTest {
         button.addListener(new ClickListener() {
             @Override
             public void clicked (InputEvent event, float x, float y) {
-                ((Lwjgl3Graphics)Gdx.graphics).setMSAASamples(16);
+                ((Lwjgl3Graphics)Gdx.graphics).setBackBufferConfig(8, 8, 8, 8, 16, 0, 16);
             }
         });
         table.add(button);
@@ -73,10 +73,22 @@ public class Lwjgl3RecreateWindowTest extends GdxTest {
         button.addListener(new ClickListener() {
             @Override
             public void clicked (InputEvent event, float x, float y) {
-                ((Lwjgl3Graphics)Gdx.graphics).setMSAASamples(0);
+                ((Lwjgl3Graphics)Gdx.graphics).setBackBufferConfig(8, 8, 8, 8, 16, 0, 0);
             }
         });
         table.add(button);
+        table.row();
+
+        button = new TextButton("(Attempt to) recreate window 10 times", skin);
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked (InputEvent event, float x, float y) {
+                for (int i = 0; i < 10; i++) {
+                    ((Lwjgl3Graphics)Gdx.graphics).setBackBufferConfig(8, 8, 8, 8, 16, 0, 0);
+                }
+            }
+        });
+        table.add(button).colspan(2);
 
         stage.addActor(table);
     }

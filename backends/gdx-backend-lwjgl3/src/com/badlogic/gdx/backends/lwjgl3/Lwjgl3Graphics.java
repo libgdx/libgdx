@@ -101,7 +101,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 		} else {
 			try {
 				this.gl20 = window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL20 ? new Lwjgl3GL20()
-						: (GL20)Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.Lwjgl3GLES20").newInstance();
+					: (GL20)Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.Lwjgl3GLES20").newInstance();
 			} catch (Throwable t) {
 				throw new GdxRuntimeException("Couldn't instantiate GLES20.", t);
 			}
@@ -151,7 +151,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 		Lwjgl3Graphics.this.logicalHeight = tmpBuffer2.get(0);
 		Lwjgl3ApplicationConfiguration config = window.getConfig();
 		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples,
-				false);
+			false);
 	}
 
 	void update () {
@@ -319,8 +319,8 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 			DisplayMode mode = getDisplayMode(monitor);
 
 			overlap = Math.max(0,
-					Math.min(windowX + windowWidth, monitor.virtualX + mode.width) - Math.max(windowX, monitor.virtualX))
-					* Math.max(0, Math.min(windowY + windowHeight, monitor.virtualY + mode.height) - Math.max(windowY, monitor.virtualY));
+				Math.min(windowX + windowWidth, monitor.virtualX + mode.width) - Math.max(windowX, monitor.virtualX))
+				* Math.max(0, Math.min(windowY + windowHeight, monitor.virtualY + mode.height) - Math.max(windowY, monitor.virtualY));
 
 			if (bestOverlap < overlap) {
 				bestOverlap = overlap;
@@ -392,7 +392,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 			} else {
 				// different monitor and/or refresh rate
 				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), newMode.getMonitor(), 0, 0, newMode.width, newMode.height,
-						newMode.refreshRate);
+					newMode.refreshRate);
 			}
 		} else {
 			// store window position so we can restore it when switching from fullscreen to windowed later
@@ -400,7 +400,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 			// switch from windowed to fullscreen
 			GLFW.glfwSetWindowMonitor(window.getWindowHandle(), newMode.getMonitor(), 0, 0, newMode.width, newMode.height,
-					newMode.refreshRate);
+				newMode.refreshRate);
 		}
 		updateFramebufferInfo();
 
@@ -442,12 +442,12 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 				Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
 				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
 				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
-						Math.max(0, tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2),
-						Math.max(0, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2), width, height,
-						displayModeBeforeFullscreen.refreshRate);
+					Math.max(0, tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2),
+					Math.max(0, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2), width, height,
+					displayModeBeforeFullscreen.refreshRate);
 			} else {
 				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width,
-						height, displayModeBeforeFullscreen.refreshRate);
+					height, displayModeBeforeFullscreen.refreshRate);
 			}
 		}
 		updateFramebufferInfo();
@@ -534,31 +534,11 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 		Lwjgl3Cursor.setSystemCursor(getWindow().getWindowHandle(), systemCursor);
 	}
 
-	public void setIdleFPS(int idleFPS) {
+	public void setIdleFPS (int idleFPS) {
 		getWindow().getConfig().idleFPS = idleFPS;
 	}
 
-	public void setMSAASamples(int samples) {
-		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
-		setBackBufferConfig(config.r, config.g, config.b, config.a, config.depth, config.stencil, samples);
-	}
-
-	public void setColorBits(int r, int g, int b, int a) {
-		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
-		setBackBufferConfig(r, g, b, a, config.depth, config.stencil, config.samples);
-	}
-
-	public void setDepthBits(int depth) {
-		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
-		setBackBufferConfig(config.r, config.g, config.b, config.a, depth, config.stencil, config.samples);
-	}
-
-	public void setStencilBits(int stencil) {
-		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
-		setBackBufferConfig(config.r, config.g, config.b, config.a, config.depth, stencil, config.samples);
-	}
-
-	public void setBackBufferConfig(int r, int g, int b, int a, int depth, int stencil, int samples) {
+	public void setBackBufferConfig (int r, int g, int b, int a, int depth, int stencil, int samples) {
 		Lwjgl3ApplicationConfiguration config = getWindow().getConfig();
 		config.setBackBufferConfig(r, g, b, a, depth, stencil, samples);
 		((Lwjgl3Application)Gdx.app).recreateWindow();

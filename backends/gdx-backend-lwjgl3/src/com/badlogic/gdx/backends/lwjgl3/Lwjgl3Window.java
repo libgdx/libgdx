@@ -242,8 +242,8 @@ public class Lwjgl3Window implements Disposable {
 		closeWindow(true);
 	}
 
-	/** Closes this window and pauses and disposes the associated {@link ApplicationListener},
-	 * depending on {@code callDisposeOnListener}.
+	/** Closes this window and pauses and disposes the associated {@link ApplicationListener}, depending on
+	 * {@code callDisposeOnListener}.
 	 * @param callDisposeOnListener should the {@link ApplicationListener} be disposed of? */
 	public void closeWindow (boolean callDisposeOnListener) {
 		this.callDisposeOnListener = callDisposeOnListener;
@@ -352,8 +352,8 @@ public class Lwjgl3Window implements Disposable {
 
 	static void setSizeLimits (long windowHandle, int minWidth, int minHeight, int maxWidth, int maxHeight) {
 		GLFW.glfwSetWindowSizeLimits(windowHandle, minWidth > -1 ? minWidth : GLFW.GLFW_DONT_CARE,
-				minHeight > -1 ? minHeight : GLFW.GLFW_DONT_CARE, maxWidth > -1 ? maxWidth : GLFW.GLFW_DONT_CARE,
-				maxHeight > -1 ? maxHeight : GLFW.GLFW_DONT_CARE);
+			minHeight > -1 ? minHeight : GLFW.GLFW_DONT_CARE, maxWidth > -1 ? maxWidth : GLFW.GLFW_DONT_CARE,
+			maxHeight > -1 ? maxHeight : GLFW.GLFW_DONT_CARE);
 	}
 
 	Lwjgl3Graphics getGraphics () {
@@ -425,9 +425,9 @@ public class Lwjgl3Window implements Disposable {
 
 	void initializeListener () {
 		if (!listenerInitialized) {
-			//If the window has been created just to change its configuration,
-			//there's no need to call create() on the ApplicationListener,
-			//since it was already called before.
+			// If the window has been created just to change its configuration,
+			// there's no need to call create() on the ApplicationListener,
+			// since it was already called before.
 			if (callCreateOnListener) {
 				listener.create();
 			}
@@ -451,8 +451,8 @@ public class Lwjgl3Window implements Disposable {
 		dispose();
 	}
 
-	/** Disposes of this window and pauses and disposes the associated {@link ApplicationListener},
-	 * depending on {@code callDisposeOnListener}. */
+	/** Disposes of this window and pauses and disposes the associated {@link ApplicationListener}, depending on
+	 * {@code callDisposeOnListener}. */
 	@Override
 	public void dispose () {
 		if (callDisposeOnListener) {
