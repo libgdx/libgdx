@@ -73,4 +73,25 @@ public class MathUtilsTest {
 		assertEquals(-1f, MathUtils.cosDeg(180f), 0f);
 		assertEquals(0f, MathUtils.cosDeg(270f), 0f);
 	}
+
+	@Test
+	public void testTanDeg () {
+		assertEquals(0f, MathUtils.tanDeg(0f), FLOAT_ROUNDING_ERROR);
+		assertEquals(Math.tan(Math.toRadians(45f)), MathUtils.tanDeg(45f), FLOAT_ROUNDING_ERROR);
+//		assertEquals(Float.POSITIVE_INFINITY, MathUtils.tanDeg(90f), 0f); // near infinite, maximum error here
+		assertEquals(Math.tan(Math.toRadians(135f)), MathUtils.tanDeg(135f), FLOAT_ROUNDING_ERROR);
+		assertEquals(0f, MathUtils.tanDeg(180f), FLOAT_ROUNDING_ERROR);
+	}
+
+	@Test
+	public void testAtan2Deg360 () {
+		assertEquals(0f, MathUtils.atan2Deg360(0f, 1f), FLOAT_ROUNDING_ERROR);
+		assertEquals(45f, MathUtils.atan2Deg360(1f, 1f), FLOAT_ROUNDING_ERROR);
+		assertEquals(90f, MathUtils.atan2Deg360(1f, 0f), FLOAT_ROUNDING_ERROR);
+		assertEquals(135f, MathUtils.atan2Deg360(1f, -1f), FLOAT_ROUNDING_ERROR);
+		assertEquals(180f, MathUtils.atan2Deg360(0f, -1f), FLOAT_ROUNDING_ERROR);
+		assertEquals(225f, MathUtils.atan2Deg360(-1f, -1f), FLOAT_ROUNDING_ERROR);
+		assertEquals(270f, MathUtils.atan2Deg360(-1f, 0f), FLOAT_ROUNDING_ERROR);
+		assertEquals(315f, MathUtils.atan2Deg360(-1f, 1f), FLOAT_ROUNDING_ERROR);
+	}
 }
