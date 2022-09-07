@@ -78,7 +78,7 @@ public class MathUtilsTest {
 	public void testTanDeg () {
 		assertEquals(0f, MathUtils.tanDeg(0f), FLOAT_ROUNDING_ERROR);
 		assertEquals(Math.tan(Math.toRadians(45f)), MathUtils.tanDeg(45f), FLOAT_ROUNDING_ERROR);
-//		assertEquals(Float.POSITIVE_INFINITY, MathUtils.tanDeg(90f), 0f); // near infinite, maximum error here
+// assertEquals(Float.POSITIVE_INFINITY, MathUtils.tanDeg(90f), 0f); // near infinite, maximum error here
 		assertEquals(Math.tan(Math.toRadians(135f)), MathUtils.tanDeg(135f), FLOAT_ROUNDING_ERROR);
 		assertEquals(0f, MathUtils.tanDeg(180f), FLOAT_ROUNDING_ERROR);
 	}
