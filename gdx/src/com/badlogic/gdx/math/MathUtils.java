@@ -92,6 +92,62 @@ public final class MathUtils {
 		return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
 	}
 
+	/**
+	 * Returns the tangent given an input in radians, using a Padé approximant.
+	 * <br> Padé approximants tend to be most accurate when they aren't producing results of extreme magnitude; in the
+	 * tan() function, those results occur on and near odd multiples of {@code PI/2}, and this method is least accurate
+	 * when given inputs near those multiples.
+	 * <br> For inputs between -1.57 to 1.57 (just inside half-pi), separated by 0x1p-20f,
+	 * absolute error is 0.00890192, relative error is 0.00000090, and the maximum error is 17.98901367 when given
+	 * 1.56999838. The maximum error might seem concerning, but it's the difference between the correct 1253.22167969
+	 * and the 1235.23266602 this returns, so for many purposes the difference won't be noticeable.
+	 * <br> For inputs between -1.55 to 1.55 (getting less close to half-pi), separated by 0x1p-20f, absolute error is
+	 * 0.00023368, relative error is -0.00000009, and the maximum error is 0.02355957 when given -1.54996467. The
+	 * maximum error is the difference between the correct -47.99691010 and the -47.97335052 this returns.
+	 * <br> While you don't have to use a dedicated method for tan(), and you can use {@code sin(x)/cos(x)},
+	 * approximating tan() in that way is very susceptible to error building up from any of sin(), cos() or the
+	 * division. Where this tan() has a maximum error in the -1.55 to 1.55 range of 0.02355957, that simpler division
+	 * technique on the same range has a maximum error of 1.25724030 (about 50 times worse), as well as larger absolute
+	 * and relative errors. Casting the double result of {@link Math#tan(double)} to float will get the highest
+	 * precision, but can be anywhere from 2.5x to nearly 4x slower than this, depending on JVM.
+	 * <br> Based on <a href="https://math.stackexchange.com/a/4453027">this Stack Exchange answer by Soonts</a>.
+	 *
+	 * @param radians a float angle in radians, where 0 to {@link #PI2} is one rotation
+	 * @return a float approximation of tan()
+	 */
+	public static float tan(float radians) {
+		radians /= PI;
+		radians += 0.5f;
+		radians -= Math.floor(radians);
+		radians -= 0.5f;
+		radians *= PI;
+		final float x2 = radians * radians, x4 = x2 * x2;
+		return radians * ((0.0010582010582010583f) * x4 - (0.1111111111111111f) * x2 + 1f)
+			/ ((0.015873015873015872f) * x4 - (0.4444444444444444f) * x2 + 1f);
+		// How we calculated those long constants above (from Stack Exchange, by Soonts):
+//        return x * ((1.0/945.0) * x4 - (1.0/9.0) * x2 + 1.0) / ((1.0/63.0) * x4 - (4.0/9.0) * x2 + 1.0);
+		// Normally, it would be best to show the division steps, but if GWT isn't computing mathematical constants at
+		// compile-time, which I don't know if it does, that would make the shown-division way slower by 4 divisions.
+	}
+
+	/**
+	 * Returns the tangent given an input in degrees, using a Padé approximant.
+	 * Based on <a href="https://math.stackexchange.com/a/4453027">this Stack Exchange answer</a>.
+	 *
+	 * @param degrees an angle in degrees, where 0 to 360 is one rotation
+	 * @return a float approximation of tan()
+	 */
+	public static float tanDeg(float degrees) {
+		degrees *= (1f/180f);
+		degrees += 0.5f;
+		degrees -= Math.floor(degrees);
+		degrees -= 0.5f;
+		degrees *= PI;
+		final float x2 = degrees * degrees, x4 = x2 * x2;
+		return degrees * ((0.0010582010582010583f) * x4 - (0.1111111111111111f) * x2 + 1f)
+			/ ((0.015873015873015872f) * x4 - (0.4444444444444444f) * x2 + 1f);
+	}
+
 	// ---
 
 	/** A variant on {@link #atan(float)} that does not tolerate infinite inputs for speed reasons. This can be given a double
