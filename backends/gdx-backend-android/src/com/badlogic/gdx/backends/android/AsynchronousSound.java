@@ -160,11 +160,11 @@ public class AsynchronousSound implements Sound {
 		sound.setPan(realSoundId, pan, volume);
 	}
 
-	private void saveSoundId(int soundNumber, long soundId) {
+	private void saveSoundId (int soundNumber, long soundId) {
 		soundIds[soundNumber % soundIdsCountToSave] = soundId;
 	}
 
-	private long getSoundId(long soundId) {
+	private long getSoundId (long soundId) {
 		return soundIds[(int)soundId % soundIdsCountToSave];
 	}
 }
