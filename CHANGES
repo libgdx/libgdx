@@ -17,6 +17,8 @@
 - ScrollPane#setScrollingDisabled avoids invalidate() if nothing changed.
 - Fixed incorrect ScrollPane#scrollTo.
 - API Fix: The cursor can now be catched on Android.
+- Desktop: Added support for 8/32/64-bit PCM and MP3 WAVs
+- Desktop: Improved support for surround sound audio files (#6792)
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.

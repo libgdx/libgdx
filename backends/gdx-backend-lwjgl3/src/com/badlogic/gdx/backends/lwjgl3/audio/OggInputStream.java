@@ -200,7 +200,7 @@ public class OggInputStream extends InputStream {
 		// I handle the initial header first instead of just having the code
 		// read all three Vorbis headers at once because reading the initial
 		// header is an easy way to identify a Vorbis bitstream and it's
-		// useful to see that functionality seperated out.
+		// useful to see that functionality separated out.
 
 		oggInfo.init();
 		comment.init();
@@ -224,8 +224,8 @@ public class OggInputStream extends InputStream {
 		// set up the Vorbis decoder
 
 		// The next two packets in order are the comment and codebook headers.
-		// They're likely large and may span multiple pages. Thus we reead
-		// and submit data until we get our two pacakets, watching that no
+		// They're likely large and may span multiple pages. Thus we read
+		// and submit data until we get our two packets, watching that no
 		// pages are missing. If a page is missing, error out; losing a
 		// header page is the only place where missing data is fatal. */
 
@@ -234,13 +234,12 @@ public class OggInputStream extends InputStream {
 			while (i < 2) {
 				int result = syncState.pageout(page);
 				if (result == 0) break; // Need more data
-				// Don't complain about missing or corrupt data yet. We'll
-				// catch it at the packet output phase
+				// Don't complain about missing or corrupt data yet.
+				// We'll catch it at the packet output phase
 
 				if (result == 1) {
 					streamState.pagein(page); // we can ignore any errors here
-					// as they'll also become apparent
-					// at packetout
+					// as they'll also become apparent at packetout
 					while (i < 2) {
 						result = streamState.packetout(packet);
 						if (result == 0) break;
@@ -272,14 +271,11 @@ public class OggInputStream extends InputStream {
 
 		convsize = BUFFER_SIZE / oggInfo.channels;
 
-		// OK, got and parsed all three headers. Initialize the Vorbis
-		// packet->PCM decoder.
+		// OK, got and parsed all three headers. Initialize the Vorbis packet->PCM decoder.
 		dspState.synthesis_init(oggInfo); // central decode state
 		vorbisBlock.init(dspState); // local state for most of the decode
-		// so multiple block decodes can
-		// proceed in parallel. We could init
-		// multiple vorbis_block structures
-		// for vd here
+		// so multiple block decodes can proceed in parallel.
+		// We could init multiple vorbis_block structures for vd here
 
 		return true;
 	}
@@ -310,21 +306,15 @@ public class OggInputStream extends InputStream {
 
 					if (result == 0) {
 						break; // need more data
-					}
-
-					if (result == -1) { // missing or corrupt data at this page position
-						// throw new GdxRuntimeException("Corrupt or missing data in bitstream.");
-						Gdx.app.log("gdx-audio", "Error reading OGG: Corrupt or missing data in bitstream.");
+					} else if (result == -1) { // missing or corrupt data at this page position
+						Gdx.app.error("gdx-audio", "Error reading OGG: Corrupt or missing data in bitstream.");
 					} else {
-						streamState.pagein(page); // can safely ignore errors at
-						// this point
+						streamState.pagein(page); // can safely ignore errors at this point
 						while (true) {
 							result = streamState.packetout(packet);
 
 							if (result == 0) break; // need more data
-							if (result == -1) { // missing or corrupt data at this page position
-								// no reason to complain; already complained above
-							} else {
+							if (result != -1) {
 								// we have a packet. Decode it
 								int samples;
 								if (vorbisBlock.synthesis(packet) == 0) { // test for success!
@@ -341,8 +331,7 @@ public class OggInputStream extends InputStream {
 									// boolean clipflag = false;
 									int bout = (samples < convsize ? samples : convsize);
 
-									// convert floats to 16 bit signed ints (host order) and
-									// interleave
+									// convert floats to 16 bit signed ints (host order) and interleave
 									for (int i = 0; i < oggInfo.channels; i++) {
 										int ptr = i * 2;
 										// int ptr=i;
@@ -378,9 +367,7 @@ public class OggInputStream extends InputStream {
 									}
 
 									wrote = true;
-									dspState.synthesis_read(bout); // tell libvorbis how
-									// many samples we
-									// actually consumed
+									dspState.synthesis_read(bout); // tell libvorbis how many samples we actually consumed
 								}
 							}
 						}
