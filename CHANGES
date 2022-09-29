@@ -17,6 +17,7 @@
 - ScrollPane#setScrollingDisabled avoids invalidate() if nothing changed.
 - Fixed incorrect ScrollPane#scrollTo.
 - API Fix: The cursor can now be catched on Android.
+- API Addition: Added CheckBox#getImageDrawable.
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
