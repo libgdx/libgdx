@@ -288,7 +288,7 @@ public class Lwjgl3GLES20 implements GL20 {
 			bb.limit(oldLimit);
 		} else
 			throw new GdxRuntimeException("Can't use " + indices.getClass().getName()
-					+ " with this method. Use ShortBuffer or ByteBuffer instead. Blame LWJGL");
+				+ " with this method. Use ShortBuffer or ByteBuffer instead. Blame LWJGL");
 	}
 
 	public void glEnable (int cap) {
