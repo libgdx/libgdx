@@ -1,0 +1,53 @@
+// Exclude all files from Gradle's test runner
+test { exclude '**' }
+
+// Copy all xcframeworks to xcode/native/ios
+// They need to be picked up from there for linking in XCode
+task copyNatives  {
+    doLast {
+        file("xcode/native/ios/").mkdirs();
+        def subDir = "META-INF/robovm/ios/libs/"
+        configurations.natives.files.each { jar ->
+            copy {
+                from zipTree(jar)
+                include "$subDir/*.xcframework/**"
+                into("xcode/native/ios/")
+                eachFile { file ->
+                    file.path = file.path.replaceFirst("^$subDir", '')
+                }
+                includeEmptyDirs(false)
+            }
+        }
+
+        def LD_FLAGS = "LIBGDX_NATIVES = -Wl,-all_load"
+        def outFlags = file("xcode/ios-moe/custom.xcconfig");
+        outFlags.write LD_FLAGS
+
+        def proguard = file("proguard.append.cfg")
+        if (!proguard.exists()) {
+            proguard = new File("proguard.append.cfg")
+            proguard << "\n-keep class com.badlogic.** { *; }\n"
+            proguard << "-keep enum com.badlogic.** { *; }\n"
+        }
+    }
+}
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+// Setup Multi-OS Engine
+moe {
+    xcode {
+        project 'xcode/ios-moe.xcodeproj'
+        mainTarget 'ios-moe'
+        testTarget 'ios-moe-Test'
+    }
+}
+
+moeMainReleaseIphoneosXcodeBuild.dependsOn copyNatives
+moeMainDebugIphoneosXcodeBuild.dependsOn copyNatives
+moeMainReleaseIphonesimulatorXcodeBuild.dependsOn copyNatives
+moeMainDebugIphonesimulatorXcodeBuild.dependsOn copyNatives
+
+if (System.getenv('PLATFORM_NAME') != null) {
+    moeXcodeInternal.dependsOn copyNatives
+}

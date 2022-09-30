@@ -49,6 +49,9 @@ public class BuildScriptHelper {
 		if (projects.contains(ProjectType.IOS)) {
 			write(wr, "classpath '" + DependencyBank.roboVMPluginImport + "'");
 		}
+		if (projects.contains(ProjectType.IOSMOE)) {
+			write(wr, "classpath '" + DependencyBank.moePluginImport + "'");
+		}
 		write(wr, language.buildScriptDependencies + "\n");
 		write(wr, "}");
 		write(wr, "}");
@@ -106,7 +109,8 @@ public class BuildScriptHelper {
 			if (dep.getDependencies(project) == null) continue;
 			for (String moduleDependency : dep.getDependencies(project)) {
 				if (moduleDependency == null) continue;
-				if (project.equals(ProjectType.ANDROID) && moduleDependency.contains("native")) {
+				if ((project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE))
+					&& moduleDependency.contains("native")) {
 					write(wr, "natives \"" + moduleDependency + "\"");
 				} else {
 					write(wr, "api \"" + moduleDependency + "\"");
@@ -118,7 +122,7 @@ public class BuildScriptHelper {
 	}
 
 	private static void addConfigurations (ProjectType project, BufferedWriter wr) throws IOException {
-		if (project.equals(ProjectType.ANDROID)) {
+		if (project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) {
 			write(wr, "configurations { natives }");
 		}
 	}

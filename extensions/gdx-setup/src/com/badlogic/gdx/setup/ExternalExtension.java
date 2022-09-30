@@ -43,7 +43,7 @@ public class ExternalExtension {
 		// TODO properly differentiate between lwjgl2 and 3 dependencies?
 		Dependency dep = new Dependency(name, gwtInherits, getPlatformDependencies("core"), getPlatformDependencies("desktop"),
 			getPlatformDependencies("desktop"), getPlatformDependencies("android"), getPlatformDependencies("ios"),
-			getPlatformDependencies("html"));
+			getPlatformDependencies("ios-moe"), getPlatformDependencies("html"));
 
 		return dep;
 	}

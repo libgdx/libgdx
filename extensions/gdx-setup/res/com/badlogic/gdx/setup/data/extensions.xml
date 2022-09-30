@@ -15,6 +15,7 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
+			<ios-moe></ios-moe>
 			<html></html>
 		</projects>
 	</extension>
@@ -35,6 +36,7 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
+			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.kotcrab.vis:vis-ui:sources</dependency>
 			</html>
@@ -57,6 +59,7 @@
 			<desktop></desktop>
 			<android></android>
 			<ios></ios>
+			<ios-moe></ios-moe>
 			<html>
 				<dependency>com.github.tommyettinger:jbump:sources</dependency>
 			</html>
@@ -85,6 +88,9 @@
 			<ios>
 				<dependency>de.golfgl.gdxgamesvcs:gdx-gamesvcs-ios-gamecenter</dependency>
 			</ios>
+			<ios-moe>
+				<dependency>de.tomgrill.gdxfacebook:gdx-facebook-ios-moe</dependency>
+			</ios-moe>
 			<html>
 				<dependency>de.golfgl.gdxgamesvcs:gdx-gamesvcs-core:sources</dependency>
 				<dependency>de.golfgl.gdxgamesvcs:gdx-gamesvcs-core-gamejolt:sources</dependency>
@@ -112,6 +118,9 @@
 			<ios>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-ios</dependency>
 			</ios>
+			<ios-moe>
+				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-ios-moe</dependency>
+			</ios-moe>
 			<html>
 		   		<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html</dependency>
 				<dependency>de.tomgrill.gdxdialogs:gdx-dialogs-html:sources</dependency>

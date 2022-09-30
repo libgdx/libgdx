@@ -21,6 +21,7 @@ ext {
     gdxnatives = [:]
 }
 
+versions.moe = "2.0.0-SNAPSHOT"
 versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 7
 versions.javaLwjgl3 = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
 versions.robovm = "2.3.16"
@@ -46,11 +47,16 @@ versions.spotless = "6.7.1"
 libraries.compileOnly = [:]
 
 libraries.lwjgl = [
-        "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",        
+        "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"
 ]
-
+testnatives.ios = [
+        files("gdx/libs/ios32/"),
+        files("extensions/gdx-box2d/gdx-box2d/libs/ios32/"),
+        files("extensions/gdx-bullet/libs/ios32/"),
+        //files("extensions/gdx-freetype/libs/ios32/")
+]
 libraries.lwjgl3 = [
         "org.lwjgl:lwjgl:${versions.lwjgl3}",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux",

@@ -40,6 +40,7 @@ com_crashlytics_export_strings.xml
 /desktop/bin/
 /html/bin/
 /ios/bin/
+/ios-moe/bin/
 *.tmp
 *.bak
 *.swp
@@ -57,6 +58,7 @@ com_crashlytics_export_strings.xml
 /desktop/nbproject/private/
 /html/nbproject/private/
 /ios/nbproject/private/
+/ios-moe/nbproject/private/
 
 /build/
 /android/build/
@@ -64,6 +66,7 @@ com_crashlytics_export_strings.xml
 /desktop/build/
 /html/build/
 /ios/build/
+/ios-moe/build/
 
 /nbbuild/
 /android/nbbuild/
@@ -71,6 +74,7 @@ com_crashlytics_export_strings.xml
 /desktop/nbbuild/
 /html/nbbuild/
 /ios/nbbuild/
+/ios-moe/nbbuild/
 
 /dist/
 /android/dist/
@@ -78,6 +82,7 @@ com_crashlytics_export_strings.xml
 /desktop/dist/
 /html/dist/
 /ios/dist/
+/ios-moe/dist/
 
 /nbdist/
 /android/nbdist/
@@ -85,6 +90,7 @@ com_crashlytics_export_strings.xml
 /desktop/nbdist/
 /html/nbdist/
 /ios/nbdist/
+/ios-moe/nbdist/
 
 nbactions.xml
 nb-configuration.xml
@@ -100,6 +106,7 @@ gradle-app.setting
 /desktop/build/
 /html/build/
 /ios/build/
+/ios-moe/build/
 
 ## OS Specific
 .DS_Store
@@ -112,3 +119,8 @@ Thumbs.db
 /ios/xcode/native/
 /ios/IOSLauncher.app
 /ios/IOSLauncher.app.dSYM
+
+/ios-moe/xcode/*.xcodeproj/*
+!/ios-moe/xcode/*.xcodeproj/xcshareddata
+!/ios-moe/xcode/*.xcodeproj/project.pbxproj
+/ios-moe/xcode/native/
