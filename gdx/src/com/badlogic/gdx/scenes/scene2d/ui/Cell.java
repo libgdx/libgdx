@@ -831,35 +831,35 @@ public class Cell<T extends Actor> implements Poolable {
 		return padTop.get(actor) + padBottom.get(actor);
 	}
 
-	public float getFillX () {
+	public @Null Float getFillX () {
 		return fillX;
 	}
 
-	public float getFillY () {
+	public @Null Float getFillY () {
 		return fillY;
 	}
 
-	public int getAlign () {
+	public @Null Integer getAlign () {
 		return align;
 	}
 
-	public int getExpandX () {
+	public @Null Integer getExpandX () {
 		return expandX;
 	}
 
-	public int getExpandY () {
+	public @Null Integer getExpandY () {
 		return expandY;
 	}
 
-	public int getColspan () {
+	public @Null Integer getColspan () {
 		return colspan;
 	}
 
-	public boolean getUniformX () {
+	public @Null Boolean getUniformX () {
 		return uniformX;
 	}
 
-	public boolean getUniformY () {
+	public @Null Boolean getUniformY () {
 		return uniformY;
 	}
 

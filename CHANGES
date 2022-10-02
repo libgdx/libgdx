@@ -6,6 +6,7 @@
 - [BREAKING CHANGE] iOS: `ApplicationListener.create` and first `resize` are now called within `UIApplicationDelegate.didFinishLaunching`. Allows for earlier rendering and prevents black screen frames after launch screen. NOTE: App will get terminated if this method is blocked for more than 10-20 sec. 
 - [BREAKING CHANGE] Actor#localToAscendantCoordinates throws an exception if the specified actor is not an ascendant.
 - [BREAKING CHANGE] WidgetGroup#hit first validates the layout.
+- [BREAKING CHANGE] Cell getters return object wrapper instead of primitives.
 - iOS: Add new MobiVM MetalANGLE backend
 - API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
 - Fix: Fixed Android and iOS touch cancelled related issues, see #6871.
