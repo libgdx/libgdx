@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.headless;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
@@ -34,18 +35,34 @@ import java.util.Properties;
 
 public class HeadlessPreferences implements Preferences {
 	private final Properties properties = new Properties();
-	private final FileHandle file;
+	private FileHandle file;
 
 	public HeadlessPreferences (String name, String directory) {
-		this(new HeadlessFileHandle(new File(directory, name), FileType.External));
+		this(new HeadlessFileHandle(new File(directory, name), FileType.External), false);
+	}
+
+	public HeadlessPreferences (String name, String directory, FileType fileType) {
+		this(new HeadlessFileHandle(new File(directory, name), fileType), false);
+	}
+
+	public HeadlessPreferences (String name, String directory, FileType fileType, boolean legacy) {
+		this(new HeadlessFileHandle(new File(directory, name), fileType), legacy);
 	}
 
 	public HeadlessPreferences (FileHandle file) {
+		this(file, false);
+	}
+
+	public HeadlessPreferences (FileHandle file, boolean legacy) {
 		this.file = file;
-		if (!file.exists()) return;
+		if (legacy && !file.exists()) {
+			FileHandle legacyFile = new HeadlessFileHandle(new File(".prefs", file.name()), Files.FileType.External);
+			if (!legacyFile.exists()) return;
+			this.file = legacyFile;
+		}
 		InputStream in = null;
 		try {
-			in = new BufferedInputStream(file.read());
+			in = new BufferedInputStream(this.file.read());
 			properties.loadFromXML(in);
 		} catch (Throwable t) {
 			t.printStackTrace();

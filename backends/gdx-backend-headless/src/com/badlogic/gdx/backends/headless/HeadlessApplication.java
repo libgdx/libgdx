@@ -52,7 +52,9 @@ public class HeadlessApplication implements Application {
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
-	private String preferencesdir;
+	private final String preferencesDir;
+	private final Files.FileType preferencesType;
+	private final boolean preferencesLegacy;
 
 	public HeadlessApplication (ApplicationListener listener) {
 		this(listener, null);
@@ -73,7 +75,9 @@ public class HeadlessApplication implements Application {
 		this.audio = new MockAudio();
 		this.input = new MockInput();
 
-		this.preferencesdir = config.preferencesDirectory;
+		this.preferencesDir = config.preferencesDirectory;
+		this.preferencesType = config.preferencesFileType;
+		this.preferencesLegacy = config.allowLegacyPreferences;
 
 		Gdx.app = this;
 		Gdx.files = files;
@@ -212,7 +216,7 @@ public class HeadlessApplication implements Application {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new HeadlessPreferences(name, this.preferencesdir);
+			Preferences prefs = new HeadlessPreferences(name, this.preferencesDir, this.preferencesType, this.preferencesLegacy);
 			preferences.put(name, prefs);
 			return prefs;
 		}

@@ -56,8 +56,9 @@ public class LwjglApplication implements LwjglApplicationBase {
 		LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
-	protected String preferencesdir;
+	protected String preferencesDir;
 	protected Files.FileType preferencesFileType;
+	protected boolean preferencesLegacy;
 
 	public LwjglApplication (ApplicationListener listener, String title, int width, int height) {
 		this(listener, createConfig(title, width, height));
@@ -97,8 +98,9 @@ public class LwjglApplication implements LwjglApplicationBase {
 		input = createInput(config);
 		net = new LwjglNet(config);
 		this.listener = listener;
-		this.preferencesdir = config.preferencesDirectory;
+		this.preferencesDir = config.preferencesDirectory;
 		this.preferencesFileType = config.preferencesFileType;
+		this.preferencesLegacy = config.allowLegacyPreferences;
 
 		Gdx.app = this;
 		Gdx.graphics = graphics;
@@ -348,7 +350,8 @@ public class LwjglApplication implements LwjglApplicationBase {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new LwjglPreferences(new LwjglFileHandle(new File(preferencesdir, name), preferencesFileType));
+			Preferences prefs = new LwjglPreferences(new LwjglFileHandle(new File(preferencesDir, name), preferencesFileType),
+				preferencesLegacy);
 			preferences.put(name, prefs);
 			return prefs;
 		}

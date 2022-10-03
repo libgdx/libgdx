@@ -55,6 +55,7 @@
 - Brought the official and third-party extensions in gdx-setup up to date. Removed some unmaintained ones and added gdx-websockets & jbump.
 - API Fix: Escaped characters in XML attributes are now properly un-escaped
 - Bug Fix: AssetManager backslash conversion removed - fixes use of filenames containing backslashes
+- The default preferences directory has been changed to use what's most appropriate for the operating system. See https://github.com/libgdx/libgdx/pull/6614 for more info.
 - gdx-setup now places the assets directory in project root instead of android or core. See advanced settings (UI) or arguments (command line) if you don't want it in root.
 - API Fix: Resolved issues with LWJGL 3 and borderless fullscreen
 - API Addition: GeometryUtils,polygons isCCW, ensureClockwise, reverseVertices

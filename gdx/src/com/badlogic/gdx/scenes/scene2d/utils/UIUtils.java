@@ -9,11 +9,12 @@ public final class UIUtils {
 	private UIUtils () {
 	}
 
-	static public boolean isAndroid = System.getProperty("java.runtime.name").contains("Android");
-	static public boolean isMac = !isAndroid && System.getProperty("os.name").contains("Mac");
-	static public boolean isWindows = !isAndroid && System.getProperty("os.name").contains("Windows");
-	static public boolean isLinux = !isAndroid && System.getProperty("os.name").contains("Linux");
-	static public boolean isIos = !isAndroid && (!(isWindows || isLinux || isMac));
+	/** Detect the user's operating system. */
+	static public final boolean isAndroid = System.getProperty("java.runtime.name").contains("Android");
+	static public final boolean isMac = !isAndroid && System.getProperty("os.name").contains("Mac");
+	static public final boolean isWindows = !isAndroid && System.getProperty("os.name").contains("Windows");
+	static public final boolean isLinux = !isAndroid && System.getProperty("os.name").contains("Linux");
+	static public final boolean isIos = !isAndroid && (!(isWindows || isLinux || isMac));
 
 	static public boolean left () {
 		return Gdx.input.isButtonPressed(Buttons.LEFT);

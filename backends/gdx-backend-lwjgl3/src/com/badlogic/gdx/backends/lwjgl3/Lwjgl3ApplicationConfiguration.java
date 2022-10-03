@@ -18,6 +18,8 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import java.io.PrintStream;
 import java.nio.IntBuffer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
@@ -36,6 +38,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3Monitor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 
 public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	public static PrintStream errorStream = System.err;
@@ -65,8 +68,9 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int idleFPS = 60;
 	int foregroundFPS = 0;
 
-	String preferencesDirectory = ".prefs/";
-	Files.FileType preferencesFileType = FileType.External;
+	String preferencesDirectory = getDefaultPreferencesDirectory();
+	Files.FileType preferencesFileType = getDefaultPreferencesFileType();
+	boolean allowLegacyPreferences = true;
 
 	HdpiMode hdpiMode = HdpiMode.Logical;
 
@@ -100,6 +104,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		foregroundFPS = config.foregroundFPS;
 		preferencesDirectory = config.preferencesDirectory;
 		preferencesFileType = config.preferencesFileType;
+		allowLegacyPreferences = config.allowLegacyPreferences;
 		hdpiMode = config.hdpiMode;
 		debug = config.debug;
 		debugStream = config.debugStream;
@@ -184,11 +189,25 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.foregroundFPS = fps;
 	}
 
-	/** Sets the directory where {@link Preferences} will be stored, as well as the file type to be used to store them. Defaults to
-	 * "$USER_HOME/.prefs/" and {@link FileType#External}. */
-	public void setPreferencesConfig (String preferencesDirectory, Files.FileType preferencesFileType) {
-		this.preferencesDirectory = preferencesDirectory;
-		this.preferencesFileType = preferencesFileType;
+	/** Sets the directory where {@link Preferences} will be stored, as well as the file type to be used to store them. Default
+	 * varies by operating system. */
+	public void setPreferencesConfig (String directory, Files.FileType fileType) {
+		this.preferencesDirectory = directory;
+		this.preferencesFileType = fileType;
+	}
+
+	/** Sets the directory where {@link Preferences} will be stored, as well as the file type to be used to store them. Default
+	 * varies by operating system. Also sets whether .prefs should be checked for preferences (default location prior to libGDX
+	 * 1.10.1). */
+	public void setPreferencesConfig (String directory, Files.FileType fileType, boolean allowLegacy) {
+		this.preferencesDirectory = directory;
+		this.preferencesFileType = fileType;
+		this.allowLegacyPreferences = allowLegacy;
+	}
+
+	/** Sets whether .prefs should be checked for preferences (default location prior to libGDX 1.10.1). */
+	public void setPreferencesConfig (boolean allowLegacy) {
+		this.allowLegacyPreferences = allowLegacy;
 	}
 
 	/** Defines how HDPI monitors are handled. Operating systems may have a per-monitor HDPI scale setting. The operating system
@@ -282,4 +301,55 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		String name = GLFW.glfwGetMonitorName(glfwMonitor);
 		return new Lwjgl3Monitor(glfwMonitor, virtualX, virtualY, name);
 	}
+
+	/** Returns where preferences are stored by default. Typically AppData/Roaming on Windows, Library/Preferences on macOS and
+	 * .config on Linux.
+	 * @return The default preferences directory. */
+	public String getDefaultPreferencesDirectory () {
+
+		if (UIUtils.isWindows) {
+			String appdata = System.getenv("APPDATA");
+			String windir = System.getenv("WINDIR");
+			return appdata != null ? appdata // 2000/XP/Vista/7/8/10/11
+				: windir != null ? windir + "/Application Data" // 95/98/Me
+					: ".prefs"; // Default to legacy directory if it's broken
+
+		} else if (UIUtils.isMac) {
+			return "Library/Preferences";
+
+		} else if (UIUtils.isLinux) {
+			String configHome = System.getenv("XDG_CONFIG_HOME");
+			if (configHome != null) {
+				Pattern p = Pattern.compile("(?<!\\\\)\\$(\\w+)");
+				Matcher m = p.matcher(configHome);
+				while (m.find()) {
+					m.reset(configHome = configHome.replaceFirst("\\Q" + m.group() + "\\E",
+						Matcher.quoteReplacement(String.valueOf(System.getenv(m.group(1))))));
+				}
+			}
+			return configHome != null ? configHome : ".config";
+
+		} else
+			return ".prefs";
+
+	}
+
+	/** @return The default FileType for the operating system - External or Absolute. */
+	public Files.FileType getDefaultPreferencesFileType () {
+
+		if (UIUtils.isWindows) {
+			return (System.getenv("APPDATA") != null || System.getenv("WINDIR") != null) ? Files.FileType.Absolute
+				: FileType.External;
+
+		} else if (UIUtils.isMac) {
+			return Files.FileType.External;
+
+		} else if (UIUtils.isLinux) {
+			return System.getenv("XDG_CONFIG_HOME") != null ? Files.FileType.Absolute : Files.FileType.External;
+
+		} else
+			return Files.FileType.External;
+
+	}
+
 }

@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
@@ -34,18 +35,34 @@ import com.badlogic.gdx.utils.StreamUtils;
 
 public class Lwjgl3Preferences implements Preferences {
 	private final Properties properties = new Properties();
-	private final FileHandle file;
+	private FileHandle file;
 
 	public Lwjgl3Preferences (String name, String directory) {
 		this(new Lwjgl3FileHandle(new File(directory, name), FileType.External));
 	}
 
+	public Lwjgl3Preferences (String name, String directory, FileType fileType) {
+		this(new Lwjgl3FileHandle(new File(directory, name), fileType), false);
+	}
+
+	public Lwjgl3Preferences (String name, String directory, FileType fileType, boolean legacy) {
+		this(new Lwjgl3FileHandle(new File(directory, name), fileType), legacy);
+	}
+
 	public Lwjgl3Preferences (FileHandle file) {
+		this(file, false);
+	}
+
+	public Lwjgl3Preferences (FileHandle file, boolean legacy) {
 		this.file = file;
-		if (!file.exists()) return;
+		if (legacy && !file.exists()) {
+			FileHandle legacyFile = new Lwjgl3FileHandle(new File(".prefs", file.name()), Files.FileType.External);
+			if (!legacyFile.exists()) return;
+			this.file = legacyFile;
+		}
 		InputStream in = null;
 		try {
-			in = new BufferedInputStream(file.read());
+			in = new BufferedInputStream(this.file.read());
 			properties.loadFromXML(in);
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -188,4 +205,5 @@ public class Lwjgl3Preferences implements Preferences {
 	public void remove (String key) {
 		properties.remove(key);
 	}
+
 }
