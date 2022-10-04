@@ -60,6 +60,16 @@ public class ParallelAction extends Action {
 		addAction(action5);
 	}
 
+	public ParallelAction (Action action1, Action action2, Action action3, Action action4, Action action5, Action action6) {
+		addAction(action1);
+		addAction(action2);
+		addAction(action3);
+		addAction(action4);
+		addAction(action5);
+		addAction(action6);
+	}
+
+
 	public boolean act (float delta) {
 		if (complete) return true;
 		complete = true;
