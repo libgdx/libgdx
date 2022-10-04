@@ -371,6 +371,17 @@ public class Actions {
 		return action;
 	}
 
+	static public SequenceAction sequence (Action action1, Action action2, Action action3, Action action4, Action action5, Action action6) {
+		SequenceAction action = action(SequenceAction.class);
+		action.addAction(action1);
+		action.addAction(action2);
+		action.addAction(action3);
+		action.addAction(action4);
+		action.addAction(action5);
+		action.addAction(action6);
+		return action;
+	}
+
 	static public SequenceAction sequence (Action... actions) {
 		SequenceAction action = action(SequenceAction.class);
 		for (int i = 0, n = actions.length; i < n; i++)
