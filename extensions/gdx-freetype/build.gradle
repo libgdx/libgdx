@@ -79,9 +79,9 @@ jnigen {
 		cppExcludes = ["freetype/subprojects/"]
 
 		cFlags += " -DFT2_BUILD_LIBRARY "
-		cFlags += System.getenv("CC_FLAGS")
+		cFlags += System.getenv("CC_FLAGS") ?: ""
 		cppFlags += " -DFT2_BUILD_LIBRARY "
-		cppFlags += System.getenv("CPP_FLAGS")
+		cppFlags += System.getenv("CPP_FLAGS") ?: ""
 	}
 	add(Windows, x32)
 	add(Windows, x64)
