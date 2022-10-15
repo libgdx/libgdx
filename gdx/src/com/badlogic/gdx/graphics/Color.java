@@ -82,16 +82,26 @@ public class Color {
 
 	/** Constructor, sets the components of the color
 	 * 
-	 * @param r the red component
-	 * @param g the green component
-	 * @param b the blue component
-	 * @param a the alpha component */
+	 * @param r the red component as float in [0,1]
+	 * @param g the green component as float in [0,1]
+	 * @param b the blue component as float in [0,1]
+	 * @param a the alpha component as float in [0,1] */
 	public Color (float r, float g, float b, float a) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
 		this.a = a;
 		clamp();
+	}
+	
+	/** Constructor, sets the components of the color
+	 * 
+	 * @param r the red component as int in [0,255]
+	 * @param g the green component as int in [0,255]
+	 * @param b the blue component as int in [0,255]
+	 * @param a the alpha component as int in [0,255] */
+	public Color (int r, int g, int b, int a) {
+		super(r/255f, g/255f, b/255f, a/255f);
 	}
 
 	/** Constructs a new color using the given color
