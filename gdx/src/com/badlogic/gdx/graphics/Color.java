@@ -101,7 +101,7 @@ public class Color {
 	 * @param b the blue component as int in [0,255]
 	 * @param a the alpha component as int in [0,255] */
 	public Color (int r, int g, int b, int a) {
-		super(r/255f, g/255f, b/255f, a/255f);
+		this(r/255f, g/255f, b/255f, a/255f);
 	}
 
 	/** Constructs a new color using the given color
