@@ -3,8 +3,8 @@ set -e
 BASE=$(cd $(dirname $0); pwd -P)
 
 BUILD_DIR=$BASE/target/objectal
-XCODE_VERSION=$(xcodebuild -version | sed -En 's/Xcode[[:space:]]+([0-9\.]*)/\1/p')
-IS_XCODE14=$(bc -l <<< "$XCODE_VERSION >= 14.0")
+XCODE_VERSION=$(xcodebuild -version | sed -En 's/Xcode[[:space:]]+([0-9]*)[\.0-9]*/\1/p')
+IS_XCODE14=$(bc -l <<< "$XCODE_VERSION >= 14")
 
 rm -rf $BUILD_DIR
 mkdir -p $BUILD_DIR
