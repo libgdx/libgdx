@@ -22,6 +22,10 @@ import com.badlogic.gdx.graphics.GL20;
 import org.robovm.apple.foundation.NSProcessInfo;
 
 public class IOSGLES20 implements GL20 {
+
+	final boolean shouldConvert16bit = IOSApplication.IS_METALANGLE
+		&& NSProcessInfo.getSharedProcessInfo().getEnvironment().containsKey("SIMULATOR_DEVICE_NAME");
+
 	public IOSGLES20 () {
 		init();
 	}
@@ -262,7 +266,7 @@ public class IOSGLES20 implements GL20 {
 
 	public native void glStencilOpSeparate (int face, int fail, int zfail, int zpass);
 
-	private static Buffer convert16bitBufferToRGBA8888 (Buffer buffer, int type) {
+	static Buffer convert16bitBufferToRGBA8888 (Buffer buffer, int type) {
 		// TODO: 20.10.22 Can it be a different buffer type?
 		ByteBuffer byteBuffer = (ByteBuffer)buffer;
 		byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -297,8 +301,7 @@ public class IOSGLES20 implements GL20 {
 
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
 		Buffer pixels) {
-		if (!IOSApplication.IS_METALANGLE
-			|| !NSProcessInfo.getSharedProcessInfo().getEnvironment().containsKey("SIMULATOR_DEVICE_NAME")) {
+		if (!shouldConvert16bit) {
 			glTexImage2DJNI(target, level, internalformat, width, height, border, format, type, pixels);
 			return;
 		}
@@ -323,8 +326,7 @@ public class IOSGLES20 implements GL20 {
 
 	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
 		Buffer pixels) {
-		if (!IOSApplication.IS_METALANGLE
-			|| !NSProcessInfo.getSharedProcessInfo().getEnvironment().containsKey("SIMULATOR_DEVICE_NAME")) {
+		if (!shouldConvert16bit) {
 			glTexSubImage2DJNI(target, level, xoffset, yoffset, width, height, format, type, pixels);
 			return;
 		}
