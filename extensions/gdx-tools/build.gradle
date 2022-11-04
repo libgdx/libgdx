@@ -32,10 +32,10 @@ ext {
 	toolsAssetsDir = ["assets"]
 }
 
-task dist2DParticles (type: Jar) {
+task dist2DParticles (type: Jar, dependsOn: configurations.runtimeClasspath) {
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
-	from files(sourceSets.main.java.outputDir)
+	from files(sourceSets.main.java.classesDirectory)
 	from files(sourceSets.main.output.resourcesDir)
 	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
@@ -47,10 +47,10 @@ task dist2DParticles (type: Jar) {
 	}
 }
 
-task dist3DParticles (type: Jar) {
+task dist3DParticles (type: Jar, dependsOn: configurations.runtimeClasspath) {
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
-	from files(sourceSets.main.java.outputDir)
+	from files(sourceSets.main.java.classesDirectory)
 	from files(sourceSets.main.output.resourcesDir)
 	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
@@ -62,10 +62,10 @@ task dist3DParticles (type: Jar) {
 	}
 }
 
-task distHiero (type: Jar) {
+task distHiero (type: Jar, dependsOn: configurations.runtimeClasspath) {
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
-	from files(sourceSets.main.java.outputDir)
+	from files(sourceSets.main.java.classesDirectory)
 	from files(sourceSets.main.output.resourcesDir)
 	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
@@ -77,10 +77,10 @@ task distHiero (type: Jar) {
 	}
 }
 
-task distTexturePacker (type: Jar) {
+task distTexturePacker (type: Jar, dependsOn: configurations.runtimeClasspath) {
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
-	from files(sourceSets.main.java.outputDir)
+	from files(sourceSets.main.java.classesDirectory)
 	from files(sourceSets.main.output.resourcesDir)
 	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
@@ -93,7 +93,6 @@ task distTexturePacker (type: Jar) {
 }
 
 task buildRunnables (dependsOn: [
-	build,
 	dist2DParticles,
 	dist3DParticles,
 	distHiero,

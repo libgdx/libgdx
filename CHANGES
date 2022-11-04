@@ -4,6 +4,10 @@
 - [BREAKING CHANGE] iOS: `hideHomeIndicator` set to `false` by default (was `true`).
 - [BREAKING CHANGE] iOS: `screenEdgesDeferringSystemGestures` set to `UIRectEdge.All` by default (was `UIRectEdge.None`).
 - [BREAKING CHANGE] iOS: preferred FPS is now uncapped by default, see #6717
+- [BREAKING CHANGE] iOS: `ApplicationListener.create` and first `resize` are now called within `UIApplicationDelegate.didFinishLaunching`. Allows for earlier rendering and prevents black screen frames after launch screen. NOTE: App will get terminated if this method is blocked for more than 10-20 sec. 
+- [BREAKING CHANGE] Actor#localToAscendantCoordinates throws an exception if the specified actor is not an ascendant.
+- [BREAKING CHANGE] WidgetGroup#hit first validates the layout.
+- [BREAKING CHANGE] Cell getters return object wrapper instead of primitives.
 - iOS: Add new MobiVM MetalANGLE backend
 - API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
 - Fix: Fixed Android and iOS touch cancelled related issues, see #6871.
@@ -11,6 +15,11 @@
 - Android: gdx-setup now uses AGP 7.0.4 and SDK 31, requiring Android Studio Arctic Fox or IntelliJ IDEA 2021.3 and JDK 11.
 - libGDX is now built using Java 11 due to new Android requirements. The rest of libGDX can still be built with JDK 8 and runtime compatibility of libGDX projects should be unaffected.
 - Fixed glViewport when using HdpiMode.Logical with the LWJGL3 backend.
+- Added Stage#actorRemoved to fire exit events just before an actor is removed.
+- ScrollPane#setScrollingDisabled avoids invalidate() if nothing changed.
+- Fixed incorrect ScrollPane#scrollTo.
+- API Fix: The cursor can now be catched on Android.
+- API Addition: Added CheckBox#getImageDrawable.
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.

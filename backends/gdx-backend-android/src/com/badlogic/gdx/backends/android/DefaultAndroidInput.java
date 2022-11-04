@@ -25,6 +25,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Handler;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
@@ -388,6 +389,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 				}
 			}
 
+			if (!isCursorCatched()) {
+				deltaX[0] = 0;
+				deltaY[0] = 0;
+			}
+
 			if (processor != null) {
 				final InputProcessor processor = this.processor;
 
@@ -397,15 +403,22 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 					currentEventTimeStamp = e.timeStamp;
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
-						processor.keyDown(e.keyCode);
-						keyJustPressed = true;
-						justPressedKeys[e.keyCode] = true;
+						// Catching the cursor causes it to send D-pad events. Ignore them.
+						if (!isCursorCatched() || !(e.keyCode >= Keys.UP && e.keyCode <= Keys.CENTER)) {
+							processor.keyDown(e.keyCode);
+							keyJustPressed = true;
+							justPressedKeys[e.keyCode] = true;
+						}
 						break;
 					case KeyEvent.KEY_UP:
-						processor.keyUp(e.keyCode);
+						if (!isCursorCatched() || !(e.keyCode >= Keys.UP && e.keyCode <= Keys.CENTER)) {
+							processor.keyUp(e.keyCode);
+						}
 						break;
 					case KeyEvent.KEY_TYPED:
-						processor.keyTyped(e.keyChar);
+						if (!isCursorCatched() || e.keyChar != Keys.UNKNOWN) {
+							processor.keyTyped(e.keyChar);
+						}
 					}
 					usedKeyEvents.free(e);
 				}
@@ -448,13 +461,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 				len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
 					usedKeyEvents.free(keyEvents.get(i));
-				}
-			}
-
-			if (touchEvents.isEmpty()) {
-				for (int i = 0; i < deltaX.length; i++) {
-					deltaX[0] = 0;
-					deltaY[0] = 0;
 				}
 			}
 
@@ -920,10 +926,30 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 
 	@Override
 	public void setCursorCatched (boolean catched) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			View view = ((AndroidGraphics)app.getGraphics()).getView();
+			if (catched) {
+				view.requestPointerCapture();
+				view.setOnCapturedPointerListener(new View.OnCapturedPointerListener() {
+					@Override
+					public boolean onCapturedPointer (View view, MotionEvent motionEvent) {
+						deltaX[0] = (int)motionEvent.getX();
+						deltaY[0] = (int)motionEvent.getY();
+						return false;
+					}
+				});
+			} else {
+				view.releasePointerCapture();
+			}
+		}
 	}
 
 	@Override
 	public boolean isCursorCatched () {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			View view = ((AndroidGraphics)app.getGraphics()).getView();
+			return view.hasPointerCapture();
+		}
 		return false;
 	}
 

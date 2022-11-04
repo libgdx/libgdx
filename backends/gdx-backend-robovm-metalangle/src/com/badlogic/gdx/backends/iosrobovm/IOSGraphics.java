@@ -198,6 +198,14 @@ public class IOSGraphics extends AbstractGraphics {
 		// time + FPS
 		lastFrameTime = System.nanoTime();
 		framesStart = lastFrameTime;
+		// enable OpenGL
+		makeCurrent();
+		// OpenGL glViewport() function expects backbuffer coordinates instead of logical coordinates
+		gl20.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
+		String versionString = gl20.glGetString(GL20.GL_VERSION);
+		String vendorString = gl20.glGetString(GL20.GL_VENDOR);
+		String rendererString = gl20.glGetString(GL20.GL_RENDERER);
+		glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
 		appPaused = false;
 	}
 
@@ -226,25 +234,11 @@ public class IOSGraphics extends AbstractGraphics {
 		app.listener.pause();
 	}
 
-	boolean created = false;
-
 	public void draw (MGLKView view, CGRect rect) {
 		makeCurrent();
 		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
 		// stores the last known viewport and we reset it here...
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
-		if (!created) {
-			// OpenGL glViewport() function expects backbuffer coordinates instead of logical coordinates
-			gl20.glViewport(0, 0, screenBounds.backBufferWidth, screenBounds.backBufferHeight);
-			String versionString = gl20.glGetString(GL20.GL_VERSION);
-			String vendorString = gl20.glGetString(GL20.GL_VENDOR);
-			String rendererString = gl20.glGetString(GL20.GL_RENDERER);
-			glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
-			updateSafeInsets();
-			app.listener.create();
-			app.listener.resize(getWidth(), getHeight());
-			created = true;
-		}
 		if (appPaused) {
 			return;
 		}
