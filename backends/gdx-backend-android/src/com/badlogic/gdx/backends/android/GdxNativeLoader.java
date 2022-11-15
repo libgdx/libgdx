@@ -20,5 +20,5 @@ package com.badlogic.gdx.backends.android;
 public interface GdxNativeLoader {
 
 	/** Load GDX native libraries. */
-	void load();
+	void load ();
 }
