@@ -172,8 +172,8 @@ public class btIndexedMesh extends BulletBase {
 
 		if (posAttr == null) throw new com.badlogic.gdx.utils.GdxRuntimeException("Mesh doesn't have a position attribute");
 
-		set(tag, mesh.getVerticesBuffer(), mesh.getVertexSize(), mesh.getNumVertices(), posAttr.offset, mesh.getIndicesBuffer(),
-			offset, count);
+		set(tag, mesh.getVerticesBuffer(false), mesh.getVertexSize(), mesh.getNumVertices(), posAttr.offset,
+			mesh.getIndicesBuffer(false), offset, count);
 	}
 
 	/** Convenience method to set this btIndexedMesh to the specified vertex and index data. The specified data must be indexed and
