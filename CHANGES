@@ -8,6 +8,7 @@
 - [BREAKING CHANGE] Actor#localToAscendantCoordinates throws an exception if the specified actor is not an ascendant.
 - [BREAKING CHANGE] WidgetGroup#hit first validates the layout.
 - [BREAKING CHANGE] Cell getters return object wrapper instead of primitives.
+- [BREAKING CHANGE] MeshPartBuilder#lastIndex now returns int instead of short.
 - iOS: Add new MobiVM MetalANGLE backend
 - API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
 - Fix: Fixed Android and iOS touch cancelled related issues, see #6871.
