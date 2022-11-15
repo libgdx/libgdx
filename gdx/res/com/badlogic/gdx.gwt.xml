@@ -90,6 +90,8 @@
 		<include name="graphics/Pixmap.java"/> <!-- Emulated -->
 		<exclude name="graphics/PixmapIO.java"/> <!-- Reason: No DeflaterOutputStream -->
 		<include name="graphics/Texture.java"/>
+		<exclude name="graphics/Texture3D.java"/> <!-- GLES 3.0 -->
+		<exclude name="graphics/Texture3DData.java"/> <!-- GLES 3.0 -->
 		<exclude name="graphics/TextureArray.java"/> <!-- GLES 3.0 -->
 		<exclude name="graphics/TextureArrayData.java"/> <!-- GLES 3.0 -->
 		<exclude name="graphics/TextureData.java"/> <!-- emulated: TextureData.Factory requires ETC1 -->
@@ -238,6 +240,7 @@
 		<include name="graphics/g3d/utils/shapebuilders/SphereShapeBuilder.java"/>
 
 	<!-- graphics/glutils -->
+		<exclude name="graphics/glutils/CustomTexture3DData.java"/> <!-- GLES 3.0 -->
 		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
 		<include name="graphics/glutils/ETC1TextureData.java"/>  <!-- Emulated: explodes on construction -->
 		<include name="graphics/glutils/FacedCubemapData.java"/>
@@ -372,6 +375,7 @@
 				
 	<!-- math/collision -->								
 		<include name="math/collision/BoundingBox.java"/>
+		<include name="math/collision/OrientedBoundingBox.java"/>
 		<include name="math/collision/Ray.java"/>
 		<include name="math/collision/Segment.java"/>
 		<include name="math/collision/Sphere.java"/>		
@@ -441,11 +445,12 @@
 		<include name="utils/NumberUtils.java"/> <!-- Emulated -->
 		<include name="utils/ObjectFloatMap.java"/>
 		<include name="utils/ObjectIntMap.java"/>
+		<include name="utils/ObjectLongMap.java"/>
 		<include name="utils/ObjectMap.java"/>
 		<include name="utils/ObjectSet.java"/>
 		<include name="utils/OrderedMap.java"/>
 		<include name="utils/OrderedSet.java"/>
-		<include name="utils/PausableThread.java"/>
+		<exclude name="utils/PauseableThread.java"/> <!-- Reason: Threading -->
 		<include name="utils/PerformanceCounter.java"/>
 		<include name="utils/PerformanceCounters.java"/>
 		<include name="utils/Pool.java"/>
@@ -453,8 +458,8 @@
 		<include name="utils/Pools.java"/>
 		<include name="utils/Predicate.java"/>
 		<include name="utils/PropertiesUtils.java"/>
-		<include name="utils/Queue.java"/>
 		<include name="utils/QuadTreeFloat.java"/>
+		<include name="utils/Queue.java"/>
 		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/>
 		<include name="utils/Scaling.java"/>

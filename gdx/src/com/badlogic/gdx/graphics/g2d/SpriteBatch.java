@@ -1071,6 +1071,8 @@ public class SpriteBatch implements Batch {
 
 	@Override
 	public void setShader (ShaderProgram shader) {
+		if (shader == customShader) // avoid unnecessary flushing in case we are drawing
+			return;
 		if (drawing) {
 			flush();
 		}

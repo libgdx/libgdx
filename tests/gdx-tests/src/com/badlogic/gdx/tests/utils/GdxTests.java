@@ -80,6 +80,7 @@ import com.badlogic.gdx.tests.g3d.utils.DefaultTextureBinderTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
+import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
 import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleTest;
@@ -90,6 +91,7 @@ import com.badlogic.gdx.tests.gles32.GL32AdvancedBlendingTest;
 import com.badlogic.gdx.tests.gles32.GL32DebugControlTest;
 import com.badlogic.gdx.tests.gles32.GL32MultipleRenderTargetsBlendingTest;
 import com.badlogic.gdx.tests.gles32.GL32OffsetElementsTest;
+import com.badlogic.gdx.tests.math.collision.OrientedBoundingBoxTest;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -164,6 +166,7 @@ public class GdxTests {
 		FullscreenTest.class,
 		Gdx2DTest.class,
 		GestureDetectorTest.class,
+		GL30Texture3DTest.class,
 		GLES30Test.class,
 		GL31IndirectDrawingIndexedTest.class,
 		GL31IndirectDrawingNonIndexedTest.class,
@@ -215,8 +218,9 @@ public class GdxTests {
 		NetAPITest.class,
 		NinePatchTest.class,
 		NoncontinuousRenderingTest.class,
-		OnscreenKeyboardTest.class,
 		OctreeTest.class,
+		OnscreenKeyboardTest.class,
+		OrientedBoundingBoxTest.class,
 		PathTest.class,
 		ParallaxTest.class,
 		ParticleControllerInfluencerSingleTest.class,

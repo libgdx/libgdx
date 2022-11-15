@@ -153,11 +153,8 @@ public class GestureDetector extends InputAdapter {
 
 		// handle pinch zoom
 		if (pinching) {
-			if (listener != null) {
-				boolean result = listener.pinch(initialPointer1, initialPointer2, pointer1, pointer2);
-				return listener.zoom(initialPointer1.dst(initialPointer2), pointer1.dst(pointer2)) || result;
-			}
-			return false;
+			boolean result = listener.pinch(initialPointer1, initialPointer2, pointer1, pointer2);
+			return listener.zoom(initialPointer1.dst(initialPointer2), pointer1.dst(pointer2)) || result;
 		}
 
 		// update tracker

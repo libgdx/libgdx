@@ -1074,7 +1074,7 @@ public class TextField extends Widget implements Disableable {
 						if (time - 750 > lastChangeTime) undoText = oldText;
 						lastChangeTime = time;
 						updateDisplayText();
-					} else
+					} else if (!text.equals(oldText)) // Keep cursor movement if the text is the same.
 						cursor = oldCursor;
 				}
 			}
