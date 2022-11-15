@@ -155,15 +155,17 @@ public class IndexBufferObjectSubData implements IndexData {
 		}
 	}
 
-	/**
-	 * <p>
-	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
-	 * If you need immediate uploading use {@link #setIndices(short[], int, int)}.
-	 * </p>
-	 *
-	 * @return the underlying short buffer. */
+	/** @deprecated use {@link #getBuffer(boolean)} instead */
+	@Override
+	@Deprecated
 	public ShortBuffer getBuffer () {
 		isDirty = true;
+		return buffer;
+	}
+
+	@Override
+	public ShortBuffer getBuffer (boolean forWriting) {
+		isDirty |= forWriting;
 		return buffer;
 	}
 

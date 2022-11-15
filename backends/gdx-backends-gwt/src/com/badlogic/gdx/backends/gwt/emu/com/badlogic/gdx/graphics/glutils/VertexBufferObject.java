@@ -96,9 +96,17 @@ public class VertexBufferObject implements VertexData {
 		return buffer.capacity() / (attributes.vertexSize / 4);
 	}
 
+	/** @deprecated use {@link #getBuffer(boolean)} instead */
 	@Override
+	@Deprecated
 	public FloatBuffer getBuffer () {
 		isDirty = true;
+		return buffer;
+	}
+
+	@Override
+	public FloatBuffer getBuffer (boolean forWriting) {
+		isDirty |= forWriting;
 		return buffer;
 	}
 
