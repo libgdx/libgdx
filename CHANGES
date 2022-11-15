@@ -21,6 +21,7 @@
 - Fixed incorrect ScrollPane#scrollTo.
 - Fix: Throw an exception when maximum Attribute count is reached to prevent silent failure.
 - API Fix: The cursor can now be catched on Android.
+- LWJGL3 Fix: Stereo audio can now be played on mono output devices. This may also improve downmixing to stereo and upmixing to surround.
 - API Addition: Added CheckBox#getImageDrawable.
 - FIX: HexagonalTiledMapRenderer now displays maps with the correct stagger index.
 
