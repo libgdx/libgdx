@@ -929,10 +929,10 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glSten
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
- * Method:    glTexImage2D
+ * Method:    glTexImage2DJNI
  * Signature: (IIIIIIIILjava/nio/Buffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glTexImage2D
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glTexImage2DJNI
   (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
 
 /*
@@ -969,10 +969,10 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glTexP
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
- * Method:    glTexSubImage2D
+ * Method:    glTexSubImage2DJNI
  * Signature: (IIIIIIIILjava/nio/Buffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glTexSubImage2D
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glTexSubImage2DJNI
   (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint, jint, jobject);
 
 /*

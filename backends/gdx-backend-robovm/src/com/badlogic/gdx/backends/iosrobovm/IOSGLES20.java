@@ -16,13 +16,16 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import java.nio.Buffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 
 import com.badlogic.gdx.graphics.GL20;
+import org.robovm.apple.foundation.NSProcessInfo;
 
 public class IOSGLES20 implements GL20 {
+
+	final boolean shouldConvert16bit = IOSApplication.IS_METALANGLE
+		&& NSProcessInfo.getSharedProcessInfo().getEnvironment().containsKey("SIMULATOR_DEVICE_NAME");
+
 	public IOSGLES20 () {
 		init();
 	}
@@ -263,7 +266,54 @@ public class IOSGLES20 implements GL20 {
 
 	public native void glStencilOpSeparate (int face, int fail, int zfail, int zpass);
 
-	public native void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format,
+	static Buffer convert16bitBufferToRGBA8888 (Buffer buffer, int type) {
+		// TODO: 20.10.22 Can it be a different buffer type?
+		ByteBuffer byteBuffer = (ByteBuffer)buffer;
+		byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+		ByteBuffer converted = ByteBuffer.allocateDirect(byteBuffer.limit() * 2);
+		while (buffer.remaining() != 0) {
+			short color = byteBuffer.getShort();
+			int rgba8888;
+
+			if (type == GL_UNSIGNED_SHORT_4_4_4_4) {
+				byte r = (byte)((color >> 12) & 0x0F);
+				byte g = (byte)((color >> 8) & 0x0F);
+				byte b = (byte)((color >> 4) & 0x0F);
+				byte a = (byte)((color) & 0x0F);
+				rgba8888 = (r << 4 | r) << 24 | (g << 4 | g) << 16 | (b << 4 | b) << 8 | (a << 4 | a);
+			} else if (type == GL_UNSIGNED_SHORT_5_6_5) {
+				byte r = (byte)((color >> 11) & 0x1F);
+				byte g = (byte)((color >> 5) & 0x3F);
+				byte b = (byte)((color) & 0x1F);
+				rgba8888 = (r << 3 | r >> 2) << 24 | (g << 2 | g >> 4) << 16 | (b << 3 | b >> 2) << 8 | 0xFF;
+			} else {
+				byte r = (byte)((color >> 11) & 0x1F);
+				byte g = (byte)((color >> 6) & 0x1F);
+				byte b = (byte)((color >> 5) & 0x1F);
+				byte a = (byte)((color) & 0x1);
+				rgba8888 = (r << 3 | r >> 2) << 24 | (g << 3 | g >> 2) << 16 | (b << 3 | b >> 2) << 8 | a * 255;
+			}
+			converted.putInt(rgba8888);
+		}
+		converted.position(0);
+		return converted;
+	}
+
+	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
+		Buffer pixels) {
+		if (!shouldConvert16bit) {
+			glTexImage2DJNI(target, level, internalformat, width, height, border, format, type, pixels);
+			return;
+		}
+		if (type != GL_UNSIGNED_SHORT_5_6_5 && type != GL_UNSIGNED_SHORT_5_5_5_1 && type != GL_UNSIGNED_SHORT_4_4_4_4) {
+			glTexImage2DJNI(target, level, internalformat, width, height, border, format, type, pixels);
+			return;
+		}
+		Buffer converted = convert16bitBufferToRGBA8888(pixels, type);
+		glTexImage2DJNI(target, level, GL_RGBA, width, height, border, GL_RGBA, GL_UNSIGNED_BYTE, converted);
+	}
+
+	public native void glTexImage2DJNI (int target, int level, int internalformat, int width, int height, int border, int format,
 		int type, Buffer pixels);
 
 	public native void glTexParameterf (int target, int pname, float param);
@@ -274,7 +324,21 @@ public class IOSGLES20 implements GL20 {
 
 	public native void glTexParameteriv (int target, int pname, IntBuffer params);
 
-	public native void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
+	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
+		Buffer pixels) {
+		if (!shouldConvert16bit) {
+			glTexSubImage2DJNI(target, level, xoffset, yoffset, width, height, format, type, pixels);
+			return;
+		}
+		if (type != GL_UNSIGNED_SHORT_5_6_5 && type != GL_UNSIGNED_SHORT_5_5_5_1 && type != GL_UNSIGNED_SHORT_4_4_4_4) {
+			glTexSubImage2DJNI(target, level, xoffset, yoffset, width, height, format, type, pixels);
+			return;
+		}
+		Buffer converted = convert16bitBufferToRGBA8888(pixels, type);
+		glTexSubImage2DJNI(target, level, xoffset, yoffset, width, height, GL_RGBA, GL_UNSIGNED_BYTE, converted);
+	}
+
+	public native void glTexSubImage2DJNI (int target, int level, int xoffset, int yoffset, int width, int height, int format,
 		int type, Buffer pixels);
 
 	public native void glUniform1f (int location, float x);
