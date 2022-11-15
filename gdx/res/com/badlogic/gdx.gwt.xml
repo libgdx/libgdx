@@ -371,6 +371,7 @@
 				
 	<!-- math/collision -->								
 		<include name="math/collision/BoundingBox.java"/>
+		<include name="math/collision/OrientedBoundingBox.java"/>
 		<include name="math/collision/Ray.java"/>
 		<include name="math/collision/Segment.java"/>
 		<include name="math/collision/Sphere.java"/>		
