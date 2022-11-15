@@ -26,7 +26,8 @@ import java.util.zip.CRC32;
 
 public class ANGLELoader {
 	static public boolean isWindows = System.getProperty("os.name").contains("Windows");
-	static public boolean isLinux = System.getProperty("os.name").contains("Linux");
+	static public boolean isLinux = System.getProperty("os.name").contains("Linux")
+		|| System.getProperty("os.name").contains("FreeBSD");
 	static public boolean isMac = System.getProperty("os.name").contains("Mac");
 	static public boolean isARM = System.getProperty("os.arch").startsWith("arm")
 		|| System.getProperty("os.arch").startsWith("aarch64");

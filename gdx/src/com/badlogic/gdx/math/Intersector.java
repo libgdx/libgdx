@@ -247,7 +247,7 @@ public final class Intersector {
 
 	/** Returns the distance between the given line and point. Note the specified line is not a line segment. */
 	public static float distanceLinePoint (float startX, float startY, float endX, float endY, float pointX, float pointY) {
-		float normalLength = (float)Math.sqrt((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY));
+		float normalLength = Vector2.len(endX - startX, endY - startY);
 		return Math.abs((pointX - startX) * (endY - startY) - (pointY - startY) * (endX - startX)) / normalLength;
 	}
 
@@ -1219,7 +1219,7 @@ public final class Intersector {
 			float axisX = y1 - y2;
 			float axisY = -(x1 - x2);
 
-			float len = (float)Math.sqrt(axisX * axisX + axisY * axisY);
+			float len = Vector2.len(axisX, axisY);
 			// We got a normalized Vector
 			axisX /= len;
 			axisY /= len;

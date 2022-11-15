@@ -342,6 +342,7 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 			y = (int)(y * yScale);
 		}
 		GLFW.glfwSetCursorPos(window.getWindowHandle(), x, y);
+		cursorPosCallback.invoke(window.getWindowHandle(), x, y);
 	}
 
 	protected char characterForKeyCode (int key) {
