@@ -133,6 +133,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	public void beforeGroup (int group, Array<Decal> contents) {
 		if (group == GROUP_BLEND) {
 			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glDepthMask(false);
 			contents.sort(cameraSorter);
 		} else {
 			for (int i = 0, n = contents.size; i < n; i++) {
@@ -162,6 +163,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	public void afterGroup (int group) {
 		if (group == GROUP_BLEND) {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
+			Gdx.gl.glDepthMask(true);
 		}
 	}
 

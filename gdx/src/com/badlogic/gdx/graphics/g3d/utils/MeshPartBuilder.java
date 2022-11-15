@@ -103,7 +103,7 @@ public interface MeshPartBuilder {
 	public short vertex (final VertexInfo info);
 
 	/** @return The index of the last added vertex. */
-	public short lastIndex ();
+	public int lastIndex ();
 
 	/** Add an index, MeshPartBuilder expects all meshes to be indexed. */
 	public void index (final short value);
