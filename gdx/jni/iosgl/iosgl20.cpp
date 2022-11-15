@@ -1437,10 +1437,10 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glSten
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
- * Method:    glTexImage2D
+ * Method:    glTexImage2DJNI
  * Signature: (IIIIIIIILjava/nio/Buffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glTexImage2D
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glTexImage2DJNI
   (JNIEnv *env, jobject, jint target, jint level, jint internalformat, jint width, jint height, jint border, jint format, jint type, jobject pixels)
 {
 	void* dataPtr = getDirectBufferPointer( env, pixels );
@@ -1495,10 +1495,10 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glTexP
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES20
- * Method:    glTexSubImage2D
+ * Method:    glTexSubImage2DJNI
  * Signature: (IIIIIIIILjava/nio/Buffer;)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glTexSubImage2D
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glTexSubImage2DJNI
   (JNIEnv *env, jobject, jint target, jint level, jint xoffset, jint yoffset, jint width, jint height, jint format, jint type, jobject pixels)
 {
 	void* dataPtr = getDirectBufferPointer( env, pixels );
