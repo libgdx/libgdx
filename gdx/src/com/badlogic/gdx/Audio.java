@@ -57,6 +57,16 @@ public interface Audio {
 	 * @throws GdxRuntimeException in case the recorder could not be created */
 	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono);
 
+	/** Creates a new {@link AudioRecorder}. The AudioRecorder has to be disposed after it is no longer used.
+	 *
+	 * @param samplingRate the sampling rate in Hertz
+	 * @param isMono whether the recorder records in mono or stereo
+	 * @param requestPermission whether to request RECORD_AUDIO permission on Android
+	 * @return the AudioRecorder
+	 *
+	 * @throws GdxRuntimeException in case the recorder could not be created */
+	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono, boolean requestPermission);
+
 	/**
 	 * <p>
 	 * Creates a new {@link Sound} which is used to play back audio effects such as gun shots or explosions. The Sound's audio data

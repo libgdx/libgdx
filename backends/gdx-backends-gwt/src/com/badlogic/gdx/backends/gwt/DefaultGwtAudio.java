@@ -42,6 +42,11 @@ public class DefaultGwtAudio implements GwtAudio {
 	}
 
 	@Override
+	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono, boolean requestPermission) {
+		throw new GdxRuntimeException("AudioRecorder not supported by GWT backend");
+	}
+
+	@Override
 	public Sound newSound (FileHandle fileHandle) {
 		return webAudioAPIManager.createSound(fileHandle);
 	}

@@ -24,6 +24,10 @@ import com.badlogic.gdx.utils.Disposable;
  * 
  * @author mzechner */
 public interface AudioRecorder extends Disposable {
+	enum Permissions {
+		GRANTED, RATIONALE, DENIED
+	};
+
 	/** Reads in numSamples samples into the array samples starting at offset. If the recorder is in stereo you have to multiply
 	 * numSamples by 2.
 	 * 
@@ -31,6 +35,17 @@ public interface AudioRecorder extends Disposable {
 	 * @param offset the offset into the array
 	 * @param numSamples the number of samples to be read */
 	public void read (short[] samples, int offset, int numSamples);
+
+	/** Checks if RECORD_AUDIO permission has been granted on Android 6+. If it returns RATIONALE, it is recommended to tell the
+	 * user why you need microphone access.
+	 * @return GRANTED if has permission or is on on desktop backend; RATIONALE if user has previously denied permission; DENIED if
+	 *         user has permanently denied permission or is on headless backend. */
+	public Permissions hasPermission ();
+
+	/** Requests RECORD_AUDIO permission on Android 6+. On older versions, you must add
+	 * <code><uses-permission android:name="android.permission.RECORD_AUDIO" /></code> to the manifest.
+	 * @return {@link #hasPermission()} */
+	public Permissions requestPermission ();
 
 	/** Disposes the AudioRecorder */
 	public void dispose ();
