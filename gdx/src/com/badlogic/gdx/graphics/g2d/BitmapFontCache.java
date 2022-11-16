@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.Pools;
  * @author davebaol
  * @author Alexander Dorokhov */
 public class BitmapFontCache {
-	static private final Color tempColor = new Color(1, 1, 1, 1);
+	private final Color tempColor = new Color(1, 1, 1, 1);
 
 	private final BitmapFont font;
 	private boolean integer;
@@ -114,7 +114,7 @@ public class BitmapFontCache {
 		currentTint = newTint;
 
 		float[][] pageVertices = this.pageVertices;
-		Color tempColor = BitmapFontCache.tempColor;
+		Color tempColor = this.tempColor;
 		int[] tempGlyphCount = this.tempGlyphCount;
 		Arrays.fill(tempGlyphCount, 0);
 

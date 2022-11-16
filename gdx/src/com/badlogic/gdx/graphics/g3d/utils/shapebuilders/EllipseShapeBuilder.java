@@ -139,12 +139,14 @@ public class EllipseShapeBuilder extends BaseShapeBuilder {
 	public static void build (MeshPartBuilder builder, float width, float height, float innerWidth, float innerHeight,
 		int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float angleFrom,
 		float angleTo) {
-		tmpV1.set(normalX, normalY, normalZ).crs(0, 0, 1);
-		tmpV2.set(normalX, normalY, normalZ).crs(0, 1, 0);
-		if (tmpV2.len2() > tmpV1.len2()) tmpV1.set(tmpV2);
-		tmpV2.set(tmpV1.nor()).crs(normalX, normalY, normalZ).nor();
+		final BaseShapeData data = tlData.get();
+
+		data.tmpV1.set(normalX, normalY, normalZ).crs(0, 0, 1);
+		data.tmpV2.set(normalX, normalY, normalZ).crs(0, 1, 0);
+		if (data.tmpV2.len2() > data.tmpV1.len2()) data.tmpV1.set(data.tmpV2);
+		data.tmpV2.set(data.tmpV1.nor()).crs(normalX, normalY, normalZ).nor();
 		build(builder, width, height, innerWidth, innerHeight, divisions, centerX, centerY, centerZ, normalX, normalY, normalZ,
-			tmpV1.x, tmpV1.y, tmpV1.z, tmpV2.x, tmpV2.y, tmpV2.z, angleFrom, angleTo);
+			data.tmpV1.x, data.tmpV1.y, data.tmpV1.z, data.tmpV2.x, data.tmpV2.y, data.tmpV2.z, angleFrom, angleTo);
 	}
 
 	/** Build an ellipse */
@@ -165,6 +167,8 @@ public class EllipseShapeBuilder extends BaseShapeBuilder {
 	public static void build (MeshPartBuilder builder, float width, float height, float innerWidth, float innerHeight,
 		int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX,
 		float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, float angleFrom, float angleTo) {
+		final BaseShapeData data = tlData.get();
+
 		if (innerWidth <= 0 || innerHeight <= 0) {
 			builder.ensureVertices(divisions + 2);
 			builder.ensureTriangleIndices(divisions);
@@ -180,16 +184,16 @@ public class EllipseShapeBuilder extends BaseShapeBuilder {
 
 		final float ao = MathUtils.degreesToRadians * angleFrom;
 		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
-		final Vector3 sxEx = tmpV1.set(tangentX, tangentY, tangentZ).scl(width * 0.5f);
-		final Vector3 syEx = tmpV2.set(binormalX, binormalY, binormalZ).scl(height * 0.5f);
-		final Vector3 sxIn = tmpV3.set(tangentX, tangentY, tangentZ).scl(innerWidth * 0.5f);
-		final Vector3 syIn = tmpV4.set(binormalX, binormalY, binormalZ).scl(innerHeight * 0.5f);
-		VertexInfo currIn = vertTmp3.set(null, null, null, null);
+		final Vector3 sxEx = data.tmpV1.set(tangentX, tangentY, tangentZ).scl(width * 0.5f);
+		final Vector3 syEx = data.tmpV2.set(binormalX, binormalY, binormalZ).scl(height * 0.5f);
+		final Vector3 sxIn = data.tmpV3.set(tangentX, tangentY, tangentZ).scl(innerWidth * 0.5f);
+		final Vector3 syIn = data.tmpV4.set(binormalX, binormalY, binormalZ).scl(innerHeight * 0.5f);
+		VertexInfo currIn = data.vertTmp3.set(null, null, null, null);
 		currIn.hasUV = currIn.hasPosition = currIn.hasNormal = true;
 		currIn.uv.set(.5f, .5f);
 		currIn.position.set(centerX, centerY, centerZ);
 		currIn.normal.set(normalX, normalY, normalZ);
-		VertexInfo currEx = vertTmp4.set(null, null, null, null);
+		VertexInfo currEx = data.vertTmp4.set(null, null, null, null);
 		currEx.hasUV = currEx.hasPosition = currEx.hasNormal = true;
 		currEx.uv.set(.5f, .5f);
 		currEx.position.set(centerX, centerY, centerZ);

@@ -38,10 +38,18 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public final static Vector3 Z = new Vector3(0, 0, 1);
 	public final static Vector3 Zero = new Vector3(0, 0, 0);
 
-	private final static Matrix4 tmpMat = new Matrix4();
+	private Matrix4 tmpMat = null;
 
 	/** Constructs a vector at (0,0,0) */
 	public Vector3 () {
+	}
+
+	private Matrix4 getTmpMat () {
+		// avoid recursive constructors : stack overflow
+		if (tmpMat == null) {
+			tmpMat = new Matrix4();
+		}
+		return tmpMat;
 	}
 
 	/** Creates a vector with the given components
@@ -451,7 +459,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param axisZ the z-component of the axis
 	 * @return This vector for chaining */
 	public Vector3 rotate (float degrees, float axisX, float axisY, float axisZ) {
-		return this.mul(tmpMat.setToRotation(axisX, axisY, axisZ, degrees));
+		return this.mul(getTmpMat().setToRotation(axisX, axisY, axisZ, degrees));
 	}
 
 	/** Rotates this vector by the given angle in radians around the given axis.
@@ -462,7 +470,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param axisZ the z-component of the axis
 	 * @return This vector for chaining */
 	public Vector3 rotateRad (float radians, float axisX, float axisY, float axisZ) {
-		return this.mul(tmpMat.setToRotationRad(axisX, axisY, axisZ, radians));
+		return this.mul(getTmpMat().setToRotationRad(axisX, axisY, axisZ, radians));
 	}
 
 	/** Rotates this vector by the given angle in degrees around the given axis.
@@ -471,8 +479,8 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param degrees the angle in degrees
 	 * @return This vector for chaining */
 	public Vector3 rotate (final Vector3 axis, float degrees) {
-		tmpMat.setToRotation(axis, degrees);
-		return this.mul(tmpMat);
+		getTmpMat().setToRotation(axis, degrees);
+		return this.mul(getTmpMat());
 	}
 
 	/** Rotates this vector by the given angle in radians around the given axis.
@@ -481,8 +489,8 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param radians the angle in radians
 	 * @return This vector for chaining */
 	public Vector3 rotateRad (final Vector3 axis, float radians) {
-		tmpMat.setToRotationRad(axis, radians);
-		return this.mul(tmpMat);
+		getTmpMat().setToRotationRad(axis, radians);
+		return this.mul(getTmpMat());
 	}
 
 	@Override

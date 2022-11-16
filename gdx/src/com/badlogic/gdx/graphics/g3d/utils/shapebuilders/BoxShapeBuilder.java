@@ -74,21 +74,23 @@ public class BoxShapeBuilder extends BaseShapeBuilder {
 	/** Add a box. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public static void build (MeshPartBuilder builder, Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110,
 		Vector3 corner001, Vector3 corner011, Vector3 corner101, Vector3 corner111) {
+		final BaseShapeData data = tlData.get();
+
 		if ((builder.getAttributes().getMask() & (Usage.Normal | Usage.BiNormal | Usage.Tangent | Usage.TextureCoordinates)) == 0) {
-			build(builder, vertTmp1.set(corner000, null, null, null), vertTmp2.set(corner010, null, null, null),
-				vertTmp3.set(corner100, null, null, null), vertTmp4.set(corner110, null, null, null),
-				vertTmp5.set(corner001, null, null, null), vertTmp6.set(corner011, null, null, null),
-				vertTmp7.set(corner101, null, null, null), vertTmp8.set(corner111, null, null, null));
+			build(builder, data.vertTmp1.set(corner000, null, null, null), data.vertTmp2.set(corner010, null, null, null),
+				data.vertTmp3.set(corner100, null, null, null), data.vertTmp4.set(corner110, null, null, null),
+				data.vertTmp5.set(corner001, null, null, null), data.vertTmp6.set(corner011, null, null, null),
+				data.vertTmp7.set(corner101, null, null, null), data.vertTmp8.set(corner111, null, null, null));
 		} else {
 			builder.ensureVertices(24);
 			builder.ensureRectangleIndices(6);
-			Vector3 nor = tmpV1.set(corner000).lerp(corner110, 0.5f).sub(tmpV2.set(corner001).lerp(corner111, 0.5f)).nor();
+			Vector3 nor = data.tmpV1.set(corner000).lerp(corner110, 0.5f).sub(data.tmpV2.set(corner001).lerp(corner111, 0.5f)).nor();
 			builder.rect(corner000, corner010, corner110, corner100, nor);
 			builder.rect(corner011, corner001, corner101, corner111, nor.scl(-1));
-			nor = tmpV1.set(corner000).lerp(corner101, 0.5f).sub(tmpV2.set(corner010).lerp(corner111, 0.5f)).nor();
+			nor = data.tmpV1.set(corner000).lerp(corner101, 0.5f).sub(data.tmpV2.set(corner010).lerp(corner111, 0.5f)).nor();
 			builder.rect(corner001, corner000, corner100, corner101, nor);
 			builder.rect(corner010, corner011, corner111, corner110, nor.scl(-1));
-			nor = tmpV1.set(corner000).lerp(corner011, 0.5f).sub(tmpV2.set(corner100).lerp(corner111, 0.5f)).nor();
+			nor = data.tmpV1.set(corner000).lerp(corner011, 0.5f).sub(data.tmpV2.set(corner100).lerp(corner111, 0.5f)).nor();
 			builder.rect(corner001, corner011, corner010, corner000, nor);
 			builder.rect(corner100, corner110, corner111, corner101, nor.scl(-1));
 		}

@@ -95,7 +95,7 @@ public class BaseAnimationController {
 			return new Transform();
 		}
 	};
-	private final static ObjectMap<Node, Transform> transforms = new ObjectMap<Node, Transform>();
+	private final ObjectMap<Node, Transform> transforms = new ObjectMap<Node, Transform>();
 	private boolean applying = false;
 	/** The {@link ModelInstance} on which the animations are being performed. */
 	public final ModelInstance target;
@@ -155,8 +155,6 @@ public class BaseAnimationController {
 			end();
 		}
 	}
-
-	private final static Transform tmpT = new Transform();
 
 	/** Find first key frame index just before a given time
 	 * @param arr Key frames ordered by time ascending
@@ -236,7 +234,7 @@ public class BaseAnimationController {
 	}
 
 	private final static Transform getNodeAnimationTransform (final NodeAnimation nodeAnim, final float time) {
-		final Transform transform = tmpT;
+		final Transform transform = nodeAnim.tempTransform;
 		getTranslationAtTime(nodeAnim, time, transform.translation);
 		getRotationAtTime(nodeAnim, time, transform.rotation);
 		getScalingAtTime(nodeAnim, time, transform.scale);

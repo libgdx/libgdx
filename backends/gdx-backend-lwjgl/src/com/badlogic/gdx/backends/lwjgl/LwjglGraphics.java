@@ -48,7 +48,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
  * @author mzechner */
 public class LwjglGraphics extends AbstractGraphics {
 
-	/** The suppored OpenGL extensions */
+	/** The supported OpenGL extensions */
 	static Array<String> extensions;
 	static GLVersion glVersion;
 

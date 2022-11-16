@@ -35,7 +35,7 @@ public class Select {
 	private QuickSelect quickSelect;
 
 	/** Provided for convenience */
-	public static Select instance () {
+	public synchronized static Select instance () {
 		if (instance == null) instance = new Select();
 		return instance;
 	}

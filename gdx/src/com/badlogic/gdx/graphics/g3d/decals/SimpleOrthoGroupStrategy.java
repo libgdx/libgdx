@@ -73,6 +73,9 @@ public class SimpleOrthoGroupStrategy implements GroupStrategy {
 	private static final int GROUP_OPAQUE = 0;
 	private static final int GROUP_BLEND = 1;
 
+	// internal instance of sorter (never use shared instance here)
+	private final Sort sorter = new Sort();
+
 	@Override
 	public int decideGroup (Decal decal) {
 		return decal.getMaterial().isOpaque() ? GROUP_OPAQUE : GROUP_BLEND;
@@ -81,7 +84,7 @@ public class SimpleOrthoGroupStrategy implements GroupStrategy {
 	@Override
 	public void beforeGroup (int group, Array<Decal> contents) {
 		if (group == GROUP_BLEND) {
-			Sort.instance().sort(contents, comparator);
+			sorter.sort(contents, comparator);
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 			// no need for writing into the z buffer if transparent decals are the last thing to be rendered
 			// and they are rendered back to front

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.g3d.model;
 
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.utils.BaseAnimationController.*;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -33,4 +34,7 @@ public class NodeAnimation {
 	public Array<NodeKeyframe<Quaternion>> rotation = null;
 	/** the scaling keyframes if any (might be null), sorted by time ascending **/
 	public Array<NodeKeyframe<Vector3>> scaling = null;
+
+	/** ClassX: temporary transform used by BaseAnimationController in order to avoid continuous allocations */
+	public Transform tempTransform = new Transform();
 }

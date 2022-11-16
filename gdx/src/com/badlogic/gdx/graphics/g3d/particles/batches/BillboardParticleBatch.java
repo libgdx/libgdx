@@ -47,9 +47,14 @@ import com.badlogic.gdx.utils.Pool;
 /** This class is used to render billboard particles.
  * @author Inferno */
 public class BillboardParticleBatch extends BufferedParticleBatch<BillboardControllerRenderData> {
-	protected static final Vector3 TMP_V1 = new Vector3(), TMP_V2 = new Vector3(), TMP_V3 = new Vector3(), TMP_V4 = new Vector3(),
-		TMP_V5 = new Vector3(), TMP_V6 = new Vector3();
-	protected static final Matrix3 TMP_M3 = new Matrix3();
+	protected final Vector3 TMP_V1 = new Vector3();
+	protected final Vector3 TMP_V2 = new Vector3();
+	protected final Vector3 TMP_V3 = new Vector3();
+	protected final Vector3 TMP_V4 = new Vector3();
+	protected final Vector3 TMP_V5 = new Vector3();
+	protected final Vector3 TMP_V6 = new Vector3();
+	protected final Matrix3 TMP_M3 = new Matrix3();
+
 	// Attributes
 	protected static final int sizeAndRotationUsage = 1 << 9, directionUsage = 1 << 10;
 	private static final VertexAttributes GPU_ATTRIBUTES = new VertexAttributes(

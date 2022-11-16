@@ -39,30 +39,53 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  *
  * @author mzechner */
 class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
-	private ByteBuffer buffer = null;
-	private FloatBuffer floatBuffer = null;
-	private IntBuffer intBuffer = null;
+	/** ClassX : support for thread safety
+	 * @author dar */
+	static final class NioThreadLocal extends ThreadLocal<NioThreadLocalData> {
+		/*
+		 * @see java.lang.ThreadLocal#initialValue()
+		 */
+		@Override
+		protected NioThreadLocalData initialValue () {
+			return new NioThreadLocalData();
+		}
+	}
 
-	private void ensureBufferCapacity (int numBytes) {
-		if (buffer == null || buffer.capacity() < numBytes) {
-			buffer = com.badlogic.gdx.utils.BufferUtils.newByteBuffer(numBytes);
-			floatBuffer = buffer.asFloatBuffer();
-			intBuffer = buffer.asIntBuffer();
+	/** ClassX : support for thread safety
+	 * @author dar */
+	static final class NioThreadLocalData {
+		public ByteBuffer buffer;
+		public FloatBuffer floatBuffer;
+		public IntBuffer intBuffer;
+	}
+
+	// nio thread local static instance
+	private final static NioThreadLocal nioThreadLocal = new NioThreadLocal();
+
+	private void ensureBufferCapacity (int numBytes, NioThreadLocalData data) {
+		if (data.buffer == null || data.buffer.capacity() < numBytes) {
+			data.buffer = com.badlogic.gdx.utils.BufferUtils.newByteBuffer(numBytes);
+			data.floatBuffer = data.buffer.asFloatBuffer();
+			data.intBuffer = data.buffer.asIntBuffer();
 		}
 	}
 
 	private FloatBuffer toFloatBuffer (float v[], int offset, int count) {
-		ensureBufferCapacity(count << 2);
-		((Buffer)floatBuffer).clear();
-		com.badlogic.gdx.utils.BufferUtils.copy(v, floatBuffer, count, offset);
-		return floatBuffer;
+		final NioThreadLocalData data = nioThreadLocal.get();
+
+		ensureBufferCapacity(count << 2, data);
+		((Buffer)data.floatBuffer).clear();
+		com.badlogic.gdx.utils.BufferUtils.copy(v, data.floatBuffer, count, offset);
+		return data.floatBuffer;
 	}
 
 	private IntBuffer toIntBuffer (int v[], int offset, int count) {
-		ensureBufferCapacity(count << 2);
-		((Buffer)intBuffer).clear();
-		com.badlogic.gdx.utils.BufferUtils.copy(v, offset, count, intBuffer);
-		return intBuffer;
+		final NioThreadLocalData data = nioThreadLocal.get();
+
+		ensureBufferCapacity(count << 2, data);
+		((Buffer)data.intBuffer).clear();
+		com.badlogic.gdx.utils.BufferUtils.copy(v, offset, count, data.intBuffer);
+		return data.intBuffer;
 	}
 
 	public void glActiveTexture (int texture) {

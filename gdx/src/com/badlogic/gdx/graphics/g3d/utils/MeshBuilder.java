@@ -56,8 +56,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	/** highest index mesh builder can get (64k - 1) */
 	public static final int MAX_INDEX = MAX_VERTICES - 1;
 
-	private final static ShortArray tmpIndices = new ShortArray();
-	private final static FloatArray tmpVertices = new FloatArray();
+	private final ShortArray tmpIndices = new ShortArray();
+	private final FloatArray tmpVertices = new FloatArray();
 
 	private final VertexInfo vertTmp1 = new VertexInfo();
 	private final VertexInfo vertTmp2 = new VertexInfo();
@@ -473,9 +473,9 @@ public class MeshBuilder implements MeshPartBuilder {
 		return lastIndex;
 	}
 
-	private final static Vector3 vTmp = new Vector3();
+	private final Vector3 vTmp = new Vector3();
 
-	private final static void transformPosition (final float[] values, final int offset, final int size, Matrix4 transform) {
+	private final void transformPosition (final float[] values, final int offset, final int size, Matrix4 transform) {
 		if (size > 2) {
 			vTmp.set(values[offset], values[offset + 1], values[offset + 2]).mul(transform);
 			values[offset] = vTmp.x;
@@ -489,7 +489,7 @@ public class MeshBuilder implements MeshPartBuilder {
 			values[offset] = vTmp.set(values[offset], 0, 0).mul(transform).x;
 	}
 
-	private final static void transformNormal (final float[] values, final int offset, final int size, Matrix3 transform) {
+	private final void transformNormal (final float[] values, final int offset, final int size, Matrix3 transform) {
 		if (size > 2) {
 			vTmp.set(values[offset], values[offset + 1], values[offset + 2]).mul(transform).nor();
 			values[offset] = vTmp.x;
@@ -760,7 +760,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		addMesh(tmpVertices.items, tmpIndices.items, 0, numIndices);
 	}
 
-	private static IntIntMap indicesMap = null;
+	private IntIntMap indicesMap = null;
 
 	@Override
 	public void addMesh (float[] vertices, short[] indices, int indexOffset, int numIndices) {

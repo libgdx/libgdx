@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.Pool;
  * @author Inferno */
 public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteControllerRenderData> {
 	private static boolean pointSpritesEnabled = false;
-	protected static final Vector3 TMP_V1 = new Vector3();
+	protected final Vector3 TMP_V1 = new Vector3();
 	protected static final int sizeAndRotationUsage = 1 << 9;
 	protected static final VertexAttributes CPU_ATTRIBUTES = new VertexAttributes(
 		new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),

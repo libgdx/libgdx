@@ -146,13 +146,11 @@ public class DepthShader extends DefaultShader {
 			super.render(renderable, combinedAttributes);
 	}
 
-	private final static Attributes tmpAttributes = new Attributes();
-
 	// TODO: Move responsibility for combining attributes to RenderableProvider
 	private static final Attributes combineAttributes (final Renderable renderable) {
-		tmpAttributes.clear();
-		if (renderable.environment != null) tmpAttributes.set(renderable.environment);
-		if (renderable.material != null) tmpAttributes.set(renderable.material);
-		return tmpAttributes;
+		renderable.tmpAttributes.clear();
+		if (renderable.environment != null) renderable.tmpAttributes.set(renderable.environment);
+		if (renderable.material != null) renderable.tmpAttributes.set(renderable.material);
+		return renderable.tmpAttributes;
 	}
 }

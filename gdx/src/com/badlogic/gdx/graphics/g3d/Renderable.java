@@ -93,6 +93,9 @@ public class Renderable {
 	/** User definable value, may be null. */
 	public Object userData;
 
+	/** renderable temp attr used for combining attrs (i.e. see: DepthShader) */
+	public final Attributes tmpAttributes = new Attributes();
+
 	public Renderable set (Renderable renderable) {
 		worldTransform.set(renderable.worldTransform);
 		material = renderable.material;

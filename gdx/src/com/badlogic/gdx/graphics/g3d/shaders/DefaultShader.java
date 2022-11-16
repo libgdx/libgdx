@@ -173,32 +173,29 @@ public class DefaultShader extends BaseShader {
 			}
 		};
 		public final static Setter viewWorldTrans = new LocalSetter() {
-			final Matrix4 temp = new Matrix4();
-
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final Matrix4 temp = shader.tempMatrix4;
 				shader.set(inputID, temp.set(shader.camera.view).mul(renderable.worldTransform));
 			}
 		};
 		public final static Setter projViewWorldTrans = new LocalSetter() {
-			final Matrix4 temp = new Matrix4();
-
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final Matrix4 temp = shader.tempMatrix4;
 				shader.set(inputID, temp.set(shader.camera.combined).mul(renderable.worldTransform));
 			}
 		};
 		public final static Setter normalMatrix = new LocalSetter() {
-			private final Matrix3 tmpM = new Matrix3();
-
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final Matrix3 tmpM = shader.tempMatrix3;
 				shader.set(inputID, tmpM.set(renderable.worldTransform).inv().transpose());
 			}
 		};
 
 		public static class Bones extends LocalSetter {
-			private final static Matrix4 idtMatrix = new Matrix4();
+			private final Matrix4 idtMatrix = new Matrix4();
 			public final float bones[];
 
 			public Bones (final int numBones) {
@@ -340,9 +337,9 @@ public class DefaultShader extends BaseShader {
 		};
 
 		public static class ACubemap extends LocalSetter {
-			private final static float ones[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+			private final float ones[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 			private final AmbientCubemap cacheAmbientCubemap = new AmbientCubemap();
-			private final static Vector3 tmpV1 = new Vector3();
+			private final Vector3 tmpV1 = new Vector3();
 			public final int dirLightsOffset;
 			public final int pointLightsOffset;
 
@@ -644,14 +641,12 @@ public class DefaultShader extends BaseShader {
 		return (mask & flag) != 0;
 	}
 
-	private final static Attributes tmpAttributes = new Attributes();
-
 	// TODO: Perhaps move responsibility for combining attributes to RenderableProvider?
 	private static final Attributes combineAttributes (final Renderable renderable) {
-		tmpAttributes.clear();
-		if (renderable.environment != null) tmpAttributes.set(renderable.environment);
-		if (renderable.material != null) tmpAttributes.set(renderable.material);
-		return tmpAttributes;
+		renderable.tmpAttributes.clear();
+		if (renderable.environment != null) renderable.tmpAttributes.set(renderable.environment);
+		if (renderable.material != null) renderable.tmpAttributes.set(renderable.material);
+		return renderable.tmpAttributes;
 	}
 
 	private static final long combineAttributeMasks (final Renderable renderable) {

@@ -255,8 +255,6 @@ public class ShaderProgram implements Disposable {
 		return program;
 	}
 
-	final static IntBuffer intbuf = BufferUtils.newIntBuffer(1);
-
 	/** @return the log info for the shader compilation and program linking stage. The shader needs to be bound for this method to
 	 *         have an effect. */
 	public String getLog () {

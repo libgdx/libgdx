@@ -54,7 +54,7 @@ public class Ray implements Serializable {
 		return out.set(direction).scl(distance).add(origin);
 	}
 
-	static Vector3 tmp = new Vector3();
+	Vector3 tmp = new Vector3();
 
 	/** Multiplies the ray by the given matrix. Use this to transform a ray into another coordinate system.
 	 * 

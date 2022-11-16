@@ -77,7 +77,7 @@ public class Octree<T> {
 	protected OctreeNode root;
 	final Collider<T> collider;
 
-	static final Vector3 tmp = new Vector3();
+	final Vector3 tmp = new Vector3();
 
 	public Octree (Vector3 minimum, Vector3 maximum, int maxDepth, int maxItemsPerNode, Collider<T> collider) {
 		super();

@@ -27,8 +27,8 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author xoppa */
 public class Quaternion implements Serializable {
 	private static final long serialVersionUID = -7661875440774897168L;
-	private static Quaternion tmp1 = new Quaternion(0, 0, 0, 0);
-	private static Quaternion tmp2 = new Quaternion(0, 0, 0, 0);
+	private Quaternion tmp1 = null;
+	private Quaternion tmp2 = null;
 
 	public float x;
 	public float y;
@@ -61,6 +61,18 @@ public class Quaternion implements Serializable {
 	 * @param angle The angle in degrees. */
 	public Quaternion (Vector3 axis, float angle) {
 		this.set(axis, angle);
+	}
+
+	/** @return the tmp1 */
+	private Quaternion getTmp1 () {
+		if (tmp1 == null) tmp1 = new Quaternion(0, 0, 0, 0);
+		return tmp1;
+	}
+
+	/** @return the tmp2 */
+	private Quaternion getTmp2 () {
+		if (tmp2 == null) tmp2 = new Quaternion(0, 0, 0, 0);
+		return tmp2;
 	}
 
 	/** Sets the components of the quaternion
@@ -234,13 +246,13 @@ public class Quaternion implements Serializable {
 	 * 
 	 * @param v Vector to transform */
 	public Vector3 transform (Vector3 v) {
-		tmp2.set(this);
-		tmp2.conjugate();
-		tmp2.mulLeft(tmp1.set(v.x, v.y, v.z, 0)).mulLeft(this);
+		getTmp2().set(this);
+		getTmp2().conjugate();
+		getTmp2().mulLeft(getTmp1().set(v.x, v.y, v.z, 0)).mulLeft(this);
 
-		v.x = tmp2.x;
-		v.y = tmp2.y;
-		v.z = tmp2.z;
+		v.x = getTmp2().x;
+		v.y = getTmp2().y;
+		v.z = getTmp2().z;
 		return v;
 	}
 
@@ -623,7 +635,7 @@ public class Quaternion implements Serializable {
 		final float w = 1.0f / q.length;
 		set(q[0]).exp(w);
 		for (int i = 1; i < q.length; i++)
-			mul(tmp1.set(q[i]).exp(w));
+			mul(getTmp1().set(q[i]).exp(w));
 		nor();
 		return this;
 	}
@@ -639,7 +651,7 @@ public class Quaternion implements Serializable {
 		// Calculate exponents and multiply everything from left to right
 		set(q[0]).exp(w[0]);
 		for (int i = 1; i < q.length; i++)
-			mul(tmp1.set(q[i]).exp(w[i]));
+			mul(getTmp1().set(q[i]).exp(w[i]));
 		nor();
 		return this;
 	}

@@ -1580,7 +1580,7 @@ public class ParticleEmitter {
 	}
 
 	static public class GradientColorValue extends ParticleValue {
-		static private float[] temp = new float[4];
+		private float[] temp = new float[4];
 
 		private float[] colors = {1, 1, 1};
 		float[] timeline = {0};

@@ -18,11 +18,30 @@ package com.badlogic.gdx.math;
 
 /** @author Nathan Sweet */
 public final class GeometryUtils {
+	/** ClassX: thread-safety support
+	 * @author dar */
+	static class GeometryUtilsLocal extends ThreadLocal<GeometryUtilsData> {
+		/*
+		 * @see java.lang.ThreadLocal#initialValue()
+		 */
+		protected GeometryUtilsData initialValue () {
+			return new GeometryUtilsData();
+		}
+	}
+
+	/** ClassX: thread-safety support
+	 * @author dar */
+	static class GeometryUtilsData {
+		final Vector2 tmp1 = new Vector2();
+		final Vector2 tmp2 = new Vector2();
+		final Vector2 tmp3 = new Vector2();
+	}
+
+	// ClassX: thread-safety support
+	private static final GeometryUtilsLocal tlData = new GeometryUtilsLocal();
 
 	private GeometryUtils () {
 	}
-
-	static private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
 
 	/** Computes the barycentric coordinates v,w for the specified point in the triangle.
 	 * <p>
@@ -42,9 +61,11 @@ public final class GeometryUtils {
 	 * 
 	 * @return barycentricOut */
 	static public Vector2 toBarycoord (Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 barycentricOut) {
-		Vector2 v0 = tmp1.set(b).sub(a);
-		Vector2 v1 = tmp2.set(c).sub(a);
-		Vector2 v2 = tmp3.set(p).sub(a);
+		final GeometryUtilsData data = tlData.get();
+
+		Vector2 v0 = data.tmp1.set(b).sub(a);
+		Vector2 v1 = data.tmp2.set(c).sub(a);
+		Vector2 v2 = data.tmp3.set(p).sub(a);
 		float d00 = v0.dot(v0);
 		float d01 = v0.dot(v1);
 		float d11 = v1.dot(v1);

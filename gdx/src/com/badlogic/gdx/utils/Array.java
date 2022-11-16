@@ -38,6 +38,10 @@ public class Array<T> implements Iterable<T> {
 	private ArrayIterable iterable;
 	private Predicate.PredicateIterable<T> predicateIterable;
 
+	// internal instance of Sort/Select (never use shared instance here)
+	private final Sort sorter = new Sort();
+	private final Select selector = new Select();
+
 	/** Creates an ordered array with a capacity of 16. */
 	public Array () {
 		this(true, 16);
@@ -422,15 +426,14 @@ public class Array<T> implements Iterable<T> {
 		return newItems;
 	}
 
-	/** Sorts this array. The array elements must implement {@link Comparable}. This method is not thread safe (uses
-	 * {@link Sort#instance()}). */
+	/** Sorts this array. The array elements must implement {@link Comparable} */
 	public void sort () {
-		Sort.instance().sort(items, 0, size);
+		sorter.sort(items, 0, size);
 	}
 
-	/** Sorts the array. This method is not thread safe (uses {@link Sort#instance()}). */
+	/** Sorts the array */
 	public void sort (Comparator<? super T> comparator) {
-		Sort.instance().sort(items, comparator, 0, size);
+		sorter.sort(items, comparator, 0, size);
 	}
 
 	/** Selects the nth-lowest element from the Array according to Comparator ranking. This might partially sort the Array. The
@@ -444,7 +447,7 @@ public class Array<T> implements Iterable<T> {
 		if (kthLowest < 1) {
 			throw new GdxRuntimeException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
 		}
-		return Select.instance().select(items, comparator, kthLowest, size);
+		return selector.select(items, comparator, kthLowest, size);
 	}
 
 	/** @see Array#selectRanked(java.util.Comparator, int)
@@ -456,7 +459,7 @@ public class Array<T> implements Iterable<T> {
 		if (kthLowest < 1) {
 			throw new GdxRuntimeException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
 		}
-		return Select.instance().selectIndex(items, comparator, kthLowest, size);
+		return selector.selectIndex(items, comparator, kthLowest, size);
 	}
 
 	public void reverse () {

@@ -37,6 +37,8 @@ public class CylinderShapeBuilder extends BaseShapeBuilder {
 	/** Build a cylinder */
 	public static void build (MeshPartBuilder builder, float width, float height, float depth, int divisions, float angleFrom,
 		float angleTo, boolean close) {
+		final BaseShapeData data = tlData.get();
+
 		// FIXME create better cylinder method (- axis on which to create the cylinder (matrix?))
 		final float hw = width * 0.5f;
 		final float hh = height * 0.5f;
@@ -46,9 +48,9 @@ public class CylinderShapeBuilder extends BaseShapeBuilder {
 		final float us = 1f / divisions;
 		float u = 0f;
 		float angle = 0f;
-		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
+		VertexInfo curr1 = data.vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
-		VertexInfo curr2 = vertTmp4.set(null, null, null, null);
+		VertexInfo curr2 = data.vertTmp4.set(null, null, null, null);
 		curr2.hasUV = curr2.hasPosition = curr2.hasNormal = true;
 		short i1, i2, i3 = 0, i4 = 0;
 

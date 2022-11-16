@@ -113,6 +113,15 @@ public abstract class BaseShader implements Shader {
 	public Camera camera;
 	private Mesh currentMesh;
 
+	/** ClassX: thread-safety support */
+	public final Matrix4 tempMatrix4 = new Matrix4();
+
+	/** ClassX: thread-safety support */
+	protected final Matrix3 tempMatrix3 = new Matrix3();
+
+	/** ClassX: thread-safety support */
+	public final Vector3 tempVector3 = new Vector3();
+
 	/** Register an uniform which might be used by this shader. Only possible prior to the call to init().
 	 * @return The ID of the uniform to use in this shader. */
 	public int register (final String alias, final Validator validator, final Setter setter) {

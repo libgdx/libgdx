@@ -34,6 +34,8 @@ public class ConeShapeBuilder extends BaseShapeBuilder {
 
 	public static void build (MeshPartBuilder builder, float width, float height, float depth, int divisions, float angleFrom,
 		float angleTo, boolean close) {
+		final BaseShapeData data = tlData.get();
+
 		// FIXME create better cylinder method (- axis on which to create the cone (matrix?))
 		builder.ensureVertices(divisions + 2);
 		builder.ensureTriangleIndices(divisions);
@@ -46,9 +48,9 @@ public class ConeShapeBuilder extends BaseShapeBuilder {
 		final float us = 1f / divisions;
 		float u = 0f;
 		float angle = 0f;
-		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
+		VertexInfo curr1 = data.vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
-		VertexInfo curr2 = vertTmp4.set(null, null, null, null).setPos(0, hh, 0).setNor(0, 1, 0).setUV(0.5f, 0);
+		VertexInfo curr2 = data.vertTmp4.set(null, null, null, null).setPos(0, hh, 0).setNor(0, 1, 0).setUV(0.5f, 0);
 		final short base = builder.vertex(curr2);
 		short i1, i2 = 0;
 		for (int i = 0; i <= divisions; i++) {

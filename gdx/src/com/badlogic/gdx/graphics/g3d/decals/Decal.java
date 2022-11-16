@@ -39,8 +39,8 @@ public class Decal {
 	public static final int SIZE = 4 * VERTEX_SIZE;
 
 	/** Temporary vector for various calculations. */
-	private static Vector3 tmp = new Vector3();
-	private static Vector3 tmp2 = new Vector3();
+	private Vector3 tmp = new Vector3();
+	private Vector3 tmp2 = new Vector3();
 
 	/** Set a multipurpose value which can be queried and used for things like group identification. */
 	public int value;
@@ -578,7 +578,7 @@ public class Decal {
 		this.material = material;
 	}
 
-	final static Vector3 dir = new Vector3();
+	final Vector3 dir = new Vector3();
 
 	/** Sets the rotation of the Decal to face the given point. Useful for billboarding.
 	 * @param position
@@ -614,7 +614,7 @@ public class Decal {
 	public static final int U4 = 22;
 	public static final int V4 = 23;
 
-	protected static Quaternion rotator = new Quaternion(0, 0, 0, 0);
+	protected Quaternion rotator = new Quaternion(0, 0, 0, 0);
 
 	/** Creates a decal assuming the dimensions of the texture region
 	 * 

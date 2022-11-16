@@ -40,7 +40,7 @@ public class Frustum {
 		}
 	}
 
-	private final static Vector3 tmpV = new Vector3();
+	private final Vector3 tmpV = new Vector3();
 
 	/** the six clipping planes, near, far, left, right, top, bottom **/
 	public final Plane[] planes = new Plane[6];

@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.IntArray;
  * Code adapted from {@link VertexBufferObject}.
  * @author mzechner, Dave Clayton <contact@redskyforge.com>, Nate Austin <nate.austin gmail> */
 public class VertexBufferObjectWithVAO implements VertexData {
-	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
+	final IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
 
 	final VertexAttributes attributes;
 	final FloatBuffer buffer;

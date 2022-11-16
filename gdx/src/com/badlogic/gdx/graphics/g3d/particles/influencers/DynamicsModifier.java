@@ -32,8 +32,8 @@ import com.badlogic.gdx.utils.JsonValue;
  * {@link DynamicsInfluencer} .
  * @author Inferno */
 public abstract class DynamicsModifier extends Influencer {
-	protected static final Vector3 TMP_V1 = new Vector3(), TMP_V2 = new Vector3(), TMP_V3 = new Vector3();
-	protected static final Quaternion TMP_Q = new Quaternion();
+	protected final Vector3 TMP_V1 = new Vector3(), TMP_V2 = new Vector3(), TMP_V3 = new Vector3();
+	protected final Quaternion TMP_Q = new Quaternion();
 
 	public static class FaceDirection extends DynamicsModifier {
 		FloatChannel rotationChannel, accellerationChannel;

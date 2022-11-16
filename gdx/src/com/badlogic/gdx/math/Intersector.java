@@ -34,11 +34,48 @@ public final class Intersector {
 	private Intersector () {
 	}
 
-	private final static Vector3 v0 = new Vector3();
-	private final static Vector3 v1 = new Vector3();
-	private final static Vector3 v2 = new Vector3();
-	private final static FloatArray floatArray = new FloatArray();
-	private final static FloatArray floatArray2 = new FloatArray();
+	/** ClassX: thread-safety support
+	 * @author dar */
+	static class IntersectorLocal extends ThreadLocal<IntersectorData> {
+		/*
+		 * @see java.lang.ThreadLocal#initialValue()
+		 */
+		protected IntersectorData initialValue () {
+			return new IntersectorData();
+		}
+	}
+
+	/** ClassX: thread-safety support
+	 * @author dar */
+	static class IntersectorData {
+		private final Vector3 v0 = new Vector3();
+		private final Vector3 v1 = new Vector3();
+		private final Vector3 v2 = new Vector3();
+		private final FloatArray floatArray = new FloatArray();
+		private final FloatArray floatArray2 = new FloatArray();
+		private final Vector2 ip = new Vector2();
+		private final Vector2 ep1 = new Vector2();
+		private final Vector2 ep2 = new Vector2();
+		private final Vector2 s = new Vector2();
+		private final Vector2 e = new Vector2();
+		private final Vector2 v2a = new Vector2();
+		private final Vector2 v2b = new Vector2();
+		private final Vector2 v2c = new Vector2();
+		private final Vector2 v2d = new Vector2();
+		private final Plane p = new Plane(new Vector3(), 0);
+		private final Vector3 i = new Vector3();
+		private final Vector3 dir = new Vector3();
+		private final Vector3 start = new Vector3();
+		private final Vector3 best = new Vector3();
+		private final Vector3 tmp = new Vector3();
+		private final Vector3 tmp1 = new Vector3();
+		private final Vector3 tmp2 = new Vector3();
+		private final Vector3 tmp3 = new Vector3();
+		private final Vector3 intersection = new Vector3();
+	}
+
+	// ClassX: our local thread-safe storage
+	private static final IntersectorLocal tlData = new IntersectorLocal();
 
 	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle. No
 	 * check is performed that this is the case.
@@ -47,17 +84,19 @@ public final class Intersector {
 	 * @param t3 the third vertex of the triangle
 	 * @return whether the point is in the triangle */
 	public static boolean isPointInTriangle (Vector3 point, Vector3 t1, Vector3 t2, Vector3 t3) {
-		v0.set(t1).sub(point);
-		v1.set(t2).sub(point);
-		v2.set(t3).sub(point);
+		final IntersectorData data = tlData.get();
 
-		float ab = v0.dot(v1);
-		float ac = v0.dot(v2);
-		float bc = v1.dot(v2);
-		float cc = v2.dot(v2);
+		data.v0.set(t1).sub(point);
+		data.v1.set(t2).sub(point);
+		data.v2.set(t3).sub(point);
+
+		float ab = data.v0.dot(data.v1);
+		float ac = data.v0.dot(data.v2);
+		float bc = data.v1.dot(data.v2);
+		float cc = data.v2.dot(data.v2);
 
 		if (bc * ac - cc * ab < 0) return false;
-		float bb = v1.dot(v1);
+		float bb = data.v1.dot(data.v1);
 		if (ab * bc - ac * bb < 0) return false;
 		return true;
 	}
@@ -83,7 +122,9 @@ public final class Intersector {
 	}
 
 	public static boolean intersectSegmentPlane (Vector3 start, Vector3 end, Plane plane, Vector3 intersection) {
-		Vector3 dir = v0.set(end).sub(start);
+		final IntersectorData data = tlData.get();
+
+		Vector3 dir = data.v0.set(end).sub(start);
 		float denom = dir.dot(plane.getNormal());
 		if (denom == 0f) return false;
 		float t = -(start.dot(plane.getNormal()) + plane.getD()) / denom;
@@ -145,12 +186,6 @@ public final class Intersector {
 		return oddNodes;
 	}
 
-	private final static Vector2 ip = new Vector2();
-	private final static Vector2 ep1 = new Vector2();
-	private final static Vector2 ep2 = new Vector2();
-	private final static Vector2 s = new Vector2();
-	private final static Vector2 e = new Vector2();
-
 	/** Intersects two convex polygons with clockwise vertices and sets the overlap polygon resulting from the intersection.
 	 * Follows the Sutherland-Hodgman algorithm.
 	 * @param p1 The polygon that is being clipped
@@ -161,8 +196,12 @@ public final class Intersector {
 		if (p1.getVertices().length == 0 || p2.getVertices().length == 0) {
 			return false;
 		}
-		Vector2 ip = Intersector.ip, ep1 = Intersector.ep1, ep2 = Intersector.ep2, s = Intersector.s, e = Intersector.e;
-		FloatArray floatArray = Intersector.floatArray, floatArray2 = Intersector.floatArray2;
+
+		// thread safety
+		final IntersectorData data = tlData.get();
+
+		Vector2 ip = data.ip, ep1 = data.ep1, ep2 = data.ep2, s = data.s, e = data.e;
+		FloatArray floatArray = data.floatArray, floatArray2 = data.floatArray2;
 		floatArray.clear();
 		floatArray2.clear();
 		floatArray2.addAll(p1.getTransformedVertices());
@@ -241,11 +280,6 @@ public final class Intersector {
 		return false;
 	}
 
-	static Vector2 v2a = new Vector2();
-	static Vector2 v2b = new Vector2();
-	static Vector2 v2c = new Vector2();
-	static Vector2 v2d = new Vector2();
-
 	/** Returns the distance between the given line and point. Note the specified line is not a line segment. */
 	public static float distanceLinePoint (float startX, float startY, float endX, float endY, float pointX, float pointY) {
 		float normalLength = Vector2.len(endX - startX, endY - startY);
@@ -254,12 +288,14 @@ public final class Intersector {
 
 	/** Returns the distance between the given segment and point. */
 	public static float distanceSegmentPoint (float startX, float startY, float endX, float endY, float pointX, float pointY) {
-		return nearestSegmentPoint(startX, startY, endX, endY, pointX, pointY, v2a).dst(pointX, pointY);
+		final IntersectorData data = tlData.get();
+		return nearestSegmentPoint(startX, startY, endX, endY, pointX, pointY, data.v2a).dst(pointX, pointY);
 	}
 
 	/** Returns the distance between the given segment and point. */
 	public static float distanceSegmentPoint (Vector2 start, Vector2 end, Vector2 point) {
-		return nearestSegmentPoint(start, end, point, v2a).dst(point);
+		final IntersectorData data = tlData.get();
+		return nearestSegmentPoint(start, end, point, data.v2a).dst(point);
 	}
 
 	/** Returns a point on the segment nearest to the specified point. */
@@ -292,21 +328,23 @@ public final class Intersector {
 	 * @param squareRadius The squared radius of the circle
 	 * @return Whether the line segment and the circle intersect */
 	public static boolean intersectSegmentCircle (Vector2 start, Vector2 end, Vector2 center, float squareRadius) {
-		tmp.set(end.x - start.x, end.y - start.y, 0);
-		tmp1.set(center.x - start.x, center.y - start.y, 0);
-		float l = tmp.len();
-		float u = tmp1.dot(tmp.nor());
+		final IntersectorData data = tlData.get();
+
+		data.tmp.set(end.x - start.x, end.y - start.y, 0);
+		data.tmp1.set(center.x - start.x, center.y - start.y, 0);
+		float l = data.tmp.len();
+		float u = data.tmp1.dot(data.tmp.nor());
 		if (u <= 0) {
-			tmp2.set(start.x, start.y, 0);
+			data.tmp2.set(start.x, start.y, 0);
 		} else if (u >= l) {
-			tmp2.set(end.x, end.y, 0);
+			data.tmp2.set(end.x, end.y, 0);
 		} else {
-			tmp3.set(tmp.scl(u)); // remember tmp is already normalized
-			tmp2.set(tmp3.x + start.x, tmp3.y + start.y, 0);
+			data.tmp3.set(data.tmp.scl(u)); // remember tmp is already normalized
+			data.tmp2.set(data.tmp3.x + start.x, data.tmp3.y + start.y, 0);
 		}
 
-		float x = center.x - tmp2.x;
-		float y = center.y - tmp2.y;
+		float x = center.x - data.tmp2.x;
+		float y = center.y - data.tmp2.y;
 
 		return x * x + y * y <= squareRadius;
 	}
@@ -318,34 +356,36 @@ public final class Intersector {
 	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
 	 * @return Whether the line segment and the circle intersect */
 	public static boolean intersectSegmentCircle (Vector2 start, Vector2 end, Circle circle, MinimumTranslationVector mtv) {
-		v2a.set(end).sub(start);
-		v2b.set(circle.x - start.x, circle.y - start.y);
-		float len = v2a.len();
-		float u = v2b.dot(v2a.nor());
+		final IntersectorData data = tlData.get();
+
+		data.v2a.set(end).sub(start);
+		data.v2b.set(circle.x - start.x, circle.y - start.y);
+		float len = data.v2a.len();
+		float u = data.v2b.dot(data.v2a.nor());
 		if (u <= 0) {
-			v2c.set(start);
+			data.v2c.set(start);
 		} else if (u >= len) {
-			v2c.set(end);
+			data.v2c.set(end);
 		} else {
-			v2d.set(v2a.scl(u)); // remember v2a is already normalized
-			v2c.set(v2d).add(start);
+			data.v2d.set(data.v2a.scl(u)); // remember v2a is already normalized
+			data.v2c.set(data.v2d).add(start);
 		}
 
-		v2a.set(v2c.x - circle.x, v2c.y - circle.y);
+		data.v2a.set(data.v2c.x - circle.x, data.v2c.y - circle.y);
 
 		if (mtv != null) {
 			// Handle special case of segment containing circle center
-			if (v2a.equals(Vector2.Zero)) {
-				v2d.set(end.y - start.y, start.x - end.x);
-				mtv.normal.set(v2d).nor();
+			if (data.v2a.equals(Vector2.Zero)) {
+				data.v2d.set(end.y - start.y, start.x - end.x);
+				mtv.normal.set(data.v2d).nor();
 				mtv.depth = circle.radius;
 			} else {
-				mtv.normal.set(v2a).nor();
-				mtv.depth = circle.radius - v2a.len();
+				mtv.normal.set(data.v2a).nor();
+				mtv.depth = circle.radius - data.v2a.len();
 			}
 		}
 
-		return v2a.len2() <= circle.radius * circle.radius;
+		return data.v2a.len2() <= circle.radius * circle.radius;
 	}
 
 	/** Returns whether the given {@link Frustum} intersects a {@link BoundingBox}.
@@ -353,11 +393,13 @@ public final class Intersector {
 	 * @param bounds The bounding box
 	 * @return Whether the frustum intersects the bounding box */
 	public static boolean intersectFrustumBounds (Frustum frustum, BoundingBox bounds) {
-		boolean boundsIntersectsFrustum = frustum.pointInFrustum(bounds.getCorner000(tmp))
-			|| frustum.pointInFrustum(bounds.getCorner001(tmp)) || frustum.pointInFrustum(bounds.getCorner010(tmp))
-			|| frustum.pointInFrustum(bounds.getCorner011(tmp)) || frustum.pointInFrustum(bounds.getCorner100(tmp))
-			|| frustum.pointInFrustum(bounds.getCorner101(tmp)) || frustum.pointInFrustum(bounds.getCorner110(tmp))
-			|| frustum.pointInFrustum(bounds.getCorner111(tmp));
+		final IntersectorData data = tlData.get();
+
+		boolean boundsIntersectsFrustum = frustum.pointInFrustum(bounds.getCorner000(data.tmp))
+			|| frustum.pointInFrustum(bounds.getCorner001(data.tmp)) || frustum.pointInFrustum(bounds.getCorner010(data.tmp))
+			|| frustum.pointInFrustum(bounds.getCorner011(data.tmp)) || frustum.pointInFrustum(bounds.getCorner100(data.tmp))
+			|| frustum.pointInFrustum(bounds.getCorner101(data.tmp)) || frustum.pointInFrustum(bounds.getCorner110(data.tmp))
+			|| frustum.pointInFrustum(bounds.getCorner111(data.tmp));
 
 		if (boundsIntersectsFrustum) {
 			return true;
@@ -420,12 +462,14 @@ public final class Intersector {
 	 * @param intersection The vector the intersection point is written to (optional)
 	 * @return Whether an intersection is present. */
 	public static boolean intersectRayPlane (Ray ray, Plane plane, Vector3 intersection) {
+		final IntersectorData data = tlData.get();
+
 		float denom = ray.direction.dot(plane.getNormal());
 		if (denom != 0) {
 			float t = -(ray.origin.dot(plane.getNormal()) + plane.getD()) / denom;
 			if (t < 0) return false;
 
-			if (intersection != null) intersection.set(ray.origin).add(v0.set(ray.direction).scl(t));
+			if (intersection != null) intersection.set(ray.origin).add(data.v0.set(ray.direction).scl(t));
 			return true;
 		} else if (plane.testPoint(ray.origin) == Plane.PlaneSide.OnPlane) {
 			if (intersection != null) intersection.set(ray.origin);
@@ -439,8 +483,10 @@ public final class Intersector {
 	 * (point2 - point1) where t is the return value of this method. */
 	public static float intersectLinePlane (float x, float y, float z, float x2, float y2, float z2, Plane plane,
 		Vector3 intersection) {
-		Vector3 direction = tmp.set(x2, y2, z2).sub(x, y, z);
-		Vector3 origin = tmp2.set(x, y, z);
+		final IntersectorData data = tlData.get();
+
+		Vector3 direction = data.tmp.set(x2, y2, z2).sub(x, y, z);
+		Vector3 origin = data.tmp2.set(x, y, z);
 		float denom = direction.dot(plane.getNormal());
 		if (denom != 0) {
 			float t = -(origin.dot(plane.getNormal()) + plane.getD()) / denom;
@@ -458,26 +504,26 @@ public final class Intersector {
 	 * any.
 	 * @param intersection The point where the three planes intersect */
 	public static boolean intersectPlanes (Plane a, Plane b, Plane c, Vector3 intersection) {
-		tmp1.set(a.normal).crs(b.normal);
-		tmp2.set(b.normal).crs(c.normal);
-		tmp3.set(c.normal).crs(a.normal);
+		final IntersectorData data = tlData.get();
 
-		float f = -a.normal.dot(tmp2);
+		data.tmp1.set(a.normal).crs(b.normal);
+		data.tmp2.set(b.normal).crs(c.normal);
+		data.tmp3.set(c.normal).crs(a.normal);
+
+		float f = -a.normal.dot(data.tmp2);
 		if (Math.abs(f) < MathUtils.FLOAT_ROUNDING_ERROR) {
 			return false;
 		}
 
-		tmp1.scl(c.d);
-		tmp2.scl(a.d);
-		tmp3.scl(b.d);
+		data.tmp1.scl(c.d);
+		data.tmp2.scl(a.d);
+		data.tmp3.scl(b.d);
 
-		intersection.set(tmp1.x + tmp2.x + tmp3.x, tmp1.y + tmp2.y + tmp3.y, tmp1.z + tmp2.z + tmp3.z);
+		intersection.set(data.tmp1.x + data.tmp2.x + data.tmp3.x, data.tmp1.y + data.tmp2.y + data.tmp3.y,
+			data.tmp1.z + data.tmp2.z + data.tmp3.z);
 		intersection.scl(1 / f);
 		return true;
 	}
-
-	private static final Plane p = new Plane(new Vector3(), 0);
-	private static final Vector3 i = new Vector3();
 
 	/** Intersect a {@link Ray} and a triangle, returning the intersection point in intersection.
 	 * @param t1 The first vertex of the triangle
@@ -486,14 +532,16 @@ public final class Intersector {
 	 * @param intersection The intersection point (optional)
 	 * @return True in case an intersection is present. */
 	public static boolean intersectRayTriangle (Ray ray, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 intersection) {
-		Vector3 edge1 = v0.set(t2).sub(t1);
-		Vector3 edge2 = v1.set(t3).sub(t1);
+		final IntersectorData data = tlData.get();
 
-		Vector3 pvec = v2.set(ray.direction).crs(edge2);
+		Vector3 edge1 = data.v0.set(t2).sub(t1);
+		Vector3 edge2 = data.v1.set(t3).sub(t1);
+
+		Vector3 pvec = data.v2.set(ray.direction).crs(edge2);
 		float det = edge1.dot(pvec);
 		if (MathUtils.isZero(det)) {
-			p.set(t1, t2, t3);
-			if (p.testPoint(ray.origin) == PlaneSide.OnPlane && Intersector.isPointInTriangle(ray.origin, t1, t2, t3)) {
+			data.p.set(t1, t2, t3);
+			if (data.p.testPoint(ray.origin) == PlaneSide.OnPlane && Intersector.isPointInTriangle(ray.origin, t1, t2, t3)) {
 				if (intersection != null) intersection.set(ray.origin);
 				return true;
 			}
@@ -502,7 +550,7 @@ public final class Intersector {
 
 		det = 1.0f / det;
 
-		Vector3 tvec = i.set(ray.origin).sub(t1);
+		Vector3 tvec = data.i.set(ray.origin).sub(t1);
 		float u = tvec.dot(pvec) * det;
 		if (u < 0.0f || u > 1.0f) return false;
 
@@ -523,9 +571,6 @@ public final class Intersector {
 
 		return true;
 	}
-
-	private static final Vector3 dir = new Vector3();
-	private static final Vector3 start = new Vector3();
 
 	/** Intersects a {@link Ray} and a sphere, returning the intersection point in intersection.
 	 * @param ray The ray, the direction component must be normalized before calling this method
@@ -560,6 +605,8 @@ public final class Intersector {
 	 * @param intersection The intersection point (optional)
 	 * @return Whether an intersection is present. */
 	public static boolean intersectRayBounds (Ray ray, BoundingBox box, Vector3 intersection) {
+		final IntersectorData data = tlData.get();
+
 		if (box.contains(ray.origin)) {
 			if (intersection != null) intersection.set(ray.origin);
 			return true;
@@ -571,8 +618,9 @@ public final class Intersector {
 		if (ray.origin.x <= box.min.x && ray.direction.x > 0) {
 			t = (box.min.x - ray.origin.x) / ray.direction.x;
 			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.y >= box.min.y && v2.y <= box.max.y && v2.z >= box.min.z && v2.z <= box.max.z && (!hit || t < lowest)) {
+				data.v2.set(ray.direction).scl(t).add(ray.origin);
+				if (data.v2.y >= box.min.y && data.v2.y <= box.max.y && data.v2.z >= box.min.z && data.v2.z <= box.max.z
+					&& (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
@@ -582,8 +630,9 @@ public final class Intersector {
 		if (ray.origin.x >= box.max.x && ray.direction.x < 0) {
 			t = (box.max.x - ray.origin.x) / ray.direction.x;
 			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.y >= box.min.y && v2.y <= box.max.y && v2.z >= box.min.z && v2.z <= box.max.z && (!hit || t < lowest)) {
+				data.v2.set(ray.direction).scl(t).add(ray.origin);
+				if (data.v2.y >= box.min.y && data.v2.y <= box.max.y && data.v2.z >= box.min.z && data.v2.z <= box.max.z
+					&& (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
@@ -593,8 +642,9 @@ public final class Intersector {
 		if (ray.origin.y <= box.min.y && ray.direction.y > 0) {
 			t = (box.min.y - ray.origin.y) / ray.direction.y;
 			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.x >= box.min.x && v2.x <= box.max.x && v2.z >= box.min.z && v2.z <= box.max.z && (!hit || t < lowest)) {
+				data.v2.set(ray.direction).scl(t).add(ray.origin);
+				if (data.v2.x >= box.min.x && data.v2.x <= box.max.x && data.v2.z >= box.min.z && data.v2.z <= box.max.z
+					&& (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
@@ -604,8 +654,9 @@ public final class Intersector {
 		if (ray.origin.y >= box.max.y && ray.direction.y < 0) {
 			t = (box.max.y - ray.origin.y) / ray.direction.y;
 			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.x >= box.min.x && v2.x <= box.max.x && v2.z >= box.min.z && v2.z <= box.max.z && (!hit || t < lowest)) {
+				data.v2.set(ray.direction).scl(t).add(ray.origin);
+				if (data.v2.x >= box.min.x && data.v2.x <= box.max.x && data.v2.z >= box.min.z && data.v2.z <= box.max.z
+					&& (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
@@ -615,8 +666,9 @@ public final class Intersector {
 		if (ray.origin.z <= box.min.z && ray.direction.z > 0) {
 			t = (box.min.z - ray.origin.z) / ray.direction.z;
 			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.x >= box.min.x && v2.x <= box.max.x && v2.y >= box.min.y && v2.y <= box.max.y && (!hit || t < lowest)) {
+				data.v2.set(ray.direction).scl(t).add(ray.origin);
+				if (data.v2.x >= box.min.x && data.v2.x <= box.max.x && data.v2.y >= box.min.y && data.v2.y <= box.max.y
+					&& (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
@@ -626,8 +678,9 @@ public final class Intersector {
 		if (ray.origin.z >= box.max.z && ray.direction.z < 0) {
 			t = (box.max.z - ray.origin.z) / ray.direction.z;
 			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.x >= box.min.x && v2.x <= box.max.x && v2.y >= box.min.y && v2.y <= box.max.y && (!hit || t < lowest)) {
+				data.v2.set(ray.direction).scl(t).add(ray.origin);
+				if (data.v2.x >= box.min.x && data.v2.x <= box.max.x && data.v2.y >= box.min.y && data.v2.y <= box.max.y
+					&& (!hit || t < lowest)) {
 					hit = true;
 					lowest = t;
 				}
@@ -657,7 +710,8 @@ public final class Intersector {
 	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
 	 * @return Whether the ray and the bounding box intersect. */
 	static public boolean intersectRayBoundsFast (Ray ray, BoundingBox box) {
-		return intersectRayBoundsFast(ray, box.getCenter(tmp1), box.getDimensions(tmp2));
+		final IntersectorData data = tlData.get();
+		return intersectRayBoundsFast(ray, box.getCenter(data.tmp1), box.getDimensions(data.tmp2));
 	}
 
 	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
@@ -730,16 +784,18 @@ public final class Intersector {
 	 * @param intersection The intersection point (optional)
 	 * @return Whether an intersection is present. */
 	static public boolean intersectRayOrientedBounds (Ray ray, BoundingBox bounds, Matrix4 transform, Vector3 intersection) {
+		final IntersectorData data = tlData.get();
+
 		float tMin = 0.0f;
 		float tMax = Float.MAX_VALUE;
 		float t1, t2;
 
-		Vector3 oBBposition = transform.getTranslation(tmp);
+		Vector3 oBBposition = transform.getTranslation(data.tmp);
 		Vector3 delta = oBBposition.sub(ray.origin);
 
 		// Test intersection with the 2 planes perpendicular to the OBB's X axis
-		Vector3 xaxis = tmp1;
-		tmp1.set(transform.val[Matrix4.M00], transform.val[Matrix4.M10], transform.val[Matrix4.M20]);
+		Vector3 xaxis = data.tmp1;
+		data.tmp1.set(transform.val[Matrix4.M00], transform.val[Matrix4.M10], transform.val[Matrix4.M20]);
 		float e = xaxis.dot(delta);
 		float f = ray.direction.dot(xaxis);
 
@@ -776,8 +832,8 @@ public final class Intersector {
 
 		// Test intersection with the 2 planes perpendicular to the OBB's Y axis
 		// Exactly the same thing than above.
-		Vector3 yaxis = tmp2;
-		tmp2.set(transform.val[Matrix4.M01], transform.val[Matrix4.M11], transform.val[Matrix4.M21]);
+		Vector3 yaxis = data.tmp2;
+		data.tmp2.set(transform.val[Matrix4.M01], transform.val[Matrix4.M11], transform.val[Matrix4.M21]);
 
 		e = yaxis.dot(delta);
 		f = ray.direction.dot(yaxis);
@@ -807,8 +863,8 @@ public final class Intersector {
 
 		// Test intersection with the 2 planes perpendicular to the OBB's Z axis
 		// Exactly the same thing than above.
-		Vector3 zaxis = tmp3;
-		tmp3.set(transform.val[Matrix4.M02], transform.val[Matrix4.M12], transform.val[Matrix4.M22]);
+		Vector3 zaxis = data.tmp3;
+		data.tmp3.set(transform.val[Matrix4.M02], transform.val[Matrix4.M12], transform.val[Matrix4.M22]);
 
 		e = zaxis.dot(delta);
 		f = ray.direction.dot(zaxis);
@@ -842,33 +898,29 @@ public final class Intersector {
 		return true;
 	}
 
-	static Vector3 best = new Vector3();
-	static Vector3 tmp = new Vector3();
-	static Vector3 tmp1 = new Vector3();
-	static Vector3 tmp2 = new Vector3();
-	static Vector3 tmp3 = new Vector3();
-
 	/** Intersects the given ray with list of triangles. Returns the nearest intersection point in intersection
 	 * @param triangles The triangles, each successive 9 elements are the 3 vertices of a triangle, a vertex is made of 3
 	 *           successive floats (XYZ)
 	 * @param intersection The nearest intersection point (optional)
 	 * @return Whether the ray and the triangles intersect. */
 	public static boolean intersectRayTriangles (Ray ray, float[] triangles, Vector3 intersection) {
+		final IntersectorData data = tlData.get();
+
 		float min_dist = Float.MAX_VALUE;
 		boolean hit = false;
 
 		if (triangles.length % 9 != 0) throw new RuntimeException("triangles array size is not a multiple of 9");
 
 		for (int i = 0; i < triangles.length; i += 9) {
-			boolean result = intersectRayTriangle(ray, tmp1.set(triangles[i], triangles[i + 1], triangles[i + 2]),
-				tmp2.set(triangles[i + 3], triangles[i + 4], triangles[i + 5]),
-				tmp3.set(triangles[i + 6], triangles[i + 7], triangles[i + 8]), tmp);
+			boolean result = intersectRayTriangle(ray, data.tmp1.set(triangles[i], triangles[i + 1], triangles[i + 2]),
+				data.tmp2.set(triangles[i + 3], triangles[i + 4], triangles[i + 5]),
+				data.tmp3.set(triangles[i + 6], triangles[i + 7], triangles[i + 8]), data.tmp);
 
 			if (result) {
-				float dist = ray.origin.dst2(tmp);
+				float dist = ray.origin.dst2(data.tmp);
 				if (dist < min_dist) {
 					min_dist = dist;
-					best.set(tmp);
+					data.best.set(data.tmp);
 					hit = true;
 				}
 			}
@@ -877,7 +929,7 @@ public final class Intersector {
 		if (!hit)
 			return false;
 		else {
-			if (intersection != null) intersection.set(best);
+			if (intersection != null) intersection.set(data.best);
 			return true;
 		}
 	}
@@ -889,6 +941,8 @@ public final class Intersector {
 	 * @return Whether the ray and the triangles intersect. */
 	public static boolean intersectRayTriangles (Ray ray, float[] vertices, short[] indices, int vertexSize,
 		Vector3 intersection) {
+		final IntersectorData data = tlData.get();
+
 		float min_dist = Float.MAX_VALUE;
 		boolean hit = false;
 
@@ -899,15 +953,15 @@ public final class Intersector {
 			int i2 = indices[i + 1] * vertexSize;
 			int i3 = indices[i + 2] * vertexSize;
 
-			boolean result = intersectRayTriangle(ray, tmp1.set(vertices[i1], vertices[i1 + 1], vertices[i1 + 2]),
-				tmp2.set(vertices[i2], vertices[i2 + 1], vertices[i2 + 2]),
-				tmp3.set(vertices[i3], vertices[i3 + 1], vertices[i3 + 2]), tmp);
+			boolean result = intersectRayTriangle(ray, data.tmp1.set(vertices[i1], vertices[i1 + 1], vertices[i1 + 2]),
+				data.tmp2.set(vertices[i2], vertices[i2 + 1], vertices[i2 + 2]),
+				data.tmp3.set(vertices[i3], vertices[i3 + 1], vertices[i3 + 2]), data.tmp);
 
 			if (result) {
-				float dist = ray.origin.dst2(tmp);
+				float dist = ray.origin.dst2(data.tmp);
 				if (dist < min_dist) {
 					min_dist = dist;
-					best.set(tmp);
+					data.best.set(data.tmp);
 					hit = true;
 				}
 			}
@@ -916,7 +970,7 @@ public final class Intersector {
 		if (!hit)
 			return false;
 		else {
-			if (intersection != null) intersection.set(best);
+			if (intersection != null) intersection.set(data.best);
 			return true;
 		}
 	}
@@ -926,19 +980,21 @@ public final class Intersector {
 	 * @param intersection The nearest intersection point (optional)
 	 * @return Whether the ray and the triangles intersect. */
 	public static boolean intersectRayTriangles (Ray ray, List<Vector3> triangles, Vector3 intersection) {
+		final IntersectorData data = tlData.get();
+
 		float min_dist = Float.MAX_VALUE;
 		boolean hit = false;
 
 		if (triangles.size() % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
 
 		for (int i = 0; i < triangles.size(); i += 3) {
-			boolean result = intersectRayTriangle(ray, triangles.get(i), triangles.get(i + 1), triangles.get(i + 2), tmp);
+			boolean result = intersectRayTriangle(ray, triangles.get(i), triangles.get(i + 1), triangles.get(i + 2), data.tmp);
 
 			if (result) {
-				float dist = ray.origin.dst2(tmp);
+				float dist = ray.origin.dst2(data.tmp);
 				if (dist < min_dist) {
 					min_dist = dist;
-					best.set(tmp);
+					data.best.set(data.tmp);
 					hit = true;
 				}
 			}
@@ -947,7 +1003,7 @@ public final class Intersector {
 		if (!hit)
 			return false;
 		else {
-			if (intersection != null) intersection.set(best);
+			if (intersection != null) intersection.set(data.best);
 			return true;
 		}
 	}
@@ -955,7 +1011,8 @@ public final class Intersector {
 	/** Quick check whether the given {@link BoundingBox} and {@link Plane} intersect.
 	 * @return Whether the bounding box and the plane intersect. */
 	public static boolean intersectBoundsPlaneFast (BoundingBox box, Plane plane) {
-		return intersectBoundsPlaneFast(box.getCenter(tmp1), box.getDimensions(tmp2).scl(0.5f), plane.normal, plane.d);
+		final IntersectorData data = tlData.get();
+		return intersectBoundsPlaneFast(box.getCenter(data.tmp1), box.getDimensions(data.tmp2).scl(0.5f), plane.normal, plane.d);
 	}
 
 	/** Quick check whether the given bounding box and a plane intersect. Code adapted from Christer Ericson's Real Time Collision
@@ -1452,14 +1509,14 @@ public final class Intersector {
 		}
 	}
 
-	static Vector3 intersection = new Vector3();
-
 	private static void splitEdge (float[] vertices, int s, int e, int stride, Plane plane, float[] split, int offset) {
+		final IntersectorData data = tlData.get();
+
 		float t = Intersector.intersectLinePlane(vertices[s], vertices[s + 1], vertices[s + 2], vertices[e], vertices[e + 1],
-			vertices[e + 2], plane, intersection);
-		split[offset + 0] = intersection.x;
-		split[offset + 1] = intersection.y;
-		split[offset + 2] = intersection.z;
+			vertices[e + 2], plane, data.intersection);
+		split[offset + 0] = data.intersection.x;
+		split[offset + 1] = data.intersection.y;
+		split[offset + 2] = data.intersection.z;
 		for (int i = 3; i < stride; i++) {
 			float a = vertices[s + i];
 			float b = vertices[e + i];

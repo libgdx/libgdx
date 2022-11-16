@@ -61,6 +61,8 @@ public class Actor {
 	private final DelayedRemovalArray<EventListener> captureListeners = new DelayedRemovalArray(0);
 	private final Array<Action> actions = new Array(0);
 
+	private final Rectangle tmp = new Rectangle();
+
 	private @Null String name;
 	private Touchable touchable = Touchable.enabled;
 	private boolean visible = true, debug;
@@ -829,7 +831,7 @@ public class Actor {
 		if (width <= 0 || height <= 0) return false;
 		Stage stage = this.stage;
 		if (stage == null) return false;
-		Rectangle tableBounds = Rectangle.tmp;
+		Rectangle tableBounds = this.tmp;
 		tableBounds.x = x;
 		tableBounds.y = y;
 		tableBounds.width = width;

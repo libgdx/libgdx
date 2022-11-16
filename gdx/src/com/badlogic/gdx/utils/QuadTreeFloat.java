@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 public class QuadTreeFloat implements Poolable {
 	static public final int VALUE = 0, X = 1, Y = 2, DISTSQR = 3;
 
-	static private final Pool<QuadTreeFloat> pool = new Pool(128, 4096) {
+	private final Pool<QuadTreeFloat> pool = new Pool(128, 4096) {
 		protected Object newObject () {
 			return new QuadTreeFloat();
 		}

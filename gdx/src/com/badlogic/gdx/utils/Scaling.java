@@ -21,7 +21,19 @@ import com.badlogic.gdx.math.Vector2;
 /** Various scaling types for fitting one rectangle into another.
  * @author Nathan Sweet */
 public abstract class Scaling {
-	protected static final Vector2 temp = new Vector2();
+	/** ClassX: thread-safety support
+	 * @author dar */
+	static class Vector2Local extends ThreadLocal<Vector2> {
+		/*
+		 * @see java.lang.ThreadLocal#initialValue()
+		 */
+		protected Vector2 initialValue () {
+			return new Vector2();
+		}
+	}
+
+	// ClassX: thread-safety support
+	private static final Vector2Local tlData = new Vector2Local();
 
 	/** Returns the size of the source scaled to the target. Note the same Vector2 instance is always returned and should never be
 	 * cached. */
@@ -31,6 +43,7 @@ public abstract class Scaling {
 	 * target in one direction. */
 	public static final Scaling fit = new Scaling() {
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
+			final Vector2 temp = tlData.get();
 			float targetRatio = targetHeight / targetWidth;
 			float sourceRatio = sourceHeight / sourceWidth;
 			float scale = targetRatio > sourceRatio ? targetWidth / sourceWidth : targetHeight / sourceHeight;
@@ -44,6 +57,7 @@ public abstract class Scaling {
 	 * both directions. This may cause the source to be smaller than the target in one or both directions. */
 	public static final Scaling contain = new Scaling() {
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
+			final Vector2 temp = tlData.get();
 			float targetRatio = targetHeight / targetWidth;
 			float sourceRatio = sourceHeight / sourceWidth;
 			float scale = targetRatio > sourceRatio ? targetWidth / sourceWidth : targetHeight / sourceHeight;
@@ -58,6 +72,7 @@ public abstract class Scaling {
 	 * target in one direction. */
 	public static final Scaling fill = new Scaling() {
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
+			final Vector2 temp = tlData.get();
 			float targetRatio = targetHeight / targetWidth;
 			float sourceRatio = sourceHeight / sourceWidth;
 			float scale = targetRatio < sourceRatio ? targetWidth / sourceWidth : targetHeight / sourceHeight;
@@ -71,6 +86,7 @@ public abstract class Scaling {
 	 * be smaller or larger than the target in the y direction. */
 	public static final Scaling fillX = new Scaling() {
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
+			final Vector2 temp = tlData.get();
 			float scale = targetWidth / sourceWidth;
 			temp.x = sourceWidth * scale;
 			temp.y = sourceHeight * scale;
@@ -82,6 +98,7 @@ public abstract class Scaling {
 	 * be smaller or larger than the target in the x direction. */
 	public static final Scaling fillY = new Scaling() {
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
+			final Vector2 temp = tlData.get();
 			float scale = targetHeight / sourceHeight;
 			temp.x = sourceWidth * scale;
 			temp.y = sourceHeight * scale;
@@ -92,6 +109,7 @@ public abstract class Scaling {
 	/** Scales the source to fill the target. This may cause the source to not keep the same aspect ratio. */
 	public static final Scaling stretch = new Scaling() {
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
+			final Vector2 temp = tlData.get();
 			temp.x = targetWidth;
 			temp.y = targetHeight;
 			return temp;
@@ -102,6 +120,7 @@ public abstract class Scaling {
 	 * keep the same aspect ratio. */
 	public static final Scaling stretchX = new Scaling() {
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
+			final Vector2 temp = tlData.get();
 			temp.x = targetWidth;
 			temp.y = sourceHeight;
 			return temp;
@@ -112,6 +131,7 @@ public abstract class Scaling {
 	 * keep the same aspect ratio. */
 	public static final Scaling stretchY = new Scaling() {
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
+			final Vector2 temp = tlData.get();
 			temp.x = sourceWidth;
 			temp.y = targetHeight;
 			return temp;
@@ -121,6 +141,7 @@ public abstract class Scaling {
 	/** The source is not scaled. */
 	public static final Scaling none = new Scaling() {
 		public Vector2 apply (float sourceWidth, float sourceHeight, float targetWidth, float targetHeight) {
+			final Vector2 temp = tlData.get();
 			temp.x = sourceWidth;
 			temp.y = sourceHeight;
 			return temp;

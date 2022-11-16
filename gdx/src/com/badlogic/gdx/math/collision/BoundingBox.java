@@ -29,7 +29,7 @@ import com.badlogic.gdx.math.Vector3;
 public class BoundingBox implements Serializable {
 	private static final long serialVersionUID = -1286036817192127343L;
 
-	private final static Vector3 tmpVector = new Vector3();
+	private final Vector3 tmpVector = new Vector3();
 
 	/** Minimum vector. All XYZ components should be inferior to corresponding {@link #max} components. Call {@link #update()} if
 	 * you manually change this vector. */

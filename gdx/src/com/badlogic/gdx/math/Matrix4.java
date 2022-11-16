@@ -73,16 +73,19 @@ public class Matrix4 implements Serializable {
 	/** WW: Typically the value one. On Vector3 multiplication this value is ignored. */
 	public static final int M33 = 15;
 
-	static final Quaternion quat = new Quaternion();
-	static final Quaternion quat2 = new Quaternion();
-	static final Vector3 l_vez = new Vector3();
-	static final Vector3 l_vex = new Vector3();
-	static final Vector3 l_vey = new Vector3();
-	static final Vector3 tmpVec = new Vector3();
-	static final Matrix4 tmpMat = new Matrix4();
-	static final Vector3 right = new Vector3();
-	static final Vector3 tmpForward = new Vector3();
-	static final Vector3 tmpUp = new Vector3();
+	// avoid recursive constructors : stack overflow
+	private Matrix4 tmpMat = null;
+
+	// local tem fields
+	private Quaternion quat = new Quaternion();
+	private Quaternion quat2 = new Quaternion();
+	private Vector3 l_vez = new Vector3();
+	private Vector3 l_vex = new Vector3();
+	private Vector3 l_vey = new Vector3();
+	private Vector3 tmpVec = new Vector3();
+	private Vector3 right = new Vector3();
+	private Vector3 tmpForward = new Vector3();
+	private Vector3 tmpUp = new Vector3();
 
 	public final float val[] = new float[16];
 
@@ -92,6 +95,12 @@ public class Matrix4 implements Serializable {
 		val[M11] = 1f;
 		val[M22] = 1f;
 		val[M33] = 1f;
+	}
+
+	// avoid recursive constructors : stack overflow. Using lazy
+	private Matrix4 getTmpMat () {
+		if (tmpMat == null) tmpMat = new Matrix4();
+		return tmpMat;
 	}
 
 	/** Constructs a matrix from the given matrix.
@@ -335,6 +344,7 @@ public class Matrix4 implements Serializable {
 	 * @param matrix The other matrix to multiply by.
 	 * @return This matrix for the purpose of chaining operations together. */
 	public Matrix4 mulLeft (Matrix4 matrix) {
+		final Matrix4 tmpMat = getTmpMat();
 		tmpMat.set(matrix);
 		mul(tmpMat.val, val);
 		return set(tmpMat);
@@ -839,7 +849,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 setToLookAt (Vector3 position, Vector3 target, Vector3 up) {
 		tmpVec.set(target).sub(position);
 		setToLookAt(tmpVec, up);
-		mul(tmpMat.setToTranslation(-position.x, -position.y, -position.z));
+		mul(getTmpMat().setToTranslation(-position.x, -position.y, -position.z));
 		return this;
 	}
 

@@ -83,13 +83,35 @@ public class PixmapIO {
 	/** @author mzechner */
 	static private class CIM {
 		static private final int BUFFER_SIZE = 32000;
-		static private final byte[] writeBuffer = new byte[BUFFER_SIZE];
-		static private final byte[] readBuffer = new byte[BUFFER_SIZE];
+
+		/** ClassX: thread-safety support
+		 * @author dar */
+		static class CIMLocal extends ThreadLocal<CIMData> {
+			/*
+			 * @see java.lang.ThreadLocal#initialValue()
+			 */
+			@Override
+			protected CIMData initialValue () {
+				return new CIMData();
+			}
+		}
+
+		/** ClassX: thread-safety support
+		 * @author dar */
+		static class CIMData {
+			final byte[] writeBuffer = new byte[BUFFER_SIZE];
+			final byte[] readBuffer = new byte[BUFFER_SIZE];
+		}
+
+		// ClassX: thread-safety support
+		private static final CIMLocal tlData = new CIMLocal();
 
 		static public void write (FileHandle file, Pixmap pixmap) {
 			DataOutputStream out = null;
 
 			try {
+				final CIMData data = tlData.get();
+
 				DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(file.write(false));
 				out = new DataOutputStream(deflaterOutputStream);
 				out.writeInt(pixmap.getWidth());
@@ -103,14 +125,14 @@ public class PixmapIO {
 				int remainingBytes = pixelBuf.capacity() % BUFFER_SIZE;
 				int iterations = pixelBuf.capacity() / BUFFER_SIZE;
 
-				synchronized (writeBuffer) {
+				synchronized (data.writeBuffer) {
 					for (int i = 0; i < iterations; i++) {
-						pixelBuf.get(writeBuffer);
-						out.write(writeBuffer);
+						pixelBuf.get(data.writeBuffer);
+						out.write(data.writeBuffer);
 					}
 
-					pixelBuf.get(writeBuffer, 0, remainingBytes);
-					out.write(writeBuffer, 0, remainingBytes);
+					pixelBuf.get(data.writeBuffer, 0, remainingBytes);
+					out.write(data.writeBuffer, 0, remainingBytes);
 				}
 
 				((Buffer)pixelBuf).position(0);
@@ -126,6 +148,8 @@ public class PixmapIO {
 			DataInputStream in = null;
 
 			try {
+				final CIMData data = tlData.get();
+
 				in = new DataInputStream(new InflaterInputStream(new BufferedInputStream(file.read())));
 				int width = in.readInt();
 				int height = in.readInt();
@@ -136,10 +160,10 @@ public class PixmapIO {
 				((Buffer)pixelBuf).position(0);
 				((Buffer)pixelBuf).limit(pixelBuf.capacity());
 
-				synchronized (readBuffer) {
+				synchronized (data.readBuffer) {
 					int readBytes = 0;
-					while ((readBytes = in.read(readBuffer)) > 0) {
-						pixelBuf.put(readBuffer, 0, readBytes);
+					while ((readBytes = in.read(data.readBuffer)) > 0) {
+						pixelBuf.put(data.readBuffer, 0, readBytes);
 					}
 				}
 

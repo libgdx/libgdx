@@ -26,36 +26,54 @@ import com.badlogic.gdx.utils.FlushablePool;
  * shape builders.
  * @author realitix, xoppa */
 public class BaseShapeBuilder {
-	/* Color */
-	protected static final Color tmpColor0 = new Color();
-	protected static final Color tmpColor1 = new Color();
-	protected static final Color tmpColor2 = new Color();
-	protected static final Color tmpColor3 = new Color();
-	protected static final Color tmpColor4 = new Color();
+	/** ClassX: thread-safety support
+	 * @author dar */
+	static class BaseShapeLocal extends ThreadLocal<BaseShapeData> {
+		/*
+		 * @see java.lang.ThreadLocal#initialValue()
+		 */
+		protected BaseShapeData initialValue () {
+			return new BaseShapeData();
+		}
+	}
 
-	/* Vector3 */
-	protected static final Vector3 tmpV0 = new Vector3();
-	protected static final Vector3 tmpV1 = new Vector3();
-	protected static final Vector3 tmpV2 = new Vector3();
-	protected static final Vector3 tmpV3 = new Vector3();
-	protected static final Vector3 tmpV4 = new Vector3();
-	protected static final Vector3 tmpV5 = new Vector3();
-	protected static final Vector3 tmpV6 = new Vector3();
-	protected static final Vector3 tmpV7 = new Vector3();
+	/** ClassX: thread-safety support
+	 * @author dar */
+	static class BaseShapeData {
+		/* Color */
+		protected final Color tmpColor0 = new Color();
+		protected final Color tmpColor1 = new Color();
+		protected final Color tmpColor2 = new Color();
+		protected final Color tmpColor3 = new Color();
+		protected final Color tmpColor4 = new Color();
 
-	/* VertexInfo */
-	protected static final VertexInfo vertTmp0 = new VertexInfo();
-	protected static final VertexInfo vertTmp1 = new VertexInfo();
-	protected static final VertexInfo vertTmp2 = new VertexInfo();
-	protected static final VertexInfo vertTmp3 = new VertexInfo();
-	protected static final VertexInfo vertTmp4 = new VertexInfo();
-	protected static final VertexInfo vertTmp5 = new VertexInfo();
-	protected static final VertexInfo vertTmp6 = new VertexInfo();
-	protected static final VertexInfo vertTmp7 = new VertexInfo();
-	protected static final VertexInfo vertTmp8 = new VertexInfo();
+		/* Vector3 */
+		protected final Vector3 tmpV0 = new Vector3();
+		protected final Vector3 tmpV1 = new Vector3();
+		protected final Vector3 tmpV2 = new Vector3();
+		protected final Vector3 tmpV3 = new Vector3();
+		protected final Vector3 tmpV4 = new Vector3();
+		protected final Vector3 tmpV5 = new Vector3();
+		protected final Vector3 tmpV6 = new Vector3();
+		protected final Vector3 tmpV7 = new Vector3();
 
-	/* Matrix4 */
-	protected static final Matrix4 matTmp1 = new Matrix4();
+		/* VertexInfo */
+		protected final VertexInfo vertTmp0 = new VertexInfo();
+		protected final VertexInfo vertTmp1 = new VertexInfo();
+		protected final VertexInfo vertTmp2 = new VertexInfo();
+		protected final VertexInfo vertTmp3 = new VertexInfo();
+		protected final VertexInfo vertTmp4 = new VertexInfo();
+		protected final VertexInfo vertTmp5 = new VertexInfo();
+		protected final VertexInfo vertTmp6 = new VertexInfo();
+		protected final VertexInfo vertTmp7 = new VertexInfo();
+		protected final VertexInfo vertTmp8 = new VertexInfo();
+
+		/* Matrix4 */
+		protected final Matrix4 matTmp1 = new Matrix4();
+	}
+
+	// ClassX: thread-safety support
+	protected static final BaseShapeLocal tlData = new BaseShapeLocal();
 
 	private final static FlushablePool<Vector3> vectorPool = new FlushablePool<Vector3>() {
 		@Override

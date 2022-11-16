@@ -67,7 +67,7 @@ public class MeshPart {
 	 * same as the length of the {@link #halfExtents} member. See {@link #update()}. **/
 	public float radius = -1;
 	/** Temporary static {@link BoundingBox} instance, used in the {@link #update()} method. **/
-	private final static BoundingBox bounds = new BoundingBox();
+	private final BoundingBox bounds = new BoundingBox();
 
 	/** Construct a new MeshPart, with null values. The MeshPart is unusable until you set all members. **/
 	public MeshPart () {

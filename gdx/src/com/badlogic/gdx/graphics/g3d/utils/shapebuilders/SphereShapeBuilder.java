@@ -26,9 +26,6 @@ import com.badlogic.gdx.utils.ShortArray;
 /** Helper class with static methods to build sphere shapes using {@link MeshPartBuilder}.
  * @author xoppa */
 public class SphereShapeBuilder extends BaseShapeBuilder {
-	private final static ShortArray tmpIndices = new ShortArray();
-	private final static Matrix3 normalTransform = new Matrix3();
-
 	public static void build (MeshPartBuilder builder, float width, float height, float depth, int divisionsU, int divisionsV) {
 		build(builder, width, height, depth, divisionsU, divisionsV, 0, 360, 0, 180);
 	}
@@ -43,7 +40,9 @@ public class SphereShapeBuilder extends BaseShapeBuilder {
 
 	public static void build (MeshPartBuilder builder, float width, float height, float depth, int divisionsU, int divisionsV,
 		float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
-		build(builder, matTmp1.idt(), width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom, angleVTo);
+		final BaseShapeData data = tlData.get();
+		build(builder, data.matTmp1.idt(), width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom,
+			angleVTo);
 	}
 
 	/** @deprecated use {@link MeshPartBuilder#setVertexTransform(Matrix4)} instead of using the method signature taking a
@@ -51,6 +50,7 @@ public class SphereShapeBuilder extends BaseShapeBuilder {
 	@Deprecated
 	public static void build (MeshPartBuilder builder, final Matrix4 transform, float width, float height, float depth,
 		int divisionsU, int divisionsV, float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
+		final BaseShapeData data = tlData.get();
 		final boolean closedVFrom = MathUtils.isEqual(angleVFrom, 0f);
 		final boolean closedVTo = MathUtils.isEqual(angleVTo, 180f);
 		final float hw = width * 0.5f;
@@ -66,8 +66,11 @@ public class SphereShapeBuilder extends BaseShapeBuilder {
 		float v = 0f;
 		float angleU = 0f;
 		float angleV = 0f;
-		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
+		VertexInfo curr1 = data.vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
+
+		final ShortArray tmpIndices = new ShortArray();
+		final Matrix3 normalTransform = new Matrix3();
 
 		normalTransform.set(transform);
 

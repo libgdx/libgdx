@@ -31,8 +31,9 @@ public class FrustumShapeBuilder extends BaseShapeBuilder {
 	 * @param builder MeshPartBuilder
 	 * @param camera Camera */
 	public static void build (MeshPartBuilder builder, Camera camera) {
-		build(builder, camera, tmpColor0.set(1, 0.66f, 0, 1), tmpColor1.set(1, 0, 0, 1), tmpColor2.set(0, 0.66f, 1, 1),
-			tmpColor3.set(1, 1, 1, 1), tmpColor4.set(0.2f, 0.2f, 0.2f, 1));
+		final BaseShapeData data = tlData.get();
+		build(builder, camera, data.tmpColor0.set(1, 0.66f, 0, 1), data.tmpColor1.set(1, 0, 0, 1),
+			data.tmpColor2.set(0, 0.66f, 1, 1), data.tmpColor3.set(1, 1, 1, 1), data.tmpColor4.set(0.2f, 0.2f, 0.2f, 1));
 	}
 
 	/** Build Camera with custom colors
@@ -45,6 +46,8 @@ public class FrustumShapeBuilder extends BaseShapeBuilder {
 	 * @param crossColor */
 	public static void build (MeshPartBuilder builder, Camera camera, Color frustumColor, Color coneColor, Color upColor,
 		Color targetColor, Color crossColor) {
+		final BaseShapeData data = tlData.get();
+
 		Vector3[] planePoints = camera.frustum.planePoints;
 
 		// Frustum
@@ -60,10 +63,10 @@ public class FrustumShapeBuilder extends BaseShapeBuilder {
 		builder.line(camera.position, targetColor, centerPoint(planePoints[4], planePoints[5], planePoints[6]), targetColor);
 
 		// Up triangle
-		float halfNearSize = tmpV0.set(planePoints[1]).sub(planePoints[0]).scl(0.5f).len();
+		float halfNearSize = data.tmpV0.set(planePoints[1]).sub(planePoints[0]).scl(0.5f).len();
 		Vector3 centerNear = centerPoint(planePoints[0], planePoints[1], planePoints[2]);
-		tmpV0.set(camera.up).scl(halfNearSize * 2);
-		centerNear.add(tmpV0);
+		data.tmpV0.set(camera.up).scl(halfNearSize * 2);
+		centerNear.add(data.tmpV0);
 
 		builder.line(centerNear, upColor, planePoints[2], upColor);
 		builder.line(planePoints[2], upColor, planePoints[3], upColor);
@@ -114,8 +117,9 @@ public class FrustumShapeBuilder extends BaseShapeBuilder {
 	 * @param point1 Second segment's point
 	 * @return the middle point */
 	private static Vector3 middlePoint (Vector3 point0, Vector3 point1) {
-		tmpV0.set(point1).sub(point0).scl(0.5f);
-		return tmpV1.set(point0).add(tmpV0);
+		final BaseShapeData data = tlData.get();
+		data.tmpV0.set(point1).sub(point0).scl(0.5f);
+		return data.tmpV1.set(point0).add(data.tmpV0);
 	}
 
 	/** Return center point's rectangle
@@ -124,9 +128,10 @@ public class FrustumShapeBuilder extends BaseShapeBuilder {
 	 * @param point2
 	 * @return the center point */
 	private static Vector3 centerPoint (Vector3 point0, Vector3 point1, Vector3 point2) {
-		tmpV0.set(point1).sub(point0).scl(0.5f);
-		tmpV1.set(point0).add(tmpV0);
-		tmpV0.set(point2).sub(point1).scl(0.5f);
-		return tmpV1.add(tmpV0);
+		final BaseShapeData data = tlData.get();
+		data.tmpV0.set(point1).sub(point0).scl(0.5f);
+		data.tmpV1.set(point0).add(data.tmpV0);
+		data.tmpV0.set(point2).sub(point1).scl(0.5f);
+		return data.tmpV1.add(data.tmpV0);
 	}
 }

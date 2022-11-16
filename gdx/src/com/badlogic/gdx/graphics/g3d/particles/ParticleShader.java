@@ -102,8 +102,6 @@ public class ParticleShader extends BaseShader {
 
 	protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse;
 
-	static final Vector3 TMP_VECTOR3 = new Vector3();
-
 	public static class Inputs {
 		public final static Uniform cameraRight = new Uniform("u_cameraRight");
 		public final static Uniform cameraInvDirection = new Uniform("u_cameraInvDirection");
@@ -120,6 +118,7 @@ public class ParticleShader extends BaseShader {
 
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final Vector3 TMP_VECTOR3 = shader.tempVector3;
 				shader.set(inputID, TMP_VECTOR3.set(shader.camera.direction).crs(shader.camera.up).nor());
 			}
 		};
@@ -132,6 +131,7 @@ public class ParticleShader extends BaseShader {
 
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final Vector3 TMP_VECTOR3 = shader.tempVector3;
 				shader.set(inputID, TMP_VECTOR3.set(shader.camera.up).nor());
 			}
 		};
@@ -144,6 +144,7 @@ public class ParticleShader extends BaseShader {
 
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final Vector3 TMP_VECTOR3 = shader.tempVector3;
 				shader.set(inputID,
 					TMP_VECTOR3.set(-shader.camera.direction.x, -shader.camera.direction.y, -shader.camera.direction.z).nor());
 			}
@@ -171,8 +172,6 @@ public class ParticleShader extends BaseShader {
 			}
 		};
 		public final static Setter worldViewTrans = new Setter() {
-			final Matrix4 temp = new Matrix4();
-
 			@Override
 			public boolean isGlobal (BaseShader shader, int inputID) {
 				return false;
@@ -180,6 +179,7 @@ public class ParticleShader extends BaseShader {
 
 			@Override
 			public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final Matrix4 temp = shader.tempMatrix4;
 				shader.set(inputID, temp.set(shader.camera.view).mul(renderable.worldTransform));
 			}
 		};

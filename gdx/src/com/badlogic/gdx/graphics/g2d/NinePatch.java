@@ -42,7 +42,7 @@ public class NinePatch {
 	static public final int BOTTOM_CENTER = 7; // This field has the javadoc comment because it appears first in the javadocs.
 	static public final int BOTTOM_RIGHT = 8;
 
-	static private final Color tmpDrawColor = new Color();
+	private final Color tmpDrawColor = new Color();
 
 	private Texture texture;
 	private int bottomLeft, bottomCenter, bottomRight;
