@@ -17,7 +17,6 @@
 package com.badlogic.gdx.backends.android;
 
 import android.annotation.TargetApi;
-import android.opengl.GLES20;
 import android.opengl.GLES30;
 
 import com.badlogic.gdx.graphics.GL30;
@@ -44,7 +43,7 @@ public class AndroidGL30 extends AndroidGL20 implements GL30 {
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
 		int offset) {
 		if (offset != 0) throw new GdxRuntimeException("non zero offset is not supported");
-		GLES20.glTexImage2D(target, level, internalformat, width, height, border, format, type, null);
+		GLES30.glTexImage2D(target, level, internalformat, width, height, border, format, type, null);
 	}
 
 	@Override
@@ -66,7 +65,7 @@ public class AndroidGL30 extends AndroidGL20 implements GL30 {
 	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
 		int offset) {
 		if (offset != 0) throw new GdxRuntimeException("non zero offset is not supported");
-		GLES20.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, null);
+		GLES30.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, null);
 	}
 
 	@Override

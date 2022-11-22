@@ -148,7 +148,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDraw
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexImage2D
   (JNIEnv *env, jobject, jint target, jint level, jint internalformat, jint width, jint height, jint border, jint format, jint type, jint offset)
 {
-	glTexImage2D( target, level, internalformat, width, height, border, format, type, (void *)&offset );
+	glTexImage2D( target, level, internalformat, width, height, border, format, type, (void*)offset);
 }
 
 /*
@@ -180,7 +180,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexI
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexSubImage2D
   (JNIEnv *env, jobject, jint target, jint level, jint xoffset, jint yoffset, jint width, jint height, jint format, jint type, jint offset)
 {
-	glTexSubImage2D( target, level, xoffset, yoffset, width, height, format, type, (void *)&offset );
+	glTexSubImage2D( target, level, xoffset, yoffset, width, height, format, type, (void*)offset);
 }
 
 /*
