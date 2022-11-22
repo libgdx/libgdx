@@ -501,6 +501,7 @@ public class DefaultShader extends BaseShader {
 	protected final long attributesMask;
 	private final long vertexMask;
 	private final int textureCoordinates;
+	private int[] boneWeightsLocations;
 	protected final Config config;
 	/** Attributes which are not required but always supported. */
 	private final static long optionalAttributes = IntAttribute.CullFace | DepthTestAttribute.Type;
@@ -557,6 +558,9 @@ public class DefaultShader extends BaseShader {
 		int boneWeights = renderable.meshPart.mesh.getVertexAttributes().getBoneWeights();
 		if (boneWeights > config.numBoneWeights) {
 			throw new GdxRuntimeException("too many bone weights: " + boneWeights + ", max configured: " + config.numBoneWeights);
+		}
+		if (renderable.bones != null) {
+			boneWeightsLocations = new int[config.numBoneWeights];
 		}
 
 		// Global uniforms
@@ -631,6 +635,12 @@ public class DefaultShader extends BaseShader {
 		spotLightsExponentOffset = loc(u_spotLights0exponent) - spotLightsLoc;
 		spotLightsSize = loc(u_spotLights1color) - spotLightsLoc;
 		if (spotLightsSize < 0) spotLightsSize = 0;
+
+		if (boneWeightsLocations != null) {
+			for (int i = 0; i < boneWeightsLocations.length; i++) {
+				boneWeightsLocations[i] = program.getAttributeLocation(ShaderProgram.BONEWEIGHT_ATTRIBUTE + i);
+			}
+		}
 	}
 
 	private static final boolean and (final long mask, final long flag) {
@@ -778,6 +788,15 @@ public class DefaultShader extends BaseShader {
 		lightsSet = false;
 
 		if (has(u_time)) set(u_time, time += Gdx.graphics.getDeltaTime());
+
+		// set generic vertex attribute value for all bone weights in case a mesh has missing attributes.
+		if (boneWeightsLocations != null) {
+			for (int location : boneWeightsLocations) {
+				if (location >= 0) {
+					Gdx.gl.glVertexAttrib2f(location, 0, 0);
+				}
+			}
+		}
 	}
 
 	@Override
