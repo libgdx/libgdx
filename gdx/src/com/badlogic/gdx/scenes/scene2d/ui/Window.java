@@ -362,6 +362,7 @@ public class Window extends Table {
 			titleFont = style.titleFont;
 			if (style.titleFontColor != null) titleFontColor = new Color(style.titleFontColor);
 			background = style.background;
+			stageBackground = style.stageBackground;
 		}
 	}
 }
