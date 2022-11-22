@@ -594,9 +594,9 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 				if (pixels instanceof FloatBuffer) {
 					buffer = webGLArray;
 				} else {
-					int remainingBytes = pixels.remaining() * 4;
+					int length = pixels.remaining();
 					int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
-					buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
+					buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, length);
 				}
 				gl.texImage3D(target, level, internalformat, width, height, depth, border, format, type, buffer);
 			} else {
