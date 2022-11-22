@@ -10,7 +10,7 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="com.android.vending.BILLING" />
 	<uses-feature android:name="android.software.live_wallpaper" />
-		
+
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:allowBackup="false"
 		tools:ignore="GoogleAppIndexingWarning">
@@ -22,7 +22,7 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		
+
 		<activity android:name=".FragmentTestStarter"
 				  android:label="@string/app_name_fragments"
 				  android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
@@ -34,19 +34,19 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".GdxTestActivity" 
+		<activity android:name=".GdxTestActivity"
 				  android:label="Gdx Test"
 				  android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
 				  android:screenOrientation="landscape"/>
 
-		<activity android:name=".LivewallpaperSettings" 
+		<activity android:name=".LivewallpaperSettings"
 				  android:label="Livewallpaper Settings"
 				  android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 		</activity>
-		
+
         <activity android:name=".DaydreamSettings"
                   android:label="Daydream Settings"
 				  android:exported="true">
@@ -54,7 +54,7 @@
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
         </activity>
-		
+
 		<service android:name=".LiveWallpaper"
             android:label="@string/app_name"
             android:icon="@drawable/icon"
@@ -66,8 +66,8 @@
             <meta-data android:name="android.service.wallpaper"
                 android:resource="@xml/livewallpaper" />
 
-        </service>	
-        
+        </service>
+
 		<service android:name=".Daydream"
 		     android:label="@string/app_name"
 		     android:icon="@drawable/icon"
@@ -81,4 +81,4 @@
 		         android:resource="@xml/daydream" />
 		</service>
 	</application>
-</manifest> 
+</manifest>
