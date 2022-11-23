@@ -142,6 +142,17 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glDraw
 
 /*
  * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Method:    glTexImage2D
+ * Signature: (IIIIIIIII)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexImage2D
+  (JNIEnv *env, jobject, jint target, jint level, jint internalformat, jint width, jint height, jint border, jint format, jint type, jint offset)
+{
+	glTexImage2D( target, level, internalformat, width, height, border, format, type, (void*)offset);
+}
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
  * Method:    glTexImage3DJNI
  * Signature: (IIIIIIIIILjava/nio/Buffer;)V
  */
@@ -159,6 +170,17 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexI
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexImage3D__IIIIIIIIII
   (JNIEnv *env, jobject, jint target, jint level, jint internalformat, jint width, jint height, jint depth, jint border, jint format, jint type, jint offset) {
     glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, (void*)offset);
+}
+
+/*
+ * Class:     com_badlogic_gdx_backends_iosrobovm_IOSGLES30
+ * Method:    glTexSubImage2D
+ * Signature: (IIIIIIIIJ)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES30_glTexSubImage2D
+  (JNIEnv *env, jobject, jint target, jint level, jint xoffset, jint yoffset, jint width, jint height, jint format, jint type, jint offset)
+{
+	glTexSubImage2D( target, level, xoffset, yoffset, width, height, format, type, (void*)offset);
 }
 
 /*
