@@ -16,11 +16,13 @@
 
 package com.badlogic.gdx.backends.gwt;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
+import com.google.gwt.typedarrays.shared.Uint32Array;
 import com.google.gwt.webgl.client.WebGL2RenderingContext;
 import com.google.gwt.webgl.client.WebGLQuery;
 import com.google.gwt.webgl.client.WebGLSampler;
@@ -28,6 +30,7 @@ import com.google.gwt.webgl.client.WebGLTransformFeedback;
 import com.google.gwt.webgl.client.WebGLVertexArrayObject;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.HasArrayBufferView;
 import java.nio.IntBuffer;
@@ -90,12 +93,6 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	private void deallocateVertexArrayId (int id) {
 		vertexArrays.remove(id);
 	}
-
-	// private Int32Array intBufferToNativeJsArray (int length, IntBuffer bufs) {
-	// Int32Array array = TypedArrays.createInt32Array(length);
-	// array.set((Int32Array)((HasArrayBufferView)bufs).getTypedArray().buffer());
-	// return array;
-	// }
 
 	@Override
 	public void glBeginQuery (int target, int id) {
@@ -172,8 +169,10 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	@Override
 	public void glDeleteQueries (int n, int[] ids, int offset) {
 		for (int i = offset; i < offset + n; i++) {
-			throw new UnsupportedOperationException();
-			// FIXMEgl.deleteQueries(ids[i]);
+			int id = ids[i];
+			WebGLQuery query = queries.get(id);
+			deallocateQueryId(id);
+			gl.deleteQuery(query);
 		}
 	}
 
@@ -192,8 +191,10 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	@Override
 	public void glDeleteSamplers (int count, int[] samplers, int offset) {
 		for (int i = offset; i < offset + count; i++) {
-			throw new UnsupportedOperationException();
-			// FIXMEgl.deleteSamplers(samplers[i]);
+			int id = samplers[i];
+			WebGLSampler sampler = this.samplers.get(id);
+			deallocateSamplerId(id);
+			gl.deleteSampler(sampler);
 		}
 	}
 
@@ -212,8 +213,10 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	@Override
 	public void glDeleteTransformFeedbacks (int n, int[] ids, int offset) {
 		for (int i = offset; i < offset + n; i++) {
-			throw new UnsupportedOperationException();
-			// FIXMEgl.deleteTransformFeedbacks(ids[i]);
+			int id = ids[i];
+			WebGLTransformFeedback feedback = feedbacks.get(id);
+			deallocateFeedbackId(id);
+			gl.deleteTransformFeedback(feedback);
 		}
 	}
 
@@ -232,8 +235,10 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	@Override
 	public void glDeleteVertexArrays (int n, int[] arrays, int offset) {
 		for (int i = offset; i < offset + n; i++) {
-			throw new UnsupportedOperationException();
-			// FIXMEgl.deleteVertexArrays(arrays[i]);
+			int id = arrays[i];
+			WebGLVertexArrayObject vArray = vertexArrays.get(id);
+			deallocateVertexArrayId(id);
+			gl.deleteVertexArray(vArray);
 		}
 	}
 
@@ -257,10 +262,6 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	@Override
 	public void glDrawBuffers (int n, IntBuffer bufs) {
 		int startPosition = bufs.position();
-		Gdx.app.log("GwtGL30", "Args: n: " + n + " bufs: " + bufs);
-		for (int i = 0; i < bufs.capacity(); i++) {
-			Gdx.app.log("GwtGL30", "Value: i: " + i + " :: " + bufs.get(i));
-		}
 		gl.drawBuffers(copy((IntBuffer)bufs).subarray(0, n));
 		bufs.position(startPosition);
 	}
@@ -268,20 +269,11 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	@Override
 	public void glDrawElementsInstanced (int mode, int count, int type, int indicesOffset, int instanceCount) {
 		gl.drawElementsInstanced(mode, count, type, indicesOffset, instanceCount);
-
 	}
 
 	@Override
 	public void glDrawRangeElements (int mode, int start, int end, int count, int type, Buffer indices) {
-		throw new UnsupportedOperationException();
-// if (indices instanceof ByteBuffer)
-// gl.drawRangeElements(mode, start, end, (ByteBuffer)indices);
-// else if (indices instanceof ShortBuffer)
-// gl.drawRangeElements(mode, start, end, (ShortBuffer)indices);
-// else if (indices instanceof IntBuffer)
-// gl.drawRangeElements(mode, start, end, (IntBuffer)indices);
-// else
-// throw new GdxRuntimeException("indices must be byte, short or int buffer");
+		gl.drawRangeElements(mode, start, end, count, type, indices.position());
 	}
 
 	@Override
@@ -301,7 +293,7 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glFlushMappedBufferRange (int target, int offset, int length) {
-		throw new UnsupportedOperationException("glFlushMappedBufferRange not available on WebGL2 ");
+		throw new UnsupportedOperationException("glFlushMappedBufferRange not supported on WebGL2");
 	}
 
 	@Override
@@ -312,8 +304,9 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	@Override
 	public void glGenQueries (int n, int[] ids, int offset) {
 		for (int i = offset; i < offset + n; i++) {
-			// ids[i] = gl.genQueries();
-			throw new UnsupportedOperationException("glGenQueries (int n, int[] ids, int offset) not supported yet");
+			WebGLQuery query = gl.createQuery();
+			int id = allocateQueryId(query);
+			ids[i] = id;
 		}
 	}
 
@@ -321,8 +314,8 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	public void glGenQueries (int n, IntBuffer ids) {
 		int startPosition = ids.position();
 		for (int i = 0; i < n; i++) {
-			WebGLQuery buffer = gl.createQuery();
-			int id = allocateQueryId(buffer);
+			WebGLQuery query = gl.createQuery();
+			int id = allocateQueryId(query);
 			ids.put(id);
 		}
 		ids.position(startPosition);
@@ -331,8 +324,9 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	@Override
 	public void glGenSamplers (int count, int[] samplers, int offset) {
 		for (int i = offset; i < offset + count; i++) {
-			throw new UnsupportedOperationException();
-			// FIXME samplers[i] = gl.genSamplers();
+			WebGLSampler sampler = gl.createSampler();
+			int id = allocateSamplerId(sampler);
+			samplers[i] = id;
 		}
 	}
 
@@ -350,8 +344,9 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	@Override
 	public void glGenTransformFeedbacks (int n, int[] ids, int offset) {
 		for (int i = offset; i < offset + n; i++) {
-			throw new UnsupportedOperationException();
-			// FIXME ids[i] = gl.genTransformFeedbacks();
+			WebGLTransformFeedback feedback = gl.createTransformFeedback();
+			int id = allocateFeedbackId(feedback);
+			ids[i] = id;
 		}
 	}
 
@@ -369,8 +364,9 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	@Override
 	public void glGenVertexArrays (int n, int[] arrays, int offset) {
 		for (int i = offset; i < offset + n; i++) {
-			throw new UnsupportedOperationException();
-			// FIXME arrays[i] = gl.genVertexArrays();
+			WebGLVertexArrayObject vArray = gl.createVertexArray();
+			int id = allocateVertexArrayId(vArray);
+			arrays[i] = id;
 		}
 	}
 
@@ -387,8 +383,20 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glGetActiveUniformBlockiv (int program, int uniformBlockIndex, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException();
-		// params.put(gl.getActiveUniformBlocki(program, uniformBlockIndex, pname));
+		if (pname == GL30.GL_UNIFORM_BLOCK_BINDING || pname == GL30.GL_UNIFORM_BLOCK_DATA_SIZE || pname == GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS) {
+			params.put(gl.getActiveUniformBlockParameteri(programs.get(program), uniformBlockIndex, pname));
+		} else if (pname == GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES) {
+			Uint32Array array = gl.getActiveUniformBlockParameterv(programs.get(program), uniformBlockIndex, pname);
+			for (int i = 0; i < array.length(); i++) {
+				params.put(i, (int) array.get(i));
+			}
+		} else if (pname == GL30.GL_UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER || pname == GL30.GL_UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER) {
+			boolean result = gl.getActiveUniformBlockParameterb(programs.get(program), uniformBlockIndex, pname);
+			params.put(result ? GL20.GL_TRUE : GL20.GL_FALSE);
+		} else {
+			throw new GdxRuntimeException("Unsupported pname passed to glGetActiveUniformBlockiv");
+		}
+		params.flip();
 	}
 
 	@Override
@@ -398,26 +406,22 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glGetActiveUniformBlockName (int program, int uniformBlockIndex, Buffer length, Buffer uniformBlockName) {
-		throw new UnsupportedOperationException();
-		// gl.getActiveUniformBlockName(program, uniformBlockIndex, (IntBuffer)length, (ByteBuffer)uniformBlockName);
+		throw new UnsupportedOperationException("glGetActiveUniformBlockName with Buffer parameters not supported on WebGL2");
 	}
 
 	@Override
 	public void glGetActiveUniformsiv (int program, int uniformCount, IntBuffer uniformIndices, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException();
-		// gl.getActiveUniforms(program, uniformIndices, pname, params);
+		throw new UnsupportedOperationException("glGetActiveUniformsiv not supported on WebGL2");
 	}
 
 	@Override
 	public void glGetBufferParameteri64v (int target, int pname, LongBuffer params) {
-		throw new UnsupportedOperationException();
-		// params.put(gl.getBufferParameteri64(target, pname));
+		throw new UnsupportedOperationException("glGetBufferParameteri64v not supported on WebGL2");
 	}
 
 	@Override
 	public Buffer glGetBufferPointerv (int target, int pname) {
-		throw new UnsupportedOperationException();
-		// return gl.getBufferPointer(target, pname);
+		throw new UnsupportedOperationException("glGetBufferPointerv not supported on WebGL2");
 	}
 
 	@Override
@@ -427,39 +431,51 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glGetInteger64v (int pname, LongBuffer params) {
-		throw new UnsupportedOperationException();
-		// gl.getInteger64v(pname, params);
+		throw new UnsupportedOperationException("glGetInteger64v not supported on WebGL2");
 	}
 
 	@Override
 	public void glGetQueryiv (int target, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException();
-		// params.put(queries.gl.getQuery(target, pname));
+		// Not 100% clear on this one. Returning the integer key for the query.
+		// Similar to how GwtGL20 handles FBO in glGetIntegerv
+		WebGLQuery query = gl.getQuery(target, pname);
+		if (query == null) {
+			params.put(0);
+		} else {
+			params.put(queries.getKey(query));
+		}
+		params.flip();
 	}
 
 	@Override
 	public void glGetQueryObjectuiv (int id, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException();
-		// gl.getQueryObjectuiv(id, pname, params);
+		// In WebGL2 getQueryObject was renamed to getQueryParameter
+		if (pname == GL30.GL_QUERY_RESULT) {
+			params.put(gl.getQueryParameteri(queries.get(id), pname));
+		} else if (pname == GL30.GL_QUERY_RESULT_AVAILABLE) {
+			boolean result = gl.getQueryParameterb(queries.get(id), pname);
+			params.put(result ? GL20.GL_TRUE : GL20.GL_FALSE);
+		} else {
+			throw new GdxRuntimeException("Unsupported pname passed to glGetQueryObjectuiv");
+		}
+		params.flip();
 	}
 
 	@Override
 	public void glGetSamplerParameterfv (int sampler, int pname, FloatBuffer params) {
-		throw new UnsupportedOperationException();
-		// gl.getSamplerParameter(sampler, pname, params);
-
+		params.put(gl.getSamplerParameterf(samplers.get(sampler), pname));
+		params.flip();
 	}
 
 	@Override
 	public void glGetSamplerParameteriv (int sampler, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException();
-		// gl.getSamplerParameterI(sampler, pname, params);
+		params.put(gl.getSamplerParameteri(samplers.get(sampler), pname));
+		params.flip();
 	}
 
 	@Override
 	public String glGetStringi (int name, int index) {
-		throw new UnsupportedOperationException();
-		// return gl.getStringi(name, index);
+		throw new UnsupportedOperationException("glGetStringi not supported on WebGL2");
 	}
 
 	@Override
@@ -469,26 +485,26 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glGetUniformIndices (int program, String[] uniformNames, IntBuffer uniformIndices) {
-		throw new UnsupportedOperationException();
-		// gl.getUniformIndices(programs.get(program), uniformNames, uniformIndices);
+		uniformIndices.put(gl.getUniformIndices(programs.get(program), uniformNames));
+		uniformIndices.flip();
 	}
 
 	@Override
 	public void glGetUniformuiv (int program, int location, IntBuffer params) {
-		throw new UnsupportedOperationException();
-		// gl.getUniformuiv(program, location, params);
+		// fv and iv also not implemented in GwtGL20
+		throw new UnsupportedOperationException("glGetUniformuiv not implemented on WebGL2");
 	}
 
 	@Override
 	public void glGetVertexAttribIiv (int index, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException();
-		// gl.getVertexAttribI(index, pname, params);
+		// fv and iv also not implemented in GwtGL20
+		throw new UnsupportedOperationException("glGetVertexAttribIiv not implemented on WebGL2");
 	}
 
 	@Override
 	public void glGetVertexAttribIuiv (int index, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException();
-		// gl.getVertexAttribIu(index, pname, params);
+		// fv and iv also not implemented in GwtGL20
+		throw new UnsupportedOperationException("glGetVertexAttribIuiv not implemented on WebGL2");
 	}
 
 	@Override
@@ -528,7 +544,7 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public Buffer glMapBufferRange(int target, int offset, int length, int access) {
-		return null;
+		throw new UnsupportedOperationException("glMapBufferRange not supported on WebGL2");
 	}
 
 	@Override
@@ -538,7 +554,7 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glProgramParameteri (int program, int pname, int value) {
-		throw new UnsupportedOperationException("Not supported on WebGL2");
+		throw new UnsupportedOperationException("glProgramParameteri not supported on WebGL2");
 	}
 
 	@Override
@@ -558,26 +574,22 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glSamplerParameterf (int sampler, int pname, float param) {
-		throw new UnsupportedOperationException();
-		// gl.samplerParameterf(sampler, pname, param);
+		gl.samplerParameterf(samplers.get(sampler), pname, param);
 	}
 
 	@Override
 	public void glSamplerParameterfv (int sampler, int pname, FloatBuffer param) {
-		throw new UnsupportedOperationException();
-		// gl.samplerParameterfv(samplers.get(sampler), pname, param);
+		gl.samplerParameterf(samplers.get(sampler), pname, param.get());
 	}
 
 	@Override
 	public void glSamplerParameteri (int sampler, int pname, int param) {
-		throw new UnsupportedOperationException();
-		// gl.samplerParameteri(samplers.get(sampler), pname, param);
+		gl.samplerParameteri(samplers.get(sampler), pname, param);
 	}
 
 	@Override
 	public void glSamplerParameteriv (int sampler, int pname, IntBuffer param) {
-		throw new UnsupportedOperationException();
-		// gl.samplerParameter(sampler, pname, param);
+		 gl.samplerParameterf(samplers.get(sampler), pname, param.get());
 	}
 
 	@Override
@@ -586,29 +598,32 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 		// Taken from glTexImage2D
 		if (pixels == null) {
 			gl.texImage3D(target, level, internalformat, width, height, depth, border, format, type, (ArrayBufferView) null);
-		} else {
-			if (pixels.limit() > 1) {
-				HasArrayBufferView arrayHolder = (HasArrayBufferView)pixels;
-				ArrayBufferView webGLArray = arrayHolder.getTypedArray();
-				ArrayBufferView buffer;
-				if (pixels instanceof FloatBuffer) {
-					buffer = webGLArray;
-				} else {
-					int length = pixels.remaining();
-					int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
-					buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, length);
-				}
-				gl.texImage3D(target, level, internalformat, width, height, depth, border, format, type, buffer);
+			return;
+		}
+
+		if (pixels.limit() > 1) {
+			HasArrayBufferView arrayHolder = (HasArrayBufferView)pixels;
+			ArrayBufferView webGLArray = arrayHolder.getTypedArray();
+			ArrayBufferView buffer;
+			if (pixels instanceof FloatBuffer) {
+				buffer = webGLArray;
 			} else {
-				Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
-				// Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
-				if (pixmap.canUseImageElement()) {
-					gl.texImage3D(target, level, internalformat, width, height, depth, border,format, type, pixmap.getImageElement());
-				} else if (pixmap.canUseVideoElement()) {
-					gl.texImage3D(target, level, internalformat, width, height, depth, border,format, type, pixmap.getVideoElement());
-				} else {
-					gl.texImage3D(target, level, internalformat, width, height, depth, border,format, type, pixmap.getCanvasElement());
-				}
+				int length = pixels.remaining();
+				if (!(pixels instanceof ByteBuffer))
+					length *= 4;
+				int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
+				buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, length);
+			}
+			gl.texImage3D(target, level, internalformat, width, height, depth, border, format, type, buffer);
+		} else {
+			Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
+			// Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
+			if (pixmap.canUseImageElement()) {
+				gl.texImage3D(target, level, internalformat, width, height, depth, border,format, type, pixmap.getImageElement());
+			} else if (pixmap.canUseVideoElement()) {
+				gl.texImage3D(target, level, internalformat, width, height, depth, border,format, type, pixmap.getVideoElement());
+			} else {
+				gl.texImage3D(target, level, internalformat, width, height, depth, border,format, type, pixmap.getCanvasElement());
 			}
 		}
 	}
@@ -630,9 +645,13 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 			if (pixels instanceof FloatBuffer) {
 				buffer = webGLArray;
 			} else {
-				int remainingBytes = pixels.remaining() * 4;
+				int length = pixels.remaining();
+				if (!(pixels instanceof ByteBuffer)) {
+					// It seems for ByteBuffer we don't need this byte conversion
+					length *= 4;
+				}
 				int byteOffset = webGLArray.byteOffset() + pixels.position() * 4;
-				buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
+				buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, length);
 			}
 			gl.texSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, buffer);
 		} else {
@@ -714,7 +733,7 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public boolean glUnmapBuffer (int target) {
-		throw new UnsupportedOperationException("Not supported in WebGL2");
+		throw new UnsupportedOperationException("glUnmapBuffer not supported on WebGL2");
 	}
 
 	@Override

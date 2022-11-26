@@ -18,12 +18,10 @@ package com.google.gwt.webgl.client;
 
 import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.VideoElement;
-import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.google.gwt.typedarrays.shared.Float32Array;
 import com.google.gwt.typedarrays.shared.Int32Array;
@@ -76,6 +74,14 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	protected WebGL2RenderingContext () {
+	}
+
+	public static JsArrayString toJsArray(String[] input) {
+		JsArrayString jsArrayString = JsArrayString.createArray().cast();
+		for (String s : input) {
+			jsArrayString.push(s);
+		}
+		return jsArrayString;
 	}
 
 	public final native void beginQuery (int target, WebGLQuery query)/*-{
@@ -251,52 +257,62 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
         return this.getActiveUniformBlockName(program, uniformBlockIndex);
 	}-*/;
 
-	// FIXME
-	public final native/* any */Object getActiveUniformBlockParameter (WebGLProgram program, int uniformBlockIndex, int pname)/*-{
+	public final native int getActiveUniformBlockParameteri (WebGLProgram program, int uniformBlockIndex, int pname)/*-{
+		return this.getActiveUniformBlockParameter(program, uniformBlockIndex, pname);
+	}-*/;
+
+	public final native <T extends ArrayBufferView> T getActiveUniformBlockParameterv (WebGLProgram program, int uniformBlockIndex, int pname)/*-{
+		return this.getActiveUniformBlockParameter(program, uniformBlockIndex, pname);
+	}-*/;
+
+	public final native boolean getActiveUniformBlockParameterb (WebGLProgram program, int uniformBlockIndex, int pname)/*-{
+		return this.getActiveUniformBlockParameter(program, uniformBlockIndex, pname);
+	}-*/;
+
+	public final native/* any */Object getActiveUniforms (WebGLProgram program, Int32Array uniformIndices, int pname)/*-{
 		throw "UnsupportedOperation";
-
 	}-*/;
 
-	// FIXME
-	public final native/* any */Object getActiveUniforms (WebGLProgram program, int[] uniformIndices, int pname)/*-{
-		throw "UnsupportedOperation";
-
-	}-*/;
-
-	public final native void getBufferSubData (int target, int offset, ArrayBuffer returnedData)/*-{
-		this.getBufferSubData(target, offset, returnedData)
-	}-*/;
+// Not part of the GL30 Interface
+//	public final native void getBufferSubData (int target, int offset, ArrayBuffer returnedData)/*-{
+//		this.getBufferSubData(target, offset, returnedData);
+//	}-*/;
 
 	/* Programs and shaders */
 	public final native int getFragDataLocation (WebGLProgram program, String name)/*-{
         return this.getFragDataLocation(program, name);
 	}-*/;
 
-	// FIXME
-	public final native/* any */Object getIndexedParameter (int target, int index)/*-{
-		throw "UnsupportedOperation";
-
-	}-*/;
+// Not part of the GL30 Interface
+//public final native/* any */Object getIndexedParameter (int target, int index)/*-{
+//	throw "UnsupportedOperation";
+//}-*/;
 
 	/* Renderbuffer objects */
-	// FIXME
-	public final native/* any */Object getInternalformatParameter (int target, int internalformat, int pname)/*-{
-		throw "UnsupportedOperation";
 
-	}-*/;
+// Not part of the GL30 Interface
+//public final native/* any */Object getInternalformatParameter (int target, int internalformat, int pname)/*-{
+//	throw "UnsupportedOperation";
+//}-*/;
 
 	public final native WebGLQuery getQuery (int target, int pname)/*-{
-		throw "UnsupportedOperation";
+		return this.getQuery(target, pname);
 	}-*/;
 
-	// FIXME
-	public final native/* any */Object getQueryParameter (WebGLQuery query, int pname)/*-{
-		throw "UnsupportedOperation";
+	public final native boolean getQueryParameterb (WebGLQuery query, int pname)/*-{
+		return this.getQueryParameter(query, pname);
 	}-*/;
 
-	// FIXME
-	public final native/* any */Object getSamplerParameter (WebGLSampler sampler, int pname)/*-{
-		throw "UnsupportedOperation";
+	public final native int getQueryParameteri (WebGLQuery query, int pname)/*-{
+		return this.getQueryParameter(query, pname);
+	}-*/;
+
+	public final native float getSamplerParameterf (WebGLSampler sampler, int pname)/*-{
+		this.getSamplerParameter(sampler, pname);
+	}-*/;
+
+	public final native int getSamplerParameteri (WebGLSampler sampler, int pname)/*-{
+		this.getSamplerParameter(sampler, pname);
 	}-*/;
 
 	// FIXME
@@ -314,18 +330,21 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
         return this.getUniformBlockIndex(program, uniformBlockName);
 	}-*/;
 
-	/* FIXME Not sure if this is right */
-	public final native JsArrayInteger getUniformIndices (WebGLProgram program, JsArrayString uniformNames)/*-{
-		throw "UnsupportedOperation";
+	public final int getUniformIndices(WebGLProgram program, String[] uniformNames) {
+		return this.getUniformIndices(program, toJsArray(uniformNames));
+	}
 
+	public final native int getUniformIndices (WebGLProgram program, JsArrayString uniformNames)/*-{
+    	//TODO Should return an array of int
+		return this.getUniformIndices(program, uniformNames);
 	}-*/;
 
 	public final native void invalidateFramebuffer (int target, Int32Array attachments)/*-{
-		this.invalidateFramebuffer(target, attachments)
+		this.invalidateFramebuffer(target, attachments);
 	}-*/;
 
 	public final native void invalidateSubFramebuffer (int target, Int32Array attachments, int x, int y, int width, int height)/*-{
-		invalidateSubFramebuffer(target, attachments, x, y, width, height)
+		invalidateSubFramebuffer(target, attachments, x, y, width, height);
 	}-*/;
 
 	public final native boolean isQuery (WebGLQuery query)/*-{
@@ -345,7 +364,7 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	public final native boolean isVertexArray (WebGLVertexArrayObject vertexArray)/*-{
-		return this.isVertexArray(vertexArray)
+		return this.isVertexArray(vertexArray);
 	}-*/;
 
 	public final native void pauseTransformFeedback ()/*-{
@@ -353,7 +372,7 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	public final native void readBuffer (int src)/*-{
-		this.readBuffer(src)
+		this.readBuffer(src);
 	}-*/;
 
 	public final native void renderbufferStorageMultisample (int target, int samples, int internalformat, int width, int height)/*-{
@@ -365,11 +384,11 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	public final native void samplerParameterf (WebGLSampler sampler, int pname, float param)/*-{
-		throw "UnsupportedOperation";
+		this.samplerParameterf(sampler, pname, param);
 	}-*/;
 
 	public final native void samplerParameteri (WebGLSampler sampler, int pname, int param)/*-{
-		throw "UnsupportedOperation";
+		this.samplerParameteri(sampler, pname, param);
 	}-*/;
 
 	public final native void texImage3D (int target, int level, int internalformat, int width, int height, int depth, int border,
@@ -425,7 +444,11 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		this.texSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, offset);
 	}-*/;
 
-	public final native void transformFeedbackVaryings (WebGLProgram program, String[] varyings, int bufferMode)/*-{
+	public final void transformFeedbackVaryings(WebGLProgram program, String[] varyings, int bufferMode) {
+		this.transformFeedbackVaryings(program, toJsArray(varyings), bufferMode);
+	}
+
+	public final native void transformFeedbackVaryings (WebGLProgram program, JsArrayString varyings, int bufferMode)/*-{
 		this.transformFeedbackVaryings(program, varyings, bufferMode);
 	}-*/;
 
