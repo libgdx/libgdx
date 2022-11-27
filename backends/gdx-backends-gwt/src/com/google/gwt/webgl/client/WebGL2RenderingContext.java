@@ -18,6 +18,7 @@ package com.google.gwt.webgl.client;
 
 import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.ImageElement;
@@ -308,11 +309,11 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	public final native float getSamplerParameterf (WebGLSampler sampler, int pname)/*-{
-		this.getSamplerParameter(sampler, pname);
+		return this.getSamplerParameter(sampler, pname);
 	}-*/;
 
 	public final native int getSamplerParameteri (WebGLSampler sampler, int pname)/*-{
-		this.getSamplerParameter(sampler, pname);
+		return this.getSamplerParameter(sampler, pname);
 	}-*/;
 
 	// FIXME
@@ -330,12 +331,11 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
         return this.getUniformBlockIndex(program, uniformBlockName);
 	}-*/;
 
-	public final int getUniformIndices(WebGLProgram program, String[] uniformNames) {
+	public final JsArrayInteger getUniformIndices(WebGLProgram program, String[] uniformNames) {
 		return this.getUniformIndices(program, toJsArray(uniformNames));
 	}
 
-	public final native int getUniformIndices (WebGLProgram program, JsArrayString uniformNames)/*-{
-    	//TODO Should return an array of int
+	public final native JsArrayInteger getUniformIndices (WebGLProgram program, JsArrayString uniformNames)/*-{
 		return this.getUniformIndices(program, uniformNames);
 	}-*/;
 

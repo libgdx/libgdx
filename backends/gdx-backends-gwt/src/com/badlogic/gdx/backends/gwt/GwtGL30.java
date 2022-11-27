@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.google.gwt.typedarrays.shared.Uint32Array;
@@ -485,7 +486,10 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glGetUniformIndices (int program, String[] uniformNames, IntBuffer uniformIndices) {
-		uniformIndices.put(gl.getUniformIndices(programs.get(program), uniformNames));
+		JsArrayInteger array = gl.getUniformIndices(programs.get(program), uniformNames);
+		for (int i = 0; i < array.length(); i++) {
+			uniformIndices.put(i, array.get(i));
+		}
 		uniformIndices.flip();
 	}
 
