@@ -19,6 +19,7 @@ package com.badlogic.gdx.tests.gwt.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class GwtTestStarter extends GwtApplication {
 	@Override
@@ -26,6 +27,12 @@ public class GwtTestStarter extends GwtApplication {
 		GwtApplicationConfiguration config = new GwtApplicationConfiguration(true);
 		config.useGyroscope = true;
 		config.padVertical = 150;
+
+		if (config.useGL30) {
+			ShaderProgram.prependVertexCode = "#version 300 es\n#define varying out\n#define attribute in\n";
+			ShaderProgram.prependFragmentCode = "#version 300 es\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nprecision mediump float;\nout vec4 fragColor;\n";
+		}
+
 		// config.openURLInNewWindow = true;
 		return config;
 	}
