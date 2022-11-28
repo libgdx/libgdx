@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 See AUTHORS file.
+ * Copyright 2022 See AUTHORS file.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,10 @@ import java.nio.HasArrayBufferView;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 
-/** @author Simon Gerst */
+/**
+ * @author Simon Gerst
+ * @author JamesTKhan
+ */
 public class GwtGL30 extends GwtGL20 implements GL30 {
 	final IntMap<WebGLQuery> queries = IntMap.create();
 	int nextQueryId = 1;

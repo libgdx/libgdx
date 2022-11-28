@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 See AUTHORS file.
+ * Copyright 2022 See AUTHORS file.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,10 @@ import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.google.gwt.typedarrays.shared.Float32Array;
 import com.google.gwt.typedarrays.shared.Int32Array;
 
-/** @author Simon Gerst */
+/**
+ * @author Simon Gerst
+ * @author JamesTKhan
+ */
 public class WebGL2RenderingContext extends WebGLRenderingContext {
 
 	private static class UniformMatrixFVSource {
@@ -86,7 +89,6 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		this.beginTransformFeedback(primitiveMode);
 	}-*/;
 
-	/* Uniform Buffer Objects and Transform Feedback Buffers */
 	public final native void bindBufferBase (int target, int index, WebGLBuffer buffer)/*-{
 		this.bindBufferBase(target, index, buffer);
 	}-*/;
@@ -108,7 +110,6 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		this.bindVertexArray(array);
 	}-*/;
 
-	/* Framebuffer objects */
 	public final native void blitFramebuffer (int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1,
 		int dstY1, int mask, int filter)/*-{
 		this.blitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1,
@@ -161,7 +162,6 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 //
 //	}-*/;
 
-	/* Buffer objects */
 	public final native void copyBufferSubData (int readTarget, int writeTarget, int readOffset, int writeOffset, int size)/*-{
 		this.copyBufferSubData(readTarget, writeTarget, readOffset,
 				writeOffset, size);
@@ -172,22 +172,18 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
     	this.copyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
 	}-*/;
 
-	/* Query Objects */
 	public final native WebGLQuery createQuery ()/*-{
 		return this.createQuery();
 	}-*/;
 
-	/* Sampler Objects */
 	public final native WebGLSampler createSampler ()/*-{
 		return this.createSampler();
 	}-*/;
 
-	/* Transform Feedback */
 	public final native WebGLTransformFeedback createTransformFeedback ()/*-{
 		return this.createTransformFeedback();
 	}-*/;
 
-	/* Vertex Array Objects */
 	public final native WebGLVertexArrayObject createVertexArray ()/*-{
 		return this.createVertexArray();
 	}-*/;
@@ -275,27 +271,9 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		return this.getActiveUniforms(program, uniformIndices, pname);
 	}-*/;
 
-// Not part of the GL30 Interface
-//	public final native void getBufferSubData (int target, int offset, ArrayBuffer returnedData)/*-{
-//		this.getBufferSubData(target, offset, returnedData);
-//	}-*/;
-
-	/* Programs and shaders */
 	public final native int getFragDataLocation (WebGLProgram program, String name)/*-{
         return this.getFragDataLocation(program, name);
 	}-*/;
-
-// Not part of the GL30 Interface
-//public final native/* any */Object getIndexedParameter (int target, int index)/*-{
-//	throw "UnsupportedOperation";
-//}-*/;
-
-	/* Renderbuffer objects */
-
-// Not part of the GL30 Interface
-//public final native/* any */Object getInternalformatParameter (int target, int internalformat, int pname)/*-{
-//	throw "UnsupportedOperation";
-//}-*/;
 
 	public final native WebGLQuery getQuery (int target, int pname)/*-{
 		return this.getQuery(target, pname);
@@ -452,7 +430,6 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		this.transformFeedbackVaryings(program, varyings, bufferMode);
 	}-*/;
 
-	/* Uniforms and attributes */
 //  Commented out in GL30 interface
 //	public final native void uniform1ui (WebGLUniformLocation location, int v0)/*-{
 //		this.uniform1ui(location, v0);
@@ -507,7 +484,6 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 
 	}-*/;
 
-	/* Writing to the drawing buffer */
 	public final native void vertexAttribDivisor (int index, int divisor)/*-{
 		this.vertexAttribDivisor(index, divisor);
 	}-*/;
