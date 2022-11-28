@@ -114,7 +114,6 @@ public class MipMapTest extends GdxTest {
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 
 		camera.update();
 

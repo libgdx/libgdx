@@ -46,7 +46,7 @@ versions.spotless = "6.7.1"
 libraries.compileOnly = [:]
 
 libraries.lwjgl = [
-        "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",        
+        "org.lwjgl.lwjgl:lwjgl:${versions.lwjgl}",
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"
 ]
