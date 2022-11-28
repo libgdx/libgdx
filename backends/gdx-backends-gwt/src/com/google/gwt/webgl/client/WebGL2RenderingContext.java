@@ -18,6 +18,7 @@ package com.google.gwt.webgl.client;
 
 import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayBoolean;
 import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.CanvasElement;
@@ -262,8 +263,12 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		return this.getActiveUniformBlockParameter(program, uniformBlockIndex, pname);
 	}-*/;
 
-	public final native/* any */Object getActiveUniforms (WebGLProgram program, Int32Array uniformIndices, int pname)/*-{
-		throw "UnsupportedOperation";
+	public final native JsArrayInteger getActiveUniformsi (WebGLProgram program, Int32Array uniformIndices, int pname)/*-{
+    	return this.getActiveUniforms(program, uniformIndices, pname);
+	}-*/;
+
+	public final native JsArrayBoolean getActiveUniformsb (WebGLProgram program, Int32Array uniformIndices, int pname)/*-{
+		return this.getActiveUniforms(program, uniformIndices, pname);
 	}-*/;
 
 // Not part of the GL30 Interface

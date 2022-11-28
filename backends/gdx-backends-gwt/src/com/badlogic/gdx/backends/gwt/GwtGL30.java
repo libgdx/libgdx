@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.core.client.JsArrayBoolean;
 import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
@@ -412,7 +413,18 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glGetActiveUniformsiv (int program, int uniformCount, IntBuffer uniformIndices, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException("glGetActiveUniformsiv not supported on WebGL2");
+		if (pname == GL30.GL_UNIFORM_IS_ROW_MAJOR) {
+			JsArrayBoolean arr = gl.getActiveUniformsb(programs.get(program), copy(uniformIndices).subarray(0, uniformCount), pname);
+			for (int i = 0; i < uniformCount; i++) {
+				params.put(i, arr.get(i) ? GL20.GL_TRUE : GL20.GL_FALSE);
+			}
+		} else {
+			JsArrayInteger arr = gl.getActiveUniformsi(programs.get(program), copy(uniformIndices).subarray(0, uniformCount), pname);
+			for (int i = 0; i < uniformCount; i++) {
+				params.put(i, arr.get(i));
+			}
+		}
+		params.flip();
 	}
 
 	@Override
