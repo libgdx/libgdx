@@ -75,7 +75,7 @@ public class UniformBufferObjectsTest extends GdxTest {
 		IntBuffer tmpBuffer = BufferUtils.newIntBuffer(16);
 
 		// Get the block index for the uniform block
-		int blockIndex = Gdx.gl30.glGetUniformBlockIndex(shaderProgram.getHandle(), "BufferBlock");
+		int blockIndex = Gdx.gl30.glGetUniformBlockIndex(shaderProgram.getHandle(), "u_bufferBlock");
 
 		// Use the index to get the active block uniform count
 		Gdx.gl30.glGetActiveUniformBlockiv(shaderProgram.getHandle(), blockIndex, GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, tmpBuffer);

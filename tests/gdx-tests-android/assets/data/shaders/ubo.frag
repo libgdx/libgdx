@@ -3,7 +3,7 @@ in vec4 v_color;
 in vec2 v_texCoords;
 
 uniform sampler2D u_texture;
-uniform BufferBlock {
+uniform u_bufferBlock {
     vec3 colorBuffer;
     vec2 positionBuffer;
 };
