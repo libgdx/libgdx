@@ -38,10 +38,8 @@ import java.nio.HasArrayBufferView;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 
-/**
- * @author Simon Gerst
- * @author JamesTKhan
- */
+/** @author Simon Gerst
+ * @author JamesTKhan */
 public class GwtGL30 extends GwtGL20 implements GL30 {
 	final IntMap<WebGLQuery> queries = IntMap.create();
 	int nextQueryId = 1;
@@ -147,7 +145,7 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glClearBufferfv (int buffer, int drawbuffer, FloatBuffer value) {
-		gl.clearBufferfv(buffer, drawbuffer,  copy(value));
+		gl.clearBufferfv(buffer, drawbuffer, copy(value));
 	}
 
 	@Override
@@ -287,7 +285,8 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	}
 
 	@Override
-	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, int offset) {
+	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
+		int offset) {
 		gl.texImage2D(target, level, internalformat, width, height, border, format, type, offset);
 	}
 
@@ -393,14 +392,16 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glGetActiveUniformBlockiv (int program, int uniformBlockIndex, int pname, IntBuffer params) {
-		if (pname == GL30.GL_UNIFORM_BLOCK_BINDING || pname == GL30.GL_UNIFORM_BLOCK_DATA_SIZE || pname == GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS) {
+		if (pname == GL30.GL_UNIFORM_BLOCK_BINDING || pname == GL30.GL_UNIFORM_BLOCK_DATA_SIZE
+			|| pname == GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS) {
 			params.put(gl.getActiveUniformBlockParameteri(programs.get(program), uniformBlockIndex, pname));
 		} else if (pname == GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES) {
 			Uint32Array array = gl.getActiveUniformBlockParameterv(programs.get(program), uniformBlockIndex, pname);
 			for (int i = 0; i < array.length(); i++) {
-				params.put(i, (int) array.get(i));
+				params.put(i, (int)array.get(i));
 			}
-		} else if (pname == GL30.GL_UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER || pname == GL30.GL_UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER) {
+		} else if (pname == GL30.GL_UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER
+			|| pname == GL30.GL_UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER) {
 			boolean result = gl.getActiveUniformBlockParameterb(programs.get(program), uniformBlockIndex, pname);
 			params.put(result ? GL20.GL_TRUE : GL20.GL_FALSE);
 		} else {
@@ -567,7 +568,7 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	}
 
 	@Override
-	public Buffer glMapBufferRange(int target, int offset, int length, int access) {
+	public Buffer glMapBufferRange (int target, int offset, int length, int access) {
 		throw new UnsupportedOperationException("glMapBufferRange not supported on WebGL2");
 	}
 
@@ -613,7 +614,7 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glSamplerParameteriv (int sampler, int pname, IntBuffer param) {
-		 gl.samplerParameterf(samplers.get(sampler), pname, param.get());
+		gl.samplerParameterf(samplers.get(sampler), pname, param.get());
 	}
 
 	@Override
@@ -621,7 +622,7 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 		int type, Buffer pixels) {
 		// Taken from glTexImage2D
 		if (pixels == null) {
-			gl.texImage3D(target, level, internalformat, width, height, depth, border, format, type, (ArrayBufferView) null);
+			gl.texImage3D(target, level, internalformat, width, height, depth, border, format, type, (ArrayBufferView)null);
 			return;
 		}
 
@@ -645,11 +646,11 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 			Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
 			// Prefer to use the HTMLImageElement when possible, since reading from the CanvasElement can be lossy.
 			if (pixmap.canUseImageElement()) {
-				gl.texImage3D(target, level, internalformat, width, height, depth, border,format, type, pixmap.getImageElement());
+				gl.texImage3D(target, level, internalformat, width, height, depth, border, format, type, pixmap.getImageElement());
 			} else if (pixmap.canUseVideoElement()) {
-				gl.texImage3D(target, level, internalformat, width, height, depth, border,format, type, pixmap.getVideoElement());
+				gl.texImage3D(target, level, internalformat, width, height, depth, border, format, type, pixmap.getVideoElement());
 			} else {
-				gl.texImage3D(target, level, internalformat, width, height, depth, border,format, type, pixmap.getCanvasElement());
+				gl.texImage3D(target, level, internalformat, width, height, depth, border, format, type, pixmap.getCanvasElement());
 			}
 		}
 	}
@@ -661,7 +662,8 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	}
 
 	@Override
-	public void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, int offset) {
+	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
+		int offset) {
 		gl.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, offset);
 	}
 
@@ -687,7 +689,8 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 			gl.texSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, buffer);
 		} else {
 			Pixmap pixmap = Pixmap.pixmaps.get(((IntBuffer)pixels).get(0));
-			gl.texSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixmap.getCanvasElement());
+			gl.texSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type,
+				pixmap.getCanvasElement());
 		}
 	}
 

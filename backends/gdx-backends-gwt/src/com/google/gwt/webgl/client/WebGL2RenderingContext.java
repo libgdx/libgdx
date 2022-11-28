@@ -28,10 +28,8 @@ import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.google.gwt.typedarrays.shared.Float32Array;
 import com.google.gwt.typedarrays.shared.Int32Array;
 
-/**
- * @author Simon Gerst
- * @author JamesTKhan
- */
+/** @author Simon Gerst
+ * @author JamesTKhan */
 public class WebGL2RenderingContext extends WebGLRenderingContext {
 
 	private static class UniformMatrixFVSource {
@@ -73,7 +71,7 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	protected WebGL2RenderingContext () {
 	}
 
-	public static JsArrayString toJsArray(String[] input) {
+	public static JsArrayString toJsArray (String[] input) {
 		JsArrayString jsArrayString = JsArrayString.createArray().cast();
 		for (String s : input) {
 			jsArrayString.push(s);
@@ -129,7 +127,7 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	public final void clearBufferiv (int buffer, int drawbuffer, Int32Array value) {
-		this.clearBufferiv(buffer, drawbuffer, (JavaScriptObject) value);
+		this.clearBufferiv(buffer, drawbuffer, (JavaScriptObject)value);
 	}
 
 	public final native void clearBufferiv (int buffer, int drawbuffer, JavaScriptObject value)/*-{
@@ -137,30 +135,30 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	public final void clearBufferuiv (int buffer, int drawbuffer, Int32Array value) {
-		this.clearBufferuiv(buffer, drawbuffer, (JavaScriptObject) value);
+		this.clearBufferuiv(buffer, drawbuffer, (JavaScriptObject)value);
 	}
 
 	public final native void clearBufferuiv (int buffer, int drawbuffer, JavaScriptObject value)/*-{
 		this.clearBufferuiv(buffer, drawbuffer, value);
 	}-*/;
 
-//  Commented out in GL30 interface
-//	public final native int clientWaitSync (WebGLSync sync, int flags, /* GLint64 */int timeout)/*-{
-//		throw "UnsupportedOperation";
-//	}-*/;
+// Commented out in GL30 interface
+// public final native int clientWaitSync (WebGLSync sync, int flags, /* GLint64 */int timeout)/*-{
+// throw "UnsupportedOperation";
+// }-*/;
 
-//  Commented out in GL30 interface
-//	public final native void compressedTexImage3D (int target, int level, int internalformat, int width, int height, int depth,
-//		int border, ArrayBufferView data)/*-{
-//		throw "UnsupportedOperation";
-//	}-*/;
+// Commented out in GL30 interface
+// public final native void compressedTexImage3D (int target, int level, int internalformat, int width, int height, int depth,
+// int border, ArrayBufferView data)/*-{
+// throw "UnsupportedOperation";
+// }-*/;
 
-//  Commented out in GL30 interface
-//	public final native void compressedTexSubImage3D (int target, int level, int xoffset, int yoffset, int zoffset, int width,
-//		int height, int depth, int format, ArrayBufferView data)/*-{
-//		throw "UnsupportedOperation";
+// Commented out in GL30 interface
+// public final native void compressedTexSubImage3D (int target, int level, int xoffset, int yoffset, int zoffset, int width,
+// int height, int depth, int format, ArrayBufferView data)/*-{
+// throw "UnsupportedOperation";
 //
-//	}-*/;
+// }-*/;
 
 	public final native void copyBufferSubData (int readTarget, int writeTarget, int readOffset, int writeOffset, int size)/*-{
 		this.copyBufferSubData(readTarget, writeTarget, readOffset,
@@ -196,10 +194,10 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		this.deleteSampler(sampler);
 	}-*/;
 
-//  Commented out in GL30 interface
-//	public final native void deleteSync (WebGLSync sync)/*-{
-//		this.deleteSync(sync);
-//	}-*/;
+// Commented out in GL30 interface
+// public final native void deleteSync (WebGLSync sync)/*-{
+// this.deleteSync(sync);
+// }-*/;
 
 	public final native void deleteTransformFeedback (WebGLTransformFeedback transformFeedback)/*-{
 		this.deleteTransformFeedback(transformFeedback);
@@ -225,7 +223,8 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		this.drawRangeElements(mode, start, end, count, type, offset);
 	}-*/;
 
-	public final native void texImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, int offset)/*-{
+	public final native void texImage2D (int target, int level, int internalformat, int width, int height, int border, int format,
+		int type, int offset)/*-{
 		this.texImage2D(target, level, internalformat, width, height, border, format, type, offset);
 	}-*/;
 
@@ -237,11 +236,11 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		this.endTransformFeedback();
 	}-*/;
 
-//  Commented out in GL30 interface
-//public final native WebGLSync fenceSync (int condition, int flags)/*-{
-//	throw "UnsupportedOperation";
+// Commented out in GL30 interface
+// public final native WebGLSync fenceSync (int condition, int flags)/*-{
+// throw "UnsupportedOperation";
 //
-//}-*/;
+// }-*/;
 
 	public final native void framebufferTextureLayer (int target, int attachment, WebGLTexture texture, int level, int layer)/*-{
 		this.framebufferTextureLayer(target, attachment, texture, level, layer);
@@ -255,7 +254,8 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		return this.getActiveUniformBlockParameter(program, uniformBlockIndex, pname);
 	}-*/;
 
-	public final native <T extends ArrayBufferView> T getActiveUniformBlockParameterv (WebGLProgram program, int uniformBlockIndex, int pname)/*-{
+	public final native <T extends ArrayBufferView> T getActiveUniformBlockParameterv (WebGLProgram program, int uniformBlockIndex,
+		int pname)/*-{
 		return this.getActiveUniformBlockParameter(program, uniformBlockIndex, pname);
 	}-*/;
 
@@ -296,15 +296,15 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 // Commented out in GL30 interface
-//	public final native WebGLActiveInfo getTransformFeedbackVarying (WebGLProgram program, int index)/*-{
-//		throw "UnsupportedOperation";
-//	}-*/;
+// public final native WebGLActiveInfo getTransformFeedbackVarying (WebGLProgram program, int index)/*-{
+// throw "UnsupportedOperation";
+// }-*/;
 
 	public final native int getUniformBlockIndex (WebGLProgram program, String uniformBlockName)/*-{
         return this.getUniformBlockIndex(program, uniformBlockName);
 	}-*/;
 
-	public final JsArrayInteger getUniformIndices(WebGLProgram program, String[] uniformNames) {
+	public final JsArrayInteger getUniformIndices (WebGLProgram program, String[] uniformNames) {
 		return this.getUniformIndices(program, toJsArray(uniformNames));
 	}
 
@@ -329,9 +329,9 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 // Commented out in GL30 interface
-//	public final native boolean isSync (WebGLSync sync)/*-{
-//		return this.isSync(sync);
-//	}-*/;
+// public final native boolean isSync (WebGLSync sync)/*-{
+// return this.isSync(sync);
+// }-*/;
 
 	public final native boolean isTransformFeedback (WebGLTransformFeedback transformFeedback)/*-{
 		return this.isTransformFeedback(transformFeedback);
@@ -366,7 +366,7 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	public final native void texImage3D (int target, int level, int internalformat, int width, int height, int depth, int border,
-										 int format, int type, int offset)/*-{
+		int format, int type, int offset)/*-{
 		this.texImage3D(target, level, internalformat, width, height, depth, border,
 				format, type, offset);
 	}-*/;
@@ -377,31 +377,35 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 				format, type, pixels);
 	}-*/;
 
-	public final native void texImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ImageData pixels) /*-{
+	public final native void texImage3D (int target, int level, int internalformat, int width, int height, int depth, int border,
+		int format, int type, ImageData pixels) /*-{
 		this.texImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 	}-*/;
 
-	public final native void texImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ImageElement image) /*-{
+	public final native void texImage3D (int target, int level, int internalformat, int width, int height, int depth, int border,
+		int format, int type, ImageElement image) /*-{
 		this.texImage3D(target, level, internalformat, width, height, depth, border, format, type, image);
 	}-*/;
 
-	public final native void texImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, CanvasElement canvas) /*-{
+	public final native void texImage3D (int target, int level, int internalformat, int width, int height, int depth, int border,
+		int format, int type, CanvasElement canvas) /*-{
 		this.texImage3D(target, level, internalformat, width, height, depth, border, format, type, canvas);
 	}-*/;
 
-	public final native void texImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, VideoElement video) /*-{
+	public final native void texImage3D (int target, int level, int internalformat, int width, int height, int depth, int border,
+		int format, int type, VideoElement video) /*-{
 		this.texImage3D(target, level, internalformat, width, height, depth, border, format, type, video);
 	}-*/;
 
-//  Commented out in GL30 interface
-//	public final native void texStorage2D (int target, int levels, int internalformat, int width, int height)/*-{
-//		this.texStorage2D(target, levels, internalformat, width, height)
-//	}-*/;
+// Commented out in GL30 interface
+// public final native void texStorage2D (int target, int levels, int internalformat, int width, int height)/*-{
+// this.texStorage2D(target, levels, internalformat, width, height)
+// }-*/;
 
-//  Commented out in GL30 interface
-//	public final native void texStorage3D (int target, int levels, int internalformat, int width, int height, int depth)/*-{
-//		throw "UnsupportedOperation";
-//	}-*/;
+// Commented out in GL30 interface
+// public final native void texStorage3D (int target, int levels, int internalformat, int width, int height, int depth)/*-{
+// throw "UnsupportedOperation";
+// }-*/;
 
 	public final native void texSubImage3D (int target, int level, int xoffset, int yoffset, int zoffset, int width, int height,
 		int depth, int format, int type, ArrayBufferView pixels)/*-{
@@ -414,15 +418,16 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	public final native void texSubImage3D (int target, int level, int xoffset, int yoffset, int zoffset, int width, int height,
-											int depth, int format, int type, int offset)/*-{
+		int depth, int format, int type, int offset)/*-{
 		this.texSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, offset);
 	}-*/;
 
-	public final native void texSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, int offset)/*-{
+	public final native void texSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
+		int type, int offset)/*-{
 		this.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, offset);
 	}-*/;
 
-	public final void transformFeedbackVaryings(WebGLProgram program, String[] varyings, int bufferMode) {
+	public final void transformFeedbackVaryings (WebGLProgram program, String[] varyings, int bufferMode) {
 		this.transformFeedbackVaryings(program, toJsArray(varyings), bufferMode);
 	}
 
@@ -430,10 +435,10 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		this.transformFeedbackVaryings(program, varyings, bufferMode);
 	}-*/;
 
-//  Commented out in GL30 interface
-//	public final native void uniform1ui (WebGLUniformLocation location, int v0)/*-{
-//		this.uniform1ui(location, v0);
-//	}-*/;
+// Commented out in GL30 interface
+// public final native void uniform1ui (WebGLUniformLocation location, int v0)/*-{
+// this.uniform1ui(location, v0);
+// }-*/;
 
 	public final native void uniform1uiv (WebGLUniformLocation location, UniformUIVSource value)/*-{
 		throw "UnsupportedOperation";
@@ -493,25 +498,25 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 // Commented out in GL30 interface
-//	public final native void vertexAttribI4iv (int index, VertexAttribIVSource values)/*-{
-//		throw "UnsupportedOperation";
-//	}-*/;
+// public final native void vertexAttribI4iv (int index, VertexAttribIVSource values)/*-{
+// throw "UnsupportedOperation";
+// }-*/;
 
 	public final native void vertexAttribI4ui (int index, int x, int y, int z, int w)/*-{
 		this.vertexAttribI4ui(index, x, y, z, w);
 	}-*/;
 
 // Commented out in GL30 interface
-//	public final native void vertexAttribI4uiv (int index, VertexAttribUIVSource values)/*-{
-//		throw "UnsupportedOperation";
-//	}-*/;
+// public final native void vertexAttribI4uiv (int index, VertexAttribUIVSource values)/*-{
+// throw "UnsupportedOperation";
+// }-*/;
 
 	public final native void vertexAttribIPointer (int index, int size, int type, int stride, int offset)/*-{
 		this.vertexAttribIPointer(index, size, type, stride, offset);
 	}-*/;
 
 // Commented out in GL30 interface
-//	public final native void waitSync (WebGLSync sync, int flags, /* GLint64 */int timeout)/*-{
-//		throw "UnsupportedOperation";
-//	}-*/;
+// public final native void waitSync (WebGLSync sync, int flags, /* GLint64 */int timeout)/*-{
+// throw "UnsupportedOperation";
+// }-*/;
 };

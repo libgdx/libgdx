@@ -70,10 +70,8 @@ public class FloatFrameBuffer extends FrameBuffer {
 		return result;
 	}
 
-	/**
-	 * Check for support for any required extensions on the current platform.
-	 */
-	private void checkExtensions() {
+	/** Check for support for any required extensions on the current platform. */
+	private void checkExtensions () {
 		if (Gdx.graphics.isGL30Available() && Gdx.app.getType() == ApplicationType.WebGL) {
 			// For WebGL2, Rendering to a Floating Point Texture requires this extension
 			if (!Gdx.graphics.supportsExtension("EXT_color_buffer_float"))

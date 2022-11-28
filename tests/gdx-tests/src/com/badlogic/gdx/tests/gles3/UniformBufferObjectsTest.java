@@ -36,11 +36,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-/**
- * Added during WebGL2 implementation but also applicable to Desktop. UBO's were added in WebGL2, this test
- * uses a UBO to send color and position data to the shader using a buffer.
- * @author JamesTKhan
- * */
+/** Added during WebGL2 implementation but also applicable to Desktop. UBO's were added in WebGL2, this test uses a UBO to send
+ * color and position data to the shader using a buffer.
+ * @author JamesTKhan */
 @GdxTestConfig(requireGL30 = true)
 public class UniformBufferObjectsTest extends GdxTest {
 
@@ -53,7 +51,7 @@ public class UniformBufferObjectsTest extends GdxTest {
 	Texture texture;
 	ShaderProgram shaderProgram;
 	FloatBuffer uniformBuffer = BufferUtils.newFloatBuffer(16);
-	
+
 	float lerpToR = 1.0f;
 	float lerpToG = 1.0f;
 	float lerpToB = 1.0f;
@@ -66,8 +64,7 @@ public class UniformBufferObjectsTest extends GdxTest {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-		shaderProgram = new ShaderProgram(Gdx.files.internal("data/shaders/ubo.vert"),
-				Gdx.files.internal("data/shaders/ubo.frag"));
+		shaderProgram = new ShaderProgram(Gdx.files.internal("data/shaders/ubo.vert"), Gdx.files.internal("data/shaders/ubo.frag"));
 
 		Gdx.app.log("UniformBufferObjectsTest", shaderProgram.getLog());
 		if (shaderProgram.isCompiled()) {
@@ -140,7 +137,7 @@ public class UniformBufferObjectsTest extends GdxTest {
 	}
 
 	@Override
-	public void resize(int width, int height) {
+	public void resize (int width, int height) {
 		stage.getViewport().update(width, height, true);
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 

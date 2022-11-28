@@ -94,7 +94,7 @@ public class GwtGraphics extends AbstractGraphics {
 
 		if (config.useGL30) {
 			context = WebGL2RenderingContext.getContext(canvas, attributes);
-			this.gl30 = new GwtGL30((WebGL2RenderingContext) context);
+			this.gl30 = new GwtGL30((WebGL2RenderingContext)context);
 			this.gl20 = gl30;
 		} else {
 			context = WebGLRenderingContext.getContext(canvas, attributes);
