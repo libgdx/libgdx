@@ -93,7 +93,12 @@ public class GwtGraphics extends AbstractGraphics {
 		attributes.setXrCompatible(config.xrCompatible);
 
 		if (config.useGL30) {
+			// Check for WebGL2 support, and fall back to 1.0 if not supported.
 			context = WebGL2RenderingContext.getContext(canvas, attributes);
+		}
+
+		if (config.useGL30 && context != null) {
+			// WebGL2 supported
 			this.gl30 = new GwtGL30((WebGL2RenderingContext)context);
 			this.gl20 = gl30;
 		} else {
