@@ -284,6 +284,11 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	}
 
 	@Override
+	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, int offset) {
+		gl.texImage2D(target, level, internalformat, width, height, border, format, type, offset);
+	}
+
+	@Override
 	public void glEndQuery (int target) {
 		gl.endQuery(target);
 	}
@@ -650,6 +655,11 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format,
 		int type, int offset) {
 		gl.texImage3D(target, level, internalformat, width, height, depth, border, format, type, offset);
+	}
+
+	@Override
+	public void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, int offset) {
+		gl.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, offset);
 	}
 
 	@Override

@@ -229,6 +229,10 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		this.drawRangeElements(mode, start, end, count, type, offset);
 	}-*/;
 
+	public final native void texImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, int offset)/*-{
+		this.texImage2D(target, level, internalformat, width, height, border, format, type, offset);
+	}-*/;
+
 	public final native void endQuery (int target)/*-{
 		this.endQuery(target);
 	}-*/;
@@ -434,6 +438,10 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	public final native void texSubImage3D (int target, int level, int xoffset, int yoffset, int zoffset, int width, int height,
 											int depth, int format, int type, int offset)/*-{
 		this.texSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, offset);
+	}-*/;
+
+	public final native void texSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, int offset)/*-{
+		this.texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, offset);
 	}-*/;
 
 	public final void transformFeedbackVaryings(WebGLProgram program, String[] varyings, int bufferMode) {
