@@ -38,14 +38,6 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		// typedef (Uint32Array or sequence<int>) UniformUIVSource;
 	}
 
-	private static class VertexAttribIVSource {
-		// typedef (Int32Array or sequence<int>) VertexAttribIVSource;
-	}
-
-	private static class VertexAttribUIVSource {
-		// typedef (Uint32Array or sequence<int>) VertexAttribUIVSource;
-	}
-
 	/** Returns a WebGL2 context for the given canvas element. Returns null if no 3d context is available. */
 	public static WebGL2RenderingContext getContext (CanvasElement canvas) {
 		return getContext(canvas, WebGLContextAttributes.create());
@@ -316,16 +308,10 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		return this.getSamplerParameter(sampler, pname);
 	}-*/;
 
-	// FIXME
-	public final native/* any */Object getSyncParameter (WebGLSync sync, int pname)/*-{
-		throw "UnsupportedOperation";
-
-	}-*/;
-
-	public final native WebGLActiveInfo getTransformFeedbackVarying (WebGLProgram program, int index)/*-{
-		throw "UnsupportedOperation";
-
-	}-*/;
+// Commented out in GL30 interface
+//	public final native WebGLActiveInfo getTransformFeedbackVarying (WebGLProgram program, int index)/*-{
+//		throw "UnsupportedOperation";
+//	}-*/;
 
 	public final native int getUniformBlockIndex (WebGLProgram program, String uniformBlockName)/*-{
         return this.getUniformBlockIndex(program, uniformBlockName);
@@ -344,7 +330,7 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	public final native void invalidateSubFramebuffer (int target, Int32Array attachments, int x, int y, int width, int height)/*-{
-		invalidateSubFramebuffer(target, attachments, x, y, width, height);
+		this.invalidateSubFramebuffer(target, attachments, x, y, width, height);
 	}-*/;
 
 	public final native boolean isQuery (WebGLQuery query)/*-{
@@ -355,9 +341,10 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		return this.isSampler(sampler);
 	}-*/;
 
-	public final native boolean isSync (WebGLSync sync)/*-{
-		return this.isSync(sync);
-	}-*/;
+// Commented out in GL30 interface
+//	public final native boolean isSync (WebGLSync sync)/*-{
+//		return this.isSync(sync);
+//	}-*/;
 
 	public final native boolean isTransformFeedback (WebGLTransformFeedback transformFeedback)/*-{
 		return this.isTransformFeedback(transformFeedback);
@@ -453,36 +440,17 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	/* Uniforms and attributes */
-	public final native void uniform1ui (WebGLUniformLocation location, int v0)/*-{
-		this.uniform1ui(location, v0);
-	}-*/;
+//  Commented out in GL30 interface
+//	public final native void uniform1ui (WebGLUniformLocation location, int v0)/*-{
+//		this.uniform1ui(location, v0);
+//	}-*/;
 
 	public final native void uniform1uiv (WebGLUniformLocation location, UniformUIVSource value)/*-{
 		throw "UnsupportedOperation";
 
 	}-*/;
 
-	public final native void uniform2ui (WebGLUniformLocation location, int v0, int v1)/*-{
-		throw "UnsupportedOperation";
-
-	}-*/;
-
-	public final native void uniform2uiv (WebGLUniformLocation location, UniformUIVSource value)/*-{
-		throw "UnsupportedOperation";
-
-	}-*/;
-
-	public final native void uniform3ui (WebGLUniformLocation location, int v0, int v1, int v2)/*-{
-		throw "UnsupportedOperation";
-
-	}-*/;
-
 	public final native void uniform3uiv (WebGLUniformLocation location, UniformUIVSource value)/*-{
-		throw "UnsupportedOperation";
-
-	}-*/;
-
-	public final native void uniform4ui (WebGLUniformLocation location, int v0, int v1, int v2, int v3)/*-{
 		throw "UnsupportedOperation";
 
 	}-*/;
@@ -535,26 +503,26 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		this.vertexAttribI4i(index, x, y, z, w);
 	}-*/;
 
-	public final native void vertexAttribI4iv (int index, VertexAttribIVSource values)/*-{
-		throw "UnsupportedOperation";
-
-	}-*/;
+// Commented out in GL30 interface
+//	public final native void vertexAttribI4iv (int index, VertexAttribIVSource values)/*-{
+//		throw "UnsupportedOperation";
+//	}-*/;
 
 	public final native void vertexAttribI4ui (int index, int x, int y, int z, int w)/*-{
 		this.vertexAttribI4ui(index, x, y, z, w);
 	}-*/;
 
-	public final native void vertexAttribI4uiv (int index, VertexAttribUIVSource values)/*-{
-		throw "UnsupportedOperation";
-
-	}-*/;
+// Commented out in GL30 interface
+//	public final native void vertexAttribI4uiv (int index, VertexAttribUIVSource values)/*-{
+//		throw "UnsupportedOperation";
+//	}-*/;
 
 	public final native void vertexAttribIPointer (int index, int size, int type, int stride, int offset)/*-{
 		this.vertexAttribIPointer(index, size, type, stride, offset);
 	}-*/;
 
-	// FIXME
-	public final native void waitSync (WebGLSync sync, int flags, /* GLint64 */int timeout)/*-{
-		throw "UnsupportedOperation";
-	}-*/;
+// Commented out in GL30 interface
+//	public final native void waitSync (WebGLSync sync, int flags, /* GLint64 */int timeout)/*-{
+//		throw "UnsupportedOperation";
+//	}-*/;
 };
