@@ -110,6 +110,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.badlogic.gdx.utils.StringBuilder;
 
@@ -198,6 +199,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	AssetManager assetManager;
 	JComboBox influencerBox;
 	TextureAtlas textureAtlas;
+	JsonWriter.OutputType jsonOutputType = JsonWriter.OutputType.minimal;
+	boolean jsonPrettyPrint = false;
 
 	private ParticleEffect effect;
 	/** READ only */
@@ -264,6 +267,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 				addRow(editorPropertiesPanel, new TextureLoaderPanel(FlameMain.this, "Texture", ""));
 				addRow(editorPropertiesPanel, new BillboardBatchPanel(FlameMain.this, renderer.billboardBatch), 1, 1);
 				addRow(editorPropertiesPanel, new PointSpriteBatchPanel(FlameMain.this, renderer.pointSpriteBatch), 1, 1);
+				addRow(editorPropertiesPanel, new SavePanel(FlameMain.this, "Save", ""));
 				editorPropertiesPanel.repaint();
 
 				// Controller props
@@ -947,8 +951,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		Writer fileWriter = null;
 		try {
 			ParticleEffectLoader loader = (ParticleEffectLoader)assetManager.getLoader(ParticleEffect.class);
-			loader.save(effect,
-				new ParticleEffectSaveParameter(new FileHandle(file.getAbsolutePath()), assetManager, particleSystem.getBatches()));
+			loader.save(effect, new ParticleEffectSaveParameter(new FileHandle(file.getAbsolutePath()), assetManager,
+				particleSystem.getBatches(), jsonOutputType, jsonPrettyPrint));
 		} catch (Exception ex) {
 			System.out.println("Error saving effect: " + file.getAbsolutePath());
 			ex.printStackTrace();
