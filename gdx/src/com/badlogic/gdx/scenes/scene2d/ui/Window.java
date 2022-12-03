@@ -358,7 +358,6 @@ public class Window extends Table {
 		}
 
 		public WindowStyle (WindowStyle style) {
-			background = style.background;
 			titleFont = style.titleFont;
 			if (style.titleFontColor != null) titleFontColor = new Color(style.titleFontColor);
 			background = style.background;
