@@ -215,7 +215,7 @@ public class GdxSetupUI extends JFrame {
 		List<String> incompatList = builder.buildProject(modules, dependencies);
 		if (incompatList.size() == 0) {
 			try {
-				builder.build(languageEnum);
+				builder.build(languageEnum, name);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -258,7 +258,7 @@ public class GdxSetupUI extends JFrame {
 				return;
 			} else {
 				try {
-					builder.build(languageEnum);
+					builder.build(languageEnum, name);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

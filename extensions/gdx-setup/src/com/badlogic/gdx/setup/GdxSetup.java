@@ -669,10 +669,11 @@ public class GdxSetup {
 			else
 				assetPath = DEFAULT_ASSET_PATH;
 
+			String appName = params.get("name");
 			builder.buildProject(projects, dependencies);
-			builder.build(languageEnum);
-			new GdxSetup().build(builder, params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"),
-				languageEnum, assetPath, sdkLocation, new CharCallback() {
+			builder.build(languageEnum, appName);
+			new GdxSetup().build(builder, params.get("dir"), appName, params.get("package"), params.get("mainClass"), languageEnum,
+				assetPath, sdkLocation, new CharCallback() {
 					@Override
 					public void character (char c) {
 						System.out.print(c);

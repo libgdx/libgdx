@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectBuilder {
-
+	private static final String NL = System.lineSeparator();
 	DependencyBank bank;
 	List<ProjectType> modules = new ArrayList<ProjectType>();
 	List<Dependency> dependencies = new ArrayList<Dependency>();
@@ -50,7 +50,7 @@ public class ProjectBuilder {
 		return incompatibilities;
 	}
 
-	public boolean build (Language language) throws IOException {
+	public boolean build (Language language, String appName) throws IOException {
 		settingsFile = File.createTempFile("libgdx-setup-settings", ".gradle");
 		buildFile = File.createTempFile("libgdx-setup-build", ".gradle");
 		if (!settingsFile.exists()) {
@@ -61,22 +61,24 @@ public class ProjectBuilder {
 		}
 		settingsFile.setWritable(true);
 		buildFile.setWritable(true);
-		try {
-			FileWriter settingsWriter = new FileWriter(settingsFile.getAbsoluteFile());
+		try (FileWriter settingsWriter = new FileWriter(settingsFile.getAbsoluteFile());
 			BufferedWriter settingsBw = new BufferedWriter(settingsWriter);
-			String settingsContents = "include ";
+			FileWriter buildWriter = new FileWriter(buildFile.getAbsoluteFile());
+			BufferedWriter buildBw = new BufferedWriter(buildWriter)) {
+
+			StringBuilder settingsContent = new StringBuilder();
+			settingsContent.append("rootProject.name = '").append(appName).append("'").append(NL);
+
+			settingsContent.append("include ");
 			for (ProjectType module : modules) {
-				settingsContents += "'" + module.getName() + "'";
+				settingsContent.append("'").append(module.getName()).append("'");
 				if (modules.indexOf(module) != modules.size() - 1) {
-					settingsContents += ", ";
+					settingsContent.append(", ");
 				}
 			}
-			settingsBw.write(settingsContents);
-			settingsBw.close();
-			settingsWriter.close();
+			settingsContent.append(NL);
 
-			FileWriter buildWriter = new FileWriter(buildFile.getAbsoluteFile());
-			BufferedWriter buildBw = new BufferedWriter(buildWriter);
+			settingsBw.write(settingsContent.toString());
 
 			BuildScriptHelper.addBuildScript(language, modules, buildBw);
 			BuildScriptHelper.addAllProjects(buildBw);
@@ -84,8 +86,6 @@ public class ProjectBuilder {
 				BuildScriptHelper.addProject(language, module, dependencies, buildBw);
 			}
 
-			buildBw.close();
-			buildWriter.close();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
