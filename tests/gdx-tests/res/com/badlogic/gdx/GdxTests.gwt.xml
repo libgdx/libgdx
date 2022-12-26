@@ -18,6 +18,7 @@
 		<exclude name="**/FreeType*.java"/> <!-- native  -->
 		<exclude name="**/Gdx2DTest.java"/> <!-- native -->
 		<exclude name="**/GdxTests.java"/> <!-- utility -->
+		<exclude name="**/GL30Texture3DTest.java"/> <!-- GLES 3.0 -->
 		<exclude name="**/HeightField.java"/> <!-- Incompatible type due to emulation -->
 		<exclude name="**/HeightMapTest.java"/> <!-- Incompatible type due to emulation -->
 		<exclude name="**/I18NMessageTest.java"/> <!-- MessageBundle -->

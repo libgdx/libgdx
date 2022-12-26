@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.OrientedBoundingBox;
 
 /** A truncated rectangular pyramid. Used to define the viewable region and its projection onto the screen.
  * @see Camera#frustum */
@@ -190,6 +191,26 @@ public class Frustum {
 			if (planes[i].testPoint(x - halfWidth, y + halfHeight, z - halfDepth) != PlaneSide.Back) continue;
 			if (planes[i].testPoint(x - halfWidth, y - halfHeight, z + halfDepth) != PlaneSide.Back) continue;
 			if (planes[i].testPoint(x - halfWidth, y - halfHeight, z - halfDepth) != PlaneSide.Back) continue;
+			return false;
+		}
+
+		return true;
+	}
+
+	/** Returns whether the given {@link OrientedBoundingBox} is in the frustum.
+	 *
+	 * @param obb The oriented bounding box
+	 * @return Whether the oriented bounding box is in the frustum */
+	public boolean boundsInFrustum (OrientedBoundingBox obb) {
+		for (int i = 0, len2 = planes.length; i < len2; i++) {
+			if (planes[i].testPoint(obb.getCorner000(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner001(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner010(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner011(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner100(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner101(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner110(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner111(tmpV)) != PlaneSide.Back) continue;
 			return false;
 		}
 

@@ -23,29 +23,29 @@ buildscript {
 def localProperties = new File(rootProject.rootDir, "local.properties")
 def hasAndroidSDKDir = false
 if (localProperties.exists()) {
-    Properties properties = new Properties()
-    localProperties.withInputStream { instr ->
-        properties.load(instr)
-    }
+	Properties properties = new Properties()
+	localProperties.withInputStream { instr ->
+		properties.load(instr)
+	}
 
-    def sdkDirProp = properties.getProperty('sdk.dir')
+	def sdkDirProp = properties.getProperty('sdk.dir')
 
-    if (sdkDirProp != null) {
-        hasAndroidSDKDir = true;
-    } else {
-        sdkDirProp = properties.getProperty('android.dir')
-        if (sdkDirProp != null) {
-            hasAndroidSDKDir = true;
-        }
-    }
+	if (sdkDirProp != null) {
+		hasAndroidSDKDir = true;
+	} else {
+		sdkDirProp = properties.getProperty('android.dir')
+		if (sdkDirProp != null) {
+			hasAndroidSDKDir = true;
+		}
+	}
 }
 
 if(!hasAndroidSDKDir && System.getenv("ANDROID_HOME") == null && System.getenv("ANDROID_SDK_ROOT") == null) {
-    logger.warn("==============================================================================================");
-    logger.warn("sdk.dir/ANDROID_HOME/ANDROID_SDK_ROOT are unset, gdx-tests-android will not be properly setup.");
-    logger.warn("==============================================================================================");
-    apply plugin: "java-library"
-    return;
+	logger.warn("==============================================================================================");
+	logger.warn("sdk.dir/ANDROID_HOME/ANDROID_SDK_ROOT are unset, gdx-tests-android will not be properly setup.");
+	logger.warn("==============================================================================================");
+	apply plugin: "java-library"
+	return;
 }
 
 apply plugin: "com.android.application"
@@ -93,8 +93,18 @@ task copyAndroidNatives() {
 		file("libs/x86_64/").mkdirs();
 		file("libs/x86/").mkdirs();
 
-		['arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'].each { arch -> 
-			[project(":gdx"), project(":extensions:gdx-bullet"), project(":extensions:gdx-box2d-parent:gdx-box2d"), project(":extensions:gdx-freetype")].each { p ->
+		[
+			'arm64-v8a',
+			'armeabi-v7a',
+			'x86_64',
+			'x86'
+		].each { arch ->
+			[
+				project(":gdx"),
+				project(":extensions:gdx-bullet"),
+				project(":extensions:gdx-box2d-parent:gdx-box2d"),
+				project(":extensions:gdx-freetype")
+			].each { p ->
 				copy {
 					from new File(p.projectDir, "libs/${arch}")
 					into "libs/${arch}"

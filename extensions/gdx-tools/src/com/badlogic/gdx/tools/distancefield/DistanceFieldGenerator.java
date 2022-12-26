@@ -30,7 +30,7 @@ import javax.imageio.ImageIO;
  * magnifications, using nothing but alpha testing so at no extra runtime cost.
  * 
  * <p>
- * The technique is described in the SIGGRAPH 2007 paper "Improved Alpha-Tested Magniﬁcation for Vector Textures and Special
+ * The technique is described in the SIGGRAPH 2007 paper "Improved Alpha-Tested Magnification for Vector Textures and Special
  * Effects" by Chris Green: <a href="http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf">
  * http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf </a>
  * 

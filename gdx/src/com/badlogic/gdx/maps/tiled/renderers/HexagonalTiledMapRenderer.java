@@ -77,6 +77,10 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 			}
 		}
 
+		// due to y-axis being different we need to change stagger index in even map height situations as else it would render
+		// differently.
+		if (!staggerAxisX && map.getProperties().get("height", Integer.class) % 2 == 0) staggerIndexEven = !staggerIndexEven;
+
 		Integer length = map.getProperties().get("hexsidelength", Integer.class);
 		if (length != null) {
 			hexSideLength = length.intValue();

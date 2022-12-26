@@ -58,6 +58,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.SOFTDirectChannels;
+import org.lwjgl.openal.SOFTDirectChannelsRemix;
 
 /** @author Nathan Sweet */
 public class OpenALLwjgl3Audio implements Lwjgl3Audio {
@@ -189,7 +190,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 				AL10.alSourcef(sourceId, AL10.AL_GAIN, 1);
 				AL10.alSourcef(sourceId, AL10.AL_PITCH, 1);
 				AL10.alSource3f(sourceId, AL10.AL_POSITION, 0, 0, 1f);
-				AL10.alSourcei(sourceId, SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT, AL10.AL_TRUE);
+				AL10.alSourcei(sourceId, SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT, SOFTDirectChannelsRemix.AL_REMIX_UNMATCHED_SOFT);
 				return sourceId;
 			}
 		}

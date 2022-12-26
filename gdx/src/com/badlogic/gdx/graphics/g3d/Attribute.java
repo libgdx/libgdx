@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Extend this class to implement a material attribute. Register the attribute type by statically calling the
  * {@link #register(String)} method, whose return value should be used to instantiate the attribute. A class can implement
@@ -25,6 +26,9 @@ import com.badlogic.gdx.utils.Array;
 public abstract class Attribute implements Comparable<Attribute> {
 	/** The registered type aliases */
 	private final static Array<String> types = new Array<String>();
+
+	/** The long bitmask is limited to 64 bits **/
+	private final static int MAX_ATTRIBUTE_COUNT = 64;
 
 	/** @return The ID of the specified attribute type, or zero if not available */
 	public final static long getAttributeType (final String alias) {
@@ -42,12 +46,17 @@ public abstract class Attribute implements Comparable<Attribute> {
 	}
 
 	/** Call this method to register a custom attribute type, see the wiki for an example. If the alias already exists, then that
-	 * ID will be reused. The alias should be unambiguously and will by default be returned by the call to {@link #toString()}.
-	 * @param alias The alias of the type to register, must be different for each dirrect type, will be used for debugging
-	 * @return the ID of the newly registered type, or the ID of the existing type if the alias was already registered */
+	 * ID will be reused. The alias should be unambiguously and will by default be returned by the call to {@link #toString()}. A
+	 * maximum of 64 attributes can be registered as a long bitmask can only hold 64 bits.
+	 * @param alias The alias of the type to register, must be different for each direct type, will be used for debugging
+	 * @return the ID of the newly registered type, or the ID of the existing type if the alias was already registered
+	 * @throws GdxRuntimeException if maximum attribute count reached */
 	protected final static long register (final String alias) {
 		long result = getAttributeType(alias);
 		if (result > 0) return result;
+		if (types.size >= MAX_ATTRIBUTE_COUNT) {
+			throw new GdxRuntimeException("Cannot register " + alias + ", maximum registered attribute count reached.");
+		}
 		types.add(alias);
 		return 1L << (types.size - 1);
 	}
