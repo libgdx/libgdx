@@ -48,7 +48,7 @@ dependencies {
 task generate(type: JavaExec) {
 	dependsOn configurations.generator
 
-	main = 'JavaCodeGenerator'
+	mainClass = 'JavaCodeGenerator'
 	classpath = sourceSets.generator.runtimeClasspath
 
 	inputs.dir '../gdx-backend-robovm/src/'
