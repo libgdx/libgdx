@@ -419,7 +419,6 @@
 		<include name="utils/Disposable.java"/>
 		<include name="utils/FloatArray.java"/>
 		<include name="utils/FlushablePool.java"/>
-		<exclude name="utils/GdxBuild.java"/> <!-- Reason: Natives -->
 		<exclude name="utils/GdxNativesLoader.java"/> <!-- Reason: Natives -->
 		<include name="utils/GdxRuntimeException.java"/>
 		<include name="utils/I18NBundle.java"/>
