@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-subprojects {
+configure(subprojects - project(":backends:gdx-backend-android")) {
 	apply plugin: "java"
 
 	if(JavaVersion.current().isJava9Compatible()) {

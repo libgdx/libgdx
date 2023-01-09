@@ -97,6 +97,7 @@ import com.badlogic.gdx.tests.gwt.GwtInputTest;
 import com.badlogic.gdx.tests.gwt.GwtWindowModeTest;
 import com.badlogic.gdx.tests.math.CollisionPlaygroundTest;
 import com.badlogic.gdx.tests.math.OctreeTest;
+import com.badlogic.gdx.tests.math.collision.OrientedBoundingBoxTest;
 import com.badlogic.gdx.tests.net.OpenBrowserExample;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -186,11 +187,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			}
 		}, new GwtInstancer() {
 			public GdxTest instance () {
-				return new ComplexActionTest();
+				return new CollisionPlaygroundTest();
 			}
 		}, new GwtInstancer() {
 			public GdxTest instance () {
-				return new CollisionPlaygroundTest();
+				return new ComplexActionTest();
 			}
 		}, new GwtInstancer() {
 			public GdxTest instance () {
@@ -338,6 +339,10 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 				}
 // }, new GwtInstancer() { public GdxTest instance () { return new NoncontinuousRenderingTest(); } // FIXME doesn't compile due to
 // the use of Thread
+			}, new GwtInstancer() {
+				public GdxTest instance () {
+					return new OrientedBoundingBoxTest();
+				}
 			}, new GwtInstancer() {
 				public GdxTest instance () {
 					return new ParallaxTest();

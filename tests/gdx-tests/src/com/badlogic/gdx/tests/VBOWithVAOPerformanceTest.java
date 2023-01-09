@@ -346,9 +346,16 @@ public class VBOWithVAOPerformanceTest extends GdxTest {
 			return byteBuffer.capacity() / attributes.vertexSize;
 		}
 
+		@Deprecated
 		@Override
 		public FloatBuffer getBuffer () {
 			isDirty = true;
+			return buffer;
+		}
+
+		@Override
+		public FloatBuffer getBuffer (boolean forWriting) {
+			isDirty |= forWriting;
 			return buffer;
 		}
 

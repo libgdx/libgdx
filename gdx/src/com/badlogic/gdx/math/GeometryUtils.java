@@ -163,10 +163,10 @@ public final class GeometryUtils {
 	 * Gary L. Miller, Dafna Talmor, Shang-Hua Teng, and Noel Walkington. A Delaunay Based Numerical Method for Three Dimensions:
 	 * Generation, Formulation, and Partition. */
 	static public float triangleQuality (float x1, float y1, float x2, float y2, float x3, float y3) {
-		float length1 = (float)Math.sqrt(x1 * x1 + y1 * y1);
-		float length2 = (float)Math.sqrt(x2 * x2 + y2 * y2);
-		float length3 = (float)Math.sqrt(x3 * x3 + y3 * y3);
-		return Math.min(length1, Math.min(length2, length3)) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
+		float sqLength1 = x1 * x1 + y1 * y1;
+		float sqLength2 = x2 * x2 + y2 * y2;
+		float sqLength3 = x3 * x3 + y3 * y3;
+		return (float)Math.sqrt(Math.min(sqLength1, Math.min(sqLength2, sqLength3))) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
 	}
 
 	static public float triangleArea (float x1, float y1, float x2, float y2, float x3, float y3) {
