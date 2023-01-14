@@ -54,6 +54,7 @@ import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
@@ -984,7 +985,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	}
 
 	public <T> T load (String resource, Class<T> type, AssetLoader loader, AssetLoaderParameters<T> params) {
-		String resolvedPath = new String(resource).replaceAll("\\\\", "/");
+		String resolvedPath = resource.replaceAll("\\\\", "/");
 		boolean exist = assetManager.isLoaded(resolvedPath, type);
 		T oldAsset = null;
 		if (exist) {
@@ -995,6 +996,18 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 
 		AssetLoader<T, AssetLoaderParameters<T>> currentLoader = assetManager.getLoader(type);
 		if (loader != null) assetManager.setLoader(type, loader);
+
+		assetManager.setLoader(ParticleEffect.class, new ParticleEffectLoader(new FileHandleResolver() {
+			@Override
+			public FileHandle resolve (String fileName) {
+				FileHandle attempt = Gdx.files.absolute(fileName);
+				if (attempt.exists()) return attempt;
+				if (DEFAULT_BILLBOARD_PARTICLE.equals(attempt.name())) return Gdx.files.internal(DEFAULT_BILLBOARD_PARTICLE);
+				if (DEFAULT_MODEL_PARTICLE.equals(attempt.name())) return Gdx.files.internal(DEFAULT_MODEL_PARTICLE);
+				if (DEFAULT_TEMPLATE_PFX.equals(attempt.name())) return Gdx.files.internal(DEFAULT_TEMPLATE_PFX);
+				return attempt;
+			}
+		}));
 
 		assetManager.load(resolvedPath, type, params);
 		assetManager.finishLoading();
