@@ -14,7 +14,8 @@ information.
 ### OSX App Bundles using jpackage
 
 Due to the way the libraries are loaded, special care is required when
-distributing your app as OSX App Bundle:
+distributing your app as OSX App Bundle.
+Note that this requires a recent JDK (see https://github.com/openjdk/jdk/pull/11922)
 
 1. Grab the `libEGL.dylib` and `libGLESv2.dylib` files from the `macosxarm64` and `macosx64` folder (inside the jar, or
    download from [here](https://github.com/libgdx/gdx-angle-natives))
@@ -24,11 +25,7 @@ distributing your app as OSX App Bundle:
    lipo macosxarm64/libGLESv2.dylib macosx64/libGLESv2.dylib -output libGLESv2.dylib -create
     ```
 3. Place the two libraries into your app bundle: `your-app.app/Contents/Frameworks/`
-4. Add the folder to the loader rpath of the launcher so the dynamic linker can find the libraries
-   ```
-   install_name_tool -add_rpath @executable_path/../Frameworks/ your-app./Contents/MacOS/launcher-binary
-   ```
-5. Sign, notarize and stamp your app as usual
+4. Sign, notarize and stamp your app as usual
 
 
 See [#7058](https://github.com/libgdx/libgdx/issues/7058) for more details.
