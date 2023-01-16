@@ -112,6 +112,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		String staggerAxis = root.getAttribute("staggeraxis", null);
 		String staggerIndex = root.getAttribute("staggerindex", null);
 		String mapBackgroundColor = root.getAttribute("backgroundcolor", null);
+		String clazz = root.getAttribute("class", null);
 
 		MapProperties mapProperties = map.getProperties();
 		if (mapOrientation != null) {
@@ -143,6 +144,10 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 					this.mapHeightInPixels = mapHeightInPixels / 2 + tileHeight / 2;
 				}
 			}
+		}
+
+		if (clazz != null) {
+			mapProperties.put("class", clazz);
 		}
 
 		Element properties = root.getChildByName("properties");
@@ -301,12 +306,17 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		boolean visible = element.getIntAttribute("visible", 1) == 1;
 		float offsetX = element.getFloatAttribute("offsetx", 0);
 		float offsetY = element.getFloatAttribute("offsety", 0);
+		String clazz = element.getAttribute("class", null);
 
 		layer.setName(name);
 		layer.setOpacity(opacity);
 		layer.setVisible(visible);
 		layer.setOffsetX(offsetX);
 		layer.setOffsetY(offsetY);
+
+		if (clazz != null) {
+			layer.getProperties().put("class", clazz);
+		}
 	}
 
 	protected void loadObject (TiledMap map, MapLayer layer, Element element) {
@@ -389,6 +399,10 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			String type = element.getAttribute("type", null);
 			if (type != null) {
 				object.getProperties().put("type", type);
+			}
+			String clazz = element.getAttribute("class", null);
+			if (clazz != null) {
+				object.getProperties().put("class", clazz);
 			}
 			int id = element.getIntAttribute("id", 0);
 			if (id != 0) {
@@ -579,6 +593,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			int tileheight = element.getIntAttribute("tileheight", 0);
 			int spacing = element.getIntAttribute("spacing", 0);
 			int margin = element.getIntAttribute("margin", 0);
+			String clazz = element.getAttribute("class", null);
 
 			Element offset = element.getChildByName("tileoffset");
 			int offsetX = 0;
@@ -597,6 +612,9 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				loadProperties(tileSetProperties, properties);
 			}
 			tileSetProperties.put("firstgid", firstgid);
+			if (clazz != null) {
+				tileSetProperties.put("class", clazz);
+			}
 
 			// Tiles
 			Array<Element> tileElements = element.getChildrenByName("tile");
@@ -645,6 +663,10 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		String type = tileElement.getAttribute("type", null);
 		if (type != null) {
 			tile.getProperties().put("type", type);
+		}
+		String clazz = tileElement.getAttribute("class", null);
+		if (clazz != null) {
+			tile.getProperties().put("class", clazz);
 		}
 		Element properties = tileElement.getChildByName("properties");
 		if (properties != null) {
