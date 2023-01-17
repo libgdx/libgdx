@@ -33,14 +33,6 @@ import com.google.gwt.typedarrays.shared.Uint32Array;
  * @author JamesTKhan */
 public class WebGL2RenderingContext extends WebGLRenderingContext {
 
-	private static class UniformMatrixFVSource {
-		// typedef (Float32Array or sequence<float>) UniformMatrixFVSource;
-	}
-
-	private static class UniformUIVSource { // FIXME
-		// typedef (Uint32Array or sequence<int>) UniformUIVSource;
-	}
-
 	/** Returns a WebGL2 context for the given canvas element. Returns null if no 3d context is available. */
 	public static WebGL2RenderingContext getContext (CanvasElement canvas) {
 		return getContext(canvas, WebGLContextAttributes.create());
@@ -48,23 +40,20 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 
 	/** Returns a WebGL2 context for the given canvas element. Returns null if no 3d context is available. */
 	public static native WebGL2RenderingContext getContext (CanvasElement canvas, WebGLContextAttributes attributes) /*-{
-		var names = [ "webgl2" ];
-		for (var i = 0; i < names.length; i++) {
-			try {
-				var ctx = canvas.getContext(names[i], attributes);
-				if (ctx != null) {
-					console.log('WebGL2 Enabled');
-					if ($wnd.WebGLDebugUtils) {
-						if ($wnd.console && $wnd.console.log) {
-							console.log('WebGL debugging enabled');
-						}
-						return $wnd.WebGLDebugUtils.makeDebugContext(ctx);
+		try {
+			var ctx = canvas.getContext("webgl2", attributes);
+			if (ctx != null) {
+				console.log('WebGL2 Enabled');
+				if ($wnd.WebGLDebugUtils) {
+					if ($wnd.console && $wnd.console.log) {
+						console.log('WebGL debugging enabled');
 					}
-					return ctx;
+					return $wnd.WebGLDebugUtils.makeDebugContext(ctx);
 				}
-			} catch (e) {
-				console.log(e);
+				return ctx;
 			}
+		} catch (e) {
+			console.log(e);
 		}
 		return null;
 	}-*/;
