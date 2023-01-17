@@ -54,6 +54,7 @@ import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
@@ -110,6 +111,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.badlogic.gdx.utils.StringBuilder;
 
@@ -198,6 +200,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	AssetManager assetManager;
 	JComboBox influencerBox;
 	TextureAtlas textureAtlas;
+	JsonWriter.OutputType jsonOutputType = JsonWriter.OutputType.minimal;
+	boolean jsonPrettyPrint = false;
 
 	private ParticleEffect effect;
 	/** READ only */
@@ -264,6 +268,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 				addRow(editorPropertiesPanel, new TextureLoaderPanel(FlameMain.this, "Texture", ""));
 				addRow(editorPropertiesPanel, new BillboardBatchPanel(FlameMain.this, renderer.billboardBatch), 1, 1);
 				addRow(editorPropertiesPanel, new PointSpriteBatchPanel(FlameMain.this, renderer.pointSpriteBatch), 1, 1);
+				addRow(editorPropertiesPanel, new SavePanel(FlameMain.this, "Save", ""));
 				editorPropertiesPanel.repaint();
 
 				// Controller props
@@ -947,8 +952,8 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		Writer fileWriter = null;
 		try {
 			ParticleEffectLoader loader = (ParticleEffectLoader)assetManager.getLoader(ParticleEffect.class);
-			loader.save(effect,
-				new ParticleEffectSaveParameter(new FileHandle(file.getAbsolutePath()), assetManager, particleSystem.getBatches()));
+			loader.save(effect, new ParticleEffectSaveParameter(new FileHandle(file.getAbsolutePath()), assetManager,
+				particleSystem.getBatches(), jsonOutputType, jsonPrettyPrint));
 		} catch (Exception ex) {
 			System.out.println("Error saving effect: " + file.getAbsolutePath());
 			ex.printStackTrace();
@@ -984,7 +989,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 	}
 
 	public <T> T load (String resource, Class<T> type, AssetLoader loader, AssetLoaderParameters<T> params) {
-		String resolvedPath = new String(resource).replaceAll("\\\\", "/");
+		String resolvedPath = resource.replaceAll("\\\\", "/");
 		boolean exist = assetManager.isLoaded(resolvedPath, type);
 		T oldAsset = null;
 		if (exist) {
@@ -995,6 +1000,18 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 
 		AssetLoader<T, AssetLoaderParameters<T>> currentLoader = assetManager.getLoader(type);
 		if (loader != null) assetManager.setLoader(type, loader);
+
+		assetManager.setLoader(ParticleEffect.class, new ParticleEffectLoader(new FileHandleResolver() {
+			@Override
+			public FileHandle resolve (String fileName) {
+				FileHandle attempt = Gdx.files.absolute(fileName);
+				if (attempt.exists()) return attempt;
+				if (DEFAULT_BILLBOARD_PARTICLE.equals(attempt.name())) return Gdx.files.internal(DEFAULT_BILLBOARD_PARTICLE);
+				if (DEFAULT_MODEL_PARTICLE.equals(attempt.name())) return Gdx.files.internal(DEFAULT_MODEL_PARTICLE);
+				if (DEFAULT_TEMPLATE_PFX.equals(attempt.name())) return Gdx.files.internal(DEFAULT_TEMPLATE_PFX);
+				return attempt;
+			}
+		}));
 
 		assetManager.load(resolvedPath, type, params);
 		assetManager.finishLoading();
