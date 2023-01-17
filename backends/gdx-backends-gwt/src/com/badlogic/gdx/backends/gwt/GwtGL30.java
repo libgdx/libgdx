@@ -28,8 +28,10 @@ import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.typedarrays.shared.Uint32Array;
 import com.google.gwt.webgl.client.WebGL2RenderingContext;
+import com.google.gwt.webgl.client.WebGLFramebuffer;
 import com.google.gwt.webgl.client.WebGLQuery;
 import com.google.gwt.webgl.client.WebGLSampler;
+import com.google.gwt.webgl.client.WebGLTexture;
 import com.google.gwt.webgl.client.WebGLTransformFeedback;
 import com.google.gwt.webgl.client.WebGLUniformLocation;
 import com.google.gwt.webgl.client.WebGLVertexArrayObject;
@@ -463,13 +465,118 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	}
 
 	@Override
+	public void glGetFloatv(int pname, FloatBuffer params) {
+		// Override GwtGL20 method to check if it's a pname introduced with GL30.
+		if (pname == GL30.GL_MAX_TEXTURE_LOD_BIAS) {
+			params.put(0, gl.getParameterf(pname));
+			params.flip();
+		} else {
+			super.glGetFloatv(pname, params);
+		}
+	}
+
+	@Override
 	public int glGetFragDataLocation (int program, String name) {
 		return gl.getFragDataLocation(programs.get(program), name);
 	}
 
 	@Override
+	public void glGetIntegerv(int pname, IntBuffer params) {
+		// Override GwtGL20 method to check if it's a pname introduced with GL30.
+		switch (pname) {
+			case GL30.GL_DRAW_BUFFER0:
+			case GL30.GL_DRAW_BUFFER1:
+			case GL30.GL_DRAW_BUFFER2:
+			case GL30.GL_DRAW_BUFFER3:
+			case GL30.GL_DRAW_BUFFER4:
+			case GL30.GL_DRAW_BUFFER5:
+			case GL30.GL_DRAW_BUFFER6:
+			case GL30.GL_DRAW_BUFFER7:
+			case GL30.GL_DRAW_BUFFER8:
+			case GL30.GL_DRAW_BUFFER9:
+			case GL30.GL_DRAW_BUFFER10:
+			case GL30.GL_FRAGMENT_SHADER_DERIVATIVE_HINT:
+			case GL30.GL_MAX_3D_TEXTURE_SIZE:
+			case GL30.GL_MAX_ARRAY_TEXTURE_LAYERS:
+			case GL30.GL_MAX_COLOR_ATTACHMENTS:
+			case GL30.GL_MAX_DRAW_BUFFERS:
+			case GL30.GL_MAX_ELEMENTS_INDICES:
+			case GL30.GL_MAX_ELEMENTS_VERTICES:
+			case GL30.GL_MAX_FRAGMENT_INPUT_COMPONENTS:
+			case GL30.GL_MAX_FRAGMENT_UNIFORM_BLOCKS:
+			case GL30.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS:
+			case GL30.GL_MAX_PROGRAM_TEXEL_OFFSET:
+			case GL30.GL_MAX_SAMPLES:
+			case GL30.GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS:
+			case GL30.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS:
+			case GL30.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS:
+			case GL30.GL_MAX_UNIFORM_BUFFER_BINDINGS:
+			case GL30.GL_MAX_VARYING_COMPONENTS:
+			case GL30.GL_MAX_VERTEX_OUTPUT_COMPONENTS:
+			case GL30.GL_MAX_VERTEX_UNIFORM_BLOCKS:
+			case GL30.GL_MAX_VERTEX_UNIFORM_COMPONENTS:
+			case GL30.GL_MIN_PROGRAM_TEXEL_OFFSET:
+			case GL30.GL_PACK_ROW_LENGTH:
+			case GL30.GL_PACK_SKIP_PIXELS:
+			case GL30.GL_PACK_SKIP_ROWS:
+			case GL30.GL_READ_BUFFER:
+			case GL30.GL_UNPACK_IMAGE_HEIGHT:
+			case GL30.GL_UNPACK_ROW_LENGTH:
+			case GL30.GL_UNPACK_SKIP_IMAGES:
+			case GL30.GL_UNPACK_SKIP_PIXELS:
+			case GL30.GL_UNPACK_SKIP_ROWS:
+				params.put(0, gl.getParameteri(pname));
+				params.flip();
+				return;
+			case GL30.GL_DRAW_FRAMEBUFFER_BINDING:
+			case GL30.GL_READ_FRAMEBUFFER_BINDING:
+				WebGLFramebuffer fbo = gl.getParametero(pname);
+				if (fbo == null) {
+					params.put(0);
+				} else {
+					params.put(frameBuffers.getKey(fbo));
+				}
+				params.flip();
+				return;
+			case GL30.GL_TEXTURE_BINDING_2D_ARRAY:
+			case GL30.GL_TEXTURE_BINDING_3D:
+				WebGLTexture tex = gl.getParametero(pname);
+				if (tex == null) {
+					params.put(0);
+				} else {
+					params.put(textures.getKey(tex));
+				}
+				params.flip();
+				return;
+			case GL30.GL_VERTEX_ARRAY_BINDING:
+				WebGLVertexArrayObject obj = gl.getParametero(pname);
+				if (obj == null) {
+					params.put(0);
+				} else {
+					params.put(vertexArrays.getKey(obj));
+				}
+				params.flip();
+				return;
+			default:
+				// Assume it is a GL20 pname
+				super.glGetIntegerv(pname, params);
+		}
+	}
+
+	@Override
 	public void glGetInteger64v (int pname, LongBuffer params) {
-		throw new UnsupportedOperationException("glGetInteger64v not supported on WebGL2");
+		switch (pname) {
+			case GL30.GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS:
+			case GL30.GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS:
+			case GL30.GL_MAX_ELEMENT_INDEX:
+			case GL30.GL_MAX_SERVER_WAIT_TIMEOUT:
+			case GL30.GL_MAX_UNIFORM_BLOCK_SIZE:
+				params.put(gl.getParameteri64(pname));
+				params.flip();
+				return;
+			default:
+				throw new UnsupportedOperationException("Given glGetInteger64v enum not supported on WebGL2");
+		}
 	}
 
 	@Override

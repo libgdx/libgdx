@@ -276,6 +276,12 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
         return this.getFragDataLocation(program, name);
 	}-*/;
 
+	//Returning an int but Java expects a Long. JS does not support long
+	// not sure how else to preserve the long values.
+	public final native int getParameteri64 (int pname) /*-{
+		return this.getParameter(pname);
+	}-*/;
+
 	public final native WebGLQuery getQuery (int target, int pname)/*-{
 		return this.getQuery(target, pname);
 	}-*/;
