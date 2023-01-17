@@ -27,6 +27,7 @@ import com.google.gwt.dom.client.VideoElement;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.google.gwt.typedarrays.shared.Float32Array;
 import com.google.gwt.typedarrays.shared.Int32Array;
+import com.google.gwt.typedarrays.shared.Uint32Array;
 
 /** @author Simon Gerst
  * @author JamesTKhan */
@@ -440,53 +441,80 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 // this.uniform1ui(location, v0);
 // }-*/;
 
-	public final native void uniform1uiv (WebGLUniformLocation location, UniformUIVSource value)/*-{
-		throw "UnsupportedOperation";
+	public final void uniform1uiv (WebGLUniformLocation location, Uint32Array value, int srcOffset, int srcLength) {
+		this.uniform1uiv(location, (JavaScriptObject) value, srcOffset, srcLength);
+	}
 
+	public final native void uniform1uiv (WebGLUniformLocation location, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+    	this.uniform1uiv(location, value, srcOffset, srcLength);
 	}-*/;
 
-	public final native void uniform3uiv (WebGLUniformLocation location, UniformUIVSource value)/*-{
-		throw "UnsupportedOperation";
+	public final void uniform3uiv (WebGLUniformLocation location, Uint32Array value, int srcOffset, int srcLength) {
+		this.uniform3uiv(location, (JavaScriptObject) value, srcOffset, srcLength);
+	}
 
+	public final native void uniform3uiv (WebGLUniformLocation location, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+		this.uniform3uiv(location, value, srcOffset, srcLength)
 	}-*/;
 
-	public final native void uniform4uiv (WebGLUniformLocation location, UniformUIVSource value)/*-{
-		throw "UnsupportedOperation";
+	public final void uniform4uiv (WebGLUniformLocation location, Uint32Array value, int srcOffset, int srcLength) {
+		this.uniform4uiv(location, (JavaScriptObject) value, srcOffset, srcLength);
+	}
 
+	public final native void uniform4uiv (WebGLUniformLocation location, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+		this.uniform4uiv(location, value, srcOffset, srcLength)
 	}-*/;
 
 	public final native void uniformBlockBinding (WebGLProgram program, int uniformBlockIndex, int uniformBlockBinding)/*-{
 		this.uniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
 	}-*/;
 
-	public final native void uniformMatrix2x3fv (WebGLUniformLocation location, boolean transpose, UniformMatrixFVSource value)/*-{
-		throw "UnsupportedOperation";
+	public final void uniformMatrix2x3fv (WebGLUniformLocation location, boolean transpose, Float32Array value) {
+		this.uniformMatrix2x3fv(location, transpose, (JavaScriptObject)value);
+	}
 
+	public final native void uniformMatrix2x3fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value)/*-{
+		this.uniformMatrix2x3fv(location, transpose, value);
 	}-*/;
 
-	public final native void uniformMatrix2x4fv (WebGLUniformLocation location, boolean transpose, UniformMatrixFVSource value)/*-{
-		throw "UnsupportedOperation";
+	public final void uniformMatrix2x4fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset, int srcLength) {
+		this.uniformMatrix2x4fv(location, transpose, (JavaScriptObject)value, srcOffset, srcLength);
+	}
 
+	public final native void uniformMatrix2x4fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+		this.uniformMatrix2x4fv(location, transpose, value, srcOffset, srcLength);
 	}-*/;
 
-	public final native void uniformMatrix3x2fv (WebGLUniformLocation location, boolean transpose, UniformMatrixFVSource value)/*-{
-		throw "UnsupportedOperation";
+	public final void uniformMatrix3x2fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset, int srcLength) {
+		this.uniformMatrix3x2fv(location, transpose, (JavaScriptObject)value, srcOffset, srcLength);
+	}
 
+	public final native void uniformMatrix3x2fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+		this.uniformMatrix3x2fv(location, transpose, value, srcOffset, srcLength);
 	}-*/;
 
-	public final native void uniformMatrix3x4fv (WebGLUniformLocation location, boolean transpose, UniformMatrixFVSource value)/*-{
-		throw "UnsupportedOperation";
+	public final void uniformMatrix3x4fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset, int srcLength) {
+		this.uniformMatrix3x4fv(location, transpose, (JavaScriptObject)value, srcOffset, srcLength);
+	}
 
+	public final native void uniformMatrix3x4fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+		this.uniformMatrix3x4fv(location, transpose, value, srcOffset, srcLength);
 	}-*/;
 
-	public final native void uniformMatrix4x2fv (WebGLUniformLocation location, boolean transpose, UniformMatrixFVSource value)/*-{
-		throw "UnsupportedOperation";
+	public final void uniformMatrix4x2fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset, int srcLength) {
+		this.uniformMatrix4x2fv(location, transpose, (JavaScriptObject)value, srcOffset, srcLength);
+	}
 
+	public final native void uniformMatrix4x2fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+		this.uniformMatrix4x2fv(location, transpose, value, srcOffset, srcLength);
 	}-*/;
 
-	public final native void uniformMatrix4x3fv (WebGLUniformLocation location, boolean transpose, UniformMatrixFVSource value)/*-{
-		throw "UnsupportedOperation";
+	public final void uniformMatrix4x3fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset, int srcLength) {
+		this.uniformMatrix4x3fv(location, transpose, (JavaScriptObject)value, srcOffset, srcLength);
+	}
 
+	public final native void uniformMatrix4x3fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+		this.uniformMatrix4x3fv(location, transpose, value, srcOffset, srcLength);
 	}-*/;
 
 	public final native void vertexAttribDivisor (int index, int divisor)/*-{

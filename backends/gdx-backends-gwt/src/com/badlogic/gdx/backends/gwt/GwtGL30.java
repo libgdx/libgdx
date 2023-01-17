@@ -20,15 +20,18 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArrayBoolean;
 import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.typedarrays.client.Uint8ArrayNative;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
+import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.typedarrays.shared.Uint32Array;
 import com.google.gwt.webgl.client.WebGL2RenderingContext;
 import com.google.gwt.webgl.client.WebGLQuery;
 import com.google.gwt.webgl.client.WebGLSampler;
 import com.google.gwt.webgl.client.WebGLTransformFeedback;
+import com.google.gwt.webgl.client.WebGLUniformLocation;
 import com.google.gwt.webgl.client.WebGLVertexArrayObject;
 
 import java.nio.Buffer;
@@ -49,12 +52,25 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	int nextFeedbackId = 1;
 	final IntMap<WebGLVertexArrayObject> vertexArrays = IntMap.create();
 	int nextVertexArrayId = 1;
+	Uint32Array uIntBuffer = TypedArrays.createUint32Array(2000 * 6);
 
 	final protected WebGL2RenderingContext gl;
 
 	protected GwtGL30 (WebGL2RenderingContext gl) {
 		super(gl);
 		this.gl = gl;
+	}
+
+	public Uint32Array copyUnsigned (IntBuffer buffer) {
+		if (GWT.isProdMode()) {
+			return ((Uint32Array)((HasArrayBufferView)buffer).getTypedArray()).subarray(buffer.position(), buffer.remaining());
+		} else {
+			ensureCapacity(buffer);
+			for (int i = buffer.position(), j = 0; i < buffer.limit(); i++, j++) {
+				uIntBuffer.set(j, buffer.get(i));
+			}
+			return uIntBuffer.subarray(0, buffer.remaining());
+		}
 	}
 
 	private int allocateQueryId (WebGLQuery query) {
@@ -707,17 +723,20 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glUniform1uiv (int location, int count, IntBuffer value) {
-		throw new UnsupportedOperationException("glUniform1uiv not supported on WebGL2");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniform1uiv(loc, copyUnsigned(value), 0, count);
 	}
 
 	@Override
 	public void glUniform3uiv (int location, int count, IntBuffer value) {
-		throw new UnsupportedOperationException("glUniform3uiv not supported on WebGL2");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniform3uiv(loc, copyUnsigned(value), 0, count);
 	}
 
 	@Override
 	public void glUniform4uiv (int location, int count, IntBuffer value) {
-		throw new UnsupportedOperationException("glUniform4uiv not supported on WebGL2");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniform4uiv(loc, copyUnsigned(value), 0, count);
 	}
 
 	@Override
@@ -727,32 +746,38 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glUniformMatrix2x3fv (int location, int count, boolean transpose, FloatBuffer value) {
-		throw new UnsupportedOperationException("glUniformMatrix2x3fv not supported on WebGL2");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniformMatrix2x3fv(loc, transpose, copy(value));
 	}
 
 	@Override
 	public void glUniformMatrix2x4fv (int location, int count, boolean transpose, FloatBuffer value) {
-		throw new UnsupportedOperationException("glUniformMatrix2x4fv not supported on WebGL2");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniformMatrix2x4fv(loc, transpose, copy(value), 0, count);
 	}
 
 	@Override
 	public void glUniformMatrix3x2fv (int location, int count, boolean transpose, FloatBuffer value) {
-		throw new UnsupportedOperationException("glUniformMatrix3x2fv not supported on WebGL2");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniformMatrix3x2fv(loc, transpose, copy(value), 0, count);
 	}
 
 	@Override
 	public void glUniformMatrix3x4fv (int location, int count, boolean transpose, FloatBuffer value) {
-		throw new UnsupportedOperationException("glUniformMatrix3x4fv not supported on WebGL2");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniformMatrix3x4fv(loc, transpose, copy(value), 0, count);
 	}
 
 	@Override
 	public void glUniformMatrix4x2fv (int location, int count, boolean transpose, FloatBuffer value) {
-		throw new UnsupportedOperationException("glUniformMatrix4x2fv not supported on WebGL2");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniformMatrix4x2fv(loc, transpose, copy(value), 0, count);
 	}
 
 	@Override
 	public void glUniformMatrix4x3fv (int location, int count, boolean transpose, FloatBuffer value) {
-		throw new UnsupportedOperationException("glUniformMatrix4x3fv not supported on WebGL2");
+		WebGLUniformLocation loc = getUniformLocation(location);
+		gl.uniformMatrix4x3fv(loc, transpose, copy(value), 0, count);
 	}
 
 	@Override
