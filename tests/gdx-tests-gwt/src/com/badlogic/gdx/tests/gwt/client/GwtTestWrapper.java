@@ -98,6 +98,7 @@ import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
+import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
 import com.badlogic.gdx.tests.gles3.UniformBufferObjectsTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gwt.GwtInputTest;
@@ -645,6 +646,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			tests.add(new GwtInstancer() {
 				public GdxTest instance () {
 					return new MultipleRenderTargetTest();
+				}
+			});
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new NonPowerOfTwoTest();
 				}
 			});
 			tests.add(new GwtInstancer() {
