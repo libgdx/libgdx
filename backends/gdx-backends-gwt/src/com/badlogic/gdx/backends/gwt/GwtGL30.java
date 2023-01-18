@@ -702,6 +702,8 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 
 	@Override
 	public void glProgramParameteri (int program, int pname, int value) {
+		//Per WebGL2 spec: Accessing binary representations of compiled shader programs is not supported in the WebGL 2.0 API.
+		// This includes OpenGL ES 3.0 GetProgramBinary, ProgramBinary, and ProgramParameteri entry points
 		throw new UnsupportedOperationException("glProgramParameteri not supported on WebGL2");
 	}
 
