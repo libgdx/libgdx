@@ -265,7 +265,7 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
         return this.getFragDataLocation(program, name);
 	}-*/;
 
-	//Returning an int but GL type is GLint64 and GL30 interface uses LongBuffer. JS does not support long
+	// Returning an int but GL type is GLint64 and GL30 interface uses LongBuffer. JS does not support long
 	// so we return an int, not sure how else to preserve the long values at this time.
 	public final native int getParameteri64 (int pname) /*-{
 		return this.getParameter(pname);
@@ -437,7 +437,7 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 // }-*/;
 
 	public final void uniform1uiv (WebGLUniformLocation location, Uint32Array value, int srcOffset, int srcLength) {
-		this.uniform1uiv(location, (JavaScriptObject) value, srcOffset, srcLength);
+		this.uniform1uiv(location, (JavaScriptObject)value, srcOffset, srcLength);
 	}
 
 	public final native void uniform1uiv (WebGLUniformLocation location, JavaScriptObject value, int srcOffset, int srcLength)/*-{
@@ -445,7 +445,7 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	public final void uniform3uiv (WebGLUniformLocation location, Uint32Array value, int srcOffset, int srcLength) {
-		this.uniform3uiv(location, (JavaScriptObject) value, srcOffset, srcLength);
+		this.uniform3uiv(location, (JavaScriptObject)value, srcOffset, srcLength);
 	}
 
 	public final native void uniform3uiv (WebGLUniformLocation location, JavaScriptObject value, int srcOffset, int srcLength)/*-{
@@ -453,7 +453,7 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	}-*/;
 
 	public final void uniform4uiv (WebGLUniformLocation location, Uint32Array value, int srcOffset, int srcLength) {
-		this.uniform4uiv(location, (JavaScriptObject) value, srcOffset, srcLength);
+		this.uniform4uiv(location, (JavaScriptObject)value, srcOffset, srcLength);
 	}
 
 	public final native void uniform4uiv (WebGLUniformLocation location, JavaScriptObject value, int srcOffset, int srcLength)/*-{
@@ -472,43 +472,53 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 		this.uniformMatrix2x3fv(location, transpose, value);
 	}-*/;
 
-	public final void uniformMatrix2x4fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset, int srcLength) {
+	public final void uniformMatrix2x4fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset,
+		int srcLength) {
 		this.uniformMatrix2x4fv(location, transpose, (JavaScriptObject)value, srcOffset, srcLength);
 	}
 
-	public final native void uniformMatrix2x4fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+	public final native void uniformMatrix2x4fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value,
+		int srcOffset, int srcLength)/*-{
 		this.uniformMatrix2x4fv(location, transpose, value, srcOffset, srcLength);
 	}-*/;
 
-	public final void uniformMatrix3x2fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset, int srcLength) {
+	public final void uniformMatrix3x2fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset,
+		int srcLength) {
 		this.uniformMatrix3x2fv(location, transpose, (JavaScriptObject)value, srcOffset, srcLength);
 	}
 
-	public final native void uniformMatrix3x2fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+	public final native void uniformMatrix3x2fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value,
+		int srcOffset, int srcLength)/*-{
 		this.uniformMatrix3x2fv(location, transpose, value, srcOffset, srcLength);
 	}-*/;
 
-	public final void uniformMatrix3x4fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset, int srcLength) {
+	public final void uniformMatrix3x4fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset,
+		int srcLength) {
 		this.uniformMatrix3x4fv(location, transpose, (JavaScriptObject)value, srcOffset, srcLength);
 	}
 
-	public final native void uniformMatrix3x4fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+	public final native void uniformMatrix3x4fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value,
+		int srcOffset, int srcLength)/*-{
 		this.uniformMatrix3x4fv(location, transpose, value, srcOffset, srcLength);
 	}-*/;
 
-	public final void uniformMatrix4x2fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset, int srcLength) {
+	public final void uniformMatrix4x2fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset,
+		int srcLength) {
 		this.uniformMatrix4x2fv(location, transpose, (JavaScriptObject)value, srcOffset, srcLength);
 	}
 
-	public final native void uniformMatrix4x2fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+	public final native void uniformMatrix4x2fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value,
+		int srcOffset, int srcLength)/*-{
 		this.uniformMatrix4x2fv(location, transpose, value, srcOffset, srcLength);
 	}-*/;
 
-	public final void uniformMatrix4x3fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset, int srcLength) {
+	public final void uniformMatrix4x3fv (WebGLUniformLocation location, boolean transpose, Float32Array value, int srcOffset,
+		int srcLength) {
 		this.uniformMatrix4x3fv(location, transpose, (JavaScriptObject)value, srcOffset, srcLength);
 	}
 
-	public final native void uniformMatrix4x3fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value, int srcOffset, int srcLength)/*-{
+	public final native void uniformMatrix4x3fv (WebGLUniformLocation location, boolean transpose, JavaScriptObject value,
+		int srcOffset, int srcLength)/*-{
 		this.uniformMatrix4x3fv(location, transpose, value, srcOffset, srcLength);
 	}-*/;
 

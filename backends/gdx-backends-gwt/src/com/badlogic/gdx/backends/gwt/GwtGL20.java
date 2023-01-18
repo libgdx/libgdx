@@ -168,7 +168,7 @@ public class GwtGL20 implements GL20 {
 		}
 	}
 
-	protected void ensureCapacity(IntBuffer buffer) {
+	protected void ensureCapacity (IntBuffer buffer) {
 		if (buffer.remaining() > intBuffer.length()) {
 			intBuffer = TypedArrays.createInt32Array(buffer.remaining());
 		}
@@ -180,7 +180,7 @@ public class GwtGL20 implements GL20 {
 		}
 	}
 
-	protected WebGLUniformLocation getUniformLocation(int location) {
+	protected WebGLUniformLocation getUniformLocation (int location) {
 		return uniforms.get(currProgram).get(location);
 	}
 
