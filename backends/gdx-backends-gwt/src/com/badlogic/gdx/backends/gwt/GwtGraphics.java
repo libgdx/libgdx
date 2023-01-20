@@ -56,9 +56,8 @@ public class GwtGraphics extends AbstractGraphics {
 	CanvasElement canvas;
 	WebGLRenderingContext context;
 	GLVersion glVersion;
-	GL20 gl20;
-	GL30 gl30;
-	String extensions;
+	private GL20 gl20;
+	private GL30 gl30;
 	float fps = 0;
 	long lastTimeStamp = System.currentTimeMillis();
 	long frameId = -1;

@@ -27,7 +27,8 @@ import java.nio.LongBuffer;
 /** Does not extend from GwtGL20Debug as we would not have GL30 methods to override meaning we would need to implement all of GL30
  * here as well.
  *
- * Instead, GL30 override methods are first, then GL20 override methods are beneath which were copied from GwtGl20Debug. */
+ * Instead, GL30 override methods are first, then GL20 override methods are beneath which were copied from
+ * {@link GwtGL20Debug}. */
 public class GwtGL30Debug extends GwtGL30 {
 
 	protected GwtGL30Debug (WebGL2RenderingContext gl) {

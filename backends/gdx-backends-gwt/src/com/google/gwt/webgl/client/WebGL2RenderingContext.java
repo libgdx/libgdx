@@ -61,7 +61,11 @@ public class WebGL2RenderingContext extends WebGLRenderingContext {
 	protected WebGL2RenderingContext () {
 	}
 
-	public static JsArrayString toJsArray (String[] input) {
+	/** Converts a Java primitive string array to JsArrayString
+	 *
+	 * @param input primitive string array
+	 * @return converted JsArrayString */
+	private static JsArrayString toJsArray (String[] input) {
 		JsArrayString jsArrayString = JsArrayString.createArray().cast();
 		for (String s : input) {
 			jsArrayString.push(s);

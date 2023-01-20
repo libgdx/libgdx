@@ -46,15 +46,15 @@ import java.nio.LongBuffer;
 /** @author Simon Gerst
  * @author JamesTKhan */
 public class GwtGL30 extends GwtGL20 implements GL30 {
-	final IntMap<WebGLQuery> queries = IntMap.create();
-	int nextQueryId = 1;
-	final IntMap<WebGLSampler> samplers = IntMap.create();
-	int nextSamplerId = 1;
-	final IntMap<WebGLTransformFeedback> feedbacks = IntMap.create();
-	int nextFeedbackId = 1;
-	final IntMap<WebGLVertexArrayObject> vertexArrays = IntMap.create();
-	int nextVertexArrayId = 1;
-	Uint32Array uIntBuffer = TypedArrays.createUint32Array(2000 * 6);
+	private final IntMap<WebGLQuery> queries = IntMap.create();
+	private int nextQueryId = 1;
+	private final IntMap<WebGLSampler> samplers = IntMap.create();
+	private int nextSamplerId = 1;
+	private final IntMap<WebGLTransformFeedback> feedbacks = IntMap.create();
+	private int nextFeedbackId = 1;
+	private final IntMap<WebGLVertexArrayObject> vertexArrays = IntMap.create();
+	private int nextVertexArrayId = 1;
+	private final Uint32Array uIntBuffer = TypedArrays.createUint32Array(2000 * 6);
 
 	final protected WebGL2RenderingContext gl;
 
@@ -63,7 +63,7 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 		this.gl = gl;
 	}
 
-	public Uint32Array copyUnsigned (IntBuffer buffer) {
+	private Uint32Array copyUnsigned (IntBuffer buffer) {
 		if (GWT.isProdMode()) {
 			return ((Uint32Array)((HasArrayBufferView)buffer).getTypedArray()).subarray(buffer.position(), buffer.remaining());
 		} else {
