@@ -535,7 +535,7 @@ public class Skin implements Disposable {
 				float scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
 				Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
 				Boolean markupEnabled = json.readValue("markupEnabled", Boolean.class, false, jsonData);
-				Boolean integerPositions = json.readValue("markupEnabled", Boolean.class, true, jsonData);
+				Boolean integerPositions = json.readValue("integerPositions", Boolean.class, true, jsonData);
 
 				FileHandle fontFile = skinFile.parent().child(path);
 				if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
