@@ -307,6 +307,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	protected void loadBasicLayerInfo (MapLayer layer, Element element) {
 		String name = element.getAttribute("name", null);
 		float opacity = Float.parseFloat(element.getAttribute("opacity", "1.0"));
+		String tintColor = element.getAttribute("tintcolor", "#ffffffff");
 		boolean visible = element.getIntAttribute("visible", 1) == 1;
 		float offsetX = element.getFloatAttribute("offsetx", 0);
 		float offsetY = element.getFloatAttribute("offsety", 0);
@@ -320,6 +321,14 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		layer.setOffsetY(offsetY);
 		layer.setParallaxX(parallaxX);
 		layer.setParallaxY(parallaxY);
+
+		// tiled uses the format #AARRGGBB
+		// if the alpha of the tintcolor is set to 255, Tiled does not include it as part of the color code.
+		// ex. Red (r:255,g:0,b:0,a:255) becomes #ff0000, Red (r:255,g:0,b:0,a:127) becomes A:157 #7fff0000
+		String alpha = tintColor.length() == 9 ? tintColor.substring(1,3) : "ff";
+		String color= tintColor.length() == 9 ? tintColor.substring(3) : tintColor.substring(1);
+		layer.setTintColor(Color.valueOf(color + alpha));
+
 	}
 
 	protected void loadObject (TiledMap map, MapLayer layer, Element element) {
