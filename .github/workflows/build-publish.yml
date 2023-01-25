@@ -19,20 +19,11 @@ jobs:
           submodules: 'recursive'
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          cache: 'gradle'
 
       - name: Build macOS natives
         run: |
@@ -42,7 +33,7 @@ jobs:
           sudo mv /Applications/Xcode_13.2.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
-          ./gradlew jniGen jnigenBuildIOS
+          ./gradlew jniGen jnigenBuildIOS --no-daemon
           ./backends/gdx-backend-robovm/build-objectal.sh
 
       - name: Pack artifacts
@@ -56,11 +47,6 @@ jobs:
           name: natives-ios.zip
           path: natives-ios.zip
 
-      - name: Cleanup Gradle Cache
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
-
   natives-macos:
     runs-on: macos-latest
     steps:
@@ -70,20 +56,11 @@ jobs:
           submodules: 'recursive'
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          cache: 'gradle'
 
       - name: Build macOS natives
         run: |
@@ -93,7 +70,7 @@ jobs:
           sudo mv /Applications/Xcode_13.2.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
-          ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64
+          ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64 --no-daemon
 
       - name: Pack artifacts
         run: |
@@ -106,11 +83,6 @@ jobs:
           name: natives-macos.zip
           path: natives-macos.zip
 
-      - name: Cleanup Gradle Cache
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
-
   natives-linux:
     runs-on: ubuntu-18.04
     steps:
@@ -120,10 +92,11 @@ jobs:
           submodules: 'recursive'
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
+          cache: 'gradle'
 
       - name: Install cross-compilation toolchains
         run: |
@@ -131,19 +104,9 @@ jobs:
           sudo apt install -y --force-yes gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-dev-arm64-cross
           sudo apt install -y --force-yes gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc6-dev-armhf-cross
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
       - name: Build Linux natives
         run: |
-          ./gradlew jniGen jnigenBuildLinux64 jnigenBuildLinuxARM jnigenBuildLinuxARM64
+          ./gradlew jniGen jnigenBuildLinux64 jnigenBuildLinuxARM jnigenBuildLinuxARM64 --no-daemon
 
       - name: Pack artifacts
         run: |
@@ -156,11 +119,6 @@ jobs:
           name: natives-linux.zip
           path: natives-linux.zip
 
-      - name: Cleanup Gradle Cache
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
-
   natives-windows:
     runs-on: ubuntu-18.04
     steps:
@@ -170,28 +128,19 @@ jobs:
           submodules: 'recursive'
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
+          cache: 'gradle'
 
       - name: Install cross-compilation toolchains
         run: |
           sudo apt install -y --force-yes mingw-w64 lib32z1
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
       - name: Build Windows natives
         run: |
-          ./gradlew jniGen jnigenBuildWindows64 jnigenBuildWindows
+          ./gradlew jniGen jnigenBuildWindows64 jnigenBuildWindows --no-daemon
 
       - name: Pack artifacts
         run: |
@@ -204,11 +153,6 @@ jobs:
           name: natives-windows.zip
           path: natives-windows.zip
 
-      - name: Cleanup Gradle Cache
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
-
   natives-android:
     runs-on: ubuntu-18.04
     steps:
@@ -218,25 +162,16 @@ jobs:
           submodules: 'recursive'
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          cache: 'gradle'
 
       - name: Build Android natives
         run: |
           export NDK_HOME=$ANDROID_NDK_HOME
-          ./gradlew jniGen jnigenBuildAndroid
+          ./gradlew jniGen jnigenBuildAndroid --no-daemon
 
       - name: Pack artifacts
         run: |
@@ -248,11 +183,6 @@ jobs:
         with:
           name: natives-android.zip
           path: natives-android.zip
-
-      - name: Cleanup Gradle Cache
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
 
   pack-natives:
     runs-on: ubuntu-18.04
@@ -268,20 +198,11 @@ jobs:
           submodules: 'recursive'
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          cache: 'gradle'
 
       - name: Download natives-ios artifact
         uses: actions/download-artifact@v2
@@ -318,7 +239,7 @@ jobs:
 
       - name: Pack desktop natives
         run: |
-          ./gradlew jniGen
+          ./gradlew jniGen --no-daemon
           ant -f gdx/jni/build.xml pack-natives
           ant -f extensions/gdx-box2d/gdx-box2d/jni/build.xml pack-natives
           ant -f extensions/gdx-freetype/jni/build.xml pack-natives
@@ -340,11 +261,6 @@ jobs:
         run: |
           aws s3 cp natives.zip s3://libgdx-nightlies/libgdx-nightlies/natives.zip
 
-      - name: Cleanup Gradle Cache
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
-
   publish:
     runs-on: ubuntu-18.04
     needs: pack-natives
@@ -358,7 +274,7 @@ jobs:
           submodules: 'recursive'
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -374,12 +290,12 @@ jobs:
 
       - name: Fetch external natives
         run: |
-          ./gradlew fetchExternalNatives
+          ./gradlew fetchExternalNatives --no-daemon
 
       - name: Snapshot build deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'libgdx'
         run: |
-          ./gradlew build publish
+          ./gradlew build publish --no-daemon
 
       - name: Import GPG key
         if: github.event_name == 'release' && github.repository_owner == 'libgdx'
@@ -391,7 +307,7 @@ jobs:
 
       - name: Release build deploy
         if: github.event_name == 'release' && github.repository_owner == 'libgdx'
-        run: ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
+        run: ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }} --no-daemon
 
   build-and-upload-runnables:
     runs-on: ubuntu-18.04
@@ -407,15 +323,16 @@ jobs:
           submodules: 'recursive'
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '11'
+          cache: 'gradle'
 
       - name: Build Runnables
         run: |
-          ./gradlew clean fetchNatives
-          ./gradlew buildRunnables build
+          ./gradlew clean fetchNatives --no-daemon
+          ./gradlew buildRunnables build --no-daemon
           
       - name: Upload artifacts to S3
         if: env.AWS_ACCESS_KEY_ID != null
