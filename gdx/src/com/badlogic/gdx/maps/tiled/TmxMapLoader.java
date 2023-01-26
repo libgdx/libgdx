@@ -156,15 +156,15 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 
 		// GroupLayer descriptors
 		for (Element groupLayer : root.getChildrenByName("group")) {
-			 for (Element imageLayer : groupLayer.getChildrenByName("imagelayer")) {
-				 Element image = imageLayer.getChildByName("image");
-				 String source = image.getAttribute("source", null);
+			for (Element imageLayer : groupLayer.getChildrenByName("imagelayer")) {
+				Element image = imageLayer.getChildByName("image");
+				String source = image.getAttribute("source", null);
 
-				 if (source != null) {
-					 FileHandle handle = getRelativeFileHandle(tmxFile, source);
-					 fileHandles.add(handle);
-				 }
-			 }
+				if (source != null) {
+					FileHandle handle = getRelativeFileHandle(tmxFile, source);
+					fileHandles.add(handle);
+				}
+			}
 		}
 
 		return fileHandles;
