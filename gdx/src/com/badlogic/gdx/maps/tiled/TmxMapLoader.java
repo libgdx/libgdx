@@ -160,10 +160,10 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		return fileHandles;
 	}
 
-	/** Recursive function to look through all the possible groups within groups ImageLayers could be found in.
-	  * @param root element we are parsing
+	/** Recursive function to look through all the possible groups within groups that ImageLayers could be found in.
+	  * @param root element of the xml file we are parsing
 	  * @param tmxFile the FileHandle of the current tmx we are looking at
-	  * @param fileHandles array of FileHandles being passed to be added on to */
+	  * @param fileHandles array of FileHandles we pass in, to be added onto */
 	 private void checkGroups(Element root, FileHandle tmxFile, Array<FileHandle> fileHandles) {
 		  // GroupLayer descriptors
 		  for (Element groupLayer : root.getChildrenByName("group")) {
