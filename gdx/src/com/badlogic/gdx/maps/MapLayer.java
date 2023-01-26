@@ -63,10 +63,10 @@ public class MapLayer {
 	/** @return layer's tint color */
 	public Color getTintColor () {
 		if (parent != null) {
-			 tempColor.set(tintColor);
-			 return tempColor.mul(parent.getTintColor());
-		}else {
-			 return tintColor;
+			tempColor.set(tintColor);
+			return tempColor.mul(parent.getTintColor());
+		} else {
+			return tintColor;
 		}
 	}
 
