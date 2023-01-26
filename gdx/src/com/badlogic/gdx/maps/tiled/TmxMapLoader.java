@@ -154,21 +154,31 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			}
 		}
 
-		// GroupLayer descriptors
-		for (Element groupLayer : root.getChildrenByName("group")) {
-			 for (Element imageLayer : groupLayer.getChildrenByName("imagelayer")) {
-				 Element image = imageLayer.getChildByName("image");
-				 String source = image.getAttribute("source", null);
-
-				 if (source != null) {
-					 FileHandle handle = getRelativeFileHandle(tmxFile, source);
-					 fileHandles.add(handle);
-				 }
-			 }
-		}
+		//Check Groups for ImageLayers
+		checkGroups(root, tmxFile, fileHandles);
 
 		return fileHandles;
 	}
+
+	/** Recursive function to look through all the possible groups within groups ImageLayers could be found in.
+	  * @param root element we are parsing
+	  * @param tmxFile the FileHandle of the current tmx we are looking at
+	  * @param fileHandles array of FileHandles being passed to be added on to */
+	 private void checkGroups(Element root, FileHandle tmxFile, Array<FileHandle> fileHandles) {
+		  // GroupLayer descriptors
+		  for (Element groupLayer : root.getChildrenByName("group")) {
+				for (Element imageLayer : groupLayer.getChildrenByName("imagelayer")) {
+					 Element image = imageLayer.getChildByName("image");
+					 String source = image.getAttribute("source", null);
+
+					 if (source != null) {
+						  FileHandle handle = getRelativeFileHandle(tmxFile, source);
+						  fileHandles.add(handle);
+					 }
+				}
+				checkGroups(groupLayer, tmxFile, fileHandles);
+		  }
+	 }
 
 	@Override
 	protected void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileSet, Element element,
