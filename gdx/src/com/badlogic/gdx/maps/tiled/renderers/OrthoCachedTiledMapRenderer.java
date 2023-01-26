@@ -359,7 +359,8 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 
 	@Override
 	public void renderImageLayer (TiledMapImageLayer layer) {
-		final float color = Color.toFloatBits(1.0f, 1.0f, 1.0f, layer.getOpacity());
+		final float color =  Color.toFloatBits(1 * layer.getTintColor().r, 1 * layer.getTintColor().g, 1* layer.getTintColor().b, layer.getTintColor().a * layer.getOpacity());
+
 		final float[] vertices = this.vertices;
 
 		TextureRegion region = layer.getTextureRegion();
