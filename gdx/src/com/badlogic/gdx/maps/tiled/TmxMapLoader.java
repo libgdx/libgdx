@@ -154,31 +154,31 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			}
 		}
 
-		//Check Groups for ImageLayers
+		// Check Groups for ImageLayers
 		checkGroups(root, tmxFile, fileHandles);
 
 		return fileHandles;
 	}
 
 	/** Recursive function to look through all the possible groups within groups that ImageLayers could be found in.
-	  * @param root element of the xml file we are parsing
-	  * @param tmxFile the FileHandle of the current tmx we are looking at
-	  * @param fileHandles array of FileHandles we pass in, to be added onto */
-	 private void checkGroups(Element root, FileHandle tmxFile, Array<FileHandle> fileHandles) {
-		  // GroupLayer descriptors
-		  for (Element groupLayer : root.getChildrenByName("group")) {
-				for (Element imageLayer : groupLayer.getChildrenByName("imagelayer")) {
-					 Element image = imageLayer.getChildByName("image");
-					 String source = image.getAttribute("source", null);
+	 * @param root element of the xml file we are parsing
+	 * @param tmxFile the FileHandle of the current tmx we are looking at
+	 * @param fileHandles array of FileHandles we pass in, to be added onto */
+	private void checkGroups (Element root, FileHandle tmxFile, Array<FileHandle> fileHandles) {
+		// GroupLayer descriptors
+		for (Element groupLayer : root.getChildrenByName("group")) {
+			for (Element imageLayer : groupLayer.getChildrenByName("imagelayer")) {
+				Element image = imageLayer.getChildByName("image");
+				String source = image.getAttribute("source", null);
 
-					 if (source != null) {
-						  FileHandle handle = getRelativeFileHandle(tmxFile, source);
-						  fileHandles.add(handle);
-					 }
+				if (source != null) {
+					FileHandle handle = getRelativeFileHandle(tmxFile, source);
+					fileHandles.add(handle);
 				}
-				checkGroups(groupLayer, tmxFile, fileHandles);
-		  }
-	 }
+			}
+			checkGroups(groupLayer, tmxFile, fileHandles);
+		}
+	}
 
 	@Override
 	protected void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileSet, Element element,
