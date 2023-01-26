@@ -105,21 +105,21 @@ public class TiledMapLayerTintOpacityTest extends GdxTest {
 				if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
 				mapType = 2;
 				map = assetManager.get(MAP_ISO);
-				renderer = new IsometricTiledMapRenderer(map, 1f / 48f);
+				renderer = new IsometricTiledMapRenderer(map, 1f / 64f);
 			}
 		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
 			if (mapType != 3) {
 				if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
 				mapType = 3;
 				map = assetManager.get(MAP_ISO_STAG);
-				renderer = new IsometricStaggeredTiledMapRenderer(map, 1f / 48f);
+				renderer = new IsometricStaggeredTiledMapRenderer(map, 1f / 64f);
 			}
 		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
 			if (mapType != 4) {
 				if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
 				mapType = 4;
 				map = assetManager.get(MAP_HEX);
-				renderer = new HexagonalTiledMapRenderer(map, 1f / 48f);
+				renderer = new HexagonalTiledMapRenderer(map, 1f / 128f);
 			}
 		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
 			if (mapType != 5) {
@@ -130,7 +130,7 @@ public class TiledMapLayerTintOpacityTest extends GdxTest {
 			}
 		}
 
-		ScreenUtils.clear(100f / 255f, 100f / 255f, 250f / 255f, 1f);
+		ScreenUtils.clear(137f / 255f, 137f / 255f, 137f / 255f, 1f);
 		camera.update();
 
 		// add margin to view bounds so it is easy to see any issues with clipping, calculated same way as
