@@ -18,41 +18,26 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
+import com.badlogic.gdx.input.NativeInputConfiguration;
+import com.badlogic.gdx.input.TextInputWrapper;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.Foundation;
-import org.robovm.apple.foundation.NSExtensions;
-import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSRange;
+import org.robovm.apple.coregraphics.CGSize;
+import org.robovm.apple.foundation.*;
 import org.robovm.apple.gamecontroller.GCKeyboard;
-import org.robovm.apple.uikit.UIAlertAction;
-import org.robovm.apple.uikit.UIAlertActionStyle;
-import org.robovm.apple.uikit.UIAlertController;
-import org.robovm.apple.uikit.UIAlertControllerStyle;
-import org.robovm.apple.uikit.UIForceTouchCapability;
-import org.robovm.apple.uikit.UIKey;
-import org.robovm.apple.uikit.UIKeyboardHIDUsage;
-import org.robovm.apple.uikit.UIKeyboardType;
-import org.robovm.apple.uikit.UIReturnKeyType;
-import org.robovm.apple.uikit.UIScreen;
-import org.robovm.apple.uikit.UITextAutocapitalizationType;
-import org.robovm.apple.uikit.UITextAutocorrectionType;
-import org.robovm.apple.uikit.UITextField;
-import org.robovm.apple.uikit.UITextFieldDelegate;
-import org.robovm.apple.uikit.UITextFieldDelegateAdapter;
-import org.robovm.apple.uikit.UITextSpellCheckingType;
-import org.robovm.apple.uikit.UITouch;
-import org.robovm.apple.uikit.UITouchPhase;
+import org.robovm.apple.uikit.*;
+import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.Method;
 import org.robovm.objc.block.VoidBlock1;
 import org.robovm.rt.VM;
@@ -396,8 +381,63 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	// uses a hidden textfield to capture input
 	// see: https://web.archive.org/web/20171016192705/http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
 
-	private UITextField textfield = null;
+	private UIView textfield = null;
+
+	private Input.InputStringValidator inputStringValidator = null;
+	private String placeHolder = "";
+	private TextInputWrapper textInputWrapper;
+	private Integer maxTextLength;
+
+	private final UITextViewDelegate textViewDelegate = new UITextViewDelegateAdapter() {
+		@Override
+		public void didChange (UITextView textView) {
+			if (textView.getText().isEmpty()) {
+				textView.setText(placeHolder);
+				textView.setTextColor(UIColor.lightGray());
+				textView
+					.setSelectedTextRange(textView.getTextRange(textView.getBeginningOfDocument(), textView.getBeginningOfDocument()));
+			}
+		}
+
+		@Override
+		public boolean shouldChangeCharacters (UITextView textView, NSRange range, String text) {
+			if (textView.getTextColor().isEqual(UIColor.lightGray())) {
+				if (text.length() != 0) {
+					textView.setText("");
+					textView.setTextColor(UIColor.black());
+				} else {
+					return false;
+				}
+			}
+			if (maxTextLength != null && textView.getText().length() + (text.length() - range.getLength()) > maxTextLength) {
+				return false;
+			}
+
+			if (inputStringValidator == null) return true;
+			return inputStringValidator.validate(text);
+		}
+	};
+
 	private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
+
+		@Override
+		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String text) {
+			if (maxTextLength != null && textField.getText().length() + (text.length() - range.getLength()) > maxTextLength) {
+				return false;
+			}
+			if (inputStringValidator == null) return true;
+			return inputStringValidator.validate(text);
+		}
+
+		@Override
+		public boolean shouldReturn (UITextField textField) {
+			if (keyboardCloseOnReturn) Gdx.input.closeTextInputField(true);
+			Gdx.graphics.requestRendering();
+			return false;
+		}
+	};
+
+	private final UITextFieldDelegate textDelegateInvisible = new UITextFieldDelegateAdapter() {
 		@Override
 		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String string) {
 			for (int i = 0; i < range.getLength(); i++) {
@@ -446,17 +486,150 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
-		if (textfield == null) createDefaultTextField();
+		if (textfield != null && !textfield.isHidden())
+			throw new RuntimeException("Can't open KeyBoard, if TextInputField KeyBoard is already open");
+		// Maybe supporting needsDoneToolbar also here?
+		if (textfield == null) createDefaultTextField(false, false);
 		softkeyboardActive = visible;
 		if (visible) {
+			UITextField uiTextField = (UITextField)textfield;
 			if (type == null) type = OnscreenKeyboardType.Default;
-			textfield.setKeyboardType(getIosInputType(type));
+			uiTextField.setKeyboardType(getIosInputType(type));
+			uiTextField.setAutocorrectionType(UITextAutocorrectionType.No);
+			uiTextField.setSpellCheckingType(UITextSpellCheckingType.No);
 			textfield.reloadInputViews();
 			textfield.becomeFirstResponder();
-			textfield.setDelegate(textDelegate);
+			uiTextField.setDelegate(textDelegateInvisible);
 		} else {
 			textfield.resignFirstResponder();
+			textfield.removeFromSuperview();
+			textfield.dispose();
+			textfield = null;
 		}
+	}
+
+	static class UtilityCallback extends NSObject {
+
+		@Method(selector = "doneClicked")
+		public void doneClicked () {
+			Gdx.input.closeTextInputField(true);
+		}
+
+		@Method(selector = "doneClicked")
+		public void togglePasswordView (UIButton sender) {
+			// TODO: 24.11.22 This is silly, but idk how to do reasonable better
+			UITextField field = (UITextField)((DefaultIOSInput)Gdx.input).getActiveKeyboardTextField();
+			field.setSecureTextEntry(!field.isSecureTextEntry());
+			String fileName = field.isSecureTextEntry() ? "ic_password_visible.png" : "ic_password_invisible.png";
+			byte[] data = Gdx.files.classpath(fileName).readBytes();
+			NSData nsData = new NSData(data);
+			sender.setImage(new UIImage(nsData), UIControlState.Normal);
+		}
+	}
+
+	@Override
+	public void openTextInputField (NativeInputConfiguration configuration) {
+		configuration.validate();
+		if (textfield != null) throw new GdxRuntimeException("Can't open TextInputField, if KeyBoard is already open");
+		createDefaultTextField(configuration.isMultiLine(),
+			configuration.isMultiLine() || (configuration.getType() != OnscreenKeyboardType.Default
+				&& configuration.getType() != OnscreenKeyboardType.Password));
+		placeHolder = configuration.getPlaceholder();
+		softkeyboardActive = true;
+		inputStringValidator = configuration.getValidator();
+		maxTextLength = configuration.getMaxLength();
+		UITextInput uiTextInput = (UITextInput)textfield;
+		textfield.setHidden(false);
+		textInputWrapper = configuration.getTextInputWrapper();
+		uiTextInput.setKeyboardType(getIosInputType(configuration.getType()));
+
+		if (configuration.isPreventCorrection()) {
+			uiTextInput.setAutocorrectionType(UITextAutocorrectionType.No);
+			uiTextInput.setSpellCheckingType(UITextSpellCheckingType.No);
+			uiTextInput.setAutocapitalizationType(UITextAutocapitalizationType.Sentences);
+		} else {
+			uiTextInput.setAutocorrectionType(UITextAutocorrectionType.Yes);
+			uiTextInput.setSpellCheckingType(UITextSpellCheckingType.Yes);
+			uiTextInput.setAutocapitalizationType(UITextAutocapitalizationType.Sentences);
+		}
+
+		if (textfield instanceof UITextView) {
+			if (textInputWrapper.getText().isEmpty()) {
+				((UITextView)textfield).setText(configuration.getPlaceholder());
+				((UITextView)textfield).setTextColor(UIColor.lightGray());
+			} else {
+				((UITextView)textfield).setText(textInputWrapper.getText());
+			}
+			((UITextView)textfield).setDelegate(textViewDelegate);
+		} else {
+			((UITextField)textfield).setText(textInputWrapper.getText());
+			((UITextField)textfield).setDelegate(textDelegate);
+			// Because apple seems to have unreadable placeholder color by default
+			NSAttributedString placeholderString = new NSAttributedString(configuration.getPlaceholder(),
+				new NSDictionary<>(NSAttributedStringAttribute.ForegroundColor.value(), UIColor.lightGray()));
+			((UITextField)textfield).setAttributedPlaceholder(placeholderString);
+
+			if (configuration.getType() == OnscreenKeyboardType.Password) {
+				UIButton button = new UIButton(UIButtonType.Custom);
+				UtilityCallback utilityCallback = new UtilityCallback();
+				utilityCallback.togglePasswordView(button);
+				button.setImageEdgeInsets(new UIEdgeInsets(0, -16, 0, 0));
+				button.setFrame(new CGRect(new CGPoint(textfield.getFrame().getSize().getWidth() - 25, 5), new CGSize(25, 25)));
+				button.addTarget(utilityCallback, Selector.register("togglePasswordView"), UIControlEvents.TouchUpInside);
+				((UITextField)textfield).setRightView(button);
+				((UITextField)textfield).setRightViewMode(UITextFieldViewMode.Always);
+			}
+		}
+		textfield.reloadInputViews();
+		textfield.becomeFirstResponder();
+
+		UITextPosition start = uiTextInput.getPosition(uiTextInput.getBeginningOfDocument(), textInputWrapper.getSelectionStart());
+		UITextPosition end = uiTextInput.getPosition(uiTextInput.getBeginningOfDocument(), textInputWrapper.getSelectionEnd());
+
+		uiTextInput.setSelectedTextRange(uiTextInput.getTextRange(start, end));
+	}
+
+	@Override
+	public void closeTextInputField (final boolean sendReturn) {
+		if (textfield == null) return;
+		UITextInput uiTextInput = (UITextInput)textfield;
+		softkeyboardActive = false;
+		String text;
+		if (textfield instanceof UITextView) {
+			text = ((UITextView)textfield).getText();
+			if (((UITextView)textfield).getTextColor().isEqual(UIColor.lightGray())) text = "";
+		} else {
+			text = ((UITextField)textfield).getText();
+		}
+		final long position = uiTextInput.getOffset(uiTextInput.getBeginningOfDocument(),
+			uiTextInput.getSelectedTextRange().getStart());
+		final String finalText = text;
+		Gdx.app.postRunnable(new Runnable() {
+			TextInputWrapper wrapper = textInputWrapper;
+
+			@Override
+			public void run () {
+				wrapper.setText(finalText);
+				wrapper.setPosition((int)position);
+				if (sendReturn) {
+					inputProcessor.keyDown(Keys.ENTER);
+					inputProcessor.keyTyped((char)13);
+				}
+			}
+		});
+
+		textfield.resignFirstResponder();
+		// We could first move the text field animated down and than delete, but I think it doesn't matter
+		textfield.removeFromSuperview();
+		textfield = null;
+		inputStringValidator = null;
+		textInputWrapper = null;
+
+	}
+
+	@Override
+	public void setKeyboardHeightObserver (KeyboardHeightObserver observer) {
+		app.graphics.viewController.observer = observer;
 	}
 
 	protected UIKeyboardType getIosInputType (OnscreenKeyboardType type) {
@@ -488,23 +661,52 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		keyboardCloseOnReturn = shouldClose;
 	}
 
-	public UITextField getKeyboardTextField () {
-		if (textfield == null) createDefaultTextField();
+	public UIView getActiveKeyboardTextField () {
 		return textfield;
 	}
 
-	private void createDefaultTextField () {
-		textfield = new UITextField(new CGRect(10, 10, 100, 50));
+	private void createDefaultTextField (boolean isMultiLine, boolean needsDoneToolbar) {
+		CGRect rect = new CGRect();
+		rect.setOrigin(new CGPoint(app.graphics.screenBounds.width, app.graphics.screenBounds.height));
+		rect.setSize(new CGSize(app.graphics.screenBounds.width, 50));
+
+		UIToolbar uiToolbar = null;
+		if (needsDoneToolbar) {
+			uiToolbar = new UIToolbar(
+				new CGRect(new CGPoint(0, 0), new CGSize(UIScreen.getMainScreen().getBounds().getSize().getWidth(), 35)));
+
+			UIBarButtonItem space = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, null, null);
+
+			UIBarButtonItem doneButton = new UIBarButtonItem(UIBarButtonSystemItem.Done, new UtilityCallback(),
+				Selector.register("doneClicked"));
+			uiToolbar.setItems(new NSArray<>(space, doneButton));
+			uiToolbar.updateConstraintsIfNeeded();
+		}
+
+		if (isMultiLine) {
+			UITextView textView = new UITextView(rect);
+			textView.setInputAccessoryView(uiToolbar);
+			textView.setTextColor(UIColor.black());
+			textView.setReturnKeyType(UIReturnKeyType.Default);
+			textfield = textView;
+		} else {
+			UITextField uiTextField = new UITextField(rect);
+			uiTextField.setTextColor(UIColor.black());
+			uiTextField.setReturnKeyType(UIReturnKeyType.Done);
+			uiTextField.setInputAccessoryView(uiToolbar);
+			textfield = uiTextField;
+		}
+
+		UITextInputTraits asTrait = (UITextInputTraits)textfield;
 		// Parameters
 		// Setting parameters
-		textfield.setKeyboardType(UIKeyboardType.Default);
-		textfield.setReturnKeyType(UIReturnKeyType.Done);
-		textfield.setAutocapitalizationType(UITextAutocapitalizationType.None);
-		textfield.setAutocorrectionType(UITextAutocorrectionType.No);
-		textfield.setSpellCheckingType(UITextSpellCheckingType.No);
+		asTrait.setKeyboardType(UIKeyboardType.Default);
+		asTrait.setAutocapitalizationType(UITextAutocapitalizationType.None);
+		asTrait.setAutocorrectionType(UITextAutocorrectionType.Yes);
+		asTrait.setSpellCheckingType(UITextSpellCheckingType.Yes);
 		textfield.setHidden(true);
-		// Text field needs to have at least one symbol - so we can use backspace
-		textfield.setText("x");
+		textfield.setBackgroundColor(UIColor.white());
+
 		app.getUIViewController().getView().addSubview(textfield);
 	}
 
