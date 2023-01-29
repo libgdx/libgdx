@@ -48,7 +48,7 @@
    </wangset>
   </wangsets>
  </tileset>
- <layer id="1" name="Tile Layer 2" width="25" height="25" parallaxx="0.75">
+ <layer id="1" name="Tile Layer 2" width="25" height="25" parallaxx="1.15">
   <data encoding="base64" compression="zlib">
    eJztwwEJAAAMBKGL8f2TLsdAwVVTVfXVA6nmOpk=
   </data>

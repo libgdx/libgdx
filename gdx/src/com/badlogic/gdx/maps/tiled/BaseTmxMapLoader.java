@@ -320,14 +320,16 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		boolean visible = element.getIntAttribute("visible", 1) == 1;
 		float offsetX = element.getFloatAttribute("offsetx", 0);
 		float offsetY = element.getFloatAttribute("offsety", 0);
+		float parallaxX = element.getFloatAttribute("parallaxx", 1f);
+		float parallaxY = element.getFloatAttribute("parallaxy", 1f);
 
 		layer.setName(name);
 		layer.setOpacity(opacity);
 		layer.setVisible(visible);
 		layer.setOffsetX(offsetX);
 		layer.setOffsetY(offsetY);
-		layer.setParallaxX(element.getFloatAttribute("parallaxx", 1f));
-		layer.setParallaxY(element.getFloatAttribute("parallaxy", 1f));
+		layer.setParallaxX(parallaxX);
+		layer.setParallaxY(parallaxY);
 	}
 
 	protected void loadObject (TiledMap map, MapLayer layer, Element element) {

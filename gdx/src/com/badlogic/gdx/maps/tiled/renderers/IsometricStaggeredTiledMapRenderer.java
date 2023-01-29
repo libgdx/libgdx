@@ -52,7 +52,7 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();
 
-		final float layerOffsetX = layer.getRenderOffsetX() * unitScale + viewBounds.x * (layer.getParallaxX() - 1);
+		final float layerOffsetX = layer.getRenderOffsetX() * unitScale - viewBounds.x * (layer.getParallaxX() - 1);
 		// offset in tiled is y down, so we flip it
 		final float layerOffsetY = -layer.getRenderOffsetY() * unitScale - viewBounds.y * (layer.getParallaxY() - 1);
 

@@ -3,7 +3,7 @@
  <tileset firstgid="1" source="../tiled/tiles.tsx"/>
  <group id="4" name="Parallax">
   <group id="8" name="Y">
-   <layer id="6" name="parallaxY" width="15" height="10" parallaxx="0.75" parallaxy="1.2">
+   <layer id="6" name="parallaxY" width="15" height="10" parallaxx="1.15" parallaxy="1.2">
     <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
