@@ -33,7 +33,7 @@
 </data>
   </layer>
  </group>
- <layer id="1" name="Tile Layer 2" width="15" height="10" offsetx="16" offsety="-16">
+ <layer id="1" name="Tile Layer 2" width="15" height="10" offsetx="16" offsety="-16"  parallaxx="1.75" >
   <data encoding="csv">
 0,0,0,0,97,98,0,0,0,0,0,97,98,0,0,
 0,0,0,97,105,105,98,0,0,97,101,105,105,98,0,
