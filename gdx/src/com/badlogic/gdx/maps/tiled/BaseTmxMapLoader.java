@@ -271,6 +271,9 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			}
 			if (flipY) y = mapHeightInPixels - y;
 
+			boolean repeatX = element.getIntAttribute("repeatx", 0) == 1;
+			boolean repeatY = element.getIntAttribute("repeaty", 0) == 1;
+
 			TextureRegion texture = null;
 
 			Element image = element.getChildByName("image");
@@ -282,7 +285,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				y -= texture.getRegionHeight();
 			}
 
-			TiledMapImageLayer layer = new TiledMapImageLayer(texture, x, y);
+			TiledMapImageLayer layer = new TiledMapImageLayer(texture, x, y,repeatX,repeatY);
 
 			loadBasicLayerInfo(layer, element);
 
