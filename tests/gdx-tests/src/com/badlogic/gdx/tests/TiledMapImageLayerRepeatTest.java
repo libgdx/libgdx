@@ -37,7 +37,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapImageLayerRepeatTest extends GdxTest {
 	private final static String MAP_ORTHO = "data/maps/tiled-imagelayer/image_layer_repeat_ortho.tmx";
-	private final static String MAP_ISO = "data/maps/tiled-offsets/iso.tmx";
+	private final static String MAP_ISO = "data/maps/tiled-imagelayer/iso.tmx";
 	private final static String MAP_ISO_STAG = "data/maps/tiled-offsets/iso_stag.tmx";
 	private final static String MAP_HEX_X = "data/maps/tiled-offsets/hex_x.tmx";
 	private final static String MAP_HEX_Y = "data/maps/tiled-offsets/hex_y.tmx";
@@ -88,7 +88,7 @@ public class TiledMapImageLayerRepeatTest extends GdxTest {
 				if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
 				mapType = 0;
 				map = assetManager.get(MAP_ORTHO);
-				renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
+				renderer = new OrthogonalTiledMapRenderer(map, 1f / 64f);
 			}
 		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
 			if (mapType != 1) {
@@ -103,7 +103,7 @@ public class TiledMapImageLayerRepeatTest extends GdxTest {
 				if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
 				mapType = 2;
 				map = assetManager.get(MAP_ISO);
-				renderer = new IsometricTiledMapRenderer(map, 1f / 48f);
+				renderer = new IsometricTiledMapRenderer(map, 1f / 64f);
 			}
 		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
 			if (mapType != 3) {
