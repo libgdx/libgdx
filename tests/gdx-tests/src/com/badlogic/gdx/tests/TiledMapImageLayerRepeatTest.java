@@ -36,11 +36,11 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapImageLayerRepeatTest extends GdxTest {
-	private final static String MAP_ORTHO = "data/maps/tiled-imagelayer/image_layer_repeat_ortho.tmx";
+	private final static String MAP_ORTHO = "data/maps/tiled-imagelayer/ortho.tmx";
 	private final static String MAP_ISO = "data/maps/tiled-imagelayer/iso.tmx";
-	private final static String MAP_ISO_STAG = "data/maps/tiled-offsets/iso_stag.tmx";
-	private final static String MAP_HEX_X = "data/maps/tiled-offsets/hex_x.tmx";
-	private final static String MAP_HEX_Y = "data/maps/tiled-offsets/hex_y.tmx";
+	private final static String MAP_ISO_STAG = "data/maps/tiled-imagelayer/iso_stag.tmx";
+	private final static String MAP_HEX_X = "data/maps/tiled-imagelayer/hex.tmx";
+	private final static String MAP_HEX_Y = "data/maps/tiled-imagelayer/hex.tmx";
 	private TiledMap map;
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;

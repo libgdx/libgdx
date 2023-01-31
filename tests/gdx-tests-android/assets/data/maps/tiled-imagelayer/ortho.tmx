@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="80" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="1">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="80" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="1">
  <tileset firstgid="1" source="../tiled/tiles.tsx"/>
  <imagelayer id="7" name="Blue Tile Repeat X and Y Layer" repeatx="1" repeaty="1">
   <image source="../../tile.png" width="35" height="35"/>
  </imagelayer>
- <imagelayer id="2" name="Badlogic Offset and Repeat Y Layer" offsetx="530.667" offsety="26" repeaty="1">
+ <imagelayer id="2" name="Badlogic Offset and Repeat Y Layer" offsetx="-256" offsety="0" repeaty="1">
   <image source="../../badlogic.jpg" width="256" height="256"/>
  </imagelayer>
- <imagelayer id="8" name="Badlogic Offset and Repeat X Layer" offsetx="385.667" offsety="-317" repeatx="1">
+ <imagelayer id="9" name="Badlogic Offset and Repeat Y Layer Right" offsetx="2560" offsety="-160" repeaty="1">
+  <image source="../../badlogic.jpg" width="256" height="256"/>
+ </imagelayer>
+ <imagelayer id="8" name="Badlogic Offset and Repeat X Layer" offsetx="512" offsety="320" repeatx="1">
+  <image source="../../badlogic.jpg" width="256" height="256"/>
+ </imagelayer>
+ <imagelayer id="10" name="Badlogic Offset and Repeat X Layer Top" offsetx="512" offsety="-256" repeatx="1">
   <image source="../../badlogic.jpg" width="256" height="256"/>
  </imagelayer>
  <layer id="3" name="Clouds" width="80" height="10">
