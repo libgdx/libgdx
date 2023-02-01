@@ -18,6 +18,7 @@ package com.badlogic.gdx.maps.tiled.renderers;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
 
+import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -245,7 +246,6 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 		  if (region == null) {
 				return;
 		  }
-
 		  /**
 			* Because of the way libGDX handles the isometric coordinates.
 			* The leftmost tile of the map begins rendering at world position 0,0, while in Tiled the y position is actually totalHeight/2
@@ -253,11 +253,10 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 			* To compensate for that we need to subtract half the map's height in pixels then add half of the tile's height in order to position it properly
 			* in order to get a 1 to 1 rendering as to where the imagelayer renders in tiled.
 			*/
-
-		  float tileHeight = getMap().getProperties().get("tileheight",Integer.class);
-		  float mapHeight =  getMap().getProperties().get("height",Integer.class);
+		  int tileHeight = getMap().getProperties().get("tileheight",Integer.class);
+		  int mapHeight =  getMap().getProperties().get("height",Integer.class);
 		  float mapHeightPixels = (mapHeight * tileHeight) * unitScale ;
-		  float halfTileHeight = (tileHeight/2)*unitScale;
+		  float halfTileHeight = (tileHeight * 0.5f)*unitScale;
 
 		  float x = layer.getX();
 		  float y = layer.getY();
@@ -313,28 +312,9 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 
 						  float rx1=0,ry1=0,rx2=0,ry2=0;
 						  if(layer.isRepeatX() && !layer.isRepeatY()){
-
-								/**	Whats going on here?
-								 * Explaining for the x position, same reasoning is used for Y.
-								 * We need to tile this layer infinitely on the x, y, or both axis, based on it's origin, so it matches up with tiled's rendering
-								 * rx1 = (x1 + i * imageBounds.width);
-								 * ^--this would tile the image layer from it's x,y/offset position,
-								 * but what we want is the texture be tiled from left to right, within the camera's bounds, while keeping its offset
-								 * rx1 = (viewBounds.x-(viewBounds.x% imageBounds.width))
-								 * ^-- Here we can ignore the x1 starting position and remove that, as it no longer matters, we want the starting position flush to camera's x position,
-								 * Taking camera's x position we then need to subtract that by the camera modulus of the image width to get the remainder
-								 * so we know how far to move the image to get flush with the camera,  But of course we are not done yet,
-								 * if the image starts off with an x/y position that is not zero, (an offset) we must now negate this
-								 * rx1 = ((viewBounds.x)-(viewBounds.x% imageBounds.width)) + (x1% imageBounds.width);
-								 * ^---We offset by (x1% imageBounds.width) which is a simple way to get the remainder of how many textures would fit between its starting position and 0
-								 * rx1 = ((viewBounds.x)-(viewBounds.x% imageBounds.width))  + (i -2) * imageBounds.width +(x1% imageBounds.width);
-								 * ^--- Finally this needs to be tiled, this is where our loops comes in, we use the repeatX = (viewBounds.width / imageBounds.width) +3
-								 * to find out how many textures we can fit in the camera + 3 more(so we can expand beyond the borders ) so we dont have pop in and out
-								 * around the edges of the camera and we use + (i -2) to start off placing them to the left of the camera, and we fill it out going right
-								 * multiplying by our image width. until we go through entire loop
-								 * *note for rx2 position we have to add the image width, for ry2 we add height
+								/** What's going on here?
+								 * {@link BatchTiledMapRenderer#renderImageLayer(TiledMapImageLayer)} explanation found there.
 								 */
-
 								rx1 = (viewBounds.x-(viewBounds.x % imageBounds.width)) +((i-2) * imageBounds.width) + (x1 % imageBounds.width);
 								ry1 = (y1 + j * imageBounds.height);
 								rx2 = ((imageBounds.width + viewBounds.x)-(viewBounds.x% imageBounds.width)) + ((i-2) * imageBounds.width) + (x1% imageBounds.width);
