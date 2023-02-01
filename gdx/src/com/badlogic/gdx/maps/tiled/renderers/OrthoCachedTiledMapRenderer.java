@@ -424,15 +424,15 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 					if (layer.isRepeatX()) {
 						rx1 = (cacheBounds.x - (cacheBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
 							+ (x1 % imageBounds.width);
-						rx2 = ((imageBounds.width + cacheBounds.x) - (cacheBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
-							+ (x1 % imageBounds.width);
+						rx2 = ((imageBounds.width + cacheBounds.x) - (cacheBounds.x % imageBounds.width))
+							+ ((i - 2) * imageBounds.width) + (x1 % imageBounds.width);
 					}
 
-					if(layer.isRepeatY()){
-					  ry1 = (cacheBounds.y - (cacheBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
-						  + (y1 % imageBounds.height);
-					  ry2 = ((imageBounds.height + cacheBounds.y) - (cacheBounds.y % imageBounds.height))
-						  + ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+					if (layer.isRepeatY()) {
+						ry1 = (cacheBounds.y - (cacheBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
+							+ (y1 % imageBounds.height);
+						ry2 = ((imageBounds.height + cacheBounds.y) - (cacheBounds.y % imageBounds.height))
+							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
 					}
 
 					final float ru1 = region.getU();
