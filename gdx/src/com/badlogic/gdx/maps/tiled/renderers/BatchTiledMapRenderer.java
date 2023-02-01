@@ -240,8 +240,8 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 			}
 		} else {
 
-			float repeatX = layer.isRepeatX() ? (viewBounds.width / imageBounds.width) + 3 : 0;
-			float repeatY = layer.isRepeatY() ? (viewBounds.height / imageBounds.height) + 3 : 0;
+			float repeatX = layer.isRepeatX() ? (viewBounds.width / imageBounds.width) + 4 : 0;
+			float repeatY = layer.isRepeatY() ? (viewBounds.height / imageBounds.height) + 4 : 0;
 
 			for (int i = 0; i <= repeatX; i++) {
 				for (int j = 0; j <= repeatY; j++) {
