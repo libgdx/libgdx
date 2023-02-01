@@ -40,7 +40,7 @@ public class TiledMapImageLayerRepeatTest extends GdxTest {
 	private final static String MAP_ISO = "data/maps/tiled-imagelayer/iso.tmx";
 	private final static String MAP_ISO_STAG = "data/maps/tiled-imagelayer/iso_stag.tmx";
 	private final static String MAP_HEX_X = "data/maps/tiled-imagelayer/hex_x.tmx";
-	private final static String MAP_HEX_Y = "data/maps/tiled-imagelayer/hex_y_test.tmx";
+	private final static String MAP_HEX_Y = "data/maps/tiled-imagelayer/hex_y.tmx";
 	private TiledMap map;
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;

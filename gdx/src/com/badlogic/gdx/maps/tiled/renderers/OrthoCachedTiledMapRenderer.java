@@ -416,39 +416,29 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 
 			for (int i = 0; i <= repeatX; i++) {
 				for (int j = 0; j <= repeatY; j++) {
+					float rx1 = x1;
+					float ry1 = y1;
+					float rx2 = x2;
+					float ry2 = y2;
 
-					float rx1 = 0, ry1 = 0, rx2 = 0, ry2 = 0;
-					if (layer.isRepeatX() && !layer.isRepeatY()) {
-						/** What's going on here? {@link BatchTiledMapRenderer#renderImageLayer(TiledMapImageLayer)} for breakdown */
+					if (layer.isRepeatX()) {
 						rx1 = (cacheBounds.x - (cacheBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
 							+ (x1 % imageBounds.width);
-						ry1 = (y1 + j * imageBounds.height);
-						rx2 = ((imageBounds.width + cacheBounds.x) - (cacheBounds.x % imageBounds.width))
-							+ ((i - 2) * imageBounds.width) + (x1 % imageBounds.width);
-						ry2 = (y2 + j * imageBounds.height);
-					} else if (layer.isRepeatY() && !layer.isRepeatX()) {
-						rx1 = (x1 + i * imageBounds.width);
-						ry1 = (cacheBounds.y - (cacheBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
-							+ (y1 % imageBounds.height);
-						rx2 = (x2 + i * imageBounds.width);
-						ry2 = ((imageBounds.height + cacheBounds.y) - (cacheBounds.y % imageBounds.height))
-							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
-					} else if (layer.isRepeatY() && layer.isRepeatX()) {
-						rx1 = (cacheBounds.x - (cacheBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
+						rx2 = ((imageBounds.width + cacheBounds.x) - (cacheBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
 							+ (x1 % imageBounds.width);
-						ry1 = (cacheBounds.y - (cacheBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
-							+ (y1 % imageBounds.height);
-						rx2 = ((imageBounds.width + cacheBounds.x) - (cacheBounds.x % imageBounds.width))
-							+ ((i - 2) * imageBounds.width) + (x1 % imageBounds.width);
-						ry2 = ((imageBounds.height + cacheBounds.y) - (cacheBounds.y % imageBounds.height))
-							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
-
 					}
 
-					float ru1 = region.getU();
-					float rv1 = region.getV2();
-					float ru2 = region.getU2();
-					float rv2 = region.getV();
+					if(layer.isRepeatY()){
+					  ry1 = (cacheBounds.y - (cacheBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
+						  + (y1 % imageBounds.height);
+					  ry2 = ((imageBounds.height + cacheBounds.y) - (cacheBounds.y % imageBounds.height))
+						  + ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+					}
+
+					final float ru1 = region.getU();
+					final float rv1 = region.getV2();
+					final float ru2 = region.getU2();
+					final float rv2 = region.getV();
 
 					vertices[X1] = rx1;
 					vertices[Y1] = ry1;
