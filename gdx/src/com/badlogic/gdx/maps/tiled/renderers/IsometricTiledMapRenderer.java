@@ -18,7 +18,6 @@ package com.badlogic.gdx.maps.tiled.renderers;
 
 import static com.badlogic.gdx.graphics.g2d.Batch.*;
 
-import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -234,151 +233,153 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 		}
 	}
 
-	 @Override
-	 public void renderImageLayer (TiledMapImageLayer layer) {
-		  final Color batchColor = batch.getColor();
-		  final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
+	@Override
+	public void renderImageLayer (TiledMapImageLayer layer) {
+		final Color batchColor = batch.getColor();
+		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
 
-		  final float[] vertices = this.vertices;
+		final float[] vertices = this.vertices;
 
-		  TextureRegion region = layer.getTextureRegion();
+		TextureRegion region = layer.getTextureRegion();
 
-		  if (region == null) {
-				return;
-		  }
-		  /**
-			* Because of the way libGDX handles the isometric coordinates.
-			* The leftmost tile of the map begins rendering at world position 0,0, while in Tiled the y position is actually totalHeight/2
-			* ex. Map 800px in height, leftmost tile edge starts rendering at 0,400 in tiled
-			* To compensate for that we need to subtract half the map's height in pixels then add half of the tile's height in order to position it properly
-			* in order to get a 1 to 1 rendering as to where the imagelayer renders in tiled.
-			*/
-		  int tileHeight = getMap().getProperties().get("tileheight",Integer.class);
-		  int mapHeight =  getMap().getProperties().get("height",Integer.class);
-		  float mapHeightPixels = (mapHeight * tileHeight) * unitScale ;
-		  float halfTileHeight = (tileHeight * 0.5f)*unitScale;
+		if (region == null) {
+			return;
+		}
+		/** Because of the way libGDX handles the isometric coordinates. The leftmost tile of the map begins rendering at world
+		 * position 0,0, while in Tiled the y position is actually totalHeight/2 ex. Map 800px in height, leftmost tile edge starts
+		 * rendering at 0,400 in tiled To compensate for that we need to subtract half the map's height in pixels then add half of
+		 * the tile's height in order to position it properly in order to get a 1 to 1 rendering as to where the imagelayer renders
+		 * in tiled. */
+		int tileHeight = getMap().getProperties().get("tileheight", Integer.class);
+		int mapHeight = getMap().getProperties().get("height", Integer.class);
+		float mapHeightPixels = (mapHeight * tileHeight) * unitScale;
+		float halfTileHeight = (tileHeight * 0.5f) * unitScale;
 
-		  float x = layer.getX();
-		  float y = layer.getY();
+		float x = layer.getX();
+		float y = layer.getY();
 
-		  float x1 = x * unitScale;
-		  float y1 = (y * unitScale) - mapHeightPixels/2 +(halfTileHeight);
-		  float x2 = x1 + region.getRegionWidth() * unitScale;
-		  float y2 = y1 + region.getRegionHeight() * unitScale;
+		float x1 = x * unitScale;
+		float y1 = (y * unitScale) - mapHeightPixels / 2 + (halfTileHeight);
+		float x2 = x1 + region.getRegionWidth() * unitScale;
+		float y2 = y1 + region.getRegionHeight() * unitScale;
 
-		  imageBounds.set(x1, y1, x2 - x1, y2 - y1);
+		imageBounds.set(x1, y1, x2 - x1, y2 - y1);
 
-		  if(!layer.isRepeatX() && !layer.isRepeatY()) {
-				if (viewBounds.contains(imageBounds) || viewBounds.overlaps(imageBounds)) {
-					 final float u1 = region.getU();
-					 final float v1 = region.getV2();
-					 final float u2 = region.getU2();
-					 final float v2 = region.getV();
+		if (!layer.isRepeatX() && !layer.isRepeatY()) {
+			if (viewBounds.contains(imageBounds) || viewBounds.overlaps(imageBounds)) {
+				final float u1 = region.getU();
+				final float v1 = region.getV2();
+				final float u2 = region.getU2();
+				final float v2 = region.getV();
 
-					 vertices[X1] = x1;
-					 vertices[Y1] = y1;
-					 vertices[C1] = color;
-					 vertices[U1] = u1;
-					 vertices[V1] = v1;
+				vertices[X1] = x1;
+				vertices[Y1] = y1;
+				vertices[C1] = color;
+				vertices[U1] = u1;
+				vertices[V1] = v1;
 
-					 vertices[X2] = x1;
-					 vertices[Y2] = y2;
-					 vertices[C2] = color;
-					 vertices[U2] = u1;
-					 vertices[V2] = v2;
+				vertices[X2] = x1;
+				vertices[Y2] = y2;
+				vertices[C2] = color;
+				vertices[U2] = u1;
+				vertices[V2] = v2;
 
-					 vertices[X3] = x2;
-					 vertices[Y3] = y2;
-					 vertices[C3] = color;
-					 vertices[U3] = u2;
-					 vertices[V3] = v2;
+				vertices[X3] = x2;
+				vertices[Y3] = y2;
+				vertices[C3] = color;
+				vertices[U3] = u2;
+				vertices[V3] = v2;
 
-					 vertices[X4] = x2;
-					 vertices[Y4] = y1;
-					 vertices[C4] = color;
-					 vertices[U4] = u2;
-					 vertices[V4] = v1;
+				vertices[X4] = x2;
+				vertices[Y4] = y1;
+				vertices[C4] = color;
+				vertices[U4] = u2;
+				vertices[V4] = v1;
 
-					 batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
+				batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
+			}
+		} else {
+
+			float repeatX = layer.isRepeatX() ? (viewBounds.width / imageBounds.width) + 3 : 0;
+			float repeatY = layer.isRepeatY() ? (viewBounds.height / imageBounds.height) + 3 : 0;
+
+			for (int i = 0; i <= repeatX; i++) {
+				for (int j = 0; j <= repeatY; j++) {
+
+					float rx1 = 0, ry1 = 0, rx2 = 0, ry2 = 0;
+					if (layer.isRepeatX() && !layer.isRepeatY()) {
+						/** What's going on here? {@link BatchTiledMapRenderer#renderImageLayer(TiledMapImageLayer)} explanation found
+						 * there. */
+						rx1 = (viewBounds.x - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
+							+ (x1 % imageBounds.width);
+						ry1 = (y1 + j * imageBounds.height);
+						rx2 = ((imageBounds.width + viewBounds.x) - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
+							+ (x1 % imageBounds.width);
+						ry2 = (y2 + j * imageBounds.height);
+					} else if (layer.isRepeatY() && !layer.isRepeatX()) {
+						rx1 = (x1 + i * imageBounds.width);
+						ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
+							+ (y1 % imageBounds.height);
+						rx2 = (x2 + i * imageBounds.width);
+						ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
+							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+					} else if (layer.isRepeatY() && layer.isRepeatX()) {
+						rx1 = (viewBounds.x - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
+							+ (x1 % imageBounds.width);
+						ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
+							+ (y1 % imageBounds.height);
+						rx2 = ((imageBounds.width + viewBounds.x) - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
+							+ (x1 % imageBounds.width);
+						ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
+							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+
+						/*
+						 * Old rx1 = ((x1 + viewBounds.x)-(x1+viewBounds.x% imageBounds.width)) + (i -2) * imageBounds.width +(x1%
+						 * imageBounds.width); ry1 = ((y1 + viewBounds.y)-(y1+viewBounds.y% imageBounds.height)) + (j -2) *
+						 * imageBounds.height +(y1% imageBounds.height); rx2 = ((x2 + viewBounds.x)-(x1+viewBounds.x%
+						 * imageBounds.width)) + (i -2) * imageBounds.width +(x1% imageBounds.width); ry2 = ((y2 +
+						 * viewBounds.y)-(y1+viewBounds.y% imageBounds.height)) + (j -2) * imageBounds.height +(y1% imageBounds.height);
+						 * 
+						 */
+					}
+
+					repeatedImageBounds.set(rx1, ry1, rx2 - rx1, ry2 - ry1);
+
+					if (viewBounds.contains(repeatedImageBounds) || viewBounds.overlaps(repeatedImageBounds)) {
+						float ru1 = region.getU();
+						float rv1 = region.getV2();
+						float ru2 = region.getU2();
+						float rv2 = region.getV();
+
+						vertices[X1] = rx1;
+						vertices[Y1] = ry1;
+						vertices[C1] = color;
+						vertices[U1] = ru1;
+						vertices[V1] = rv1;
+
+						vertices[X2] = rx1;
+						vertices[Y2] = ry2;
+						vertices[C2] = color;
+						vertices[U2] = ru1;
+						vertices[V2] = rv2;
+
+						vertices[X3] = rx2;
+						vertices[Y3] = ry2;
+						vertices[C3] = color;
+						vertices[U3] = ru2;
+						vertices[V3] = rv2;
+
+						vertices[X4] = rx2;
+						vertices[Y4] = ry1;
+						vertices[C4] = color;
+						vertices[U4] = ru2;
+						vertices[V4] = rv1;
+
+						batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
+					}
 				}
-		  }
-		  else {
-
-				float repeatX = layer.isRepeatX() ? (viewBounds.width / imageBounds.width) + 3 : 0;
-				float repeatY = layer.isRepeatY() ? (viewBounds.height / imageBounds.height) + 3 : 0;
-
-				for (int i = 0; i <= repeatX; i++) {
-					 for (int j = 0; j <= repeatY; j++) {
-
-						  float rx1=0,ry1=0,rx2=0,ry2=0;
-						  if(layer.isRepeatX() && !layer.isRepeatY()){
-								/** What's going on here?
-								 * {@link BatchTiledMapRenderer#renderImageLayer(TiledMapImageLayer)} explanation found there.
-								 */
-								rx1 = (viewBounds.x-(viewBounds.x % imageBounds.width)) +((i-2) * imageBounds.width) + (x1 % imageBounds.width);
-								ry1 = (y1 + j * imageBounds.height);
-								rx2 = ((imageBounds.width + viewBounds.x)-(viewBounds.x% imageBounds.width)) + ((i-2) * imageBounds.width) + (x1% imageBounds.width);
-								ry2 = (y2 + j * imageBounds.height);
-						  }
-						  else if(layer.isRepeatY() && !layer.isRepeatX()){
-								rx1 = (x1 + i * imageBounds.width);
-								ry1 = (viewBounds.y-(viewBounds.y % imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
-								rx2 = (x2 + i * imageBounds.width);
-								ry2 = ((imageBounds.height + viewBounds.y)-(viewBounds.y% imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
-						  }
-						  else if(layer.isRepeatY() && layer.isRepeatX()){
-								rx1 = (viewBounds.x-(viewBounds.x % imageBounds.width)) +((i-2) * imageBounds.width) + (x1 % imageBounds.width);
-								ry1 = (viewBounds.y-(viewBounds.y % imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
-								rx2 = ((imageBounds.width + viewBounds.x)-(viewBounds.x% imageBounds.width)) + ((i-2) * imageBounds.width) + (x1% imageBounds.width);
-								ry2 = ((imageBounds.height + viewBounds.y)-(viewBounds.y% imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
-
-							/* Old
-							 rx1 = ((x1 + viewBounds.x)-(x1+viewBounds.x% imageBounds.width))  + (i -2) * imageBounds.width +(x1% imageBounds.width);
-							 ry1 = ((y1 + viewBounds.y)-(y1+viewBounds.y% imageBounds.height))  + (j -2) * imageBounds.height +(y1% imageBounds.height);
-							 rx2 = ((x2 + viewBounds.x)-(x1+viewBounds.x% imageBounds.width)) + (i -2) * imageBounds.width +(x1% imageBounds.width);
-							 ry2 = ((y2 + viewBounds.y)-(y1+viewBounds.y% imageBounds.height))  + (j -2) * imageBounds.height +(y1% imageBounds.height);
-
-							 */
-						  }
-
-						  repeatedImageBounds.set(rx1, ry1, rx2 - rx1, ry2 - ry1);
-
-						  if (viewBounds.contains(repeatedImageBounds) || viewBounds.overlaps(repeatedImageBounds)) {
-								float ru1 = region.getU();
-								float rv1 = region.getV2();
-								float ru2 = region.getU2();
-								float rv2 = region.getV();
-
-								vertices[X1] = rx1;
-								vertices[Y1] = ry1;
-								vertices[C1] = color;
-								vertices[U1] = ru1;
-								vertices[V1] = rv1;
-
-								vertices[X2] = rx1;
-								vertices[Y2] = ry2;
-								vertices[C2] = color;
-								vertices[U2] = ru1;
-								vertices[V2] = rv2;
-
-								vertices[X3] = rx2;
-								vertices[Y3] = ry2;
-								vertices[C3] = color;
-								vertices[U3] = ru2;
-								vertices[V3] = rv2;
-
-								vertices[X4] = rx2;
-								vertices[Y4] = ry1;
-								vertices[C4] = color;
-								vertices[U4] = ru2;
-								vertices[V4] = rv1;
-
-								batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
-						  }
-					 }
-				}
-		  }
-	 }
-
+			}
+		}
+	}
 
 }

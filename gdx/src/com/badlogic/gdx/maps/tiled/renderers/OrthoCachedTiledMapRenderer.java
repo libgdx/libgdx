@@ -376,104 +376,107 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 		final float y2 = y1 + region.getRegionHeight() * unitScale;
 
 		imageBounds.set(x1, y1, x2 - x1, y2 - y1);
-		if(!layer.isRepeatX() && !layer.isRepeatY()) {
+		if (!layer.isRepeatX() && !layer.isRepeatY()) {
 
-				  final float u1 = region.getU();
-				  final float v1 = region.getV2();
-				  final float u2 = region.getU2();
-				  final float v2 = region.getV();
+			final float u1 = region.getU();
+			final float v1 = region.getV2();
+			final float u2 = region.getU2();
+			final float v2 = region.getV();
 
-				  vertices[X1] = x1;
-				  vertices[Y1] = y1;
-				  vertices[C1] = color;
-				  vertices[U1] = u1;
-				  vertices[V1] = v1;
+			vertices[X1] = x1;
+			vertices[Y1] = y1;
+			vertices[C1] = color;
+			vertices[U1] = u1;
+			vertices[V1] = v1;
 
-				  vertices[X2] = x1;
-				  vertices[Y2] = y2;
-				  vertices[C2] = color;
-				  vertices[U2] = u1;
-				  vertices[V2] = v2;
+			vertices[X2] = x1;
+			vertices[Y2] = y2;
+			vertices[C2] = color;
+			vertices[U2] = u1;
+			vertices[V2] = v2;
 
-				  vertices[X3] = x2;
-				  vertices[Y3] = y2;
-				  vertices[C3] = color;
-				  vertices[U3] = u2;
-				  vertices[V3] = v2;
+			vertices[X3] = x2;
+			vertices[Y3] = y2;
+			vertices[C3] = color;
+			vertices[U3] = u2;
+			vertices[V3] = v2;
 
-				  vertices[X4] = x2;
-				  vertices[Y4] = y1;
-				  vertices[C4] = color;
-				  vertices[U4] = u2;
-				  vertices[V4] = v1;
+			vertices[X4] = x2;
+			vertices[Y4] = y1;
+			vertices[C4] = color;
+			vertices[U4] = u2;
+			vertices[V4] = v1;
 
-				  spriteCache.add(region.getTexture(), vertices, 0, NUM_VERTICES);
+			spriteCache.add(region.getTexture(), vertices, 0, NUM_VERTICES);
 
-		}
-		else {
+		} else {
 
-			 float repeatX = layer.isRepeatX() ? (cacheBounds.width / imageBounds.width) + 3 : 0;
-			 float repeatY = layer.isRepeatY() ? (cacheBounds.height / imageBounds.height) + 3 : 0;
+			float repeatX = layer.isRepeatX() ? (cacheBounds.width / imageBounds.width) + 3 : 0;
+			float repeatY = layer.isRepeatY() ? (cacheBounds.height / imageBounds.height) + 3 : 0;
 
-			 for (int i = 0; i <= repeatX; i++) {
-				  for (int j = 0; j <= repeatY; j++) {
+			for (int i = 0; i <= repeatX; i++) {
+				for (int j = 0; j <= repeatY; j++) {
 
-						float rx1=0,ry1=0,rx2=0,ry2=0;
-						if(layer.isRepeatX() && !layer.isRepeatY()){
-							 /**	What's going on here?
-							  * {@link BatchTiledMapRenderer#renderImageLayer(TiledMapImageLayer)} for breakdown
-							 */
-							 rx1 = (cacheBounds.x-(cacheBounds.x % imageBounds.width)) +((i-2) * imageBounds.width) + (x1 % imageBounds.width);
-							 ry1 = (y1 + j * imageBounds.height);
-							 rx2 = ((imageBounds.width + cacheBounds.x)-(cacheBounds.x% imageBounds.width)) + ((i-2) * imageBounds.width) + (x1% imageBounds.width);
-							 ry2 = (y2 + j * imageBounds.height);
-						}
-						else if(layer.isRepeatY() && !layer.isRepeatX()){
-							 rx1 = (x1 + i * imageBounds.width);
-							 ry1 = (cacheBounds.y-(cacheBounds.y % imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
-							 rx2 = (x2 + i * imageBounds.width);
-							 ry2 = ((imageBounds.height + cacheBounds.y)-(cacheBounds.y% imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
-						}
-						else if(layer.isRepeatY() && layer.isRepeatX()){
-							 rx1 = (cacheBounds.x-(cacheBounds.x % imageBounds.width)) +((i-2) * imageBounds.width) + (x1 % imageBounds.width);
-							 ry1 = (cacheBounds.y-(cacheBounds.y % imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
-							 rx2 = ((imageBounds.width + cacheBounds.x)-(cacheBounds.x% imageBounds.width)) + ((i-2) * imageBounds.width) + (x1% imageBounds.width);
-							 ry2 = ((imageBounds.height + cacheBounds.y)-(cacheBounds.y% imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
+					float rx1 = 0, ry1 = 0, rx2 = 0, ry2 = 0;
+					if (layer.isRepeatX() && !layer.isRepeatY()) {
+						/** What's going on here? {@link BatchTiledMapRenderer#renderImageLayer(TiledMapImageLayer)} for breakdown */
+						rx1 = (cacheBounds.x - (cacheBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
+							+ (x1 % imageBounds.width);
+						ry1 = (y1 + j * imageBounds.height);
+						rx2 = ((imageBounds.width + cacheBounds.x) - (cacheBounds.x % imageBounds.width))
+							+ ((i - 2) * imageBounds.width) + (x1 % imageBounds.width);
+						ry2 = (y2 + j * imageBounds.height);
+					} else if (layer.isRepeatY() && !layer.isRepeatX()) {
+						rx1 = (x1 + i * imageBounds.width);
+						ry1 = (cacheBounds.y - (cacheBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
+							+ (y1 % imageBounds.height);
+						rx2 = (x2 + i * imageBounds.width);
+						ry2 = ((imageBounds.height + cacheBounds.y) - (cacheBounds.y % imageBounds.height))
+							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+					} else if (layer.isRepeatY() && layer.isRepeatX()) {
+						rx1 = (cacheBounds.x - (cacheBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
+							+ (x1 % imageBounds.width);
+						ry1 = (cacheBounds.y - (cacheBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
+							+ (y1 % imageBounds.height);
+						rx2 = ((imageBounds.width + cacheBounds.x) - (cacheBounds.x % imageBounds.width))
+							+ ((i - 2) * imageBounds.width) + (x1 % imageBounds.width);
+						ry2 = ((imageBounds.height + cacheBounds.y) - (cacheBounds.y % imageBounds.height))
+							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
 
-						}
+					}
 
-							 float ru1 = region.getU();
-							 float rv1 = region.getV2();
-							 float ru2 = region.getU2();
-							 float rv2 = region.getV();
+					float ru1 = region.getU();
+					float rv1 = region.getV2();
+					float ru2 = region.getU2();
+					float rv2 = region.getV();
 
-							 vertices[X1] = rx1;
-							 vertices[Y1] = ry1;
-							 vertices[C1] = color;
-							 vertices[U1] = ru1;
-							 vertices[V1] = rv1;
+					vertices[X1] = rx1;
+					vertices[Y1] = ry1;
+					vertices[C1] = color;
+					vertices[U1] = ru1;
+					vertices[V1] = rv1;
 
-							 vertices[X2] = rx1;
-							 vertices[Y2] = ry2;
-							 vertices[C2] = color;
-							 vertices[U2] = ru1;
-							 vertices[V2] = rv2;
+					vertices[X2] = rx1;
+					vertices[Y2] = ry2;
+					vertices[C2] = color;
+					vertices[U2] = ru1;
+					vertices[V2] = rv2;
 
-							 vertices[X3] = rx2;
-							 vertices[Y3] = ry2;
-							 vertices[C3] = color;
-							 vertices[U3] = ru2;
-							 vertices[V3] = rv2;
+					vertices[X3] = rx2;
+					vertices[Y3] = ry2;
+					vertices[C3] = color;
+					vertices[U3] = ru2;
+					vertices[V3] = rv2;
 
-							 vertices[X4] = rx2;
-							 vertices[Y4] = ry1;
-							 vertices[C4] = color;
-							 vertices[U4] = ru2;
-							 vertices[V4] = rv1;
+					vertices[X4] = rx2;
+					vertices[Y4] = ry1;
+					vertices[C4] = color;
+					vertices[U4] = ru2;
+					vertices[V4] = rv1;
 
-							 spriteCache.add(region.getTexture(), vertices, 0, NUM_VERTICES);
-				  }
-			 }
+					spriteCache.add(region.getTexture(), vertices, 0, NUM_VERTICES);
+				}
+			}
 		}
 	}
 

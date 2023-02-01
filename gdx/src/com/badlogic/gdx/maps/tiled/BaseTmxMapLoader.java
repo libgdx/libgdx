@@ -304,7 +304,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				y -= texture.getRegionHeight();
 			}
 
-			TiledMapImageLayer layer = new TiledMapImageLayer(texture, x, y,repeatX,repeatY);
+			TiledMapImageLayer layer = new TiledMapImageLayer(texture, x, y, repeatX, repeatY);
 
 			loadBasicLayerInfo(layer, element);
 
