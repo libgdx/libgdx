@@ -287,23 +287,23 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 
 		  if(staggerAxisX){
 				/**
-				 * If X axis staggered, must offset imagelayer y position by half of tileHeight to match position
+				 * If X axis staggered, must offset imagelayer y position by adding half of tileHeight to match position
 				 */
 				imageLayerYOffset = halfTileHeight;
 		  }
 		  else{
 				/**
 				 * ImageLayer's y position seems to be placed at an offset determined the total height if this were a normal tile map
-				 * minus the height as calculated for a hexmap. We get this number and use it to offset our Y.
-				 * Then we will have our imagelayer matching it's position in Tiled.
+				 * minus the height as calculated for a hexmap. We get this number and use it to counter offset our Y.
+				 * Then we will have our imagelayer matching its position in Tiled.
 				 */
-				imageLayerYOffset = 	totalHeightPixels -hexMapHeightPixels;
+				imageLayerYOffset = 	-(totalHeightPixels -hexMapHeightPixels);
 		  }
 
 		  final float x = layer.getX();
 		  final float y = layer.getY();
 		  final float x1 = x * unitScale;
-		  final float y1 = (y * unitScale) - imageLayerYOffset;
+		  final float y1 = (y * unitScale) + imageLayerYOffset;
 		  final float x2 = x1 + region.getRegionWidth() * unitScale;
 		  final float y2 = y1 + region.getRegionHeight() * unitScale;
 
