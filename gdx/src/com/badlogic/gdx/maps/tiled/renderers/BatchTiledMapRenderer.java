@@ -245,68 +245,55 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 			for (int i = 0; i <= repeatX; i++) {
 				for (int j = 0; j <= repeatY; j++) {
-					float rx1 = 0, ry1 = 0, rx2 = 0, ry2 = 0;
-					if (layer.isRepeatX() && !layer.isRepeatY()) {
+					float rx1 = x1;
+					float ry1 = y1;
+					float rx2 = x2;
+					float ry2 = y2;
 
-						/** What's going on here? Explaining for the x position, same reasoning is used for Y. We need to tile this
-						 * layer infinitely on the x, y, or both axis, based on it's origin, so it matches up with tiled's rendering rx1
-						 * = (x1 + i * imageBounds.width); ^--this would tile the image layer from it's x,y/offset position, but what we
-						 * want is the texture be tiled from left to right, within the camera's bounds, while keeping its offset rx1 =
-						 * (viewBounds.x-(viewBounds.x% imageBounds.width)) ^-- Here we can ignore the x1 starting position and remove
-						 * that, as it no longer matters, we want the starting position flush to camera's x position, Taking camera's x
-						 * position we then need to subtract that by the camera modulus of the image width to get the remainder so we
-						 * know how far to move the image to get flush with the camera, But of course we are not done yet, if the image
-						 * starts off with an x/y position that is not zero, (an offset) we must now negate this rx1 =
-						 * ((viewBounds.x)-(viewBounds.x% imageBounds.width)) + (x1% imageBounds.width); ^---We offset by (x1%
-						 * imageBounds.width) which is a simple way to get the remainder of how many textures would fit between its
-						 * starting position and 0 rx1 = ((viewBounds.x)-(viewBounds.x% imageBounds.width)) + (i -2) * imageBounds.width
-						 * +(x1% imageBounds.width); ^--- Finally this needs to be tiled, this is where our loops comes in, we use the
-						 * repeatX = (viewBounds.width / imageBounds.width) +3 to find out how many textures we can fit in the camera +
-						 * 3 more(so we can expand beyond the borders ) so we dont have pop in and out around the edges of the camera
-						 * and we use + (i -2) to start off placing them to the left of the camera, and we fill it out going right
-						 * multiplying by our image width. until we go through entire loop *note for rx2 position we have to add the
-						 * image width, for ry2 we add height */
+					 /** What's going on here?
+					  * Explaining for the x position, same reasoning is used for Y. We need to tile this layer infinitely on the
+					  * x, y, or both axis, based on its origin, so it matches up with Tiled's rendering.
+					  * rx1 = (x1 + i * imageBounds.width);
+					  * ^--this would tile the image layer from it's x,y/offset position, but what we want is the texture be tiled
+					  * from left to right, within the camera's bounds, while keeping its offset
+					  * rx1 = (viewBounds.x-(viewBounds.x% imageBounds.width))
+					  * ^-- Here we can ignore the x1 starting position and remove that, as it no longer matters, we want the
+					  * starting position flush to camera's x position, Taking camera's x position we then need to subtract that by
+					  * the camera modulus of the image width to get the remainder so we know how far to move the image to get flush
+					  * with the camera, But of course we are not done yet, if the image starts off with an x/y position that
+					  * is not zero, (an offset) we must now negate this.
+					  * rx1 = ((viewBounds.x)-(viewBounds.x% imageBounds.width)) + (x1% imageBounds.width);
+					  * ^---We offset by (x1 % imageBounds.width) which is a simple way to get the remainder of how many textures
+					  * would fit between its starting position and 0.
+					  * rx1 = ((viewBounds.x)-(viewBounds.x% imageBounds.width))+(i -2)*imageBounds.width+(x1% imageBounds.width);
+					  * ^--- Finally this needs to be tiled, this is where our loops comes in, we use the
+					  * repeatX = (viewBounds.width / imageBounds.width) +3 to find out how many textures we can fit in the camera +
+					  * 3 more(so we can expand beyond the borders ) so we dont have pop in and out around the edges of the camera,
+					  * we use + (i -2) to start off placing them to the left of the camera, and we fill it out going right
+					  * multiplying by our image width. until we go through entire loop.
+					  * *note for rx2 position we have to add the image width, for ry2 we add height */
 
+					if (layer.isRepeatX()) {
 						rx1 = (viewBounds.x - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
 							+ (x1 % imageBounds.width);
-						ry1 = (y1 + j * imageBounds.height);
 						rx2 = ((imageBounds.width + viewBounds.x) - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
 							+ (x1 % imageBounds.width);
-						ry2 = (y2 + j * imageBounds.height);
-					} else if (layer.isRepeatY() && !layer.isRepeatX()) {
-						rx1 = (x1 + i * imageBounds.width);
-						ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
-							+ (y1 % imageBounds.height);
-						rx2 = (x2 + i * imageBounds.width);
-						ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
-							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
-					} else if (layer.isRepeatY() && layer.isRepeatX()) {
-						rx1 = (viewBounds.x - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
-							+ (x1 % imageBounds.width);
-						ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
-							+ (y1 % imageBounds.height);
-						rx2 = ((imageBounds.width + viewBounds.x) - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
-							+ (x1 % imageBounds.width);
-						ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
-							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+					}
 
-						/*
-						 * Old rx1 = ((x1 + viewBounds.x)-(x1+viewBounds.x% imageBounds.width)) + (i -2) * imageBounds.width +(x1%
-						 * imageBounds.width); ry1 = ((y1 + viewBounds.y)-(y1+viewBounds.y% imageBounds.height)) + (j -2) *
-						 * imageBounds.height +(y1% imageBounds.height); rx2 = ((x2 + viewBounds.x)-(x1+viewBounds.x%
-						 * imageBounds.width)) + (i -2) * imageBounds.width +(x1% imageBounds.width); ry2 = ((y2 +
-						 * viewBounds.y)-(y1+viewBounds.y% imageBounds.height)) + (j -2) * imageBounds.height +(y1% imageBounds.height);
-						 * 
-						 */
+					if(layer.isRepeatY()){
+					  ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
+						  + (y1 % imageBounds.height);
+					  ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
+						  + ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
 					}
 
 					repeatedImageBounds.set(rx1, ry1, rx2 - rx1, ry2 - ry1);
 
 					if (viewBounds.contains(repeatedImageBounds) || viewBounds.overlaps(repeatedImageBounds)) {
-						float ru1 = region.getU();
-						float rv1 = region.getV2();
-						float ru2 = region.getU2();
-						float rv2 = region.getV();
+						final float ru1 = region.getU();
+						final float rv1 = region.getV2();
+						final float ru2 = region.getU2();
+						final float rv2 = region.getV();
 
 						vertices[X1] = rx1;
 						vertices[Y1] = ry1;
