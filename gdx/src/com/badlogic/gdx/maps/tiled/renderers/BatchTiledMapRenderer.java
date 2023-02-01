@@ -250,28 +250,24 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 					float rx2 = x2;
 					float ry2 = y2;
 
-					 /** What's going on here?
-					  * Explaining for the x position, same reasoning is used for Y. We need to tile this layer infinitely on the
-					  * x, y, or both axis, based on its origin, so it matches up with Tiled's rendering.
-					  * rx1 = (x1 + i * imageBounds.width);
-					  * ^--this would tile the image layer from it's x,y/offset position, but what we want is the texture be tiled
-					  * from left to right, within the camera's bounds, while keeping its offset
-					  * rx1 = (viewBounds.x-(viewBounds.x% imageBounds.width))
-					  * ^-- Here we can ignore the x1 starting position and remove that, as it no longer matters, we want the
-					  * starting position flush to camera's x position, Taking camera's x position we then need to subtract that by
-					  * the camera modulus of the image width to get the remainder so we know how far to move the image to get flush
-					  * with the camera, But of course we are not done yet, if the image starts off with an x/y position that
-					  * is not zero, (an offset) we must now negate this.
-					  * rx1 = ((viewBounds.x)-(viewBounds.x% imageBounds.width)) + (x1% imageBounds.width);
-					  * ^---We offset by (x1 % imageBounds.width) which is a simple way to get the remainder of how many textures
-					  * would fit between its starting position and 0.
-					  * rx1 = ((viewBounds.x)-(viewBounds.x% imageBounds.width))+(i -2)*imageBounds.width+(x1% imageBounds.width);
-					  * ^--- Finally this needs to be tiled, this is where our loops comes in, we use the
-					  * repeatX = (viewBounds.width / imageBounds.width) +3 to find out how many textures we can fit in the camera +
-					  * 3 more(so we can expand beyond the borders ) so we dont have pop in and out around the edges of the camera,
-					  * we use + (i -2) to start off placing them to the left of the camera, and we fill it out going right
-					  * multiplying by our image width. until we go through entire loop.
-					  * *note for rx2 position we have to add the image width, for ry2 we add height */
+					/** What's going on here? Explaining for the x position, same reasoning is used for Y. We need to tile this layer
+					 * infinitely on the x, y, or both axis, based on its origin, so it matches up with Tiled's rendering. rx1 = (x1 +
+					 * i * imageBounds.width); ^--this would tile the image layer from it's x,y/offset position, but what we want is
+					 * the texture be tiled from left to right, within the camera's bounds, while keeping its offset rx1 =
+					 * (viewBounds.x-(viewBounds.x% imageBounds.width)) ^-- Here we can ignore the x1 starting position and remove
+					 * that, as it no longer matters, we want the starting position flush to camera's x position, Taking camera's x
+					 * position we then need to subtract that by the camera modulus of the image width to get the remainder so we know
+					 * how far to move the image to get flush with the camera, But of course we are not done yet, if the image starts
+					 * off with an x/y position that is not zero, (an offset) we must now negate this. rx1 =
+					 * ((viewBounds.x)-(viewBounds.x% imageBounds.width)) + (x1% imageBounds.width); ^---We offset by (x1 %
+					 * imageBounds.width) which is a simple way to get the remainder of how many textures would fit between its
+					 * starting position and 0. rx1 = ((viewBounds.x)-(viewBounds.x% imageBounds.width))+(i -2)*imageBounds.width+(x1%
+					 * imageBounds.width); ^--- Finally this needs to be tiled, this is where our loops comes in, we use the repeatX =
+					 * (viewBounds.width / imageBounds.width) +3 to find out how many textures we can fit in the camera + 3 more(so we
+					 * can expand beyond the borders ) so we dont have pop in and out around the edges of the camera, we use + (i -2)
+					 * to start off placing them to the left of the camera, and we fill it out going right multiplying by our image
+					 * width. until we go through entire loop. *note for rx2 position we have to add the image width, for ry2 we add
+					 * height */
 
 					if (layer.isRepeatX()) {
 						rx1 = (viewBounds.x - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
@@ -280,11 +276,11 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 							+ (x1 % imageBounds.width);
 					}
 
-					if(layer.isRepeatY()){
-					  ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
-						  + (y1 % imageBounds.height);
-					  ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
-						  + ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+					if (layer.isRepeatY()) {
+						ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
+							+ (y1 % imageBounds.height);
+						ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
+							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
 					}
 
 					repeatedImageBounds.set(rx1, ry1, rx2 - rx1, ry2 - ry1);

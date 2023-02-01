@@ -267,11 +267,11 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 							+ (x1 % imageBounds.width);
 					}
 
-					if(layer.isRepeatY()){
-					  ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
-						  + (y1 % imageBounds.height);
-					  ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
-						  + ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+					if (layer.isRepeatY()) {
+						ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
+							+ (y1 % imageBounds.height);
+						ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
+							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
 					}
 
 					repeatedImageBounds.set(rx1, ry1, rx2 - rx1, ry2 - ry1);
