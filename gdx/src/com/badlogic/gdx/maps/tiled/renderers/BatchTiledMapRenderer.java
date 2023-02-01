@@ -205,8 +205,8 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 		imageBounds.set(x1, y1, x2 - x1, y2 - y1);
 
-		if(!layer.isRepeatX() && !layer.isRepeatY()) {
-			 if (viewBounds.contains(imageBounds) || viewBounds.overlaps(imageBounds)) {
+		if (!layer.isRepeatX() && !layer.isRepeatY()) {
+			if (viewBounds.contains(imageBounds) || viewBounds.overlaps(imageBounds)) {
 				final float u1 = region.getU();
 				final float v1 = region.getV2();
 				final float u2 = region.getU2();
@@ -237,63 +237,67 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 				vertices[V4] = v1;
 
 				batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
-			 }
-		}
-		else {
+			}
+		} else {
 
-		  float repeatX = layer.isRepeatX() ? (viewBounds.width / imageBounds.width) + 3 : 0;
-		  float repeatY = layer.isRepeatY() ? (viewBounds.height / imageBounds.height) + 3 : 0;
+			float repeatX = layer.isRepeatX() ? (viewBounds.width / imageBounds.width) + 3 : 0;
+			float repeatY = layer.isRepeatY() ? (viewBounds.height / imageBounds.height) + 3 : 0;
 
-		  for (int i = 0; i <= repeatX; i++) {
+			for (int i = 0; i <= repeatX; i++) {
 				for (int j = 0; j <= repeatY; j++) {
-					float rx1=0,ry1=0,rx2=0,ry2=0;
-					if(layer.isRepeatX() && !layer.isRepeatY()){
+					float rx1 = 0, ry1 = 0, rx2 = 0, ry2 = 0;
+					if (layer.isRepeatX() && !layer.isRepeatY()) {
 
-					  /**	What's going on here?
-						* Explaining for the x position, same reasoning is used for Y.
-						* We need to tile this layer infinitely on the x, y, or both axis, based on it's origin, so it matches up with tiled's rendering
-						* rx1 = (x1 + i * imageBounds.width);
-						* ^--this would tile the image layer from it's x,y/offset position,
-						* but what we want is the texture be tiled from left to right, within the camera's bounds, while keeping its offset
-						* rx1 = (viewBounds.x-(viewBounds.x% imageBounds.width))
-						* ^-- Here we can ignore the x1 starting position and remove that, as it no longer matters, we want the starting position flush to camera's x position,
-						* Taking camera's x position we then need to subtract that by the camera modulus of the image width to get the remainder
-						* so we know how far to move the image to get flush with the camera,  But of course we are not done yet,
-						* if the image starts off with an x/y position that is not zero, (an offset) we must now negate this
-						* rx1 = ((viewBounds.x)-(viewBounds.x% imageBounds.width)) + (x1% imageBounds.width);
-						* ^---We offset by (x1% imageBounds.width) which is a simple way to get the remainder of how many textures would fit between its starting position and 0
-						* rx1 = ((viewBounds.x)-(viewBounds.x% imageBounds.width))  + (i -2) * imageBounds.width +(x1% imageBounds.width);
-						* ^--- Finally this needs to be tiled, this is where our loops comes in, we use the repeatX = (viewBounds.width / imageBounds.width) +3
-						* to find out how many textures we can fit in the camera + 3 more(so we can expand beyond the borders ) so we dont have pop in and out
-						* around the edges of the camera and we use + (i -2) to start off placing them to the left of the camera, and we fill it out going right
-						* multiplying by our image width. until we go through entire loop
-						* *note for rx2 position we have to add the image width, for ry2 we add height
-						*/
+						/** What's going on here? Explaining for the x position, same reasoning is used for Y. We need to tile this
+						 * layer infinitely on the x, y, or both axis, based on it's origin, so it matches up with tiled's rendering rx1
+						 * = (x1 + i * imageBounds.width); ^--this would tile the image layer from it's x,y/offset position, but what we
+						 * want is the texture be tiled from left to right, within the camera's bounds, while keeping its offset rx1 =
+						 * (viewBounds.x-(viewBounds.x% imageBounds.width)) ^-- Here we can ignore the x1 starting position and remove
+						 * that, as it no longer matters, we want the starting position flush to camera's x position, Taking camera's x
+						 * position we then need to subtract that by the camera modulus of the image width to get the remainder so we
+						 * know how far to move the image to get flush with the camera, But of course we are not done yet, if the image
+						 * starts off with an x/y position that is not zero, (an offset) we must now negate this rx1 =
+						 * ((viewBounds.x)-(viewBounds.x% imageBounds.width)) + (x1% imageBounds.width); ^---We offset by (x1%
+						 * imageBounds.width) which is a simple way to get the remainder of how many textures would fit between its
+						 * starting position and 0 rx1 = ((viewBounds.x)-(viewBounds.x% imageBounds.width)) + (i -2) * imageBounds.width
+						 * +(x1% imageBounds.width); ^--- Finally this needs to be tiled, this is where our loops comes in, we use the
+						 * repeatX = (viewBounds.width / imageBounds.width) +3 to find out how many textures we can fit in the camera +
+						 * 3 more(so we can expand beyond the borders ) so we dont have pop in and out around the edges of the camera
+						 * and we use + (i -2) to start off placing them to the left of the camera, and we fill it out going right
+						 * multiplying by our image width. until we go through entire loop *note for rx2 position we have to add the
+						 * image width, for ry2 we add height */
 
-					  		rx1 = (viewBounds.x-(viewBounds.x % imageBounds.width)) +((i-2) * imageBounds.width) + (x1 % imageBounds.width);
-					  		ry1 = (y1 + j * imageBounds.height);
-					  		rx2 = ((imageBounds.width + viewBounds.x)-(viewBounds.x% imageBounds.width)) + ((i-2) * imageBounds.width) + (x1% imageBounds.width);
-					  		ry2 = (y2 + j * imageBounds.height);
-					}
-					else if(layer.isRepeatY() && !layer.isRepeatX()){
-					  		rx1 = (x1 + i * imageBounds.width);
-					  		ry1 = (viewBounds.y-(viewBounds.y % imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
-					 		rx2 = (x2 + i * imageBounds.width);
-					 		ry2 = ((imageBounds.height + viewBounds.y)-(viewBounds.y% imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
-					}
-					else if(layer.isRepeatY() && layer.isRepeatX()){
-					 		rx1 = (viewBounds.x-(viewBounds.x % imageBounds.width)) +((i-2) * imageBounds.width) + (x1 % imageBounds.width);
-					  		ry1 = (viewBounds.y-(viewBounds.y % imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
-					  		rx2 = ((imageBounds.width + viewBounds.x)-(viewBounds.x% imageBounds.width)) + ((i-2) * imageBounds.width) + (x1% imageBounds.width);
-							ry2 = ((imageBounds.height + viewBounds.y)-(viewBounds.y% imageBounds.height))  + ((j -2) * imageBounds.height) + (y1% imageBounds.height);
+						rx1 = (viewBounds.x - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
+							+ (x1 % imageBounds.width);
+						ry1 = (y1 + j * imageBounds.height);
+						rx2 = ((imageBounds.width + viewBounds.x) - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
+							+ (x1 % imageBounds.width);
+						ry2 = (y2 + j * imageBounds.height);
+					} else if (layer.isRepeatY() && !layer.isRepeatX()) {
+						rx1 = (x1 + i * imageBounds.width);
+						ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
+							+ (y1 % imageBounds.height);
+						rx2 = (x2 + i * imageBounds.width);
+						ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
+							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+					} else if (layer.isRepeatY() && layer.isRepeatX()) {
+						rx1 = (viewBounds.x - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
+							+ (x1 % imageBounds.width);
+						ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
+							+ (y1 % imageBounds.height);
+						rx2 = ((imageBounds.width + viewBounds.x) - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
+							+ (x1 % imageBounds.width);
+						ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
+							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
 
-							/* Old
-							 rx1 = ((x1 + viewBounds.x)-(x1+viewBounds.x% imageBounds.width))  + (i -2) * imageBounds.width +(x1% imageBounds.width);
-							 ry1 = ((y1 + viewBounds.y)-(y1+viewBounds.y% imageBounds.height))  + (j -2) * imageBounds.height +(y1% imageBounds.height);
-							 rx2 = ((x2 + viewBounds.x)-(x1+viewBounds.x% imageBounds.width)) + (i -2) * imageBounds.width +(x1% imageBounds.width);
-							 ry2 = ((y2 + viewBounds.y)-(y1+viewBounds.y% imageBounds.height))  + (j -2) * imageBounds.height +(y1% imageBounds.height);
-
-							 */
+						/*
+						 * Old rx1 = ((x1 + viewBounds.x)-(x1+viewBounds.x% imageBounds.width)) + (i -2) * imageBounds.width +(x1%
+						 * imageBounds.width); ry1 = ((y1 + viewBounds.y)-(y1+viewBounds.y% imageBounds.height)) + (j -2) *
+						 * imageBounds.height +(y1% imageBounds.height); rx2 = ((x2 + viewBounds.x)-(x1+viewBounds.x%
+						 * imageBounds.width)) + (i -2) * imageBounds.width +(x1% imageBounds.width); ry2 = ((y2 +
+						 * viewBounds.y)-(y1+viewBounds.y% imageBounds.height)) + (j -2) * imageBounds.height +(y1% imageBounds.height);
+						 * 
+						 */
 					}
 
 					repeatedImageBounds.set(rx1, ry1, rx2 - rx1, ry2 - ry1);
@@ -331,7 +335,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 						batch.draw(region.getTexture(), vertices, 0, NUM_VERTICES);
 					}
 				}
-		  }
+			}
 		}
 	}
 
