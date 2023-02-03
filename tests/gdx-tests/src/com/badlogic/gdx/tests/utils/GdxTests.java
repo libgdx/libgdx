@@ -286,6 +286,7 @@ public class GdxTests {
 		TiledMapObjectLoadingTest.class,
 		TiledMapBench.class,
 		TiledMapLayerOffsetTest.class,
+		TiledMapLayerTintOpacityTest.class,
 		TimerTest.class,
 		TimeUtilsTest.class,
 		TouchpadTest.class,
