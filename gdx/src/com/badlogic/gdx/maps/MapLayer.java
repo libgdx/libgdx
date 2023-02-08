@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,6 +27,8 @@ public class MapLayer {
 	private float offsetY;
 	private float renderOffsetX;
 	private float renderOffsetY;
+	private float parallaxX;
+	private float parallaxY;
 	private boolean renderOffsetDirty = true;
 	private MapLayer parent;
 	private MapObjects objects = new MapObjects();
@@ -74,13 +76,31 @@ public class MapLayer {
 		invalidateRenderOffset();
 	}
 
-	/** @return the layer's x render offset, this takes into consideration all parent layers' offsets **/
+	/** @return layer's parallax scrolling factor for x-axis */
+	public float getParallaxX () {
+		return parallaxX;
+	}
+
+	public void setParallaxX (float parallaxX) {
+		this.parallaxX = parallaxX;
+	}
+
+	/** @return layer's parallax scrolling factor for y-axis */
+	public float getParallaxY () {
+		return parallaxY;
+	}
+
+	public void setParallaxY (float parallaxY) {
+		this.parallaxY = parallaxY;
+	}
+
+	/** @return the layer's x render offset, this takes into consideration all parent layers' offsets */
 	public float getRenderOffsetX () {
 		if (renderOffsetDirty) calculateRenderOffsets();
 		return renderOffsetX;
 	}
 
-	/** @return the layer's y render offset, this takes into consideration all parent layers' offsets **/
+	/** @return the layer's y render offset, this takes into consideration all parent layers' offsets */
 	public float getRenderOffsetY () {
 		if (renderOffsetDirty) calculateRenderOffsets();
 		return renderOffsetY;
