@@ -257,9 +257,8 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 
 		float x = layer.getX();
 		float y = layer.getY();
-
-		float x1 = x * unitScale;
-		float y1 = (y * unitScale) - mapHeightPixels / 2 + (halfTileHeight);
+		final float x1 = x * unitScale - viewBounds.x * (layer.getParallaxX() - 1);
+		final float y1 = y * unitScale - viewBounds.y * (layer.getParallaxY() - 1) - (mapHeightPixels * 0.5f) + halfTileHeight;
 		float x2 = x1 + region.getRegionWidth() * unitScale;
 		float y2 = y1 + region.getRegionHeight() * unitScale;
 
