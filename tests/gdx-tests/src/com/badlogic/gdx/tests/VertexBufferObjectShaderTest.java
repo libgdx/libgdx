@@ -55,7 +55,7 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 		texture.bind();
 		vbo.bind(shader);
 		indices.bind();
-		gl.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT, indices.getBuffer().position());
+		gl.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT, indices.getBuffer(false).position());
 		indices.unbind();
 		vbo.unbind(shader);
 	}

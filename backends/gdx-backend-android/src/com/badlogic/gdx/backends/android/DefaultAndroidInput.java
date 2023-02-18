@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,8 +27,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Handler;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.view.MotionEvent;
@@ -53,7 +51,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /** An implementation of the {@link Input} interface for Android.
- * 
+ *
  * @author mzechner */
 /** @author jshapcot */
 public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
@@ -75,6 +73,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		static final int TOUCH_DRAGGED = 2;
 		static final int TOUCH_SCROLLED = 3;
 		static final int TOUCH_MOVED = 4;
+		static final int TOUCH_CANCELLED = 5;
 
 		long timeStamp;
 		int type;
@@ -123,7 +122,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
-	protected final Vibrator vibrator;
+	protected final AndroidHaptics haptics;
 	private boolean compassAvailable = false;
 	private boolean rotationVectorAvailable = false;
 	boolean keyboardAvailable;
@@ -170,7 +169,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		touchHandler = new AndroidTouchHandler();
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
-		vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+		haptics = new AndroidHaptics(context);
 
 		int rotation = getRotation();
 		DisplayMode mode = app.getGraphics().getDisplayMode();
@@ -390,6 +389,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 				}
 			}
 
+			if (!isCursorCatched()) {
+				deltaX[0] = 0;
+				deltaY[0] = 0;
+			}
+
 			if (processor != null) {
 				final InputProcessor processor = this.processor;
 
@@ -399,15 +403,22 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 					currentEventTimeStamp = e.timeStamp;
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
-						processor.keyDown(e.keyCode);
-						keyJustPressed = true;
-						justPressedKeys[e.keyCode] = true;
+						// Catching the cursor causes it to send D-pad events. Ignore them.
+						if (!isCursorCatched() || !(e.keyCode >= Keys.UP && e.keyCode <= Keys.CENTER)) {
+							processor.keyDown(e.keyCode);
+							keyJustPressed = true;
+							justPressedKeys[e.keyCode] = true;
+						}
 						break;
 					case KeyEvent.KEY_UP:
-						processor.keyUp(e.keyCode);
+						if (!isCursorCatched() || !(e.keyCode >= Keys.UP && e.keyCode <= Keys.CENTER)) {
+							processor.keyUp(e.keyCode);
+						}
 						break;
 					case KeyEvent.KEY_TYPED:
-						processor.keyTyped(e.keyChar);
+						if (!isCursorCatched() || e.keyChar != Keys.UNKNOWN) {
+							processor.keyTyped(e.keyChar);
+						}
 					}
 					usedKeyEvents.free(e);
 				}
@@ -428,6 +439,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
 						break;
+					case TouchEvent.TOUCH_CANCELLED:
+						processor.touchCancelled(e.x, e.y, e.pointer, e.button);
+						break;
 					case TouchEvent.TOUCH_MOVED:
 						processor.mouseMoved(e.x, e.y);
 						break;
@@ -447,13 +461,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 				len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
 					usedKeyEvents.free(keyEvents.get(i));
-				}
-			}
-
-			if (touchEvents.isEmpty()) {
-				for (int i = 0; i < deltaX.length; i++) {
-					deltaX[0] = 0;
-					deltaY[0] = 0;
 				}
 			}
 
@@ -642,23 +649,22 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 
 	@Override
 	public void vibrate (int milliseconds) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-			vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
-		else
-			vibrator.vibrate(milliseconds);
+		haptics.vibrate(milliseconds);
 	}
 
 	@Override
-	public void vibrate (long[] pattern, int repeat) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-			vibrator.vibrate(VibrationEffect.createWaveform(pattern, repeat));
-		else
-			vibrator.vibrate(pattern, repeat);
+	public void vibrate (int milliseconds, boolean fallback) {
+		haptics.vibrate(milliseconds);
 	}
 
 	@Override
-	public void cancelVibrate () {
-		vibrator.cancel();
+	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
+		haptics.vibrate(milliseconds, amplitude, fallback);
+	}
+
+	@Override
+	public void vibrate (VibrationType vibrationType) {
+		haptics.vibrate(vibrationType);
 	}
 
 	@Override
@@ -831,7 +837,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
-		if (peripheral == Peripheral.Vibrator) return vibrator != null && vibrator.hasVibrator();
+		if (peripheral == Peripheral.Vibrator) return haptics.hasVibratorAvailable();
+		if (peripheral == Peripheral.HapticFeedback) return haptics.hasHapticsSupport();
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		if (peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
 		if (peripheral == Peripheral.Pressure) return true;
@@ -919,10 +926,30 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 
 	@Override
 	public void setCursorCatched (boolean catched) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			View view = ((AndroidGraphics)app.getGraphics()).getView();
+			if (catched) {
+				view.requestPointerCapture();
+				view.setOnCapturedPointerListener(new View.OnCapturedPointerListener() {
+					@Override
+					public boolean onCapturedPointer (View view, MotionEvent motionEvent) {
+						deltaX[0] = (int)motionEvent.getX();
+						deltaY[0] = (int)motionEvent.getY();
+						return false;
+					}
+				});
+			} else {
+				view.releasePointerCapture();
+			}
+		}
 	}
 
 	@Override
 	public boolean isCursorCatched () {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			View view = ((AndroidGraphics)app.getGraphics()).getView();
+			return view.hasPointerCapture();
+		}
 		return false;
 	}
 
@@ -976,12 +1003,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	@Override
 	public void onPause () {
 		unregisterSensorListeners();
-
-		// erase pointer ids. this sucks donkeyballs...
-		Arrays.fill(realId, -1);
-
-		// erase touched state. this also sucks donkeyballs...
-		Arrays.fill(touched, false);
 	}
 
 	@Override

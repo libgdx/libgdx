@@ -1,22 +1,22 @@
-configure(subprojects - project(":tests:gdx-tests-android")) {
+configure(subprojects - project(":tests:gdx-tests-android") - project(":backends:gdx-backend-android")) {
 	tasks.register('uberJar', Jar) {
         archiveClassifier = ''
         archiveVersion = ''
         duplicatesStrategy = 'exclude'
 
         from sourceSets.main.output
-		
+
         dependsOn configurations.compileClasspath
 
         from {
-            configurations.compileClasspath.findAll { 
-				it.name.endsWith('jar') && 
+            configurations.compileClasspath.findAll {
+				it.name.endsWith('jar') &&
 				!it.name.endsWith("gdx-natives.jar") &&
 				!it.name.endsWith("gdx-box2d-natives.jar") &&
 				!it.name.endsWith("gdx-freetype-natives.jar") &&
 				!it.name.endsWith("gdx-bullet-natives.jar") &&
 				!it.name.endsWith("jinput-2.0.5.jar") &&
-				!it.name.endsWith("jutils-1.0.0.jar") &&				
+				!it.name.endsWith("jutils-1.0.0.jar") &&
 				!it.name.contains("platform") }.collect { zipTree(it) }
         }
     }

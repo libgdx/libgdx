@@ -144,6 +144,11 @@ public class ChainShape extends Shape {
 		vertex.set(v.x, v.y);
 	}
 
+	/** Clear all vertices in the chain and free the memory. */
+	public void clear () {
+		shape.clear();
+	}
+
 	@Override
 	public float getRadius () {
 		return shape.getRadius();

@@ -20,6 +20,7 @@ import android.annotation.TargetApi;
 import android.opengl.GLES30;
 
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 @TargetApi(18)
 public class AndroidGL30 extends AndroidGL20 implements GL30 {
@@ -39,6 +40,13 @@ public class AndroidGL30 extends AndroidGL20 implements GL30 {
 	}
 
 	@Override
+	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
+		int offset) {
+		if (offset != 0) throw new GdxRuntimeException("non zero offset is not supported");
+		GLES30.glTexImage2D(target, level, internalformat, width, height, border, format, type, null);
+	}
+
+	@Override
 	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format,
 		int type, java.nio.Buffer pixels) {
 		if (pixels == null)
@@ -51,6 +59,13 @@ public class AndroidGL30 extends AndroidGL20 implements GL30 {
 	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format,
 		int type, int offset) {
 		GLES30.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, offset);
+	}
+
+	@Override
+	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
+		int offset) {
+		if (offset != 0) throw new GdxRuntimeException("non zero offset is not supported");
+		GLES30.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, null);
 	}
 
 	@Override

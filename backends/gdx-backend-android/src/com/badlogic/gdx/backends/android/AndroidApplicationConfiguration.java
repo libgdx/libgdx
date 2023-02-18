@@ -23,6 +23,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /** Class defining the configuration of an {@link AndroidApplication}. Allows you to disable the use of the accelerometer to save
  * battery among other things.
@@ -88,7 +89,7 @@ public class AndroidApplicationConfiguration {
 	public boolean getTouchEventsForLiveWallpaper = false;
 
 	/** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
-	public boolean useImmersiveMode = false;
+	public boolean useImmersiveMode = true;
 
 	/** Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0. When GL ES
 	 * 3* is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. Requires at least Android 4.3 (API
@@ -98,4 +99,12 @@ public class AndroidApplicationConfiguration {
 
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
 	public int maxNetThreads = Integer.MAX_VALUE;
+
+	/** The loader used to load native libraries. Override this to use a different loading strategy. */
+	public GdxNativeLoader nativeLoader = new GdxNativeLoader() {
+		@Override
+		public void load () {
+			GdxNativesLoader.load();
+		}
+	};
 }

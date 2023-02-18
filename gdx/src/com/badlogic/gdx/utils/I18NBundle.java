@@ -19,9 +19,11 @@ package com.badlogic.gdx.utils;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Set;
 
 import com.badlogic.gdx.files.FileHandle;
 
@@ -135,7 +137,7 @@ public class I18NBundle {
 	/** Creates a new bundle using the specified <code>baseFileHandle</code> and <code>encoding</code>; the default locale is used.
 	 * 
 	 * @param baseFileHandle the file handle to the base of the bundle
-	 * @param encoding the charter encoding
+	 * @param encoding the character encoding
 	 * @return a bundle for the given base file handle and locale
 	 * @exception NullPointerException if <code>baseFileHandle</code> or <code>encoding</code> is <code>null</code>
 	 * @exception MissingResourceException if no bundle for the specified base file handle can be found */
@@ -147,7 +149,7 @@ public class I18NBundle {
 	 * 
 	 * @param baseFileHandle the file handle to the base of the bundle
 	 * @param locale the locale for which a bundle is desired
-	 * @param encoding the charter encoding
+	 * @param encoding the character encoding
 	 * @return a bundle for the given base file handle and locale
 	 * @exception NullPointerException if <code>baseFileHandle</code>, <code>locale</code> or <code>encoding</code> is
 	 *               <code>null</code>
@@ -435,6 +437,20 @@ public class I18NBundle {
 					throw new MissingResourceException("Can't find bundle key " + key, this.getClass().getName(), key);
 				else
 					return "???" + key + "???";
+			}
+		}
+		return result;
+	}
+
+	/** Gets a key set of loaded properties. Keys will be copied into a new set and returned.
+	 *
+	 * @return a key set of loaded properties. Never null, might be an empty set */
+	public Set<String> keys () {
+		Set<String> result = new LinkedHashSet<>();
+		ObjectMap.Keys<String> keys = properties.keys();
+		if (keys != null) {
+			for (String key : keys) {
+				result.add(key);
 			}
 		}
 		return result;

@@ -74,8 +74,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private final Vector2 tempCoords = new Vector2();
 	private final Actor[] pointerOverActors = new Actor[20];
 	private final boolean[] pointerTouched = new boolean[20];
-	private final int[] pointerScreenX = new int[20];
-	private final int[] pointerScreenY = new int[20];
+	private final int[] pointerScreenX = new int[20], pointerScreenY = new int[20];
 	private int mouseScreenX, mouseScreenY;
 	private @Null Actor mouseOverActor;
 	private @Null Actor keyboardFocus, scrollFocus;
@@ -194,34 +193,20 @@ public class Stage extends InputAdapter implements Disposable {
 		// Update over actors. Done in act() because actors may change position, which can fire enter/exit without an input event.
 		for (int pointer = 0, n = pointerOverActors.length; pointer < n; pointer++) {
 			Actor overLast = pointerOverActors[pointer];
-			// Check if pointer is gone.
-			if (!pointerTouched[pointer]) {
-				if (overLast != null) {
-					pointerOverActors[pointer] = null;
-					screenToStageCoordinates(tempCoords.set(pointerScreenX[pointer], pointerScreenY[pointer]));
-					// Exit over last.
-					InputEvent event = Pools.obtain(InputEvent.class);
-					event.setType(InputEvent.Type.exit);
-					event.setStage(this);
-					event.setStageX(tempCoords.x);
-					event.setStageY(tempCoords.y);
-					event.setRelatedActor(overLast);
-					event.setPointer(pointer);
-					overLast.fire(event);
-					Pools.free(event);
-				}
-				continue;
+			if (pointerTouched[pointer]) {
+				// Update the over actor for the pointer.
+				pointerOverActors[pointer] = fireEnterAndExit(overLast, pointerScreenX[pointer], pointerScreenY[pointer], pointer);
+			} else if (overLast != null) {
+				// The pointer is gone, exit the over actor for the pointer, if any.
+				pointerOverActors[pointer] = null;
+				fireExit(overLast, pointerScreenX[pointer], pointerScreenY[pointer], pointer);
 			}
-			// Update over actor for the pointer.
-			pointerOverActors[pointer] = fireEnterAndExit(overLast, pointerScreenX[pointer], pointerScreenY[pointer], pointer);
 		}
+
 		// Update over actor for the mouse on the desktop.
 		ApplicationType type = Gdx.app.getType();
-		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL) {
-			// if (mouseOverActor != null) mouseOverActor.setDebug(false);
+		if (type == ApplicationType.Desktop || type == ApplicationType.Applet || type == ApplicationType.WebGL)
 			mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
-			// if (mouseOverActor != null) mouseOverActor.setDebug(true);
-		}
 
 		root.act(delta);
 	}
@@ -235,28 +220,42 @@ public class Stage extends InputAdapter implements Disposable {
 		// Exit overLast.
 		if (overLast != null) {
 			InputEvent event = Pools.obtain(InputEvent.class);
+			event.setType(InputEvent.Type.exit);
 			event.setStage(this);
 			event.setStageX(tempCoords.x);
 			event.setStageY(tempCoords.y);
 			event.setPointer(pointer);
-			event.setType(InputEvent.Type.exit);
 			event.setRelatedActor(over);
 			overLast.fire(event);
 			Pools.free(event);
 		}
+
 		// Enter over.
 		if (over != null) {
 			InputEvent event = Pools.obtain(InputEvent.class);
+			event.setType(InputEvent.Type.enter);
 			event.setStage(this);
 			event.setStageX(tempCoords.x);
 			event.setStageY(tempCoords.y);
 			event.setPointer(pointer);
-			event.setType(InputEvent.Type.enter);
 			event.setRelatedActor(overLast);
 			over.fire(event);
 			Pools.free(event);
 		}
 		return over;
+	}
+
+	private void fireExit (Actor actor, int screenX, int screenY, int pointer) {
+		screenToStageCoordinates(tempCoords.set(screenX, screenY));
+		InputEvent event = Pools.obtain(InputEvent.class);
+		event.setType(InputEvent.Type.exit);
+		event.setStage(this);
+		event.setStageX(tempCoords.x);
+		event.setStageY(tempCoords.y);
+		event.setPointer(pointer);
+		event.setRelatedActor(actor);
+		actor.fire(event);
+		Pools.free(event);
 	}
 
 	/** Applies a touch down event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
@@ -362,6 +361,11 @@ public class Stage extends InputAdapter implements Disposable {
 		return handled;
 	}
 
+	public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {
+		cancelTouchFocus();
+		return false;
+	}
+
 	/** Applies a mouse moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
 	 * event. This event only occurs on the desktop. */
 	public boolean mouseMoved (int screenX, int screenY) {
@@ -373,8 +377,8 @@ public class Stage extends InputAdapter implements Disposable {
 		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
 		InputEvent event = Pools.obtain(InputEvent.class);
-		event.setStage(this);
 		event.setType(Type.mouseMoved);
+		event.setStage(this);
 		event.setStageX(tempCoords.x);
 		event.setStageY(tempCoords.y);
 
@@ -395,12 +399,12 @@ public class Stage extends InputAdapter implements Disposable {
 		screenToStageCoordinates(tempCoords.set(mouseScreenX, mouseScreenY));
 
 		InputEvent event = Pools.obtain(InputEvent.class);
-		event.setStage(this);
 		event.setType(InputEvent.Type.scrolled);
-		event.setScrollAmountX(amountX);
-		event.setScrollAmountY(amountY);
+		event.setStage(this);
 		event.setStageX(tempCoords.x);
 		event.setStageY(tempCoords.y);
+		event.setScrollAmountX(amountX);
+		event.setScrollAmountY(amountY);
 		target.fire(event);
 		boolean handled = event.isHandled();
 		Pools.free(event);
@@ -412,8 +416,8 @@ public class Stage extends InputAdapter implements Disposable {
 	public boolean keyDown (int keyCode) {
 		Actor target = keyboardFocus == null ? root : keyboardFocus;
 		InputEvent event = Pools.obtain(InputEvent.class);
-		event.setStage(this);
 		event.setType(InputEvent.Type.keyDown);
+		event.setStage(this);
 		event.setKeyCode(keyCode);
 		target.fire(event);
 		boolean handled = event.isHandled();
@@ -426,8 +430,8 @@ public class Stage extends InputAdapter implements Disposable {
 	public boolean keyUp (int keyCode) {
 		Actor target = keyboardFocus == null ? root : keyboardFocus;
 		InputEvent event = Pools.obtain(InputEvent.class);
-		event.setStage(this);
 		event.setType(InputEvent.Type.keyUp);
+		event.setStage(this);
 		event.setKeyCode(keyCode);
 		target.fire(event);
 		boolean handled = event.isHandled();
@@ -440,8 +444,8 @@ public class Stage extends InputAdapter implements Disposable {
 	public boolean keyTyped (char character) {
 		Actor target = keyboardFocus == null ? root : keyboardFocus;
 		InputEvent event = Pools.obtain(InputEvent.class);
-		event.setStage(this);
 		event.setType(InputEvent.Type.keyTyped);
+		event.setStage(this);
 		event.setCharacter(character);
 		target.fire(event);
 		boolean handled = event.isHandled();
@@ -492,8 +496,8 @@ public class Stage extends InputAdapter implements Disposable {
 
 			if (event == null) {
 				event = Pools.obtain(InputEvent.class);
-				event.setStage(this);
 				event.setType(InputEvent.Type.touchUp);
+				event.setStage(this);
 				event.setStageX(Integer.MIN_VALUE);
 				event.setStageY(Integer.MIN_VALUE);
 			}
@@ -521,8 +525,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @see #cancelTouchFocus() */
 	public void cancelTouchFocusExcept (@Null EventListener exceptListener, @Null Actor exceptActor) {
 		InputEvent event = Pools.obtain(InputEvent.class);
-		event.setStage(this);
 		event.setType(InputEvent.Type.touchUp);
+		event.setStage(this);
 		event.setStageX(Integer.MIN_VALUE);
 		event.setStageY(Integer.MIN_VALUE);
 
@@ -586,6 +590,23 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @see Actor#removeCaptureListener(EventListener) */
 	public boolean removeCaptureListener (EventListener listener) {
 		return root.removeCaptureListener(listener);
+	}
+
+	/** Called just before an actor is removed from a group.
+	 * <p>
+	 * The default implementation fires an {@link InputEvent.Type#exit} event if a pointer had entered the actor. */
+	protected void actorRemoved (Actor actor) {
+		for (int pointer = 0, n = pointerOverActors.length; pointer < n; pointer++) {
+			if (actor == pointerOverActors[pointer]) {
+				pointerOverActors[pointer] = null;
+				fireExit(actor, pointerScreenX[pointer], pointerScreenY[pointer], pointer);
+			}
+		}
+
+		if (actor == mouseOverActor) {
+			mouseOverActor = null;
+			fireExit(actor, mouseScreenX, mouseScreenY, -1);
+		}
 	}
 
 	/** Removes the root's children, actions, and listeners. */

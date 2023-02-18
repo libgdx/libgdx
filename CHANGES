@@ -1,11 +1,44 @@
-[1.10.1]
+[1.11.1]
+- [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
+- [BREAKING CHANGE] Android: Immersive mode is now true by default. Set `useImmersiveMode` config to `false` to disable it. 
+- [BREAKING CHANGE] iOS: `hideHomeIndicator` set to `false` by default (was `true`).
+- [BREAKING CHANGE] iOS: `screenEdgesDeferringSystemGestures` set to `UIRectEdge.All` by default (was `UIRectEdge.None`).
+- [BREAKING CHANGE] iOS: preferred FPS is now uncapped by default, see #6717
+- [BREAKING CHANGE] iOS: `ApplicationListener.create` and first `resize` are now called within `UIApplicationDelegate.didFinishLaunching`. Allows for earlier rendering and prevents black screen frames after launch screen. NOTE: App will get terminated if this method is blocked for more than 10-20 sec. 
+- [BREAKING CHANGE] Actor#localToAscendantCoordinates throws an exception if the specified actor is not an ascendant.
+- [BREAKING CHANGE] WidgetGroup#hit first validates the layout.
+- [BREAKING CHANGE] Cell getters return object wrapper instead of primitives.
+- [BREAKING CHANGE] MeshPartBuilder#lastIndex now returns int instead of short.
+- [BREAKING CHANGE] 3D API - max bone weights is now configurable and limited to 4 by default. Change this value if you need less or more. See #6522.
+- [BREAKING CHANGE] Mesh#getVerticesBuffer, Mesh#getIndicesBuffer, VertexData#getBuffer, and IndexData#getBuffer are deprecated in favor to new methods with boolean parameter. If you subclassed some of these classes, you need to implement the new methods.
+- [BREAKING CHANGE] Desktop: The return value of AudioDevice#getLatency() is now in samples, and not milliseconds
+- iOS: Add new MobiVM MetalANGLE backend
+- API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
+- Fix: Fixed Android and iOS touch cancelled related issues, see #6871.
+- Javadoc: Add "-use" flag to javadoc generation
+- Android: gdx-setup now uses AGP 7.2.2 and SDK 32, requiring Android Studio Chipmunk or IntelliJ IDEA 2022.2 and JDK 11.
+- libGDX is now built using Java 11 due to new Android requirements. The rest of libGDX can still be built with JDK 8 and runtime compatibility of libGDX projects should be unaffected.
+- Fixed glViewport when using HdpiMode.Logical with the LWJGL3 backend.
+- Added Stage#actorRemoved to fire exit events just before an actor is removed.
+- ScrollPane#setScrollingDisabled avoids invalidate() if nothing changed.
+- Fixed incorrect ScrollPane#scrollTo.
+- API Addition: Added Texture3D support
+- Fix: Throw an exception when maximum Attribute count is reached to prevent silent failure.
+- API Fix: The cursor can now be catched on Android.
+- LWJGL3 Fix: Stereo audio can now be played on mono output devices. This may also improve downmixing to stereo and upmixing to surround.
+- API Addition: Added CheckBox#getImageDrawable.
+- FIX: HexagonalTiledMapRenderer now displays maps with the correct stagger index.
+- API Addition: Added I18NBundle#keys() method.
+- TOOLS Features: Save mode can be changed in Flame particle 3D editor.
+
+[1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
 - [BREAKING CHANGE] Removed Maven and Ant build systems. libGDX is now solely built with Gradle. See https://libgdx.com/dev/from-source/ for updated build instructions.
 - [BREAKING CHANGE] Android Moved natives loading out of static init block, see #5795
 - [BREAKING CHANGE] Linux: Shared libraries are now built on Ubuntu 18.04 (up from Ubuntu 16.04)
 - [BREAKING CHANGE] The built-in font files arial-15.fnt and arial-15.png have been replaced with lsans-15.fnt and lsans-15.png; this may change some text layout that uses the built-in font, and code that expects arial-15 assets to be present must change to lsans-15.
 - [BREAKING CHANGE] Legacy LWJGL3 projects must update the sourceCompatibility to 1.8 or higher.
-- [BREAKING CHANGE] Android Removed hideStatusBar configuration, see #6683 
+- [BREAKING CHANGE] Android Removed hideStatusBar configuration, see #6683
 - [BREAKING CHANGE] Lwjgl3ApplicationConfiguration#useOpenGL3 was replaced by #setOpenGLEmulation
 - Gradle build now takes -PjavaVersion=7|8|9... to specify the Java version against which to compile libGDX. Default is Java 7 for everything, except the LWJGL3 backend, which is compiled for Java 8.
 - LWJGL3 extension: Added gdx-lwjgl3-glfw-awt-macos extension. Fixes GLFW in such a way, that the LWJGL3/libGDX must no longer run on the main thread in macOS, which allows AWT to work in parallel, i.e. file dialogs, JFrames, ImageIO, etc. You no longer need to pass `-XstartOnFirstThread` when starting an LWJGL3 app on macOS. See `AwtTestLWJGL` in gdx-tests-lwjgl3. For more information, see https://github.com/libgdx/libgdx/pull/6772
@@ -37,6 +70,7 @@
 - API Fix: Resolved issues with LWJGL 3 and borderless fullscreen
 - API Addition: GeometryUtils,polygons isCCW, ensureClockwise, reverseVertices
 - API Addition: Added FreeTypeFontGenerator#hasCharGlyph method.
+- API Addition: Tiled parallax factor support
 - API Fix: Pool discard method now resets object by default. This fixes the known issue about Pool in libGDX 1.10.0.
 - API Addition: Split GWT reflection cache into two generated classes
 - API Fix: Fix Box2D memory leak with ropes on GWT
@@ -48,16 +82,26 @@
 - API Fix: Move vertex array index buffer limit to backends to fix issue with numIndices parameter
 - API Fix: TexturePacker: Fix wrong Y value when using padding
 - API Fix: Lwjgl3Net: Add fallback to xdg-open on Linux if Desktop.BROWSE is unavailable
-- API Addition: Add NWSEResize, NESWResize, AllResize, and NotAllowed SystemCursors
+- API Addition: Add NWSEResize, NESWResize, AllResize, NotAllowed and None SystemCursors
 - API Addition: GWTApplication#getJavaHeap and getNativeHeap are now supported
 - API Addition: Box2D Shape now implements Disposable
-- API Addition: Addes Tooltip#setTouchIndependent; see #6758
+- API Addition: Added ChainShape#clear method
+- API Addition: Added Tooltip#setTouchIndependent; see #6758
 - API Addition: Emulate Timer#isEmpty on GWT
 - API Addition: Bits add copy constructor public Bits (Bits bitsToCpy)
 - API Addition: Added List#drawSelection().
+- API Addition: GwtApplicationConfiguration#xrCompatible 
+- API Fix: setSystemCursor() now works on Android
 - API Fix: getDisplayMode() is now more accurate on Android and GWT.
 - API Addition: JsonValue#iterator(String) to more easily iterate a child that may not exist.
 - API Addition: Added ExtendViewport#setScaling, eg for use with Scaling.contain.
+- API Addition: Added application lifecycle methods to IOSAudio for custom audio implementations.
+- API Addition: Added getBoundingRectangle() to Polyline
+- API Addition: ShapeRenderer#check() has now protected visibility
+- API Addition: Add ability to host GWT module on a different domain than the site, see #6851
+- API Addition: Addes Tooltip#setTouchIndependent; see #6758
+- API ADDITION: Emulate Timer#isEmpty on GWT
+- API Addition: OrientedBoundingBox.
 
 [1.10.0]
 - [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.

@@ -24,6 +24,7 @@ import com.badlogic.gdx.ApplicationListener;
 
 /** An OpenGL surface in an applet.
  * @author Nathan Sweet */
+@SuppressWarnings("removal")
 public class LwjglApplet extends Applet {
 	final Canvas canvas;
 	LwjglApplication app;

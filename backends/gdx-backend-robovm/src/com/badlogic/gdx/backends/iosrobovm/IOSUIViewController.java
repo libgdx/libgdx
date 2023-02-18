@@ -10,6 +10,7 @@ import org.robovm.apple.uikit.UIInterfaceOrientationMask;
 import org.robovm.apple.uikit.UIPress;
 import org.robovm.apple.uikit.UIPressesEvent;
 import org.robovm.apple.uikit.UIRectEdge;
+import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 
 public class IOSUIViewController extends GLKViewController {
@@ -22,8 +23,8 @@ public class IOSUIViewController extends GLKViewController {
 	}
 
 	@Override
-	public void viewWillAppear (boolean arg0) {
-		super.viewWillAppear(arg0);
+	public void viewWillAppear (boolean animated) {
+		super.viewWillAppear(animated);
 		// start GLKViewController even though we may only draw a single frame
 		// (we may be in non-continuous mode)
 		setPaused(false);
@@ -32,6 +33,7 @@ public class IOSUIViewController extends GLKViewController {
 	@Override
 	public void viewDidAppear (boolean animated) {
 		super.viewDidAppear(animated);
+		getView().setContentScaleFactor(UIScreen.getMainScreen().getNativeScale());
 		if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
 	}
 
@@ -68,7 +70,7 @@ public class IOSUIViewController extends GLKViewController {
 		final IOSScreenBounds newBounds = app.computeBounds();
 		graphics.screenBounds = newBounds;
 		// Layout may happen without bounds changing, don't trigger resize in that case
-		if (graphics.created && (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height)) {
+		if (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height) {
 			graphics.makeCurrent();
 			graphics.updateSafeInsets();
 			graphics.gl20.glViewport(0, 0, newBounds.backBufferWidth, newBounds.backBufferHeight);

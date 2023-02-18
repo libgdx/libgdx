@@ -46,6 +46,8 @@ import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyWorldInfo;
 import com.badlogic.gdx.physics.bullet.softbody.btSoftRigidDynamicsWorld;
 
 import java.nio.Buffer;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 /** @author xoppa */
 public class SoftBodyTest extends BaseBulletTest {
@@ -98,12 +100,14 @@ public class SoftBodyTest extends BaseBulletTest {
 			new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		final int vertSize = mesh.getVertexSize() / 4;
-		((Buffer)mesh.getVerticesBuffer()).position(0);
-		((Buffer)mesh.getVerticesBuffer()).limit(vertCount * vertSize);
-		((Buffer)mesh.getIndicesBuffer()).position(0);
-		((Buffer)mesh.getIndicesBuffer()).limit(faceCount * 3);
-		softBody.getVertices(mesh.getVerticesBuffer(), vertCount, mesh.getVertexSize(), 0);
-		softBody.getIndices(mesh.getIndicesBuffer(), faceCount);
+		FloatBuffer verticesBuffer = mesh.getVerticesBuffer(true);
+		((Buffer)verticesBuffer).position(0);
+		((Buffer)verticesBuffer).limit(vertCount * vertSize);
+		ShortBuffer indicesBuffer = mesh.getIndicesBuffer(true);
+		((Buffer)indicesBuffer).position(0);
+		((Buffer)indicesBuffer).limit(faceCount * 3);
+		softBody.getVertices(verticesBuffer, vertCount, mesh.getVertexSize(), 0);
+		softBody.getIndices(indicesBuffer, faceCount);
 
 		final float[] verts = new float[vertCount * vertSize];
 		final int uvOffset = mesh.getVertexAttribute(Usage.TextureCoordinates).offset / 4;
@@ -150,7 +154,7 @@ public class SoftBodyTest extends BaseBulletTest {
 
 	@Override
 	protected void renderWorld () {
-		softBody.getVertices(mesh.getVerticesBuffer(), softBody.getNodeCount(), mesh.getVertexSize(), 0);
+		softBody.getVertices(mesh.getVerticesBuffer(true), softBody.getNodeCount(), mesh.getVertexSize(), 0);
 		softBody.getWorldTransform(instance.transform);
 		super.renderWorld();
 

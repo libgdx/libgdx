@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@ package com.badlogic.gdx.utils;
 
 import java.util.Arrays;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** A quad tree that stores a float for each point.
@@ -153,6 +154,29 @@ public class QuadTreeFloat implements Poolable {
 			if (sw != null) sw.query(centerX, centerY, radiusSqr, rectX, rectY, rectSize, results);
 			if (ne != null) ne.query(centerX, centerY, radiusSqr, rectX, rectY, rectSize, results);
 			if (se != null) se.query(centerX, centerY, radiusSqr, rectX, rectY, rectSize, results);
+		}
+	}
+
+	/** @param results For each entry found within the rectangle, if any, the value, x, and y of the entry are added to this array.
+	 *           See {@link #VALUE}, {@link #X}, and {@link #Y}. */
+	public void query (Rectangle rect, FloatArray results) {
+		if (x >= rect.x + rect.width || x + width <= rect.x || y >= rect.y + rect.height || y + height <= rect.y) return;
+		int count = this.count;
+		if (count != -1) {
+			float[] values = this.values;
+			for (int i = 1; i < count; i += 3) {
+				float px = values[i], py = values[i + 1];
+				if (rect.contains(px, py)) {
+					results.add(values[i - 1]);
+					results.add(px);
+					results.add(py);
+				}
+			}
+		} else {
+			if (nw != null) nw.query(rect, results);
+			if (sw != null) sw.query(rect, results);
+			if (ne != null) ne.query(rect, results);
+			if (se != null) se.query(rect, results);
 		}
 	}
 

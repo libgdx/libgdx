@@ -23,7 +23,8 @@ public class IntAttribute extends Attribute {
 	public static final long CullFace = register(CullFaceAlias);
 
 	/** create a cull face attribute to be used in a material
-	 * @param value cull face value, possible values are GL_FRONT_AND_BACK, GL_BACK, GL_FRONT, or -1 to inherit default
+	 * @param value cull face value, possible values are 0 (render both faces), GL_FRONT_AND_BACK (render nothing), GL_BACK (render
+	 *           front faces only), GL_FRONT (render back faces only), or -1 to inherit default
 	 * @return an attribute */
 	public static IntAttribute createCullFace (int value) {
 		return new IntAttribute(CullFace, value);
