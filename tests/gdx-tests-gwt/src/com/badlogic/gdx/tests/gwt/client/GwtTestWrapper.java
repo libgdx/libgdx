@@ -115,9 +115,9 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 				return new DecalTest();
 			}
 		}, new GwtInstancer() {
-			 public GdxTest instance () {
-				  return new DecalAlphaTest();
-			 }
+			public GdxTest instance () {
+				return new DecalAlphaTest();
+			}
 		}, new GwtInstancer() {
 			public GdxTest instance () {
 				return new DisplayModeTest();
