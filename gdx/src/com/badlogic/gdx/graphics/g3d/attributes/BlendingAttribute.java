@@ -32,14 +32,14 @@ public class BlendingAttribute extends Attribute {
 	/** Whether this material should be considered blended (default: true). This is used for sorting (back to front instead of
 	 * front to back). */
 	public boolean blended;
-	/** Specifies how the (incoming) red, green, blue, and alpha source blending factors are computed (default: GL_SRC_ALPHA) */
+	/** Specifies how the (incoming) red, green, blue source blending factors are computed (default: GL_SRC_ALPHA) */
 	public int sourceFunction;
-	/** Specifies how the (existing) red, green, blue, and alpha destination blending factors are computed (default:
+	/** Specifies how the (existing) red, green, blue destination blending factors are computed (default:
 	 * GL_ONE_MINUS_SRC_ALPHA) */
 	public int destFunction;
-	/** Specifies how the (incoming) red, green, blue, and alpha source blending factors are computed (default: GL_SRC_ALPHA) */
+	/** Specifies how the (incoming) alpha source blending factor is computed (default: GL_SRC_ALPHA) */
 	public int sourceFunctionAlpha;
-	/** Specifies how the (existing) red, green, blue, and alpha destination blending factors are computed (default:
+	/** Specifies how the (existing) alpha destination blending factor is computed (default:
 	 * GL_ONE_MINUS_SRC_ALPHA) */
 	public int destFunctionAlpha;
 	/** the blend equation for rgb (default: GL_FUNC_ADD) */
