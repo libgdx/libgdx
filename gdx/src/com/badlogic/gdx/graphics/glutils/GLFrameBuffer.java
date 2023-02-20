@@ -301,7 +301,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		gl.glDeleteRenderbuffer(depthStencilPackedBufferHandle);
 		gl.glDeleteRenderbuffer(depthbufferHandle);
 		gl.glDeleteRenderbuffer(stencilbufferHandle);
-		
+
 		gl.glDeleteFramebuffer(framebufferHandle);
 
 		if (buffers.get(Gdx.app) != null) buffers.get(Gdx.app).removeValue(this, true);
