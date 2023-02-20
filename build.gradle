@@ -19,6 +19,9 @@ buildscript {
 	repositories {
 		mavenCentral()
 		gradlePluginPortal()
+		maven {
+			url "https://maven.google.com"
+		}
 	}
 	dependencies {
 		classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
