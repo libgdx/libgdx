@@ -39,8 +39,7 @@ public class BlendingAttribute extends Attribute {
 	public int destFunction;
 	/** Specifies how the (incoming) alpha source blending factor is computed (default: GL_SRC_ALPHA) */
 	public int sourceFunctionAlpha;
-	/** Specifies how the (existing) alpha destination blending factor is computed (default:
-	 * GL_ONE_MINUS_SRC_ALPHA) */
+	/** Specifies how the (existing) alpha destination blending factor is computed (default: GL_ONE_MINUS_SRC_ALPHA) */
 	public int destFunctionAlpha;
 	/** the blend equation for rgb (default: GL_FUNC_ADD) */
 	public int equationRGB;
