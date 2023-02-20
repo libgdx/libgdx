@@ -17,7 +17,7 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.*;
 
 /** Manages OpenGL state and tries to reduce state changes. Uses a {@link TextureBinder} to reduce texture binds as well. Call
  * {@link #begin()} to setup the context, call {@link #end()} to undo all state changes. Use the setters to change state, use
@@ -29,6 +29,10 @@ public class RenderContext {
 	private boolean blending;
 	private int blendSFactor;
 	private int blendDFactor;
+	private int blendSFactorAlpha;
+	private int blendDFactorAlpha;
+	private int blendEquationRGB;
+	private int blendEquationAlpha;
 	private int depthFunc;
 	private float depthRangeNear;
 	private float depthRangeFar;
@@ -48,7 +52,7 @@ public class RenderContext {
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 		blending = false;
 		Gdx.gl.glDisable(GL20.GL_CULL_FACE);
-		cullFace = blendSFactor = blendDFactor = 0;
+		cullFace = blendSFactor = blendDFactor = blendSFactorAlpha = blendDFactorAlpha = blendEquationRGB = blendEquationAlpha = -1;
 		textureBinder.begin();
 	}
 
@@ -88,6 +92,11 @@ public class RenderContext {
 	}
 
 	public void setBlending (final boolean enabled, final int sFactor, final int dFactor) {
+		setBlending(enabled, sFactor, dFactor, sFactor, dFactor, GL20.GL_FUNC_ADD, GL20.GL_FUNC_ADD);
+	}
+
+	public void setBlending (final boolean enabled, final int sFactorRGB, final int dFactorRGB, final int sFactorAlpha,
+		final int dFactorAlpha, final int equationRGB, final int equationAlpha) {
 		if (enabled != blending) {
 			blending = enabled;
 			if (enabled)
@@ -95,10 +104,22 @@ public class RenderContext {
 			else
 				Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
-		if (enabled && (blendSFactor != sFactor || blendDFactor != dFactor)) {
-			Gdx.gl.glBlendFunc(sFactor, dFactor);
-			blendSFactor = sFactor;
-			blendDFactor = dFactor;
+
+		if (enabled) {
+			if (blendEquationRGB != equationRGB || blendEquationAlpha != equationAlpha) {
+				Gdx.gl.glBlendEquationSeparate(equationRGB, equationAlpha);
+				blendEquationRGB = equationRGB;
+				blendEquationAlpha = equationAlpha;
+			}
+
+			if (blendSFactor != sFactorRGB || blendDFactor != dFactorRGB || blendSFactorAlpha != sFactorAlpha
+				|| blendDFactorAlpha != dFactorAlpha) {
+				Gdx.gl.glBlendFuncSeparate(sFactorRGB, dFactorRGB, sFactorAlpha, dFactorAlpha);
+				blendSFactor = sFactorRGB;
+				blendDFactor = dFactorRGB;
+				blendSFactorAlpha = sFactorAlpha;
+				blendDFactorAlpha = dFactorAlpha;
+			}
 		}
 	}
 
