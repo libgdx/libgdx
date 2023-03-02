@@ -27,8 +27,8 @@ public class RenderContext {
 	/** used to bind textures **/
 	public final TextureBinder textureBinder;
 	private boolean blending;
-	private int blendSFactor;
-	private int blendDFactor;
+	private int blendSFactorRGB;
+	private int blendDFactorRGB;
 	private int blendSFactorAlpha;
 	private int blendDFactorAlpha;
 	private int blendEquationRGB;
@@ -52,7 +52,7 @@ public class RenderContext {
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 		blending = false;
 		Gdx.gl.glDisable(GL20.GL_CULL_FACE);
-		cullFace = blendSFactor = blendDFactor = blendSFactorAlpha = blendDFactorAlpha = blendEquationRGB = blendEquationAlpha = -1;
+		cullFace = blendSFactorRGB = blendDFactorRGB = blendSFactorAlpha = blendDFactorAlpha = blendEquationRGB = blendEquationAlpha = -1;
 		textureBinder.begin();
 	}
 
@@ -112,11 +112,11 @@ public class RenderContext {
 				blendEquationAlpha = equationAlpha;
 			}
 
-			if (blendSFactor != sFactorRGB || blendDFactor != dFactorRGB || blendSFactorAlpha != sFactorAlpha
+			if (blendSFactorRGB != sFactorRGB || blendDFactorRGB != dFactorRGB || blendSFactorAlpha != sFactorAlpha
 				|| blendDFactorAlpha != dFactorAlpha) {
 				Gdx.gl.glBlendFuncSeparate(sFactorRGB, dFactorRGB, sFactorAlpha, dFactorAlpha);
-				blendSFactor = sFactorRGB;
-				blendDFactor = dFactorRGB;
+				blendSFactorRGB = sFactorRGB;
+				blendDFactorRGB = dFactorRGB;
 				blendSFactorAlpha = sFactorAlpha;
 				blendDFactorAlpha = dFactorAlpha;
 			}

@@ -54,22 +54,22 @@ public class PointSpriteBatchPanel extends EditorPanel<PointSpriteParticleBatch>
 		// Blending source
 		srcBlendFunction = new JComboBox();
 		srcBlendFunction.setModel(new DefaultComboBoxModel(BlendFunction.values()));
-		srcBlendFunction.setSelectedItem(BlendFunction.find(renderer.getBlendingAttribute().sourceFunction));
+		srcBlendFunction.setSelectedItem(BlendFunction.find(renderer.getBlendingAttribute().sourceFunctionRGB));
 		srcBlendFunction.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
 				BlendFunction blend = (BlendFunction)srcBlendFunction.getSelectedItem();
-				editor.getPointSpriteBatch().getBlendingAttribute().sourceFunction = blend.blend;
+				editor.getPointSpriteBatch().getBlendingAttribute().sourceFunctionRGB = blend.blend;
 			}
 		});
 
 		// Blending destination
 		destBlendFunction = new JComboBox();
 		destBlendFunction.setModel(new DefaultComboBoxModel(BlendFunction.values()));
-		destBlendFunction.setSelectedItem(BlendFunction.find(renderer.getBlendingAttribute().destFunction));
+		destBlendFunction.setSelectedItem(BlendFunction.find(renderer.getBlendingAttribute().destFunctionRGB));
 		destBlendFunction.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
 				BlendFunction blend = (BlendFunction)destBlendFunction.getSelectedItem();
-				editor.getPointSpriteBatch().getBlendingAttribute().destFunction = blend.blend;
+				editor.getPointSpriteBatch().getBlendingAttribute().destFunctionRGB = blend.blend;
 			}
 		});
 

@@ -316,7 +316,7 @@ public class ParticleShader extends BaseShader {
 		for (final Attribute attr : currentMaterial) {
 			final long t = attr.type;
 			if (BlendingAttribute.is(t)) {
-				context.setBlending(true, ((BlendingAttribute)attr).sourceFunction, ((BlendingAttribute)attr).destFunction);
+				context.setBlending(true, ((BlendingAttribute)attr).sourceFunctionRGB, ((BlendingAttribute)attr).destFunctionRGB);
 			} else if ((t & DepthTestAttribute.Type) == DepthTestAttribute.Type) {
 				DepthTestAttribute dta = (DepthTestAttribute)attr;
 				depthFunc = dta.depthFunc;

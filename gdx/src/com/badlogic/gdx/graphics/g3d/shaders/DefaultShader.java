@@ -828,10 +828,9 @@ public class DefaultShader extends BaseShader {
 		for (final Attribute attr : attributes) {
 			final long t = attr.type;
 			if (BlendingAttribute.is(t)) {
-				context.setBlending(((BlendingAttribute)attr).blended, ((BlendingAttribute)attr).sourceFunction,
-					((BlendingAttribute)attr).destFunction, ((BlendingAttribute)attr).sourceFunctionAlpha,
-					((BlendingAttribute)attr).destFunctionAlpha, ((BlendingAttribute)attr).equationRGB,
-					((BlendingAttribute)attr).equationAlpha);
+				context.setBlending(true, ((BlendingAttribute)attr).sourceFunctionRGB, ((BlendingAttribute)attr).destFunctionRGB,
+					((BlendingAttribute)attr).sourceFunctionAlpha, ((BlendingAttribute)attr).destFunctionAlpha,
+					((BlendingAttribute)attr).equationRGB, ((BlendingAttribute)attr).equationAlpha);
 				set(u_opacity, ((BlendingAttribute)attr).opacity);
 			} else if ((t & IntAttribute.CullFace) == IntAttribute.CullFace)
 				cullFace = ((IntAttribute)attr).value;

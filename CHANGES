@@ -1,4 +1,5 @@
 [1.11.1]
+- [BREAKING CHANGE] Added glBlendEquationSeparate/glBlendFuncSeparate support in BlendingAttribute, see #7095
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
 - [BREAKING CHANGE] Android: Immersive mode is now true by default. Set `useImmersiveMode` config to `false` to disable it. 
 - [BREAKING CHANGE] iOS: `hideHomeIndicator` set to `false` by default (was `true`).
