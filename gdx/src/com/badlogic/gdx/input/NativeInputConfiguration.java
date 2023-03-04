@@ -14,6 +14,7 @@ public class NativeInputConfiguration {
 	private Input.InputStringValidator validator;
 	private String placeholder = "";
 	private boolean showPasswordButton = false;
+	private String[] autoComplete = null;
 
 	public Input.OnscreenKeyboardType getType () {
 		return type;
@@ -95,6 +96,15 @@ public class NativeInputConfiguration {
 		return this;
 	}
 
+	public String[] getAutoComplete () {
+		return autoComplete;
+	}
+
+	public NativeInputConfiguration setAutoComplete (String[] autoComplete) {
+		this.autoComplete = autoComplete;
+		return this;
+	}
+
 	public void validate () {
 		String message = null;
 		if (type == null) message = "OnscreenKeyboardType needs to be non null";
@@ -102,6 +112,9 @@ public class NativeInputConfiguration {
 		if (showPasswordButton && type != Input.OnscreenKeyboardType.Password)
 			message = "ShowPasswordButton only works with OnscreenKeyboardType.Password";
 		if (placeholder == null) message = "Placeholder needs to be non null";
+		if (autoComplete != null && type != Input.OnscreenKeyboardType.Default)
+			message = "AutoComplete should only be used with OnscreenKeyboardType.Default";
+		if (autoComplete != null && isMultiLine) message = "AutoComplete shouldn't be used with multiline";
 
 		if (message != null) {
 			throw new IllegalArgumentException("NativeInputConfiguration validation failed: " + message);

@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.annotation.SuppressLint;
+import android.animation.Animator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -28,28 +28,20 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.text.InputFilter;
+import android.text.*;
 import android.text.InputFilter.LengthFilter;
-import android.text.InputType;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.Surface;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnGenericMotionListener;
 import android.view.View.OnKeyListener;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
-
 import android.widget.TextView.OnEditorActionListener;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -714,24 +706,60 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		relativeLayoutField.setX(0);
 		relativeLayoutField.setScaleX(1);
 		// @off
-		relativeLayoutField.animate()
-				.y(-height)
-				.scaleX(((float)Gdx.graphics.getWidth() + rightInset + leftInset) / Gdx.graphics.getWidth())
-				.x((leftInset == 0 ? -1 : 1) * ((float)leftInset + rightInset) / 2)
-				.setDuration(100);
+		if (((Activity)context).getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING) {
+			relativeLayoutField.animate()
+					.y(-height)
+					.scaleX(((float) Gdx.graphics.getWidth() + rightInset + leftInset) / Gdx.graphics.getWidth())
+					.x((leftInset == 0 ? -1 : 1) * ((float) leftInset + rightInset) / 2)
+					.setDuration(100)
+					.setListener(new Animator.AnimatorListener() {
+						@Override
+						public void onAnimationCancel(Animator animation) {}
+						@Override
+						public void onAnimationRepeat(Animator animation) {}
+						@Override
+						public void onAnimationStart(Animator animation) {}
+						@Override
+						public void onAnimationEnd(Animator animation) {
+							if (getEditTextForNativeInput().isPopupShowing()) {
+								// In case it gets reopened
+								getEditTextForNativeInput().showDropDown();
+							}
+						}
+					});
+		}
 		// @on
 	}
 
 	private void createDefaultEditText () {
 		View view = ((AndroidGraphics)app.getGraphics()).getView();
 		FrameLayout frameLayout = (FrameLayout)view.getParent();
-		TextInputLayout relativeLayout = new TextInputLayout(context);
+		final TextInputLayout relativeLayout = new TextInputLayout(context);
 		relativeLayout.setGravity(Gravity.BOTTOM);
 		// Why? Why isn't it working without?
 		relativeLayout.setBackgroundColor(Color.TRANSPARENT);
 
-		@SuppressLint("AppCompatCustomView")
-		EditText editText = new EditText(context) {
+		AppCompatAutoCompleteTextView editText = new AppCompatAutoCompleteTextView(context) {
+
+			private int count = 0;
+
+			@Override
+			public void onFilterComplete (int count) {
+				this.count = count;
+				super.onFilterComplete(count);
+			}
+
+			@Override
+			public void showDropDown () {
+				int size = 165 * count;
+				if (size > relativeLayout.getHeight() + relativeLayout.getY() - getHeight())
+					size = (int)(relativeLayout.getHeight() + relativeLayout.getY() - getHeight());
+				if (size != 0) setDropDownHeight(size);
+				setDropDownVerticalOffset(-getDropDownHeight() - getHeight());
+				setDropDownWidth((int)(getWidth() * relativeLayout.getScaleX()));
+				super.showDropDown();
+			}
+
 			@Override
 			public boolean onKeyPreIme (int keyCode, android.view.KeyEvent event) {
 				if (event.getKeyCode() == android.view.KeyEvent.KEYCODE_BACK) {
@@ -775,8 +803,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		return relativeLayoutField != null && relativeLayoutField.getVisibility() == View.VISIBLE;
 	}
 
-	private EditText getEditTextForNativeInput () {
-		return (EditText)((FrameLayout)relativeLayoutField.getChildAt(0)).getChildAt(0);
+	private AutoCompleteTextView getEditTextForNativeInput () {
+		return (AutoCompleteTextView)((FrameLayout)relativeLayoutField.getChildAt(0)).getChildAt(0);
 	}
 
 	private boolean multiline;
@@ -804,10 +832,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		handle.post(new Runnable() {
 			public void run () {
 				if (relativeLayoutField == null) createDefaultEditText();
-				final EditText editText = getEditTextForNativeInput();
+				final AutoCompleteTextView editText = getEditTextForNativeInput();
 				if (isNativeInputOpen()) return;
-
-				((Activity)context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
 				InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -891,6 +917,14 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				}
 
 				editText.setFilters(filters);
+
+				if (configuration.getAutoComplete() != null) {
+					ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line,
+						configuration.getAutoComplete());
+					editText.setAdapter(adapter);
+				} else {
+					editText.setAdapter(null);
+				}
 
 				editText.setBackgroundColor(Color.WHITE);
 

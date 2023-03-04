@@ -382,7 +382,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	// see: https://web.archive.org/web/20171016192705/http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
 
 	private UIView textfield = null;
-
+	private UITableView suggestionTable;
 	private Input.InputStringValidator inputStringValidator = null;
 	private String placeHolder = "";
 	private TextInputWrapper textInputWrapper;
@@ -528,7 +528,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	@Override
-	public void openTextInputField (NativeInputConfiguration configuration) {
+	public void openTextInputField (final NativeInputConfiguration configuration) {
 		configuration.validate();
 		if (textfield != null) throw new GdxRuntimeException("Can't open TextInputField, if KeyBoard is already open");
 		createDefaultTextField(configuration.isMultiLine(),
@@ -562,12 +562,73 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			}
 			((UITextView)textfield).setDelegate(textViewDelegate);
 		} else {
-			((UITextField)textfield).setText(textInputWrapper.getText());
-			((UITextField)textfield).setDelegate(textDelegate);
+			final UITextField asTextField = (UITextField)textfield;
+			if (configuration.getAutoComplete() != null) {
+				suggestionTable = new UITableView(new CGRect(app.graphics.screenBounds.width, app.graphics.screenBounds.height,
+					app.graphics.screenBounds.width, 50));
+				suggestionTable.setScrollEnabled(true);
+				suggestionTable.setBackgroundColor(UIColor.white());
+				suggestionTable.setRowHeight(40);
+				final Array<String> available = new Array<>(configuration.getAutoComplete());
+				suggestionTable.setDataSource(new UITableViewDataSourceAdapter() {
+					@Override
+					public UITableViewCell getCellForRow (UITableView tableView, NSIndexPath indexPath) {
+						UITableViewCell cell = tableView.dequeueReusableCell("suggestion");
+						if (cell == null) cell = new UITableViewCell(UITableViewCellStyle.Default, "suggestion");
+						if (Foundation.getMajorSystemVersion() >= 14) {
+							UIListContentConfiguration contentConfiguration = cell.defaultContentConfiguration();
+							NSAttributedString coloredText = new NSAttributedString(available.get(indexPath.getRow()),
+								new NSDictionary<>(NSAttributedStringAttribute.ForegroundColor.value(), UIColor.white()));
+							contentConfiguration.setAttributedText(coloredText);
+							cell.setContentConfiguration(contentConfiguration);
+						} else {
+							cell.getTextLabel().setText(available.get(indexPath.getRow()));
+							cell.getTextLabel().setTextColor(UIColor.black());
+						}
+						cell.setBackgroundColor(UIColor.white());
+						return cell;
+					}
+
+					@Override
+					public long getNumberOfRowsInSection (UITableView tableView, long section) {
+						return available.size;
+					}
+				});
+				suggestionTable.setDelegate(new UITableViewDelegateAdapter() {
+					@Override
+					public void didSelectRow (UITableView tableView, NSIndexPath indexPath) {
+						tableView.deselectRow(indexPath, true);
+						asTextField.setText(available.get(indexPath.getRow()));
+						Gdx.input.closeTextInputField(false);
+					}
+				});
+
+				asTextField.addTarget(new NSObject() {
+					@Method(selector = "changedText")
+					public void changedText (UITextField textField) {
+						available.clear();
+						for (String s : configuration.getAutoComplete()) {
+							if (s.startsWith(textField.getText())) {
+								available.add(s);
+							}
+						}
+						int height = (int)(available.size * suggestionTable.getRowHeight());
+						CGRect textFrame = textfield.getFrame();
+						suggestionTable.setFrame(new CGRect(new CGPoint(textFrame.getX(), textFrame.getY() - height),
+							new CGSize(textFrame.getWidth(), height)));
+
+						suggestionTable.reloadData();
+
+					}
+				}, Selector.register("changedText"), UIControlEvents.EditingChanged);
+				app.getUIViewController().getView().addSubview(suggestionTable);
+			}
+			asTextField.setText(textInputWrapper.getText());
+			asTextField.setDelegate(textDelegate);
 			// Because apple seems to have unreadable placeholder color by default
 			NSAttributedString placeholderString = new NSAttributedString(configuration.getPlaceholder(),
 				new NSDictionary<>(NSAttributedStringAttribute.ForegroundColor.value(), UIColor.lightGray()));
-			((UITextField)textfield).setAttributedPlaceholder(placeholderString);
+			asTextField.setAttributedPlaceholder(placeholderString);
 
 			if (configuration.getType() == OnscreenKeyboardType.Password) {
 				UIButton button = new UIButton(UIButtonType.Custom);
@@ -576,8 +637,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				button.setImageEdgeInsets(new UIEdgeInsets(0, -16, 0, 0));
 				button.setFrame(new CGRect(new CGPoint(textfield.getFrame().getSize().getWidth() - 25, 5), new CGSize(25, 25)));
 				button.addTarget(utilityCallback, Selector.register("togglePasswordView"), UIControlEvents.TouchUpInside);
-				((UITextField)textfield).setRightView(button);
-				((UITextField)textfield).setRightViewMode(UITextFieldViewMode.Always);
+				asTextField.setRightView(button);
+				asTextField.setRightViewMode(UITextFieldViewMode.Always);
 			}
 		}
 		textfield.reloadInputViews();
@@ -617,6 +678,16 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				}
 			}
 		});
+
+		if (suggestionTable != null) {
+			for (NSObject action : ((UITextField)textfield).getAllTargets()) {
+				if (action != null) {
+					((UITextField)textfield).removeTarget(action, Selector.register("changedText"), UIControlEvents.EditingChanged);
+				}
+			}
+			suggestionTable.removeFromSuperview();
+			suggestionTable = null;
+		}
 
 		textfield.resignFirstResponder();
 		// We could first move the text field animated down and than delete, but I think it doesn't matter
