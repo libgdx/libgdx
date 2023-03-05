@@ -716,8 +716,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		}
 		relativeLayoutField.animate()
 				.y(-height)
-				.scaleX(((float) Gdx.graphics.getWidth() + rightInset + leftInset) / Gdx.graphics.getWidth())
-				.x((leftInset == 0 ? -1 : 1) * ((float) leftInset + rightInset) / 2)
+				.scaleX(((float) Gdx.graphics.getWidth() - rightInset - leftInset) / Gdx.graphics.getWidth())
+				.x((float) (leftInset - rightInset) / 2)
 				.setDuration(100)
 				.setListener(new Animator.AnimatorListener() {
 					@Override

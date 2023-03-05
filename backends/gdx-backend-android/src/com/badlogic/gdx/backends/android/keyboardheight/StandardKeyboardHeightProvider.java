@@ -140,7 +140,7 @@ public class StandardKeyboardHeightProvider extends PopupWindow implements Keybo
 		int orientation = getScreenOrientation();
 		int keyboardHeight = screenSize.y - rect.bottom;
 		int leftInset = rect.left;
-		int rightInset = screenSize.x - rect.right;
+		int rightInset = Math.abs(screenSize.x - rect.right + rect.left);
 
 		if (keyboardHeight == 0) {
 			notifyKeyboardHeightChanged(0, leftInset, rightInset, orientation);

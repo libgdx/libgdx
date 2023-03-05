@@ -181,7 +181,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		setLayoutInDisplayCutoutMode(this.renderUnderCutout);
 
-		if (Build.VERSION.SDK_INT >= 30) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			keyboardHeightProvider = new AndroidRKeyboardHeightProvider(this);
 		} else {
 			keyboardHeightProvider = new StandardKeyboardHeightProvider(this);
