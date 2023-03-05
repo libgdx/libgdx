@@ -41,7 +41,6 @@ import android.view.inputmethod.InputConnectionWrapper;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import android.widget.TextView.OnEditorActionListener;
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -55,7 +54,6 @@ import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.input.TextInputWrapper;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,6 +191,13 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		// this is for backward compatibility: libGDX always caught the circle button, original comment:
 		// circle button on Xperia Play shouldn't need catchBack == true
 		setCatchKey(Keys.BUTTON_CIRCLE, true);
+		handle.post(new Runnable() {
+			@Override
+			public void run () {
+				// Early call to have a proper layouted EditText already on first call of openNativeInput
+				createDefaultEditText();
+			}
+		});
 	}
 
 	@Override
@@ -656,7 +661,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		});
 	}
 
-	private TextInputLayout relativeLayoutField = null;
+	private RelativeLayout relativeLayoutField = null;
 	private TextInputWrapper textInputWrapper;
 
 	private int getSoftButtonsBarHeight () {
@@ -715,10 +720,13 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 					.setListener(new Animator.AnimatorListener() {
 						@Override
 						public void onAnimationCancel(Animator animation) {}
+
 						@Override
 						public void onAnimationRepeat(Animator animation) {}
+
 						@Override
 						public void onAnimationStart(Animator animation) {}
+
 						@Override
 						public void onAnimationEnd(Animator animation) {
 							if (getEditTextForNativeInput().isPopupShowing()) {
@@ -734,12 +742,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private void createDefaultEditText () {
 		View view = ((AndroidGraphics)app.getGraphics()).getView();
 		FrameLayout frameLayout = (FrameLayout)view.getParent();
-		final TextInputLayout relativeLayout = new TextInputLayout(context);
+		final RelativeLayout relativeLayout = new RelativeLayout(context);
 		relativeLayout.setGravity(Gravity.BOTTOM);
 		// Why? Why isn't it working without?
 		relativeLayout.setBackgroundColor(Color.TRANSPARENT);
 
-		AppCompatAutoCompleteTextView editText = new AppCompatAutoCompleteTextView(context) {
+		final AutoCompleteTextView editText = new AutoCompleteTextView(context) {
 
 			private int count = 0;
 
@@ -791,6 +799,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				};
 			}
 		};
+
+		RelativeLayout.LayoutParams editTextParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+			RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+		editText.setLayoutParams(editTextParams);
+
 		relativeLayout.setVisibility(View.INVISIBLE);
 		relativeLayout.addView(editText);
 		relativeLayout.requestLayout();
@@ -804,7 +818,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	private AutoCompleteTextView getEditTextForNativeInput () {
-		return (AutoCompleteTextView)((FrameLayout)relativeLayoutField.getChildAt(0)).getChildAt(0);
+		return (AutoCompleteTextView)relativeLayoutField.getChildAt(0);
 	}
 
 	private boolean multiline;
@@ -837,6 +851,10 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 				InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
+				// Potential cleanup
+				if (relativeLayoutField.getChildCount() > 1)
+					relativeLayoutField.removeViews(1, relativeLayoutField.getChildCount() - 1);
+
 				editText.setOnEditorActionListener(new OnEditorActionListener() {
 					@Override
 					public boolean onEditorAction (TextView textView, int actionId, android.view.KeyEvent keyEvent) {
@@ -847,10 +865,10 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 						return true;
 					}
 				});
+
 				// Needs to be done first, for some reason...
 				if (configuration.getType() != OnscreenKeyboardType.Password) {
 					editText.setTransformationMethod(null);
-					relativeLayoutField.setEndIconMode(TextInputLayout.END_ICON_NONE);
 				}
 
 				editText.setInputType(getAndroidInputType(configuration.getType()));
@@ -870,8 +888,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 					editText.setWidth(Gdx.graphics.getWidth());
 					editText.setLines(3);
 				} else {
-					editText.setLayoutParams(
-						new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
 					editText.setImeOptions(editText.getImeOptions() | EditorInfo.IME_FLAG_NO_FULLSCREEN);
 					editText.setSingleLine();
 				}
@@ -932,12 +948,42 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 					// For some reason this needs to be done last, otherwise it won't work
 					editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
 					if (configuration.isShowPasswordButton()) {
-						relativeLayoutField.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+						final ImageView imageView = new ImageView(context);
+
+						imageView.setImageResource(com.badlogic.gdx.backends.android.R.drawable.design_ic_visibility);
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+							RelativeLayout.LayoutParams.WRAP_CONTENT);
+						params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+						params.rightMargin = 10;
+						params.height = editText.getHeight();
+						params.width = editText.getHeight();
+
+						imageView.setLayoutParams(params);
+						imageView.setOnClickListener(new View.OnClickListener() {
+							private boolean isHidding = true;
+
+							@Override
+							public void onClick (View v) {
+								int start = editText.getSelectionStart();
+								int end = editText.getSelectionStart();
+								isHidding = !isHidding;
+								if (isHidding) {
+									editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+									imageView.setImageResource(com.badlogic.gdx.backends.android.R.drawable.design_ic_visibility);
+								} else {
+									editText.setTransformationMethod(null);
+									imageView.setImageResource(com.badlogic.gdx.backends.android.R.drawable.design_ic_visibility_off);
+								}
+								// Seems to get reset by "setTransformationMethod"
+								editText.setSelection(start, end);
+							}
+						});
+						imageView.setAlpha(0.5f);
+						imageView.setPadding(5, 5, 5, 5);
+						relativeLayoutField.addView(imageView);
 					}
-				} else {
-					editText.setTransformationMethod(null);
-					relativeLayoutField.setEndIconMode(TextInputLayout.END_ICON_NONE);
 				}
+
 				// One wonders why here? I don't know!
 				editText.setSelection(textInputWrapper.getSelectionStart(), textInputWrapper.getSelectionEnd());
 
@@ -1001,6 +1047,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 						});
 					}
 				});
+				if (relativeLayoutField.getChildCount() > 1)
+					relativeLayoutField.removeViews(1, relativeLayoutField.getChildCount() - 1);
 				relativeLayoutField.setVisibility(View.INVISIBLE);
 				closeTriggered = false;
 			}
