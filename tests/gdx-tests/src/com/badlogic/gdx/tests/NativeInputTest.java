@@ -33,14 +33,14 @@ public class NativeInputTest extends GdxTest {
 	private Stage stage;
 	private Skin skin;
 
-	public void create() {
+	public void create () {
 		stage = new Stage();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		Table table = new Table();
-		table.addListener(new ClickListener(){
+		table.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				Gdx.input.closeTextInputField(false);
 				super.clicked(event, x, y);
 			}
@@ -56,9 +56,11 @@ public class NativeInputTest extends GdxTest {
 		final Slider maxLengthSlider = new Slider(0, 15, 1, false, skin);
 		maxLengthSlider.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				if (maxLengthSlider.getValue() == 0) maxLengthLabel.setText("--");
-				else maxLengthLabel.setText((int) maxLengthSlider.getValue());
+			public void changed (ChangeEvent event, Actor actor) {
+				if (maxLengthSlider.getValue() == 0)
+					maxLengthLabel.setText("--");
+				else
+					maxLengthLabel.setText((int)maxLengthSlider.getValue());
 			}
 		});
 
@@ -78,52 +80,47 @@ public class NativeInputTest extends GdxTest {
 		TextButton openInput = new TextButton("Open TextInput", skin);
 		openInput.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				NativeInputConfiguration configuration = new NativeInputConfiguration();
-				configuration
-						.setPreventCorrection(noAutocorrectButton.isChecked())
-						.setMultiLine(multilineButton.isChecked())
-						.setShowPasswordButton(showPasswordButton.isChecked())
-						.setPlaceholder(placeHolder.getText())
-						.setType(selectBox.getSelected());
+				configuration.setPreventCorrection(noAutocorrectButton.isChecked()).setMultiLine(multilineButton.isChecked())
+					.setShowPasswordButton(showPasswordButton.isChecked()).setPlaceholder(placeHolder.getText())
+					.setType(selectBox.getSelected());
 				if (useCustomAutocompleteButton.isChecked())
-					configuration.setAutoComplete(new String[]{"Hello", "Hillo", "Hellale", "Dog", "Dogfood"});
-				if (maxLengthSlider.getValue() != 0)
-					configuration.setMaxLength((int) maxLengthSlider.getValue());
-				if (useValidatorButton.isChecked())
-					configuration.setValidator(new InputStringValidator() {
-						@Override
-						public boolean validate(String toCheck) {
-							return !toCheck.contains("!");
-						}
-					});
+					configuration.setAutoComplete(new String[] {"Hello", "Hillo", "Hellale", "Dog", "Dogfood"});
+				if (maxLengthSlider.getValue() != 0) configuration.setMaxLength((int)maxLengthSlider.getValue());
+				if (useValidatorButton.isChecked()) configuration.setValidator(new InputStringValidator() {
+					@Override
+					public boolean validate (String toCheck) {
+						return !toCheck.contains("!");
+					}
+				});
 				configuration.setTextInputWrapper(new TextInputWrapper() {
 					@Override
-					public String getText() {
+					public String getText () {
 						return "";
 					}
 
 					@Override
-					public int getSelectionStart() {
+					public int getSelectionStart () {
 						return 0;
 					}
 
 					@Override
-					public int getSelectionEnd() {
+					public int getSelectionEnd () {
 						return 0;
 					}
 
 					@Override
-					public void setText(String text) {
+					public void setText (String text) {
 						result.setText(text);
 					}
 
 					@Override
-					public void setPosition(int position) {
+					public void setPosition (int position) {
 					}
 
 					@Override
-					public boolean shouldClose() {
+					public boolean shouldClose () {
 						return true;
 					}
 				});
@@ -150,7 +147,6 @@ public class NativeInputTest extends GdxTest {
 		table.add(g2);
 		table.row();
 
-
 		HorizontalGroup g3 = new HorizontalGroup();
 		g3.addActor(placeHodlerLabel);
 		g3.addActor(placeHolder);
@@ -167,7 +163,7 @@ public class NativeInputTest extends GdxTest {
 		Gdx.input.setInputProcessor(stage);
 	}
 
-	public void render() {
+	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
