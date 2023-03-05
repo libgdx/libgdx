@@ -711,31 +711,33 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		relativeLayoutField.setX(0);
 		relativeLayoutField.setScaleX(1);
 		// @off
-		if (((Activity)context).getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING) {
-			relativeLayoutField.animate()
-					.y(-height)
-					.scaleX(((float) Gdx.graphics.getWidth() + rightInset + leftInset) / Gdx.graphics.getWidth())
-					.x((leftInset == 0 ? -1 : 1) * ((float) leftInset + rightInset) / 2)
-					.setDuration(100)
-					.setListener(new Animator.AnimatorListener() {
-						@Override
-						public void onAnimationCancel(Animator animation) {}
-
-						@Override
-						public void onAnimationRepeat(Animator animation) {}
-
-						@Override
-						public void onAnimationStart(Animator animation) {}
-
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							if (getEditTextForNativeInput().isPopupShowing()) {
-								// In case it gets reopened
-								getEditTextForNativeInput().showDropDown();
-							}
-						}
-					});
+		if (((Activity)context).getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING) {
+			height = 0;
 		}
+		relativeLayoutField.animate()
+				.y(-height)
+				.scaleX(((float) Gdx.graphics.getWidth() + rightInset + leftInset) / Gdx.graphics.getWidth())
+				.x((leftInset == 0 ? -1 : 1) * ((float) leftInset + rightInset) / 2)
+				.setDuration(100)
+				.setListener(new Animator.AnimatorListener() {
+					@Override
+					public void onAnimationCancel(Animator animation) {}
+
+					@Override
+					public void onAnimationRepeat(Animator animation) {}
+
+					@Override
+					public void onAnimationStart(Animator animation) {}
+
+					@Override
+					public void onAnimationEnd(Animator animation) {
+						if (getEditTextForNativeInput().isPopupShowing()) {
+							// In case it gets reopened
+							getEditTextForNativeInput().showDropDown();
+						}
+					}
+				});
+
 		// @on
 	}
 
