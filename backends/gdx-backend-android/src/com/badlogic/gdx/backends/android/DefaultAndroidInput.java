@@ -46,7 +46,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.android.keyboardheight.AndroidRKeyboardHeightProvider;
+import com.badlogic.gdx.backends.android.keyboardheight.AndroidXKeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightObserver;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
@@ -697,7 +697,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		if (height == 0) {
 			// Don't close keyboard on floating keyboards
 			KeyboardHeightProvider keyboardHeightProvider = ((AndroidApplication)app).getKeyboardHeightProvider();
-			if (keyboardHeightProvider instanceof AndroidRKeyboardHeightProvider
+			if (keyboardHeightProvider instanceof AndroidXKeyboardHeightProvider
 				&& (keyboardHeightProvider.getKeyboardLandscapeHeight() != 0
 					|| keyboardHeightProvider.getKeyboardPortraitHeight() != 0)) {
 				closeTextInputField(false);
