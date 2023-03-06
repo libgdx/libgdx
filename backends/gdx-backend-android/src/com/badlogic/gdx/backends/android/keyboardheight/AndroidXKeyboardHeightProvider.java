@@ -23,7 +23,7 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 	/** The cached portrait height of the keyboard */
 	private static int keyboardPortraitHeight;
 
-	public AndroidXKeyboardHeightProvider(final Activity activity) {
+	public AndroidXKeyboardHeightProvider (final Activity activity) {
 		this.view = activity.findViewById(android.R.id.content);
 		this.activity = activity;
 	}
@@ -33,7 +33,7 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 		ViewCompat.setOnApplyWindowInsetsListener(view, new OnApplyWindowInsetsListener() {
 			@NotNull
 			@Override
-			public WindowInsetsCompat onApplyWindowInsets(@NotNull View v, @NotNull WindowInsetsCompat windowInsets) {
+			public WindowInsetsCompat onApplyWindowInsets (@NotNull View v, @NotNull WindowInsetsCompat windowInsets) {
 				if (observer == null) return windowInsets;
 				int orientation = activity.getResources().getConfiguration().orientation;
 				boolean isVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime());
@@ -46,8 +46,10 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 					}
 
 					// I don't know whether I went completly insane now, but WindowInsets.Type.all() isn't existing?
-					@SuppressLint("WrongConstant") int leftInset = windowInsets.getInsets(0xFFFFFFFF).left;
-					@SuppressLint("WrongConstant") int rightInset = windowInsets.getInsets(0xFFFFFFFF).right;
+					@SuppressLint("WrongConstant")
+					int leftInset = windowInsets.getInsets(0xFFFFFFFF).left;
+					@SuppressLint("WrongConstant")
+					int rightInset = windowInsets.getInsets(0xFFFFFFFF).right;
 
 					observer.onKeyboardHeightChanged(insets.bottom, leftInset, rightInset, orientation);
 				} else {
