@@ -1,7 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="15" height="10" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="15" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="1">
  <tileset firstgid="1" source="../tiled/tiles.tsx"/>
- <layer name="Tile Layer 2" width="15" height="10" offsetx="16" offsety="-16">
+ <group id="4" name="Parallax">
+  <group id="8" name="Y">
+   <layer id="6" name="parallaxY" width="15" height="10" parallaxx="1.15" parallaxy="1.2">
+    <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,97,98,0,0,0,0,0,0,0,
+0,0,0,0,97,101,105,105,98,0,0,0,0,0,0,
+0,0,0,0,99,102,102,102,100,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+   </layer>
+  </group>
+  <layer id="5" name="parallaxX" width="15" height="10" parallaxx="1.25">
+   <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,115,116,0,0,0,0,0,0,
+0,0,0,0,0,0,0,113,114,0,0,0,0,0,0,
+0,0,0,0,0,0,0,113,114,0,0,0,0,0,0,
+0,0,0,0,0,0,0,113,114,0,0,0,0,0,0,
+0,0,0,0,0,0,0,113,114,0,0,0,0,0,0,
+0,0,0,0,0,0,0,113,114,0,0,0,0,0,0
+</data>
+  </layer>
+ </group>
+ <layer id="1" name="Tile Layer 2" width="15" height="10" offsetx="16" offsety="-16"  parallaxx="1.75" >
   <data encoding="csv">
 0,0,0,0,97,98,0,0,0,0,0,97,98,0,0,
 0,0,0,97,105,105,98,0,0,97,101,105,105,98,0,
@@ -15,7 +47,7 @@
 113,114,113,114,0,0,0,0,0,0,0,0,0,113,114
 </data>
  </layer>
- <layer name="Tile Layer 1 - offset float" width="15" height="10">
+ <layer id="2" name="Tile Layer 1 - offset float" width="15" height="10">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -29,7 +61,7 @@
 2,2,18,1,73,73,1,1,1,24,2,2,2,2,2
 </data>
  </layer>
- <layer name="Tile Layer 1" width="15" height="10" offsetx="1.5" offsety="-1.5">
+ <layer id="3" name="Tile Layer 1" width="15" height="10" offsetx="1.5" offsety="-1.5">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

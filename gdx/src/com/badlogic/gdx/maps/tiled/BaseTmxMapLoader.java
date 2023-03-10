@@ -160,6 +160,25 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			Element element = root.getChild(i);
 			loadLayer(map, map.getLayers(), element, tmxFile, imageResolver);
 		}
+
+		// update hierarchical parallax scrolling factors
+		// in Tiled the final parallax scrolling factor of a layer is the multiplication of its factor with all its parents
+		// 1) get top level groups
+		final Array<MapGroupLayer> groups = map.getLayers().getByType(MapGroupLayer.class);
+		while (groups.notEmpty()) {
+			final MapGroupLayer group = groups.first();
+			groups.removeIndex(0);
+
+			for (MapLayer child : group.getLayers()) {
+				child.setParallaxX(child.getParallaxX() * group.getParallaxX());
+				child.setParallaxY(child.getParallaxY() * group.getParallaxY());
+				if (child instanceof MapGroupLayer) {
+					// 2) handle any child groups
+					groups.add((MapGroupLayer)child);
+				}
+			}
+		}
+
 		return map;
 	}
 
@@ -301,12 +320,16 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		boolean visible = element.getIntAttribute("visible", 1) == 1;
 		float offsetX = element.getFloatAttribute("offsetx", 0);
 		float offsetY = element.getFloatAttribute("offsety", 0);
+		float parallaxX = element.getFloatAttribute("parallaxx", 1f);
+		float parallaxY = element.getFloatAttribute("parallaxy", 1f);
 
 		layer.setName(name);
 		layer.setOpacity(opacity);
 		layer.setVisible(visible);
 		layer.setOffsetX(offsetX);
 		layer.setOffsetY(offsetY);
+		layer.setParallaxX(parallaxX);
+		layer.setParallaxY(parallaxY);
 	}
 
 	protected void loadObject (TiledMap map, MapLayer layer, Element element) {

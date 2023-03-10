@@ -37,7 +37,7 @@ dependencies {
 }
 
 task launchTestsLwjgl3 (dependsOn: classes, type: JavaExec) {
-	main = mainTestClass
+	mainClass = mainTestClass
 	classpath = sourceSets.main.runtimeClasspath
 	standardInput = System.in
 	workingDir = new File("../gdx-tests-android/assets")
