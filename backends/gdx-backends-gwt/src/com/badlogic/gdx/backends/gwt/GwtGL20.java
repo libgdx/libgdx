@@ -99,7 +99,6 @@ public class GwtGL20 implements GL20 {
 	Int32Array intBuffer = TypedArrays.createInt32Array(2000 * 6);
 	Int16Array shortBuffer = TypedArrays.createInt16Array(2000 * 6);
 	Int8Array byteBuffer = TypedArrays.createInt8Array(2000 * 6);
-	float[] floatArray = new float[16000];
 
 	public final WebGLRenderingContext gl;
 

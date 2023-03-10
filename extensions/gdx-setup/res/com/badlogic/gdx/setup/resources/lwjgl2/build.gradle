@@ -6,7 +6,7 @@ project.ext.mainClassName = "%PACKAGE%.DesktopLauncher"
 project.ext.assetsDir = new File("../%ASSET_PATH%")
 
 task run(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
+    mainClass = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
@@ -14,7 +14,7 @@ task run(dependsOn: classes, type: JavaExec) {
 }
 
 task debug(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
+    mainClass = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
