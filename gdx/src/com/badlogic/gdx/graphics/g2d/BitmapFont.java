@@ -983,12 +983,10 @@ public class BitmapFont implements Disposable {
 			setScale(scaleX + amount, scaleY + amount);
 		}
 
-		/**
-		 * Undo last {@link #setScale(float, float)} operation. We need this to solve problem with limited float precision
+		/** Undo last {@link #setScale(float, float)} operation. We need this to solve problem with limited float precision
 		 * calculations which can cause some undesirable behaviour in certain widgets, as described here:
-		 * <a href="https://github.com/libgdx/libgdx/issues/7100">https://github.com/libgdx/libgdx/issues/7100</a>
-		 */
-		public void undoScale() {
+		 * <a href="https://github.com/libgdx/libgdx/issues/7100">https://github.com/libgdx/libgdx/issues/7100</a> */
+		public void undoScale () {
 			scaleX = backupScaleX;
 			scaleY = backupScaleY;
 
@@ -1005,7 +1003,7 @@ public class BitmapFont implements Disposable {
 			padBottom = backupPadBottom;
 		}
 
-		public String toString() {
+		public String toString () {
 			return name != null ? name : super.toString();
 		}
 	}
