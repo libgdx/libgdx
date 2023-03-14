@@ -579,7 +579,7 @@ public final class MathUtils {
 	 * @param progress interpolation value in the range [0, 1]
 	 * @return the interpolated angle in the range [0, PI2[ */
 	public static float lerpAngle (float fromRadians, float toRadians, float progress) {
-		float delta = ((toRadians - fromRadians + PI2 + PI) % PI2) - PI;
+		float delta = (((toRadians - fromRadians) % PI2 + PI2 + PI) % PI2) - PI;
 		return (fromRadians + delta * progress + PI2) % PI2;
 	}
 
@@ -591,7 +591,7 @@ public final class MathUtils {
 	 * @param progress interpolation value in the range [0, 1]
 	 * @return the interpolated angle in the range [0, 360[ */
 	public static float lerpAngleDeg (float fromDegrees, float toDegrees, float progress) {
-		float delta = ((toDegrees - fromDegrees + 360 + 180) % 360) - 180;
+		float delta = (((toDegrees - fromDegrees) % 360 + 360 + 180) % 360) - 180;
 		return (fromDegrees + delta * progress + 360) % 360;
 	}
 
