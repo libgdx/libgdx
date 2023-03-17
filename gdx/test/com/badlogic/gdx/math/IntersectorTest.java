@@ -183,4 +183,48 @@ public class IntersectorTest {
 		assertEquals(-57.7337f, intersection.y, 0.1f);
 		assertEquals(100, intersection.z, 0.1f);
 	}
+
+	@Test
+	public void testIsPointInTriangle2D(){
+		assertFalse(Intersector.isPointInTriangle(new Vector2(0.1f,0),
+				new Vector2(0,0), new Vector2(1,1), new Vector2(-1,-1)));
+
+		assertTrue(Intersector.isPointInTriangle(new Vector2(0,0.1f),
+				new Vector2(-1,1), new Vector2(1,1), new Vector2(-1,-2)));
+	}
+
+	@Test
+	public void testIsPointInTriangle3D(){
+		// 2D ---
+		assertFalse(Intersector.isPointInTriangle(new Vector3(0.1f,0,0),
+				new Vector3(0,0,0), new Vector3(1,1,0), new Vector3(-1,-1,0)));
+
+		assertTrue(Intersector.isPointInTriangle(new Vector3(0,0.1f,0),
+				new Vector3(-1,1,0), new Vector3(1,1,0), new Vector3(-1,-2,0)));
+
+		// 3D ---
+		assertTrue(Intersector.isPointInTriangle(new Vector3(0.2f,0,1.25f),
+				new Vector3(-1,1,0), new Vector3(1.4f,0.99f,2.5f), new Vector3(-1,-2,0)));
+		// 1.2f away
+		assertFalse(Intersector.isPointInTriangle(new Vector3(2.6f,0,3.75f),
+				new Vector3(-1,1,0), new Vector3(1.4f,0.99f,2.5f), new Vector3(-1,-2,0)));
+		// in an edge
+		assertTrue(Intersector.isPointInTriangle(new Vector3(0,-0.5f,0.5f),
+				new Vector3(-1,1,0), new Vector3(1,1,1), new Vector3(-1,-2,0)));
+		// Realy close to the edge
+		float epsilon = 0.0000001f; // One more 0 will fail.
+		float almost1 = 1 - epsilon;
+		assertFalse(Intersector.isPointInTriangle(new Vector3(0,-0.5f,0.5f),
+				new Vector3(-1,1,0), new Vector3(almost1,1,1), new Vector3(-1,-2,0)));
+
+		// A realy long dictance away.
+		assertFalse(Intersector.isPointInTriangle(new Vector3(199f,1f,500f),
+				new Vector3(-1,1,0), new Vector3(1,1,5f), new Vector3(-1,-2,0)));
+
+		assertFalse(Intersector.isPointInTriangle(
+                new Vector3( -5120.8345f,8946.126f,-3270.5813f),
+                new Vector3(50.008057f, 22.20586f, 124.62208f),
+                new Vector3( 62.282288f, 22.205864f, 109.665924f),
+                new Vector3(70.92052f, 7.205861f, 115.437805f)));
+	}
 }
