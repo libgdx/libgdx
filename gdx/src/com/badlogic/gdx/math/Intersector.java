@@ -40,11 +40,10 @@ public final class Intersector {
 	private final static FloatArray floatArray = new FloatArray();
 	private final static FloatArray floatArray2 = new FloatArray();
 
-	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle.
-	 * No check is performed that this is the case.
-	 * 
-	 * If Vector have points with really small and realy big values (over 10^7 between the 2)
-	 * it' won't work! (because of Vector3 that use float)
+	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle. No
+	 * check is performed that this is the case. <br>
+	 * If the Vector3 parameters contain both small and large values, such as one that contains 0.0001 and one that contains
+	 * 10000000.0, this can fail due to floating-point imprecision.
 	 * 
 	 * @param t1 the first vertex of the triangle
 	 * @param t2 the second vertex of the triangle
@@ -56,11 +55,11 @@ public final class Intersector {
 		v2.set(t3).sub(point);
 
 		v1.crs(v2);
-        v2.crs(v0);
+		v2.crs(v0);
 
-        if(v1.dot(v2) < 0f) return false;
-        v0.crs(v2.set(t2).sub(point));
-        return (v1.dot(v0) >= 0f);
+		if (v1.dot(v2) < 0f) return false;
+		v0.crs(v2.set(t2).sub(point));
+		return (v1.dot(v0) >= 0f);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
