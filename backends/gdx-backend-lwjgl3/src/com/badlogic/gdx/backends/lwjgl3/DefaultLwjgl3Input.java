@@ -31,6 +31,8 @@ import com.badlogic.gdx.InputProcessor;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -44,6 +46,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -320,61 +323,70 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 	}
 
 	@Override
-	public void getTextInput (TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
-        // use swing fixit, by deedywu
-        JFrame frame = new JFrame(title);
-        JPanel panel = new JPanel();
-        // default 30 char length
-        JTextField textField;
-        switch (type) {
-            case Password:
-                textField = new JPasswordField(text, 30) {{ // 用星号来隐藏密码
-                    setEchoChar('*');
-                }};
-                break;
-            case NumberPad:
-                NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
-                DecimalFormat decimalFormat = (DecimalFormat) numberFormat;
-                decimalFormat.setGroupingUsed(false);
-                textField = new JFormattedTextField(decimalFormat) {{
-                    setText(text);
-                    setColumns(30);
-                    setDocument(new PlainDocumentNumber());
-                }};
-                break;
-            default:
-                textField = new JTextField(text, 30);
-                break;
-        }
-        textField.setFocusable(true);
-        textField.setToolTipText(hint);
-        JButton button = new JButton("OK");
-        Container contentPane = frame.getContentPane();
-        contentPane.setLayout(new BorderLayout());
-        panel.add(textField);
-        panel.add(button);
-        contentPane.add(panel);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        // enter ok
-        frame.getRootPane().setDefaultButton(button);
-        // esc cancel
-        frame.getRootPane().registerKeyboardAction(actionEvent -> { // on cancel
-                    listener.canceled();
-                    frame.dispose();
-                },
-                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
-        button.addActionListener(e -> { // on ok
-            listener.input(textField.getText());
-            frame.dispose();
-        });
+	public void getTextInput (final TextInputListener listener, String title, String text, String hint,
+		OnscreenKeyboardType type) {
+		// use swing fixit, by deedywu
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run () {
+				final JFrame frame = new JFrame(title);
+				JPanel panel = new JPanel();
+				// default 30 char length
+				JTextField textField;
+				switch (type) {
+				case Password:
+					textField = new JPasswordField(text, 30); // 用星号来隐藏密码
+					((JPasswordField)textField).setEchoChar('*');
+					break;
+				case NumberPad:
+					NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+					DecimalFormat decimalFormat = (DecimalFormat)numberFormat;
+					decimalFormat.setGroupingUsed(false);
+					textField = new JFormattedTextField(decimalFormat);
+					textField.setText(text);
+					textField.setColumns(30);
+					textField.setDocument(new PlainDocumentNumber());
+					break;
+				default:
+					textField = new JTextField(text, 30);
+					break;
+				}
+				textField.setFocusable(true);
+				textField.setToolTipText(hint);
+				JButton button = new JButton("OK");
+				Container contentPane = frame.getContentPane();
+				contentPane.setLayout(new BorderLayout());
+				panel.add(textField);
+				panel.add(button);
+				contentPane.add(panel);
+				frame.pack();
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
+				// enter ok
+				frame.getRootPane().setDefaultButton(button);
+				// esc cancel
+				frame.getRootPane().registerKeyboardAction(new ActionListener() {
+					@Override
+					public void actionPerformed (ActionEvent actionEvent) { // on cancel
+						listener.canceled();
+						frame.dispose();
+					}
+				}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+				button.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed (ActionEvent e) { // on ok
+						listener.input(textField.getText());
+						frame.dispose();
+					}
+				});
+			}
+		});
 	}
 
 	/*** input number filter */
 	private static class PlainDocumentNumber extends PlainDocument {
 		@Override
-		public void insertString(int offset, String s, AttributeSet attrSet) throws BadLocationException {
+		public void insertString (int offset, String s, AttributeSet attrSet) throws BadLocationException {
 			if (null != s) {
 				char[] chars = s.toCharArray();
 				for (char c : chars) {
