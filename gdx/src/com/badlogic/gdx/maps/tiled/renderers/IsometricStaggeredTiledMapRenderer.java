@@ -251,8 +251,8 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 		} else {
 
 			// Determine number of times to repeat image across X and Y, + 4 for padding to avoid pop in/out
-			int repeatX = layer.isRepeatX() ? (int) Math.ceil((viewBounds.width / imageBounds.width) + 4) : 0;
-			int repeatY = layer.isRepeatY() ? (int) Math.ceil((viewBounds.height / imageBounds.height) + 4) : 0;
+			int repeatX = layer.isRepeatX() ? (int)Math.ceil((viewBounds.width / imageBounds.width) + 4) : 0;
+			int repeatY = layer.isRepeatY() ? (int)Math.ceil((viewBounds.height / imageBounds.height) + 4) : 0;
 
 			// Calculate the offset of the first image to align with the camera
 			float startX = viewBounds.x;
@@ -271,13 +271,13 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 					// In case the image is offset, we must negate this using + (x1% imageBounds.width)
 					// It's a way to get the remainder of how many images would fit between its starting position and 0
 					if (layer.isRepeatX()) {
-						 rx1 = startX + ((i - 2) * imageBounds.width) + (x1 % imageBounds.width);
-						 rx2 = rx1 +imageBounds.width;
+						rx1 = startX + ((i - 2) * imageBounds.width) + (x1 % imageBounds.width);
+						rx2 = rx1 + imageBounds.width;
 					}
 
 					if (layer.isRepeatY()) {
-						 ry1 = startY + ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
-						 ry2 = ry1 +imageBounds.height;
+						ry1 = startY + ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+						ry2 = ry1 + imageBounds.height;
 					}
 
 					repeatedImageBounds.set(rx1, ry1, rx2 - rx1, ry2 - ry1);

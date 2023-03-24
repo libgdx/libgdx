@@ -411,15 +411,15 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 
 		} else {
 
-			 // Determine number of times to repeat image across X and Y, + 4 for padding to avoid pop in/out
-			 int repeatX = layer.isRepeatX() ? (int) Math.ceil((cacheBounds.width / imageBounds.width) + 4) : 0;
-			 int repeatY = layer.isRepeatY() ? (int) Math.ceil((cacheBounds.height / imageBounds.height) + 4) : 0;
+			// Determine number of times to repeat image across X and Y, + 4 for padding to avoid pop in/out
+			int repeatX = layer.isRepeatX() ? (int)Math.ceil((cacheBounds.width / imageBounds.width) + 4) : 0;
+			int repeatY = layer.isRepeatY() ? (int)Math.ceil((cacheBounds.height / imageBounds.height) + 4) : 0;
 
-			 // Calculate the offset of the first image to align with the camera
-			 float startX = cacheBounds.x;
-			 float startY = cacheBounds.y;
-			 startX = startX - (startX % imageBounds.width);
-			 startY = startY - (startY % imageBounds.height);
+			// Calculate the offset of the first image to align with the camera
+			float startX = cacheBounds.x;
+			float startY = cacheBounds.y;
+			startX = startX - (startX % imageBounds.width);
+			startY = startY - (startY % imageBounds.height);
 
 			for (int i = 0; i <= repeatX; i++) {
 				for (int j = 0; j <= repeatY; j++) {
@@ -432,13 +432,13 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 					// In case the image is offset, we must negate this using + (x1% imageBounds.width)
 					// It's a way to get the remainder of how many images would fit between its starting position and 0
 					if (layer.isRepeatX()) {
-						 rx1 = startX + ((i - 2) * imageBounds.width) + (x1 % imageBounds.width);
-						 rx2 = rx1 +imageBounds.width;
+						rx1 = startX + ((i - 2) * imageBounds.width) + (x1 % imageBounds.width);
+						rx2 = rx1 + imageBounds.width;
 					}
 
 					if (layer.isRepeatY()) {
-						 ry1 = startY + ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
-						 ry2 = ry1 +imageBounds.height;
+						ry1 = startY + ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+						ry2 = ry1 + imageBounds.height;
 					}
 
 					final float ru1 = region.getU();
