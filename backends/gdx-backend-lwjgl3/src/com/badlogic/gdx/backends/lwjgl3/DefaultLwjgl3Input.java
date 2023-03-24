@@ -339,17 +339,7 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
                 textField = new JFormattedTextField(decimalFormat) {{
                     setText(text);
                     setColumns(30);
-                    setDocument(new PlainDocument() { // 只能输入数字校验
-                        @Override
-                        public void insertString(int offset, String s, AttributeSet attrSet) throws BadLocationException {
-                            try {
-                                Integer.parseInt(s);
-                            } catch (NumberFormatException ex) {
-                                return;
-                            }
-                            super.insertString(offset, s, attrSet);
-                        }
-                    });
+                    setDocument(new PlainDocumentNumber());
                 }};
                 break;
             default:
@@ -379,6 +369,21 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
             listener.input(textField.getText());
             frame.dispose();
         });
+	}
+
+	/*** input number filter */
+	private static class PlainDocumentNumber extends PlainDocument {
+		@Override
+		public void insertString(int offset, String s, AttributeSet attrSet) throws BadLocationException {
+			if (null != s) {
+				char[] chars = s.toCharArray();
+				for (char c : chars) {
+					if (c < 0x30 || c > 0x39) // use ASCII check chars
+						return;
+				}
+			}
+			super.insertString(offset, s, attrSet);
+		}
 	}
 
 	@Override
