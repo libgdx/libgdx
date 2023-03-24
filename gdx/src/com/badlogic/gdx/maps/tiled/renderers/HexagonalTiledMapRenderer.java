@@ -339,8 +339,15 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 			}
 		} else {
 
-			float repeatX = layer.isRepeatX() ? (viewBounds.width / imageBounds.width) + 3 : 0;
-			float repeatY = layer.isRepeatY() ? (viewBounds.height / imageBounds.height) + 3 : 0;
+			// Determine number of times to repeat image across X and Y, + 4 for padding to avoid pop in/out
+			int repeatX = layer.isRepeatX() ? (int) Math.ceil((viewBounds.width / imageBounds.width) + 4) : 0;
+			int repeatY = layer.isRepeatY() ? (int) Math.ceil((viewBounds.height / imageBounds.height) + 4) : 0;
+
+			// Calculate the offset of the first image to align with the camera
+			float startX = viewBounds.x;
+			float startY = viewBounds.y;
+			startX = startX - (startX % imageBounds.width);
+			startY = startY - (startY % imageBounds.height);
 
 			for (int i = 0; i <= repeatX; i++) {
 				for (int j = 0; j <= repeatY; j++) {
@@ -349,18 +356,17 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 					float rx2 = x2;
 					float ry2 = y2;
 
+					// Use (i -2)/(j-2) to begin placing our repeating images outside the camera.
+					// In case the image is offset, we must negate this using + (x1% imageBounds.width)
+					// It's a way to get the remainder of how many images would fit between its starting position and 0
 					if (layer.isRepeatX()) {
-						rx1 = (viewBounds.x - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
-							+ (x1 % imageBounds.width);
-						rx2 = ((imageBounds.width + viewBounds.x) - (viewBounds.x % imageBounds.width)) + ((i - 2) * imageBounds.width)
-							+ (x1 % imageBounds.width);
+						 rx1 = startX + ((i - 2) * imageBounds.width) + (x1 % imageBounds.width);
+						 rx2 = rx1 +imageBounds.width;
 					}
 
 					if (layer.isRepeatY()) {
-						ry1 = (viewBounds.y - (viewBounds.y % imageBounds.height)) + ((j - 2) * imageBounds.height)
-							+ (y1 % imageBounds.height);
-						ry2 = ((imageBounds.height + viewBounds.y) - (viewBounds.y % imageBounds.height))
-							+ ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+						 ry1 = startY + ((j - 2) * imageBounds.height) + (y1 % imageBounds.height);
+						 ry2 = ry1 +imageBounds.height;
 					}
 
 					repeatedImageBounds.set(rx1, ry1, rx2 - rx1, ry2 - ry1);
