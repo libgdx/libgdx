@@ -9,11 +9,13 @@ public final class UIUtils {
 	private UIUtils () {
 	}
 
-	static public boolean isAndroid = System.getProperty("java.runtime.name").contains("Android");
-	static public boolean isMac = !isAndroid && System.getProperty("os.name").contains("Mac");
-	static public boolean isWindows = !isAndroid && System.getProperty("os.name").contains("Windows");
-	static public boolean isLinux = !isAndroid && System.getProperty("os.name").contains("Linux")
-		|| System.getProperty("os.name").contains("FreeBSD");
+	static private final String osName = System.getProperty("os.name", "");
+	static private final String jrName = System.getProperty("java.runtime.name", "");
+	static public boolean isAndroid = jrName.contains("Android");
+	static public boolean isMac = !isAndroid && osName.contains("Mac");
+	static public boolean isWindows = !isAndroid && osName.contains("Windows");
+	static public boolean isLinux = !isAndroid && osName.contains("Linux")
+		|| osName.contains("FreeBSD");
 	static public boolean isIos = !isAndroid && (!(isWindows || isLinux || isMac));
 
 	static public boolean left () {
