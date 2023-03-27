@@ -14,8 +14,7 @@ public final class UIUtils {
 	static public boolean isAndroid = jrName.contains("Android");
 	static public boolean isMac = !isAndroid && osName.contains("Mac");
 	static public boolean isWindows = !isAndroid && osName.contains("Windows");
-	static public boolean isLinux = !isAndroid && osName.contains("Linux")
-		|| osName.contains("FreeBSD");
+	static public boolean isLinux = !isAndroid && osName.contains("Linux") || osName.contains("FreeBSD");
 	static public boolean isIos = !isAndroid && (!(isWindows || isLinux || isMac));
 
 	static public boolean left () {
