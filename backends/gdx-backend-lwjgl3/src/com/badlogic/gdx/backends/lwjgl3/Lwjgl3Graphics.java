@@ -89,7 +89,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 				posted = true;
 				Gdx.app.postRunnable(new Runnable() {
 					@Override
-					public void run() {
+					public void run () {
 						posted = false;
 						updateFramebufferInfo();
 						if (!window.isListenerInitialized()) {
