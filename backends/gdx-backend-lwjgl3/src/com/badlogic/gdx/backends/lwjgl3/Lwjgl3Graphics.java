@@ -23,6 +23,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -73,23 +74,35 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
-			if (posted) return;
-			posted = true;
-			Gdx.app.postRunnable(new Runnable() {
-				@Override
-				public void run () {
-					posted = false;
-					updateFramebufferInfo();
-					if (!window.isListenerInitialized()) {
-						return;
-					}
-					window.makeCurrent();
-					gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
-					window.getListener().resize(getWidth(), getHeight());
-					window.getListener().render();
-					GLFW.glfwSwapBuffers(windowHandle);
+			if (SharedLibraryLoader.isWindows) {
+				updateFramebufferInfo();
+				if (!window.isListenerInitialized()) {
+					return;
 				}
-			});
+				window.makeCurrent();
+				gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
+				window.getListener().resize(getWidth(), getHeight());
+				window.getListener().render();
+				GLFW.glfwSwapBuffers(windowHandle);
+			} else {
+				if (posted) return;
+				posted = true;
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run() {
+						posted = false;
+						updateFramebufferInfo();
+						if (!window.isListenerInitialized()) {
+							return;
+						}
+						window.makeCurrent();
+						gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
+						window.getListener().resize(getWidth(), getHeight());
+						window.getListener().render();
+						GLFW.glfwSwapBuffers(windowHandle);
+					}
+				});
+			}
 		}
 	};
 
