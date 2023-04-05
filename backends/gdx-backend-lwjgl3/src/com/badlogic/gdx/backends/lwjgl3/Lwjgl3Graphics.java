@@ -74,7 +74,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
-			if (SharedLibraryLoader.isWindows) {
+			if (SharedLibraryLoader.isWindows || SharedLibraryLoader.isLinux) {
 				updateFramebufferInfo();
 				if (!window.isListenerInitialized()) {
 					return;
