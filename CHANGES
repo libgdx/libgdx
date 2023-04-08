@@ -13,6 +13,7 @@
 - [BREAKING CHANGE] Mesh#getVerticesBuffer, Mesh#getIndicesBuffer, VertexData#getBuffer, and IndexData#getBuffer are deprecated in favor to new methods with boolean parameter. If you subclassed some of these classes, you need to implement the new methods.
 - [BREAKING CHANGE] Desktop: The return value of AudioDevice#getLatency() is now in samples, and not milliseconds
 - iOS: Add new MobiVM MetalANGLE backend
+- iOS: Update to MobiVM 2.3.19
 - API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
 - Fix: Fixed Android and iOS touch cancelled related issues, see #6871.
 - Javadoc: Add "-use" flag to javadoc generation
