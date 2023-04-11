@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -385,12 +387,26 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 
 	/*** input number filter */
 	private static class PlainDocumentNumber extends PlainDocument {
+
+		private final Set<Character> validChars = new HashSet<>();
+
+		public PlainDocumentNumber () {
+			for (char c : "0123456789.-".toCharArray()) {
+				validChars.add(c);
+			}
+		}
+
 		@Override
 		public void insertString (int offset, String s, AttributeSet attrSet) throws BadLocationException {
 			if (null != s) {
 				char[] chars = s.toCharArray();
-				for (char c : chars) {
-					if (c < 0x30 || c > 0x39) // use ASCII check chars
+				int point = 0;
+				for (int i = 0; i < chars.length; i++) {
+					char c = chars[i];
+					if (!validChars.contains(c)) return;
+					if (c == '-' && i != 0) // the negative sign can only be placed at the front.
+						return;
+					if (c == '.' && ++point == 2) // there is at most one decimal point symbol "." in a number.
 						return;
 				}
 			}
