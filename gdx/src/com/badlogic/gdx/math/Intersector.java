@@ -64,12 +64,7 @@ public final class Intersector {
 
 	/** Returns true if the given point is inside the triangle. */
 	public static boolean isPointInTriangle (Vector2 p, Vector2 a, Vector2 b, Vector2 c) {
-		float px1 = p.x - a.x;
-		float py1 = p.y - a.y;
-		boolean side12 = (b.x - a.x) * py1 - (b.y - a.y) * px1 > 0;
-		if ((c.x - a.x) * py1 - (c.y - a.y) * px1 > 0 == side12) return false;
-		if ((c.x - b.x) * (p.y - b.y) - (c.y - b.y) * (p.x - b.x) > 0 != side12) return false;
-		return true;
+		return isPointInTriangle(p.x, p.y, a.x, a.y, b.x, b.y, c.x, c.y);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
@@ -984,16 +979,7 @@ public final class Intersector {
 	 * @param intersection The intersection point. May be null.
 	 * @return Whether the two lines intersect */
 	public static boolean intersectLines (Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection) {
-		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
-
-		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-		if (d == 0) return false;
-
-		if (intersection != null) {
-			float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
-			intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
-		}
-		return true;
+		return intersectLines(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, intersection);
 	}
 
 	/** Intersects the two lines and returns the intersection point in intersection.
@@ -1117,21 +1103,7 @@ public final class Intersector {
 	 * @param intersection The intersection point. May be null.
 	 * @return Whether the two line segments intersect */
 	public static boolean intersectSegments (Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection) {
-		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
-
-		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-		if (d == 0) return false;
-
-		float yd = y1 - y3;
-		float xd = x1 - x3;
-		float ua = ((x4 - x3) * yd - (y4 - y3) * xd) / d;
-		if (ua < 0 || ua > 1) return false;
-
-		float ub = ((x2 - x1) * yd - (y2 - y1) * xd) / d;
-		if (ub < 0 || ub > 1) return false;
-
-		if (intersection != null) intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
-		return true;
+		return intersectSegments(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, intersection);
 	}
 
 	/** @param intersection May be null. */
