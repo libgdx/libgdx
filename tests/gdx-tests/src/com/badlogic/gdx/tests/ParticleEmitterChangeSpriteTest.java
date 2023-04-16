@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -59,10 +60,7 @@ public class ParticleEmitterChangeSpriteTest extends GdxTest {
 		effect.getEmitters().clear();
 		effect.getEmitters().add(emitters.get(0));
 
-		inputProcessor = new InputProcessor() {
-			public boolean touchUp (int x, int y, int pointer, int button) {
-				return false;
-			}
+		inputProcessor = new InputAdapter() {
 
 			public boolean touchDragged (int x, int y, int pointer) {
 				effect.setPosition(x, Gdx.graphics.getHeight() - y);
@@ -73,28 +71,6 @@ public class ParticleEmitterChangeSpriteTest extends GdxTest {
 				ParticleEmitter emitter = emitters.get(emitterIndex);
 				currentSprite = (currentSprite + 1) % sprites.size;
 				emitter.setSprites(new Array<Sprite>(new Sprite[] {sprites.get(currentSprite)}));
-				return false;
-			}
-
-			public boolean keyUp (int keycode) {
-				return false;
-			}
-
-			public boolean keyTyped (char character) {
-				return false;
-			}
-
-			public boolean keyDown (int keycode) {
-				return false;
-			}
-
-			@Override
-			public boolean mouseMoved (int x, int y) {
-				return false;
-			}
-
-			@Override
-			public boolean scrolled (float amountX, float amountY) {
 				return false;
 			}
 		};

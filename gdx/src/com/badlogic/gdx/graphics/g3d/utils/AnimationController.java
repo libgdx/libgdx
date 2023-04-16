@@ -225,8 +225,8 @@ public class AnimationController extends BaseAnimationController {
 
 	/** Set the active animation, replacing any current animation.
 	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
-	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, negative to continuously
-	 *           loop the animation.
+	 * @param loopCount The number of times to play the animation, 1 to play the animation only once, negative to continuously loop
+	 *           the animation.
 	 * @param listener The {@link AnimationListener} which will be informed when the animation is looped or completed.
 	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the animation
 	 *         is completed. */
@@ -236,8 +236,8 @@ public class AnimationController extends BaseAnimationController {
 
 	/** Set the active animation, replacing any current animation.
 	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
-	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, negative to continuously
-	 *           loop the animation.
+	 * @param loopCount The number of times to play the animation, 1 to play the animation only once, negative to continuously loop
+	 *           the animation.
 	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play the animation at
 	 *           twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc. This value can be
 	 *           negative, causing the animation to played in reverse. This value cannot be zero.
@@ -252,8 +252,8 @@ public class AnimationController extends BaseAnimationController {
 	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
 	 * @param offset The offset in seconds to the start of the animation.
 	 * @param duration The duration in seconds of the animation (or negative to play till the end of the animation).
-	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, negative to continuously
-	 *           loop the animation.
+	 * @param loopCount The number of times to play the animation, 1 to play the animation only once, negative to continuously loop
+	 *           the animation.
 	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play the animation at
 	 *           twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc. This value can be
 	 *           negative, causing the animation to played in reverse. This value cannot be zero.
@@ -320,8 +320,8 @@ public class AnimationController extends BaseAnimationController {
 
 	/** Changes the current animation by blending the new on top of the old during the transition time.
 	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
-	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, negative to continuously
-	 *           loop the animation.
+	 * @param loopCount The number of times to play the animation, 1 to play the animation only once, negative to continuously loop
+	 *           the animation.
 	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play the animation at
 	 *           twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc. This value can be
 	 *           negative, causing the animation to played in reverse. This value cannot be zero.
@@ -338,8 +338,8 @@ public class AnimationController extends BaseAnimationController {
 	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
 	 * @param offset The offset in seconds to the start of the animation.
 	 * @param duration The duration in seconds of the animation (or negative to play till the end of the animation).
-	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, negative to continuously
-	 *           loop the animation.
+	 * @param loopCount The number of times to play the animation, 1 to play the animation only once, negative to continuously loop
+	 *           the animation.
 	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play the animation at
 	 *           twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc. This value can be
 	 *           negative, causing the animation to played in reverse. This value cannot be zero.
@@ -384,8 +384,8 @@ public class AnimationController extends BaseAnimationController {
 	/** Queue an animation to be applied when the {@link #current} animation is finished. If the current animation is continuously
 	 * looping it will be synchronized on next loop.
 	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
-	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, negative to continuously
-	 *           loop the animation.
+	 * @param loopCount The number of times to play the animation, 1 to play the animation only once, negative to continuously loop
+	 *           the animation.
 	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play the animation at
 	 *           twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc. This value can be
 	 *           negative, causing the animation to played in reverse. This value cannot be zero.
@@ -403,8 +403,8 @@ public class AnimationController extends BaseAnimationController {
 	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
 	 * @param offset The offset in seconds to the start of the animation.
 	 * @param duration The duration in seconds of the animation (or negative to play till the end of the animation).
-	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, negative to continuously
-	 *           loop the animation.
+	 * @param loopCount The number of times to play the animation, 1 to play the animation only once, negative to continuously loop
+	 *           the animation.
 	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play the animation at
 	 *           twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc. This value can be
 	 *           negative, causing the animation to played in reverse. This value cannot be zero.
@@ -438,8 +438,8 @@ public class AnimationController extends BaseAnimationController {
 
 	/** Apply an action animation on top of the current animation.
 	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
-	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, negative to continuously
-	 *           loop the animation.
+	 * @param loopCount The number of times to play the animation, 1 to play the animation only once, negative to continuously loop
+	 *           the animation.
 	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play the animation at
 	 *           twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc. This value can be
 	 *           negative, causing the animation to played in reverse. This value cannot be zero.
@@ -456,8 +456,8 @@ public class AnimationController extends BaseAnimationController {
 	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
 	 * @param offset The offset in seconds to the start of the animation.
 	 * @param duration The duration in seconds of the animation (or negative to play till the end of the animation).
-	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, negative to continuously
-	 *           loop the animation.
+	 * @param loopCount The number of times to play the animation, 1 to play the animation only once, negative to continuously loop
+	 *           the animation.
 	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play the animation at
 	 *           twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc. This value can be
 	 *           negative, causing the animation to played in reverse. This value cannot be zero.

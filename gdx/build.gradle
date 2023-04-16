@@ -49,12 +49,7 @@ test {
 	}
 }
 
-// Workaround needed for IDEA to have resources on classpath when running tests (like gdx-tests-lwjgl3)
-task copyIdeaResources(type: Copy) {
-	from "${projectDir}/res"
-	into "${buildDir}/classes/java/main/"
-}
-processResources.dependsOn copyIdeaResources
+processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 jnigen {
@@ -78,7 +73,13 @@ jnigen {
 		cppExcludes = []
 	}
 	robovm {
-		extraLib("libs/ObjectAL.xcframework/ios-arm64_armv7/libObjectAL.a", "device")
+		if (file("libs/ios32/ObjectAL.xcframework/ios-arm64_armv7/").exists()) {
+			extraLib("libs/ObjectAL.xcframework/ios-arm64_armv7/libObjectAL.a", "device")
+		} else if (file("libs/ios32/ObjectAL.xcframework/ios-arm64/").exists()) {
+			extraLib("libs/ObjectAL.xcframework/ios-arm64/libObjectAL.a", "device")
+		} else {
+			getLogger().warn("ObjectAL is not build yet. Please run `fetchNatives` or build it to silence this warning.")
+		}
 		extraLib("libs/ObjectAL.xcframework/ios-arm64_x86_64-simulator/libObjectAL.a", "simulator")
 	}
 }

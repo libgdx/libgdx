@@ -126,7 +126,7 @@ public class UnicodeFont {
 
 	private void initializeFont (Font baseFont, int size, boolean bold, boolean italic) {
 		Map attributes = baseFont.getAttributes();
-		attributes.put(TextAttribute.SIZE, new Float(size));
+		attributes.put(TextAttribute.SIZE, size);
 		attributes.put(TextAttribute.WEIGHT, bold ? TextAttribute.WEIGHT_BOLD : TextAttribute.WEIGHT_REGULAR);
 		attributes.put(TextAttribute.POSTURE, italic ? TextAttribute.POSTURE_OBLIQUE : TextAttribute.POSTURE_REGULAR);
 		try {

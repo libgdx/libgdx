@@ -448,9 +448,10 @@ public class Pixmap implements Disposable {
 		return pixmap.getPixels();
 	}
 
-	/** Sets pixels from a provided byte buffer.
-	 * @param pixels Pixels to copy from, should match Pixmap data size (see {@link #getPixels()}). */
+	/** Sets pixels from a provided direct byte buffer.
+	 * @param pixels Pixels to copy from, should be a direct ByteBuffer and match Pixmap data size (see {@link #getPixels()}). */
 	public void setPixels (ByteBuffer pixels) {
+		if (!pixels.isDirect()) throw new GdxRuntimeException("Couldn't setPixels from non-direct ByteBuffer");
 		ByteBuffer dst = pixmap.getPixels();
 		BufferUtils.copy(pixels, dst, dst.limit());
 	}

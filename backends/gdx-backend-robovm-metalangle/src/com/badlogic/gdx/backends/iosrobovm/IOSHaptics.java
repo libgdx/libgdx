@@ -41,6 +41,7 @@ public class IOSHaptics {
 				} catch (NSErrorException e) {
 					Gdx.app.error("IOSHaptics", "Error creating CHHapticEngine. Haptics will be disabled. " + e);
 					hapticsSupport = false;
+					return;
 				}
 				hapticEngine.setPlaysHapticsOnly(true);
 				hapticEngine.setAutoShutdownEnabled(true);
@@ -54,8 +55,10 @@ public class IOSHaptics {
 
 							@Override
 							public void invoke (NSError nsError) {
-								Gdx.app.error("IOSHaptics", "Error restarting CHHapticEngine. Haptics will be disabled.");
-								hapticsSupport = false;
+								if (nsError != null) {
+									Gdx.app.error("IOSHaptics", "Error restarting CHHapticEngine. Haptics will be disabled.");
+									hapticsSupport = false;
+								}
 							}
 						});
 					}
@@ -72,7 +75,7 @@ public class IOSHaptics {
 				NSError.NSErrorPtr ptr = new NSError.NSErrorPtr();
 				hapticEngine.createPlayer(pattern).start(0, ptr);
 				if (ptr.get() != null) {
-					Gdx.app.error("IOSHaptics", "Error starting haptics player. Error code: " + ptr.get().getErrorCode());
+					Gdx.app.error("IOSHaptics", "Error starting haptics player. Error code: " + ptr.get().getLocalizedDescription());
 				}
 			} catch (NSErrorException e) {
 				Gdx.app.error("IOSHaptics", "Error creating haptics pattern or player. " + e.getMessage());
@@ -115,7 +118,7 @@ public class IOSHaptics {
 			UIImpactFeedbackStyle uiImpactFeedbackStyle;
 			switch (vibrationType) {
 			case LIGHT:
-				uiImpactFeedbackStyle = UIImpactFeedbackStyle.Soft;
+				uiImpactFeedbackStyle = UIImpactFeedbackStyle.Light;
 				break;
 			case MEDIUM:
 				uiImpactFeedbackStyle = UIImpactFeedbackStyle.Medium;

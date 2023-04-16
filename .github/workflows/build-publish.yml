@@ -17,10 +17,12 @@ jobs:
         with:
           fetch-depth: 0
           submodules: 'recursive'
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -37,7 +39,7 @@ jobs:
           # See https://github.com/actions/virtual-environments/issues/2557
           sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
           sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
-          sudo mv /Applications/Xcode_12.4.app /Applications/Xcode.app
+          sudo mv /Applications/Xcode_13.2.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
           ./gradlew jniGen jnigenBuildIOS
@@ -66,10 +68,12 @@ jobs:
         with:
           fetch-depth: 0
           submodules: 'recursive'
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -86,7 +90,7 @@ jobs:
           # See https://github.com/actions/virtual-environments/issues/2557
           sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
           sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
-          sudo mv /Applications/Xcode_12.4.app /Applications/Xcode.app
+          sudo mv /Applications/Xcode_13.2.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
           ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64
@@ -108,17 +112,18 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   natives-linux:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Install cross-compilation toolchains
         run: |
@@ -157,17 +162,18 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   natives-windows:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Install cross-compilation toolchains
         run: |
@@ -204,17 +210,18 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   natives-android:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -248,21 +255,23 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   pack-natives:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: [natives-macos, natives-linux, natives-windows, natives-ios, natives-android]
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -337,7 +346,7 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
   publish:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: pack-natives
     env:
       ORG_GRADLE_PROJECT_MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -348,10 +357,11 @@ jobs:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: 'zulu'
+          java-version: '11'
 
       - name: Download natives artifact
         uses: actions/download-artifact@v2
@@ -378,33 +388,38 @@ jobs:
         with:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
       - name: Release build deploy
         if: github.event_name == 'release' && github.repository_owner == 'libgdx'
         run: ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
 
-
   build-and-upload-runnables:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
+    needs: pack-natives
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
         with:
-          java-version: 1.8
-      - name: Build Runnables
-        run: ./gradlew clean fetchNatives buildRunnables build
+          distribution: 'zulu'
+          java-version: '11'
 
+      - name: Build Runnables
+        run: |
+          ./gradlew clean fetchNatives
+          ./gradlew buildRunnables build
+          
       - name: Upload artifacts to S3
         if: env.AWS_ACCESS_KEY_ID != null
         run: |
           aws s3 cp ./extensions/gdx-tools/build/libs/ s3://libgdx-nightlies/libgdx-runnables/ --recursive
           aws s3 cp ./extensions/gdx-setup/build/libs/ s3://libgdx-nightlies/libgdx-runnables/ --recursive
-
 

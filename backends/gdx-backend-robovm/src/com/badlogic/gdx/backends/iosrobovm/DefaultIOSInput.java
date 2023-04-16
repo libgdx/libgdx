@@ -451,9 +451,9 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		if (textfield == null) createDefaultTextField();
 		softkeyboardActive = visible;
 		if (visible) {
-			UIKeyboardType preferredInputType;
 			if (type == null) type = OnscreenKeyboardType.Default;
 			textfield.setKeyboardType(getIosInputType(type));
+			textfield.reloadInputViews();
 			textfield.becomeFirstResponder();
 			textfield.setDelegate(textDelegate);
 		} else {
@@ -712,9 +712,11 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
 					if (numTouched >= 1) justTouched = true;
 					break;
-				case Cancelled:
 				case Ended:
 					if (inputProcessor != null) inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
+					break;
+				case Cancelled:
+					if (inputProcessor != null) inputProcessor.touchCancelled(event.x, event.y, event.pointer, Buttons.LEFT);
 					break;
 				case Moved:
 				case Stationary:

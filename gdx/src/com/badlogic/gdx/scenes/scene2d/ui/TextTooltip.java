@@ -46,9 +46,7 @@ public class TextTooltip extends Tooltip<Label> {
 	public TextTooltip (@Null String text, final TooltipManager manager, TextTooltipStyle style) {
 		super(null, manager);
 
-		Label label = newLabel(text, style.label);
-		label.setWrap(true);
-		container.fill().setActor(label);
+		container.setActor(newLabel(text, style.label));
 
 		setStyle(style);
 	}
@@ -59,9 +57,15 @@ public class TextTooltip extends Tooltip<Label> {
 
 	public void setStyle (TextTooltipStyle style) {
 		if (style == null) throw new NullPointerException("style cannot be null");
-		container.getActor().setStyle(style.label);
 		container.setBackground(style.background);
 		container.maxWidth(style.wrapWidth);
+
+		boolean wrap = style.wrapWidth != 0;
+		container.fill(wrap);
+
+		Label label = container.getActor();
+		label.setStyle(style.label);
+		label.setWrap(wrap);
 	}
 
 	/** The style for a text tooltip, see {@link TextTooltip}.
