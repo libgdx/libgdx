@@ -59,9 +59,9 @@ public class Lwjgl3TestStarter {
 			ShaderProgram.prependVertexCode = "#version 140\n#define varying out\n#define attribute in\n";
 			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
 
-			if(SharedLibraryLoader.isMac){
+			if (SharedLibraryLoader.isMac) {
 				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 3, 2);
-			}else{
+			} else {
 				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 4, 3);
 			}
 		}

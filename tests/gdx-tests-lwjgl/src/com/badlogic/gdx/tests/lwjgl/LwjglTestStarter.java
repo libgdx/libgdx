@@ -77,7 +77,7 @@ public class LwjglTestStarter extends JFrame {
 		config.forceExit = false;
 		if (useGL30) {
 			config.useGL30 = true;
-			if(!SharedLibraryLoader.isMac){
+			if (!SharedLibraryLoader.isMac) {
 				config.gles30ContextMajorVersion = 4;
 				config.gles30ContextMinorVersion = 3;
 			}
