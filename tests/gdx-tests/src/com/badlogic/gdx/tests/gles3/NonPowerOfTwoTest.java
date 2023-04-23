@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests.gles3;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -29,7 +28,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class NonPowerOfTwoTest extends GdxTest {
 	SpriteBatch batch;
 	Texture texture;
-	ShaderProgram shaderProgram;
 
 	@Override
 	public void create () {
@@ -55,6 +53,5 @@ public class NonPowerOfTwoTest extends GdxTest {
 	public void dispose () {
 		texture.dispose();
 		batch.dispose();
-		shaderProgram.dispose();
 	}
 }
