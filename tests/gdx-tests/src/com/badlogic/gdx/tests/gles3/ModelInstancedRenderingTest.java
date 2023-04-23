@@ -17,30 +17,21 @@
 package com.badlogic.gdx.tests.gles3;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
-import com.badlogic.gdx.graphics.g3d.model.MeshPart;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestConfig;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.nio.Buffer;
@@ -85,13 +76,13 @@ public class ModelInstancedRenderingTest extends GdxTest {
 		}
 		((Buffer)offsets).position(0);
 		mesh.setInstanceData(offsets);
-		
+
 		renderable = new Renderable();
 		renderable.material = new Material();
 		renderable.meshPart.set("quad instanced", mesh, 0, 6, GL20.GL_TRIANGLES);
 		renderable.worldTransform.idt();
 		renderable.shader = new BaseShader() {
-			
+
 			@Override
 			public void init () {
 				ShaderProgram.prependVertexCode = "#version 300 es\n";
@@ -103,20 +94,20 @@ public class ModelInstancedRenderingTest extends GdxTest {
 				}
 				init(program, renderable);
 			}
-			
+
 			@Override
 			public int compareTo (Shader other) {
 				return 0;
 			}
-			
+
 			@Override
 			public boolean canRender (Renderable instance) {
 				return true;
 			}
 		};
-		
+
 		renderable.shader.init();
-		
+
 		camera = new OrthographicCamera();
 		batch = new ModelBatch();
 	}
@@ -129,6 +120,7 @@ public class ModelInstancedRenderingTest extends GdxTest {
 		batch.render(renderable);
 		batch.end();
 	}
+
 	@Override
 	public void dispose () {
 		mesh.dispose();
