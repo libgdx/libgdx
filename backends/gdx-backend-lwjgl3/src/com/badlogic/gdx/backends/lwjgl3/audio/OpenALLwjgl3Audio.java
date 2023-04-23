@@ -48,7 +48,7 @@ import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALUtil;
 import org.lwjgl.openal.SOFTDirectChannels;
 import org.lwjgl.openal.SOFTReopenDevice;
-import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.openal.SOFTXHoldOnDisconnect;
 import org.lwjgl.openal.SOFTDirectChannelsRemix;
 
 /** @author Nathan Sweet */
@@ -126,8 +126,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		((Buffer)position).flip();
 		alListenerfv(AL_POSITION, position);
 
-		// AL_STOP_SOURCES_ON_DISCONNECT_SOFT
-		alDisable(0x19AB);
+		alDisable(SOFTXHoldOnDisconnect.AL_STOP_SOURCES_ON_DISCONNECT_SOFT);
 		observerThread = new Thread(new Runnable() {
 
 			private String[] lastAvailableDevices = new String[0];
@@ -222,13 +221,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		if (setPreferred) {
 			preferredOutputDevice = deviceIdentifier;
 		}
-
-		if (deviceIdentifier == null) {
-			return SOFTReopenDevice.nalcReopenDeviceSOFT(device, MemoryUtil.memAddressSafe((ByteBuffer)null),
-				MemoryUtil.memAddressSafe((IntBuffer)null));
-		} else {
-			return SOFTReopenDevice.alcReopenDeviceSOFT(device, deviceIdentifier, (IntBuffer)null);
-		}
+		return SOFTReopenDevice.alcReopenDeviceSOFT(device, deviceIdentifier, (IntBuffer)null);
 	}
 
 	@Override
