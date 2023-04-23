@@ -82,6 +82,7 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
+import com.badlogic.gdx.tests.gles3.ModelInstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
 import com.badlogic.gdx.tests.math.collision.OrientedBoundingBoxTest;
 import com.badlogic.gdx.tests.net.NetAPITest;
@@ -195,6 +196,7 @@ public class GdxTests {
 		MipMapTest.class,
 		ModelTest.class,
 		ModelCacheTest.class,
+		ModelInstancedRenderingTest.class,
 		MoveSpriteExample.class,
 		MultipleRenderTargetTest.class,
 		MultitouchTest.class,
