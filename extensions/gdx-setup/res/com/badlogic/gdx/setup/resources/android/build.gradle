@@ -1,4 +1,5 @@
 android {
+    namespace "%PACKAGE%"
     buildToolsVersion "%BUILD_TOOLS_VERSION%"
     compileSdkVersion %API_LEVEL%
     sourceSets {

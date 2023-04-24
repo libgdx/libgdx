@@ -2,7 +2,6 @@
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
-	package="com.badlogic.gdx.tests.android"
 	android:installLocation="auto">
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>

@@ -9,10 +9,33 @@ import org.junit.Test;
 public class MathUtilsTest {
 
 	@Test
+	public void lerpAngle () {
+		assertEquals(PI / 18f, MathUtils.lerpAngle(PI / 18f, PI / 6f, 0.0f), 0.01f);
+		assertEquals(PI / 9f, MathUtils.lerpAngle(PI / 18f, PI / 6f, 0.5f), 0.01f);
+		assertEquals(PI / 6f, MathUtils.lerpAngle(PI / 18f, PI / 6f, 1.0f), 0.01f);
+
+		// checks both negative c, which should produce a result close to HALF_PI, and
+		// positive c, which should be close to PI + HALF_PI.
+		// intentionally skips where c == 0, because there are two equally-valid results for that case.
+		for (float c = -1f; c <= 1f; c += 0.003f) {
+			assertEquals(PI + Math.copySign(HALF_PI, c) + c, MathUtils.lerpAngle(0, PI2 + PI + c + c, 0.5f), 0.01f);
+			assertEquals(PI + Math.copySign(HALF_PI, c) + c, MathUtils.lerpAngle(PI2 + PI + c + c, 0, 0.5f), 0.01f);
+		}
+	}
+
+	@Test
 	public void lerpAngleDeg () {
 		assertEquals(10, MathUtils.lerpAngleDeg(10, 30, 0.0f), 0.01f);
 		assertEquals(20, MathUtils.lerpAngleDeg(10, 30, 0.5f), 0.01f);
 		assertEquals(30, MathUtils.lerpAngleDeg(10, 30, 1.0f), 0.01f);
+
+		// checks both negative c, which should produce a result close to 90, and
+		// positive c, which should be close to 270.
+		// intentionally skips where c == 0, because there are two equally-valid results for that case.
+		for (float c = -80f; c <= 80f; c += 0.3f) {
+			assertEquals(180f + Math.copySign(90f, c) + c, MathUtils.lerpAngleDeg(0, 540 + c + c, 0.5f), 0.01f);
+			assertEquals(180f + Math.copySign(90f, c) + c, MathUtils.lerpAngleDeg(540 + c + c, 0, 0.5f), 0.01f);
+		}
 	}
 
 	@Test
