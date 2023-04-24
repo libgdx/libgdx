@@ -285,6 +285,16 @@ public class BoundingBox implements Serializable {
 			&& max.z >= b.max.z);
 	}
 
+	/** Returns whether the given oriented bounding box is contained in this oriented bounding box.
+	 * @param obb The bounding box
+	 * @return Whether the given oriented bounding box is contained */
+	public boolean contains (OrientedBoundingBox obb) {
+		return contains(obb.getCorner000(tmpVector)) && contains(obb.getCorner001(tmpVector))
+			&& contains(obb.getCorner010(tmpVector)) && contains(obb.getCorner011(tmpVector))
+			&& contains(obb.getCorner100(tmpVector)) && contains(obb.getCorner101(tmpVector))
+			&& contains(obb.getCorner110(tmpVector)) && contains(obb.getCorner111(tmpVector));
+	}
+
 	/** Returns whether the given bounding box is intersecting this bounding box (at least one point in).
 	 * @param b The bounding box
 	 * @return Whether the given bounding box is intersected */
@@ -303,7 +313,6 @@ public class BoundingBox implements Serializable {
 		float sumz = (this.dim.z / 2.0f) + (b.dim.z / 2.0f);
 
 		return (lx <= sumx && ly <= sumy && lz <= sumz);
-
 	}
 
 	/** Returns whether the given vector is contained in this bounding box.

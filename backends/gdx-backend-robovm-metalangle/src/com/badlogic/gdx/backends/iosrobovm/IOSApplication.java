@@ -73,6 +73,8 @@ public class IOSApplication implements Application {
 		}
 	}
 
+	static final boolean IS_METALANGLE = true;
+
 	UIApplication uiApp;
 
 	UIWindow uiWindow;

@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.tests.gwt.client;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tests.AbstractTestWrapper;
 import com.badlogic.gdx.tests.AccelerometerTest;
 import com.badlogic.gdx.tests.ActionSequenceTest;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.tests.DownloadTest;
 import com.badlogic.gdx.tests.EdgeDetectionTest;
 import com.badlogic.gdx.tests.FilesTest;
 import com.badlogic.gdx.tests.FilterPerformanceTest;
+import com.badlogic.gdx.tests.FloatTextureTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.FramebufferToTextureTest;
 import com.badlogic.gdx.tests.GLProfilerErrorTest;
@@ -91,433 +93,585 @@ import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
+import com.badlogic.gdx.tests.g3d.MultipleRenderTargetTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
+import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
+import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
+import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
+import com.badlogic.gdx.tests.gles3.UniformBufferObjectsTest;
+import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gwt.GwtInputTest;
 import com.badlogic.gdx.tests.gwt.GwtWindowModeTest;
 import com.badlogic.gdx.tests.math.CollisionPlaygroundTest;
 import com.badlogic.gdx.tests.math.OctreeTest;
+import com.badlogic.gdx.tests.math.collision.OrientedBoundingBoxTest;
 import com.badlogic.gdx.tests.net.OpenBrowserExample;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
+import java.util.ArrayList;
+
 public class GwtTestWrapper extends AbstractTestWrapper {
 	@Override
 	protected AbstractTestWrapper.Instancer[] getTestList () {
-		Instancer[] tests = {new GwtInstancer() {
+		ArrayList<Instancer> tests = new ArrayList<>();
+
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new AccelerometerTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new ActionTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new ActionSequenceTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new AlphaTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new AnimationTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new AnnotationTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new AssetManagerTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new AtlasIssueTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new BigMeshTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new BitmapFontAlignmentTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new BitmapFontFlipTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new BitmapFontTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new BitmapFontMetricsTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new BlitTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new Box2DCharacterControllerTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new Box2DTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new Box2DTestCollection();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new BufferUtilsTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new ClipboardTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new ColorTest();
 			}
-		}, new GwtInstancer() {
-			public GdxTest instance () {
-				return new ComplexActionTest();
-			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new CollisionPlaygroundTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ComplexActionTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new CustomShaderSpriteBatchTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new DecalTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new DisplayModeTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new LabelScaleTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new EdgeDetectionTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new FilesTest();
 			}
-		}, new GwtInstancer() {
+		});
+		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new FilterPerformanceTest();
 			}
-		},
+		});
 // new GwtInstancer() {public GdxTest instance(){return new FlickScrollPaneTest();}}, // FIXME this messes up stuff, why?
-			new GwtInstancer() {
-				public GdxTest instance () {
-					return new FrameBufferTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new DownloadTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new FramebufferToTextureTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new GestureDetectorTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new GLProfilerErrorTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new GroupCullingTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new GroupFadeTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new GwtInputTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new GwtWindowModeTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new I18NSimpleMessageTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new ImageScaleTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new ImageTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new IndexBufferObjectShaderTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new IntegerBitmapFontTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new InterpolationTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new InverseKinematicsTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new IsometricTileTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new KinematicBodyTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new LifeCycleTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new LabelTest();
-				}
-			},
-			// new GwtInstancer() {public GdxTest instance(){return new MatrixJNITest();}}, // No purpose
-			new GwtInstancer() {
-				public GdxTest instance () {
-					return new MeshShaderTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new MeshWithCustomAttributesTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new MipMapTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new ModelCacheTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new MultitouchTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new MusicTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new OctreeTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new OpenBrowserExample();
-				}
-// }, new GwtInstancer() { public GdxTest instance () { return new NoncontinuousRenderingTest(); } // FIXME doesn't compile due to
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new FrameBufferTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new DownloadTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new FramebufferToTextureTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new GestureDetectorTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new GLProfilerErrorTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new GroupCullingTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new GroupFadeTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new GwtInputTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new GwtWindowModeTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new I18NSimpleMessageTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ImageScaleTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ImageTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new IndexBufferObjectShaderTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new IntegerBitmapFontTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new InterpolationTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new InverseKinematicsTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new IsometricTileTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new KinematicBodyTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new LifeCycleTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new LabelTest();
+			}
+		});
+		// new GwtInstancer() {public GdxTest instance(){return new MatrixJNITest();}}, // No purpose
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new MeshShaderTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new MeshWithCustomAttributesTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new MipMapTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ModelCacheTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new MultitouchTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new MusicTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new OctreeTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new OpenBrowserExample();
+			}
+		});
+// tests.add(new GwtInstancer() { public GdxTest instance () { return new NoncontinuousRenderingTest(); } // FIXME doesn't compile
+// due to
 // the use of Thread
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new ParallaxTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new ParticleEmitterTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new PixelsPerInchTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new PixmapPackerTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new PixmapTest();
-				}
-			},
-			// new GwtInstancer() {public GdxTest instance(){return new PixmapBlendingTest();}}, // FIXME no idea why this doesn't
-			// work
-			new GwtInstancer() {
-				public GdxTest instance () {
-					return new PreferencesTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new ProjectiveTextureTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new RotationTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new ReflectionCorrectnessTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new Scene2dTest();
-				}
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new OrientedBoundingBoxTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ParallaxTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ParticleEmitterTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new PixelsPerInchTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new PixmapPackerTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new PixmapTest();
+			}
+		});
+		// new GwtInstancer() {public GdxTest instance(){return new PixmapBlendingTest();}}, // FIXME no idea why this doesn't
+		// work
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new PreferencesTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ProjectiveTextureTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new RotationTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ReflectionCorrectnessTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new Scene2dTest();
+			}
+		});
 
 // new GwtInstancer() {public GdxTest instance(){return new RunnablePostTest();}}, // Goes into infinite loop
 // new GwtInstancer() {public GdxTest instance(){return new ScrollPaneTest();}}, // FIXME this messes up stuff, why?
 // new GwtInstancer() {public GdxTest instance(){return new ShaderMultitextureTest();}}, // FIXME fucks up stuff
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new ShadowMappingTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new ShapeRendererTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new SimpleAnimationTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new SimpleDecalTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new SimpleStageCullingTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new SortedSpriteTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new SpriteBatchShaderTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new SpriteCacheOffsetTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new SpriteCacheTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new SoundTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new StageTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new SystemCursorTest();
-				}
-			},
-			// new GwtInstancer() {public GdxTest instance(){return new StagePerformanceTest();}}, // FIXME borks out
-			new GwtInstancer() {
-				public GdxTest instance () {
-					return new TableTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new TextButtonTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new TextButtonTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new TextureAtlasTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new TiledMapObjectLoadingTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new UITest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new VertexBufferObjectShaderTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new YDownTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new SuperKoalio();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new ReflectionTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new TiledMapAtlasAssetManagerTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new TimeUtilsTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new GWTLossyPremultipliedAlphaTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new QuadTreeFloatTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new QuadTreeFloatNearestTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new TextAreaTest();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new TextAreaTest2();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new TextAreaTest3();
-				}
-			}, new GwtInstancer() {
-				public GdxTest instance () {
-					return new VertexArrayTest();
-				}
-			} // these may have issues with tab getting intercepted by the browser
-		};
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ShadowMappingTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ShapeRendererTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SimpleAnimationTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SimpleDecalTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SimpleStageCullingTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SortedSpriteTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SpriteBatchShaderTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SpriteCacheOffsetTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SpriteCacheTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SoundTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new StageTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SystemCursorTest();
+			}
+		});
+		// new GwtInstancer() {public GdxTest instance(){return new StagePerformanceTest();}}, // FIXME borks out
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TableTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TextButtonTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TextButtonTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TextureAtlasTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TiledMapObjectLoadingTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new UITest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new VertexBufferObjectShaderTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new YDownTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SuperKoalio();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ReflectionTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TiledMapAtlasAssetManagerTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TimeUtilsTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new GWTLossyPremultipliedAlphaTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new QuadTreeFloatTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new QuadTreeFloatNearestTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TextAreaTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TextAreaTest2();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TextAreaTest3();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new VertexArrayTest();
+			}
+		});
+		// these may have issues with tab getting intercepted by the browser
 
-		return tests;
+		// Add the GL30 tests if applicable
+		if (Gdx.graphics.isGL30Available()) {
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new FloatTextureTest();
+				}
+			});
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new GL30Texture3DTest();
+				}
+			});
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new InstancedRenderingTest();
+				}
+			});
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new MultipleRenderTargetTest();
+				}
+			});
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new NonPowerOfTwoTest();
+				}
+			});
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new TextureArrayTest();
+				}
+			});
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new UniformBufferObjectsTest();
+				}
+			});
+		}
+
+		Instancer[] testArr = new Instancer[tests.size()];
+		tests.toArray(testArr);
+
+		return testArr;
 	}
 
-	abstract static class GwtInstancer implements Instancer {
+	abstract static class GwtInstancer implements AbstractTestWrapper.Instancer {
 		@Override
 		public String getSimpleName () {
 			return instance().getClass().getSimpleName();

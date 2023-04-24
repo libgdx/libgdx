@@ -14,7 +14,6 @@
 		<exclude name="**/KTXTest.java"/> <!-- use ECT1 which is native -->
 		<exclude name="**/ETC1Test.java"/> <!-- native -->
 		<exclude name="**/FFTTest.java"/> <!-- native -->
-		<exclude name="**/FloatTextureTest.java"/> <!-- GLES 2.0 extension -->
 		<exclude name="**/FreeType*.java"/> <!-- native  -->
 		<exclude name="**/Gdx2DTest.java"/> <!-- native -->
 		<exclude name="**/GdxTests.java"/> <!-- utility -->
@@ -36,10 +35,9 @@
 		<exclude name="**/SensorTest.java"/> <!-- Tests device accelerometer, compass, gyro -->
 		<exclude name="**/SoundTouchTest.java"/> <!-- native -->
 		<exclude name="**/StbTrueTypeTest.java"/> <!-- native -->
-		<exclude name="**/TextureArrayTest.java"/> <!-- GLES 3.0 -->
 		<exclude name="**/TextureDownloadTest.java"/> <!-- http utils missing -->
 		<exclude name="**/TTFFactoryTest.java"/> <!-- native -->
-		<exclude name="**/VBOWithVAOPerformanceTest.java"/> <!-- GLES 3.0 -->
+		<exclude name="**/VBOWithVAOPerformanceTest.java"/> <!-- GLES 3.0, Emulation issues -->
 		<exclude name="**/VorbisTest.java"/> <!-- native -->
 		<exclude name="**/WavTest.java"/> <!-- naive -->
 		<exclude name="**/voxel/*.java"/> <!-- PerlinNoiseGenerator uses a method not in the emulated version of Buffer -->

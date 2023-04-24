@@ -2,6 +2,5 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://www.gwtproject.org/doctype/2.8.0/gwt-module.dtd">
 <module>
 	<source path="box2d">
-	    <exclude name="utils/Box2DBuild.java"/>
 	</source>
 </module>
