@@ -69,7 +69,7 @@ public class GL31FrameBufferMultisampleTest extends GdxTest {
 
 		@Override
 		public void dispose () {
-			Gdx.gl.glDeleteBuffer(framebufferHandle);
+			Gdx.gl.glDeleteFramebuffer(framebufferHandle);
 			Gdx.gl.glDeleteRenderbuffer(colorBufferHandle);
 		}
 
