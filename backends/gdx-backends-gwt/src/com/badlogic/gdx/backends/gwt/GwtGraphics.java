@@ -31,6 +31,7 @@ import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.webgl.client.WebGL2RenderingContext;
 import com.google.gwt.webgl.client.WebGLContextAttributes;
 import com.google.gwt.webgl.client.WebGLRenderingContext;
 
@@ -55,8 +56,8 @@ public class GwtGraphics extends AbstractGraphics {
 	CanvasElement canvas;
 	WebGLRenderingContext context;
 	GLVersion glVersion;
-	GL20 gl;
-	String extensions;
+	private GL20 gl20;
+	private GL30 gl30;
 	float fps = 0;
 	long lastTimeStamp = System.currentTimeMillis();
 	long frameId = -1;
@@ -90,13 +91,25 @@ public class GwtGraphics extends AbstractGraphics {
 		attributes.setPreserveDrawingBuffer(config.preserveDrawingBuffer);
 		attributes.setXrCompatible(config.xrCompatible);
 
-		context = WebGLRenderingContext.getContext(canvas, attributes);
-		context.viewport(0, 0, getWidth(), getHeight());
-		this.gl = config.useDebugGL ? new GwtGL20Debug(context) : new GwtGL20(context);
+		if (config.useGL30) {
+			// Check for WebGL2 support, and fall back to 1.0 if not supported.
+			context = WebGL2RenderingContext.getContext(canvas, attributes);
+		}
 
-		String versionString = gl.glGetString(GL20.GL_VERSION);
-		String vendorString = gl.glGetString(GL20.GL_VENDOR);
-		String rendererString = gl.glGetString(GL20.GL_RENDERER);
+		if (config.useGL30 && context != null) {
+			// WebGL2 supported
+			this.gl30 = config.useDebugGL ? new GwtGL30Debug((WebGL2RenderingContext)context)
+				: new GwtGL30((WebGL2RenderingContext)context);
+			this.gl20 = gl30;
+		} else {
+			context = WebGLRenderingContext.getContext(canvas, attributes);
+			this.gl20 = config.useDebugGL ? new GwtGL20Debug(context) : new GwtGL20(context);
+		}
+		context.viewport(0, 0, getWidth(), getHeight());
+
+		String versionString = gl20.glGetString(GL20.GL_VERSION);
+		String vendorString = gl20.glGetString(GL20.GL_VENDOR);
+		String rendererString = gl20.glGetString(GL20.GL_RENDERER);
 		glVersion = new GLVersion(Application.ApplicationType.WebGL, versionString, vendorString, rendererString);
 	}
 
@@ -106,29 +119,36 @@ public class GwtGraphics extends AbstractGraphics {
 
 	@Override
 	public GL20 getGL20 () {
-		return gl;
+		return gl20;
 	}
 
 	@Override
 	public void setGL20 (GL20 gl20) {
-		this.gl = gl20;
+		this.gl20 = gl20;
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 	}
 
 	@Override
 	public boolean isGL30Available () {
-		return false;
+		return gl30 != null;
 	}
 
 	@Override
 	public GL30 getGL30 () {
-		return null;
+		return gl30;
 	}
 
 	@Override
 	public void setGL30 (GL30 gl30) {
+		this.gl30 = gl30;
+		if (gl30 != null) {
+			this.gl20 = gl30;
 
+			Gdx.gl = gl20;
+			Gdx.gl20 = gl20;
+			Gdx.gl30 = gl30;
+		}
 	}
 
 	@Override

@@ -17,10 +17,16 @@
 package com.badlogic.gdx.tests.gles3;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestConfig;
@@ -32,10 +38,12 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 @GdxTestConfig(requireGL30 = true)
-public class InstancedRenderingTest extends GdxTest {
+public class ModelInstancedRenderingTest extends GdxTest {
 
-	ShaderProgram shader;
 	Mesh mesh;
+	private ModelBatch batch;
+	private OrthographicCamera camera;
+	private Renderable renderable;
 
 	private final static int INSTANCE_COUNT_SQRT = 100;
 	private final static int INSTANCE_COUNT = INSTANCE_COUNT_SQRT * INSTANCE_COUNT_SQRT;
@@ -45,19 +53,6 @@ public class InstancedRenderingTest extends GdxTest {
 		if (Gdx.gl30 == null) {
 			throw new GdxRuntimeException("GLES 3.0 profile required for this test");
 		}
-
-		String ovs = ShaderProgram.prependVertexCode;
-		String ofs = ShaderProgram.prependFragmentCode;
-		ShaderProgram.prependVertexCode = "#version 300 es\n";
-		ShaderProgram.prependFragmentCode = "#version 300 es\n";
-		shader = new ShaderProgram(Gdx.files.internal("data/shaders/instanced-rendering.vert"),
-			Gdx.files.internal("data/shaders/instanced-rendering.frag"));
-		if (!shader.isCompiled()) {
-			throw new GdxRuntimeException("Shader compile error: " + shader.getLog());
-		}
-
-		ShaderProgram.prependVertexCode = ovs;
-		ShaderProgram.prependFragmentCode = ofs;
 
 		mesh = new Mesh(true, 6, 0, new VertexAttribute(Usage.Position, 2, "a_position"));
 
@@ -81,14 +76,55 @@ public class InstancedRenderingTest extends GdxTest {
 		}
 		((Buffer)offsets).position(0);
 		mesh.setInstanceData(offsets);
-// mesh.disableInstancedRendering();
+
+		renderable = new Renderable();
+		renderable.material = new Material();
+		renderable.meshPart.set("quad instanced", mesh, 0, 6, GL20.GL_TRIANGLES);
+		renderable.worldTransform.idt();
+		renderable.shader = new BaseShader() {
+
+			@Override
+			public void init () {
+				ShaderProgram.prependVertexCode = "#version 300 es\n";
+				ShaderProgram.prependFragmentCode = "#version 300 es\n";
+				program = new ShaderProgram(Gdx.files.internal("data/shaders/instanced-rendering.vert"),
+					Gdx.files.internal("data/shaders/instanced-rendering.frag"));
+				if (!program.isCompiled()) {
+					throw new GdxRuntimeException("Shader compile error: " + program.getLog());
+				}
+				init(program, renderable);
+			}
+
+			@Override
+			public int compareTo (Shader other) {
+				return 0;
+			}
+
+			@Override
+			public boolean canRender (Renderable instance) {
+				return true;
+			}
+		};
+
+		renderable.shader.init();
+
+		camera = new OrthographicCamera();
+		batch = new ModelBatch();
 	}
 
 	@Override
 	public void render () {
 		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1f);
 
-		shader.bind();
-		mesh.render(shader, GL30.GL_TRIANGLES);
+		batch.begin(camera);
+		batch.render(renderable);
+		batch.end();
+	}
+
+	@Override
+	public void dispose () {
+		mesh.dispose();
+		batch.dispose();
+		renderable.shader.dispose();
 	}
 }

@@ -150,6 +150,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthStencilPackedBufferHandle);
 			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, bufferBuilder.packedStencilDepthRenderBufferSpec.internalFormat, width,
 				height);
+			hasDepthStencilPackedBuffer = true;
 		}
 
 		isMRT = bufferBuilder.textureAttachmentSpecs.size > 1;
