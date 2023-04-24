@@ -47,7 +47,6 @@ feasible due to the use of Canvas.
 - Excluded from ant build (build-template.xml)!
 
 [Unsupported Classes]
-GdxBuild.java
 GdxNativesLoader.java
 SharedLibraryLoader.java
 Gdx2DPixmap.java

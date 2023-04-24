@@ -19,12 +19,12 @@ plugins {
 }
 
 application {
-	mainClassName = 'com.badlogic.gdx.setup.GdxSetup'
+	mainClass = 'com.badlogic.gdx.setup.GdxSetup'
 }
 
 jar {
 	archiveFileName = 'gdx-setup.jar'
 	manifest {
-		attributes 'Main-Class': project.mainClassName
+		attributes 'Main-Class': project.application.mainClass.get()
 	}
 }

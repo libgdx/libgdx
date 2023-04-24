@@ -45,6 +45,7 @@ import com.badlogic.gdx.tests.utils.CommandLineOptions;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTests;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class LwjglTestStarter extends JFrame {
 	static CommandLineOptions options;
@@ -76,6 +77,10 @@ public class LwjglTestStarter extends JFrame {
 		config.forceExit = false;
 		if (useGL30) {
 			config.useGL30 = true;
+			if (!SharedLibraryLoader.isMac) {
+				config.gles30ContextMajorVersion = 4;
+				config.gles30ContextMinorVersion = 3;
+			}
 			ShaderProgram.prependVertexCode = "#version 140\n#define varying out\n#define attribute in\n";
 			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
 		} else {

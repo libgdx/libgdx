@@ -49,6 +49,8 @@ import com.badlogic.gdx.tests.extensions.FreeTypeMetricsTest;
 import com.badlogic.gdx.tests.extensions.FreeTypePackTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeTest;
 import com.badlogic.gdx.tests.extensions.InternationalFontsTest;
+import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
+import com.badlogic.gdx.tests.gles3.UniformBufferObjectsTest;
 import com.badlogic.gdx.tests.math.CollisionPlaygroundTest;
 import com.badlogic.gdx.tests.math.OctreeTest;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
@@ -82,6 +84,7 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
+import com.badlogic.gdx.tests.gles3.ModelInstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
 import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleTest;
 import com.badlogic.gdx.tests.gles31.GL31IndirectDrawingIndexedTest;
@@ -211,6 +214,7 @@ public class GdxTests {
 		MipMapTest.class,
 		ModelTest.class,
 		ModelCacheTest.class,
+		ModelInstancedRenderingTest.class,
 		MoveSpriteExample.class,
 		MultipleRenderTargetTest.class,
 		MultitouchTest.class,
@@ -218,6 +222,7 @@ public class GdxTests {
 		NetAPITest.class,
 		NinePatchTest.class,
 		NoncontinuousRenderingTest.class,
+		NonPowerOfTwoTest.class,
 		OctreeTest.class,
 		OnscreenKeyboardTest.class,
 		OrientedBoundingBoxTest.class,
@@ -308,6 +313,7 @@ public class GdxTests {
 		TreeTest.class,
 		UISimpleTest.class,
 		UITest.class,
+		UniformBufferObjectsTest.class,
 		UtfFontTest.class,
 		VBOWithVAOPerformanceTest.class,
 		Vector2dTest.class,

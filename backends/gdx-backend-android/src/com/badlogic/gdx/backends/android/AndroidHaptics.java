@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.os.Build;
@@ -47,6 +48,7 @@ public class AndroidHaptics {
 		}
 	}
 
+	@SuppressLint("MissingPermission")
 	public void vibrate (int milliseconds) {
 		if (vibratorSupport) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -56,6 +58,7 @@ public class AndroidHaptics {
 		}
 	}
 
+	@SuppressLint("MissingPermission")
 	public void vibrate (Input.VibrationType vibrationType) {
 		if (hapticsSupport) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -78,6 +81,7 @@ public class AndroidHaptics {
 		}
 	}
 
+	@SuppressLint("MissingPermission")
 	public void vibrate (int milliseconds, int intensity, boolean fallback) {
 		if (hapticsSupport) {
 			intensity = MathUtils.clamp(intensity, 0, 255);

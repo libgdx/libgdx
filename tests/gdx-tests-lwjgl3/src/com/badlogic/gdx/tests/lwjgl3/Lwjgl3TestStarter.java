@@ -65,7 +65,11 @@ public class Lwjgl3TestStarter {
 		} else if (options.gl31) {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL31, 4, 5);
 		} else if (options.gl30) {
-			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 3, 2);
+			if (SharedLibraryLoader.isMac) {
+				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 3, 2);
+			} else {
+				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 4, 3);
+			}
 		} else if (options.angle) {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 0, 0);
 			// Use CPU sync if ANGLE is enabled on macOS, otherwise the framerate gets halfed

@@ -42,65 +42,63 @@ import com.badlogic.gdx.utils.ScreenUtils;
  * to generate and upload the aforementioned file
  */
 public class APKExpansionTest extends GdxTest {
-    FileHandleResolver resolver;
-    Sound sound;
-    SpriteBatch batch;
-    Texture texture;
-    TextureRegion atlasTextureRegion;
-    AssetManager assetManager;
+	FileHandleResolver resolver;
+	Sound sound;
+	SpriteBatch batch;
+	Texture texture;
+	TextureRegion atlasTextureRegion;
+	AssetManager assetManager;
 
-    /** The OBB zip assets are taken from the android tests assets directory
-     Extension prefix is prepended to each asset and zipped up into a obb.
-     Extension prefix is required so we can be certain the assets are coming
-     from the obb, while keeping the structure of the assets file tree for easier testing
-     **/
-    String extensionPrefix = "obbasset-";
+	/** The OBB zip assets are taken from the android tests assets directory Extension prefix is prepended to each asset and zipped
+	 * up into a obb. Extension prefix is required so we can be certain the assets are coming from the obb, while keeping the
+	 * structure of the assets file tree for easier testing **/
+	String extensionPrefix = "obbasset-";
 
-    @Override
-    public void create () {
-        if ((((AndroidFiles)Gdx.files)).setAPKExpansion(1, 0)) {
-            resolver = new ZipFileHandleResolver();
-        } else {
-            Gdx.app.error("libgdx", "No Expansion can be opened");
-        }
+	@Override
+	public void create () {
+		if ((((AndroidFiles)Gdx.files)).setAPKExpansion(1, 0)) {
+			resolver = new ZipFileHandleResolver();
+		} else {
+			Gdx.app.error("libgdx", "No Expansion can be opened");
+		}
 
-        assetManager = new AssetManager();
-        FileHandleResolver resolver = new InternalFileHandleResolver();
-        assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
-        assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+		assetManager = new AssetManager();
+		FileHandleResolver resolver = new InternalFileHandleResolver();
+		assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+		assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 
-        loadFont(assetManager, "data/DroidSerif-Regular.ttf", 12);
-        loadFont(assetManager, "data/"  + extensionPrefix + "DroidSerif-Regular.ttf", 12);
+		loadFont(assetManager, "data/DroidSerif-Regular.ttf", 12);
+		loadFont(assetManager, "data/" + extensionPrefix + "DroidSerif-Regular.ttf", 12);
 
-        assetManager.load("data/" + extensionPrefix + "testpackobb", TextureAtlas.class);
-        assetManager.finishLoading();
+		assetManager.load("data/" + extensionPrefix + "testpackobb", TextureAtlas.class);
+		assetManager.finishLoading();
 
-        sound = Gdx.audio.newSound(Gdx.files.internal("data/" + extensionPrefix + "chirp.ogg"));
-        sound.play();
-        texture = new Texture(resolver.resolve("data/" + extensionPrefix + "badlogic.jpg"));
-        batch = new SpriteBatch();
-        TextureAtlas atlas = assetManager.get("data/" + extensionPrefix + "testpackobb");
-        atlasTextureRegion = new TextureRegion(atlas.findRegion("water"));
-        sound = Gdx.audio.newSound(Gdx.files.internal("data/shotgun.ogg"));
-        sound.play();
-    }
+		sound = Gdx.audio.newSound(Gdx.files.internal("data/" + extensionPrefix + "chirp.ogg"));
+		sound.play();
+		texture = new Texture(resolver.resolve("data/" + extensionPrefix + "badlogic.jpg"));
+		batch = new SpriteBatch();
+		TextureAtlas atlas = assetManager.get("data/" + extensionPrefix + "testpackobb");
+		atlasTextureRegion = new TextureRegion(atlas.findRegion("water"));
+		sound = Gdx.audio.newSound(Gdx.files.internal("data/shotgun.ogg"));
+		sound.play();
+	}
 
-    @Override
-    public void render () {
-        ScreenUtils.clear(Color.RED);
-        batch.begin();
-        batch.draw(texture, 0, 0);
-        batch.draw(atlasTextureRegion, 0, 0);
-        batch.end();
-    }
+	@Override
+	public void render () {
+		ScreenUtils.clear(Color.RED);
+		batch.begin();
+		batch.draw(texture, 0, 0);
+		batch.draw(atlasTextureRegion, 0, 0);
+		batch.end();
+	}
 
-    private void loadFont(AssetManager assetManager, String fontName, int size) {
-       FreeTypeFontLoaderParameter param = new FreeTypeFontLoaderParameter();
-       param.fontFileName = fontName;
-       param.fontParameters.size = 12;
-       param.fontParameters.genMipMaps = true;
-       param.fontParameters.minFilter = TextureFilter.MipMapLinearLinear;
-       param.fontParameters.magFilter = TextureFilter.Linear;
-       assetManager.load(fontName + "size" + size + ".ttf", BitmapFont.class, param);
-    }
+	private void loadFont (AssetManager assetManager, String fontName, int size) {
+		FreeTypeFontLoaderParameter param = new FreeTypeFontLoaderParameter();
+		param.fontFileName = fontName;
+		param.fontParameters.size = 12;
+		param.fontParameters.genMipMaps = true;
+		param.fontParameters.minFilter = TextureFilter.MipMapLinearLinear;
+		param.fontParameters.magFilter = TextureFilter.Linear;
+		assetManager.load(fontName + "size" + size + ".ttf", BitmapFont.class, param);
+	}
 }
