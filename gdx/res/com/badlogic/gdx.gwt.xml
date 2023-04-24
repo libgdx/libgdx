@@ -80,6 +80,8 @@
 		<include name="graphics/FPSLogger.java"/>
 		<include name="graphics/GL20.java"/>
 		<include name="graphics/GL30.java"/>
+		<include name="graphics/GL31.java"/>
+		<include name="graphics/GL32.java"/>
 		<include name="graphics/GLCommon.java"/>
 		<include name="graphics/GLTexture.java"/>
 		<include name="graphics/Mesh.java"/>
@@ -276,6 +278,8 @@
 	<!-- graphics/profiling -->
 		<include name="graphics/profiling/GL20Interceptor.java"/>
 		<include name="graphics/profiling/GL30Interceptor.java"/>
+		<include name="graphics/profiling/GL31Interceptor.java"/>
+		<include name="graphics/profiling/GL32Interceptor.java"/>
 		<include name="graphics/profiling/GLInterceptor.java"/>
 		<include name="graphics/profiling/GLProfiler.java"/>
 		<include name="graphics/profiling/GLErrorListener.java"/> <!-- Emulated -->

@@ -34,6 +34,7 @@
 - API Addition: Added I18NBundle#keys() method.
 - TOOLS Features: Save mode can be changed in Flame particle 3D editor.
 - API Addition : added WebGL 2.0 implementation to Gwt backend : you can enable it by GwtApplicationConfiguration#useGL30
+- Added GLES31 and GLES32 support with Lwjgl3 backend implementation
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
