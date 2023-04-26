@@ -421,9 +421,11 @@ public class Lwjgl3Window implements Disposable {
 
 	void makeCurrent () {
 		Gdx.graphics = graphics;
-		Gdx.gl30 = graphics.getGL30();
+		Gdx.gl32 = graphics.getGL32();
+		Gdx.gl31 = Gdx.gl32 != null ? Gdx.gl32 : graphics.getGL31();
+		Gdx.gl30 = Gdx.gl31 != null ? Gdx.gl31 : graphics.getGL30();
 		Gdx.gl20 = Gdx.gl30 != null ? Gdx.gl30 : graphics.getGL20();
-		Gdx.gl = Gdx.gl30 != null ? Gdx.gl30 : Gdx.gl20;
+		Gdx.gl = Gdx.gl20;
 		Gdx.input = input;
 
 		GLFW.glfwMakeContextCurrent(windowHandle);
