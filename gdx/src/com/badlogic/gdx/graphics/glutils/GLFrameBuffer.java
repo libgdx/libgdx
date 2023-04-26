@@ -287,6 +287,11 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 				}
 			}
 		}
+
+		if (bufferBuilder.hasPackedStencilDepthRenderBuffer) {
+			if (bufferBuilder.hasDepthRenderBuffer || bufferBuilder.hasStencilRenderBuffer) throw new GdxRuntimeException(
+				"Frame buffer couldn't be constructed: packed stencil buffer cannot be specified together with separated depth or stencil buffer");
+		}
 	}
 
 	/** Releases all resources associated with the FrameBuffer. */
