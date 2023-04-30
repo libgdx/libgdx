@@ -22,7 +22,7 @@ gretty.resourceBase = project.buildDir.path + "/gwt/draftOut"
 gretty.contextPath = "/"
 gretty.portPropertiesFileName = "TEMP_PORTS.properties"
 
-task startHttpServer () {
+tasks.register("startHttpServer") {
     dependsOn draftCompileGwt
 
     doFirst {
@@ -38,7 +38,8 @@ task startHttpServer () {
     }
 }
 
-task beforeRun(type: AppBeforeIntegrationTestTask, dependsOn: startHttpServer) {
+tasks.register("beforeRun", AppBeforeIntegrationTestTask) {
+    dependsOn startHttpServer
     // The next line allows ports to be reused instead of
     // needing a process to be manually terminated.
     file("build/TEMP_PORTS.properties").delete()
@@ -50,14 +51,15 @@ task beforeRun(type: AppBeforeIntegrationTestTask, dependsOn: startHttpServer) {
     interactive false
 }
 
-task superDev (type: GwtSuperDev) {
+tasks.register("superDev", GwtSuperDev) {
     dependsOn startHttpServer
     doFirst {
         gwt.modules = gwt.devModules
     }
 }
 
-task dist(dependsOn: [clean, compileGwt]) {
+tasks.register("dist") {
+    dependsOn clean, compileGwt
     doLast {
         file("build/dist").mkdirs()
         copy {
@@ -67,7 +69,7 @@ task dist(dependsOn: [clean, compileGwt]) {
         copy {
             from "webapp"
             into "build/dist"
-            }
+        }
         copy {
             from "war"
             into "build/dist"
@@ -75,7 +77,7 @@ task dist(dependsOn: [clean, compileGwt]) {
     }
 }
 
-task addSource {
+tasks.register("addSource") {
     doLast {
         sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJava.srcDirs)
     }
