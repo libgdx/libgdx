@@ -2,18 +2,18 @@ android {
     namespace "%PACKAGE%"
     buildToolsVersion "%BUILD_TOOLS_VERSION%"
     compileSdkVersion %API_LEVEL%
-        sourceSets {
-            main {
-                manifest.srcFile 'AndroidManifest.xml'
-                java.srcDirs = ['src']
-                aidl.srcDirs = ['src']
-                renderscript.srcDirs = ['src']
-                res.srcDirs = ['res']
-                assets.srcDirs = ['../%ASSET_PATH%']
-                jniLibs.srcDirs = ['libs']
-            }
-
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['../%ASSET_PATH%']
+            jniLibs.srcDirs = ['libs']
         }
+
+    }
     packagingOptions {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
