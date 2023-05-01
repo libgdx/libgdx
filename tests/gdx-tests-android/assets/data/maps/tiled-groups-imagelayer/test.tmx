@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="20" height="14" tilewidth="30" tileheight="30" infinite="0" nextlayerid="17" nextobjectid="2">
+    <imagelayer id="29" name="outside_group" offsetx="0" offsety="0">
+        <image source="tileset/egg.png"/>
+    </imagelayer>
+    <group id="35" name="grouped_imagelayer">
+        <imagelayer id="34" name="inside_group" offsetx="256" offsety="0">
+            <image source="tileset/badlogic.jpg"/>
+        </imagelayer>
+    </group>
+</map>
