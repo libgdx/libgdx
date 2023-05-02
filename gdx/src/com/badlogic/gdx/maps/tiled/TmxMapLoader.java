@@ -113,10 +113,12 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		for (Element tileset : root.getChildrenByName("tileset")) {
 			String source = tileset.getAttribute("source", null);
 
-			FileHandle fileHandle = tmxFile;
+			FileHandle fileHandle;
 			if (source != null) {
 				fileHandle = getRelativeFileHandle(tmxFile, source);
 				tileset = xml.parse(fileHandle);
+			} else {
+				fileHandle = tmxFile;
 			}
 
 			Element imageElement = tileset.getChildByName("image");
