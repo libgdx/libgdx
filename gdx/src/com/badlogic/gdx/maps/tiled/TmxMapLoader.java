@@ -112,33 +112,23 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		// TileSet descriptors
 		for (Element tileset : root.getChildrenByName("tileset")) {
 			String source = tileset.getAttribute("source", null);
+
+			FileHandle fileHandle = tmxFile;
 			if (source != null) {
-				FileHandle tsxFile = getRelativeFileHandle(tmxFile, source);
-				tileset = xml.parse(tsxFile);
-				Element imageElement = tileset.getChildByName("image");
-				if (imageElement != null) {
-					String imageSource = tileset.getChildByName("image").getAttribute("source");
-					FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
-					fileHandles.add(image);
-				} else {
-					for (Element tile : tileset.getChildrenByName("tile")) {
-						String imageSource = tile.getChildByName("image").getAttribute("source");
-						FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
-						fileHandles.add(image);
-					}
-				}
+				fileHandle = getRelativeFileHandle(tmxFile, source);
+				tileset = xml.parse(fileHandle);
+			}
+
+			Element imageElement = tileset.getChildByName("image");
+			if (imageElement != null) {
+				String imageSource = imageElement.getAttribute("source");
+				FileHandle image = getRelativeFileHandle(fileHandle, imageSource);
+				fileHandles.add(image);
 			} else {
-				Element imageElement = tileset.getChildByName("image");
-				if (imageElement != null) {
-					String imageSource = tileset.getChildByName("image").getAttribute("source");
-					FileHandle image = getRelativeFileHandle(tmxFile, imageSource);
+				for (Element tile : tileset.getChildrenByName("tile")) {
+					String imageSource = tile.getChildByName("image").getAttribute("source");
+					FileHandle image = getRelativeFileHandle(fileHandle, imageSource);
 					fileHandles.add(image);
-				} else {
-					for (Element tile : tileset.getChildrenByName("tile")) {
-						String imageSource = tile.getChildByName("image").getAttribute("source");
-						FileHandle image = getRelativeFileHandle(tmxFile, imageSource);
-						fileHandles.add(image);
-					}
 				}
 			}
 		}
