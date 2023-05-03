@@ -242,7 +242,7 @@ public class LwjglGraphics extends AbstractGraphics {
 				DisplayMode bestMode = null;
 				for (DisplayMode mode : getDisplayModes()) {
 					if (mode.width == config.width && mode.height == config.height) {
-						if (bestMode == null || bestMode.refreshRate < this.getDisplayMode().refreshRate) {
+						if (bestMode == null || bestMode.refreshRate < mode.refreshRate) {
 							bestMode = mode;
 						}
 					}
