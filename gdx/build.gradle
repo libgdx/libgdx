@@ -71,15 +71,9 @@ jnigen {
 	add(IOS) {
 		headerDirs = ["iosgl"]
 		cppExcludes = []
+		linkerFlags += " -undefined dynamic_lookup "
 	}
 	robovm {
-		if (file("libs/ios32/ObjectAL.xcframework/ios-arm64_armv7/").exists()) {
-			extraLib("libs/ObjectAL.xcframework/ios-arm64_armv7/libObjectAL.a", "device")
-		} else if (file("libs/ios32/ObjectAL.xcframework/ios-arm64/").exists()) {
-			extraLib("libs/ObjectAL.xcframework/ios-arm64/libObjectAL.a", "device")
-		} else {
-			getLogger().warn("ObjectAL is not build yet. Please run `fetchNatives` or build it to silence this warning.")
-		}
-		extraLib("libs/ObjectAL.xcframework/ios-arm64_x86_64-simulator/libObjectAL.a", "simulator")
+		extraXCFramework("libs/ObjectAL.xcframework")
 	}
 }
