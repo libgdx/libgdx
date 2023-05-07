@@ -54,7 +54,6 @@ public class OpenALSound implements Sound {
 		int bytes = pcmLength - (pcmLength % (channels > 1 ? 4 : 2));
 		int samples = bytes / (2 * channels);
 		duration = samples / (float)sampleRate;
-		System.out.println("duration: " + duration);
 
 		if (bufferID == -1) {
 			bufferID = alGenBuffers();
