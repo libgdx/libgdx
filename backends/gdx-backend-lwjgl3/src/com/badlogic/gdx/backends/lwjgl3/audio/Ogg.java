@@ -17,9 +17,18 @@
 package com.badlogic.gdx.backends.lwjgl3.audio;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
+import org.lwjgl.stb.STBVorbis;
+import org.lwjgl.system.MemoryStack;
 
 /** @author Nathan Sweet */
 public class Ogg {
@@ -61,19 +70,44 @@ public class Ogg {
 		public Sound (OpenALLwjgl3Audio audio, FileHandle file) {
 			super(audio);
 			if (audio.noDevice) return;
-			OggInputStream input = null;
+
+			// read file into byte array
+			InputStream stream = file.read();
+			final ByteArrayOutputStream converterStream = new ByteArrayOutputStream();
+			final byte[] converterBuffer = new byte[20000];
 			try {
-				input = new OggInputStream(file.read());
-				ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
-				byte[] buffer = new byte[2048];
-				while (!input.atEnd()) {
-					int length = input.read(buffer);
-					if (length == -1) break;
-					output.write(buffer, 0, length);
+				while (true) {
+					final int read = stream.read(converterBuffer);
+					if (read <= 0) {
+						break;
+					}
+					converterStream.write(converterBuffer, 0, read);
 				}
-				setup(output.toByteArray(), input.getChannels(), input.getSampleRate());
+			} catch (IOException e) {
+				throw new GdxRuntimeException("Error reading OGG file: " + file, e);
 			} finally {
-				StreamUtils.closeQuietly(input);
+				StreamUtils.closeQuietly(stream);
+			}
+
+			// put the encoded audio data in a ByteBuffer
+			byte[] streamData = converterStream.toByteArray();
+			ByteBuffer encodedData = BufferUtils.newByteBuffer(streamData.length);
+			encodedData.put(streamData);
+			encodedData.flip();
+
+			try (MemoryStack stack = MemoryStack.stackPush()) {
+				final IntBuffer channelsBuffer = stack.mallocInt(1);
+				final IntBuffer sampleRateBuffer = stack.mallocInt(1);
+
+				// decode
+				final ShortBuffer decodedData = STBVorbis.stb_vorbis_decode_memory(encodedData, channelsBuffer, sampleRateBuffer);
+				if (decodedData == null) {
+					throw new GdxRuntimeException("Error decoding OGG file: " + file);
+				}
+
+				final int channels = channelsBuffer.get(0);
+				final int sampleRate = sampleRateBuffer.get(0);
+				setup(decodedData, channels, sampleRate);
 			}
 		}
 	}
