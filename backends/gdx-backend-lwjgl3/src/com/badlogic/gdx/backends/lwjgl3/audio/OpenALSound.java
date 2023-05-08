@@ -37,8 +37,9 @@ public class OpenALSound implements Sound {
 	}
 
 	void setup (byte[] pcm, int channels, int sampleRate) {
-		ByteBuffer buffer = BufferUtils.newByteBuffer(pcm.length);
-		buffer.put(pcm);
+		int validBytes = pcm.length - (pcm.length % (channels > 1 ? 4 : 2));
+		ByteBuffer buffer = BufferUtils.newByteBuffer(validBytes);
+		buffer.put(pcm, 0, validBytes);
 		((Buffer)buffer).flip();
 
 		setup(buffer.asShortBuffer(), channels, sampleRate);
