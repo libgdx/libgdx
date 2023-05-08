@@ -75,16 +75,20 @@ public class Ogg {
 			encodedData.flip();
 
 			try (MemoryStack stack = MemoryStack.stackPush()) {
-				final IntBuffer channels = stack.mallocInt(1);
-				final IntBuffer sampleRate = stack.mallocInt(1);
+				final IntBuffer channelsBuffer = stack.mallocInt(1);
+				final IntBuffer sampleRateBuffer = stack.mallocInt(1);
 
 				// decode
-				final ShortBuffer decodedData = STBVorbis.stb_vorbis_decode_memory(encodedData, channels, sampleRate);
+				final ShortBuffer decodedData = STBVorbis.stb_vorbis_decode_memory(encodedData, channelsBuffer, sampleRateBuffer);
+				int channels = channelsBuffer.get(0);
+				int sampleRate = sampleRateBuffer.get(0);
 				if (decodedData == null) {
 					throw new GdxRuntimeException("Error decoding OGG file: " + file);
+				} else if (channels < 1 || channels > 2) {
+					throw new GdxRuntimeException("Error decoding OGG file, unsupported number of channels: " + file);
 				}
 
-				setup(decodedData, channels.get(0), sampleRate.get(0));
+				setup(decodedData, channels, sampleRate);
 			}
 		}
 	}
