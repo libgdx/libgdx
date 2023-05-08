@@ -16,12 +16,12 @@
 
 package com.badlogic.gdx.backends.lwjgl3.audio;
 
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.utils.BufferUtils;
+
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
-
-import com.badlogic.gdx.audio.Sound;
 
 import static org.lwjgl.openal.AL10.*;
 
@@ -37,11 +37,8 @@ public class OpenALSound implements Sound {
 	}
 
 	void setup (byte[] pcm, int channels, int sampleRate) {
-		int bytes = pcm.length - (pcm.length % (channels > 1 ? 4 : 2));
-
-		ByteBuffer buffer = ByteBuffer.allocateDirect(bytes);
-		buffer.order(ByteOrder.nativeOrder());
-		buffer.put(pcm, 0, bytes);
+		ByteBuffer buffer = BufferUtils.newByteBuffer(pcm.length);
+		buffer.put(pcm);
 		((Buffer)buffer).flip();
 
 		setup(buffer.asShortBuffer(), channels, sampleRate);
@@ -50,10 +47,8 @@ public class OpenALSound implements Sound {
 	void setup (ShortBuffer pcm, int channels, int sampleRate) {
 		this.channels = channels;
 		this.sampleRate = sampleRate;
-		int pcmLength = pcm.limit();
-		int bytes = pcmLength - (pcmLength % (channels > 1 ? 4 : 2));
-		int samples = bytes / (2 * channels);
-		duration = samples / (float)sampleRate;
+		int sampleFrames = pcm.limit() / channels;
+		duration = sampleFrames / (float)sampleRate;
 
 		if (bufferID == -1) {
 			bufferID = alGenBuffers();
