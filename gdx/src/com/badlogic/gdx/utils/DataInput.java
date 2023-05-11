@@ -69,7 +69,7 @@ public class DataInput extends DataInputStream {
 		int charIndex = 0;
 		int b = 0;
 		while (charIndex < charCount) {
-			b = readByte();
+			b = readByte() & 0xFF;
 			if (b > 127) break;
 			chars[charIndex++] = (char)b;
 		}
