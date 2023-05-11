@@ -19,9 +19,11 @@ package com.badlogic.gdx.utils;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Set;
 
 import com.badlogic.gdx.files.FileHandle;
 
@@ -435,6 +437,20 @@ public class I18NBundle {
 					throw new MissingResourceException("Can't find bundle key " + key, this.getClass().getName(), key);
 				else
 					return "???" + key + "???";
+			}
+		}
+		return result;
+	}
+
+	/** Gets a key set of loaded properties. Keys will be copied into a new set and returned.
+	 *
+	 * @return a key set of loaded properties. Never null, might be an empty set */
+	public Set<String> keys () {
+		Set<String> result = new LinkedHashSet<>();
+		ObjectMap.Keys<String> keys = properties.keys();
+		if (keys != null) {
+			for (String key : keys) {
+				result.add(key);
 			}
 		}
 		return result;

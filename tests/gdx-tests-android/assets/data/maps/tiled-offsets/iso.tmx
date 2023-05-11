@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="isometric" renderorder="right-down" width="25" height="25" tilewidth="64" tileheight="32" nextobjectid="1">
+<map version="1.5" tiledversion="1.7.2" orientation="isometric" renderorder="right-down" width="25" height="25" tilewidth="64" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="1">
  <properties>
   <property name="boolCustomProperty" type="bool" value="true"/>
   <property name="floatCustomProperty" type="float" value="1.56"/>
@@ -12,45 +12,48 @@
    <property name="tilesetCustomProperty" value="tilesetCustomValue"/>
   </properties>
   <image source="../tiled/isometric_grass_and_water.png" width="256" height="384"/>
-  <terraintypes>
-   <terrain name="Grass" tile="0"/>
-   <terrain name="Water" tile="22"/>
-  </terraintypes>
-  <tile id="0" terrain="0,0,0,0">
+  <tile id="0">
    <properties>
     <property name="tileCustomProperty" value="tileCustomValue"/>
    </properties>
   </tile>
-  <tile id="1" terrain="0,0,0,0"/>
-  <tile id="2" terrain="0,0,0,0"/>
-  <tile id="3" terrain="0,0,0,0"/>
-  <tile id="4" terrain="0,0,0,1"/>
-  <tile id="5" terrain="0,0,1,0"/>
-  <tile id="6" terrain="1,0,0,0"/>
-  <tile id="7" terrain="0,1,0,0"/>
-  <tile id="8" terrain="0,1,1,1"/>
-  <tile id="9" terrain="1,0,1,1"/>
-  <tile id="10" terrain="1,1,1,0"/>
-  <tile id="11" terrain="1,1,0,1"/>
-  <tile id="12" terrain="0,0,1,1"/>
-  <tile id="13" terrain="1,0,1,0"/>
-  <tile id="14" terrain="1,1,0,0"/>
-  <tile id="15" terrain="0,1,0,1"/>
-  <tile id="16" terrain="0,0,1,1"/>
-  <tile id="17" terrain="1,0,1,0"/>
-  <tile id="18" terrain="1,1,0,0"/>
-  <tile id="19" terrain="0,1,0,1"/>
-  <tile id="20" terrain="0,1,1,0"/>
-  <tile id="21" terrain="1,0,0,1"/>
-  <tile id="22" terrain="1,1,1,1"/>
-  <tile id="23" terrain="1,1,1,1"/>
+  <wangsets>
+   <wangset name="Terrains" type="corner" tile="-1">
+    <wangcolor name="Grass" color="#ff0000" tile="0" probability="1"/>
+    <wangcolor name="Water" color="#00ff00" tile="22" probability="1"/>
+    <wangtile tileid="0" wangid="0,1,0,1,0,1,0,1"/>
+    <wangtile tileid="1" wangid="0,1,0,1,0,1,0,1"/>
+    <wangtile tileid="2" wangid="0,1,0,1,0,1,0,1"/>
+    <wangtile tileid="3" wangid="0,1,0,1,0,1,0,1"/>
+    <wangtile tileid="4" wangid="0,1,0,2,0,1,0,1"/>
+    <wangtile tileid="5" wangid="0,1,0,1,0,2,0,1"/>
+    <wangtile tileid="6" wangid="0,1,0,1,0,1,0,2"/>
+    <wangtile tileid="7" wangid="0,2,0,1,0,1,0,1"/>
+    <wangtile tileid="8" wangid="0,2,0,2,0,2,0,1"/>
+    <wangtile tileid="9" wangid="0,1,0,2,0,2,0,2"/>
+    <wangtile tileid="10" wangid="0,2,0,1,0,2,0,2"/>
+    <wangtile tileid="11" wangid="0,2,0,2,0,1,0,2"/>
+    <wangtile tileid="12" wangid="0,1,0,2,0,2,0,1"/>
+    <wangtile tileid="13" wangid="0,1,0,1,0,2,0,2"/>
+    <wangtile tileid="14" wangid="0,2,0,1,0,1,0,2"/>
+    <wangtile tileid="15" wangid="0,2,0,2,0,1,0,1"/>
+    <wangtile tileid="16" wangid="0,1,0,2,0,2,0,1"/>
+    <wangtile tileid="17" wangid="0,1,0,1,0,2,0,2"/>
+    <wangtile tileid="18" wangid="0,2,0,1,0,1,0,2"/>
+    <wangtile tileid="19" wangid="0,2,0,2,0,1,0,1"/>
+    <wangtile tileid="20" wangid="0,2,0,1,0,2,0,1"/>
+    <wangtile tileid="21" wangid="0,1,0,2,0,1,0,2"/>
+    <wangtile tileid="22" wangid="0,2,0,2,0,2,0,2"/>
+    <wangtile tileid="23" wangid="0,2,0,2,0,2,0,2"/>
+   </wangset>
+  </wangsets>
  </tileset>
- <layer name="Tile Layer 2" width="25" height="25">
+ <layer id="1" name="Tile Layer 2" width="25" height="25" parallaxx="1.15">
   <data encoding="base64" compression="zlib">
    eJztwwEJAAAMBKGL8f2TLsdAwVVTVfXVA6nmOpk=
   </data>
  </layer>
- <layer name="Tile Layer 1" width="25" height="25" offsetx="64" offsety="-64">
+ <layer id="2" name="Tile Layer 1" width="25" height="25" offsetx="64" offsety="-64">
   <properties>
    <property name="layerCustomProperty" value="layerCustomValue"/>
   </properties>
