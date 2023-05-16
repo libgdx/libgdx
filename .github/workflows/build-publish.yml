@@ -25,6 +25,9 @@ jobs:
           java-version: '11'
           cache: 'gradle'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Build macOS natives
         run: |
           # See https://github.com/actions/virtual-environments/issues/2557
@@ -33,7 +36,7 @@ jobs:
           sudo mv /Applications/Xcode_13.2.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
-          ./gradlew jniGen jnigenBuildIOS --no-daemon
+          ./gradlew jniGen jnigenBuildIOS
           ./backends/gdx-backend-robovm/build-objectal.sh
 
       - name: Pack artifacts
@@ -62,6 +65,9 @@ jobs:
           java-version: '11'
           cache: 'gradle'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Build macOS natives
         run: |
           # See https://github.com/actions/virtual-environments/issues/2557
@@ -70,7 +76,7 @@ jobs:
           sudo mv /Applications/Xcode_13.2.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
-          ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64 --no-daemon
+          ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64
 
       - name: Pack artifacts
         run: |
@@ -98,6 +104,9 @@ jobs:
           java-version: '11'
           cache: 'gradle'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Install cross-compilation toolchains
         run: |
           sudo apt install -y --force-yes gcc g++
@@ -106,7 +115,7 @@ jobs:
 
       - name: Build Linux natives
         run: |
-          ./gradlew jniGen jnigenBuildLinux64 jnigenBuildLinuxARM jnigenBuildLinuxARM64 --no-daemon
+          ./gradlew jniGen jnigenBuildLinux64 jnigenBuildLinuxARM jnigenBuildLinuxARM64
 
       - name: Pack artifacts
         run: |
@@ -134,13 +143,16 @@ jobs:
           java-version: '11'
           cache: 'gradle'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Install cross-compilation toolchains
         run: |
           sudo apt install -y --force-yes mingw-w64 lib32z1
 
       - name: Build Windows natives
         run: |
-          ./gradlew jniGen jnigenBuildWindows64 jnigenBuildWindows --no-daemon
+          ./gradlew jniGen jnigenBuildWindows64 jnigenBuildWindows
 
       - name: Pack artifacts
         run: |
@@ -168,10 +180,13 @@ jobs:
           java-version: '11'
           cache: 'gradle'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Build Android natives
         run: |
           export NDK_HOME=$ANDROID_NDK_HOME
-          ./gradlew jniGen jnigenBuildAndroid --no-daemon
+          ./gradlew jniGen jnigenBuildAndroid
 
       - name: Pack artifacts
         run: |
@@ -203,6 +218,9 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
           cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: Download natives-ios artifact
         uses: actions/download-artifact@v2
@@ -239,7 +257,7 @@ jobs:
 
       - name: Pack desktop natives
         run: |
-          ./gradlew jniGen --no-daemon
+          ./gradlew jniGen
           ant -f gdx/jni/build.xml pack-natives
           ant -f extensions/gdx-box2d/gdx-box2d/jni/build.xml pack-natives
           ant -f extensions/gdx-freetype/jni/build.xml pack-natives
@@ -279,6 +297,9 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Download natives artifact
         uses: actions/download-artifact@v2
         with:
@@ -290,12 +311,12 @@ jobs:
 
       - name: Fetch external natives
         run: |
-          ./gradlew fetchExternalNatives --no-daemon
+          ./gradlew fetchExternalNatives
 
       - name: Snapshot build deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'libgdx'
         run: |
-          ./gradlew build publish --no-daemon
+          ./gradlew build publish
 
       - name: Import GPG key
         if: github.event_name == 'release' && github.repository_owner == 'libgdx'
@@ -307,7 +328,7 @@ jobs:
 
       - name: Release build deploy
         if: github.event_name == 'release' && github.repository_owner == 'libgdx'
-        run: ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }} --no-daemon
+        run: ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
 
   build-and-upload-runnables:
     runs-on: ubuntu-20.04
@@ -329,14 +350,16 @@ jobs:
           java-version: '11'
           cache: 'gradle'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Build Runnables
         run: |
-          ./gradlew clean fetchNatives --no-daemon
-          ./gradlew buildRunnables build --no-daemon
+          ./gradlew clean fetchNatives
+          ./gradlew buildRunnables build
           
       - name: Upload artifacts to S3
         if: env.AWS_ACCESS_KEY_ID != null
         run: |
           aws s3 cp ./extensions/gdx-tools/build/libs/ s3://libgdx-nightlies/libgdx-runnables/ --recursive
           aws s3 cp ./extensions/gdx-setup/build/libs/ s3://libgdx-nightlies/libgdx-runnables/ --recursive
-
