@@ -116,9 +116,9 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 		final float layerTileWidth = layer.getTileWidth() * unitScale;
 		final float layerTileHeight = layer.getTileHeight() * unitScale;
 
-		final float layerOffsetX = layer.getRenderOffsetX() * unitScale;
+		final float layerOffsetX = layer.getRenderOffsetX() * unitScale - viewBounds.x * (layer.getParallaxX() - 1);
 		// offset in tiled is y down, so we flip it
-		final float layerOffsetY = -layer.getRenderOffsetY() * unitScale;
+		final float layerOffsetY = -layer.getRenderOffsetY() * unitScale - viewBounds.y * (layer.getParallaxY() - 1);
 
 		final float layerHexLength = hexSideLength * unitScale;
 

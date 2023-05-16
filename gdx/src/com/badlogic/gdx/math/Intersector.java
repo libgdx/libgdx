@@ -41,7 +41,10 @@ public final class Intersector {
 	private final static FloatArray floatArray2 = new FloatArray();
 
 	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle. No
-	 * check is performed that this is the case.
+	 * check is performed that this is the case. <br>
+	 * If the Vector3 parameters contain both small and large values, such as one that contains 0.0001 and one that contains
+	 * 10000000.0, this can fail due to floating-point imprecision.
+	 * 
 	 * @param t1 the first vertex of the triangle
 	 * @param t2 the second vertex of the triangle
 	 * @param t3 the third vertex of the triangle
@@ -51,25 +54,17 @@ public final class Intersector {
 		v1.set(t2).sub(point);
 		v2.set(t3).sub(point);
 
-		float ab = v0.dot(v1);
-		float ac = v0.dot(v2);
-		float bc = v1.dot(v2);
-		float cc = v2.dot(v2);
+		v1.crs(v2);
+		v2.crs(v0);
 
-		if (bc * ac - cc * ab < 0) return false;
-		float bb = v1.dot(v1);
-		if (ab * bc - ac * bb < 0) return false;
-		return true;
+		if (v1.dot(v2) < 0f) return false;
+		v0.crs(v2.set(t2).sub(point));
+		return (v1.dot(v0) >= 0f);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
 	public static boolean isPointInTriangle (Vector2 p, Vector2 a, Vector2 b, Vector2 c) {
-		float px1 = p.x - a.x;
-		float py1 = p.y - a.y;
-		boolean side12 = (b.x - a.x) * py1 - (b.y - a.y) * px1 > 0;
-		if ((c.x - a.x) * py1 - (c.y - a.y) * px1 > 0 == side12) return false;
-		if ((c.x - b.x) * (p.y - b.y) - (c.y - b.y) * (p.x - b.x) > 0 != side12) return false;
-		return true;
+		return isPointInTriangle(p.x, p.y, a.x, a.y, b.x, b.y, c.x, c.y);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
@@ -984,16 +979,7 @@ public final class Intersector {
 	 * @param intersection The intersection point. May be null.
 	 * @return Whether the two lines intersect */
 	public static boolean intersectLines (Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection) {
-		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
-
-		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-		if (d == 0) return false;
-
-		if (intersection != null) {
-			float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
-			intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
-		}
-		return true;
+		return intersectLines(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, intersection);
 	}
 
 	/** Intersects the two lines and returns the intersection point in intersection.
@@ -1117,21 +1103,7 @@ public final class Intersector {
 	 * @param intersection The intersection point. May be null.
 	 * @return Whether the two line segments intersect */
 	public static boolean intersectSegments (Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection) {
-		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
-
-		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-		if (d == 0) return false;
-
-		float yd = y1 - y3;
-		float xd = x1 - x3;
-		float ua = ((x4 - x3) * yd - (y4 - y3) * xd) / d;
-		if (ua < 0 || ua > 1) return false;
-
-		float ub = ((x2 - x1) * yd - (y2 - y1) * xd) / d;
-		if (ub < 0 || ub > 1) return false;
-
-		if (intersection != null) intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
-		return true;
+		return intersectSegments(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, intersection);
 	}
 
 	/** @param intersection May be null. */
