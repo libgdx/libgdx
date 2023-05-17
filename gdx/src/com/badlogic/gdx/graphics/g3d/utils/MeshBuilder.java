@@ -469,8 +469,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	private int lastIndex = -1;
 
 	@Override
-	public short lastIndex () {
-		return (short)lastIndex;
+	public int lastIndex () {
+		return lastIndex;
 	}
 
 	private final static Vector3 vTmp = new Vector3();

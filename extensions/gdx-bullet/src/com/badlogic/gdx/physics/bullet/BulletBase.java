@@ -127,6 +127,7 @@ public class BulletBase implements Disposable {
 		}
 	}
 
+	@SuppressWarnings("removal")
 	@Override
 	protected void finalize () throws Throwable {
 		if (!destroyed && Bullet.enableLogging)

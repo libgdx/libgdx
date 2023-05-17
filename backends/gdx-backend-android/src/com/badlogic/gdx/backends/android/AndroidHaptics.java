@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.os.Build;
@@ -29,17 +30,17 @@ public class AndroidHaptics {
 	private final Vibrator vibrator;
 	private AudioAttributes audioAttributes;
 	private boolean vibratorSupport;
-	private boolean amplitudeSupport;
+	private boolean hapticsSupport;
 
 	public AndroidHaptics (Context context) {
 		vibratorSupport = false;
-		amplitudeSupport = false;
+		hapticsSupport = false;
 		this.vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
 		if (vibrator != null && vibrator.hasVibrator()) {
 			vibratorSupport = true;
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 				if (vibrator.hasAmplitudeControl()) {
-					amplitudeSupport = true;
+					hapticsSupport = true;
 				}
 				this.audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
 					.setUsage(AudioAttributes.USAGE_GAME).build();
@@ -47,6 +48,7 @@ public class AndroidHaptics {
 		}
 	}
 
+	@SuppressLint("MissingPermission")
 	public void vibrate (int milliseconds) {
 		if (vibratorSupport) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -56,8 +58,9 @@ public class AndroidHaptics {
 		}
 	}
 
+	@SuppressLint("MissingPermission")
 	public void vibrate (Input.VibrationType vibrationType) {
-		if (amplitudeSupport) {
+		if (hapticsSupport) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 				int vibrationEffect;
 				switch (vibrationType) {
@@ -74,28 +77,13 @@ public class AndroidHaptics {
 					throw new IllegalArgumentException("Unknown VibrationType " + vibrationType);
 				}
 				vibrator.vibrate(VibrationEffect.createPredefined(vibrationEffect), audioAttributes);
-			} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				int amplitude;
-				switch (vibrationType) {
-				case LIGHT:
-					amplitude = 50;
-					break;
-				case MEDIUM:
-					amplitude = VibrationEffect.DEFAULT_AMPLITUDE;
-					break;
-				case HEAVY:
-					amplitude = 250;
-					break;
-				default:
-					throw new IllegalArgumentException("Unknown VibrationType " + vibrationType);
-				}
-				vibrator.vibrate(VibrationEffect.createOneShot(25, amplitude));
 			}
 		}
 	}
 
+	@SuppressLint("MissingPermission")
 	public void vibrate (int milliseconds, int intensity, boolean fallback) {
-		if (amplitudeSupport) {
+		if (hapticsSupport) {
 			intensity = MathUtils.clamp(intensity, 0, 255);
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
 				vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, intensity));
@@ -106,7 +94,7 @@ public class AndroidHaptics {
 		return vibratorSupport;
 	}
 
-	public boolean hasAmplitudeSupport () {
-		return amplitudeSupport;
+	public boolean hasHapticsSupport () {
+		return hapticsSupport;
 	}
 }

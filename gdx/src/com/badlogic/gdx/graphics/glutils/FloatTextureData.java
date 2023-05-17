@@ -81,7 +81,7 @@ public class FloatTextureData implements TextureData {
 	@Override
 	public void consumeCustomData (int target) {
 		if (Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.iOS
-			|| Gdx.app.getType() == ApplicationType.WebGL) {
+			|| (Gdx.app.getType() == ApplicationType.WebGL && !Gdx.graphics.isGL30Available())) {
 
 			if (!Gdx.graphics.supportsExtension("OES_texture_float"))
 				throw new GdxRuntimeException("Extension OES_texture_float not supported!");

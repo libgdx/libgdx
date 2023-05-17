@@ -145,6 +145,10 @@ public class TiledMapLayerOffsetTest extends GdxTest {
 		final float x = camera.position.x - w / 2;
 		final float y = camera.position.y - h / 2;
 		renderer.setView(camera.combined, x, y, w, h);
+		// For parallax effect to work, we must invalidate cache.
+		if (mapType == 1) {
+			((OrthoCachedTiledMapRenderer)renderer).invalidateCache();
+		}
 		renderer.render();
 
 		shapeRenderer.setProjectionMatrix(camera.combined);

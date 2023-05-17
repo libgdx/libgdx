@@ -145,7 +145,7 @@ public class MultipleRenderTargetTest extends GdxTest {
 		frameBufferBuilder.addColorTextureAttachment(GL30.GL_RGBA8, GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE);
 		frameBufferBuilder.addColorTextureAttachment(GL30.GL_RGB8, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE);
 		frameBufferBuilder.addColorTextureAttachment(GL30.GL_RGB8, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE);
-		frameBufferBuilder.addDepthTextureAttachment(GL30.GL_DEPTH_COMPONENT, GL30.GL_UNSIGNED_SHORT);
+		frameBufferBuilder.addDepthTextureAttachment(GL30.GL_DEPTH_COMPONENT16, GL30.GL_UNSIGNED_SHORT);
 
 		frameBuffer = frameBufferBuilder.build();
 

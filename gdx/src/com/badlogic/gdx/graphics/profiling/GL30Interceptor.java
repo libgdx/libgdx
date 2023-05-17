@@ -334,6 +334,14 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 	}
 
 	@Override
+	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
+		int offset) {
+		calls++;
+		gl30.glTexImage2D(target, level, internalformat, width, height, border, format, type, offset);
+		check();
+	}
+
+	@Override
 	public void glTexParameterf (int target, int pname, float param) {
 		calls++;
 		gl30.glTexParameterf(target, pname, param);
@@ -345,6 +353,14 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 		Buffer pixels) {
 		calls++;
 		gl30.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+		check();
+	}
+
+	@Override
+	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
+		int offset) {
+		calls++;
+		gl30.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, offset);
 		check();
 	}
 

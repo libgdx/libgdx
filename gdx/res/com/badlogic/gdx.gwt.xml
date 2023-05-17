@@ -80,6 +80,8 @@
 		<include name="graphics/FPSLogger.java"/>
 		<include name="graphics/GL20.java"/>
 		<include name="graphics/GL30.java"/>
+		<include name="graphics/GL31.java"/>
+		<include name="graphics/GL32.java"/>
 		<include name="graphics/GLCommon.java"/>
 		<include name="graphics/GLTexture.java"/>
 		<include name="graphics/Mesh.java"/>
@@ -88,8 +90,10 @@
 		<include name="graphics/Pixmap.java"/> <!-- Emulated -->
 		<exclude name="graphics/PixmapIO.java"/> <!-- Reason: No DeflaterOutputStream -->
 		<include name="graphics/Texture.java"/>
-		<exclude name="graphics/TextureArray.java"/> <!-- GLES 3.0 -->
-		<exclude name="graphics/TextureArrayData.java"/> <!-- GLES 3.0 -->
+		<include name="graphics/Texture3D.java"/> <!-- GLES 3.0 -->
+		<include name="graphics/Texture3DData.java"/> <!-- GLES 3.0 -->
+		<include name="graphics/TextureArray.java"/> <!-- GLES 3.0 -->
+		<include name="graphics/TextureArrayData.java"/> <!-- GLES 3.0 -->
 		<exclude name="graphics/TextureData.java"/> <!-- emulated: TextureData.Factory requires ETC1 -->
 		<include name="graphics/VertexAttribute.java"/>
 		<include name="graphics/VertexAttributes.java"/>
@@ -236,10 +240,11 @@
 		<include name="graphics/g3d/utils/shapebuilders/SphereShapeBuilder.java"/>
 
 	<!-- graphics/glutils -->
+		<include name="graphics/glutils/CustomTexture3DData.java"/> <!-- GLES 3.0 -->
 		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
 		<include name="graphics/glutils/ETC1TextureData.java"/>  <!-- Emulated: explodes on construction -->
 		<include name="graphics/glutils/FacedCubemapData.java"/>
-		<exclude name="graphics/glutils/FileTextureArrayData.java"/> <!-- GLES 3.0 -->
+		<include name="graphics/glutils/FileTextureArrayData.java"/> <!-- GLES 3.0 -->
 		<include name="graphics/glutils/FileTextureData.java"/> <!-- Emulated: No PixmapIO -->
 		<include name="graphics/glutils/FloatFrameBuffer.java"/>
 		<include name="graphics/glutils/FloatTextureData.java"/>
@@ -273,6 +278,8 @@
 	<!-- graphics/profiling -->
 		<include name="graphics/profiling/GL20Interceptor.java"/>
 		<include name="graphics/profiling/GL30Interceptor.java"/>
+		<include name="graphics/profiling/GL31Interceptor.java"/>
+		<include name="graphics/profiling/GL32Interceptor.java"/>
 		<include name="graphics/profiling/GLInterceptor.java"/>
 		<include name="graphics/profiling/GLProfiler.java"/>
 		<include name="graphics/profiling/GLErrorListener.java"/> <!-- Emulated -->
@@ -368,6 +375,7 @@
 				
 	<!-- math/collision -->								
 		<include name="math/collision/BoundingBox.java"/>
+		<include name="math/collision/OrientedBoundingBox.java"/>
 		<include name="math/collision/Ray.java"/>
 		<include name="math/collision/Segment.java"/>
 		<include name="math/collision/Sphere.java"/>		
@@ -415,7 +423,6 @@
 		<include name="utils/Disposable.java"/>
 		<include name="utils/FloatArray.java"/>
 		<include name="utils/FlushablePool.java"/>
-		<exclude name="utils/GdxBuild.java"/> <!-- Reason: Natives -->
 		<exclude name="utils/GdxNativesLoader.java"/> <!-- Reason: Natives -->
 		<include name="utils/GdxRuntimeException.java"/>
 		<include name="utils/I18NBundle.java"/>
@@ -437,11 +444,12 @@
 		<include name="utils/NumberUtils.java"/> <!-- Emulated -->
 		<include name="utils/ObjectFloatMap.java"/>
 		<include name="utils/ObjectIntMap.java"/>
+		<include name="utils/ObjectLongMap.java"/>
 		<include name="utils/ObjectMap.java"/>
 		<include name="utils/ObjectSet.java"/>
 		<include name="utils/OrderedMap.java"/>
 		<include name="utils/OrderedSet.java"/>
-		<include name="utils/PausableThread.java"/>
+		<exclude name="utils/PauseableThread.java"/> <!-- Reason: Threading -->
 		<include name="utils/PerformanceCounter.java"/>
 		<include name="utils/PerformanceCounters.java"/>
 		<include name="utils/Pool.java"/>
@@ -449,8 +457,8 @@
 		<include name="utils/Pools.java"/>
 		<include name="utils/Predicate.java"/>
 		<include name="utils/PropertiesUtils.java"/>
-		<include name="utils/Queue.java"/>
 		<include name="utils/QuadTreeFloat.java"/>
+		<include name="utils/Queue.java"/>
 		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/>
 		<include name="utils/Scaling.java"/>

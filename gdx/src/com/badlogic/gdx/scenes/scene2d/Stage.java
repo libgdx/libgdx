@@ -361,6 +361,11 @@ public class Stage extends InputAdapter implements Disposable {
 		return handled;
 	}
 
+	public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {
+		cancelTouchFocus();
+		return false;
+	}
+
 	/** Applies a mouse moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
 	 * event. This event only occurs on the desktop. */
 	public boolean mouseMoved (int screenX, int screenY) {

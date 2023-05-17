@@ -27,6 +27,7 @@ configurations.all {
 }
 
 apply plugin: 'gwt'
+apply plugin: 'war'
 apply plugin: 'org.gretty'
 
 import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
@@ -41,6 +42,7 @@ dependencies {
 	implementation project(":tests:gdx-tests")
 	implementation project(":backends:gdx-backend-gwt")
 	implementation project(":extensions:gdx-box2d-parent:gdx-box2d-gwt")
+	compileOnly "com.google.gwt:gwt-dev:${versions.gwt}"
 }
 
 gwt {

@@ -48,7 +48,7 @@ dependencies {
 task generate(type: JavaExec) {
 	dependsOn configurations.generator
 
-	main = 'JavaCodeGenerator'
+	mainClass = 'JavaCodeGenerator'
 	classpath = sourceSets.generator.runtimeClasspath
 
 	inputs.dir '../gdx-backend-robovm/src/'
@@ -59,7 +59,7 @@ task fetchMetalANGLE(type: Download) {
 	doFirst {
 		file("build/tmp").mkdirs();
 	}
-	src 'https://github.com/kakashidinho/metalangle/releases/download/gles3-0.0.7/MetalANGLE.framework.ios.zip'
+	src 'https://github.com/kakashidinho/metalangle/releases/download/gles3-0.0.8/MetalANGLE.framework.ios.zip'
 	dest 'build/tmp/MetalANGLE.framework.ios.zip'
 	onlyIfModified true
 	useETag "all"
@@ -69,7 +69,7 @@ task fetchMetalANGLESimulator(type: Download) {
 	doFirst {
 		file("build/tmp").mkdirs();
 	}
-	src 'https://github.com/kakashidinho/metalangle/releases/download/gles3-0.0.7/MetalANGLE.framework.ios.simulator.zip'
+	src 'https://github.com/kakashidinho/metalangle/releases/download/gles3-0.0.8/MetalANGLE.framework.ios.simulator.zip'
 	dest 'build/tmp/MetalANGLE.framework.ios.simulator.zip'
 	onlyIfModified true
 	useETag "all"
@@ -78,13 +78,13 @@ task fetchMetalANGLESimulator(type: Download) {
 task verifyMetalANGLE(dependsOn: fetchMetalANGLE, type: Verify) {
 	src 'build/tmp/MetalANGLE.framework.ios.zip'
 	algorithm 'SHA-256'
-	checksum '66fcf9eed2ede9e5725bf64e5b3169e0f39d1a515fe425447354c41968fc7999'
+	checksum '9b6e7c82d41749266200ed19bb184c4f47df63c4dcde0972186ea557de623018'
 }
 
 task verifyMetalANGLESimulator(dependsOn: fetchMetalANGLESimulator, type: Verify) {
 	src 'build/tmp/MetalANGLE.framework.ios.simulator.zip'
 	algorithm 'SHA-256'
-	checksum 'e9aa526d2f19c57e1efbae4ec04d76701da4cf596bf8c6fb6ef6c507dbc2fdc4'
+	checksum '63ff063bf7825e2da9a01eda981067eb4eacd42e202c86f448541d2c5bd564a9'
 }
 
 task extractMetalANGLE(dependsOn: verifyMetalANGLE, type: Copy) {
@@ -108,6 +108,7 @@ task buildMetalANGLE(dependsOn: [
 	extractMetalANGLESimulator
 ], type: Exec) {
 	doFirst {
+		delete("res/META-INF/robovm/ios/libs/MetalANGLE.xcframework")
 		file("res/META-INF/robovm/ios/libs").mkdirs();
 	}
 	commandLine 'xcodebuild', '-create-xcframework', '-framework', 'build/tmp/real/MetalANGLE.framework', '-framework', 'build/tmp/sim/MetalANGLE.framework', '-output', 'res/META-INF/robovm/ios/libs/MetalANGLE.xcframework'

@@ -48,7 +48,6 @@ public class IndexBufferObjectShaderTest extends GdxTest {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 		shader.bind();
 		shader.setUniformi("u_texture", 0);
 		texture.bind();

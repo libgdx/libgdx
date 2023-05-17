@@ -87,7 +87,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		selection.setActor(this);
 		selection.setRequired(true);
 
-		scrollPane = new SelectBoxScrollPane(this);
+		scrollPane = newScrollPane();
 
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -458,7 +458,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 			addListener(new InputListener() {
 				public void exit (InputEvent event, float x, float y, int pointer, @Null Actor toActor) {
-					if (toActor == null || !isAscendantOf(toActor)) list.selection.set(selectBox.getSelected());
+					if (toActor == null || !isAscendantOf(toActor)) {
+						T selected = selectBox.getSelected();
+						if (selected != null) list.selection.set(selected);
+					}
 				}
 			});
 
