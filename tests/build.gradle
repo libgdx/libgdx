@@ -17,8 +17,10 @@
 configure(subprojects - project(":tests:gdx-tests-android")) {
 	apply plugin: "java"
 
-	compileJava {
-		options.release = versions.java
+	if (JavaVersion.current().isJava9Compatible()) {
+		compileJava {
+			options.release = versions.java
+		}
 	}
 	sourceCompatibility = versions.java
 	targetCompatibility = versions.java
