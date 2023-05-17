@@ -70,11 +70,11 @@ public class DataInput extends DataInputStream {
 		int b = 0;
 		while (charIndex < charCount) {
 			b = readByte();
-			if (b > 127) break;
+			if (b < 0) break;
 			chars[charIndex++] = (char)b;
 		}
 		// If a char was not ASCII, finish with slow path.
-		if (charIndex < charCount) readUtf8_slow(charCount, charIndex, b);
+		if (charIndex < charCount) readUtf8_slow(charCount, charIndex, b & 0xFF);
 		return new String(chars, 0, charCount);
 	}
 

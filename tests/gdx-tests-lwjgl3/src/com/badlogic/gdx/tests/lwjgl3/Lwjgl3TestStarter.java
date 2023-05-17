@@ -55,18 +55,22 @@ public class Lwjgl3TestStarter {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(640, 480);
 
-		if (options.gl30) {
+		if (options.gl30 || options.gl31 || options.gl32) {
 			ShaderProgram.prependVertexCode = "#version 140\n#define varying out\n#define attribute in\n";
 			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+		}
 
+		if (options.gl32) {
+			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL32, 4, 6);
+		} else if (options.gl31) {
+			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL31, 4, 5);
+		} else if (options.gl30) {
 			if (SharedLibraryLoader.isMac) {
 				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 3, 2);
 			} else {
 				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 4, 3);
 			}
-		}
-
-		if (options.angle) {
+		} else if (options.angle) {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 0, 0);
 			// Use CPU sync if ANGLE is enabled on macOS, otherwise the framerate gets halfed
 			// by each new open window.
