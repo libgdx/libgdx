@@ -22,6 +22,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Null;
 
 /** This interface encapsulates the creation and management of audio resources. It allows you to get direct access to the audio
  * hardware via the {@link AudioDevice} and {@link AudioRecorder} interfaces, create sound effects via the {@link Sound} interface
@@ -85,4 +86,17 @@ public interface Audio {
 	 * @return the new Music or null if the Music could not be loaded
 	 * @throws GdxRuntimeException in case the music could not be loaded */
 	public Music newMusic (FileHandle file);
+
+	/** Sets a new OutputDevice. The identifier can be retrieved from {@link Audio#getAvailableOutputDevices()}. If null is passed,
+	 * it will switch to auto.
+	 *
+	 * @param deviceIdentifier device identifier to switch to, or null for auto */
+	public boolean switchOutputDevice (@Null String deviceIdentifier);
+
+	/** This function returns a list of fully qualified Output device names. This function is only implemented on desktop. On all
+	 * other platforms it will return a empty array. It will also return a empty array on error. The names returned need os
+	 * dependent preprocessing before exposing to a user.
+	 *
+	 * @return A array of available output devices */
+	public String[] getAvailableOutputDevices ();
 }
