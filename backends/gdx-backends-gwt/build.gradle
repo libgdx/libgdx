@@ -15,12 +15,18 @@
  ******************************************************************************/
 
 dependencies {
-	compile libraries.gwt
+	api libraries.gwt
+	compileOnly libraries.compileOnly.gwt
 }
 
 configurations.all {
 	// gwt-dev pulls in apache-jsp (Tomcat), but we don't need it and it messes with gretty
 	exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
+}
+
+javadoc {
+	exclude "com/badlogic/gdx/backends/gwt/emu/**"
+	options.addStringOption("sourcepath", "src/")
 }
 
 sourceSets.main.java.exclude "**/System.java"

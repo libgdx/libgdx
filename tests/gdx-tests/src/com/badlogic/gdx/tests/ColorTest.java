@@ -35,7 +35,7 @@ public class ColorTest extends GdxTest {
 		Gdx.input.setInputProcessor(stage);
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		skin.add("default", new BitmapFont(Gdx.files.internal("data/arial-32.fnt"), false));
+		skin.add("default", new BitmapFont(Gdx.files.internal("data/lsans-32.fnt"), false));
 
 		Table root = new Table();
 		stage.addActor(root);

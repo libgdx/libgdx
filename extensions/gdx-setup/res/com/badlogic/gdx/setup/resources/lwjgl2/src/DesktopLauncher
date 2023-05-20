@@ -7,6 +7,7 @@ import %PACKAGE%.%MAIN_CLASS%;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = "%APP_NAME%";
 		new LwjglApplication(new %MAIN_CLASS%(), config);
 	}
 }

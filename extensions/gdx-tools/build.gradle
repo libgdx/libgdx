@@ -15,11 +15,10 @@
  ******************************************************************************/
 
 dependencies {
-	compile project(":gdx")
-	compile project(":backends:gdx-backend-lwjgl")
-	compile project(":extensions:gdx-freetype")
-	compile project(":backends:gdx-backend-headless")
-	compile testnatives.desktop
+	api project(":backends:gdx-backend-lwjgl")
+	api project(":extensions:gdx-freetype")
+	api project(":backends:gdx-backend-headless")
+	api testnatives.desktop
 }
 
 sourceSets.main.resources.srcDirs = ["assets"]
@@ -33,52 +32,60 @@ ext {
 	toolsAssetsDir = ["assets"]
 }
 
-task dist2DParticles (type: Jar) {
-	from files(sourceSets.main.java.outputDir)
+task dist2DParticles (type: Jar, dependsOn: configurations.runtimeClasspath) {
+	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+	from files(sourceSets.main.java.classesDirectory)
 	from files(sourceSets.main.output.resourcesDir)
-	from {configurations.compile.collect {zipTree(it)}}
+	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
-	archiveName = "runnable-2D-particles.jar"
+	archiveFileName = "runnable-2D-particles.jar"
 
 	manifest {
 		attributes 'Main-Class': particles2DMainClass
 	}
 }
 
-task dist3DParticles (type: Jar) {
-	from files(sourceSets.main.java.outputDir)
+task dist3DParticles (type: Jar, dependsOn: configurations.runtimeClasspath) {
+	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+	from files(sourceSets.main.java.classesDirectory)
 	from files(sourceSets.main.output.resourcesDir)
-	from {configurations.compile.collect {zipTree(it)}}
+	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
-	archiveName = "runnable-3D-particles.jar"
+	archiveFileName = "runnable-3D-particles.jar"
 
 	manifest {
 		attributes 'Main-Class': particles3DMainClass
 	}
 }
 
-task distHiero (type: Jar) {
-	from files(sourceSets.main.java.outputDir)
+task distHiero (type: Jar, dependsOn: configurations.runtimeClasspath) {
+	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+	from files(sourceSets.main.java.classesDirectory)
 	from files(sourceSets.main.output.resourcesDir)
-	from {configurations.compile.collect {zipTree(it)}}
+	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
-	archiveName = "runnable-hiero.jar"
+	archiveFileName = "runnable-hiero.jar"
 
 	manifest {
 		attributes 'Main-Class': hieroMainClass
 	}
 }
 
-task distTexturePacker (type: Jar) {
-	from files(sourceSets.main.java.outputDir)
+task distTexturePacker (type: Jar, dependsOn: configurations.runtimeClasspath) {
+	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+	from files(sourceSets.main.java.classesDirectory)
 	from files(sourceSets.main.output.resourcesDir)
-	from {configurations.compile.collect {zipTree(it)}}
+	from {configurations.runtimeClasspath.collect {zipTree(it)}}
 	from files(toolsAssetsDir)
 
-	archiveName = "runnable-texturepacker.jar"
+	archiveFileName = "runnable-texturepacker.jar"
 
 	manifest {
 		attributes 'Main-Class': texturePackerMainClass
@@ -86,7 +93,6 @@ task distTexturePacker (type: Jar) {
 }
 
 task buildRunnables (dependsOn: [
-	classes,
 	dist2DParticles,
 	dist3DParticles,
 	distHiero,

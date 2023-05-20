@@ -26,9 +26,8 @@ sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
 dependencies {
-	compile project(":tests:gdx-tests")
-	compile project(":backends:gdx-backend-robovm")
-	compile testnatives.ios
+	implementation project(":tests:gdx-tests")
+	implementation project(":backends:gdx-backend-robovm")
 }
 
 ext {

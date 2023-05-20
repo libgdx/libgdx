@@ -21,7 +21,9 @@ include ":backends:gdx-backend-headless"
 include ":backends:gdx-backend-lwjgl"
 include ":backends:gdx-backend-lwjgl3"
 include ":backends:gdx-backend-robovm"
+include ":backends:gdx-backend-robovm-metalangle"
 include ":backends:gdx-backends-gwt"
+project(":backends:gdx-backends-gwt").name = "gdx-backend-gwt"
 
 include(":extensions:gdx-box2d")
 project(":extensions:gdx-box2d").name = "gdx-box2d-parent"
@@ -31,6 +33,8 @@ include ":extensions:gdx-bullet"
 include ":extensions:gdx-freetype"
 include ":extensions:gdx-setup"
 include ":extensions:gdx-tools"
+include ":extensions:gdx-lwjgl3-angle"
+include ":extensions:gdx-lwjgl3-glfw-awt-macos"
 
 include ":tests"
 include ":tests:gdx-tests"

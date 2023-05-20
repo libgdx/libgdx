@@ -45,7 +45,7 @@ public class FreeTypeIncrementalTest extends GdxTest {
 
 		FreeTypeFontGenerator.setMaxTextureSize(128);
 
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/arial.ttf"));
+		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/lsans.ttf"));
 
 		FreeTypeFontParameter param = new FreeTypeFontParameter();
 		param.incremental = true;
@@ -97,6 +97,10 @@ public class FreeTypeIncrementalTest extends GdxTest {
 	public void resize (int width, int height) {
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 		shapes.setProjectionMatrix(batch.getProjectionMatrix());
+	}
+
+	public void dispose () {
+		FreeTypeFontGenerator.setMaxTextureSize(1024);
 	}
 
 	static public class SimplifiedChinese {

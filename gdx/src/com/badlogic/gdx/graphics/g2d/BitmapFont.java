@@ -66,18 +66,18 @@ public class BitmapFont implements Disposable {
 	boolean integer;
 	private boolean ownsTexture;
 
-	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily
-	 * display text without bothering without generating a bitmap font yourself. */
+	/** Creates a BitmapFont using the default 15pt Liberation Sans font included in the libgdx JAR file. This is convenient to
+	 * easily display text without bothering without generating a bitmap font yourself. */
 	public BitmapFont () {
-		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"), Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"),
+		this(Gdx.files.classpath("com/badlogic/gdx/utils/lsans-15.fnt"), Gdx.files.classpath("com/badlogic/gdx/utils/lsans-15.png"),
 			false, true);
 	}
 
-	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily
-	 * display text without bothering without generating a bitmap font yourself.
+	/** Creates a BitmapFont using the default 15pt Liberation Sans font included in the libgdx JAR file. This is convenient to
+	 * easily display text without bothering without generating a bitmap font yourself.
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner. */
 	public BitmapFont (boolean flip) {
-		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"), Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"),
+		this(Gdx.files.classpath("com/badlogic/gdx/utils/lsans-15.fnt"), Gdx.files.classpath("com/badlogic/gdx/utils/lsans-15.png"),
 			flip, true);
 	}
 

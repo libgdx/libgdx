@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,7 @@ package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.OrientedBoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
@@ -40,7 +41,10 @@ public final class Intersector {
 	private final static FloatArray floatArray2 = new FloatArray();
 
 	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle. No
-	 * check is performed that this is the case.
+	 * check is performed that this is the case. <br>
+	 * If the Vector3 parameters contain both small and large values, such as one that contains 0.0001 and one that contains
+	 * 10000000.0, this can fail due to floating-point imprecision.
+	 * 
 	 * @param t1 the first vertex of the triangle
 	 * @param t2 the second vertex of the triangle
 	 * @param t3 the third vertex of the triangle
@@ -50,25 +54,17 @@ public final class Intersector {
 		v1.set(t2).sub(point);
 		v2.set(t3).sub(point);
 
-		float ab = v0.dot(v1);
-		float ac = v0.dot(v2);
-		float bc = v1.dot(v2);
-		float cc = v2.dot(v2);
+		v1.crs(v2);
+		v2.crs(v0);
 
-		if (bc * ac - cc * ab < 0) return false;
-		float bb = v1.dot(v1);
-		if (ab * bc - ac * bb < 0) return false;
-		return true;
+		if (v1.dot(v2) < 0f) return false;
+		v0.crs(v2.set(t2).sub(point));
+		return (v1.dot(v0) >= 0f);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
 	public static boolean isPointInTriangle (Vector2 p, Vector2 a, Vector2 b, Vector2 c) {
-		float px1 = p.x - a.x;
-		float py1 = p.y - a.y;
-		boolean side12 = (b.x - a.x) * py1 - (b.y - a.y) * px1 > 0;
-		if ((c.x - a.x) * py1 - (c.y - a.y) * px1 > 0 == side12) return false;
-		if ((c.x - b.x) * (p.y - b.y) - (c.y - b.y) * (p.x - b.x) > 0 != side12) return false;
-		return true;
+		return isPointInTriangle(p.x, p.y, a.x, a.y, b.x, b.y, c.x, c.y);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
@@ -247,7 +243,7 @@ public final class Intersector {
 
 	/** Returns the distance between the given line and point. Note the specified line is not a line segment. */
 	public static float distanceLinePoint (float startX, float startY, float endX, float endY, float pointX, float pointY) {
-		float normalLength = (float)Math.sqrt((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY));
+		float normalLength = Vector2.len(endX - startX, endY - startY);
 		return Math.abs((pointX - startX) * (endY - startY) - (pointY - startY) * (endX - startX)) / normalLength;
 	}
 
@@ -266,8 +262,8 @@ public final class Intersector {
 		float length2 = start.dst2(end);
 		if (length2 == 0) return nearest.set(start);
 		float t = ((point.x - start.x) * (end.x - start.x) + (point.y - start.y) * (end.y - start.y)) / length2;
-		if (t < 0) return nearest.set(start);
-		if (t > 1) return nearest.set(end);
+		if (t <= 0) return nearest.set(start);
+		if (t >= 1) return nearest.set(end);
 		return nearest.set(start.x + t * (end.x - start.x), start.y + t * (end.y - start.y));
 	}
 
@@ -279,8 +275,8 @@ public final class Intersector {
 		float length2 = xDiff * xDiff + yDiff * yDiff;
 		if (length2 == 0) return nearest.set(startX, startY);
 		float t = ((pointX - startX) * (endX - startX) + (pointY - startY) * (endY - startY)) / length2;
-		if (t < 0) return nearest.set(startX, startY);
-		if (t > 1) return nearest.set(endX, endY);
+		if (t <= 0) return nearest.set(startX, startY);
+		if (t >= 1) return nearest.set(endX, endY);
 		return nearest.set(startX + t * (endX - startX), startY + t * (endY - startY));
 	}
 
@@ -365,6 +361,29 @@ public final class Intersector {
 		boolean frustumIsInsideBounds = false;
 		for (Vector3 point : frustum.planePoints) {
 			frustumIsInsideBounds |= bounds.contains(point);
+		}
+		return frustumIsInsideBounds;
+	}
+
+	/** Returns whether the given {@link Frustum} intersects a {@link OrientedBoundingBox}.
+	 * @param frustum The frustum
+	 * @param obb The oriented bounding box
+	 * @return Whether the frustum intersects the oriented bounding box */
+	public static boolean intersectFrustumBounds (Frustum frustum, OrientedBoundingBox obb) {
+
+		boolean boundsIntersectsFrustum = false;
+
+		for (Vector3 v : obb.getVertices()) {
+			boundsIntersectsFrustum |= frustum.pointInFrustum(v);
+		}
+
+		if (boundsIntersectsFrustum) {
+			return true;
+		}
+
+		boolean frustumIsInsideBounds = false;
+		for (Vector3 point : frustum.planePoints) {
+			frustumIsInsideBounds |= obb.contains(point);
 		}
 
 		return frustumIsInsideBounds;
@@ -523,12 +542,12 @@ public final class Intersector {
 
 	/** Intersects a {@link Ray} and a {@link BoundingBox}, returning the intersection point in intersection. This intersection is
 	 * defined as the point on the ray closest to the origin which is within the specified bounds.
-	 * 
+	 *
 	 * <p>
 	 * The returned intersection (if any) is guaranteed to be within the bounds of the bounding box, but it can occasionally
 	 * diverge slightly from ray, due to small floating-point errors.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * If the origin of the ray is inside the box, this method returns true and the intersection point is set to the origin of the
 	 * ray, accordingly to the definition above.
@@ -675,29 +694,54 @@ public final class Intersector {
 		return max >= 0 && max >= min;
 	}
 
-	/** Quick check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.
+	/** Check whether the given {@link Ray} and {@link OrientedBoundingBox} intersect.
+	 *
+	 * @return Whether the ray and the oriented bounding box intersect. */
+	static public boolean intersectRayOrientedBoundsFast (Ray ray, OrientedBoundingBox obb) {
+		return intersectRayOrientedBounds(ray, obb, null);
+	}
+
+	/** Check whether the given {@link Ray} and Oriented {@link BoundingBox} intersect.
+	 * @param transform - the BoundingBox transformation
+	 *
+	 * @return Whether the ray and the oriented bounding box intersect. */
+	static public boolean intersectRayOrientedBoundsFast (Ray ray, BoundingBox bounds, Matrix4 transform) {
+		return intersectRayOrientedBounds(ray, bounds, transform, null);
+	}
+
+	/** Check whether the given {@link Ray} and {@link OrientedBoundingBox} intersect.
+	 *
+	 * @param intersection The intersection point (optional)
+	 * @return Whether an intersection is present. */
+	static public boolean intersectRayOrientedBounds (Ray ray, OrientedBoundingBox obb, Vector3 intersection) {
+		BoundingBox bounds = obb.getBounds();
+		Matrix4 transform = obb.getTransform();
+		return intersectRayOrientedBounds(ray, bounds, transform, intersection);
+	}
+
+	/** Check whether the given {@link Ray} and {@link OrientedBoundingBox} intersect.
 	 *
 	 * Based on code at: https://github.com/opengl-tutorials/ogl/blob/master/misc05_picking/misc05_picking_custom.cpp#L83
-	 * @param matrix The orientation of the bounding box
-	 * @return Whether the ray and the oriented bounding box intersect. */
-	static public boolean intersectRayOrientedBoundsFast (Ray ray, BoundingBox bounds, Matrix4 matrix) {
+	 * @param intersection The intersection point (optional)
+	 * @return Whether an intersection is present. */
+	static public boolean intersectRayOrientedBounds (Ray ray, BoundingBox bounds, Matrix4 transform, Vector3 intersection) {
 		float tMin = 0.0f;
 		float tMax = Float.MAX_VALUE;
 		float t1, t2;
 
-		Vector3 oBBposition = matrix.getTranslation(tmp);
+		Vector3 oBBposition = transform.getTranslation(tmp);
 		Vector3 delta = oBBposition.sub(ray.origin);
 
 		// Test intersection with the 2 planes perpendicular to the OBB's X axis
 		Vector3 xaxis = tmp1;
-		tmp1.set(matrix.val[Matrix4.M00], matrix.val[Matrix4.M10], matrix.val[Matrix4.M20]);
+		tmp1.set(transform.val[Matrix4.M00], transform.val[Matrix4.M10], transform.val[Matrix4.M20]);
 		float e = xaxis.dot(delta);
 		float f = ray.direction.dot(xaxis);
 
 		if (Math.abs(f) > MathUtils.FLOAT_ROUNDING_ERROR) { // Standard case
 			t1 = (e + bounds.min.x) / f; // Intersection with the "left" plane
 			t2 = (e + bounds.max.x) / f; // Intersection with the "right" plane
-			// t1 and t2 now contain distances betwen ray origin and ray-plane intersections
+			// t1 and t2 now contain distances between ray origin and ray-plane intersections
 
 			// We want t1 to represent the nearest intersection,
 			// so if it's not the case, invert t1 and t2
@@ -717,7 +761,6 @@ public final class Intersector {
 
 			// And here's the trick :
 			// If "far" is closer than "near", then there is NO intersection.
-			// See the images in the tutorials for the visual explanation.
 			if (tMax < tMin) {
 				return false;
 			}
@@ -729,7 +772,7 @@ public final class Intersector {
 		// Test intersection with the 2 planes perpendicular to the OBB's Y axis
 		// Exactly the same thing than above.
 		Vector3 yaxis = tmp2;
-		tmp2.set(matrix.val[Matrix4.M01], matrix.val[Matrix4.M11], matrix.val[Matrix4.M21]);
+		tmp2.set(transform.val[Matrix4.M01], transform.val[Matrix4.M11], transform.val[Matrix4.M21]);
 
 		e = yaxis.dot(delta);
 		f = ray.direction.dot(yaxis);
@@ -760,7 +803,7 @@ public final class Intersector {
 		// Test intersection with the 2 planes perpendicular to the OBB's Z axis
 		// Exactly the same thing than above.
 		Vector3 zaxis = tmp3;
-		tmp3.set(matrix.val[Matrix4.M02], matrix.val[Matrix4.M12], matrix.val[Matrix4.M22]);
+		tmp3.set(transform.val[Matrix4.M02], transform.val[Matrix4.M12], transform.val[Matrix4.M22]);
 
 		e = zaxis.dot(delta);
 		f = ray.direction.dot(zaxis);
@@ -785,6 +828,10 @@ public final class Intersector {
 			}
 		} else if (-e + bounds.min.z > 0.0f || -e + bounds.max.z < 0.0f) {
 			return false;
+		}
+
+		if (intersection != null) {
+			ray.getEndPoint(intersection, tMin);
 		}
 
 		return true;
@@ -932,16 +979,7 @@ public final class Intersector {
 	 * @param intersection The intersection point. May be null.
 	 * @return Whether the two lines intersect */
 	public static boolean intersectLines (Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection) {
-		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
-
-		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-		if (d == 0) return false;
-
-		if (intersection != null) {
-			float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
-			intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
-		}
-		return true;
+		return intersectLines(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, intersection);
 	}
 
 	/** Intersects the two lines and returns the intersection point in intersection.
@@ -1065,21 +1103,7 @@ public final class Intersector {
 	 * @param intersection The intersection point. May be null.
 	 * @return Whether the two line segments intersect */
 	public static boolean intersectSegments (Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection) {
-		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y, x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
-
-		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-		if (d == 0) return false;
-
-		float yd = y1 - y3;
-		float xd = x1 - x3;
-		float ua = ((x4 - x3) * yd - (y4 - y3) * xd) / d;
-		if (ua < 0 || ua > 1) return false;
-
-		float ub = ((x2 - x1) * yd - (y2 - y1) * xd) / d;
-		if (ub < 0 || ub > 1) return false;
-
-		if (intersection != null) intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
-		return true;
+		return intersectSegments(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, intersection);
 	}
 
 	/** @param intersection May be null. */
@@ -1219,7 +1243,7 @@ public final class Intersector {
 			float axisX = y1 - y2;
 			float axisY = -(x1 - x2);
 
-			float len = (float)Math.sqrt(axisX * axisX + axisY * axisY);
+			float len = Vector2.len(axisX, axisY);
 			// We got a normalized Vector
 			axisX /= len;
 			axisY /= len;
@@ -1287,7 +1311,7 @@ public final class Intersector {
 
 	/** Splits the triangle by the plane. The result is stored in the SplitTriangle instance. Depending on where the triangle is
 	 * relative to the plane, the result can be:
-	 * 
+	 *
 	 * <ul>
 	 * <li>Triangle is fully in front/behind: {@link SplitTriangle#front} or {@link SplitTriangle#back} will contain the original
 	 * triangle, {@link SplitTriangle#total} will be one.</li>
@@ -1296,7 +1320,7 @@ public final class Intersector {
 	 * <li>Triangle has one vertex in front, two behind: {@link SplitTriangle#front} contains 1 triangle,
 	 * {@link SplitTriangle#back} contains 2 triangles, {@link SplitTriangle#total} will be 3.</li>
 	 * </ul>
-	 * 
+	 *
 	 * The input triangle should have the form: x, y, z, x2, y2, z2, x3, y3, z3. One can add additional attributes per vertex which
 	 * will be interpolated if split, such as texture coordinates or normals. Note that these additional attributes won't be
 	 * normalized, as might be necessary in case of normals.
@@ -1474,5 +1498,42 @@ public final class Intersector {
 		public Vector2 normal = new Vector2();
 		/** Distance of the translation required for the separation */
 		public float depth = 0;
+	}
+
+	/** Returns whether two geometries (defined as an array of vertices) have at least one point of intersection using SAT
+	 * (separating axis theorem)
+	 *
+	 * @param axes - Axes to be tested
+	 * @param aVertices - Vertices from geometry A
+	 * @param bVertices - Vertices from geometry B
+	 *
+	 * @return if geometries are intersecting */
+	public static boolean hasOverlap (Vector3[] axes, Vector3[] aVertices, Vector3[] bVertices) {
+		for (Vector3 axis : axes) {
+			float minA = Float.MAX_VALUE;
+			float maxA = -Float.MAX_VALUE;
+			// project shape a on axis
+			for (Vector3 aVertex : aVertices) {
+				float p = aVertex.dot(axis);
+				minA = Math.min(minA, p);
+				maxA = Math.max(maxA, p);
+			}
+
+			float minB = Float.MAX_VALUE;
+			float maxB = -Float.MAX_VALUE;
+			// project shape b on axis
+			for (Vector3 bVertex : bVertices) {
+				float p = bVertex.dot(axis);
+				minB = Math.min(minB, p);
+				maxB = Math.max(maxB, p);
+			}
+
+			if (maxA < minB || maxB < minA) {
+				// Found an axis so the geometries are not intersecting
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

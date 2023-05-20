@@ -38,6 +38,8 @@ import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 
 public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
+	public static PrintStream errorStream = System.err;
+
 	boolean disableAudio = false;
 
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
@@ -47,7 +49,11 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int audioDeviceBufferSize = 512;
 	int audioDeviceBufferCount = 9;
 
-	boolean useGL30 = false;
+	public enum GLEmulation {
+		ANGLE_GLES20, GL20, GL30, GL31, GL32
+	}
+
+	GLEmulation glEmulation = GLEmulation.GL20;
 	int gles30ContextMajorVersion = 3;
 	int gles30ContextMinorVersion = 2;
 
@@ -79,7 +85,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		audioDeviceSimultaneousSources = config.audioDeviceSimultaneousSources;
 		audioDeviceBufferSize = config.audioDeviceBufferSize;
 		audioDeviceBufferCount = config.audioDeviceBufferCount;
-		useGL30 = config.useGL30;
+		glEmulation = config.glEmulation;
 		gles30ContextMajorVersion = config.gles30ContextMajorVersion;
 		gles30ContextMinorVersion = config.gles30ContextMinorVersion;
 		r = config.r;
@@ -104,7 +110,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.initialVisible = visibility;
 	}
 
-	/** Whether to disable audio or not. If set to false, the returned audio class instances like {@link Audio} or {@link Music}
+	/** Whether to disable audio or not. If set to true, the returned audio class instances like {@link Audio} or {@link Music}
 	 * will be mock implementations. */
 	public void disableAudio (boolean disableAudio) {
 		this.disableAudio = disableAudio;
@@ -117,27 +123,27 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 
 	/** Sets the audio device configuration.
 	 * 
-	 * @param simultaniousSources the maximum number of sources that can be played simultaniously (default 16)
+	 * @param simultaneousSources the maximum number of sources that can be played simultaniously (default 16)
 	 * @param bufferSize the audio device buffer size in samples (default 512)
 	 * @param bufferCount the audio device buffer count (default 9) */
-	public void setAudioConfig (int simultaniousSources, int bufferSize, int bufferCount) {
-		this.audioDeviceSimultaneousSources = simultaniousSources;
+	public void setAudioConfig (int simultaneousSources, int bufferSize, int bufferCount) {
+		this.audioDeviceSimultaneousSources = simultaneousSources;
 		this.audioDeviceBufferSize = bufferSize;
 		this.audioDeviceBufferCount = bufferCount;
 	}
 
-	/** Sets whether to use OpenGL ES 3.0 emulation. If the given major/minor version is not supported, the backend falls back to
-	 * OpenGL ES 2.0 emulation. The default parameters for major and minor should be 3 and 2 respectively to be compatible with Mac
-	 * OS X. Specifying major version 4 and minor version 2 will ensure that all OpenGL ES 3.0 features are supported. Note however
-	 * that Mac OS X does only support 3.2.
+	/** Sets which OpenGL version to use to emulate OpenGL ES. If the given major/minor version is not supported, the backend falls
+	 * back to OpenGL ES 2.0 emulation through OpenGL 2.0. The default parameters for major and minor should be 3 and 2
+	 * respectively to be compatible with Mac OS X. Specifying major version 4 and minor version 2 will ensure that all OpenGL ES
+	 * 3.0 features are supported. Note however that Mac OS X does only support 3.2.
 	 * 
 	 * @see <a href= "http://legacy.lwjgl.org/javadoc/org/lwjgl/opengl/ContextAttribs.html"> LWJGL OSX ContextAttribs note</a>
 	 * 
-	 * @param useGL30 whether to use OpenGL ES 3.0
+	 * @param glVersion which OpenGL ES emulation version to use
 	 * @param gles3MajorVersion OpenGL ES major version, use 3 as default
 	 * @param gles3MinorVersion OpenGL ES minor version, use 2 as default */
-	public void useOpenGL3 (boolean useGL30, int gles3MajorVersion, int gles3MinorVersion) {
-		this.useGL30 = useGL30;
+	public void setOpenGLEmulation (GLEmulation glVersion, int gles3MajorVersion, int gles3MinorVersion) {
+		this.glEmulation = glVersion;
 		this.gles30ContextMajorVersion = gles3MajorVersion;
 		this.gles30ContextMinorVersion = gles3MinorVersion;
 	}
@@ -161,10 +167,8 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.samples = samples;
 	}
 
-	/** Set transparent window hint
-	 * @deprecated Results may vary on different OS and GPUs. See https://github.com/glfw/glfw/issues/1237
+	/** Set transparent window hint. Results may vary on different OS and GPUs. Usage with the ANGLE backend is less consistent.
 	 * @param transparentFramebuffer */
-	@Deprecated
 	public void setTransparentFramebuffer (boolean transparentFramebuffer) {
 		this.transparentFramebuffer = transparentFramebuffer;
 	}

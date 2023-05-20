@@ -16,8 +16,10 @@
 
 package com.badlogic.gdx.backends.gwt.widgets;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
 /** A widget that displays progress on an arbitrary scale.
@@ -52,7 +54,7 @@ public class ProgressBar extends Widget implements ResizableWidget {
 	}
 
 	/** The bar element that displays the progress. */
-	private Element barElement;
+	private final Element barElement;
 
 	/** The current progress. */
 	private double curProgress;
@@ -67,7 +69,7 @@ public class ProgressBar extends Widget implements ResizableWidget {
 	private boolean textVisible = true;
 
 	/** The element that displays text on the page. */
-	private Element textElement;
+	private final Element textElement;
 
 	/** The current text formatter. */
 	private TextFormatter textFormatter;
@@ -114,21 +116,21 @@ public class ProgressBar extends Widget implements ResizableWidget {
 		setTextFormatter(textFormatter);
 
 		// Create the outer shell
-		setElement(DOM.createDiv());
-		DOM.setStyleAttribute(getElement(), "position", "relative");
+		setElement(Document.get().createDivElement());
+		getElement().getStyle().setPosition(Style.Position.RELATIVE);
 		setStyleName("gwt-ProgressBar-shell");
 
 		// Create the bar element
 		barElement = DOM.createDiv();
 		DOM.appendChild(getElement(), barElement);
-		DOM.setStyleAttribute(barElement, "height", "100%");
+		barElement.getStyle().setHeight(100, Style.Unit.PCT);
 		setBarStyleName("gwt-ProgressBar-bar");
 
 		// Create the text element
 		textElement = DOM.createDiv();
 		DOM.appendChild(getElement(), textElement);
-		DOM.setStyleAttribute(textElement, "position", "absolute");
-		DOM.setStyleAttribute(textElement, "top", "0px");
+		textElement.getStyle().setPosition(Style.Position.ABSOLUTE);
+		textElement.getStyle().setTop(0, Style.Unit.PX);
 
 		// Set the current progress
 		setProgress(curProgress);
@@ -191,23 +193,23 @@ public class ProgressBar extends Widget implements ResizableWidget {
 	 * @param height the new client height of the element */
 	public void onResize (int width, int height) {
 		if (textVisible) {
-			int textWidth = DOM.getElementPropertyInt(textElement, "offsetWidth");
+			int textWidth = textElement.getPropertyInt("offsetWidth");
 			int left = (width / 2) - (textWidth / 2);
-			DOM.setStyleAttribute(textElement, "left", left + "px");
+			textElement.getStyle().setLeft(left, Style.Unit.PX);
 		}
 	}
 
 	/** Redraw the progress bar when something changes the layout. */
 	public void redraw () {
 		if (isAttached()) {
-			int width = DOM.getElementPropertyInt(getElement(), "clientWidth");
-			int height = DOM.getElementPropertyInt(getElement(), "clientHeight");
+			int width = getElement().getPropertyInt("clientWidth");
+			int height = getElement().getPropertyInt("clientHeight");
 			onResize(width, height);
 		}
 	}
 
 	public void setBarStyleName (String barClassName) {
-		DOM.setElementProperty(barElement, "className", barClassName);
+		barElement.setPropertyString("className", barClassName);
 	}
 
 	/** Set the maximum progress. If the minimum progress is more than the current progress, the current progress is adjusted to be
@@ -238,8 +240,8 @@ public class ProgressBar extends Widget implements ResizableWidget {
 
 		// Calculate percent complete
 		int percent = (int)(100 * getPercent());
-		DOM.setStyleAttribute(barElement, "width", percent + "%");
-		DOM.setElementProperty(textElement, "innerHTML", generateText(curProgress));
+		barElement.getStyle().setWidth(percent, Style.Unit.PCT);
+		textElement.setPropertyString("innerHTML", generateText(curProgress));
 		updateTextStyle(percent);
 
 		// Realign the text
@@ -274,16 +276,16 @@ public class ProgressBar extends Widget implements ResizableWidget {
 	public void setTextVisible (boolean textVisible) {
 		this.textVisible = textVisible;
 		if (this.textVisible) {
-			DOM.setStyleAttribute(textElement, "display", "");
+			textElement.getStyle().clearDisplay();
 			redraw();
 		} else {
-			DOM.setStyleAttribute(textElement, "display", "none");
+			textElement.getStyle().setDisplay(Style.Display.NONE);
 		}
 	}
 
 	/** Generate the text to display within the progress bar. Override this function to change the default progress percent to a
 	 * more informative message, such as the number of kilobytes downloaded.
-	 * 
+	 *
 	 * @param curProgress the current progress
 	 * @return the text to display in the progress bar */
 	protected String generateText (double curProgress) {
@@ -312,7 +314,7 @@ public class ProgressBar extends Widget implements ResizableWidget {
 	@Override
 	protected void onLoad () {
 		// Reset the position attribute of the parent element
-		DOM.setStyleAttribute(getElement(), "position", "relative");
+		getElement().getStyle().setPosition(Style.Position.RELATIVE);
 		ResizableWidgetCollection.get().add(this);
 		redraw();
 	}
@@ -335,9 +337,9 @@ public class ProgressBar extends Widget implements ResizableWidget {
 	private void updateTextStyle (int percent) {
 		// Set the style depending on the size of the bar
 		if (percent < 50) {
-			DOM.setElementProperty(textElement, "className", textClassName + " " + textFirstHalfClassName);
+			textElement.setPropertyString("className", textClassName + " " + textFirstHalfClassName);
 		} else {
-			DOM.setElementProperty(textElement, "className", textClassName + " " + textSecondHalfClassName);
+			textElement.setPropertyString("className", textClassName + " " + textSecondHalfClassName);
 		}
 	}
 }

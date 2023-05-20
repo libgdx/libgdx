@@ -20,6 +20,9 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -29,17 +32,20 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
+import com.badlogic.gdx.graphics.GL32;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL32;
 
 public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	final Lwjgl3Window window;
 	GL20 gl20;
 	private GL30 gl30;
+	private GL31 gl31;
+	private GL32 gl32;
 	private GLVersion glVersion;
 	private volatile int backBufferWidth;
 	private volatile int backBufferHeight;
@@ -49,6 +55,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	private BufferFormat bufferFormat;
 	private long lastFrameTime = -1;
 	private float deltaTime;
+	private boolean resetDeltaTime = false;
 	private long frameId;
 	private long frameCounterStart = 0;
 	private int frames;
@@ -64,28 +71,46 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	IntBuffer tmpBuffer3 = BufferUtils.createIntBuffer(1);
 	IntBuffer tmpBuffer4 = BufferUtils.createIntBuffer(1);
 
-	private GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
+	GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
+		volatile boolean posted;
+
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
-			updateFramebufferInfo();
-			if (!window.isListenerInitialized()) {
-				return;
-			}
-			window.makeCurrent();
-			gl20.glViewport(0, 0, width, height);
-			window.getListener().resize(getWidth(), getHeight());
-			window.getListener().render();
-			GLFW.glfwSwapBuffers(windowHandle);
+			if (posted) return;
+			posted = true;
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run () {
+					posted = false;
+					updateFramebufferInfo();
+					if (!window.isListenerInitialized()) {
+						return;
+					}
+					window.makeCurrent();
+					gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
+					window.getListener().resize(getWidth(), getHeight());
+					window.getListener().render();
+					GLFW.glfwSwapBuffers(windowHandle);
+				}
+			});
 		}
 	};
 
 	public Lwjgl3Graphics (Lwjgl3Window window) {
 		this.window = window;
-		if (window.getConfig().useGL30) {
-			this.gl30 = new Lwjgl3GL30();
-			this.gl20 = this.gl30;
+		if (window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL32) {
+			this.gl20 = this.gl30 = this.gl31 = this.gl32 = new Lwjgl3GL32();
+		} else if (window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL31) {
+			this.gl20 = this.gl30 = this.gl31 = new Lwjgl3GL31();
+		} else if (window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL30) {
+			this.gl20 = this.gl30 = new Lwjgl3GL30();
 		} else {
-			this.gl20 = new Lwjgl3GL20();
+			try {
+				this.gl20 = window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL20 ? new Lwjgl3GL20()
+					: (GL20)Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.Lwjgl3GLES20").newInstance();
+			} catch (Throwable t) {
+				throw new GdxRuntimeException("Couldn't instantiate GLES20.", t);
+			}
 			this.gl30 = null;
 		}
 		updateFramebufferInfo();
@@ -113,9 +138,9 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	 * @param enable */
 	public void enableCubeMapSeamless (boolean enable) {
 		if (enable) {
-			gl20.glEnable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+			gl20.glEnable(org.lwjgl.opengl.GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		} else {
-			gl20.glDisable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+			gl20.glDisable(org.lwjgl.opengl.GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		}
 	}
 
@@ -138,7 +163,11 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	void update () {
 		long time = System.nanoTime();
 		if (lastFrameTime == -1) lastFrameTime = time;
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		if (resetDeltaTime) {
+			resetDeltaTime = false;
+			deltaTime = 0;
+		} else
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
 
 		if (time - frameCounterStart >= 1000000000) {
@@ -156,6 +185,16 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
+	public boolean isGL31Available () {
+		return gl31 != null;
+	}
+
+	@Override
+	public boolean isGL32Available () {
+		return gl32 != null;
+	}
+
+	@Override
 	public GL20 getGL20 () {
 		return gl20;
 	}
@@ -166,6 +205,16 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	}
 
 	@Override
+	public GL31 getGL31 () {
+		return gl31;
+	}
+
+	@Override
+	public GL32 getGL32 () {
+		return gl32;
+	}
+
+	@Override
 	public void setGL20 (GL20 gl20) {
 		this.gl20 = gl20;
 	}
@@ -173,6 +222,16 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	@Override
 	public void setGL30 (GL30 gl30) {
 		this.gl30 = gl30;
+	}
+
+	@Override
+	public void setGL31 (GL31 gl31) {
+		this.gl31 = gl31;
+	}
+
+	@Override
+	public void setGL32 (GL32 gl32) {
+		this.gl32 = gl32;
 	}
 
 	@Override
@@ -219,6 +278,10 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	@Override
 	public float getDeltaTime () {
 		return deltaTime;
+	}
+
+	public void resetDeltaTime () {
+		resetDeltaTime = true;
 	}
 
 	@Override
@@ -392,6 +455,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 	@Override
 	public boolean setWindowedMode (int width, int height) {
+		int minX, minY;
 		window.getInput().resetPollingStates();
 		if (!isFullscreen()) {
 			int newX = 0, newY = 0;
@@ -400,8 +464,10 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 				centerWindow = true;
 				Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
 				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
-				newX = Math.max(0, tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2);
-				newY = Math.max(0, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2);
+				minX = tmpBuffer.get(0);
+				minY = tmpBuffer2.get(0);
+				newX = Math.max(minX, minX + (tmpBuffer3.get(0) - width) / 2);
+				newY = Math.max(minY, minY + (tmpBuffer4.get(0) - height) / 2);
 			}
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
 			if (centerWindow) {
@@ -414,10 +480,10 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 			if (width != windowWidthBeforeFullscreen || height != windowHeightBeforeFullscreen) { // Center window
 				Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
 				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
-				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0,
-					Math.max(0, tmpBuffer.get(0) + (tmpBuffer3.get(0) - width) / 2),
-					Math.max(0, tmpBuffer2.get(0) + (tmpBuffer4.get(0) - height) / 2), width, height,
-					displayModeBeforeFullscreen.refreshRate);
+				minX = tmpBuffer.get(0);
+				minY = tmpBuffer2.get(0);
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, Math.max(minX, minX + (tmpBuffer3.get(0) - width) / 2),
+					Math.max(minY, minY + (tmpBuffer4.get(0) - height) / 2), width, height, displayModeBeforeFullscreen.refreshRate);
 			} else {
 				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width,
 					height, displayModeBeforeFullscreen.refreshRate);

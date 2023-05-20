@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,7 +56,7 @@ public abstract class AbstractTestWrapper extends GdxTest {
 
 		ui = new Stage(new ExtendViewport(480, 320));
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 		container = new Table();
 		ui.addActor(container);
 		container.debug();
@@ -305,13 +305,18 @@ public abstract class AbstractTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void vibrate (long[] pattern, int repeat) {
-			input.vibrate(pattern, repeat);
+		public void vibrate (int milliseconds, boolean fallback) {
+			input.vibrate(milliseconds, fallback);
 		}
 
 		@Override
-		public void cancelVibrate () {
-			input.cancelVibrate();
+		public void vibrate (int milliseconds, int amplitude, boolean fallback) {
+			input.vibrate(milliseconds, amplitude, fallback);
+		}
+
+		@Override
+		public void vibrate (VibrationType vibrationType) {
+			input.vibrate(vibrationType);
 		}
 
 		@Override

@@ -586,6 +586,10 @@ public class TextField extends Widget implements Disableable {
 		this.focusTraversal = focusTraversal;
 	}
 
+	public boolean getFocusTraversal () {
+		return focusTraversal;
+	}
+
 	/** @return May be null. */
 	public @Null String getMessageText () {
 		return messageText;
@@ -1074,7 +1078,7 @@ public class TextField extends Widget implements Disableable {
 						if (time - 750 > lastChangeTime) undoText = oldText;
 						lastChangeTime = time;
 						updateDisplayText();
-					} else
+					} else if (!text.equals(oldText)) // Keep cursor movement if the text is the same.
 						cursor = oldCursor;
 				}
 			}

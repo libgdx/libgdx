@@ -67,7 +67,9 @@ public class MipMapGenerator {
 
 	private static void generateMipMapDesktop (int target, Pixmap pixmap, int textureWidth, int textureHeight) {
 		if (Gdx.graphics.supportsExtension("GL_ARB_framebuffer_object")
-			|| Gdx.graphics.supportsExtension("GL_EXT_framebuffer_object") || Gdx.gl30 != null) {
+			|| Gdx.graphics.supportsExtension("GL_EXT_framebuffer_object")
+			|| Gdx.gl20.getClass().getName().equals("com.badlogic.gdx.backends.lwjgl3.Lwjgl3GLES20") // LWJGL3ANGLE
+			|| Gdx.gl30 != null) {
 			Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
 				pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 			Gdx.gl20.glGenerateMipmap(target);

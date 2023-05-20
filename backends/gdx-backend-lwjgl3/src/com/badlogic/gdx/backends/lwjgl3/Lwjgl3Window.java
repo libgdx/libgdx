@@ -51,6 +51,7 @@ public class Lwjgl3Window implements Disposable {
 	private final IntBuffer tmpBuffer;
 	private final IntBuffer tmpBuffer2;
 	boolean iconified = false;
+	boolean focused = false;
 	private boolean requestRendering = false;
 
 	private final GLFWWindowFocusCallback focusCallback = new GLFWWindowFocusCallback() {
@@ -65,6 +66,7 @@ public class Lwjgl3Window implements Disposable {
 						} else {
 							windowListener.focusLost();
 						}
+						Lwjgl3Window.this.focused = focused;
 					}
 				}
 			});
@@ -242,6 +244,11 @@ public class Lwjgl3Window implements Disposable {
 		GLFW.glfwIconifyWindow(windowHandle);
 	}
 
+	/** Whether the window is iconfieid */
+	public boolean isIconified () {
+		return iconified;
+	}
+
 	/** De-minimizes (de-iconifies) and de-maximizes the window. */
 	public void restoreWindow () {
 		GLFW.glfwRestoreWindow(windowHandle);
@@ -255,6 +262,10 @@ public class Lwjgl3Window implements Disposable {
 	/** Brings the window to front and sets input focus. The window should already be visible and not iconified. */
 	public void focusWindow () {
 		GLFW.glfwFocusWindow(windowHandle);
+	}
+
+	public boolean isFocused () {
+		return focused;
 	}
 
 	/** Sets the icon that will be used in the window's title bar. Has no effect in macOS, which doesn't use window icons.
@@ -410,9 +421,11 @@ public class Lwjgl3Window implements Disposable {
 
 	void makeCurrent () {
 		Gdx.graphics = graphics;
-		Gdx.gl30 = graphics.getGL30();
+		Gdx.gl32 = graphics.getGL32();
+		Gdx.gl31 = Gdx.gl32 != null ? Gdx.gl32 : graphics.getGL31();
+		Gdx.gl30 = Gdx.gl31 != null ? Gdx.gl31 : graphics.getGL30();
 		Gdx.gl20 = Gdx.gl30 != null ? Gdx.gl30 : graphics.getGL20();
-		Gdx.gl = Gdx.gl30 != null ? Gdx.gl30 : Gdx.gl20;
+		Gdx.gl = Gdx.gl20;
 		Gdx.input = input;
 
 		GLFW.glfwMakeContextCurrent(windowHandle);
@@ -455,5 +468,9 @@ public class Lwjgl3Window implements Disposable {
 		Lwjgl3Window other = (Lwjgl3Window)obj;
 		if (windowHandle != other.windowHandle) return false;
 		return true;
+	}
+
+	public void flash () {
+		GLFW.glfwRequestWindowAttention(windowHandle);
 	}
 }

@@ -115,13 +115,17 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 	 * Use the {@link Iterator} constructor for nested or multithreaded iteration. */
 	public java.util.Iterator<Node<E>> iterator () {
 		if (Collections.allocateIterators) return new Iterator();
-		if (iterator == null) iterator = new Iterator();
+		if (iterator == null) return iterator = new Iterator();
 		return iterator.reset();
 	}
 
 	public class Iterator implements java.util.Iterator<Node<E>> {
 		private Node<E> position;
 		private Node<E> previousPosition;
+
+		public Iterator () {
+			reset();
+		}
 
 		@Override
 		public boolean hasNext () {

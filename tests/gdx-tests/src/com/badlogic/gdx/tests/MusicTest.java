@@ -160,8 +160,8 @@ public class MusicTest extends GdxTest {
 			songDuration = 183;
 			break;
 		case OGG:
-			music = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
-			songDuration = 22;
+			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.ogg"));
+			songDuration = 183;
 			break;
 		case WAV:
 			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.loop.wav"));

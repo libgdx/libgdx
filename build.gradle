@@ -13,124 +13,226 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+buildscript {
+	apply from: "gradle/dependencies.gradle"
+
+	repositories {
+		mavenCentral()
+		gradlePluginPortal()
+	}
+	dependencies {
+		classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
+		classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.3.1"
+	}
+}
+
+plugins {
+	id "de.undercouch.download" version "5.0.1"
+}
 
 apply from: "gradle/dependencies.gradle"
 
-buildscript {
-    apply from: "gradle/dependencies.gradle"
+ext {
+	isReleaseBuild = {
+		return project.hasProperty("RELEASE")
+	}
 
-    repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
-        classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.2.0"
-    }
+	getReleaseRepositoryUrl = {
+		return project.hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
+				: "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+	}
+
+	getSnapshotRepositoryUrl = {
+		return project.hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
+				: "https://oss.sonatype.org/content/repositories/snapshots/"
+	}
+
+	getRepositoryUsername = {
+		return project.hasProperty('MAVEN_USERNAME') ? MAVEN_USERNAME : ""
+	}
+
+	getRepositoryPassword = {
+		return project.hasProperty('MAVEN_PASSWORD') ? MAVEN_PASSWORD : ""
+	}
 }
 
 allprojects {
-    group = 'com.badlogicgames.gdx'
-    version = '1.10.0-SNAPSHOT'
+	group = 'com.badlogicgames.gdx'
+	version = project.getProperty('version') + (isReleaseBuild() ? "" : "-SNAPSHOT")
 
-    buildscript {
-        repositories {
-            google()
-            mavenLocal()
-            mavenCentral()
-            gradlePluginPortal()
-            maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-            maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        }
-    }
+	buildscript {
+		repositories {
+			google()
+			mavenLocal()
+			mavenCentral()
+			gradlePluginPortal()
+			maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+			maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+		}
+	}
 
-    repositories {
-        google()
-        mavenLocal()
-        mavenCentral()
-        gradlePluginPortal()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-    }
+	repositories {
+		google()
+		mavenLocal()
+		mavenCentral()
+		gradlePluginPortal()
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+		maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+	}
 
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
+	tasks.withType(JavaCompile) {
+		options.encoding = 'UTF-8'
+	}
+	tasks.withType(Javadoc) {
+		options.encoding = 'UTF-8'
+		options.addBooleanOption('use', true);
+	}
+	tasks.withType(Test) {
+		systemProperty 'file.encoding', 'UTF-8'
+	}
 
-    tasks.withType(Test) {
-        systemProperty 'file.encoding', 'UTF-8'
-    }
+	if (JavaVersion.current().isJava8Compatible()) {
+		tasks.withType(Javadoc) {
+			options.addStringOption('Xdoclint:none,-missing', '-quiet')
+		}
+	}
+
+	if (JavaVersion.current().isJava9Compatible()) {
+		tasks.withType(Javadoc) {
+			options.addStringOption("-release", "8");
+		}
+	}
+
+	apply plugin: "com.diffplug.spotless"
+
+	spotless {
+		lineEndings 'UNIX'
+
+		java {
+			target '**/*.java'
+			removeUnusedImports()
+			eclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
+		}
+		groovyGradle {
+			target '*.gradle'
+			greclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
+		}
+	}
 }
 
-configure(subprojects - project(":tests:gdx-tests-android")) {
-    apply plugin: "java"
-    apply plugin: "com.diffplug.spotless"
+configure(subprojects - project(":tests:gdx-tests-android") - project(":backends:gdx-backend-android")) {
+	apply plugin: "java-library"
 
-    compileJava {
-        options.fork = true
-        options.incremental = true
-    }
+	compileJava {
+		options.fork = true
+		options.incremental = true
+	}
 
-    spotless {
-        lineEndings 'UNIX'
-
-        java {
-            removeUnusedImports()
-            eclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
-        }
-        groovyGradle {
-            target '*.gradle'
-            greclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
-        }
-    }
+	java {
+		withJavadocJar()
+		withSourcesJar()
+	}
 }
 
 configure(subprojects - project(":backends") - project(":extensions") - project(":tests") - project(":extensions:gdx-box2d-parent")) {
-    apply plugin: "idea"
-    apply plugin: "eclipse"
+	apply plugin: "idea"
+	apply plugin: "eclipse"
 
-    //This has to be done in afterEvaluate due to java/android plugin dependency
-    afterEvaluate {
-        eclipse {
-            project {
-                //hide gradle build folders from eclipse
-                resourceFilter {
-                    appliesTo = 'FOLDERS'
-                    type = 'EXCLUDE_ALL'
-                    matcher {
-                        id = 'org.eclipse.ui.ide.multiFilter'
-                        arguments = '1.0-projectRelativePath-matches-true-false-build'
-                    }
-                }
-            }
-            jdt {
-                file {
-                    withProperties { properties ->
-                        def libgdxJdtProperties = new Properties()
-                        libgdxJdtProperties.load(new FileInputStream(".settings/org.eclipse.jdt.libgdx.prefs"))
-                        properties.putAll(libgdxJdtProperties)
-                    }
-                }
-            }
-            classpath.file {
-                whenMerged { classpath ->
-                    classpath.entries.findAll { entry -> entry.kind == 'lib' || entry.kind == 'src' }*.exported = true
-                }
-            }
-        }
-        //Set all projects to use UTF-8 file encoding for all files
-        eclipseJdt.doLast {
-            File f = new File(projectDir, '.settings/org.eclipse.core.resources.prefs')
-            f.write('eclipse.preferences.version=1\n')
-            f.append('encoding/<project>=UTF-8')
-        }
-    }
+	//This has to be done in afterEvaluate due to java/android plugin dependency
+	afterEvaluate {
+		eclipse {
+			project {
+				//hide gradle build folders from eclipse
+				resourceFilter {
+					appliesTo = 'FOLDERS'
+					type = 'EXCLUDE_ALL'
+					matcher {
+						id = 'org.eclipse.ui.ide.multiFilter'
+						arguments = '1.0-projectRelativePath-matches-true-false-build'
+					}
+				}
+			}
+			jdt {
+				file {
+					withProperties { properties ->
+						def libgdxJdtProperties = new Properties()
+						libgdxJdtProperties.load(new FileInputStream(".settings/org.eclipse.jdt.libgdx.prefs"))
+						properties.putAll(libgdxJdtProperties)
+					}
+				}
+			}
+			classpath.file {
+				whenMerged { classpath ->
+					classpath.entries.findAll { entry -> entry.kind == 'lib' || entry.kind == 'src' }*.exported = true
+				}
+			}
+		}
+		//Set all projects to use UTF-8 file encoding for all files
+		eclipseJdt.doLast {
+			File f = new File(projectDir, '.settings/org.eclipse.core.resources.prefs')
+			f.write('eclipse.preferences.version=1\n')
+			f.append('encoding/<project>=UTF-8')
+		}
+	}
 }
 
-ant.importBuild("fetch.xml") { antTargetName ->
-    "ant-task-" + antTargetName
-}
-task fetchNatives(dependsOn: "ant-task-all"){
-    doLast {
-    }
+task setupExternalNativesDirs() {
+	doLast {
+		file("build").mkdir();
+		file("extensions/gdx-lwjgl3-angle/res").mkdirs();
+		file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
+		file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosarm64").mkdirs();
+	}
+	outputs.upToDateWhen { false }
 }
 
+task fetchAngleNativesZIP(dependsOn: setupExternalNativesDirs, type: Download) {
+	src 'https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip'
+	dest 'build/gdx-angle-natives.zip'
+	onlyIfModified true
+	useETag "all"
+}
+
+task fetchGlfwAWT(dependsOn: setupExternalNativesDirs, type: Download) {
+	src 'https://raw.githubusercontent.com/badlogic/glfw/master/libglfw.dylib'
+	dest 'extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64/libglfw.dylib'
+	onlyIfModified true
+	useETag "all"
+}
+
+task fetchGlfwAWTARM64(dependsOn: setupExternalNativesDirs, type: Download) {
+	src 'https://raw.githubusercontent.com/badlogic/glfw/master/libglfwarm64.dylib'
+	dest 'extensions/gdx-lwjgl3-glfw-awt-macos/res/macosarm64/libglfwarm64.dylib'
+	onlyIfModified true
+	useETag "all"
+}
+
+task fetchExternalNatives(dependsOn: [
+	fetchAngleNativesZIP,
+	fetchGlfwAWT,
+	fetchGlfwAWTARM64
+] , type: Copy) {
+	from zipTree("build/gdx-angle-natives.zip")
+	into "./extensions/gdx-lwjgl3-angle/res"
+	outputs.upToDateWhen { false }
+}
+
+task fetchGdxNativesZIP(dependsOn: fetchExternalNatives, type: Download) {
+	src "https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip"
+	dest "build/natives.zip"
+	onlyIfModified true
+	useETag "all"
+}
+
+task fetchNatives(dependsOn: fetchGdxNativesZIP, type: Copy) {
+	from zipTree("build/natives.zip")
+	into "."
+	outputs.upToDateWhen { false }
+}
+
+apply from: rootProject.file('publish.gradle')
+
+if(rootProject.file('override.gradle').exists())
+	apply from: rootProject.file('override.gradle')
+
+apply from: "gradle/dist.gradle"

@@ -153,6 +153,31 @@ public class Pixmap implements Disposable {
 		}
 	}
 
+	/** Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP. Not
+	 * available on GWT backend.
+	 *
+	 * @param encodedData the encoded image data
+	 * @param offset the offset relative to the base address of encodedData
+	 * @param len the length */
+	public Pixmap (ByteBuffer encodedData, int offset, int len) {
+		if (!encodedData.isDirect()) throw new GdxRuntimeException("Couldn't load pixmap from non-direct ByteBuffer");
+		try {
+			pixmap = new Gdx2DPixmap(encodedData, offset, len, 0);
+		} catch (IOException e) {
+			throw new GdxRuntimeException("Couldn't load pixmap from image data", e);
+		}
+	}
+
+	/** Creates a new Pixmap instance from the given encoded image data. The image can be encoded as JPEG, PNG or BMP. Not
+	 * available on GWT backend.
+	 *
+	 * Offset is based on the position of the buffer. Length is based on the remaining bytes of the buffer.
+	 *
+	 * @param encodedData the encoded image data */
+	public Pixmap (ByteBuffer encodedData) {
+		this(encodedData, encodedData.position(), encodedData.remaining());
+	}
+
 	/** Creates a new Pixmap instance from the given file. The file must be a Png, Jpeg or Bitmap. Paletted formats are not
 	 * supported.
 	 * 
@@ -423,9 +448,10 @@ public class Pixmap implements Disposable {
 		return pixmap.getPixels();
 	}
 
-	/** Sets pixels from a provided byte buffer.
-	 * @param pixels Pixels to copy from, should match Pixmap data size (see {@link #getPixels()}). */
+	/** Sets pixels from a provided direct byte buffer.
+	 * @param pixels Pixels to copy from, should be a direct ByteBuffer and match Pixmap data size (see {@link #getPixels()}). */
 	public void setPixels (ByteBuffer pixels) {
+		if (!pixels.isDirect()) throw new GdxRuntimeException("Couldn't setPixels from non-direct ByteBuffer");
 		ByteBuffer dst = pixmap.getPixels();
 		BufferUtils.copy(pixels, dst, dst.limit());
 	}

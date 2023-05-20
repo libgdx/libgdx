@@ -54,7 +54,8 @@ abstract public class Pool<T> {
 	}
 
 	/** Puts the specified object in the pool, making it eligible to be returned by {@link #obtain()}. If the pool already contains
-	 * {@link #max} free objects, the specified object is {@link #discard(Object) discarded} and not added to the pool.
+	 * {@link #max} free objects, the specified object is {@link #discard(Object) discarded}, it is not reset and not added to the
+	 * pool.
 	 * <p>
 	 * The pool does not check if an object is already freed, so the same object must not be freed multiple times. */
 	public void free (T object) {
@@ -63,9 +64,8 @@ abstract public class Pool<T> {
 			freeObjects.add(object);
 			peak = Math.max(peak, freeObjects.size);
 			reset(object);
-		} else {
+		} else
 			discard(object);
-		}
 	}
 
 	/** Adds the specified number of new free objects to the pool. Usually called early on as a pre-allocation mechanism but can be
@@ -87,6 +87,7 @@ abstract public class Pool<T> {
 	/** Called when an object is discarded. This is the case when an object is freed, but the maximum capacity of the pool is
 	 * reached, and when the pool is {@link #clear() cleared} */
 	protected void discard (T object) {
+		reset(object);
 	}
 
 	/** Puts the specified objects in the pool. Null objects within the array are silently ignored.

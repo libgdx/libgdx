@@ -1,0 +1,140 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+import org.gradle.internal.os.OperatingSystem
+
+sourceSets {
+	generator {
+		java {
+			srcDir 'generator'
+		}
+		resources {
+			srcDir 'generator'
+		}
+	}
+	main {
+		java {
+			srcDir 'src'
+		}
+		resources {
+			srcDir 'res'
+		}
+	}
+}
+configurations {
+	generatorCompile.extendsFrom testCompile
+	generatorRuntime.extendsFrom testRuntime
+}
+
+configurations { generator }
+
+dependencies {
+	api libraries.robovm
+	generatorImplementation 'com.github.javaparser:javaparser-core:3.24.2'
+}
+
+task generate(type: JavaExec) {
+	dependsOn configurations.generator
+
+	mainClass = 'JavaCodeGenerator'
+	classpath = sourceSets.generator.runtimeClasspath
+
+	inputs.dir '../gdx-backend-robovm/src/'
+	outputs.dir 'src/'
+}
+
+task fetchMetalANGLE(type: Download) {
+	doFirst {
+		file("build/tmp").mkdirs();
+	}
+	src 'https://github.com/kakashidinho/metalangle/releases/download/gles3-0.0.8/MetalANGLE.framework.ios.zip'
+	dest 'build/tmp/MetalANGLE.framework.ios.zip'
+	onlyIfModified true
+	useETag "all"
+}
+
+task fetchMetalANGLESimulator(type: Download) {
+	doFirst {
+		file("build/tmp").mkdirs();
+	}
+	src 'https://github.com/kakashidinho/metalangle/releases/download/gles3-0.0.8/MetalANGLE.framework.ios.simulator.zip'
+	dest 'build/tmp/MetalANGLE.framework.ios.simulator.zip'
+	onlyIfModified true
+	useETag "all"
+}
+
+task verifyMetalANGLE(dependsOn: fetchMetalANGLE, type: Verify) {
+	src 'build/tmp/MetalANGLE.framework.ios.zip'
+	algorithm 'SHA-256'
+	checksum '9b6e7c82d41749266200ed19bb184c4f47df63c4dcde0972186ea557de623018'
+}
+
+task verifyMetalANGLESimulator(dependsOn: fetchMetalANGLESimulator, type: Verify) {
+	src 'build/tmp/MetalANGLE.framework.ios.simulator.zip'
+	algorithm 'SHA-256'
+	checksum '63ff063bf7825e2da9a01eda981067eb4eacd42e202c86f448541d2c5bd564a9'
+}
+
+task extractMetalANGLE(dependsOn: verifyMetalANGLE, type: Copy) {
+	doFirst {
+		file("build/tmp/real").mkdirs();
+	}
+	from zipTree('build/tmp/MetalANGLE.framework.ios.zip')
+	into 'build/tmp/real'
+}
+
+task extractMetalANGLESimulator(dependsOn: verifyMetalANGLESimulator, type: Copy) {
+	doFirst {
+		file("build/tmp/sim").mkdirs();
+	}
+	from zipTree('build/tmp/MetalANGLE.framework.ios.simulator.zip')
+	into 'build/tmp/sim'
+}
+
+task buildMetalANGLE(dependsOn: [
+	extractMetalANGLE,
+	extractMetalANGLESimulator
+], type: Exec) {
+	doFirst {
+		delete("res/META-INF/robovm/ios/libs/MetalANGLE.xcframework")
+		file("res/META-INF/robovm/ios/libs").mkdirs();
+	}
+	commandLine 'xcodebuild', '-create-xcframework', '-framework', 'build/tmp/real/MetalANGLE.framework', '-framework', 'build/tmp/sim/MetalANGLE.framework', '-output', 'res/META-INF/robovm/ios/libs/MetalANGLE.xcframework'
+	standardOutput = new ByteArrayOutputStream()
+	ext.output = {
+		return standardOutput.toString()
+	}
+
+	inputs.dir 'build/tmp/real/MetalANGLE.framework'
+	inputs.dir 'build/tmp/sim/MetalANGLE.framework'
+	outputs.dir 'res/META-INF/robovm/ios/libs/MetalANGLE.xcframework'
+}
+
+task jnigenBuildIOS(dependsOn: buildMetalANGLE) {
+}
+
+task jnigenBuild() {
+}
+
+//Dummy task to make compatible with publish
+task jnigen() {
+}
+
+if(OperatingSystem.current() == OperatingSystem.MAC_OS) {
+	jnigenBuild.dependsOn jnigenBuildIOS
+}
+
+processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+sourcesJar.duplicatesStrategy = DuplicatesStrategy.EXCLUDE

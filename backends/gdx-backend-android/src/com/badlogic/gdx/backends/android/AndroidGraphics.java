@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.hardware.display.DisplayManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
@@ -36,6 +39,7 @@ import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -212,6 +216,36 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 			Gdx.gl20 = gl20;
 			Gdx.gl30 = gl30;
 		}
+	}
+
+	@Override
+	public boolean isGL31Available () {
+		return false;
+	}
+
+	@Override
+	public GL31 getGL31 () {
+		return null;
+	}
+
+	@Override
+	public void setGL31 (GL31 gl31) {
+
+	}
+
+	@Override
+	public boolean isGL32Available () {
+		return false;
+	}
+
+	@Override
+	public GL32 getGL32 () {
+		return null;
+	}
+
+	@Override
+	public void setGL32 (GL32 gl32) {
+
 	}
 
 	/** {@inheritDoc} */
@@ -620,6 +654,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		return new DisplayMode[] {getDisplayMode()};
 	}
 
+	@TargetApi(Build.VERSION_CODES.P)
 	protected void updateSafeAreaInsets () {
 		safeInsetLeft = 0;
 		safeInsetTop = 0;
@@ -685,9 +720,24 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 	@Override
 	public DisplayMode getDisplayMode () {
+		Display display;
 		DisplayMetrics metrics = new DisplayMetrics();
-		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		return new AndroidDisplayMode(metrics.widthPixels, metrics.heightPixels, 0, 0);
+
+		if (Build.VERSION.SDK_INT >= 17) {
+			DisplayManager displayManager = (DisplayManager)app.getContext().getSystemService(Context.DISPLAY_SERVICE);
+			display = displayManager.getDisplay(Display.DEFAULT_DISPLAY);
+			display.getRealMetrics(metrics); // Deprecated but no direct equivalent
+		} else {
+			display = app.getWindowManager().getDefaultDisplay();
+			display.getMetrics(metrics); // Excludes system UI!
+		}
+
+		int width = metrics.widthPixels;
+		int height = metrics.heightPixels;
+		int refreshRate = MathUtils.roundPositive(display.getRefreshRate());
+		int bitsPerPixel = config.r + config.g + config.b + config.a;
+
+		return new AndroidDisplayMode(width, height, refreshRate, bitsPerPixel);
 	}
 
 	@Override
@@ -747,6 +797,8 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
+		View view = ((AndroidGraphics)app.getGraphics()).getView();
+		AndroidCursor.setSystemCursor(view, systemCursor);
 	}
 
 	private class AndroidDisplayMode extends DisplayMode {

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,12 +16,8 @@
 
 package com.badlogic.gdx.backends.gwt.preloader;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -47,13 +43,13 @@ public class Preloader {
 
 	}
 
-	public ObjectMap<String, Void> directories = new ObjectMap<String, Void>();
-	public ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
-	public ObjectMap<String, Blob> audio = new ObjectMap<String, Blob>();
-	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
-	public ObjectMap<String, Blob> binaries = new ObjectMap<String, Blob>();
-	private ObjectMap<String, Asset> stillToFetchAssets = new ObjectMap<String, Asset>();
-	public ObjectMap<String, String> assetNames = new ObjectMap<String, String>();
+	public ObjectMap<String, Void> directories = new ObjectMap<>();
+	public ObjectMap<String, ImageElement> images = new ObjectMap<>();
+	public ObjectMap<String, Blob> audio = new ObjectMap<>();
+	public ObjectMap<String, String> texts = new ObjectMap<>();
+	public ObjectMap<String, Blob> binaries = new ObjectMap<>();
+	private ObjectMap<String, Asset> stillToFetchAssets = new ObjectMap<>();
+	public ObjectMap<String, String> assetNames = new ObjectMap<>();
 
 	public static class Asset {
 		public Asset (String file, String url, AssetType type, long size, String mimeType) {
@@ -137,7 +133,7 @@ public class Preloader {
 			@Override
 			public void onSuccess (String result) {
 				String[] lines = result.split("\n");
-				Array<Asset> assets = new Array<Asset>(lines.length);
+				Array<Asset> assets = new Array<>(lines.length);
 				for (String line : lines) {
 					String[] tokens = line.split(":");
 					if (tokens.length != 6) {
@@ -259,11 +255,7 @@ public class Preloader {
 
 	public InputStream read (String file) {
 		if (texts.containsKey(file)) {
-			try {
-				return new ByteArrayInputStream(texts.get(file).getBytes("UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				return null;
-			}
+			return new ByteArrayInputStream(texts.get(file).getBytes(StandardCharsets.UTF_8));
 		}
 		if (images.containsKey(file)) {
 			return new ByteArrayInputStream(new byte[1]); // FIXME, sensible?
@@ -348,11 +340,7 @@ public class Preloader {
 
 	public long length (String file) {
 		if (texts.containsKey(file)) {
-			try {
-				return texts.get(file).getBytes("UTF-8").length;
-			} catch (UnsupportedEncodingException e) {
-				return texts.get(file).getBytes().length;
-			}
+			return texts.get(file).getBytes(StandardCharsets.UTF_8).length;
 		}
 		if (images.containsKey(file)) {
 			return 1; // FIXME, sensible?
@@ -371,7 +359,7 @@ public class Preloader {
 	}
 
 	private FileHandle[] getMatchedAssetFiles (FilePathFilter filter) {
-		Array<FileHandle> files = new Array<FileHandle>();
+		Array<FileHandle> files = new Array<>();
 		for (String file : assetNames.keys()) {
 			if (filter.accept(file)) {
 				files.add(new GwtFileHandle(this, file, FileType.Internal));

@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests.android;
 
 import java.util.List;
@@ -6,8 +7,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.ListFragment;
@@ -20,7 +19,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -30,20 +28,20 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 
 	FrameLayout list;
 	FrameLayout view;
-	
+
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		GdxTests.tests.add(MatrixTest.class);
-		
+
 		LinearLayout layout = new LinearLayout(this);
 		layout.setOrientation(LinearLayout.HORIZONTAL);
-		
+
 		list = new FrameLayout(this);
 		list.setId(R.id.framelayout);
 		list.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		layout.addView(list);
-		
+
 		list.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1));
 
 		view = new FrameLayout(this);
@@ -57,32 +55,32 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 			getSupportFragmentManager().beginTransaction().add(R.id.framelayout, new TestListFragment()).commit();
 		}
 	}
-	
+
 	public void onTestSelected (String testName) {
-		if(view != null) {
+		if (view != null) {
 			getSupportFragmentManager().beginTransaction().replace(R.id.viewlayout, TestViewFragment.newInstance(testName)).commit();
 		} else {
 			startActivity(new Intent(this, GdxTestActivity.class).putExtra("test", testName));
 		}
 	}
-	
+
 	@Override
 	public void exit () {
 	}
-   
+
 	public static class TestListFragment extends ListFragment {
-		
+
 		private SharedPreferences prefs;
 		private FragmentTestStarter activity;
-		
+
 		@Override
 		public void onCreate (Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			List<String> testNames = GdxTests.getNames();
-			setListAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, testNames));			
+			setListAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, testNames));
 			prefs = getActivity().getSharedPreferences("libgdx-tests", Context.MODE_PRIVATE);
-		}		
-		
+		}
+
 		@Override
 		public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			View view = super.onCreateView(inflater, container, savedInstanceState);
@@ -99,9 +97,8 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 			if (activity != null) {
 				activity.onTestSelected(testName);
 			}
-		}		
-		
-		
+		}
+
 		@Override
 		public void onAttach (Activity activity) {
 			super.onAttach(activity);
@@ -109,21 +106,21 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 				this.activity = (FragmentTestStarter)activity;
 			}
 		}
-		
+
 	}
 
 	public static class TestViewFragment extends AndroidFragmentApplication {
 
-		public static TestViewFragment newInstance(String testName) {
+		public static TestViewFragment newInstance (String testName) {
 			Bundle arguments = new Bundle();
 			arguments.putString("test", testName);
 			TestViewFragment fragment = new TestViewFragment();
 			fragment.setArguments(arguments);
 			return fragment;
 		}
-		
+
 		GdxTest test;
-		
+
 		@Override
 		public void onCreate (Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
@@ -136,8 +133,7 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 			config.useImmersiveMode = true;
 			return initializeForView(test, config);
 		}
-		
-	}
 
+	}
 
 }

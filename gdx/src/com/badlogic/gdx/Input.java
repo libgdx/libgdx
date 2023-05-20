@@ -642,7 +642,7 @@ public interface Input {
 	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
 	 * @author mzechner */
 	public enum Peripheral {
-		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope, RotationVector, Pressure
+		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, HapticFeedback, Gyroscope, RotationVector, Pressure
 	}
 
 	/** @return The acceleration force in m/s^2 applied to the device in the X axis, including the force of gravity */
@@ -790,21 +790,46 @@ public interface Input {
 		Default, NumberPad, PhonePad, Email, Password, URI
 	}
 
-	/** Vibrates for the given amount of time. Note that you'll need the permission
+	/** Generates a simple haptic effect of a given duration or a vibration effect on devices without haptic capabilities. Note
+	 * that on Android backend you'll need the permission
 	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
+	 * On iOS backend you'll need to set <code>useHaptics = true</code> for devices with haptics capabilities to use them.
 	 * 
 	 * @param milliseconds the number of milliseconds to vibrate. */
 	public void vibrate (int milliseconds);
 
-	/** Vibrate with a given pattern. Pass in an array of ints that are the times at which to turn on or off the vibrator. The
-	 * first one is how long to wait before turning it on, and then after that it alternates. If you want to repeat, pass the index
-	 * into the pattern at which to start the repeat.
-	 * @param pattern an array of longs of times to turn the vibrator on or off.
-	 * @param repeat the index into pattern at which to repeat, or -1 if you don't want to repeat. */
-	public void vibrate (long[] pattern, int repeat);
+	/** Generates a simple haptic effect of a given duration and default amplitude. Note that on Android backend you'll need the
+	 * permission <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for
+	 * this to work. On iOS backend you'll need to set <code>useHaptics = true</code> for devices with haptics capabilities to use
+	 * them.
+	 *
+	 * @param milliseconds the duration of the haptics effect
+	 * @param fallback whether to use non-haptic vibrator on devices without haptics capabilities (or haptics disabled). Fallback
+	 *           non-haptic vibrations may ignore length parameter in some backends. */
+	public void vibrate (int milliseconds, boolean fallback);
 
-	/** Stops the vibrator */
-	public void cancelVibrate ();
+	/** Generates a simple haptic effect of a given duration and amplitude. Note that on Android backend you'll need the permission
+	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
+	 * On iOS backend you'll need to set <code>useHaptics = true</code> for devices with haptics capabilities to use them.
+	 *
+	 * @param milliseconds the duration of the haptics effect
+	 * @param amplitude the amplitude/strength of the haptics effect. Valid values in the range [0, 255].
+	 * @param fallback whether to use non-haptic vibrator on devices without haptics capabilities (or haptics disabled). Fallback
+	 *           non-haptic vibrations may ignore length and/or amplitude parameters in some backends. */
+	public void vibrate (int milliseconds, int amplitude, boolean fallback);
+
+	/** Generates a simple haptic effect of a type. VibrationTypes are length/amplitude haptic effect presets that depend on each
+	 * device and are defined by manufacturers. Should give most consistent results across devices and OSs. Note that on Android
+	 * backend you'll need the permission <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your
+	 * manifest file in order for this to work. On iOS backend you'll need to set <code>useHaptics = true</code> for devices with
+	 * haptics capabilities to use them.
+	 *
+	 * @param vibrationType the type of vibration */
+	public void vibrate (VibrationType vibrationType);
+
+	public enum VibrationType {
+		LIGHT, MEDIUM, HEAVY;
+	}
 
 	/** The azimuth is the angle of the device's orientation around the z-axis. The positive z-axis points towards the earths
 	 * center.
@@ -908,8 +933,8 @@ public interface Input {
 		Landscape, Portrait
 	}
 
-	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor. X and y
-	 * coordinates are still reported as if the mouse was not catched.
+	/** Only viable on desktop, GWT and Android 8+. Will confine the mouse cursor location to the window and hide the mouse cursor.
+	 * X and y coordinates are still reported as if the mouse was not catched.
 	 * @param catched whether to catch or not to catch the mouse cursor */
 	public void setCursorCatched (boolean catched);
 

@@ -47,8 +47,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
-import com.badlogic.gdx.backends.iosrobovm.objectal.OALSimpleAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
@@ -86,6 +84,8 @@ public class IOSApplication implements Application {
 			app.willTerminate(application);
 		}
 	}
+
+	static final boolean IS_METALANGLE = false;
 
 	UIApplication uiApp;
 	UIWindow uiWindow;
@@ -151,7 +151,16 @@ public class IOSApplication implements Application {
 		this.input.setupPeripherals();
 
 		this.uiWindow.setRootViewController(this.graphics.viewController);
+		this.graphics.updateSafeInsets();
+
 		Gdx.app.debug("IOSApplication", "created");
+
+		listener.create();
+		listener.resize(this.graphics.getWidth(), this.graphics.getHeight());
+
+		// make sure the OpenGL view has contents before displaying it
+		this.graphics.view.display();
+
 		return true;
 	}
 
@@ -239,33 +248,18 @@ public class IOSApplication implements Application {
 
 	final void didBecomeActive (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
-		// workaround for ObjectAL crash problem
-		// see: https://groups.google.com/g/objectal-for-iphone/c/ubRWltp_i1Q
-		OALAudioSession audioSession = OALAudioSession.sharedInstance();
-		if (audioSession != null) {
-			audioSession.forceEndInterruption();
-		}
-		if (config.allowIpod) {
-			OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
-			if (audio != null) {
-				audio.setUseHardwareIfAvailable(false);
-			}
-		}
+		audio.didBecomeActive();
 		graphics.makeCurrent();
 		graphics.resume();
 	}
 
 	final void willEnterForeground (UIApplication uiApp) {
-		// workaround for ObjectAL crash problem
-		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-		OALAudioSession audioSession = OALAudioSession.sharedInstance();
-		if (audioSession != null) {
-			audioSession.forceEndInterruption();
-		}
+		audio.willEnterForeground();
 	}
 
 	final void willResignActive (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "paused");
+		audio.willResignActive();
 		graphics.makeCurrent();
 		graphics.pause();
 		Gdx.gl.glFinish();
@@ -273,6 +267,7 @@ public class IOSApplication implements Application {
 
 	final void willTerminate (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "disposed");
+		audio.willTerminate();
 		graphics.makeCurrent();
 		Array<LifecycleListener> listeners = lifecycleListeners;
 		synchronized (listeners) {

@@ -58,7 +58,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
 	protected boolean useImmersiveMode = false;
-	protected boolean hideStatusBar = false;
 	private int wasFocusChanged = -1;
 	private boolean isWaitingForAudio = false;
 
@@ -113,7 +112,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		if (this.getVersion() < MINIMUM_SDK) {
 			throw new GdxRuntimeException("libGDX requires Android API Level " + MINIMUM_SDK + " or later.");
 		}
-		GdxNativesLoader.load();
+		config.nativeLoader.load();
 		setApplicationLogger(new AndroidApplicationLogger());
 		graphics = new AndroidGraphics(this, config,
 			config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
@@ -124,7 +123,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		this.listener = listener;
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
-		this.hideStatusBar = config.hideStatusBar;
 		this.clipboard = new AndroidClipboard(this);
 
 		// Add a specialized audio lifecycle listener
@@ -165,7 +163,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 
 		createWakeLock(config.useWakelock);
-		hideStatusBar(this.hideStatusBar);
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT) {
 			AndroidVisibilityListener vlistener = new AndroidVisibilityListener();
@@ -189,18 +186,10 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 	}
 
-	protected void hideStatusBar (boolean hide) {
-		if (!hide) return;
-
-		View rootView = getWindow().getDecorView();
-		rootView.setSystemUiVisibility(0x1);
-	}
-
 	@Override
 	public void onWindowFocusChanged (boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		useImmersiveMode(this.useImmersiveMode);
-		hideStatusBar(this.hideStatusBar);
 		if (hasFocus) {
 			this.wasFocusChanged = 1;
 			if (this.isWaitingForAudio) {

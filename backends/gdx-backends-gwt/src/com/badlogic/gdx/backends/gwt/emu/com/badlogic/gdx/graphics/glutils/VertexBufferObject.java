@@ -22,7 +22,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
 
 /**
@@ -97,9 +96,17 @@ public class VertexBufferObject implements VertexData {
 		return buffer.capacity() / (attributes.vertexSize / 4);
 	}
 
+	/** @deprecated use {@link #getBuffer(boolean)} instead */
 	@Override
+	@Deprecated
 	public FloatBuffer getBuffer () {
 		isDirty = true;
+		return buffer;
+	}
+
+	@Override
+	public FloatBuffer getBuffer (boolean forWriting) {
+		isDirty |= forWriting;
 		return buffer;
 	}
 
@@ -157,13 +164,8 @@ public class VertexBufferObject implements VertexData {
 				final int location = shader.getAttributeLocation(attribute.alias);
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
-
-				if (attribute.usage == Usage.ColorPacked)
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
-						attribute.offset);
-				else
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
-						attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
@@ -171,13 +173,8 @@ public class VertexBufferObject implements VertexData {
 				final int location = locations[i];
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
-
-				if (attribute.usage == Usage.ColorPacked)
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
-						attribute.offset);
-				else
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
-						attribute.offset);
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 			}
 		}
 		isBound = true;

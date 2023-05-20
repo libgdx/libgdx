@@ -54,8 +54,16 @@ public interface VertexData extends Disposable {
 	/** Returns the underlying FloatBuffer and marks it as dirty, causing the buffer contents to be uploaded on the next call to
 	 * bind. If you need immediate uploading use {@link #setVertices(float[], int, int)}; Any modifications made to the Buffer
 	 * *after* the call to bind will not automatically be uploaded.
-	 * @return the underlying FloatBuffer holding the vertex data. */
+	 * @return the underlying FloatBuffer holding the vertex data.
+	 * @deprecated use {@link #getBuffer(boolean)} instead. */
+	@Deprecated
 	public FloatBuffer getBuffer ();
+
+	/** Returns the underlying FloatBuffer for reading or writing.
+	 * @param forWriting when true, the underlying buffer will be uploaded on the next call to bind. If you need immediate
+	 *           uploading use {@link #setVertices(float[], int, int)}.
+	 * @return the underlying FloatBuffer holding the vertex data. */
+	public FloatBuffer getBuffer (boolean forWriting);
 
 	/** Binds this VertexData for rendering via glDrawArrays or glDrawElements. */
 	public void bind (ShaderProgram shader);

@@ -163,10 +163,10 @@ public final class GeometryUtils {
 	 * Gary L. Miller, Dafna Talmor, Shang-Hua Teng, and Noel Walkington. A Delaunay Based Numerical Method for Three Dimensions:
 	 * Generation, Formulation, and Partition. */
 	static public float triangleQuality (float x1, float y1, float x2, float y2, float x3, float y3) {
-		float length1 = (float)Math.sqrt(x1 * x1 + y1 * y1);
-		float length2 = (float)Math.sqrt(x2 * x2 + y2 * y2);
-		float length3 = (float)Math.sqrt(x3 * x3 + y3 * y3);
-		return Math.min(length1, Math.min(length2, length3)) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
+		float sqLength1 = x1 * x1 + y1 * y1;
+		float sqLength2 = x2 * x2 + y2 * y2;
+		float sqLength3 = x3 * x3 + y3 * y3;
+		return (float)Math.sqrt(Math.min(sqLength1, Math.min(sqLength2, sqLength3))) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
 	}
 
 	static public float triangleArea (float x1, float y1, float x2, float y2, float x3, float y3) {
@@ -231,6 +231,19 @@ public final class GeometryUtils {
 
 	static public void ensureCCW (float[] polygon, int offset, int count) {
 		if (!isClockwise(polygon, offset, count)) return;
+		reverseVertices(polygon, offset, count);
+	}
+
+	static public void ensureClockwise (float[] polygon) {
+		ensureClockwise(polygon, 0, polygon.length);
+	}
+
+	static public void ensureClockwise (float[] polygon, int offset, int count) {
+		if (isClockwise(polygon, offset, count)) return;
+		reverseVertices(polygon, offset, count);
+	}
+
+	static public void reverseVertices (float[] polygon, int offset, int count) {
 		int lastX = offset + count - 2;
 		for (int i = offset, n = offset + count / 2; i < n; i += 2) {
 			int other = lastX - i;
@@ -255,5 +268,9 @@ public final class GeometryUtils {
 			y1 = y2;
 		}
 		return area < 0;
+	}
+
+	static public boolean isCCW (float[] polygon, int offset, int count) {
+		return !isClockwise(polygon, offset, count);
 	}
 }
