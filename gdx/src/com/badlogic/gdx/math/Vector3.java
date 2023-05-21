@@ -204,12 +204,12 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	@Override
 	public Vector3 mulAdd (Vector3 vec, float scalar) {
-		return set(this.x + vec.x * scalar, this.y + vec.y * scalar, this.z + vec.z * scalar);
+		return set(x + vec.x * scalar, y + vec.y * scalar, z + vec.z * scalar);
 	}
 
 	@Override
 	public Vector3 mulAdd (Vector3 vec, Vector3 mulVec) {
-		return set(this.x + vec.x * mulVec.x, this.y + vec.y * mulVec.y, this.z + vec.z * mulVec.z);
+		return set(x + vec.x * mulVec.x, y + vec.y * mulVec.y, z + vec.z * mulVec.z);
 	}
 
 	/** @return The euclidean length */
@@ -552,7 +552,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	@Override
 	public Vector3 lerp (final Vector3 target, float alpha) {
-		return set(this.x + alpha * (target.x - x), this.y + alpha * (target.y - y), this.z + alpha * (target.z - z));
+		return set(x + alpha * (target.x - x), y + alpha * (target.y - y), z + alpha * (target.z - z));
 	}
 
 	@Override
