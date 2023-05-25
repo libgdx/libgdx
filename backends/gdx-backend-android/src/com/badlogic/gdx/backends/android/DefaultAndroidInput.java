@@ -49,6 +49,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.keyboardheight.AndroidXKeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightObserver;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightProvider;
+import com.badlogic.gdx.backends.android.keyboardheight.StandardKeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.input.TextInputWrapper;
@@ -702,6 +703,10 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 					|| keyboardHeightProvider.getKeyboardPortraitHeight() != 0)) {
 				closeTextInputField(false);
 			}
+			// What should I say at this point, everything is busted on android
+			if (keyboardHeightProvider instanceof StandardKeyboardHeightProvider && getEditTextForNativeInput().isPopupShowing()) {
+				return;
+			}
 			if (observer != null) observer.onKeyboardHeightChanged(0);
 			relativeLayoutField.setY(0);
 			return;
@@ -710,8 +715,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		// This is weird, if I don't do that there is a weird scaling/position error after rotating the 2. time
 		relativeLayoutField.setX(0);
 		relativeLayoutField.setScaleX(1);
+		relativeLayoutField.setY(0);
 		// @off
-		if (((Activity)context).getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING) {
+		if ((((Activity)context).getWindow().getAttributes().softInputMode & WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST) != WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING) {
 			height = 0;
 		}
 		relativeLayoutField.animate()

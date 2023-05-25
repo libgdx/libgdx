@@ -183,7 +183,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		// As per the docs, it might work unreliable < 23 https://developer.android.com/jetpack/androidx/releases/core#1.5.0-alpha02
 		// So, I guess since 23 is pretty rare we can use the old API for the users
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			keyboardHeightProvider = new AndroidXKeyboardHeightProvider(this);
 		} else {
 			keyboardHeightProvider = new StandardKeyboardHeightProvider(this);
