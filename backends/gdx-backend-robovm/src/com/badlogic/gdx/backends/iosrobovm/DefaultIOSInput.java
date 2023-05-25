@@ -746,7 +746,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			uiToolbar = new UIToolbar(
 				new CGRect(new CGPoint(0, 0), new CGSize(UIScreen.getMainScreen().getBounds().getSize().getWidth(), 35)));
 
-			UIBarButtonItem space = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, null, null);
+			UIBarButtonItem space = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, (NSObject)null, null);
 
 			UIBarButtonItem doneButton = new UIBarButtonItem(UIBarButtonSystemItem.Done, new UtilityCallback(),
 				Selector.register("doneClicked"));
