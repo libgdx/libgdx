@@ -74,12 +74,6 @@ public class GdxSetup {
 			} else {
 				DependencyBank.buildToolsVersion = newestLocalTool;
 			}
-		} else {
-			if (!versionsEqual(localToolVersion, targetToolVersion)) {
-				JOptionPane.showMessageDialog(null,
-					"Please update your Android SDK, you need build tools: " + DependencyBank.buildToolsVersion);
-				return false;
-			}
 		}
 
 		int newestLocalApi = getLatestApi(apis);
@@ -202,6 +196,7 @@ public class GdxSetup {
 		return true;
 	}
 
+	/** @return true if testVersion greater than version */
 	private static boolean compareVersions (int[] version, int[] testVersion) {
 		if (testVersion[0] > version[0]) {
 			return true;
