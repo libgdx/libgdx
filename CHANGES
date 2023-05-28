@@ -12,10 +12,13 @@
 - [BREAKING CHANGE] 3D API - max bone weights is now configurable and limited to 4 by default. Change this value if you need less or more. See #6522.
 - [BREAKING CHANGE] Mesh#getVerticesBuffer, Mesh#getIndicesBuffer, VertexData#getBuffer, and IndexData#getBuffer are deprecated in favor to new methods with boolean parameter. If you subclassed some of these classes, you need to implement the new methods.
 - [BREAKING CHANGE] Desktop: The return value of AudioDevice#getLatency() is now in samples, and not milliseconds
+- [BREAKING CHANGE] optimized Mesh#bind and Mesh#unbind have a new parameter for instanced attribute locations. If you use these methods without instancing, you can pass a null value.
 - LWJGL Fix: setPosision() for MP3 files.
 - iOS: Add new MobiVM MetalANGLE backend
 - iOS: Update to MobiVM 2.3.19
 - Update to LWJGL 3.3.2
+- API Addition: Added Audio#switchOutputDevice and Audio#getAvailableOutputDevices to specify output devices. Only works for LWJGL3
+- Fix LWJGL3: Audio doesn't die anymore, if a device gets disconnected
 - API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
 - Fix: Fixed Android and iOS touch cancelled related issues, see #6871.
 - Javadoc: Add "-use" flag to javadoc generation
