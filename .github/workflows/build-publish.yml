@@ -178,6 +178,7 @@ jobs:
 
       - name: Install cross-compilation toolchains
         run: |
+          sudo apt update
           sudo apt install -y --force-yes mingw-w64 lib32z1
 
       - name: Cache Gradle packages
