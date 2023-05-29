@@ -671,6 +671,10 @@ public class JsonReader implements BaseJsonReader {
 		stop = true;
 	}
 
+	public boolean isStopped () {
+		return stop;
+	}
+
 	/** @param name May be null. */
 	private void addChild (@Null String name, JsonValue child) {
 		child.setName(name);
