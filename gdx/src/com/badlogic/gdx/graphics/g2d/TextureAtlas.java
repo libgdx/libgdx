@@ -359,7 +359,7 @@ public class TextureAtlas implements Disposable {
 				}
 			});
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 1024);
+			BufferedReader reader = packFile.reader(1024);
 			try {
 				String line = reader.readLine();
 				// Ignore empty lines before first entry.
