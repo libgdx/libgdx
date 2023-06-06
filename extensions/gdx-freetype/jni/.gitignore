@@ -5,3 +5,4 @@ Android.mk
 Application.mk
 jni-headers
 memcpy_wrap.c
+Info.plist
