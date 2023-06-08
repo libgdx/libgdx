@@ -37,7 +37,6 @@ import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL32;
 import org.lwjgl.system.Configuration;
 
 public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
