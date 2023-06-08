@@ -586,6 +586,10 @@ public class TextField extends Widget implements Disableable {
 		this.focusTraversal = focusTraversal;
 	}
 
+	public boolean getFocusTraversal () {
+		return focusTraversal;
+	}
+
 	/** @return May be null. */
 	public @Null String getMessageText () {
 		return messageText;
