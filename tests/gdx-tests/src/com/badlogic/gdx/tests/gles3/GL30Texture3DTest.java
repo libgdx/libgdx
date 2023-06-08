@@ -66,7 +66,7 @@ public class GL30Texture3DTest extends GdxTest {
 			+ "in vec2 v_texCoords;\n" //
 			+ "out vec4 fragColor;" //
 			+ "uniform sampler2D u_texture;\n" //
-			+ "uniform sampler3D u_texture3D;\n" //
+			+ "uniform LOWP sampler3D u_texture3D;\n" //
 			+ "uniform float u_time;\n" //
 			+ "void main()\n"//
 			+ "{\n" //

@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -80,7 +81,11 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat,
 			attachmentSpec.format, attachmentSpec.type);
 		Texture result = new Texture(data);
-		result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		// Filtering support for depth textures on WebGL is spotty https://github.com/KhronosGroup/OpenGL-API/issues/84
+		boolean webGLDepth = attachmentSpec.isDepth && Gdx.app.getType() == Application.ApplicationType.WebGL;
+		if (!webGLDepth) {
+			result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		}
 		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		return result;
 	}
