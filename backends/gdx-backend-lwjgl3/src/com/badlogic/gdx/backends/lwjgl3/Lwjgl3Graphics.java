@@ -39,6 +39,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
+import org.lwjgl.system.Configuration;
 
 public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	final Lwjgl3Window window;
@@ -74,7 +75,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
-			if (SharedLibraryLoader.isWindows || SharedLibraryLoader.isLinux) {
+			if (Configuration.GLFW_CHECK_THREAD0.get(true)) {
 				updateFramebufferInfo();
 				if (!window.isListenerInitialized()) {
 					return;
