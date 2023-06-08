@@ -89,8 +89,8 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 			}
 		}
 	};
-	
-	private void renderWindow(long windowHandle, final int width, final int height) {
+
+	private void renderWindow (long windowHandle, final int width, final int height) {
 		updateFramebufferInfo();
 		if (!window.isListenerInitialized()) {
 			return;
