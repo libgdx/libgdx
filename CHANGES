@@ -15,7 +15,7 @@
 - [BREAKING CHANGE] iOS: 32 bit (armv7) builds are no longer supported. Builds must be 64 bit (arm64) only.
 - [BREAKING CHANGE] iOS: Use dynamic frameworks instead of static libs
 - [BREAKING CHANGE] optimized Mesh#bind and Mesh#unbind have a new parameter for instanced attribute locations. If you use these methods without instancing, you can pass a null value.
-- Update to jnigen 2.4.0
+- Update to jnigen 2.4.1
 - LWJGL Fix: setPosision() for MP3 files.
 - iOS: Add new MobiVM MetalANGLE backend
 - iOS: Update to MobiVM 2.3.19
