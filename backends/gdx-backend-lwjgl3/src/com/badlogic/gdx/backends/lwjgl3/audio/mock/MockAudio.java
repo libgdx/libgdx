@@ -48,6 +48,16 @@ public class MockAudio implements Lwjgl3Audio {
 	}
 
 	@Override
+	public boolean switchOutputDevice (String deviceIdentifier) {
+		return true;
+	}
+
+	@Override
+	public String[] getAvailableOutputDevices () {
+		return new String[0];
+	}
+
+	@Override
 	public void update () {
 	}
 

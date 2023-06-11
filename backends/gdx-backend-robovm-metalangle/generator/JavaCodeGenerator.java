@@ -10,6 +10,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -99,11 +100,11 @@ public class JavaCodeGenerator {
 			public Visitable visit (FieldDeclaration n, Object arg) {
 				n = (FieldDeclaration)super.visit(n, arg);
 				if (n.toString().contains("METALANGLE")) {
-					n.getVariables().forEach(variableDeclarator -> {
+					for (VariableDeclarator variableDeclarator : n.getVariables()) {
 						if (variableDeclarator.getName().asString().equals("IS_METALANGLE")) {
 							variableDeclarator.setInitializer(new BooleanLiteralExpr(true));
 						}
-					});
+					}
 				}
 				return n;
 			}
