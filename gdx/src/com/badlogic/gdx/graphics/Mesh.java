@@ -962,6 +962,7 @@ public class Mesh implements Disposable {
 
 	/** @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android!
 	 * @deprecated use {@link #getIndicesBuffer(boolean)} instead */
+	@Deprecated
 	public ShortBuffer getIndicesBuffer () {
 		return indices.getBuffer(true);
 	}
