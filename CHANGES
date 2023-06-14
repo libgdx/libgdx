@@ -15,6 +15,7 @@
 - [BREAKING CHANGE] iOS: 32 bit (armv7) builds are no longer supported. Builds must be 64 bit (arm64) only.
 - [BREAKING CHANGE] iOS: Use dynamic frameworks instead of static libs
 - [BREAKING CHANGE] optimized Mesh#bind and Mesh#unbind have a new parameter for instanced attribute locations. If you use these methods without instancing, you can pass a null value.
+- [BREAKING CHANGE] Dropped support for older libc versions since libGDX is now built on Ubuntu 20.04  (#7005)
 - Update to jnigen 2.4.1
 - LWJGL Fix: setPosision() for MP3 files.
 - iOS: Add new MobiVM MetalANGLE backend
@@ -42,6 +43,24 @@
 - API Addition: added WebGL 2.0 implementation to Gwt backend : you can enable it by GwtApplicationConfiguration#useGL30
 - Added GLES31 and GLES32 support with Lwjgl3 backend implementation
 - API Addition: JsonReader#stop() to stop parsing.
+- API Change: TextureAtlas now uses FileHandle#reader so outside code can control the charset
+- API Fix: Intersector#isPointInTriangle
+- API Addition: The Skin serializer now supports useIntegerPositions
+- API Change: The skin serializer now treats scaledSize as a float
+- API Change: DataInput throws an EOF-Exception
+- API Fix: RenderBuffer leak in GLFrameBuffer class
+- API Change: Pixmap#setPixels will now verify it has been given a direct ByteBuffer
+- API Addition: glTexImage2D and glTexSubImage2D with offset parameter
+- API Addition: OrientedBoundingBox
+- API Fix: LWJGL 3’s borderless fullscreen works with negative monitor coords
+- API Fix: Update mouse x and y values immediately after calling #setCursorPosition
+- API Change: Never stall with AssetManager on GWT
+- API Change: Allow packed depth stencil buffer creation when not using GL30
+- API Fix: Fixed DataInput#readString for non-ASCII
+- API Fix: LwjglGraphics.setupDisplay() is no longer choosing the wrong display mode
+- API Fix: MathUtils.lerpAngle() fixed for extreme inputs
+- MathUtils trigonometry improvements
+- Various Scene2D fixes and improvements
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
