@@ -52,6 +52,7 @@
 - API Change: Pixmap#setPixels will now verify it has been given a direct ByteBuffer
 - API Addition: glTexImage2D and glTexSubImage2D with offset parameter
 - API Addition: OrientedBoundingBox
+- API Addition: Tiled parallax factor support
 - API Fix: LWJGL 3’s borderless fullscreen works with negative monitor coords
 - API Fix: Update mouse x and y values immediately after calling #setCursorPosition
 - API Change: Never stall with AssetManager on GWT
@@ -101,7 +102,6 @@
 - API Fix: Resolved issues with LWJGL 3 and borderless fullscreen
 - API Addition: GeometryUtils,polygons isCCW, ensureClockwise, reverseVertices
 - API Addition: Added FreeTypeFontGenerator#hasCharGlyph method.
-- API Addition: Tiled parallax factor support
 - API Fix: Pool discard method now resets object by default. This fixes the known issue about Pool in libGDX 1.10.0.
 - API Addition: Split GWT reflection cache into two generated classes
 - API Fix: Fix Box2D memory leak with ropes on GWT
