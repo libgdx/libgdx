@@ -39,6 +39,7 @@ import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.system.Configuration;
 
 public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	final Lwjgl3Window window;
@@ -76,25 +77,33 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
-			if (posted) return;
-			posted = true;
-			Gdx.app.postRunnable(new Runnable() {
-				@Override
-				public void run () {
-					posted = false;
-					updateFramebufferInfo();
-					if (!window.isListenerInitialized()) {
-						return;
+			if (Configuration.GLFW_CHECK_THREAD0.get(true)) {
+				renderWindow(windowHandle, width, height);
+			} else {
+				if (posted) return;
+				posted = true;
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run () {
+						posted = false;
+						renderWindow(windowHandle, width, height);
 					}
-					window.makeCurrent();
-					gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
-					window.getListener().resize(getWidth(), getHeight());
-					window.getListener().render();
-					GLFW.glfwSwapBuffers(windowHandle);
-				}
-			});
+				});
+			}
 		}
 	};
+
+	private void renderWindow (long windowHandle, final int width, final int height) {
+		updateFramebufferInfo();
+		if (!window.isListenerInitialized()) {
+			return;
+		}
+		window.makeCurrent();
+		gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
+		window.getListener().resize(getWidth(), getHeight());
+		window.getListener().render();
+		GLFW.glfwSwapBuffers(windowHandle);
+	}
 
 	public Lwjgl3Graphics (Lwjgl3Window window) {
 		this.window = window;
