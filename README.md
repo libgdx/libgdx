@@ -19,9 +19,7 @@ Moreover, libGDX boasts a vibrant third-party ecosystem, with numerous [tools](h
 ###### An example game created with libGDX: [Pathway](https://store.steampowered.com/app/546430/Pathway/) by Robotality. Discover more captivating games in our [Showcase](https://libgdx.com/showcase/).
 
 ## Getting Started with libGDX / Documentation
-Thanks to Gradle, you can easily set up libGDX without the need to download the framework itself. Your favorite build tool can handle everything for you. Additionally, we offer a convenient [setup tool](https://libgdx.com/dev/#how-to-get-started-with-libgdx) that automates project creation and downloads all the necessary components. Check out our **[website](https://libgdx.com/wiki/start/setup)** for instructions on
-
- getting started or refer to our comprehensive **[wiki](https://libgdx.com/wiki/)**.
+Thanks to Gradle, you can easily set up libGDX without the need to download the framework itself. Your favorite build tool can handle everything for you. Additionally, we offer a convenient [setup tool](https://libgdx.com/dev/#how-to-get-started-with-libgdx) that automates project creation and downloads all the necessary components. Check out our **[website](https://libgdx.com/wiki/start/setup)** for instructions on getting started or refer to our comprehensive **[wiki](https://libgdx.com/wiki/)**.
 
 - [Creating a libGDX Project](https://libgdx.com/wiki/start/setup)
 - [Building a Simple Game](https://libgdx.com/wiki/start/a-simple-game)
