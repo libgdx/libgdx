@@ -33,9 +33,7 @@ import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.utils.Array;
 
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSProcessInfo;
 import org.robovm.apple.glkit.GLKView;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.glkit.GLKViewControllerDelegate;
@@ -148,11 +146,7 @@ public class IOSGraphics extends AbstractGraphics {
 
 		int preferredFps;
 		if (config.preferredFramesPerSecond == 0) {
-			if (NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion() >= 11) {
-				preferredFps = (int)(UIScreen.getMainScreen().getMaximumFramesPerSecond());
-			} else {
-				preferredFps = 60;
-			}
+			preferredFps = (int)(UIScreen.getMainScreen().getMaximumFramesPerSecond());
 		} else {
 			preferredFps = config.preferredFramesPerSecond;
 		}
@@ -480,18 +474,16 @@ public class IOSGraphics extends AbstractGraphics {
 		safeInsetRight = 0;
 		safeInsetBottom = 0;
 
-		if (Foundation.getMajorSystemVersion() >= 11) {
-			UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
-			safeInsetTop = (int)edgeInsets.getTop();
-			safeInsetLeft = (int)edgeInsets.getLeft();
-			safeInsetRight = (int)edgeInsets.getRight();
-			safeInsetBottom = (int)edgeInsets.getBottom();
-			if (config.hdpiMode == HdpiMode.Pixels) {
-				safeInsetTop *= app.pixelsPerPoint;
-				safeInsetLeft *= app.pixelsPerPoint;
-				safeInsetRight *= app.pixelsPerPoint;
-				safeInsetBottom *= app.pixelsPerPoint;
-			}
+		UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
+		safeInsetTop = (int)edgeInsets.getTop();
+		safeInsetLeft = (int)edgeInsets.getLeft();
+		safeInsetRight = (int)edgeInsets.getRight();
+		safeInsetBottom = (int)edgeInsets.getBottom();
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			safeInsetTop *= app.pixelsPerPoint;
+			safeInsetLeft *= app.pixelsPerPoint;
+			safeInsetRight *= app.pixelsPerPoint;
+			safeInsetBottom *= app.pixelsPerPoint;
 		}
 	}
 

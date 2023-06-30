@@ -29,7 +29,7 @@
         <key>UIStatusBarHidden</key>
         <true/>
         <key>MinimumOSVersion</key>
-        <string>9.0</string>
+        <string>11.0</string>
         <key>UIDeviceFamily</key>
         <array>
             <integer>1</integer>
