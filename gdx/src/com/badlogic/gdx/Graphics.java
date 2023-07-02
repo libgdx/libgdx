@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
+import com.badlogic.gdx.graphics.GL32;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -128,17 +130,43 @@ public interface Graphics {
 	 * @return whether OpenGL ES 3.0 is available */
 	boolean isGL30Available ();
 
+	/** Returns whether OpenGL ES 3.1 is available. If it is you can get an instance of {@link GL31} via {@link #getGL31()} to
+	 * access OpenGL ES 3.1 functionality. Note that this functionality will only be available if you instructed the
+	 * {@link Application} instance to use OpenGL ES 3.1!
+	 *
+	 * @return whether OpenGL ES 3.1 is available */
+	boolean isGL31Available ();
+
+	/** Returns whether OpenGL ES 3.2 is available. If it is you can get an instance of {@link GL32} via {@link #getGL32()} to
+	 * access OpenGL ES 3.2 functionality. Note that this functionality will only be available if you instructed the
+	 * {@link Application} instance to use OpenGL ES 3.2!
+	 *
+	 * @return whether OpenGL ES 3.2 is available */
+	boolean isGL32Available ();
+
 	/** @return the {@link GL20} instance */
 	GL20 getGL20 ();
 
 	/** @return the {@link GL30} instance or null if not supported */
 	GL30 getGL30 ();
 
+	/** @return the {@link GL31} instance or null if not supported */
+	GL31 getGL31 ();
+
+	/** @return the {@link GL32} instance or null if not supported */
+	GL32 getGL32 ();
+
 	/** Set the GL20 instance **/
 	void setGL20 (GL20 gl20);
 
 	/** Set the GL30 instance **/
 	void setGL30 (GL30 gl30);
+
+	/** Set the GL31 instance **/
+	void setGL31 (GL31 gl31);
+
+	/** Set the GL32 instance **/
+	void setGL32 (GL32 gl32);
 
 	/** @return the width of the client area in logical pixels. */
 	int getWidth ();

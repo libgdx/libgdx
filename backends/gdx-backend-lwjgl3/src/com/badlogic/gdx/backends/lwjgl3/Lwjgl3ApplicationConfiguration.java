@@ -50,7 +50,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int audioDeviceBufferCount = 9;
 
 	public enum GLEmulation {
-		ANGLE_GLES20, GL20, GL30
+		ANGLE_GLES20, GL20, GL30, GL31, GL32
 	}
 
 	GLEmulation glEmulation = GLEmulation.GL20;
