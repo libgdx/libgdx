@@ -205,7 +205,7 @@ public class BaseAnimationController {
 			final float t = (time - firstKeyframe.keytime) / (secondKeyframe.keytime - firstKeyframe.keytime);
 			out.lerp(secondKeyframe.value, t);
 		}
-		return out.add(nodeAnim.node.translation).add(nodeAnim.node.blendWithAnimation ? nodeAnim.node.translation : Vector3.Zero);
+		return out.add(nodeAnim.node.blendWithAnimation ? nodeAnim.node.translation : Vector3.Zero);
 	}
 
 	private final static Quaternion getRotationAtTime (final NodeAnimation nodeAnim, final float time, final Quaternion out) {
