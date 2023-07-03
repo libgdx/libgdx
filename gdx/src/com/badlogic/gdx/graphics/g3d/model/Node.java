@@ -49,6 +49,9 @@ public class Node {
 	 * {@link #calculateWorldTransform()} **/
 	public final Matrix4 globalTransform = new Matrix4();
 
+	/** if true, the translation, rotation and scale will be blended with this node when its animating **/
+	public boolean blendWithAnimation = false;
+
 	public Array<NodePart> parts = new Array<NodePart>(2);
 
 	protected Node parent;

@@ -37,6 +37,10 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  * 
  * @author Xoppa */
 public class BaseAnimationController {
+
+	private static final Quaternion identityQuaternion = new Quaternion().idt();
+	private static final Vector3 one = new Vector3(1, 1, 1);
+
 	public final static class Transform implements Poolable {
 		public final Vector3 translation = new Vector3();
 		public final Quaternion rotation = new Quaternion();
@@ -189,7 +193,7 @@ public class BaseAnimationController {
 
 	private final static Vector3 getTranslationAtTime (final NodeAnimation nodeAnim, final float time, final Vector3 out) {
 		if (nodeAnim.translation == null) return out.set(nodeAnim.node.translation);
-		if (nodeAnim.translation.size == 1) return out.set(nodeAnim.translation.get(0).value);
+		if (nodeAnim.translation.size == 1) return out.set(nodeAnim.translation.get(0).value).add(nodeAnim.node.blendWithAnimation ? nodeAnim.node.translation : Vector3.Zero);
 
 		int index = getFirstKeyframeIndexAtTime(nodeAnim.translation, time);
 		final NodeKeyframe firstKeyframe = nodeAnim.translation.get(index);
@@ -200,12 +204,12 @@ public class BaseAnimationController {
 			final float t = (time - firstKeyframe.keytime) / (secondKeyframe.keytime - firstKeyframe.keytime);
 			out.lerp(secondKeyframe.value, t);
 		}
-		return out;
+		return out.add(nodeAnim.node.translation).add(nodeAnim.node.blendWithAnimation ? nodeAnim.node.translation : Vector3.Zero);
 	}
 
 	private final static Quaternion getRotationAtTime (final NodeAnimation nodeAnim, final float time, final Quaternion out) {
 		if (nodeAnim.rotation == null) return out.set(nodeAnim.node.rotation);
-		if (nodeAnim.rotation.size == 1) return out.set(nodeAnim.rotation.get(0).value);
+		if (nodeAnim.rotation.size == 1) return out.set(nodeAnim.rotation.get(0).value).mul(nodeAnim.node.blendWithAnimation ? nodeAnim.node.rotation : identityQuaternion);
 
 		int index = getFirstKeyframeIndexAtTime(nodeAnim.rotation, time);
 		final NodeKeyframe firstKeyframe = nodeAnim.rotation.get(index);
@@ -216,12 +220,12 @@ public class BaseAnimationController {
 			final float t = (time - firstKeyframe.keytime) / (secondKeyframe.keytime - firstKeyframe.keytime);
 			out.slerp(secondKeyframe.value, t);
 		}
-		return out;
+		return out.mul(nodeAnim.node.blendWithAnimation ? nodeAnim.node.rotation : identityQuaternion);
 	}
 
 	private final static Vector3 getScalingAtTime (final NodeAnimation nodeAnim, final float time, final Vector3 out) {
 		if (nodeAnim.scaling == null) return out.set(nodeAnim.node.scale);
-		if (nodeAnim.scaling.size == 1) return out.set(nodeAnim.scaling.get(0).value);
+		if (nodeAnim.scaling.size == 1) return out.set(nodeAnim.scaling.get(0).value).scl(nodeAnim.node.blendWithAnimation ? nodeAnim.node.scale : one);
 
 		int index = getFirstKeyframeIndexAtTime(nodeAnim.scaling, time);
 		final NodeKeyframe firstKeyframe = nodeAnim.scaling.get(index);
@@ -232,7 +236,7 @@ public class BaseAnimationController {
 			final float t = (time - firstKeyframe.keytime) / (secondKeyframe.keytime - firstKeyframe.keytime);
 			out.lerp(secondKeyframe.value, t);
 		}
-		return out;
+		return out.scl(nodeAnim.node.blendWithAnimation ? nodeAnim.node.scale : one);
 	}
 
 	private final static Transform getNodeAnimationTransform (final NodeAnimation nodeAnim, final float time) {
