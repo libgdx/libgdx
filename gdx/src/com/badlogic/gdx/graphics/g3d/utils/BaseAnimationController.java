@@ -193,7 +193,8 @@ public class BaseAnimationController {
 
 	private final static Vector3 getTranslationAtTime (final NodeAnimation nodeAnim, final float time, final Vector3 out) {
 		if (nodeAnim.translation == null) return out.set(nodeAnim.node.translation);
-		if (nodeAnim.translation.size == 1) return out.set(nodeAnim.translation.get(0).value).add(nodeAnim.node.blendWithAnimation ? nodeAnim.node.translation : Vector3.Zero);
+		if (nodeAnim.translation.size == 1) return out.set(nodeAnim.translation.get(0).value)
+			.add(nodeAnim.node.blendWithAnimation ? nodeAnim.node.translation : Vector3.Zero);
 
 		int index = getFirstKeyframeIndexAtTime(nodeAnim.translation, time);
 		final NodeKeyframe firstKeyframe = nodeAnim.translation.get(index);
@@ -209,7 +210,8 @@ public class BaseAnimationController {
 
 	private final static Quaternion getRotationAtTime (final NodeAnimation nodeAnim, final float time, final Quaternion out) {
 		if (nodeAnim.rotation == null) return out.set(nodeAnim.node.rotation);
-		if (nodeAnim.rotation.size == 1) return out.set(nodeAnim.rotation.get(0).value).mul(nodeAnim.node.blendWithAnimation ? nodeAnim.node.rotation : identityQuaternion);
+		if (nodeAnim.rotation.size == 1) return out.set(nodeAnim.rotation.get(0).value)
+			.mul(nodeAnim.node.blendWithAnimation ? nodeAnim.node.rotation : identityQuaternion);
 
 		int index = getFirstKeyframeIndexAtTime(nodeAnim.rotation, time);
 		final NodeKeyframe firstKeyframe = nodeAnim.rotation.get(index);
@@ -225,7 +227,8 @@ public class BaseAnimationController {
 
 	private final static Vector3 getScalingAtTime (final NodeAnimation nodeAnim, final float time, final Vector3 out) {
 		if (nodeAnim.scaling == null) return out.set(nodeAnim.node.scale);
-		if (nodeAnim.scaling.size == 1) return out.set(nodeAnim.scaling.get(0).value).scl(nodeAnim.node.blendWithAnimation ? nodeAnim.node.scale : one);
+		if (nodeAnim.scaling.size == 1)
+			return out.set(nodeAnim.scaling.get(0).value).scl(nodeAnim.node.blendWithAnimation ? nodeAnim.node.scale : one);
 
 		int index = getFirstKeyframeIndexAtTime(nodeAnim.scaling, time);
 		final NodeKeyframe firstKeyframe = nodeAnim.scaling.get(index);
