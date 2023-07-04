@@ -132,6 +132,70 @@ jobs:
           sudo apt install -y --force-yes gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-dev-arm64-cross
           sudo apt install -y --force-yes gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc6-dev-armhf-cross
 
+      - name: Add patches to minimize needed GLIBC version
+        run: |
+          CURRENT_DIR="$(pwd)"
+          sudo apt-get -yq install python3
+          # download chromium reversion_glibc.py script from chromium source tree at pinned commit (incase they ever move or change it)
+          wget https://raw.githubusercontent.com/chromium/chromium/01bc42d648c45439e1beef8fd25fde3aef9079bc/build/linux/sysroot_scripts/reversion_glibc.py -O /tmp/reversion_glibc.py
+          # set targeted minimum GLIBC to 2.17
+          sed -i 's/26]/17]/g' /tmp/reversion_glibc.py
+          chmod +x /tmp/reversion_glibc.py
+          # download the host libc6 package from apt and patch the binaries in it
+          # replacing the host libc6 at runtime causes crashs and hangs but apt is able to do it without issue
+          sudo apt-get install --download-only --reinstall -y libc6
+          sudo rm -rf /tmp/libc6
+          sudo mkdir /tmp/libc6
+          sudo cp /var/cache/apt/archives/libc6_2.31-*_amd64.deb /tmp/libc6
+          cd /tmp/libc6
+          deb_name="$(ls)"
+          sudo ar x "$deb_name"
+          sudo tar xf data.tar.xz
+          sudo mkdir DEBIAN
+          sudo tar xf control.tar.xz -C DEBIAN
+          sudo rm -f control.tar.xz \
+            data.tar.xz \
+            debian-binary \
+            DEBIAN/md5sums \
+            DEBIAN/archives \
+            DEBIAN/conffiles \
+            "$deb_name"
+  
+          # patch libc6 in host download deb and cross compilers using the reversion_glibc.py script
+          files=(/tmp/libc6/lib/x86_64-linux-gnu/libc.so.6 /tmp/libc6/lib/x86_64-linux-gnu/libm.so.6 \
+          /usr/aarch64-linux-gnu/lib/libc.so.6 /usr/aarch64-linux-gnu/lib/libm.so.6 \
+          /usr/arm-linux-gnueabihf/lib/libc.so.6 /usr/arm-linux-gnueabihf/lib/libm.so.6 \
+          /libx32/libc.so.6 /libx32/libm.so.6 \
+          /lib32/libc.so.6 /lib32/libm.so.6 \
+          /usr/i686-linux-gnu/lib/libc.so.6 /usr/i686-linux-gnu/lib/libm.so.6)
+          for file in "${files[@]}"; do
+            [ -f $file ] && sudo python3 /tmp/reversion_glibc.py "$file"
+          done
+  
+          # install patched libc6 deb
+          sudo dpkg-deb -b . "$deb_name"
+          sudo apt install --reinstall --allow-downgrades -y ./"$deb_name"
+          cd "$CURRENT_DIR"
+          # __GLIBC_MINOR__ is used as a feature test macro.  Replace it with the
+          # earliest supported version of glibc 2.17
+          files=(/usr/include/features.h \
+          /usr/aarch64-linux-gnu/include/features.h \
+          /usr/arm-linux-gnueabihf/include/features.h \
+          /usr/i686-linux-gnu/include/features.h)
+          for file in "${files[@]}"; do
+            [ -f $file ] && sudo sed -i 's|\(#define\s\+__GLIBC_MINOR__\)|\1 17 //|' "$file"
+          done
+  
+          # fcntl64() was introduced in glibc 2.28.  Make sure to use fcntl() instead.
+          files=(/usr/include/fcntl.h \
+          /usr/aarch64-linux-gnu/include/fcntl.h \
+          /usr/arm-linux-gnueabihf/include/fcntl.h \
+          /usr/i686-linux-gnu/include/fcntl.h)
+          for file in "${files[@]}"; do
+            [ -f $file ] && sudo sed -i '{N; s/#ifndef __USE_FILE_OFFSET64\(\nextern int fcntl\)/#if 1\1/}' "$file"
+          done
+          true
+
       - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
