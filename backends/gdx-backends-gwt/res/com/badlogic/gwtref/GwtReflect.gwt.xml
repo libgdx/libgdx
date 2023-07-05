@@ -49,7 +49,33 @@
 		value="com.badlogic.gdx.Net" />
 
 	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.maps" />
+		value="com.badlogic.gdx.maps.Map" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.MapGroupLayer" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.MapLayer" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.MapLayers" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.MapObject" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.MapObjects" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.MapProperties" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.objects" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.tiled.TiledMap" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.tiled.TiledMapImageLayer" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.tiled.TiledMapTileLayer" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.tiled.TiledMapTileSet" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.tiled.TiledMapTileSets" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.maps.tiled.objects" />
 
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.particles.ParticleEffect" />
