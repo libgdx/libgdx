@@ -18,9 +18,7 @@ import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.utils.Array;
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSProcessInfo;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.MGLKView;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.MGLKViewController;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.MGLKViewControllerDelegate;
@@ -153,11 +151,7 @@ public class IOSGraphics extends AbstractGraphics {
 		viewController.setDelegate(viewDelegate);
 		int preferredFps;
 		if (config.preferredFramesPerSecond == 0) {
-			if (NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion() >= 11) {
-				preferredFps = (int)(UIScreen.getMainScreen().getMaximumFramesPerSecond());
-			} else {
-				preferredFps = 60;
-			}
+			preferredFps = (int)(UIScreen.getMainScreen().getMaximumFramesPerSecond());
 		} else {
 			preferredFps = config.preferredFramesPerSecond;
 		}
@@ -468,18 +462,16 @@ public class IOSGraphics extends AbstractGraphics {
 		safeInsetLeft = 0;
 		safeInsetRight = 0;
 		safeInsetBottom = 0;
-		if (Foundation.getMajorSystemVersion() >= 11) {
-			UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
-			safeInsetTop = (int)edgeInsets.getTop();
-			safeInsetLeft = (int)edgeInsets.getLeft();
-			safeInsetRight = (int)edgeInsets.getRight();
-			safeInsetBottom = (int)edgeInsets.getBottom();
-			if (config.hdpiMode == HdpiMode.Pixels) {
-				safeInsetTop *= app.pixelsPerPoint;
-				safeInsetLeft *= app.pixelsPerPoint;
-				safeInsetRight *= app.pixelsPerPoint;
-				safeInsetBottom *= app.pixelsPerPoint;
-			}
+		UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
+		safeInsetTop = (int)edgeInsets.getTop();
+		safeInsetLeft = (int)edgeInsets.getLeft();
+		safeInsetRight = (int)edgeInsets.getRight();
+		safeInsetBottom = (int)edgeInsets.getBottom();
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			safeInsetTop *= app.pixelsPerPoint;
+			safeInsetLeft *= app.pixelsPerPoint;
+			safeInsetRight *= app.pixelsPerPoint;
+			safeInsetBottom *= app.pixelsPerPoint;
 		}
 	}
 

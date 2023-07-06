@@ -18,7 +18,6 @@ package com.badlogic.gdx.graphics.g2d;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Files.FileType;
@@ -359,7 +358,7 @@ public class TextureAtlas implements Disposable {
 				}
 			});
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 1024);
+			BufferedReader reader = packFile.reader(1024);
 			try {
 				String line = reader.readLine();
 				// Ignore empty lines before first entry.
