@@ -54,7 +54,7 @@ apply from: "obb.gradle"
 dependencies {
 	implementation project(":tests:gdx-tests")
 	implementation project(":backends:gdx-backend-android")
-	implementation libraries.android
+	implementation libraries.compileOnly.android
 	implementation "androidx.multidex:multidex:${versions.multiDex}"
 }
 

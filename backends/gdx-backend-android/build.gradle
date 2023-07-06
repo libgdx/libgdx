@@ -52,5 +52,5 @@ android {
 
 dependencies {
 	implementation project(":gdx")
-	implementation libraries.android
+	compileOnly libraries.compileOnly.android
 }
