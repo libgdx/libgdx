@@ -133,7 +133,6 @@ jobs:
           zip \
           unzip \
           xz-utils \
-          openjdk-11-jdk-headless \
           maven \
           ant sudo locales
 
