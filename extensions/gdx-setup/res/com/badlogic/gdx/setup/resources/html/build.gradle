@@ -38,8 +38,7 @@ tasks.register('startHttpServer') {
     }
 }
 
-tasks.register('beforeRun', AppBeforeIntegrationTestTask) {
-    dependsOn startHttpServer
+task beforeRun(type: AppBeforeIntegrationTestTask, dependsOn: startHttpServer) {
     // The next line allows ports to be reused instead of
     // needing a process to be manually terminated.
     file("build/TEMP_PORTS.properties").delete()
