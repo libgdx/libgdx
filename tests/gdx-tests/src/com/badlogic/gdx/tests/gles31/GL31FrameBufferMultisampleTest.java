@@ -138,7 +138,7 @@ public class GL31FrameBufferMultisampleTest extends GdxTest {
 	public void render () {
 
 		ScreenUtils.clear(Color.CLEAR);
-		
+
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, 2, 2);
 
 		// render a line into the non multisample FBO and display it
