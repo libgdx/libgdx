@@ -142,9 +142,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		if (bufferBuilder.hasDepthRenderBuffer) {
 			depthbufferHandle = gl.glGenRenderbuffer();
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthbufferHandle);
-			if(bufferBuilder.samples > 0){
-				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples, bufferBuilder.depthRenderBufferSpec.internalFormat, width, height);
-			}else{
+			if (bufferBuilder.samples > 0) {
+				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples,
+					bufferBuilder.depthRenderBufferSpec.internalFormat, width, height);
+			} else {
 				gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, bufferBuilder.depthRenderBufferSpec.internalFormat, width, height);
 			}
 		}
@@ -152,9 +153,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		if (bufferBuilder.hasStencilRenderBuffer) {
 			stencilbufferHandle = gl.glGenRenderbuffer();
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, stencilbufferHandle);
-			if(bufferBuilder.samples > 0){
-				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples, bufferBuilder.stencilRenderBufferSpec.internalFormat, width, height);
-			}else{
+			if (bufferBuilder.samples > 0) {
+				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples,
+					bufferBuilder.stencilRenderBufferSpec.internalFormat, width, height);
+			} else {
 				gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, bufferBuilder.stencilRenderBufferSpec.internalFormat, width, height);
 			}
 		}
@@ -162,9 +164,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		if (bufferBuilder.hasPackedStencilDepthRenderBuffer) {
 			depthStencilPackedBufferHandle = gl.glGenRenderbuffer();
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthStencilPackedBufferHandle);
-			if(bufferBuilder.samples > 0){
-				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples, bufferBuilder.packedStencilDepthRenderBufferSpec.internalFormat, width, height);
-			}else{
+			if (bufferBuilder.samples > 0) {
+				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples,
+					bufferBuilder.packedStencilDepthRenderBufferSpec.internalFormat, width, height);
+			} else {
 				gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, bufferBuilder.packedStencilDepthRenderBufferSpec.internalFormat, width,
 					height);
 			}
@@ -178,8 +181,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 				T texture = createTexture(attachmentSpec);
 				textureAttachments.add(texture);
 				if (attachmentSpec.isColorTexture()) {
-					gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0 + colorAttachmentCounter, GL30.GL_TEXTURE_2D,
-						texture.getTextureObjectHandle(), 0);
+					gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0 + colorAttachmentCounter,
+						GL30.GL_TEXTURE_2D, texture.getTextureObjectHandle(), 0);
 					colorAttachmentCounter++;
 				} else if (attachmentSpec.isDepth) {
 					gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_TEXTURE_2D,
@@ -189,21 +192,23 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 						texture.getTextureObjectHandle(), 0);
 				}
 			}
-		} else if(bufferBuilder.textureAttachmentSpecs.size > 0){
+		} else if (bufferBuilder.textureAttachmentSpecs.size > 0) {
 			T texture = createTexture(bufferBuilder.textureAttachmentSpecs.first());
 			textureAttachments.add(texture);
 			gl.glBindTexture(texture.glTarget, texture.getTextureObjectHandle());
 		}
-		
-		for(FrameBufferRenderBufferAttachmentSpec colorBufferSpec : bufferBuilder.colorRenderBufferSpecs){
+
+		for (FrameBufferRenderBufferAttachmentSpec colorBufferSpec : bufferBuilder.colorRenderBufferSpecs) {
 			int colorbufferHandle = gl.glGenRenderbuffer();
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, colorbufferHandle);
-			if(bufferBuilder.samples > 0){
-				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples, colorBufferSpec.internalFormat, width, height);
-			}else{
+			if (bufferBuilder.samples > 0) {
+				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples, colorBufferSpec.internalFormat,
+					width, height);
+			} else {
 				gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, colorBufferSpec.internalFormat, width, height);
 			}
-			Gdx.gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0 + colorAttachmentCounter, GL20.GL_RENDERBUFFER, colorbufferHandle);
+			Gdx.gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0 + colorAttachmentCounter,
+				GL20.GL_RENDERBUFFER, colorbufferHandle);
 			colorBufferHandles.add(colorbufferHandle);
 			colorAttachmentCounter++;
 		}
@@ -215,7 +220,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			}
 			((Buffer)defaultDrawBuffers).position(0);
 			Gdx.gl30.glDrawBuffers(colorAttachmentCounter, defaultDrawBuffers);
-		} else if(bufferBuilder.textureAttachmentSpecs.size > 0){
+		} else if (bufferBuilder.textureAttachmentSpecs.size > 0) {
 			attachFrameBufferColorTexture(textureAttachments.first());
 		}
 
@@ -258,9 +263,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			depthStencilPackedBufferHandle = gl.glGenRenderbuffer();
 			hasDepthStencilPackedBuffer = true;
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthStencilPackedBufferHandle);
-			if(bufferBuilder.samples > 0){
-				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples, GL_DEPTH24_STENCIL8_OES, width, height);
-			}else{
+			if (bufferBuilder.samples > 0) {
+				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples, GL_DEPTH24_STENCIL8_OES, width,
+					height);
+			} else {
 				gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, width, height);
 			}
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
@@ -305,14 +311,14 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	}
 
 	private void checkValidBuilder () {
-		
-		if(bufferBuilder.samples > 0 && !Gdx.graphics.isGL31Available()){
-			throw new GdxRuntimeException("Framebuffer multisample requires GLES 3.1+"); 
+
+		if (bufferBuilder.samples > 0 && !Gdx.graphics.isGL31Available()) {
+			throw new GdxRuntimeException("Framebuffer multisample requires GLES 3.1+");
 		}
-		if(bufferBuilder.samples > 0 && bufferBuilder.textureAttachmentSpecs.size > 0){
-			throw new GdxRuntimeException("Framebuffer multisample with texture attachments not yet supported"); 
+		if (bufferBuilder.samples > 0 && bufferBuilder.textureAttachmentSpecs.size > 0) {
+			throw new GdxRuntimeException("Framebuffer multisample with texture attachments not yet supported");
 		}
-		
+
 		boolean runningGL30 = Gdx.graphics.isGL30Available();
 
 		if (!runningGL30) {
@@ -394,57 +400,58 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		unbind();
 		Gdx.gl20.glViewport(x, y, width, height);
 	}
-	
+
 	static final IntBuffer singleInt = BufferUtils.newIntBuffer(1);
-	
+
 	public void transfer (GLFrameBuffer<T> destination) {
-		
+
 		int copyBits = 0;
-		for(FrameBufferTextureAttachmentSpec attachment : destination.bufferBuilder.textureAttachmentSpecs){
-			if(attachment.isDepth && bufferBuilder.hasDepthRenderBuffer || bufferBuilder.hasPackedStencilDepthRenderBuffer){
+		for (FrameBufferTextureAttachmentSpec attachment : destination.bufferBuilder.textureAttachmentSpecs) {
+			if (attachment.isDepth && bufferBuilder.hasDepthRenderBuffer || bufferBuilder.hasPackedStencilDepthRenderBuffer) {
 				copyBits |= GL20.GL_DEPTH_BUFFER_BIT;
-			}else if(attachment.isStencil && bufferBuilder.hasStencilRenderBuffer || bufferBuilder.hasPackedStencilDepthRenderBuffer){
+			} else if (attachment.isStencil && bufferBuilder.hasStencilRenderBuffer
+				|| bufferBuilder.hasPackedStencilDepthRenderBuffer) {
 				copyBits |= GL20.GL_STENCIL_BUFFER_BIT;
-			}else if(colorBufferHandles.size > 0){
+			} else if (colorBufferHandles.size > 0) {
 				copyBits |= GL20.GL_COLOR_BUFFER_BIT;
 			}
 		}
-		
+
 		transfer(destination, copyBits);
 	}
-	
-	public void transfer(GLFrameBuffer<T> destination, int copyBits){
+
+	public void transfer (GLFrameBuffer<T> destination, int copyBits) {
 		Gdx.gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferHandle);
 		Gdx.gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, destination.framebufferHandle);
-		
+
 		int colorBufferIndex = 0;
 		int attachmentIndex = 0;
-		for(FrameBufferTextureAttachmentSpec attachment : destination.bufferBuilder.textureAttachmentSpecs){
-			if(attachment.isColorTexture()){
+		for (FrameBufferTextureAttachmentSpec attachment : destination.bufferBuilder.textureAttachmentSpecs) {
+			if (attachment.isColorTexture()) {
 				Gdx.gl30.glReadBuffer(GL30.GL_COLOR_ATTACHMENT0 + colorBufferIndex);
 
 				singleInt.clear();
 				singleInt.put(GL30.GL_COLOR_ATTACHMENT0 + attachmentIndex);
 				singleInt.flip();
 				Gdx.gl30.glDrawBuffers(1, singleInt);
-				
+
 				Gdx.gl30.glBlitFramebuffer(0, 0, getWidth(), getHeight(), 0, 0, destination.getWidth(), destination.getHeight(),
 					copyBits, GL20.GL_NEAREST);
-				
+
 				copyBits = GL20.GL_COLOR_BUFFER_BIT;
 				colorBufferIndex++;
 			}
 			attachmentIndex++;
 		}
 		// case of depth or stencil only
-		if(attachmentIndex == 0 && copyBits != 0){
+		if (attachmentIndex == 0 && copyBits != 0) {
 			Gdx.gl30.glBlitFramebuffer(0, 0, getWidth(), getHeight(), 0, 0, destination.getWidth(), destination.getHeight(),
 				copyBits, GL20.GL_NEAREST);
 		}
 
 		// restore draw buffers for destination
 		Gdx.gl30.glDrawBuffers(destination.defaultDrawBuffers.limit(), destination.defaultDrawBuffers);
-		
+
 		Gdx.gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0);
 		Gdx.gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
 	}
@@ -459,11 +466,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	public int getDepthBufferHandle () {
 		return depthbufferHandle;
 	}
-	
+
 	/** @param n index of the color buffer as added to the frame buffer builder.
-	 * @return The OpenGL handle of a color buffer (see {@link GL20#glGenRenderbuffer()}). 
-	 **/
-	public int getColorBufferHandle(int n){
+	 * @return The OpenGL handle of a color buffer (see {@link GL20#glGenRenderbuffer()}). **/
+	public int getColorBufferHandle (int n) {
 		return colorBufferHandles.get(n);
 	}
 
@@ -567,6 +573,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		public GLFrameBufferBuilder (int width, int height) {
 			this(width, height, 0);
 		}
+
 		public GLFrameBufferBuilder (int width, int height, int samples) {
 			this.width = width;
 			this.height = height;
@@ -650,6 +657,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		public FrameBufferBuilder (int width, int height) {
 			super(width, height);
 		}
+
 		public FrameBufferBuilder (int width, int height, int samples) {
 			super(width, height, samples);
 		}
@@ -664,6 +672,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		public FloatFrameBufferBuilder (int width, int height) {
 			super(width, height);
 		}
+
 		public FloatFrameBufferBuilder (int width, int height, int samples) {
 			super(width, height, samples);
 		}
@@ -678,6 +687,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		public FrameBufferCubemapBuilder (int width, int height) {
 			super(width, height);
 		}
+
 		public FrameBufferCubemapBuilder (int width, int height, int samples) {
 			super(width, height, samples);
 		}

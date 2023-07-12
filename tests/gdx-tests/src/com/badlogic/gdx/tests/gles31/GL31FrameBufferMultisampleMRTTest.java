@@ -43,27 +43,22 @@ public class GL31FrameBufferMultisampleMRTTest extends GdxTest {
 
 	@Override
 	public void create () {
-		
+
 		int nbSamples = 4;
-		
-		fboMS = new FrameBufferBuilder(64, 64, nbSamples)
-			.addColorRenderBuffer(GL30.GL_RGBA8)
-			.addColorRenderBuffer(GL30.GL_RGBA8)
-			.addDepthRenderBuffer(GL30.GL_DEPTH_COMPONENT24)
-			.build();
-		
-		fbo = new FrameBufferBuilder(64, 64)
-			.addColorTextureAttachment(GL30.GL_RGBA8, GL20.GL_RGBA, GL30.GL_UNSIGNED_BYTE)
+
+		fboMS = new FrameBufferBuilder(64, 64, nbSamples).addColorRenderBuffer(GL30.GL_RGBA8).addColorRenderBuffer(GL30.GL_RGBA8)
+			.addDepthRenderBuffer(GL30.GL_DEPTH_COMPONENT24).build();
+
+		fbo = new FrameBufferBuilder(64, 64).addColorTextureAttachment(GL30.GL_RGBA8, GL20.GL_RGBA, GL30.GL_UNSIGNED_BYTE)
 			.addColorTextureAttachment(GL30.GL_RGBA8, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE)
-			.addDepthTextureAttachment(GL30.GL_DEPTH_COMPONENT24, GL30.GL_UNSIGNED_INT)
-			.build();
-		
+			.addDepthTextureAttachment(GL30.GL_DEPTH_COMPONENT24, GL30.GL_UNSIGNED_INT).build();
+
 		fbo.getTextureAttachments().get(0).setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		fbo.getTextureAttachments().get(1).setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		fbo.getTextureAttachments().get(2).setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		
+
 		batch = new SpriteBatch();
-		
+
 		ShaderProgram.prependVertexCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop)
 			? "#version 140\n #extension GL_ARB_explicit_attrib_location : enable\n"
 			: "#version 300 es\n";
@@ -71,12 +66,11 @@ public class GL31FrameBufferMultisampleMRTTest extends GdxTest {
 			? "#version 140\n #extension GL_ARB_explicit_attrib_location : enable\n"
 			: "#version 300 es\n";
 
-		shader = new ShaderProgram( 
-			Gdx.files.internal("data/shaders/shape-renderer-mrt-vert.glsl").readString(),
+		shader = new ShaderProgram(Gdx.files.internal("data/shaders/shape-renderer-mrt-vert.glsl").readString(),
 			Gdx.files.internal("data/shaders/shape-renderer-mrt-frag.glsl").readString());
-		
+
 		shapes = new ShapeRenderer(3, shader);
-		
+
 	}
 
 	@Override
@@ -109,7 +103,7 @@ public class GL31FrameBufferMultisampleMRTTest extends GdxTest {
 		batch.draw(fbo.getTextureAttachments().get(1), 0, 1, 1, 1, 0, 0, 1, 1);
 		batch.draw(fbo.getTextureAttachments().get(2), 0, 2, 1, 1, 0, 0, 1, 1);
 		batch.end();
-			
+
 		// render a shape into the multisample FBO, transfer to the other one and display it on the right
 		fboMS.begin();
 		ScreenUtils.clear(Color.CLEAR, true);
@@ -118,9 +112,9 @@ public class GL31FrameBufferMultisampleMRTTest extends GdxTest {
 		shapes.triangle(0.2f, 0.3f, .9f, .9f, .8f, 0.5f);
 		shapes.end();
 		fboMS.end();
-		
+
 		fboMS.transfer(fbo);
-		
+
 		batch.begin();
 		batch.draw(fbo.getTextureAttachments().get(0), 1, 0, 1, 1, 0, 0, 1, 1);
 		batch.draw(fbo.getTextureAttachments().get(1), 1, 1, 1, 1, 0, 0, 1, 1);
