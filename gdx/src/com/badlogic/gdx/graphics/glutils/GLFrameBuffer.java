@@ -397,6 +397,14 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	
 	static final IntBuffer singleInt = BufferUtils.newIntBuffer(1);
 	
+	/**
+	 * Transfer pixels from this frame buffer to the destination frame buffer.
+	 * Usually used when using multisample, it resolves samples from this multisample FBO
+	 * to a non-multisample as destination in order to be used as textures.
+	 * This is a convenient method that automatically choose which of stencil, depth, and
+	 * colors buffers attachment to be copied.
+	 * @param destination the destination of the copy.
+	 */
 	public void transfer (GLFrameBuffer<T> destination) {
 		
 		int copyBits = 0;
@@ -413,6 +421,15 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		transfer(destination, copyBits);
 	}
 	
+	/**
+	 * Transfer pixels from this frame buffer to the destination frame buffer.
+	 * Usually used when using multisample, it resolves samples from this multisample FBO
+	 * to a non-multisample as destination in order to be used as textures.
+	 * @param destination the destination of the copy.
+	 * @param copyBits combination of GL20.GL_COLOR_BUFFER_BIT, GL20.GL_STENCIL_BUFFER_BIT, 
+	 * 	and GL20.GL_DEPTH_BUFFER_BIT. When GL20.GL_COLOR_BUFFER_BIT is present, every color buffers
+	 * 	will be copied to each corresponding color texture buffers in the destination framebuffer.
+	 */
 	public void transfer(GLFrameBuffer<T> destination, int copyBits){
 		Gdx.gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferHandle);
 		Gdx.gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, destination.framebufferHandle);
@@ -436,8 +453,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			}
 			attachmentIndex++;
 		}
-		// case of depth or stencil only
-		if(attachmentIndex == 0 && copyBits != 0){
+		// case of depth and/or stencil only
+		if(copyBits != GL20.GL_COLOR_BUFFER_BIT){
 			Gdx.gl30.glBlitFramebuffer(0, 0, getWidth(), getHeight(), 0, 0, destination.getWidth(), destination.getHeight(),
 				copyBits, GL20.GL_NEAREST);
 		}
