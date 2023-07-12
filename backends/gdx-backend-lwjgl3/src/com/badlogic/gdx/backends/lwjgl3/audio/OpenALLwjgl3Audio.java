@@ -159,14 +159,8 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 						List<String> currentDevicesList = new ArrayList<>(Arrays.asList(currentDevices));
 						currentDevicesList.removeAll(Arrays.asList(lastAvailableDevices));
 						// If a new device got added, re evaluate "auto" mode
-						if (currentDevicesList.size() != 0) {
+						if (!Arrays.equals(currentDevices, lastAvailableDevices)) {
 							switchOutputDevice(null);
-						}
-						// If the default device got changed on the OS, re evaluate "auto" mode
-						if (lastAvailableDevices.length != 0 && currentDevices.length != 0) {
-							if (!lastAvailableDevices[0].equals(currentDevices[0])) {
-								switchOutputDevice(null);
-							}
 						}
 						// Update last available devices
 						lastAvailableDevices = currentDevices;
