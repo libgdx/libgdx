@@ -22,7 +22,7 @@ buildscript {
 	}
 	dependencies {
 		classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
-		classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.3.1"
+		classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.4.1"
 	}
 }
 

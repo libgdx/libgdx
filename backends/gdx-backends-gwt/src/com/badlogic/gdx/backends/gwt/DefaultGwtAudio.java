@@ -50,4 +50,14 @@ public class DefaultGwtAudio implements GwtAudio {
 	public Music newMusic (FileHandle file) {
 		return webAudioAPIManager.createMusic(file);
 	}
+
+	@Override
+	public boolean switchOutputDevice (String deviceIdentifier) {
+		return true;
+	}
+
+	@Override
+	public String[] getAvailableOutputDevices () {
+		return new String[0];
+	}
 }
