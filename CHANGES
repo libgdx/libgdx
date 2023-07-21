@@ -1,4 +1,5 @@
 [1.12.1]
+- Tiled Fix: TiledLayer parallax default values fix
 
 [1.12.0]
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
