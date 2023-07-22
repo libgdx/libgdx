@@ -120,5 +120,7 @@ public class GL31FrameBufferMultisampleMRTTest extends GdxTest {
 		batch.draw(fbo.getTextureAttachments().get(1), 1, 1, 1, 1, 0, 0, 1, 1);
 		batch.draw(fbo.getTextureAttachments().get(2), 1, 2, 1, 1, 0, 0, 1, 1);
 		batch.end();
+
+		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 	}
 }
