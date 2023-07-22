@@ -86,7 +86,7 @@ public class GL31FrameBufferMultisampleMRTTest extends GdxTest {
 	public void render () {
 
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-		ScreenUtils.clear(Color.CLEAR);
+		ScreenUtils.clear(Color.CLEAR, true);
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, 2, 3);
 
 		// render a shape into the non-multisample FBO and display it on the left
