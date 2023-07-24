@@ -177,8 +177,8 @@ public interface Input {
 		public static final int META_SHIFT_ON = 1;
 		public static final int META_SHIFT_RIGHT_ON = 128;
 		public static final int META_SYM_ON = 4;
-		public static final int CONTROL_LEFT = 129;
-		public static final int CONTROL_RIGHT = 130;
+		public static final int CONTROL_LEFT = 113;
+		public static final int CONTROL_RIGHT = 114;
 		public static final int ESCAPE = 111;
 		public static final int END = 123;
 		public static final int INSERT = 124;
