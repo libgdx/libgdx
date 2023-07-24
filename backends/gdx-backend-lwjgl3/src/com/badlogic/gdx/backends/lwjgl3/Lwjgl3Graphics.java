@@ -22,6 +22,7 @@ import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
@@ -39,6 +40,7 @@ import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Disposable;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.system.Configuration;
 
 public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	final Lwjgl3Window window;
@@ -68,33 +70,39 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 	IntBuffer tmpBuffer = BufferUtils.createIntBuffer(1);
 	IntBuffer tmpBuffer2 = BufferUtils.createIntBuffer(1);
-	IntBuffer tmpBuffer3 = BufferUtils.createIntBuffer(1);
-	IntBuffer tmpBuffer4 = BufferUtils.createIntBuffer(1);
 
 	GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
 		volatile boolean posted;
 
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
-			if (posted) return;
-			posted = true;
-			Gdx.app.postRunnable(new Runnable() {
-				@Override
-				public void run () {
-					posted = false;
-					updateFramebufferInfo();
-					if (!window.isListenerInitialized()) {
-						return;
+			if (Configuration.GLFW_CHECK_THREAD0.get(true)) {
+				renderWindow(windowHandle, width, height);
+			} else {
+				if (posted) return;
+				posted = true;
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run () {
+						posted = false;
+						renderWindow(windowHandle, width, height);
 					}
-					window.makeCurrent();
-					gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
-					window.getListener().resize(getWidth(), getHeight());
-					window.getListener().render();
-					GLFW.glfwSwapBuffers(windowHandle);
-				}
-			});
+				});
+			}
 		}
 	};
+
+	private void renderWindow (long windowHandle, final int width, final int height) {
+		updateFramebufferInfo();
+		if (!window.isListenerInitialized()) {
+			return;
+		}
+		window.makeCurrent();
+		gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
+		window.getListener().resize(getWidth(), getHeight());
+		window.getListener().render();
+		GLFW.glfwSwapBuffers(windowHandle);
+	}
 
 	public Lwjgl3Graphics (Lwjgl3Window window) {
 		this.window = window;
@@ -455,36 +463,29 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 	@Override
 	public boolean setWindowedMode (int width, int height) {
-		int minX, minY;
 		window.getInput().resetPollingStates();
 		if (!isFullscreen()) {
-			int newX = 0, newY = 0;
+			GridPoint2 newPos = null;
 			boolean centerWindow = false;
 			if (width != logicalWidth || height != logicalHeight) {
-				centerWindow = true;
-				Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
-				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
-				minX = tmpBuffer.get(0);
-				minY = tmpBuffer2.get(0);
-				newX = Math.max(minX, minX + (tmpBuffer3.get(0) - width) / 2);
-				newY = Math.max(minY, minY + (tmpBuffer4.get(0) - height) / 2);
+				centerWindow = true; // recenter the window since its size changed
+				newPos = Lwjgl3ApplicationConfiguration.calculateCenteredWindowPosition((Lwjgl3Monitor)getMonitor(), width, height);
 			}
 			GLFW.glfwSetWindowSize(window.getWindowHandle(), width, height);
 			if (centerWindow) {
-				window.setPosition(newX, newY); // on macOS the centering has to happen _after_ the new window size was set
+				window.setPosition(newPos.x, newPos.y); // on macOS the centering has to happen _after_ the new window size was set
 			}
-		} else {
+		} else { // if we were in fullscreen mode, we should consider restoring a previous display mode
 			if (displayModeBeforeFullscreen == null) {
 				storeCurrentWindowPositionAndDisplayMode();
 			}
-			if (width != windowWidthBeforeFullscreen || height != windowHeightBeforeFullscreen) { // Center window
-				Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
-				GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmpBuffer, tmpBuffer2, tmpBuffer3, tmpBuffer4);
-				minX = tmpBuffer.get(0);
-				minY = tmpBuffer2.get(0);
-				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, Math.max(minX, minX + (tmpBuffer3.get(0) - width) / 2),
-					Math.max(minY, minY + (tmpBuffer4.get(0) - height) / 2), width, height, displayModeBeforeFullscreen.refreshRate);
-			} else {
+			if (width != windowWidthBeforeFullscreen || height != windowHeightBeforeFullscreen) { // center the window since its size
+				// changed
+				GridPoint2 newPos = Lwjgl3ApplicationConfiguration.calculateCenteredWindowPosition((Lwjgl3Monitor)getMonitor(), width,
+					height);
+				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, newPos.x, newPos.y, width, height,
+					displayModeBeforeFullscreen.refreshRate);
+			} else { // restore previous position
 				GLFW.glfwSetWindowMonitor(window.getWindowHandle(), 0, windowPosXBeforeFullscreen, windowPosYBeforeFullscreen, width,
 					height, displayModeBeforeFullscreen.refreshRate);
 			}

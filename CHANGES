@@ -1,6 +1,10 @@
-[1.11.1]
+[1.12.1]
+- Tiled Fix: TiledLayer parallax default values fix
+
+[1.12.0]
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
-- [BREAKING CHANGE] Android: Immersive mode is now true by default. Set `useImmersiveMode` config to `false` to disable it. 
+- [BREAKING CHANGE] Android: Immersive mode is now true by default. Set `useImmersiveMode` config to `false` to disable it.
+- [BREAKING CHANGE] iOS: Increased min supported iOS version to 11.0. Update your Info.plist file if necessary.
 - [BREAKING CHANGE] iOS: `hideHomeIndicator` set to `false` by default (was `true`).
 - [BREAKING CHANGE] iOS: `screenEdgesDeferringSystemGestures` set to `UIRectEdge.All` by default (was `UIRectEdge.None`).
 - [BREAKING CHANGE] iOS: preferred FPS is now uncapped by default, see #6717
