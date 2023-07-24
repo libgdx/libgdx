@@ -1,5 +1,6 @@
 [1.12.1]
 - [BREAKING CHANGE] CONTROL_LEFT and CONTROL_RIGHT are now keycodes 113 and 114 for all platforms, to match Android
+- Tiled Fix: TiledLayer parallax default values fix
 
 [1.12.0]
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
