@@ -91,10 +91,9 @@ public class AndroidApplicationConfiguration {
 	/** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
 	public boolean useImmersiveMode = true;
 
-	/** Whether to enable OpenGL ES 3.0 if supported. If not supported it will fall-back to OpenGL ES 2.0. When GL ES
-	 * 3* is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. Requires at least Android 4.3 (API
-	 * level 18).
-	 */
+	/** Whether to enable OpenGL ES 3.0 if supported. If not supported it will fall-back to OpenGL ES 2.0. When GL ES 3* is
+	 * enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. Requires at least Android 4.3 (API level
+	 * 18). */
 	public boolean useGL30 = false;
 
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */

@@ -53,9 +53,8 @@ public class GwtApplicationConfiguration {
 	public TextArea log;
 	/** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown. */
 	public boolean useDebugGL = false;
-	/** Whether to enable OpenGL ES 3.0 (aka WebGL2) if supported. If not supported it will fall-back to OpenGL ES
-	 * 2.0. When GL ES 3.0 is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality.
-	 */
+	/** Whether to enable OpenGL ES 3.0 (aka WebGL2) if supported. If not supported it will fall-back to OpenGL ES 2.0. When GL ES
+	 * 3.0 is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. */
 	public boolean useGL30 = false;
 	/** preserve the back buffer, needed if you fetch a screenshot via canvas#toDataUrl, may have performance impact **/
 	public boolean preserveDrawingBuffer = false;
