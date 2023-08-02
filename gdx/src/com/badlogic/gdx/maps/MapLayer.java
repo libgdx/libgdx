@@ -27,8 +27,8 @@ public class MapLayer {
 	private float offsetY;
 	private float renderOffsetX;
 	private float renderOffsetY;
-	private float parallaxX;
-	private float parallaxY;
+	private float parallaxX = 1;
+	private float parallaxY = 1;
 	private boolean renderOffsetDirty = true;
 	private MapLayer parent;
 	private MapObjects objects = new MapObjects();
