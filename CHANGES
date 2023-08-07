@@ -1,4 +1,5 @@
 [1.12.1]
+- LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
 - Tiled Fix: TiledLayer parallax default values fix
 
 [1.12.0]

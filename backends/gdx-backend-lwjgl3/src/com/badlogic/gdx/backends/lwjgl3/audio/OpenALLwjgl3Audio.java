@@ -25,7 +25,6 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -156,12 +155,11 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 						}
 					} else {
 						String[] currentDevices = getAvailableOutputDevices();
-						List<String> currentDevicesList = new ArrayList<>(Arrays.asList(currentDevices));
-						currentDevicesList.removeAll(Arrays.asList(lastAvailableDevices));
 						// If a new device got added, re evaluate "auto" mode
-						if (currentDevicesList.size() != 0) {
+						if (!Arrays.equals(currentDevices, lastAvailableDevices)) {
 							switchOutputDevice(null);
 						}
+						// Update last available devices
 						lastAvailableDevices = currentDevices;
 					}
 					try {
