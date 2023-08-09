@@ -1,4 +1,6 @@
 [1.12.1]
+- LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
+- Tiled Fix: TiledLayer parallax default values fix
 
 [1.12.0]
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
