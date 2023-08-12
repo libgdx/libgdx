@@ -568,6 +568,51 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			}
 		}
 
+		// zoom from last onZoomChanged
+		boolean zoomConsumed = true;
+		float zoom = 0.0f;
+
+		@Override
+		public void onZoomChanged(float zoom) {
+
+			// it spawns too frequent on some devices - its annoying!
+			// if (DEBUG)
+			// Log.d(TAG, " > AndroidWallpaperEngine - onZoomChanged(" + zoom + ") " + hashCode()
+			// + ", linkedApp: " + (linkedApp != null));
+
+			this.zoomConsumed = false;
+			this.zoom = zoom;
+
+			// can fail if linkedApp == null, so we repeat it in Engine.onResume
+			notifyZoomChanged();
+			if (!Gdx.graphics.isContinuousRendering()) {
+				Gdx.graphics.requestRendering();
+			}
+
+			super.onZoomChanged(zoom);
+		}
+
+		protected void notifyZoomChanged() {
+			if (linkedEngine == this && app.listener instanceof AndroidWallpaperListener) {
+				if (!zoomConsumed) { // no need for more sophisticated synchronization - zoomChanged can be called multiple
+// times and with various patterns on various devices - user application must be prepared for that
+					zoomConsumed = true;
+
+					app.postRunnable(new Runnable() {
+						@Override
+						public void run () {
+							boolean isCurrent = false;
+							synchronized (sync) {
+								isCurrent = (linkedEngine == AndroidWallpaperEngine.this); // without this app can crash when fast
+// switching between engines (tested!)
+							}
+							if (isCurrent) ((AndroidWallpaperListener)app.listener).zoomChange(zoom);
+						}
+					});
+				}
+			}
+		}
+
 		protected void notifyPreviewState () {
 			// notify preview state to app listener
 			if (linkedEngine == this && app.listener instanceof AndroidWallpaperListener) {

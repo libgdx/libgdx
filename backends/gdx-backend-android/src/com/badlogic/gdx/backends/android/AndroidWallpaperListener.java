@@ -33,6 +33,10 @@ public interface AndroidWallpaperListener {
 	 * @param yPixelOffset */
 	void offsetChange (float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset, int yPixelOffset);
 
+	/** Called on the rendering thread after the live wallpaper's zoom had changed.
+	 * @param zoom */
+	void zoomChange (float zoom);
+
 	/** Called after 'isPreview' state had changed. First time called just after application initialization.
 	 * @param isPreview current status, save this value and update always when this method is called if you want track live
 	 *           wallpaper isPreview status. */
