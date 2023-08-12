@@ -22,11 +22,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Align;
 
-/**
- * Draws a {@link TextureRegion} repeatedly to fill the area, instead of stretching it.
+/** Draws a {@link TextureRegion} repeatedly to fill the area, instead of stretching it.
  * @author Nathan Sweet
- * @author Thomas Creutzenberg
- */
+ * @author Thomas Creutzenberg */
 public class TiledDrawable extends TextureRegionDrawable {
 	private final Color color = new Color(1, 1, 1, 1);
 	private float scale = 1;
