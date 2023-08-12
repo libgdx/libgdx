@@ -32,6 +32,7 @@ public class TiledDrawableTest extends GdxTest {
 		renderer = new ShapeRenderer();
 		renderer.setProjectionMatrix(batch.getProjectionMatrix());
 
+		// Must be a texture atlas so uv is not just 0 and 1
 		final TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("data/testAtlas.atlas"));
 		textureRegion = atlas.findRegion("tileTester");
 		tiledDrawable = new TiledDrawable(textureRegion);
