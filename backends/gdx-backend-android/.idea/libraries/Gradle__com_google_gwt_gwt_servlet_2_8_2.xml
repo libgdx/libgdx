@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.gwt:gwt-servlet:2.8.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.gwt/gwt-servlet/2.8.2/a538bc7b20dece1ca9c517d8ec5f6819ba2fdec9/gwt-servlet-2.8.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.gwt/gwt-servlet/2.8.2/1e4354de6741228bc7a6fc9d870497a76ecdd342/gwt-servlet-2.8.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

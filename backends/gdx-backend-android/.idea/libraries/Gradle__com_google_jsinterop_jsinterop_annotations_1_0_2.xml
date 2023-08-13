@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.jsinterop:jsinterop-annotations:1.0.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.jsinterop/jsinterop-annotations/1.0.2/abd7319f53d018e11108a88f599bd16492448dd2/jsinterop-annotations-1.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.jsinterop/jsinterop-annotations/1.0.2/33716f8aef043f2f02b78ab4a1acda6cd90a7602/jsinterop-annotations-1.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
