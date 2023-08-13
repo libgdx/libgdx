@@ -573,7 +573,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		float zoom = 0.0f;
 
 		@Override
-		public void onZoomChanged(float zoom) {
+		public void onZoomChanged (float zoom) {
 
 			// it spawns too frequent on some devices - its annoying!
 			// if (DEBUG)
@@ -592,7 +592,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			super.onZoomChanged(zoom);
 		}
 
-		protected void notifyZoomChanged() {
+		protected void notifyZoomChanged () {
 			if (linkedEngine == this && app.listener instanceof AndroidWallpaperListener) {
 				if (!zoomConsumed) { // no need for more sophisticated synchronization - zoomChanged can be called multiple
 // times and with various patterns on various devices - user application must be prepared for that
