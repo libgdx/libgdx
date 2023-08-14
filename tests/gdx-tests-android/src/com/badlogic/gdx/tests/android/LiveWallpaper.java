@@ -48,6 +48,11 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		}
 
 		@Override
+		public void zoomChange (float zoom) {
+			Log.i("LiveWallpaper test", "zoomChange(zoom:" + zoom + ")");
+		}
+
+		@Override
 		public void previewStateChange (boolean isPreview) {
 			Log.i("LiveWallpaper test", "previewStateChange(isPreview:" + isPreview + ")");
 		}
