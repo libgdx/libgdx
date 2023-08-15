@@ -110,6 +110,7 @@ public class TiledDrawableTest extends GdxTest {
 	@Override
 	public void dispose () {
 		stage.dispose();
+		font.dispose();
 		atlas.dispose();
 	}
 }
