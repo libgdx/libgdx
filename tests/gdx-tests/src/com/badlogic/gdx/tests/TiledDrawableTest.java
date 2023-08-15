@@ -1,11 +1,12 @@
-
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -20,9 +21,8 @@ public class TiledDrawableTest extends GdxTest {
 	private Batch batch;
 	private BitmapFont font;
 	private ShapeRenderer renderer;
-	private TextureRegion textureRegion;
+	private TextureAtlas atlas;
 	private TiledDrawable tiledDrawable;
-	private Vector2 v;
 
 	@Override
 	public void create () {
@@ -33,10 +33,8 @@ public class TiledDrawableTest extends GdxTest {
 		renderer.setProjectionMatrix(batch.getProjectionMatrix());
 
 		// Must be a texture atlas so uv is not just 0 and 1
-		final TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("data/testAtlas.atlas"));
-		textureRegion = atlas.findRegion("tileTester");
-		tiledDrawable = new TiledDrawable(textureRegion);
-		v = new Vector2();
+		atlas = new TextureAtlas(Gdx.files.internal("data/testAtlas.atlas"));
+		tiledDrawable = new TiledDrawable(atlas.findRegion("tileTester"));
 
 		Gdx.input.setInputProcessor(this);
 	}
@@ -49,7 +47,7 @@ public class TiledDrawableTest extends GdxTest {
 		batch.begin();
 
 		font.draw(batch,
-			"Scale: " + tiledDrawable.getScale() + "  (to change scale press: 'A' +" + SCALE_CHANGE + ", 'D' -" + SCALE_CHANGE + ")",
+			"Scale: " + tiledDrawable.getScale() + "  (to change scale press: 'A' -" + SCALE_CHANGE + ", 'D' +" + SCALE_CHANGE + ")",
 			8, 20);
 
 		final float leftSpacingX = 40;
@@ -111,6 +109,6 @@ public class TiledDrawableTest extends GdxTest {
 	@Override
 	public void dispose () {
 		stage.dispose();
-		textureRegion.getTexture().dispose();
+		atlas.dispose();
 	}
 }
