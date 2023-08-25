@@ -1,6 +1,7 @@
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
 - Tiled Fix: TiledLayer parallax default values fix
+- Android: Removed mouse catching added on 1.12.0 due to unintended effects (see #7187).
 
 [1.12.0]
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
@@ -21,6 +22,7 @@
 - [BREAKING CHANGE] iOS: Use dynamic frameworks instead of static libs
 - [BREAKING CHANGE] optimized Mesh#bind and Mesh#unbind have a new parameter for instanced attribute locations. If you use these methods without instancing, you can pass a null value.
 - [BREAKING CHANGE] Dropped support for older libc versions since libGDX is now built on Ubuntu 20.04  (#7005)
+- [KNOWN ISSUE] Android drag behaviour. Gdx.input.getDeltaX() and Gdx.input.getDeltaY always return 0 for pointer 0. Fixed on next version.
 - Update to jnigen 2.4.1
 - LWJGL Fix: setPosision() for MP3 files.
 - iOS: Add new MobiVM MetalANGLE backend
