@@ -21,7 +21,6 @@ public class TiledDrawableTest extends GdxTest {
 	private Stage stage;
 	private Batch batch;
 	private BitmapFont font;
-	private ShapeRenderer renderer;
 	private TextureAtlas atlas;
 	private TiledDrawable tiledDrawable;
 
@@ -30,8 +29,6 @@ public class TiledDrawableTest extends GdxTest {
 		stage = new Stage();
 		batch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
-		renderer = new ShapeRenderer();
-		renderer.setProjectionMatrix(batch.getProjectionMatrix());
 
 		// Must be a texture atlas so uv is not just 0 and 1
 		atlas = new TextureAtlas(Gdx.files.internal("data/testAtlas.atlas"));
@@ -103,7 +100,6 @@ public class TiledDrawableTest extends GdxTest {
 	@Override
 	public void resize (int width, int height) {
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
-		renderer.setProjectionMatrix(batch.getProjectionMatrix());
 		stage.getViewport().update(width, height, true);
 	}
 
