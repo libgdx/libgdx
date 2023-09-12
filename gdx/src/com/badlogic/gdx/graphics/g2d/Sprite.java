@@ -351,7 +351,7 @@ public class Sprite extends TextureRegion {
 	public void setAlpha (float a) {
 		if (color.a != a) {
 			color.a = a;
-			packedColor = this.color.toFloatBits();
+			packedColor = color.toFloatBits();
 			vertices[C1] = packedColor;
 			vertices[C2] = packedColor;
 			vertices[C3] = packedColor;
@@ -362,7 +362,7 @@ public class Sprite extends TextureRegion {
 	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a) {
 		color.set(r, g, b, a);
-		packedColor = this.color.toFloatBits();
+		packedColor = color.toFloatBits();
 		float[] vertices = this.vertices;
 		vertices[C1] = packedColor;
 		vertices[C2] = packedColor;
