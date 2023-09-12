@@ -639,7 +639,7 @@ public class Sprite extends TextureRegion {
 	}
 
 	/** Returns the packed color of this sprite. */
-	public float getPackedColor() {
+	public float getPackedColor () {
 		return packedColor;
 	}
 
