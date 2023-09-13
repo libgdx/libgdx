@@ -375,7 +375,8 @@ public class Sprite extends TextureRegion {
 	 * @see Color#toFloatBits() */
 	public void setPackedColor (float packedColor) {
 		// Handle 0f/-0f special case
-		if (packedColor != this.packedColor || (packedColor  == 0f && this.packedColor == 0f && Float.floatToIntBits(packedColor) != Float.floatToIntBits(this.packedColor))) {
+		if (packedColor != this.packedColor || (packedColor == 0f && this.packedColor == 0f
+			&& Float.floatToIntBits(packedColor) != Float.floatToIntBits(this.packedColor))) {
 			this.packedColor = packedColor;
 			Color.abgr8888ToColor(color, packedColor);
 			float[] vertices = this.vertices;
