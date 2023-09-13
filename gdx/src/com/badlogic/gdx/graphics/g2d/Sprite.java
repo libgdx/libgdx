@@ -370,7 +370,7 @@ public class Sprite extends TextureRegion {
 		vertices[C4] = packedColor;
 	}
 
-	/** Sets the color of this sprite, expanding the alpha from 0-254 to 0-255.
+	/** Sets the packed color used to tint this sprite.
 	 * @see #setColor(Color)
 	 * @see Color#toFloatBits() */
 	public void setPackedColor (float packedColor) {
