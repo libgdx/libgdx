@@ -465,6 +465,9 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			String opaqueColor = value.substring(3);
 			String alpha = value.substring(1, 3);
 			return Color.valueOf(opaqueColor + alpha);
+		} else if (type.equals("object")) {
+			// TODO: support for tiled custom objects
+			return null;
 		} else {
 			throw new GdxRuntimeException(
 				"Wrong type given for property " + name + ", given : " + type + ", supported : string, bool, int, float, color");
