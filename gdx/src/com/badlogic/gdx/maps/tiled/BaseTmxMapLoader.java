@@ -28,9 +28,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
-import java.util.Queue;
-import java.util.*;
+import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
@@ -78,17 +76,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
     protected int mapHeightInPixels;
 
     protected TiledMap map;
-
-    /**
-     * Dictionary where the key is tiled object id and the value is the map properties of the object.
-     */
-    protected Map<Integer, MapProperties> tiledObjIdToMapPropsMap;
-    /**
-     * When a tiled object has a property of type "object", then store a pair in the queue where
-     * the first value is the tiled object id and the second value is the id of the tiled object
-     * being pointed to.
-     */
-    protected Queue<Pair<Integer, Integer>> objectPropQueue;
+    protected ObjectMap<Integer, MapProperties> tiledObjIdToMapPropsMap;
+    protected Queue<Runnable> runOnEnd;
 
     public BaseTmxMapLoader(FileHandleResolver resolver) {
         super(resolver);
@@ -121,9 +110,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
      */
     protected TiledMap loadTiledMap(FileHandle tmxFile, P parameter, ImageResolver imageResolver) {
         this.map = new TiledMap();
-
-        this.tiledObjIdToMapPropsMap = new HashMap<>();
-        this.objectPropQueue = new LinkedList<>();
+        this.tiledObjIdToMapPropsMap = new ObjectMap<>();
+        this.runOnEnd = new Queue<>();
 
         if (parameter != null) {
             this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
@@ -208,6 +196,10 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
                     groups.add((MapGroupLayer) child);
                 }
             }
+        }
+
+        while (!runOnEnd.isEmpty()) {
+            runOnEnd.removeFirst().run();
         }
 
         return map;
@@ -464,6 +456,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
             Element properties = element.getChildByName("properties");
             if (properties != null) {
                 loadProperties(object.getProperties(), properties);
+                tiledObjIdToMapPropsMap.put(id, object.getProperties());
             }
             objects.add(object);
         }
@@ -480,15 +473,10 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
                 if (value == null) {
                     value = property.getText();
                 }
-
                 if (type != null && type.equals("object")) {
-                    /*
-                    Tiled custom properties with type="object" are stored in a child XML element named <object>
-                    where the value is the id of the tiled object being pointed to. Here, queue up a pair where
-                    the first value is the id of the object with the property and the second value is the id of
-                    the object being pointed to.
-                    */
-                    objectPropQueue.add(new Pair<>(properties.get("id", Integer.class), Integer.valueOf(value)));
+                    final String _value = value;
+                    runOnEnd.addFirst(() -> properties.put(name,
+                            tiledObjIdToMapPropsMap.get(Integer.parseInt(_value))));
                 } else {
                     Object castValue = castProperty(name, value, type);
                     properties.put(name, castValue);
@@ -511,15 +499,12 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
             String opaqueColor = value.substring(3);
             String alpha = value.substring(1, 3);
             return Color.valueOf(opaqueColor + alpha);
-        } else if (type.equals("object")) {
-            // TODO: support for tiled custom objects
-            return null;
-
         } else {
             throw new GdxRuntimeException(
                     "Wrong type given for property " + name + ", given : " + type + ", supported : string, bool, int," +
                             " float, color");
         }
+
     }
 
     protected Cell createTileLayerCell(boolean flipHorizontally, boolean flipVertically, boolean flipDiagonally) {
