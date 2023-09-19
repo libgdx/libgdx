@@ -158,7 +158,7 @@ public interface Input {
 		public static final int SOFT_RIGHT = 2;
 		public static final int SPACE = 62;
 		public static final int STAR = 17;
-		public static final int SYM = 63;
+		public static final int SYM = 63; // on MacOS, this is Command (⌘)
 		public static final int T = 48;
 		public static final int TAB = 61;
 		public static final int U = 49;
@@ -933,8 +933,8 @@ public interface Input {
 		Landscape, Portrait
 	}
 
-	/** Only viable on desktop, GWT and Android 8+. Will confine the mouse cursor location to the window and hide the mouse cursor.
-	 * X and y coordinates are still reported as if the mouse was not catched.
+	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor. X and y
+	 * coordinates are still reported as if the mouse was not catched.
 	 * @param catched whether to catch or not to catch the mouse cursor */
 	public void setCursorCatched (boolean catched);
 
