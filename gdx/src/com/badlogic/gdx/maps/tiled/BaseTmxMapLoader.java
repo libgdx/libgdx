@@ -187,7 +187,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		}
 
 		while (!runOnEndOfLoadTiledMap.isEmpty()) {
-			// Gdx.app.log("BaseTmxMapLoader", "Running on end of load tiled map");
 			runOnEndOfLoadTiledMap.removeFirst().run();
 		}
 
@@ -442,7 +441,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
 				loadProperties(object.getProperties(), properties);
-				// Gdx.app.log("BaseTmxMapLoader", "Putting props for id [" + id + "]");
 				/*
 				 * After loading the properties of the object, put a mapping entry where the key is the object id and the value is the
 				 * object's properties.
@@ -469,7 +467,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 					 * properties of the object being pointed to might not have been loaded yet.
 					 */
 					try {
-						// Gdx.app.log("BaseTmxMapLoader", "Parsing property [" + name + "] of type \"object\"");
 						/*
 						 * Value should be the id of the object being pointed to. Nevertheless, the try-catch block safeguards in case
 						 * faulty data in inputted.
@@ -480,10 +477,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 						 * Create a [Runnable] to fetch the map properties of the object being pointed to and add it to this object's
 						 * properties.
 						 */
-						/*
-						 * Gdx.app.log("BaseTmxMapLoader", "Creating runnable to fetch obj with id [" + _value + "] " +
-						 * "to put in props of obj with id [" + properties.get("id", Integer.class) + "]");
-						 */
 						Runnable fetchMapProps = new Runnable() {
 							@Override
 							public void run () {
@@ -493,7 +486,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 						};
 
 						// [Runnable] should not run until the end of the [loadTiledMap] method.
-						// Gdx.app.log("BaseTmxMapLoader", "Put runnable in queue...");
 						runOnEndOfLoadTiledMap.addFirst(fetchMapProps);
 					} catch (Exception exception) {
 						Gdx.app.error("BaseTmxMapLoader", "Error parsing property [" + name + "] of type \"object\"", exception);
