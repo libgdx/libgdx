@@ -453,11 +453,11 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		}
 	}
 
-	protected void loadProperties (MapProperties properties, Element element) {
+	protected void loadProperties (final MapProperties properties, Element element) {
 		if (element == null) return;
 		if (element.getName().equals("properties")) {
 			for (Element property : element.getChildrenByName("property")) {
-				String name = property.getAttribute("name", null);
+				final String name = property.getAttribute("name", null);
 				String value = property.getAttribute("value", null);
 				String type = property.getAttribute("type", null);
 				if (value == null) {
