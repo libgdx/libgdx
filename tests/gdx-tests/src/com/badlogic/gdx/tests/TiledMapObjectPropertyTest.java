@@ -21,6 +21,7 @@ import com.badlogic.gdx.tests.utils.OrthoCamController;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.StringBuilder;
 
 import java.util.Iterator;
 
@@ -51,7 +52,6 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 
 	@Override
 	public void create () {
-		Gdx.app.log("TiledMapObjectPropertyTest", "Running test...");
 		try {
 			float w = Gdx.graphics.getWidth();
 			float h = Gdx.graphics.getHeight();
@@ -64,9 +64,7 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 			OrthoCamController cameraController = new OrthoCamController(camera);
 			Gdx.input.setInputProcessor(cameraController);
 
-			Gdx.app.log("TiledMapObjectPropertyTest", "Load map...");
 			map = new TmxMapLoader().load("data/maps/tiled-objects/test-object-properties.tmx");
-			Gdx.app.log("TiledMapObjectPropertyTest", "Finish loading map!");
 
 			batch = new SpriteBatch();
 			shapeRenderer = new ShapeRenderer();
@@ -82,7 +80,6 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 
 			for (MapObject object : objects) {
 				int id = object.getProperties().get("id", Integer.class);
-				Gdx.app.log("TiledMapObjectPropertyTest", "Testing object with id " + id);
 				MapProperties props = idPropMap.get(id);
 
 				switch (id) {
@@ -118,7 +115,8 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 				int id = entry.key;
 				MapProperties props = entry.value;
 
-				System.out.println("Object with id " + id + " has \"object\" properties: ");
+				StringBuilder builder = new StringBuilder();
+				builder.append("Object with id ").append(id).append(" has \"object\" properties:\n");
 
 				Iterator<String> propKeysIterator = props.getKeys();
 				Iterator<Object> propValuesIterator = props.getValues();
@@ -135,8 +133,10 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 						value = "props of object with id " + nestedProps.get("id", Integer.class);
 					}
 
-					System.out.println("\t" + key + " = " + value);
+					builder.append("\t").append(key).append(" = ").append(value).append("\n");
 				}
+
+				Gdx.app.log("TiledMapObjectPropertyTest", builder.toString());
 
 			}
 
@@ -185,12 +185,9 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 
 	private void test (MapProperties props, int idToObjProp, IntMap<MapProperties> idPropMap) {
 		String key = "Points_To_ID_" + idToObjProp;
-		Gdx.app.log("TiledMapObjectPropertyTest", "Testing property " + key);
-
 		if (!props.containsKey(key)) {
 			throw new RuntimeException("Missing property: " + key);
 		}
-
 		MapProperties otherProps = idPropMap.get(idToObjProp);
 		if (otherProps != idPropMap.get(idToObjProp)) {
 			throw new RuntimeException("Property " + key + " does not point to the correct object");
