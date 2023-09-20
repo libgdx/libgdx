@@ -444,8 +444,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				loadProperties(object.getProperties(), properties);
 				// Gdx.app.log("BaseTmxMapLoader", "Putting props for id [" + id + "]");
                                 /* After loading the properties of the object, put a mapping entry where the key is the object id and
-                                 * the value is the
-                                 * object's properties
+                                 * the value is the object's properties.
                                  */
                                 idToPropsMap.put(id, object.getProperties());
 			}
@@ -466,25 +465,24 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				if (type != null && type.equals("object")) {
                                         /*
                                          * Wait until the end of the [loadTiledMap] method to fetch the map props for "object". This is
-                                         * because the map
-                                         * properties of the object being pointed to might not have been loaded yet.
+                                         * because the map properties of the object being pointed to might not have been loaded yet.
                                          */
                                         try {
                                                 // Gdx.app.log("BaseTmxMapLoader", "Parsing property [" + name + "] of type \"object\"");
                                                 /*
                                                  * Value should be the id of the object being pointed to. Nevertheless, the try-catch block
-                                                 * safeguards in case
-                                                 * faulty data in inputted.
+                                                 * safeguards in case faulty data in inputted.
                                                  */
                                                 final int _value = Integer.parseInt(value);
 
                                                 /*
                                                  * Create a [Runnable] to fetch the map properties of the object being pointed to and add it
-                                                 * to this object's
-                                                 * properties.
+                                                 * to this object's properties.
                                                  */
-                                                // Gdx.app.log("BaseTmxMapLoader", "Creating runnable to fetch obj with id [" + _value + "] " +
-                                                // "to put in props of obj with id [" + properties.get("id", Integer.class) + "]");
+						/*
+                                                Gdx.app.log("BaseTmxMapLoader", "Creating runnable to fetch obj with id [" + _value + "] " +
+                                                "to put in props of obj with id [" + properties.get("id", Integer.class) + "]");
+                                                */
                                                 Runnable fetchMapProps = new Runnable() {
                                                         @Override
                                                         public void run() {

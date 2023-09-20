@@ -27,6 +27,21 @@ import java.util.Iterator;
  * Test for successful loading of "object" properties for tiled objects in a map. The value of the "object"
  * property is the id of another tiled object. This test ensures that the "object" property is correctly
  * loaded and points to the correct object.
+ *
+ * The following should be true:
+ * - Object with id 1 should have props:
+ *     - Points_To_ID_1 = 1
+ *     - Points_To_ID_2 = 2
+ *     - Points_To_ID_5 = 5
+ * - Object with id 2 should have props:
+ *     - Points_To_ID_3 = 3
+ *     - Points_To_ID_4 = 4
+ * - Object with id 3 should have props:
+ *     - Points_To_ID_2 = 2
+ * - Object with id 4 should have props:
+ *     - Points_To_ID_1 = 1
+ * - Objects with id's 5 and 6 should have props:
+ *     - Placeholder = 0
  */
 public class TiledMapObjectPropertyTest extends GdxTest {
 
