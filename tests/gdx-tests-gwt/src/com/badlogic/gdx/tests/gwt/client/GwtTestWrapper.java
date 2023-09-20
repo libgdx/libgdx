@@ -22,7 +22,7 @@ import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.BufferUtilsTest;
 import com.badlogic.gdx.tests.ClipboardTest;
-import com. badlogic.gdx.tests.TiledMapObjectPropertyTest;
+import com.badlogic.gdx.tests.TiledMapObjectPropertyTest;
 import com.badlogic.gdx.tests.ColorTest;
 import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
@@ -557,7 +557,7 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		});
 		tests.add(new GwtInstancer() {
 			@Override
-			public GdxTest instance() {
+			public GdxTest instance () {
 				return new TiledMapObjectPropertyTest();
 			}
 		});
