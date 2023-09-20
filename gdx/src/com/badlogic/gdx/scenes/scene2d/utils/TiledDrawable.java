@@ -124,10 +124,8 @@ public class TiledDrawable extends TextureRegionDrawable {
 				final float vOffset = 0.5f * (v2 - v) * (1f - (height / regionHeight));
 				final float leftCenterV = v2 - vOffset;
 				final float leftCenterV2 = v + vOffset;
-				for (int i = 0; i < 1; i++) {
-					batch.draw(texture, drawX, drawY, leftPartialWidth, height, leftEdgeU, leftCenterV, u2, leftCenterV2);
-					drawY += height;
-				}
+				batch.draw(texture, drawX, drawY, leftPartialWidth, height, leftEdgeU, leftCenterV, u2, leftCenterV2);
+				drawY += height;
 			} else {
 				for (int i = 0; i < fullY; i++) {
 					batch.draw(texture, drawX, drawY, leftPartialWidth, regionHeight, leftEdgeU, v2, u2, v);
@@ -155,10 +153,8 @@ public class TiledDrawable extends TextureRegionDrawable {
 					final float uOffset = 0.5f * (u2 - u) * (1f - (width / regionWidth));
 					final float centerBottomU = u + uOffset;
 					final float centerBottomU2 = u2 - uOffset;
-					for (int i = 0; i < 1; i++) {
-						batch.draw(texture, drawX, drawY, width, bottomPartialHeight, centerBottomU, centerBottomV, centerBottomU2, v);
-						drawX += width;
-					}
+					batch.draw(texture, drawX, drawY, width, bottomPartialHeight, centerBottomU, centerBottomV, centerBottomU2, v);
+					drawX += width;
 				} else {
 					for (int i = 0; i < fullX; i++) {
 						batch.draw(texture, drawX, drawY, regionWidth, bottomPartialHeight, u, centerBottomV, u2, v);
@@ -218,10 +214,8 @@ public class TiledDrawable extends TextureRegionDrawable {
 					final float uOffset = 0.5f * (u2 - u) * (1f - (width / regionWidth));
 					final float centerTopU = u + uOffset;
 					final float centerTopU2 = u2 - uOffset;
-					for (int i = 0; i < 1; i++) {
-						batch.draw(texture, drawX, drawY, width, topPartialHeight, centerTopU, v2, centerTopU2, centerTopV);
-						drawX += width;
-					}
+					batch.draw(texture, drawX, drawY, width, topPartialHeight, centerTopU, v2, centerTopU2, centerTopV);
+					drawX += width;
 				} else {
 					for (int i = 0; i < fullX; i++) {
 						batch.draw(texture, drawX, drawY, regionWidth, topPartialHeight, u, v2, u2, centerTopV);
@@ -249,10 +243,8 @@ public class TiledDrawable extends TextureRegionDrawable {
 				final float vOffset = 0.5f * (v2 - v) * (1f - (height / regionHeight));
 				final float rightCenterV = v2 - vOffset;
 				final float rightCenterV2 = v + vOffset;
-				for (int i = 0; i < 1; i++) {
-					batch.draw(texture, drawX, drawY, rightPartialWidth, height, u, rightCenterV, rightEdgeU2, rightCenterV2);
-					drawY += height;
-				}
+				batch.draw(texture, drawX, drawY, rightPartialWidth, height, u, rightCenterV, rightEdgeU2, rightCenterV2);
+				drawY += height;
 			} else {
 				for (int i = 0; i < fullY; i++) {
 					batch.draw(texture, drawX, drawY, rightPartialWidth, regionHeight, u, v2, rightEdgeU2, v);
