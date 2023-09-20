@@ -18,19 +18,28 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.Iterator;
 
 /** Test for successful loading of "object" properties for tiled objects in a map. The value of the "object" property is the id of
- * another tiled object. This test ensures that the "object" property is correctly loaded and points to the correct object.
- *
- * The following should be true: - Object with id 1 should have props: - Points_To_ID_1 = 1 - Points_To_ID_2 = 2 - Points_To_ID_5
- * = 5 - Object with id 2 should have props: - Points_To_ID_3 = 3 - Points_To_ID_4 = 4 - Object with id 3 should have props: -
- * Points_To_ID_2 = 2 - Object with id 4 should have props: - Points_To_ID_1 = 1 - Objects with id's 5 and 6 should have props: -
- * Placeholder = 0 */
+ * another tiled object. This test ensures that the "object" property is correctly loaded and points to the correct object. The
+ * following should be true:
+ * - Object with id 1 should have props:
+ *     - Points_To_ID_1 = 1
+ *     - Points_To_ID_2 = 2
+ *     - Points_To_ID_5 = 5
+ * - Object with id 2 should have props:
+ *     - Points_To_ID_3 = 3
+ *     - Points_To_ID_4 = 4
+ * - Object with id 3 should have props:
+ *     - Points_To_ID_2 = 2
+ * - Object with id 4 should have props:
+ *     - Points_To_ID_1 = 1
+ *     - Objects with id's 5 and 6 should have props:
+ *     - Placeholder = 0 */
 public class TiledMapObjectPropertyTest extends GdxTest {
 
 	private TiledMap map;
@@ -65,7 +74,7 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 
 			MapObjects objects = map.getLayers().get("Objects").getObjects();
 
-			ObjectMap<Integer, MapProperties> idPropMap = new ObjectMap<>();
+			IntMap<MapProperties> idPropMap = new IntMap<>();
 			for (MapObject object : objects) {
 				int id = object.getProperties().get("id", Integer.class);
 				idPropMap.put(id, object.getProperties());
@@ -105,7 +114,7 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 				}
 			}
 
-			for (ObjectMap.Entry<Integer, MapProperties> entry : idPropMap.entries()) {
+			for (IntMap.Entry<MapProperties> entry : idPropMap.entries()) {
 				int id = entry.key;
 				MapProperties props = entry.value;
 
@@ -174,7 +183,7 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 		shapeRenderer.dispose();
 	}
 
-	private void test (MapProperties props, int idToObjProp, ObjectMap<Integer, MapProperties> idPropMap) {
+	private void test (MapProperties props, int idToObjProp, IntMap<MapProperties> idPropMap) {
 		String key = "Points_To_ID_" + idToObjProp;
 		Gdx.app.log("TiledMapObjectPropertyTest", "Testing property " + key);
 

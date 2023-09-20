@@ -66,7 +66,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 
 	protected TiledMap map;
 	/** MapProperty instances are mapped to the id of the respective tiled object */
-	protected ObjectMap<Integer, MapProperties> idToPropsMap;
+	protected IntMap<MapProperties> idToPropsMap;
 	/** Logic to delay until the end of the [loadTiledMap] method */
 	protected Queue<Runnable> runOnEndOfLoadTiledMap;
 
@@ -99,7 +99,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 	 * @return the {@link TiledMap} */
 	protected TiledMap loadTiledMap (FileHandle tmxFile, P parameter, ImageResolver imageResolver) {
 		this.map = new TiledMap();
-		this.idToPropsMap = new ObjectMap<>();
+		this.idToPropsMap = new IntMap<>();
 		this.runOnEndOfLoadTiledMap = new Queue<>();
 
 		if (parameter != null) {
@@ -471,7 +471,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 						 * Value should be the id of the object being pointed to. Nevertheless, the try-catch block safeguards in case
 						 * faulty data in inputted.
 						 */
-						final int _value = Integer.parseInt(value);
+						final int id = Integer.parseInt(value);
 
 						/*
 						 * Create a [Runnable] to fetch the map properties of the object being pointed to and add it to this object's
@@ -480,7 +480,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 						Runnable fetchMapProps = new Runnable() {
 							@Override
 							public void run () {
-								MapProperties props = idToPropsMap.get(_value);
+								MapProperties props = idToPropsMap.get(id);
 								properties.put(name, props);
 							}
 						};
