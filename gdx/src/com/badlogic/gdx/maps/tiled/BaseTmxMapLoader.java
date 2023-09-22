@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.maps.tiled;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
@@ -482,7 +481,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 						// [Runnable] should not run until the end of [loadTiledMap]
 						runOnEndOfLoadTiled.add(fetchMapProps);
 					} catch (Exception exception) {
-						Gdx.app.error("BaseTmxMapLoader", "Error parsing property [" + name + "] of type \"object\"", exception);
+						throw new GdxRuntimeException(
+							"Error parsing property [\" + name + \"] of type \"object\" with value: [" + value + "]", exception);
 					}
 				} else {
 					Object castValue = castProperty(name, value, type);
