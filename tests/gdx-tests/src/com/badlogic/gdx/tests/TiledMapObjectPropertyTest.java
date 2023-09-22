@@ -80,6 +80,7 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 
 				IntMap<MapObject> idToObject = loader.getIdToObject();
 
+				builder.clear();
 				builder.append("\nidToObject: {");
 				for (IntMap.Entry<MapObject> entry : idToObject) {
 					builder.append("\n\t").append(entry.key).append(" -> ").append(entry.value);
@@ -125,7 +126,7 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 					}
 				}
 
-				builder = new StringBuilder();
+				builder.clear();
 				builder.append("Actual results:\n");
 				for (IntMap.Entry<MapObject> entry : idToObject.entries()) {
 					int id = entry.key;

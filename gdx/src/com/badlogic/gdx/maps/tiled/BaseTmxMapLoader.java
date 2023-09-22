@@ -91,7 +91,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 	 *
 	 * @return the map of the object ids to the {@link MapObject} instances, or null if the load tiled map method has not been
 	 *         called yet. */
-	public IntMap<MapObject> getIdToObject () {
+	public @Null IntMap<MapObject> getIdToObject () {
 		return idToObject == null ? null : new IntMap<>(idToObject);
 	}
 
