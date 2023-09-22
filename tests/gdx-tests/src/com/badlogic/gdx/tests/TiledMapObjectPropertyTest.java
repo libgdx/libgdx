@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.BaseTmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -18,29 +18,17 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.*;
 
 import java.util.Iterator;
 
-/** Test for successful loading of "object" properties for tiled objects in a map. The value of the "object" property is the id of
- * another tiled object. This test ensures that the "object" property is correctly loaded and points to the correct object. The
- * following should be true:
- * - Object with id 1 should have props:
- *     - Points_To_ID_1 = 1
- *     - Points_To_ID_2 = 2
- *     - Points_To_ID_5 = 5
- * - Object with id 2 should have props:
- *     - Points_To_ID_3 = 3
- *     - Points_To_ID_4 = 4
- * - Object with id 3 should have props:
- *     - Points_To_ID_2 = 2
- * - Object with id 4 should have props:
- *     - Points_To_ID_1 = 1
- *     - Objects with id's 5 and 6 should have props:
- *     - Placeholder = 0 */
+/** Test for successful loading of "object" properties for tiled objects in a map. The value of the "object" property in Tiled is
+ * the id of another tiled object. This is converted to a MapObject instance in [loadTiledMap] of {@link BaseTmxMapLoader}. The
+ * test checks that the "object" properties are loaded correctly. - Object with id 1 should have props: - Points_To_ID_1 = 1 -
+ * Points_To_ID_2 = 2 - Points_To_ID_5 = 5 - Object with id 2 should have props: - Points_To_ID_3 = 3 - Points_To_ID_4 = 4 -
+ * Object with id 3 should have props: - Points_To_ID_2 = 2 - Object with id 4 should have props: - Points_To_ID_1 = 1 - Objects
+ * with id's 5 and 6 should have props: - Placeholder = 0 */
 public class TiledMapObjectPropertyTest extends GdxTest {
 
 	private TiledMap map;
@@ -48,99 +36,130 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private TiledMapRenderer mapRenderer;
+	private Array<MapObject> objects;
 	private boolean error;
 
 	@Override
 	public void create () {
 		try {
-			float w = Gdx.graphics.getWidth();
-			float h = Gdx.graphics.getHeight();
+			TmxMapLoader loader = new TmxMapLoader();
+			// run multiple times to ensure reloading map works correctly
+			for (int i = 0; i < 3; i++) {
+				Gdx.app.log("-------------------------------------", "Running test " + (i + 1) + "/3\n");
 
-			camera = new OrthographicCamera();
-			camera.setToOrtho(false, (w / h) * 512, 512);
-			camera.zoom = .5f;
-			camera.update();
+				float w = Gdx.graphics.getWidth();
+				float h = Gdx.graphics.getHeight();
 
-			OrthoCamController cameraController = new OrthoCamController(camera);
-			Gdx.input.setInputProcessor(cameraController);
+				camera = new OrthographicCamera();
+				camera.setToOrtho(false, (w / h) * 512, 512);
+				camera.zoom = .5f;
+				camera.update();
 
-			map = new TmxMapLoader().load("data/maps/tiled-objects/test-object-properties.tmx");
+				OrthoCamController cameraController = new OrthoCamController(camera);
+				Gdx.input.setInputProcessor(cameraController);
 
-			batch = new SpriteBatch();
-			shapeRenderer = new ShapeRenderer();
-			mapRenderer = new OrthogonalTiledMapRenderer(map);
+				map = loader.load("data/maps/tiled-objects/test-object-properties.tmx");
 
-			MapObjects objects = map.getLayers().get("Objects").getObjects();
+				batch = new SpriteBatch();
+				shapeRenderer = new ShapeRenderer();
+				mapRenderer = new OrthogonalTiledMapRenderer(map);
 
-			IntMap<MapProperties> idPropMap = new IntMap<>();
-			for (MapObject object : objects) {
-				int id = object.getProperties().get("id", Integer.class);
-				idPropMap.put(id, object.getProperties());
-			}
-
-			for (MapObject object : objects) {
-				int id = object.getProperties().get("id", Integer.class);
-				MapProperties props = idPropMap.get(id);
-
-				switch (id) {
-				case 1:
-					test(props, 2, idPropMap);
-					test(props, 5, idPropMap);
-					test(props, 1, idPropMap);
-					break;
-				case 2:
-					test(props, 3, idPropMap);
-					test(props, 4, idPropMap);
-					break;
-				case 3:
-					test(props, 2, idPropMap);
-					break;
-				case 4:
-					test(props, 1, idPropMap);
-					break;
-				case 5:
-				case 6:
-					Iterator<String> propKeysIterator = props.getKeys();
-					ObjectSet<String> propKeys = new ObjectSet<>();
-					while (propKeysIterator.hasNext()) {
-						propKeys.add(propKeysIterator.next());
-					}
-					if (propKeys.size != 6) {
-						throw new RuntimeException("Object with id " + id + " should have six keys " + "but has " + propKeys);
-					}
+				MapObjects objects1 = map.getLayers().get("Objects 1").getObjects();
+				MapObjects objects2 = map.getLayers().get("Objects 2").getObjects();
+				objects = new Array<>();
+				for (MapObject object : objects1) {
+					objects.add(object);
 				}
-			}
+				for (MapObject object : objects2) {
+					objects.add(object);
+				}
 
-			for (IntMap.Entry<MapProperties> entry : idPropMap.entries()) {
-				int id = entry.key;
-				MapProperties props = entry.value;
-
+				IntMap<MapObject> idToObject = loader.getIdToObject();
 				StringBuilder builder = new StringBuilder();
-				builder.append("Object with id ").append(id).append(" has \"object\" properties:\n");
-
-				Iterator<String> propKeysIterator = props.getKeys();
-				Iterator<Object> propValuesIterator = props.getValues();
-
-				while (propKeysIterator.hasNext() && propValuesIterator.hasNext()) {
-					Object value = propValuesIterator.next();
-					String key = propKeysIterator.next();
-					if (!key.contains("Points_To_ID_")) {
-						continue;
-					}
-
-					if (value instanceof MapProperties) {
-						MapProperties nestedProps = (MapProperties)value;
-						value = "props of object with id " + nestedProps.get("id", Integer.class);
-					}
-
-					builder.append("\t").append(key).append(" = ").append(value).append("\n");
+				builder.append("idToObject: {");
+				for (IntMap.Entry<MapObject> entry : idToObject) {
+					builder.append("\n\t").append(entry.key).append(" -> ").append(entry.value);
 				}
-
+				builder.append("}\n");
 				Gdx.app.log("TiledMapObjectPropertyTest", builder.toString());
 
-			}
+				for (MapObject object1 : objects) {
+					int id = object1.getProperties().get("id", Integer.class);
+					MapObject object2 = idToObject.get(id);
+					if (object1 != object2) {
+						throw new RuntimeException(
+							"Error! Object with id " + id + " " + "is not the same object as the one in the idToObject map!");
+					}
 
-			Gdx.app.log("TiledMapObjectPropertyTest", "Successfully ran test!");
+					MapProperties props = object1.getProperties();
+					switch (id) {
+					case 1:
+						test(props, 2, idToObject);
+						test(props, 5, idToObject);
+						test(props, 1, idToObject);
+						break;
+					case 2:
+						test(props, 3, idToObject);
+						test(props, 4, idToObject);
+						break;
+					case 3:
+						test(props, 2, idToObject);
+						break;
+					case 4:
+						test(props, 1, idToObject);
+						break;
+					case 5:
+					case 6:
+						Iterator<String> propKeysIterator = props.getKeys();
+						ObjectSet<String> propKeys = new ObjectSet<>();
+						while (propKeysIterator.hasNext()) {
+							propKeys.add(propKeysIterator.next());
+						}
+						if (propKeys.size != 6) {
+							throw new RuntimeException("Object with id " + id + " should " + "have six keys " + "but has " + propKeys);
+						}
+					}
+				}
+
+				builder = new StringBuilder();
+				builder.append("Expected results:\n").append("- Object with id 1 should have \"object\" props:\n")
+					.append("\t- Points_To_ID_1 = id: 1\n").append("\t- Points_To_ID_2 = id: 2\n")
+					.append("\t- Points_To_ID_5 = id: 5\n").append("- Object with id 2 should have \"object\" props:\n")
+					.append("\t- Points_To_ID_3 = id: 3\n").append("\t- Points_To_ID_4 = id: 4\n")
+					.append("- Object with id 3 should have \"object\" props:\n").append("\t- Points_To_ID_2 = id: 2\n")
+					.append("- Object with id 4 should have \"object\" props:\n").append("\t- Points_To_ID_1 = id: 1\n")
+					.append("- Objects with id's 5 and 6 should have \"object\" props:\n").append("\t- Placeholder = 0\n");
+				Gdx.app.log("TiledMapObjectPropertyTest", builder.toString());
+
+				builder = new StringBuilder();
+				builder.append("Actual results:\n");
+				for (IntMap.Entry<MapObject> entry : idToObject.entries()) {
+					int id = entry.key;
+					MapProperties props = entry.value.getProperties();
+
+					builder.append("- Object with id ").append(id).append(" has \"object\" props:\n");
+
+					Iterator<String> propKeysIterator = props.getKeys();
+					Iterator<Object> propValuesIterator = props.getValues();
+
+					while (propKeysIterator.hasNext() && propValuesIterator.hasNext()) {
+						Object value = propValuesIterator.next();
+						String key = propKeysIterator.next();
+						if (!key.contains("Points_To_ID_") && !key.contains("Placeholder")) {
+							continue;
+						}
+
+						if (value instanceof MapObject) {
+							MapObject object = (MapObject)value;
+							int objectId = object.getProperties().get("id", Integer.class);
+							value = "id: " + objectId + ", object: " + object;
+						}
+
+						builder.append("\t\t").append(key).append(" -> ").append(value).append("\n");
+					}
+				}
+				Gdx.app.log("TiledMapObjectPropertyTest", builder.toString());
+			}
 		} catch (Exception e) {
 			Gdx.app.error("TiledMapObjectPropertyTest", "Failed to run test!", e);
 			e.printStackTrace();
@@ -165,12 +184,11 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 
 		shapeRenderer.setColor(Color.BLUE);
 		Gdx.gl20.glLineWidth(2);
-		MapLayer layer = map.getLayers().get("Objects");
-		for (MapObject mapObject : layer.getObjects()) {
-			if (!mapObject.isVisible()) continue;
-			if (mapObject instanceof RectangleMapObject) {
+		for (MapObject object : objects) {
+			if (!object.isVisible()) continue;
+			if (object instanceof RectangleMapObject) {
 				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-				Rectangle rectangle = ((RectangleMapObject)mapObject).getRectangle();
+				Rectangle rectangle = ((RectangleMapObject)object).getRectangle();
 				shapeRenderer.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 				shapeRenderer.end();
 			}
@@ -183,13 +201,13 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 		shapeRenderer.dispose();
 	}
 
-	private void test (MapProperties props, int idToObjProp, IntMap<MapProperties> idPropMap) {
+	private void test (MapProperties props, int idToObjProp, IntMap<MapObject> idToObjectMap) {
 		String key = "Points_To_ID_" + idToObjProp;
 		if (!props.containsKey(key)) {
 			throw new RuntimeException("Missing property: " + key);
 		}
-		MapProperties otherProps = idPropMap.get(idToObjProp);
-		if (otherProps != idPropMap.get(idToObjProp)) {
+		MapProperties otherProps = idToObjectMap.get(idToObjProp).getProperties();
+		if (otherProps != idToObjectMap.get(idToObjProp).getProperties()) {
 			throw new RuntimeException("Property " + key + " does not point to the correct object");
 		}
 	}

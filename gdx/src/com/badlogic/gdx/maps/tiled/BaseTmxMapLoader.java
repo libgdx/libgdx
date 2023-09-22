@@ -65,10 +65,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 	protected int mapHeightInPixels;
 
 	protected TiledMap map;
-	/** MapProperty instances are mapped to the id of the respective object */
-	protected IntMap<MapProperties> objectIdToPropsMap;
-	/** Logic to delay until the end of the [loadTiledMap] method */
-	protected Queue<Runnable> runOnEndOfLoadTiledMap;
+	protected IntMap<MapObject> idToObject;
+	protected Array<Runnable> runOnEndOfLoadTiled;
 
 	public BaseTmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -88,6 +86,16 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		return getDependencyAssetDescriptors(tmxFile, textureParameter);
 	}
 
+	/** Gets a map of the object ids to the {@link MapObject} instances. The returned map is a copy of the internal map. Returns
+	 * null if {@link #loadTiledMap(FileHandle, Parameters, ImageResolver)} has not been called yet. The internal map is reset when
+	 * the load tiled map method is called.
+	 *
+	 * @return the map of the object ids to the {@link MapObject} instances, or null if the load tiled map method has not been
+	 *         called yet. */
+	public IntMap<MapObject> getIdToObject () {
+		return idToObject == null ? null : new IntMap<>(idToObject);
+	}
+
 	protected abstract Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,
 		TextureLoader.TextureParameter textureParameter);
 
@@ -99,8 +107,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 	 * @return the {@link TiledMap} */
 	protected TiledMap loadTiledMap (FileHandle tmxFile, P parameter, ImageResolver imageResolver) {
 		this.map = new TiledMap();
-		this.objectIdToPropsMap = new IntMap<>();
-		this.runOnEndOfLoadTiledMap = new Queue<>();
+		this.idToObject = new IntMap<>();
+		this.runOnEndOfLoadTiled = new Array<>();
 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
@@ -186,9 +194,10 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			}
 		}
 
-		while (!runOnEndOfLoadTiledMap.isEmpty()) {
-			runOnEndOfLoadTiledMap.removeFirst().run();
+		for (Runnable runnable : runOnEndOfLoadTiled) {
+			runnable.run();
 		}
+		runOnEndOfLoadTiled = null;
 
 		return map;
 	}
@@ -441,12 +450,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
 				loadProperties(object.getProperties(), properties);
-				/*
-				 * After loading the properties of the object, put a mapping entry where the key is the object id and the value is the
-				 * object's properties.
-				 */
-				objectIdToPropsMap.put(id, object.getProperties());
 			}
+			idToObject.put(id, object);
 			objects.add(object);
 		}
 	}
@@ -462,31 +467,20 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 					value = property.getText();
 				}
 				if (type != null && type.equals("object")) {
-					/*
-					 * Wait until the end of the [loadTiledMap] method to fetch the map props for "object". This is because the map
-					 * properties of the object being pointed to might not have been loaded yet.
-					 */
+					// Wait until the end of [loadTiledMap] to fetch the object
 					try {
-						/*
-						 * Value should be the id of the object being pointed to. Nevertheless, the try-catch block safeguards in case
-						 * faulty data in inputted.
-						 */
+						// Value should be the id of the object being pointed to
 						final int id = Integer.parseInt(value);
-
-						/*
-						 * Create a [Runnable] to fetch the map properties of the object being pointed to and add it to this object's
-						 * properties.
-						 */
+						// Create [Runnable] to fetch object and add it to props
 						Runnable fetchMapProps = new Runnable() {
 							@Override
 							public void run () {
-								MapProperties props = objectIdToPropsMap.get(id);
+								MapObject props = idToObject.get(id);
 								properties.put(name, props);
 							}
 						};
-
-						// [Runnable] should not run until the end of the [loadTiledMap] method.
-						runOnEndOfLoadTiledMap.addFirst(fetchMapProps);
+						// [Runnable] should not run until the end of [loadTiledMap]
+						runOnEndOfLoadTiled.add(fetchMapProps);
 					} catch (Exception exception) {
 						Gdx.app.error("BaseTmxMapLoader", "Error parsing property [" + name + "] of type \"object\"", exception);
 					}
