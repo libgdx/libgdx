@@ -471,7 +471,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 						// Value should be the id of the object being pointed to
 						final int id = Integer.parseInt(value);
 						// Create [Runnable] to fetch object and add it to props
-						Runnable fetchMapProps = new Runnable() {
+						Runnable fetch = new Runnable() {
 							@Override
 							public void run () {
 								MapObject props = idToObject.get(id);
@@ -479,7 +479,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 							}
 						};
 						// [Runnable] should not run until the end of [loadTiledMap]
-						runOnEndOfLoadTiled.add(fetchMapProps);
+						runOnEndOfLoadTiled.add(fetch);
 					} catch (Exception exception) {
 						throw new GdxRuntimeException(
 							"Error parsing property [\" + name + \"] of type \"object\" with value: [" + value + "]", exception);
