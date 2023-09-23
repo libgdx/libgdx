@@ -491,7 +491,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			};
 		}
 
-		public void setResetSelectionOnExit(boolean resetSelectionOnExit) {
+		public void setResetSelectionOnExit (boolean resetSelectionOnExit) {
 			this.resetSelectionOnExit = resetSelectionOnExit;
 		}
 
