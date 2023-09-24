@@ -72,7 +72,7 @@ public class Ellipse implements Serializable, Shape2D {
 	/** Constructs a new ellipse
 	 * 
 	 * @param position Position vector
-	 * @param size Size vector*/
+	 * @param size Size vector */
 	public Ellipse (Vector2 position, Vector2 size) {
 		this.x = position.x;
 		this.y = position.y;
