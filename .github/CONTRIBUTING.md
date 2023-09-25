@@ -43,7 +43,7 @@ Before starting to contribute, please also give a quick look at our [Contributin
 Now, let's see how you can actually create a PR:
 
 1.  Fork the repository to your own Github account. Clone the project to your machine. Set up the project in your local IDE. These steps are detailed over on [our website](https://libgdx.com/dev/from-source/#setting-the-project-up).
-2.  Create a branch locally with a succinct but descriptive name
+2.  Create a branch locally with a concise but descriptive name
 3.  Commit changes to the branch
 4.  Push changes to your fork
 5.  Open a PR in our repository
