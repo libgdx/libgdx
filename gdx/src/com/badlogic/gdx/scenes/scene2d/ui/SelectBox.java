@@ -426,7 +426,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		final List<T> list;
 		private InputListener hideListener;
 		private Actor previousScrollFocus;
-		boolean resetSelectionOnExit = true;
+		boolean resetSelectionOnExit = false;
 
 		public SelectBoxScrollPane (final SelectBox<T> selectBox) {
 			super(null, selectBox.style.scrollStyle);
