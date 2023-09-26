@@ -111,8 +111,7 @@ public class Lwjgl3Cursor implements Cursor {
 			GLFW.glfwSetInputMode(windowHandle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
 			return;
 		} else if (inputModeBeforeNoneCursor != -1) {
-			GLFW.glfwSetInputMode(windowHandle, GLFW.GLFW_CURSOR,
-				inputModeBeforeNoneCursor == -1 ? GLFW.GLFW_CURSOR_NORMAL : inputModeBeforeNoneCursor);
+			GLFW.glfwSetInputMode(windowHandle, GLFW.GLFW_CURSOR, inputModeBeforeNoneCursor);
 			inputModeBeforeNoneCursor = -1;
 		}
 		Long glfwCursor = systemCursors.get(systemCursor);
