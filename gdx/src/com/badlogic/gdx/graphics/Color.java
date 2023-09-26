@@ -109,7 +109,7 @@ public class Color {
 		this.g = color.g;
 		this.b = color.b;
 		this.a = color.a;
-		return this;
+		return clamp();
 	}
 
 	/** Multiplies the this color and the given color
