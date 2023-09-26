@@ -474,8 +474,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 						Runnable fetch = new Runnable() {
 							@Override
 							public void run () {
-								MapObject props = idToObject.get(id);
-								properties.put(name, props);
+								MapObject object = idToObject.get(id);
+								properties.put(name, object);
 							}
 						};
 						// [Runnable] should not run until the end of [loadTiledMap]
