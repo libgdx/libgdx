@@ -992,10 +992,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 	@Override
 	public void onDreamingStopped () {
 		unregisterSensorListeners();
-		// erase pointer ids. this sucks donkeyballs...
-		Arrays.fill(realId, -1);
-		// erase touched state. this also sucks donkeyballs...
-		Arrays.fill(touched, false);
 	}
 
 	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a
