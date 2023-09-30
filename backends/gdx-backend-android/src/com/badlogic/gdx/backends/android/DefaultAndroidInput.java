@@ -46,7 +46,6 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /** An implementation of the {@link Input} interface for Android.
