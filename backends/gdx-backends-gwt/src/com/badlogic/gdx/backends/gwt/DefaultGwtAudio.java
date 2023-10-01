@@ -22,13 +22,31 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.gwt.webaudio.WebAudioAPIManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.user.client.Timer;
 
 public class DefaultGwtAudio implements GwtAudio {
 	private WebAudioAPIManager webAudioAPIManager = null;
 
+	private String[] availableOutputDevices = new String[] {};
+
 	public DefaultGwtAudio () {
 		webAudioAPIManager = new WebAudioAPIManager();
+
+		getUserMedia();
+		Timer observer = new Timer() {
+			@Override
+			public void run () {
+				fetchAvailableOutputDevices(new DeviceListener() {
+					@Override
+					public void onDevicesChanged (String[] devices) {
+						availableOutputDevices = devices;
+					}
+				});
+			}
+		};
+		observer.scheduleRepeating(1000);
 	}
 
 	@Override
@@ -53,11 +71,42 @@ public class DefaultGwtAudio implements GwtAudio {
 
 	@Override
 	public boolean switchOutputDevice (String deviceIdentifier) {
-		return true;
+		String[] features = GwtFeaturePolicy.features();
+		if (features == null || !Array.with(features).contains("speaker-selection", false)
+			|| GwtFeaturePolicy.allowsFeature("speaker-selection")) {
+			if (deviceIdentifier == null || deviceIdentifier.equals("default")) {
+				deviceIdentifier = ""; // Empty = default
+			}
+			webAudioAPIManager.setSinkId(deviceIdentifier);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public String[] getAvailableOutputDevices () {
-		return new String[0];
+		return availableOutputDevices;
+	}
+
+	private native void getUserMedia () /*-{
+		navigator.mediaDevices.getUserMedia({ audio: true });
+	}-*/;
+
+	private native void fetchAvailableOutputDevices (DeviceListener listener) /*-{
+		navigator.mediaDevices
+			.enumerateDevices()
+			.then(function(devices) {
+				var dev = devices.filter(function(device) {
+					return device.deviceId && device.kind === 'audiooutput';
+				})
+					.map(function(device) {
+						return device.deviceId;
+					});
+                listener.@com.badlogic.gdx.backends.gwt.DefaultGwtAudio.DeviceListener::onDevicesChanged([Ljava/lang/String;)(@com.badlogic.gdx.backends.gwt.GwtUtils::toStringArray(Lcom/google/gwt/core/client/JsArrayString;)(dev));
+			});
+	}-*/;
+
+	private interface DeviceListener {
+		void onDevicesChanged (String[] devices);
 	}
 }
