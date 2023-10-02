@@ -1,135 +1,63 @@
 # Contributing to libGDX
 
-Please take a moment to review this document in order to make the contribution
-process easy and effective for everyone involved.
+A big welcome and thank you for considering contributing to libGDX! 
 
-Following these guidelines helps to communicate that you respect the time of
-the developers managing and developing this open source project. In return,
-they should reciprocate that respect in addressing your issue or assessing
-patches and features.
+## Quicklinks
 
+- [Getting Started](#getting-started)
+   - [Issues](#issues)
+   - [Pull Requests](#pull-requests)
+   - [Reviews](#reviews)
+   - [Documentation](#documentation)
+-   [Getting Help](#getting-help)
 
-## Using the issue tracker
+## Getting Started
 
-The issue tracker is the preferred channel for [bug reports](#bugs),
-[feature requests](#features) and [submitting pull
-requests](#pull-requests), but please respect the following restrictions:
+Contributions to this repo are made via issues and pull requests (PRs). A few general guidelines that cover both: 
 
-* Please **do not** use the issue tracker for personal support requests (use
-  the official [libGDX Discord](https://libgdx.com/community/discord/) or [subreddit](https://www.reddit.com/r/libgdx/)).
-  See also [Getting Help](https://libgdx.com/wiki/articles/getting-help).
+- Search for existing issues and PRs before creating your own.
+- If you just need support with using libGDX, please ask on our [Discord](https://libgdx.com/community/discord/) server instead of opening an issue. 
+- If you are unsure about something or want to discuss an idea, just head over to the `#libgdx-contributions` channel on our [Discord](https://libgdx.com/community/discord/), we are always happy to help!
 
-* Please **do not** derail or troll issues. Keep the discussion on topic and
-  respect the opinions of others.
+If you are looking for areas to contribute in, scan through our [existing issues](https://github.com/libgdx/libgdx/issues) to find one that interests you. You can narrow down the search using `labels` as filters. If you find an issue to work on, you are welcome to open a PR with a fix.
 
+### Issues
 
-<a name="bugs"></a>
-## Bug reports
+Issues should be used to report problems with the library, request a new feature, or to discuss potential changes before a PR is created. Before you report an issue on our  [issue tracker](https://github.com/libgdx/libgdx/issues), we ask you to do a few things:
 
-A bug is a _demonstrable problem_ that is caused by the code in the repository.
-Good bug reports are extremely helpful - thank you!
+- Verify that the problem hasn’t already been reported on the tracker. If that is the case, please add your own information to the existing issue rather than creating a new one. Adding a [reaction](https://github.blog/2016-03-10-add-reactions-to-pull-requests-issues-and-comments/) can also help indicate that a particular problem is affecting more than just one user.
+- Make sure the bug hasn’t already been fixed. Use the latest snapshot of libGDX to try to reproduce your issue.
+- Create a concise, self-contained example to demonstrate the issue. If we can’t reproduce your issue, we can’t fix it.
 
-Guidelines for bug reports:
+Once you have done this, [create a new issue](https://github.com/libgdx/libgdx/issues/new) in the project and follow the instructions in the template that is shown to help us triage your issue.
 
-1. **Use the GitHub issue search** &mdash; check if the issue has already been
-   reported. Make sure to search all issues, not only the open issues.
+### Pull Requests
 
-2. **Check if the issue has been fixed** &mdash; try to reproduce it using the
-   latest `master` or development branch in the repository.
+PRs for libGDX are always welcome and can be a quick way to get your fix or improvement slated for the next release. In general, PRs should:
 
-3. **Isolate the problem** &mdash; create a [reduced test
-   case](https://libgdx.com/wiki/articles/getting-help#executable-example-code).
+- Only fix/add _one_ thing.
+- Add a meaningful description that explains what the PR does, what might still be missing (maybe testing on certain platforms?) and anything else potential reviewers need to know.
 
-A good bug report shouldn't leave others needing to chase you up for more
-information. Please try to be as detailed as possible in your report. What is
-your environment? What steps will reproduce the issue? What browser(s) and OS
-experience the problem? What would you expect to be the outcome? All these
-details will help people to fix any potential bugs.
+Before starting to contribute, please also give a quick look at our [Contributing Guidelines](https://libgdx.com/dev/contributing/#guidelines), in particular the sections on the Contributor License Agreement and Formatting. For changes that address core functionality or would require breaking changes, it's best to discuss your proposal first on our [Discord](https://libgdx.com/community/discord/) server (check the `#libgdx-contributions` channel). 
 
-If you have found a bug and want to fix it yourself immediately, great!
-Create a [pull request](#pull-requests) with your proposed correction and
-a description of the problem you are fixing. Please do **not** create a separate
-issue for the bug report, the pull request is enough.
+Now, let's see how you can actually create a PR:
 
-See [Getting Help](https://libgdx.com/wiki/articles/getting-help) for more information and an example.
+1.  Fork the repository to your own Github account. Clone the project to your machine. Set up the project in your local IDE. These steps are detailed over on [our website](https://libgdx.com/dev/from-source/#setting-the-project-up).
+2.  Create a branch locally with a concise but descriptive name
+3.  Commit changes to the branch
+4.  Push changes to your fork
+5.  Open a PR in our repository
 
+### Reviews
 
-<a name="features"></a>
-## Feature requests
+Pull requests need to be reviewed before they can be merged. If you see any PRs that interest you or that you would like to get into the next release, feel free to chime in! Reviews should focus on two things: (1.) does the PR work, (2.) are the code changes sensible. If you are testing things, please also state your platform (Windows, macOS, Android, etc.) if applicable.
 
-Feature requests are welcome. But take a moment to find out whether your idea
-fits with the scope and aims of the project. It's up to *you* to make a strong
-case to convince the project's developers of the merits of this feature. Please
-provide as much detail and context as possible.
+The features we are currently focusing on for our next release are part of a [milestone](https://github.com/libgdx/libgdx/milestones). Check it out if you want to see which PRs are most in need of reviews!
 
-<a name="pull-requests"></a>
-## Pull requests
+### Documentation
 
-Contributing to libGDX is easy:
+To contribute to our wiki, head over to the [libgdx.github.io](https://github.com/libgdx/libgdx.github.io) repo!
 
-  * Fork libGDX on [`http://github.com/libgdx/libgdx`](http://github.com/libgdx/libgdx)
-  * Learn how to [Work with the Source](https://libgdx.com/dev/from-source/)
-  * Hack away, and send a pull request on GitHub!
+## Getting Help
 
-### API Changes & Additions
-If you modify a public API, or add a new one, make sure to add these changes to the [CHANGES](https://github.com/libgdx/libgdx/blob/master/CHANGES) file in the root of the repository. In addition to the CHANGES file, such modifications are also published on the [website](https://libgdx.com/news/) and on [Twitter](https://twitter.com/libgdx) to reach all of the community.
-
-If you want to poll the brains of other devs, either send a pull request and start a conversation on Github, or discuss in the official [libGDX Discord](https://libgdx.com/community/discord/).
-
-### Contributor License Agreement
-
-libGDX is licensed under the [Apache 2.0 license](https://en.wikipedia.org/wiki/Apache_License). Before we can accept code contributions, we need you to sign our [contributor license agreement](https://github.com/libgdx/libgdx/blob/master/CLA.txt). Just print it out, fill in the blanks and send a copy to [`contact@badlogicgames.com`](mailto:contact@badlogicgames.com?subject=[libGDX]%20CLA), with the subject `[libGDX] CLA`.
-
-Signing the CLA will allow us to use and distribute your code. This is a non-exclusive license, so you retain all rights to your code. It's a fail-safe for us should someone contribute essential code and later decide to take it back.
-
-### Eclipse Formatter
-
-If you work on libGDX code, we require you to use the [Eclipse formatter](https://github.com/libgdx/libgdx/blob/master/eclipse-formatter.xml) located in the root directory of the repository.
-
-Failure to use the formatter will result in Nate being very upset and the CI to fail.
-
-If you are using IntelliJ IDEA, you can still make use of the eclipse code formatter. See [this article](https://blog.jetbrains.com/idea/2014/01/intellij-idea-13-importing-code-formatter-settings-from-eclipse/) for more information.
-
-To make our life easier, we integrated the formatter with [spotless](https://github.com/diffplug/spotless) in our build system, so you don't have to take the hassle of importing it into your IDE. Just run `./gradlew spotlessApply` and your edited files are correct formatted.
-
-### Code Style
-
-libGDX does not have an official coding standard. We mostly follow the usual [Java style](https://www.oracle.com/java/technologies/javase/codeconventions-contents.html), and so should you.
-
-A few things we'd rather not like to see:
-
-  * Underscores in any kind of identifier
-  * [Hungarian notation](https://en.wikipedia.org/wiki/Hungarian_notation)
-  * Prefixes for fields or arguments
-  * Curlies on new lines
-  * Conditional block bodies without curlies when the block spans more than one line
-
-If you modify an existing file, follow the style of the code in there.
-
-If you create a new file, make sure to add the Apache file header, as seen [here](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/Application.java).
-
-If you create a new class, please add at least class documentation that explains the usage and scope of the class. You can omit Javadoc for methods that are self-explanatory.
-
-If your class is explicitly thread-safe, mention it in the Javadoc. The default assumption is that classes are not thread-safe, to reduce the amount of costly locks in the code base.
-
-### Performance Considerations
-
-libGDX is meant to run on both desktop and mobile platforms, including browsers (JavaScript!). While the desktop HotSpot VM can take quite a beating in terms of unnecessary allocations, Dalvik and consorts don't.
-
-A couple of guidelines:
-
-  * Avoid temporary object allocation wherever possible
-  * Do not make defensive copies
-  * Avoid locking. libGDX classes are, by default, not thread-safe unless explicitly specified
-  * Do not use boxed primitives
-  * Use the collection classes in the [`com.badlogic.gdx.utils` package](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/utils)
-  * Do not perform argument checks for methods that may be called thousands of times per frame
-  * Use pooling if necessary, if possible, avoid exposing the pooling to the user as it complicates the API
-
-### Git
-
-Most of the libGDX team members are Git novices. As such, we are just learning the ropes ourselves. To lower the risk of getting something wrong, we'd kindly ask you to keep your pull requests small if possible. A changeset of 3000 files is likely not to get merged.
-
-We do open new branches for bigger API changes. If you help out with a new API, make sure your pull request targets that specific branch.
-
-Pull requests for the master repository will be checked by multiple core contributors before inclusion. We may reject your pull request to `master` if we do not deem them to be ready or fitting. Please don't take offense in that case. libGDX is used by thousands of projects around the world. We need to make sure things stay somewhat sane and stable.
+We have a very active community on [Discord](https://libgdx.com/community/discord/) community. Check it out if you have any trouble with using libGDX in your project! You might also want to take a look at out our [guide](https://libgdx.com/wiki/articles/getting-help) on getting help. 
