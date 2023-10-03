@@ -284,6 +284,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 			notifyPreviewState();
 			notifyOffsetsChanged();
+			notifyZoomChanged();
 			if (!Gdx.graphics.isContinuousRendering()) {
 				Gdx.graphics.requestRendering();
 			}
@@ -396,6 +397,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 				notifyPreviewState();
 				notifyOffsetsChanged();
+				notifyZoomChanged();
 				if (!Gdx.graphics.isContinuousRendering()) {
 					Gdx.graphics.requestRendering();
 				}
