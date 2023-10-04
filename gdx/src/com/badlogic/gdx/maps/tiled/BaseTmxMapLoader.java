@@ -85,14 +85,13 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		return getDependencyAssetDescriptors(tmxFile, textureParameter);
 	}
 
-	/** Gets a map of the object ids to the {@link MapObject} instances. The returned map is a copy of the internal map. Returns
-	 * null if {@link #loadTiledMap(FileHandle, Parameters, ImageResolver)} has not been called yet. The internal map is reset when
-	 * the load tiled map method is called.
+	/** Gets a map of the object ids to the {@link MapObject} instances. Returns null if
+	 * {@link #loadTiledMap(FileHandle, Parameters, ImageResolver)} has not been called yet.
 	 *
-	 * @return the map of the object ids to the {@link MapObject} instances, or null if the load tiled map method has not been
-	 *         called yet. */
+	 * @return the map of the ids to {@link MapObject}, or null if {@link #loadTiledMap(FileHandle, Parameters, ImageResolver)}
+	 *         method has not been called yet. */
 	public @Null IntMap<MapObject> getIdToObject () {
-		return idToObject == null ? null : new IntMap<>(idToObject);
+		return idToObject;
 	}
 
 	protected abstract Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,
