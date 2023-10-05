@@ -2,6 +2,7 @@
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
 - Tiled Fix: TiledLayer parallax default values fix
 - Android: Removed mouse catching added on 1.12.0 due to unintended effects (see #7187).
+- API Addition: Using "object" property in Tiled object now fetches MapObject being pointed to, and BaseTmxMapLoader includes method for fetching map where key is id and value is MapObject instance.
 - Update to LWJGL 3.3.3
 
 [1.12.0]
