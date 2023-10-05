@@ -2,9 +2,7 @@
 set -e
 BASE=$(cd $(dirname $0); pwd -P)
 
-BUILD_DIR=$BASE/target/objectal
-XCODE_VERSION=$(xcodebuild -version | sed -En 's/Xcode[[:space:]]+([0-9]*)[\.0-9]*/\1/p')
-IS_XCODE14=$(bc -l <<< "$XCODE_VERSION >= 14")
+BUILD_DIR=$BASE/build/objectal
 
 rm -rf $BUILD_DIR
 mkdir -p $BUILD_DIR
@@ -15,34 +13,14 @@ tar xvfz $BUILD_DIR/objectal.tar.gz -C $BUILD_DIR --strip-components 1
 
 XCODEPROJ=$BUILD_DIR/ObjectAL/ObjectAL.xcodeproj
 
-if [[ IS_XCODE14 -eq 0 ]]; then
-  xcodebuild -project $XCODEPROJ -arch armv7  -sdk iphoneos         CONFIGURATION_BUILD_DIR=$BUILD_DIR/armv7  OTHER_CFLAGS="-target armv7-apple-ios9.0.0"
-fi
-xcodebuild -project $XCODEPROJ -arch arm64  -sdk iphoneos         CONFIGURATION_BUILD_DIR=$BUILD_DIR/arm64  OTHER_CFLAGS="-target arm64-apple-ios9.0.0"
-xcodebuild -project $XCODEPROJ -arch x86_64 -sdk iphonesimulator  CONFIGURATION_BUILD_DIR=$BUILD_DIR/x86_64 OTHER_CFLAGS="-target x86_64-simulator-apple-ios9.0.0"
-xcodebuild -project $XCODEPROJ -arch arm64  -sdk iphonesimulator  CONFIGURATION_BUILD_DIR=$BUILD_DIR/arm64-simulator  OTHER_CFLAGS="-target arm64-simulator-apple-ios9.0.0"
-
-mkdir $BUILD_DIR/real/
-
-if [[ IS_XCODE14 -eq 0 ]]; then
-  lipo $BUILD_DIR/armv7/libObjectAL.a \
-       $BUILD_DIR/arm64/libObjectAL.a \
-       -create \
-       -output $BUILD_DIR/real/libObjectAL.a
-else
-  cp $BUILD_DIR/arm64/libObjectAL.a $BUILD_DIR/real/libObjectAL.a
-fi
-
-mkdir $BUILD_DIR/sim/
-
-lipo $BUILD_DIR/x86_64/libObjectAL.a \
-     $BUILD_DIR/arm64-simulator/libObjectAL.a \
-     -create \
-     -output $BUILD_DIR/sim/libObjectAL.a
+xcodebuild -project $XCODEPROJ -arch arm64 -sdk iphoneos -target "ObjectAL-iOS-Framework" CONFIGURATION_BUILD_DIR=$BUILD_DIR/device
+xcodebuild -project $XCODEPROJ -arch x86_64 -arch arm64 -sdk iphonesimulator -target "ObjectAL-iOS-Framework" CONFIGURATION_BUILD_DIR=$BUILD_DIR/simulator
 
 xcodebuild -create-xcframework \
-           -library $BUILD_DIR/sim/libObjectAL.a \
-           -library $BUILD_DIR/real/libObjectAL.a \
+           -framework $BUILD_DIR/device/ObjectAL.framework \
+           -debug-symbols $BUILD_DIR/device/ObjectAL.framework.dSYM \
+           -framework $BUILD_DIR/simulator/ObjectAL.framework \
+           -debug-symbols $BUILD_DIR/simulator/ObjectAL.framework.dSYM \
            -output $BUILD_DIR/ObjectAL.xcframework
 
 mkdir -p $BASE/../../gdx/libs/ios32/

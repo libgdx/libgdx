@@ -42,7 +42,7 @@ class NumericPanel extends EditorPanel {
 
 		valueSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				value.setValue((Float)valueSpinner.getValue());
+				value.setValue(((Number)valueSpinner.getValue()).floatValue());
 			}
 		});
 	}

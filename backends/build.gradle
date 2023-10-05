@@ -17,14 +17,14 @@
 configure(subprojects - project(":backends:gdx-backend-android")) {
 	apply plugin: "java"
 
-	if(JavaVersion.current().isJava9Compatible()) {
+	if (JavaVersion.current().isJava9Compatible()) {
 		compileJava {
 			options.release = versions.java
 		}
-	} else {
-		sourceCompatibility = versions.java
-		targetCompatibility = versions.java
 	}
+	sourceCompatibility = versions.java
+	targetCompatibility = versions.java
+
 	sourceSets.main.java.srcDirs = ["src"]
 	sourceSets.main.resources.srcDirs = ["res"]
 

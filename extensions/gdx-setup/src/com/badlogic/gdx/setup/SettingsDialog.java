@@ -88,7 +88,7 @@ public class SettingsDialog extends JDialog {
 			public void actionPerformed (ActionEvent e) {
 				if (offlineBox.isSelected()) {
 					int value = JOptionPane.showConfirmDialog(null,
-						"You have selected offline mode. This requires you to have your dependencies already in your maven/gradle cache.\n\nThe setup will fail if you do not have the correct dependenices already.\n\nDo you want to continue?",
+						"You have selected offline mode. This requires you to have your dependencies already in your maven/gradle cache.\n\nThe setup will fail if you do not have the correct dependencies already.\n\nDo you want to continue?",
 						"Warning!", JOptionPane.YES_NO_OPTION);
 					if (value == 0) {
 						onOK();
@@ -190,7 +190,7 @@ public class SettingsDialog extends JDialog {
 		kotlinDesc.setForeground(new Color(170, 170, 170));
 
 		JLabel oldAssetsLabel = new JLabel("Legacy Assets Dir");
-		JLabel oldAssetsDesc = new JLabel("Store assets in the pre-1.10.1 location");
+		JLabel oldAssetsDesc = new JLabel("Store assets in the pre-1.11.0 location");
 		oldAssetsDesc.setToolTipText("(in android or core folder instead of project root)");
 		oldAssetsBox = new SetupCheckBox();
 		oldAssetsLabel.setForeground(new Color(170, 170, 170));

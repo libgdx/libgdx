@@ -23,13 +23,13 @@ ext {
 
 versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 7
 versions.javaLwjgl3 = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
-versions.robovm = "2.3.16"
+versions.robovm = "2.3.19"
 versions.gwt = "2.8.2"
 versions.gwtPlugin = "1.1.16"
 versions.gretty = "3.0.7"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.3"
-versions.lwjgl3 = "3.3.1"
+versions.lwjgl3 = "3.3.3"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.13.2"
@@ -39,7 +39,7 @@ versions.androidCompileSdk = 32
 versions.androidTargetSdk = 32
 versions.androidMinSdk = 14
 versions.androidBuildTools = "33.0.0"
-versions.androidFragment = "1.2.3"
+versions.androidFragment = "1.5.7"
 versions.javaparser = "2.3.0"
 versions.spotless = "6.7.1"
 
@@ -122,7 +122,7 @@ libraries.robovm = [
         "com.mobidevelop.robovm:robovm-cocoatouch:${versions.robovm}"
 ]
 
-libraries.android = [
+libraries.compileOnly.android = [
         "androidx.fragment:fragment:${versions.androidFragment}"
 ]
 

@@ -54,11 +54,12 @@ apply from: "obb.gradle"
 dependencies {
 	implementation project(":tests:gdx-tests")
 	implementation project(":backends:gdx-backend-android")
-	implementation libraries.android
+	implementation libraries.compileOnly.android
 	implementation "androidx.multidex:multidex:${versions.multiDex}"
 }
 
 android {
+	namespace "com.badlogic.gdx.tests.android"
 	buildToolsVersion versions.androidBuildTools
 	compileSdkVersion versions.androidCompileSdk
 	sourceSets {
