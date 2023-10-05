@@ -71,6 +71,7 @@
 - API Fix: MathUtils.lerpAngle() fixed for extreme inputs
 - MathUtils trigonometry improvements
 - Various Scene2D fixes and improvements
+- Fix: JsonValue#addChild now clears leftover list pointers, preventing inconsistent or looping JSON objects.
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
