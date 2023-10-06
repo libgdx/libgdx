@@ -307,6 +307,7 @@ public class GdxTests {
 		TiledMapDirectLoaderTest.class,
 		TiledMapModifiedExternalTilesetTest.class,
 		TiledMapObjectLoadingTest.class,
+		TiledMapObjectPropertyTest.class,
 		TiledMapBench.class,
 		TiledMapLayerOffsetTest.class,
 		TimerTest.class,

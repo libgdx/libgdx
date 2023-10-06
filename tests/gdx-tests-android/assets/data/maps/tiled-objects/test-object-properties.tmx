@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="10">
+ <tileset firstgid="1" source="grass.tsx"/>
+ <objectgroup id="5" name="Objects 2">
+  <object id="1" x="64" y="256" width="96" height="96">
+   <properties>
+    <property name="Points_To_ID_1" type="object" value="1"/>
+    <property name="Points_To_ID_2" type="object" value="2"/>
+    <property name="Points_To_ID_5" type="object" value="5"/>
+   </properties>
+  </object>
+  <object id="3" x="288" y="448" width="96" height="96">
+   <properties>
+    <property name="Points_To_ID_2" type="object" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="2" name="Objects 1">
+  <object id="2" x="288" y="256" width="96" height="96">
+   <properties>
+    <property name="Points_To_ID_3" type="object" value="3"/>
+    <property name="Points_To_ID_4" type="object" value="4"/>
+   </properties>
+  </object>
+  <object id="4" x="288" y="64" width="96" height="96">
+   <properties>
+    <property name="Points_To_ID_1" type="object" value="1"/>
+   </properties>
+  </object>
+  <object id="5" x="64" y="448" width="96" height="96">
+   <properties>
+    <property name="Placeholder" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="6" x="64" y="64" width="96" height="96">
+   <properties>
+    <property name="Placeholder" type="int" value="0"/>
+   </properties>
+   <polygon points="0,0 96,0 96,96 0,96"/>
+  </object>
+ </objectgroup>
+ <layer id="4" name="Tiles" width="20" height="20">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>
