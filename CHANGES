@@ -1,7 +1,12 @@
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
 - Tiled Fix: TiledLayer parallax default values fix
+- API Addition: TiledDrawable: Align can be set to manipulate the alignment of the rendering (TiledDrawable#setAlign, TiledDrawable#getAlign)
+- API Addition: TiledDrawable#draw: Also available as a static function (with align) if you don't want to create an extra instance per texture region
 - Android: Removed mouse catching added on 1.12.0 due to unintended effects (see #7187).
+- iOS: Update to MobiVM 2.3.20
+- API Addition: Using "object" property in Tiled object now fetches MapObject being pointed to, and BaseTmxMapLoader includes method for fetching map where key is id and value is MapObject instance.
+- Update to LWJGL 3.3.3
 
 [1.12.0]
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
@@ -69,6 +74,7 @@
 - API Fix: MathUtils.lerpAngle() fixed for extreme inputs
 - MathUtils trigonometry improvements
 - Various Scene2D fixes and improvements
+- Fix: JsonValue#addChild now clears leftover list pointers, preventing inconsistent or looping JSON objects.
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.

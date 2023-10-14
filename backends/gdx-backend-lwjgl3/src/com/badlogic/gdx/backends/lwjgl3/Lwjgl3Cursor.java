@@ -32,6 +32,8 @@ public class Lwjgl3Cursor implements Cursor {
 	static final Array<Lwjgl3Cursor> cursors = new Array<Lwjgl3Cursor>();
 	static final Map<SystemCursor, Long> systemCursors = new HashMap<SystemCursor, Long>();
 
+	private static int inputModeBeforeNoneCursor = -1;
+
 	final Lwjgl3Window window;
 	Pixmap pixmapCopy;
 	GLFWImage glfwImage;
@@ -105,10 +107,12 @@ public class Lwjgl3Cursor implements Cursor {
 
 	static void setSystemCursor (long windowHandle, SystemCursor systemCursor) {
 		if (systemCursor == SystemCursor.None) {
+			if (inputModeBeforeNoneCursor == -1) inputModeBeforeNoneCursor = GLFW.glfwGetInputMode(windowHandle, GLFW.GLFW_CURSOR);
 			GLFW.glfwSetInputMode(windowHandle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
 			return;
-		} else {
-			GLFW.glfwSetInputMode(windowHandle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+		} else if (inputModeBeforeNoneCursor != -1) {
+			GLFW.glfwSetInputMode(windowHandle, GLFW.GLFW_CURSOR, inputModeBeforeNoneCursor);
+			inputModeBeforeNoneCursor = -1;
 		}
 		Long glfwCursor = systemCursors.get(systemCursor);
 		if (glfwCursor == null) {
