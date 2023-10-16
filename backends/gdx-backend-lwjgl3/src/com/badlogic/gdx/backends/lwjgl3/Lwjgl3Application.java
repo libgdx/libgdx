@@ -563,7 +563,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			try {
 				Class gles = Class.forName("org.lwjgl.opengles.GLES");
 				gles.getMethod("createCapabilities").invoke(gles);
-				// TODO: 06.10.23 Remove once https://github.com/LWJGL/lwjgl3/issues/931 is fixed
+				// TODO: Remove once https://github.com/LWJGL/lwjgl3/issues/931 is fixed
 				ThreadLocalUtil.setFunctionMissingAddresses(0);
 			} catch (Throwable e) {
 				throw new GdxRuntimeException("Couldn't initialize GLES", e);
