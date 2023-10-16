@@ -50,6 +50,7 @@ task dist(type: Jar, dependsOn: classes) {
 	manifest {
 		attributes 'Main-Class': project.mainTestClass
 	}
+	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 	dependsOn configurations.runtimeClasspath
 	from {
 		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
