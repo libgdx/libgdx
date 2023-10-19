@@ -218,7 +218,16 @@ public class Rectangle implements Serializable, Shape2D {
 	/** @param r the other {@link Rectangle}
 	 * @return whether this rectangle overlaps the other rectangle. */
 	public boolean overlaps (Rectangle r) {
-		return x < r.x + r.width && x + width > r.x && y < r.y + r.height && y + height > r.y;
+		float thisLeft = width >= 0 ? x : x + width;
+		float thisRight = width >= 0 ? x+width : x;
+		float thisButton = height >= 0 ? y : y + height;
+		float thisTop = height >= 0 ? y + height : y;
+
+		float thatLeft = r.width >= 0 ? r.x : r.x + r.width;
+		float thatRight = r.width >= 0 ? r.x+r.width : r.x;
+		float thatButton = r.height >= 0 ? r.y : r.y + r.height;
+		float thatTop = r.height >= 0 ?r. y + r.height : r.y;
+		return thisLeft < thatRight && thisRight > thatLeft && thisButton < thatTop && thisTop > thatButton;
 	}
 
 	/** Sets the values of the given rectangle to this rectangle.
