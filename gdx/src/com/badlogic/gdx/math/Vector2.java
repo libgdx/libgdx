@@ -186,6 +186,13 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 
+	/** Returns true if this vector and the vector parameter have identical components.
+	 * @param vector The other vector
+	 * @return Whether this and the other vector are equal with exact precision */
+	public boolean idt (final Vector2 vector) {
+		return x == vector.x && y == vector.y;
+	}
+
 	public static float dst (float x1, float y1, float x2, float y2) {
 		final float x_d = x2 - x1;
 		final float y_d = y2 - y1;
