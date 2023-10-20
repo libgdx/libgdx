@@ -100,7 +100,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 
-	/** Substracts the other vector from this vector.
+	/** Subtracts the other vector from this vector.
 	 * @param x The x-component of the other vector
 	 * @param y The y-component of the other vector
 	 * @return This vector for chaining */
@@ -328,7 +328,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	/** @return the angle in degrees of this vector (point) relative to the given vector. Angles are towards the negative y-axis
 	 *         (typically clockwise) between -180 and +180
-	 * @deprecated use {@link #angleDeg(Vector2)} instead. Be ware of the changes in returned angle to counter-clockwise and the
+	 * @deprecated use {@link #angleDeg(Vector2)} instead. Beware of the changes in returned angle to counter-clockwise and the
 	 *             range. */
 	@Deprecated
 	public float angle (Vector2 reference) {

@@ -278,8 +278,10 @@ public class Vector4 implements Serializable, Vector<Vector4> {
 		return x * x + y * y + z * z + w * w;
 	}
 
-	/** @param vector The other vector
-	 * @return Whether this and the other vector are equal */
+
+	/** Returns true if this vector and the vector parameter have identical components.
+	 * @param vector The other vector
+	 * @return Whether this and the other vector are equal with exact precision */
 	public boolean idt (final Vector4 vector) {
 		return x == vector.x && y == vector.y && z == vector.z && w == vector.w;
 	}
