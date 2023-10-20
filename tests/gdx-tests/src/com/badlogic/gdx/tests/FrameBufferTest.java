@@ -126,7 +126,7 @@ public class FrameBufferTest extends GdxTest {
 
 		spriteBatch = new SpriteBatch();
 		frameBuffer = new FrameBuffer(Format.RGB565, 128, 128, false);
-		stencilFrameBuffer = new FrameBuffer(Format.RGB565, 128, 128, true, true);
+		stencilFrameBuffer = new FrameBuffer(Format.RGB565, 128, 128, false, true);
 		createShader(Gdx.graphics);
 	}
 

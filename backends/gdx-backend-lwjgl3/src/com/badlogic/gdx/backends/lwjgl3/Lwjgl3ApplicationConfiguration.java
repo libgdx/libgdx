@@ -36,6 +36,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3Monitor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
+import com.badlogic.gdx.math.GridPoint2;
 
 public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	public static PrintStream errorStream = System.err;
@@ -281,5 +282,40 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		int virtualY = tmp2.get(0);
 		String name = GLFW.glfwGetMonitorName(glfwMonitor);
 		return new Lwjgl3Monitor(glfwMonitor, virtualX, virtualY, name);
+	}
+
+	static GridPoint2 calculateCenteredWindowPosition (Lwjgl3Monitor monitor, int newWidth, int newHeight) {
+		IntBuffer tmp = BufferUtils.createIntBuffer(1);
+		IntBuffer tmp2 = BufferUtils.createIntBuffer(1);
+		IntBuffer tmp3 = BufferUtils.createIntBuffer(1);
+		IntBuffer tmp4 = BufferUtils.createIntBuffer(1);
+
+		DisplayMode displayMode = getDisplayMode(monitor);
+
+		GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmp, tmp2, tmp3, tmp4);
+		int workareaWidth = tmp3.get(0);
+		int workareaHeight = tmp4.get(0);
+
+		int minX, minY, maxX, maxY;
+
+		// If the new width is greater than the working area, we have to ignore stuff like the taskbar for centering and use the
+		// whole monitor's size
+		if (newWidth > workareaWidth) {
+			minX = monitor.virtualX;
+			maxX = displayMode.width;
+		} else {
+			minX = tmp.get(0);
+			maxX = workareaWidth;
+		}
+		// The same is true for height
+		if (newHeight > workareaHeight) {
+			minY = monitor.virtualY;
+			maxY = displayMode.height;
+		} else {
+			minY = tmp2.get(0);
+			maxY = workareaHeight;
+		}
+
+		return new GridPoint2(Math.max(minX, minX + (maxX - newWidth) / 2), Math.max(minY, minY + (maxY - newHeight) / 2));
 	}
 }

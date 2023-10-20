@@ -41,7 +41,7 @@ class Slider extends JPanel {
 	}
 
 	public float getValue () {
-		return ((Double)spinner.getValue()).floatValue();
+		return ((Number)spinner.getValue()).floatValue();
 	}
 
 	public void addChangeListener (ChangeListener listener) {

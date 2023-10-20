@@ -26,7 +26,6 @@ import com.badlogic.gdx.backends.lwjgl3.audio.Lwjgl3Audio;
 import com.badlogic.gdx.backends.lwjgl3.audio.OpenALLwjgl3Audio;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.AMDDebugOutput;
@@ -50,12 +49,14 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl3.audio.mock.MockAudio;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.system.Configuration;
+import org.lwjgl.system.ThreadLocalUtil;
 
 public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private final Lwjgl3ApplicationConfiguration config;
@@ -531,7 +532,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		Lwjgl3Window.setSizeLimits(windowHandle, config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth,
 			config.windowMaxHeight);
 		if (config.fullscreenMode == null) {
-			if (config.windowX == -1 && config.windowY == -1) {
+			if (config.windowX == -1 && config.windowY == -1) { // i.e., center the window
 				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
 				int windowHeight = Math.max(config.windowHeight, config.windowMinHeight);
 				if (config.windowMaxWidth > -1) windowWidth = Math.min(windowWidth, config.windowMaxWidth);
@@ -542,14 +543,9 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 					monitorHandle = config.maximizedMonitor.monitorHandle;
 				}
 
-				IntBuffer areaXPos = BufferUtils.createIntBuffer(1);
-				IntBuffer areaYPos = BufferUtils.createIntBuffer(1);
-				IntBuffer areaWidth = BufferUtils.createIntBuffer(1);
-				IntBuffer areaHeight = BufferUtils.createIntBuffer(1);
-				GLFW.glfwGetMonitorWorkarea(monitorHandle, areaXPos, areaYPos, areaWidth, areaHeight);
-
-				GLFW.glfwSetWindowPos(windowHandle, Math.max(0, areaXPos.get(0) + areaWidth.get(0) / 2 - windowWidth / 2),
-					Math.max(0, areaYPos.get(0) + areaHeight.get(0) / 2 - windowHeight / 2));
+				GridPoint2 newPos = Lwjgl3ApplicationConfiguration.calculateCenteredWindowPosition(
+					Lwjgl3ApplicationConfiguration.toLwjgl3Monitor(monitorHandle), windowWidth, windowHeight);
+				GLFW.glfwSetWindowPos(windowHandle, newPos.x, newPos.y);
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
@@ -567,6 +563,8 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			try {
 				Class gles = Class.forName("org.lwjgl.opengles.GLES");
 				gles.getMethod("createCapabilities").invoke(gles);
+				// TODO: Remove once https://github.com/LWJGL/lwjgl3/issues/931 is fixed
+				ThreadLocalUtil.setFunctionMissingAddresses(0);
 			} catch (Throwable e) {
 				throw new GdxRuntimeException("Couldn't initialize GLES", e);
 			}

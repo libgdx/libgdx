@@ -1,0 +1,27 @@
+testAtlas.png
+	size: 256, 64
+	filter: Linear, Linear
+black
+	bounds: 126, 16, 4, 8
+darkBlue
+	bounds: 2, 33, 26, 26
+darkBlue2
+	bounds: 2, 2, 26, 26
+darkGray
+	bounds: 33, 33, 26, 26
+darkGray2
+	bounds: 33, 2, 26, 26
+darkGreen
+	bounds: 64, 33, 26, 26
+darkGreen2
+	bounds: 64, 2, 26, 26
+grey
+	bounds: 126, 29, 22, 30
+pink
+	bounds: 95, 33, 26, 26
+purple
+	bounds: 153, 17, 16, 42
+tileTester
+	bounds: 95, 2, 26, 26
+white
+	bounds: 174, 57, 4, 2

@@ -1,4 +1,14 @@
-[1.11.1]
+[1.12.1]
+- LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
+- Tiled Fix: TiledLayer parallax default values fix
+- API Addition: TiledDrawable: Align can be set to manipulate the alignment of the rendering (TiledDrawable#setAlign, TiledDrawable#getAlign)
+- API Addition: TiledDrawable#draw: Also available as a static function (with align) if you don't want to create an extra instance per texture region
+- Android: Removed mouse catching added on 1.12.0 due to unintended effects (see #7187).
+- iOS: Update to MobiVM 2.3.20
+- API Addition: Using "object" property in Tiled object now fetches MapObject being pointed to, and BaseTmxMapLoader includes method for fetching map where key is id and value is MapObject instance.
+- Update to LWJGL 3.3.3
+
+[1.12.0]
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
 - [BREAKING CHANGE] Android: Immersive mode is now true by default. Set `useImmersiveMode` config to `false` to disable it.
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 11.0. Update your Info.plist file if necessary.
@@ -17,6 +27,7 @@
 - [BREAKING CHANGE] iOS: Use dynamic frameworks instead of static libs
 - [BREAKING CHANGE] optimized Mesh#bind and Mesh#unbind have a new parameter for instanced attribute locations. If you use these methods without instancing, you can pass a null value.
 - [BREAKING CHANGE] Dropped support for older libc versions since libGDX is now built on Ubuntu 20.04  (#7005)
+- [KNOWN ISSUE] Android drag behaviour. Gdx.input.getDeltaX() and Gdx.input.getDeltaY always return 0 for pointer 0. Fixed on next version.
 - Update to jnigen 2.4.1
 - LWJGL Fix: setPosision() for MP3 files.
 - iOS: Add new MobiVM MetalANGLE backend
@@ -63,6 +74,7 @@
 - API Fix: MathUtils.lerpAngle() fixed for extreme inputs
 - MathUtils trigonometry improvements
 - Various Scene2D fixes and improvements
+- Fix: JsonValue#addChild now clears leftover list pointers, preventing inconsistent or looping JSON objects.
 
 [1.11.0]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
