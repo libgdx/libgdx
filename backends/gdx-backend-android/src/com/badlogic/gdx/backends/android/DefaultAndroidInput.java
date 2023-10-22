@@ -639,7 +639,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 	@Override
 	public void setOnscreenKeyboardVisible (final boolean visible, final OnscreenKeyboardType type) {
-		if (relativeLayoutField != null) throw new GdxRuntimeException("Can't open keyboard if already open");
+		if (isNativeInputOpen()) throw new GdxRuntimeException("Can't open keyboard if already open");
 		onscreenVisible = visible;
 		handle.post(new Runnable() {
 			public void run () {

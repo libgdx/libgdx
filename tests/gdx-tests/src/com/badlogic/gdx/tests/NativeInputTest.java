@@ -41,7 +41,10 @@ public class NativeInputTest extends GdxTest {
 		table.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
-				Gdx.input.closeTextInputField(false);
+				if (!event.isStopped())
+				{
+					Gdx.input.closeTextInputField(false);
+				}
 				super.clicked(event, x, y);
 			}
 		});
@@ -73,6 +76,14 @@ public class NativeInputTest extends GdxTest {
 
 		Label placeHodlerLabel = new Label("Placeholder:", skin);
 		final TextField placeHolder = new TextField(null, skin);
+		placeHolder.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				System.out.println("UWU3");
+				super.clicked(event, x, y);
+				event.stop();
+			}
+		});
 
 		final TextArea result = new TextArea(null, skin);
 		result.setDisabled(true);
@@ -81,6 +92,7 @@ public class NativeInputTest extends GdxTest {
 		openInput.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
+				System.out.println("UWU2");
 				NativeInputConfiguration configuration = new NativeInputConfiguration();
 				configuration.setPreventCorrection(noAutocorrectButton.isChecked()).setMultiLine(multilineButton.isChecked())
 					.setShowPasswordButton(showPasswordButton.isChecked()).setPlaceholder(placeHolder.getText())
@@ -130,6 +142,7 @@ public class NativeInputTest extends GdxTest {
 				} catch (IllegalArgumentException e) {
 					result.setText(e.getMessage());
 				}
+				event.stop();
 			}
 		});
 		HorizontalGroup g1 = new HorizontalGroup();
