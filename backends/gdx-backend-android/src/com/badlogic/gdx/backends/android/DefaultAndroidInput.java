@@ -770,7 +770,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				int size = 165 * count;
 				if (size > relativeLayout.getHeight() + relativeLayout.getY() - getHeight())
 					size = (int)(relativeLayout.getHeight() + relativeLayout.getY() - getHeight());
-				if (size != 0) setDropDownHeight(size);
+				if (size > 0)
+					setDropDownHeight(size);
 				setDropDownVerticalOffset(-getDropDownHeight() - getHeight());
 				setDropDownWidth((int)(getWidth() * relativeLayout.getScaleX()));
 				super.showDropDown();
