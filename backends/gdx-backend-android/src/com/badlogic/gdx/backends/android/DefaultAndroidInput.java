@@ -46,7 +46,6 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.backends.android.keyboardheight.AndroidXKeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightObserver;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.keyboardheight.StandardKeyboardHeightProvider;
@@ -700,7 +699,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		if (height == 0) {
 			// Don't close keyboard on floating keyboards
 			if (!isStandardHeightProvider && (keyboardHeightProvider.getKeyboardLandscapeHeight() != 0
-					|| keyboardHeightProvider.getKeyboardPortraitHeight() != 0)) {
+				|| keyboardHeightProvider.getKeyboardPortraitHeight() != 0)) {
 				closeTextInputField(false);
 			}
 			// What should I say at this point, everything is busted on android
@@ -770,8 +769,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				int size = 165 * count;
 				if (size > relativeLayout.getHeight() + relativeLayout.getY() - getHeight())
 					size = (int)(relativeLayout.getHeight() + relativeLayout.getY() - getHeight());
-				if (size > 0)
-					setDropDownHeight(size);
+				if (size > 0) setDropDownHeight(size);
 				setDropDownVerticalOffset(-getDropDownHeight() - getHeight());
 				setDropDownWidth((int)(getWidth() * relativeLayout.getScaleX()));
 				super.showDropDown();

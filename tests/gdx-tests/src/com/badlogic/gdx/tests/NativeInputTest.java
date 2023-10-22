@@ -41,8 +41,7 @@ public class NativeInputTest extends GdxTest {
 		table.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
-				if (!event.isStopped())
-				{
+				if (!event.isStopped()) {
 					Gdx.input.closeTextInputField(false);
 				}
 				super.clicked(event, x, y);
@@ -76,9 +75,9 @@ public class NativeInputTest extends GdxTest {
 
 		Label placeHodlerLabel = new Label("Placeholder:", skin);
 		final TextField placeHolder = new TextField(null, skin);
-		placeHolder.addListener(new ClickListener(){
+		placeHolder.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				System.out.println("UWU3");
 				super.clicked(event, x, y);
 				event.stop();
