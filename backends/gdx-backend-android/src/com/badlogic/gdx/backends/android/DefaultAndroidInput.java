@@ -883,6 +883,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 				if (configuration.isPreventCorrection()) {
 					editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+					editText.setInputType(editText.getInputType() & ~InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 				} else {
 					editText.setInputType(
 						editText.getInputType() | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
