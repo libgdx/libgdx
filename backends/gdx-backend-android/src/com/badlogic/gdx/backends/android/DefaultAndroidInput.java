@@ -686,7 +686,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 	@Override
 	public void onKeyboardHeightChanged (int height, int leftInset, int rightInset, int orientation) {
-		if (config.useImmersiveMode) {
+		KeyboardHeightProvider keyboardHeightProvider = ((AndroidApplication)app).getKeyboardHeightProvider();
+		boolean isStandardHeightProvider = keyboardHeightProvider instanceof StandardKeyboardHeightProvider;
+		if (config.useImmersiveMode && isStandardHeightProvider) {
 			height += getSoftButtonsBarHeight();
 		}
 
@@ -697,14 +699,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 		if (height == 0) {
 			// Don't close keyboard on floating keyboards
-			KeyboardHeightProvider keyboardHeightProvider = ((AndroidApplication)app).getKeyboardHeightProvider();
-			if (keyboardHeightProvider instanceof AndroidXKeyboardHeightProvider
-				&& (keyboardHeightProvider.getKeyboardLandscapeHeight() != 0
+			if (!isStandardHeightProvider && (keyboardHeightProvider.getKeyboardLandscapeHeight() != 0
 					|| keyboardHeightProvider.getKeyboardPortraitHeight() != 0)) {
 				closeTextInputField(false);
 			}
 			// What should I say at this point, everything is busted on android
-			if (keyboardHeightProvider instanceof StandardKeyboardHeightProvider && getEditTextForNativeInput().isPopupShowing()) {
+			if (isStandardHeightProvider && getEditTextForNativeInput().isPopupShowing()) {
 				return;
 			}
 			if (observer != null) observer.onKeyboardHeightChanged(0);
