@@ -57,7 +57,7 @@ public class Ellipse implements Serializable, Shape2D {
 		this.height = height;
 	}
 
-	/** Costructs a new ellipse
+	/** Constructs a new ellipse
 	 * 
 	 * @param position Position vector
 	 * @param width the width of the ellipse
@@ -69,6 +69,10 @@ public class Ellipse implements Serializable, Shape2D {
 		this.height = height;
 	}
 
+	/** Constructs a new ellipse
+	 * 
+	 * @param position Position vector
+	 * @param size Size vector */
 	public Ellipse (Vector2 position, Vector2 size) {
 		this.x = position.x;
 		this.y = position.y;

@@ -912,11 +912,13 @@ public class JsonValue implements Iterable<JsonValue> {
 		if (type == ValueType.object && value.name == null)
 			throw new IllegalStateException("An object child requires a name: " + value);
 		value.parent = this;
+		value.next = null;
 		size++;
 		JsonValue current = child;
-		if (current == null)
+		if (current == null) {
+			value.prev = null;
 			child = value;
-		else {
+		} else {
 			while (true) {
 				if (current.next == null) {
 					current.next = value;
