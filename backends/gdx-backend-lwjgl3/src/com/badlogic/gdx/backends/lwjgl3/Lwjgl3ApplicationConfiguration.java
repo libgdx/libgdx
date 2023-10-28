@@ -174,7 +174,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.transparentFramebuffer = transparentFramebuffer;
 	}
 
-	/** Sets the polling rate during idle time in non-continuous rendering mode. Must be positive. Default is 60. */
+	/** Sets the sleep time when no runnables were executed and non-continuous rendering mode is on. Must be positive. Default is 60. */
 	public void setIdleFPS (int fps) {
 		this.idleFPS = fps;
 	}
