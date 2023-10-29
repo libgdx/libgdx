@@ -8,6 +8,7 @@
 - iOS: Update to MobiVM 2.3.20
 - API Addition: Using "object" property in Tiled object now fetches MapObject being pointed to, and BaseTmxMapLoader includes method for fetching map where key is id and value is MapObject instance.
 - Update to LWJGL 3.3.3
+- API Addition: Vector4 is just like Vector2 or Vector3, but with x, y, z, and w float components; a Vector4 can be passed as a shader uniform.
 
 [1.12.0]
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
