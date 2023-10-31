@@ -1,3 +1,5 @@
+[1.11.1]
+- [BREAKING CHANGE] Added glBlendEquationSeparate/glBlendFuncSeparate support in BlendingAttribute, see #7095
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
 - Tiled Fix: TiledLayer parallax default values fix

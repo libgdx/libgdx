@@ -32,11 +32,19 @@ public class BlendingAttribute extends Attribute {
 	/** Whether this material should be considered blended (default: true). This is used for sorting (back to front instead of
 	 * front to back). */
 	public boolean blended;
-	/** Specifies how the (incoming) red, green, blue, and alpha source blending factors are computed (default: GL_SRC_ALPHA) */
-	public int sourceFunction;
-	/** Specifies how the (existing) red, green, blue, and alpha destination blending factors are computed (default:
+	/** Specifies how the (incoming) red, green, blue source blending factors are computed (default: GL_SRC_ALPHA) */
+	public int sourceFunctionRGB;
+	/** Specifies how the (existing) red, green, blue destination blending factors are computed (default:
 	 * GL_ONE_MINUS_SRC_ALPHA) */
-	public int destFunction;
+	public int destFunctionRGB;
+	/** Specifies how the (incoming) alpha source blending factor is computed (default: GL_SRC_ALPHA) */
+	public int sourceFunctionAlpha;
+	/** Specifies how the (existing) alpha destination blending factor is computed (default: GL_ONE_MINUS_SRC_ALPHA) */
+	public int destFunctionAlpha;
+	/** the blend equation for rgb (default: GL_FUNC_ADD) */
+	public int equationRGB;
+	/** the blend equation for alpha (default: GL_FUNC_ADD) */
+	public int equationAlpha;
 	/** The opacity used as source alpha value, ranging from 0 (fully transparent) to 1 (fully opaque), (default: 1). */
 	public float opacity = 1.f;
 
@@ -44,12 +52,21 @@ public class BlendingAttribute extends Attribute {
 		this(null);
 	}
 
-	public BlendingAttribute (final boolean blended, final int sourceFunc, final int destFunc, final float opacity) {
+	public BlendingAttribute (final boolean blended, final int sourceFuncRGB, final int destFuncRGB, final int sourceFuncAlpha,
+		final int destFuncAlpha, final int equationRGB, final int equationAlpha, final float opacity) {
 		super(Type);
 		this.blended = blended;
-		this.sourceFunction = sourceFunc;
-		this.destFunction = destFunc;
+		this.sourceFunctionRGB = sourceFuncRGB;
+		this.destFunctionRGB = destFuncRGB;
+		this.sourceFunctionAlpha = sourceFuncAlpha;
+		this.destFunctionAlpha = destFuncAlpha;
+		this.equationRGB = equationRGB;
+		this.equationAlpha = equationAlpha;
 		this.opacity = opacity;
+	}
+
+	public BlendingAttribute (final boolean blended, final int sourceFunc, final int destFunc, final float opacity) {
+		this(blended, sourceFunc, destFunc, sourceFunc, destFunc, GL20.GL_FUNC_ADD, GL20.GL_FUNC_ADD, opacity);
 	}
 
 	public BlendingAttribute (final int sourceFunc, final int destFunc, final float opacity) {
@@ -69,8 +86,12 @@ public class BlendingAttribute extends Attribute {
 	}
 
 	public BlendingAttribute (final BlendingAttribute copyFrom) {
-		this(copyFrom == null || copyFrom.blended, copyFrom == null ? GL20.GL_SRC_ALPHA : copyFrom.sourceFunction,
-			copyFrom == null ? GL20.GL_ONE_MINUS_SRC_ALPHA : copyFrom.destFunction, copyFrom == null ? 1.f : copyFrom.opacity);
+		this(copyFrom == null || copyFrom.blended, copyFrom == null ? GL20.GL_SRC_ALPHA : copyFrom.sourceFunctionRGB,
+			copyFrom == null ? GL20.GL_ONE_MINUS_SRC_ALPHA : copyFrom.destFunctionRGB,
+			copyFrom == null ? GL20.GL_SRC_ALPHA : copyFrom.sourceFunctionAlpha,
+			copyFrom == null ? GL20.GL_ONE_MINUS_SRC_ALPHA : copyFrom.destFunctionAlpha,
+			copyFrom == null ? GL20.GL_FUNC_ADD : copyFrom.equationRGB, copyFrom == null ? GL20.GL_FUNC_ADD : copyFrom.equationAlpha,
+			copyFrom == null ? 1.f : copyFrom.opacity);
 	}
 
 	@Override
@@ -82,8 +103,12 @@ public class BlendingAttribute extends Attribute {
 	public int hashCode () {
 		int result = super.hashCode();
 		result = 947 * result + (blended ? 1 : 0);
-		result = 947 * result + sourceFunction;
-		result = 947 * result + destFunction;
+		result = 947 * result + sourceFunctionRGB;
+		result = 947 * result + destFunctionRGB;
+		result = 947 * result + sourceFunctionAlpha;
+		result = 947 * result + destFunctionAlpha;
+		result = 947 * result + equationRGB;
+		result = 947 * result + equationAlpha;
 		result = 947 * result + NumberUtils.floatToRawIntBits(opacity);
 		return result;
 	}
@@ -93,8 +118,12 @@ public class BlendingAttribute extends Attribute {
 		if (type != o.type) return (int)(type - o.type);
 		BlendingAttribute other = (BlendingAttribute)o;
 		if (blended != other.blended) return blended ? 1 : -1;
-		if (sourceFunction != other.sourceFunction) return sourceFunction - other.sourceFunction;
-		if (destFunction != other.destFunction) return destFunction - other.destFunction;
+		if (sourceFunctionRGB != other.sourceFunctionRGB) return sourceFunctionRGB - other.sourceFunctionRGB;
+		if (destFunctionRGB != other.destFunctionRGB) return destFunctionRGB - other.destFunctionRGB;
+		if (sourceFunctionAlpha != other.sourceFunctionAlpha) return sourceFunctionAlpha - other.sourceFunctionAlpha;
+		if (destFunctionAlpha != other.destFunctionAlpha) return destFunctionAlpha - other.destFunctionAlpha;
+		if (equationRGB != other.equationRGB) return equationRGB - other.equationRGB;
+		if (equationAlpha != other.equationAlpha) return equationAlpha - other.equationAlpha;
 		return (MathUtils.isEqual(opacity, other.opacity)) ? 0 : (opacity < other.opacity ? 1 : -1);
 	}
 }

@@ -63,22 +63,22 @@ public class BillboardBatchPanel extends EditorPanel<BillboardParticleBatch> {
 		// Blending source
 		srcBlendFunction = new JComboBox();
 		srcBlendFunction.setModel(new DefaultComboBoxModel(BlendFunction.values()));
-		srcBlendFunction.setSelectedItem(BlendFunction.find(renderer.getBlendingAttribute().sourceFunction));
+		srcBlendFunction.setSelectedItem(BlendFunction.find(renderer.getBlendingAttribute().sourceFunctionRGB));
 		srcBlendFunction.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
 				BlendFunction blend = (BlendFunction)srcBlendFunction.getSelectedItem();
-				editor.getBillboardBatch().getBlendingAttribute().sourceFunction = blend.blend;
+				editor.getBillboardBatch().getBlendingAttribute().sourceFunctionRGB = blend.blend;
 			}
 		});
 
 		// Blending destination
 		destBlendFunction = new JComboBox();
 		destBlendFunction.setModel(new DefaultComboBoxModel(BlendFunction.values()));
-		destBlendFunction.setSelectedItem(BlendFunction.find(renderer.getBlendingAttribute().destFunction));
+		destBlendFunction.setSelectedItem(BlendFunction.find(renderer.getBlendingAttribute().destFunctionRGB));
 		destBlendFunction.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
 				BlendFunction blend = (BlendFunction)destBlendFunction.getSelectedItem();
-				editor.getBillboardBatch().getBlendingAttribute().destFunction = blend.blend;
+				editor.getBillboardBatch().getBlendingAttribute().destFunctionRGB = blend.blend;
 			}
 		});
 

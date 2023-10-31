@@ -40,7 +40,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		return mask;
 	}
 
-	/** Example usage: ((BlendingAttribute)material.get(BlendingAttribute.ID)).sourceFunction;
+	/** Example usage: ((BlendingAttribute)material.get(BlendingAttribute.ID)).sourceFunctionRGB;
 	 * @return The attribute (which can safely be cast) if any, otherwise null */
 	public final Attribute get (final long type) {
 		if (has(type)) for (int i = 0; i < attributes.size; i++)
@@ -48,7 +48,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		return null;
 	}
 
-	/** Example usage: ((BlendingAttribute)material.get(BlendingAttribute.ID)).sourceFunction;
+	/** Example usage: ((BlendingAttribute)material.get(BlendingAttribute.ID)).sourceFunctionRGB;
 	 * @return The attribute if any, otherwise null */
 	public final <T extends Attribute> T get (Class<T> clazz, final long type) {
 		return (T)get(type);
