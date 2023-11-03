@@ -32,6 +32,7 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
@@ -620,6 +621,18 @@ public class ShaderProgram implements Disposable {
 
 	public void setUniformf (int location, Vector3 values) {
 		setUniformf(location, values.x, values.y, values.z);
+	}
+
+	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
+	 *
+	 * @param name the name of the uniform
+	 * @param values x, y, z, and w as the first, second, third, and fourth values respectively */
+	public void setUniformf (String name, Vector4 values) {
+		setUniformf(name, values.x, values.y, values.z, values.w);
+	}
+
+	public void setUniformf (int location, Vector4 values) {
+		setUniformf(location, values.x, values.y, values.z, values.w);
 	}
 
 	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
