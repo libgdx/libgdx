@@ -23,7 +23,7 @@ ext {
 
 versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 7
 versions.javaLwjgl3 = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
-versions.robovm = "2.3.19"
+versions.robovm = "2.3.20"
 versions.gwt = "2.8.2"
 versions.gwtPlugin = "1.1.19"
 versions.gretty = "3.1.0"
@@ -35,10 +35,10 @@ versions.jorbis = "0.0.17"
 versions.junit = "4.13.2"
 versions.androidPlugin = "8.1.2"
 versions.multiDex = "2.0.1"
-versions.androidCompileSdk = 32
-versions.androidTargetSdk = 32
+versions.androidCompileSdk = 33
+versions.androidTargetSdk = 33
 versions.androidMinSdk = 14
-versions.androidBuildTools = "33.0.0"
+versions.androidBuildTools = "33.0.2"
 versions.androidFragment = "1.5.7"
 versions.javaparser = "2.3.0"
 versions.spotless = "6.7.1"
