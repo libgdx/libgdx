@@ -1,3 +1,6 @@
+[1.12.2-SNAPSHOT]
+- Fixed GlyphLayout for fixed width glyph offsets at the start and end of lines.
+
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
 - Tiled Fix: TiledLayer parallax default values fix

@@ -35,7 +35,8 @@ public class TextAreaTest extends GdxTest {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		TextArea textArea = new TextArea("Text Area\nEssentially, a text field\nwith\nmultiple\nlines.\n"
+		skin.getFont("default-font").setFixedWidthGlyphs("0123456789");
+		TextArea textArea = new TextArea("Text Area\n1111111111\n0123456789\nEssentially, a text field\nwith\nmultiple\nlines.\n"
 			+ "It can even handle very loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong lines.",
 			skin);
 		textArea.setX(10);
