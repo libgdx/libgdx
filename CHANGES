@@ -1,3 +1,6 @@
+[1.12.2-SNAPSHOT]
+- Fixed GlyphLayout for fixed width glyph offsets at the start and end of lines.
+
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
 - Tiled Fix: TiledLayer parallax default values fix
@@ -9,6 +12,19 @@
 - API Addition: Using "object" property in Tiled object now fetches MapObject being pointed to, and BaseTmxMapLoader includes method for fetching map where key is id and value is MapObject instance.
 - Update to LWJGL 3.3.3
 - API Addition: Vector4 is just like Vector2 or Vector3, but with x, y, z, and w float components; a Vector4 can be passed as a shader uniform.
+- Fix: Fix crash with ANGLE GLES renderer
+- API Change: Use STBVorbis to decode ogg data for Sound
+- API Change: Remove usage of deprecated tag on GL30
+- Lower GLIBC requirements to 2.17 in order to support older Linux systems
+- Fix: Fix setCursor releasing the caught cursor on the LWJGL 3 backend.
+- Fix crash in ParticleEditor and Flame 
+- Fix bitwise precedence in ModelBatch#addMesh (float[] vertices, short[] indices)
+- Improve the default font's compatibility with GL30
+- Fix potential IndexOutOfBoundsException on AsynchronousAndroidSound
+- API Addition: GwtGL20 & GwtGL30#glGetFramebufferAttachmentParameteriv 
+- Fix Tiled classes not being registered in the reflection cache
+- Fix: Change androidx.fragment dependency to compileOnly
+- Fix borderless fullscreen when taskbar is on the left/top
 
 [1.12.0]
 - [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
