@@ -120,12 +120,11 @@ public class GLVersion {
 		return releaseVersion;
 	}
 
-	/**
-	 * @return The version string as reported by `glGetString(GL_VERSION)`
-	 */
-	public String getVersionString() {
+	/** @return The version string as reported by `glGetString(GL_VERSION)` */
+	public String getVersionString () {
 		return versionString;
 	}
+
 	/** @return the vendor string associated with the current GL connection */
 	public String getVendorString () {
 		return vendorString;

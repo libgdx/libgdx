@@ -35,7 +35,6 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.GLCapabilities;
-import org.lwjgl.opengl.GLDebugMessageCallback;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.Callback;
@@ -58,7 +57,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.system.Configuration;
-import org.lwjgl.system.ThreadLocalUtil;
 
 public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private final Lwjgl3ApplicationConfiguration config;
@@ -467,8 +465,8 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		window.setVisible(config.initialVisible);
 
 		for (int i = 0; i < 2; i++) {
-			window.getGraphics().gl20.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
-				config.initialBackgroundColor.a);
+			window.getGraphics().gl20.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
+				config.initialBackgroundColor.b, config.initialBackgroundColor.a);
 			window.getGraphics().gl20.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			GLFW.glfwSwapBuffers(windowHandle);
 		}
@@ -584,7 +582,8 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 		if (config.debug) {
 			if (config.glEmulation == GLEmulation.ANGLE_GLES20) {
-				throw new IllegalStateException("ANGLE currently can't be used with with Lwjgl3ApplicationConfiguration#enableGLDebugOutput");
+				throw new IllegalStateException(
+					"ANGLE currently can't be used with with Lwjgl3ApplicationConfiguration#enableGLDebugOutput");
 			}
 			glDebugCallback = GLUtil.setupDebugMessageCallback(config.debugStream);
 			setGLDebugMessageControl(GLDebugMessageSeverity.NOTIFICATION, false);
