@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.GLEmulation;
 import com.badlogic.gdx.backends.lwjgl3.audio.Lwjgl3Audio;
 import com.badlogic.gdx.backends.lwjgl3.audio.OpenALLwjgl3Audio;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
@@ -34,6 +35,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.GLCapabilities;
+import org.lwjgl.opengl.GLDebugMessageCallback;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.Callback;
@@ -465,9 +467,9 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		window.setVisible(config.initialVisible);
 
 		for (int i = 0; i < 2; i++) {
-			GL11.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
+			window.getGraphics().gl20.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
 				config.initialBackgroundColor.a);
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			window.getGraphics().gl20.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			GLFW.glfwSwapBuffers(windowHandle);
 		}
 	}
@@ -563,8 +565,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			try {
 				Class gles = Class.forName("org.lwjgl.opengles.GLES");
 				gles.getMethod("createCapabilities").invoke(gles);
-				// TODO: Remove once https://github.com/LWJGL/lwjgl3/issues/931 is fixed
-				ThreadLocalUtil.setFunctionMissingAddresses(0);
 			} catch (Throwable e) {
 				throw new GdxRuntimeException("Couldn't initialize GLES", e);
 			}
@@ -575,14 +575,17 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		initiateGL(config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20);
 		if (!glVersion.isVersionEqualToOrHigher(2, 0))
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-				+ GL11.glGetString(GL11.GL_VERSION) + "\n" + glVersion.getDebugVersionString());
+				+ glVersion.getVersionString() + "\n" + glVersion.getDebugVersionString());
 
 		if (config.glEmulation != Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20 && !supportsFBO()) {
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-				+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glVersion.getDebugVersionString());
+				+ glVersion.getVersionString() + ", FBO extension: false\n" + glVersion.getDebugVersionString());
 		}
 
 		if (config.debug) {
+			if (config.glEmulation == GLEmulation.ANGLE_GLES20) {
+				throw new IllegalStateException("ANGLE currently can't be used with with Lwjgl3ApplicationConfiguration#enableGLDebugOutput");
+			}
 			glDebugCallback = GLUtil.setupDebugMessageCallback(config.debugStream);
 			setGLDebugMessageControl(GLDebugMessageSeverity.NOTIFICATION, false);
 		}
