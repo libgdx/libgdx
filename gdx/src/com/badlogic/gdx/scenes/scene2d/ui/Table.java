@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -832,10 +833,10 @@ public class Table extends WidgetGroup {
 			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
 			if (maxHeight > 0 && prefHeight > maxHeight) prefHeight = maxHeight;
 			if (round) {
-				minWidth = (float)Math.ceil(minWidth);
-				minHeight = (float)Math.ceil(minHeight);
-				prefWidth = (float)Math.ceil(prefWidth);
-				prefHeight = (float)Math.ceil(prefHeight);
+				minWidth = MathUtils.ceil(minWidth);
+				minHeight = MathUtils.ceil(minHeight);
+				prefWidth = MathUtils.ceil(prefWidth);
+				prefHeight = MathUtils.ceil(prefHeight);
 			}
 
 			if (colspan == 1) { // Spanned column min and pref width is added later.
@@ -907,8 +908,8 @@ public class Table extends WidgetGroup {
 			if (prefWidth < minWidth) prefWidth = minWidth;
 			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
 			if (round) {
-				minWidth = (float)Math.ceil(minWidth);
-				prefWidth = (float)Math.ceil(prefWidth);
+				minWidth = MathUtils.ceil(minWidth);
+				prefWidth = MathUtils.ceil(prefWidth);
 			}
 
 			float spannedMinWidth = -(c.computedPadLeft + c.computedPadRight), spannedPrefWidth = spannedMinWidth;
@@ -1142,10 +1143,10 @@ public class Table extends WidgetGroup {
 			c.actorY = layoutHeight - currentY - c.actorY - c.actorHeight;
 
 			if (round) {
-				c.actorWidth = (float)Math.ceil(c.actorWidth);
-				c.actorHeight = (float)Math.ceil(c.actorHeight);
-				c.actorX = (float)Math.floor(c.actorX);
-				c.actorY = (float)Math.floor(c.actorY);
+				c.actorWidth = MathUtils.ceil(c.actorWidth);
+				c.actorHeight = MathUtils.ceil(c.actorHeight);
+				c.actorX = MathUtils.floor(c.actorX);
+				c.actorY = MathUtils.floor(c.actorY);
 			}
 
 			if (c.actor != null) c.actor.setBounds(c.actorX, c.actorY, c.actorWidth, c.actorHeight);

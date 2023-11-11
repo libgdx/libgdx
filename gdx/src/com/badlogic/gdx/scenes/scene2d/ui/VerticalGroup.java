@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
@@ -124,8 +125,8 @@ public class VerticalGroup extends WidgetGroup {
 		}
 		prefWidth += padLeft + padRight;
 		if (round) {
-			prefWidth = (float)Math.ceil(prefWidth);
-			prefHeight = (float)Math.ceil(prefHeight);
+			prefWidth = MathUtils.ceil(prefWidth);
+			prefHeight = MathUtils.ceil(prefHeight);
 		}
 	}
 
@@ -194,7 +195,7 @@ public class VerticalGroup extends WidgetGroup {
 
 			y -= height + space;
 			if (round)
-				child.setBounds((float)Math.floor(x), (float)Math.floor(y), (float)Math.ceil(width), (float)Math.ceil(height));
+				child.setBounds(MathUtils.floor(x), MathUtils.floor(y), MathUtils.ceil(width), MathUtils.ceil(height));
 			else
 				child.setBounds(x, y, width, height);
 
@@ -283,7 +284,7 @@ public class VerticalGroup extends WidgetGroup {
 
 			y -= height + space;
 			if (round)
-				child.setBounds((float)Math.floor(x), (float)Math.floor(y), (float)Math.ceil(width), (float)Math.ceil(height));
+				child.setBounds(MathUtils.floor(x), MathUtils.floor(y), MathUtils.ceil(width), MathUtils.ceil(height));
 			else
 				child.setBounds(x, y, width, height);
 
