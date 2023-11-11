@@ -746,8 +746,8 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define " + FloatAttribute.AlphaTestAlias + "Flag\n";
 		if (renderable.bones != null && config.numBones > 0) prefix += "#define numBones " + config.numBones + "\n";
 
-		if (renderable.meshPart.mesh.isInstanced()) {
-			final VertexAttributes instancedAttrs = renderable.meshPart.mesh.getInstancedAttributes();
+		final VertexAttributes instancedAttrs = renderable.meshPart.mesh.getInstancedAttributes();
+		if (instancedAttrs != null) {
 			final int attrsCount = instancedAttrs.size();
 			for (int i = 0; i < attrsCount; i++) {
 				final VertexAttribute attr = instancedAttrs.get(i);
