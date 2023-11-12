@@ -118,6 +118,14 @@ allprojects {
 			greclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
 		}
 	}
+
+	tasks.named("spotlessGroovyGradle") {
+		mustRunAfter(":fetchNatives")
+	}
+
+	tasks.named("spotlessJava") {
+		mustRunAfter(":fetchNatives")
+	}
 }
 
 configure(subprojects - project(":tests:gdx-tests-android") - project(":backends:gdx-backend-android")) {
@@ -183,7 +191,7 @@ task setupExternalNativesDirs() {
 		file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
 		file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosarm64").mkdirs();
 	}
-	outputs.upToDateWhen { false }
+	doNotTrackState("Don't track state")
 }
 
 task fetchAngleNativesZIP(dependsOn: setupExternalNativesDirs, type: Download) {
@@ -214,7 +222,7 @@ task fetchExternalNatives(dependsOn: [
 ] , type: Copy) {
 	from zipTree("build/gdx-angle-natives.zip")
 	into "./extensions/gdx-lwjgl3-angle/res"
-	outputs.upToDateWhen { false }
+	doNotTrackState("Don't track state")
 }
 
 task fetchGdxNativesZIP(dependsOn: fetchExternalNatives, type: Download) {
@@ -227,7 +235,7 @@ task fetchGdxNativesZIP(dependsOn: fetchExternalNatives, type: Download) {
 task fetchNatives(dependsOn: fetchGdxNativesZIP, type: Copy) {
 	from zipTree("build/natives.zip")
 	into "."
-	outputs.upToDateWhen { false }
+	doNotTrackState("Don't track state")
 }
 
 apply from: rootProject.file('publish.gradle')
