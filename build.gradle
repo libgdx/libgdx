@@ -118,14 +118,6 @@ allprojects {
 			greclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
 		}
 	}
-
-	tasks.named("spotlessGroovyGradle") {
-		mustRunAfter(":fetchNatives")
-	}
-
-	tasks.named("spotlessJava") {
-		mustRunAfter(":fetchNatives")
-	}
 }
 
 configure(subprojects - project(":tests:gdx-tests-android") - project(":backends:gdx-backend-android")) {
