@@ -109,7 +109,7 @@ allprojects {
 		lineEndings 'UNIX'
 
 		java {
-			target '**/*.java'
+			target 'src/**/*.java', 'test/**/*.java', 'generator/**/*.java'
 			removeUnusedImports()
 			eclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
 		}

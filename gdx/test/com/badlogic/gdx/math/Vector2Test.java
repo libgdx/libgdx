@@ -27,6 +27,11 @@ public class Vector2Test {
 	}
 
 	@Test
+	public void testAngleStatic () {
+		assertEquals(270f, Vector2.angleDeg(0, -1f), MathUtils.FLOAT_ROUNDING_ERROR);
+	}
+
+	@Test
 	public void testAngleRad () {
 		assertEquals(-MathUtils.HALF_PI, new Vector2(0, -1f).angleRad(), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
@@ -35,4 +40,10 @@ public class Vector2Test {
 	public void testAngleRadRelative () {
 		assertEquals(-MathUtils.HALF_PI, new Vector2(0, -1f).angleRad(Vector2.X), MathUtils.FLOAT_ROUNDING_ERROR);
 	}
+
+	@Test
+	public void testAngleRadStatic () {
+		assertEquals(-MathUtils.HALF_PI, Vector2.angleRad(0, -1f), MathUtils.FLOAT_ROUNDING_ERROR);
+	}
+
 }
