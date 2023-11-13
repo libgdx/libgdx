@@ -226,7 +226,9 @@ public class IntersectorTest {
 	public void testIntersectPolygons () {
 		// Corner case with extremely small overlap polygon
 		Polygon intersectionPolygon = new Polygon();
-		assertFalse(Intersector.intersectPolygons(new Polygon(new float[]{3200.1453f, 88.00839f, 3233.9087f, 190.34174f, 3266.2905f, 0.0f}), new Polygon(new float[]{3213.0f, 131.0f, 3214.0f, 131.0f, 3214.0f, 130.0f, 3213.0f, 130.0f}), intersectionPolygon));
+		assertFalse(
+			Intersector.intersectPolygons(new Polygon(new float[] {3200.1453f, 88.00839f, 3233.9087f, 190.34174f, 3266.2905f, 0.0f}),
+				new Polygon(new float[] {3213.0f, 131.0f, 3214.0f, 131.0f, 3214.0f, 130.0f, 3213.0f, 130.0f}), intersectionPolygon));
 		assertEquals(0, intersectionPolygon.getVertexCount());
 	}
 }
