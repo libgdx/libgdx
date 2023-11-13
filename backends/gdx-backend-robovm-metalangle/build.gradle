@@ -45,7 +45,7 @@ dependencies {
 	generatorImplementation 'com.github.javaparser:javaparser-core:3.24.2'
 }
 
-task generate(type: JavaExec) {
+tasks.register('generate', JavaExec) {
 	dependsOn configurations.generator
 
 	mainClass = 'JavaCodeGenerator'
@@ -55,7 +55,7 @@ task generate(type: JavaExec) {
 	outputs.dir 'src/'
 }
 
-task fetchMetalANGLE(type: Download) {
+tasks.register('fetchMetalANGLE', Download) {
 	doFirst {
 		file("build/tmp").mkdirs();
 	}
@@ -65,7 +65,7 @@ task fetchMetalANGLE(type: Download) {
 	useETag "all"
 }
 
-task fetchMetalANGLESimulator(type: Download) {
+tasks.register('fetchMetalANGLESimulator', Download) {
 	doFirst {
 		file("build/tmp").mkdirs();
 	}
@@ -75,19 +75,22 @@ task fetchMetalANGLESimulator(type: Download) {
 	useETag "all"
 }
 
-task verifyMetalANGLE(dependsOn: fetchMetalANGLE, type: Verify) {
+tasks.register('verifyMetalANGLE', Verify) {
+	dependsOn fetchMetalANGLE
 	src 'build/tmp/MetalANGLE.framework.ios.zip'
 	algorithm 'SHA-256'
 	checksum '9b6e7c82d41749266200ed19bb184c4f47df63c4dcde0972186ea557de623018'
 }
 
-task verifyMetalANGLESimulator(dependsOn: fetchMetalANGLESimulator, type: Verify) {
+tasks.register('verifyMetalANGLESimulator', Verify) {
+	dependsOn fetchMetalANGLESimulator
 	src 'build/tmp/MetalANGLE.framework.ios.simulator.zip'
 	algorithm 'SHA-256'
 	checksum '63ff063bf7825e2da9a01eda981067eb4eacd42e202c86f448541d2c5bd564a9'
 }
 
-task extractMetalANGLE(dependsOn: verifyMetalANGLE, type: Copy) {
+tasks.register('extractMetalANGLE', Copy) {
+	dependsOn verifyMetalANGLE
 	doFirst {
 		file("build/tmp/real").mkdirs();
 	}
@@ -95,7 +98,8 @@ task extractMetalANGLE(dependsOn: verifyMetalANGLE, type: Copy) {
 	into 'build/tmp/real'
 }
 
-task extractMetalANGLESimulator(dependsOn: verifyMetalANGLESimulator, type: Copy) {
+tasks.register('extractMetalANGLESimulator', Copy) {
+	dependsOn verifyMetalANGLESimulator
 	doFirst {
 		file("build/tmp/sim").mkdirs();
 	}
@@ -103,10 +107,8 @@ task extractMetalANGLESimulator(dependsOn: verifyMetalANGLESimulator, type: Copy
 	into 'build/tmp/sim'
 }
 
-task buildMetalANGLE(dependsOn: [
-	extractMetalANGLE,
-	extractMetalANGLESimulator
-], type: Exec) {
+tasks.register('buildMetalANGLE', Exec) {
+	dependsOn extractMetalANGLE, extractMetalANGLESimulator
 	doFirst {
 		delete("res/META-INF/robovm/ios/libs/MetalANGLE.xcframework")
 		file("res/META-INF/robovm/ios/libs").mkdirs();
@@ -122,14 +124,15 @@ task buildMetalANGLE(dependsOn: [
 	outputs.dir 'res/META-INF/robovm/ios/libs/MetalANGLE.xcframework'
 }
 
-task jnigenBuildIOS(dependsOn: buildMetalANGLE) {
+tasks.register('jnigenBuildIOS') {
+	dependsOn buildMetalANGLE
 }
 
-task jnigenBuild() {
+tasks.register('jnigenBuild') {
 }
 
 //Dummy task to make compatible with publish
-task jnigen() {
+tasks.register('jnigen') {
 }
 
 if(OperatingSystem.current() == OperatingSystem.MAC_OS) {
