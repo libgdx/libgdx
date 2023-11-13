@@ -1,5 +1,6 @@
 [1.12.2-SNAPSHOT]
 - Fixed GlyphLayout for fixed width glyph offsets at the start and end of lines.
+- Fixed scene2d.ui layout for fractional positions and sizes.
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
@@ -54,6 +55,7 @@
 - API Addition: Added Audio#switchOutputDevice and Audio#getAvailableOutputDevices to specify output devices. Only works for LWJGL3
 - Fix LWJGL3: Audio doesn't die anymore, if a device gets disconnected
 - API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
+- API Addition: Vector2: Added static methods for angleDeg and angleRad
 - Fix: Fixed Android and iOS touch cancelled related issues, see #6871.
 - Javadoc: Add "-use" flag to javadoc generation
 - Android: gdx-setup now uses AGP 7.2.2 and SDK 32, requiring Android Studio Chipmunk or IntelliJ IDEA 2022.2 and JDK 11.

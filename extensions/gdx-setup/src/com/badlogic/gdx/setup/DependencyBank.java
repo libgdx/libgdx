@@ -28,7 +28,7 @@ public class DependencyBank {
 	static String buildToolsVersion = "33.0.2";
 	static String androidAPILevel = "33";
 	static String androidMinAPILevel = "14";
-	static String gwtVersion = "2.8.2";
+	static String gwtVersion = "2.10.0";
 
 	// Repositories
 	static String mavenLocal = "mavenLocal()";
@@ -40,7 +40,7 @@ public class DependencyBank {
 	static String jitpackUrl = "https://jitpack.io";
 
 	// Project plugins
-	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.1.16";
+	static String gwtPluginImport = "org.docstr:gwt-gradle-plugin:1.1.29";
 	static String grettyPluginImport = "org.gretty:gretty:3.0.7";
 	static String androidPluginImport = "com.android.tools.build:gradle:7.3.1";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
