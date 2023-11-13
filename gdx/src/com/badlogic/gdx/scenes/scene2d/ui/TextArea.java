@@ -117,7 +117,7 @@ public class TextArea extends TextField {
 		} else {
 			// without ceil we might end up with one less row then expected
 			// due to how linesShowing is calculated in #sizeChanged and #getHeight() returning rounded value
-			float prefHeight = MathUtils.ceil(style.font.getLineHeight() * prefRows);
+			float prefHeight = (float)Math.ceil(style.font.getLineHeight() * prefRows);
 			if (style.background != null) {
 				prefHeight = Math.max(prefHeight + style.background.getBottomHeight() + style.background.getTopHeight(),
 					style.background.getMinHeight());

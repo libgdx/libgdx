@@ -125,8 +125,8 @@ public class VerticalGroup extends WidgetGroup {
 		}
 		prefWidth += padLeft + padRight;
 		if (round) {
-			prefWidth = MathUtils.ceil(prefWidth);
-			prefHeight = MathUtils.ceil(prefHeight);
+			prefWidth = (float)Math.ceil(prefWidth);
+			prefHeight = (float)Math.ceil(prefHeight);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class VerticalGroup extends WidgetGroup {
 
 			y -= height + space;
 			if (round)
-				child.setBounds(MathUtils.floor(x), MathUtils.floor(y), MathUtils.ceil(width), MathUtils.ceil(height));
+				child.setBounds((float)Math.floor(x), (float)Math.floor(y), (float)Math.ceil(width), (float)Math.ceil(height));
 			else
 				child.setBounds(x, y, width, height);
 
@@ -284,7 +284,7 @@ public class VerticalGroup extends WidgetGroup {
 
 			y -= height + space;
 			if (round)
-				child.setBounds(MathUtils.floor(x), MathUtils.floor(y), MathUtils.ceil(width), MathUtils.ceil(height));
+				child.setBounds((float)Math.floor(x), (float)Math.floor(y), (float)Math.ceil(width), (float)Math.ceil(height));
 			else
 				child.setBounds(x, y, width, height);
 
