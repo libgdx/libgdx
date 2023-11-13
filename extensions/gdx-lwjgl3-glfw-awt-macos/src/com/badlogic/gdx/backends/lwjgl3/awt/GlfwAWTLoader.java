@@ -27,8 +27,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.zip.CRC32;
 
+import com.badlogic.gdx.utils.Architecture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Os;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class GlfwAWTLoader {
@@ -177,7 +177,8 @@ public class GlfwAWTLoader {
 			}
 		}
 
-		String source = SharedLibraryLoader.os == Os.MacOsX ? "macosarm64/libglfwarm64.dylib" : "macosx64/libglfw.dylib";
+		String source = SharedLibraryLoader.architecture == Architecture.ARM ? "macosarm64/libglfwarm64.dylib"
+			: "macosx64/libglfw.dylib";
 		String crc = crc(GlfwAWTLoader.class.getResourceAsStream("/" + source));
 		File sharedLib = getExtractedFile(crc, new File(source).getName());
 
