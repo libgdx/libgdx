@@ -32,7 +32,8 @@ ext {
 	toolsAssetsDir = ["assets"]
 }
 
-task dist2DParticles (type: Jar, dependsOn: configurations.runtimeClasspath) {
+tasks.register('dist2DParticles', Jar) {
+	dependsOn configurations.runtimeClasspath
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
 	from files(sourceSets.main.java.classesDirectory)
@@ -47,7 +48,8 @@ task dist2DParticles (type: Jar, dependsOn: configurations.runtimeClasspath) {
 	}
 }
 
-task dist3DParticles (type: Jar, dependsOn: configurations.runtimeClasspath) {
+tasks.register('dist3DParticles', Jar) {
+	dependsOn configurations.runtimeClasspath
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
 	from files(sourceSets.main.java.classesDirectory)
@@ -62,7 +64,8 @@ task dist3DParticles (type: Jar, dependsOn: configurations.runtimeClasspath) {
 	}
 }
 
-task distHiero (type: Jar, dependsOn: configurations.runtimeClasspath) {
+tasks.register('distHiero', Jar) {
+	dependsOn configurations.runtimeClasspath
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
 	from files(sourceSets.main.java.classesDirectory)
@@ -77,7 +80,8 @@ task distHiero (type: Jar, dependsOn: configurations.runtimeClasspath) {
 	}
 }
 
-task distTexturePacker (type: Jar, dependsOn: configurations.runtimeClasspath) {
+tasks.register('distTexturePacker', Jar) {
+	dependsOn configurations.runtimeClasspath
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
 	from files(sourceSets.main.java.classesDirectory)
@@ -92,12 +96,8 @@ task distTexturePacker (type: Jar, dependsOn: configurations.runtimeClasspath) {
 	}
 }
 
-task buildRunnables (dependsOn: [
-	dist2DParticles,
-	dist3DParticles,
-	distHiero,
-	distTexturePacker
-]) {
+tasks.register('buildRunnables') {
+	dependsOn dist2DParticles, dist3DParticles, distHiero, distTexturePacker
 	doLast {
 		println "Building ye runnables"
 	}
