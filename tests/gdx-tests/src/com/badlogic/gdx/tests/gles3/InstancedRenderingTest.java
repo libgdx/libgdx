@@ -45,6 +45,9 @@ public class InstancedRenderingTest extends GdxTest {
 		if (Gdx.gl30 == null) {
 			throw new GdxRuntimeException("GLES 3.0 profile required for this test");
 		}
+
+		String ovs = ShaderProgram.prependVertexCode;
+		String ofs = ShaderProgram.prependFragmentCode;
 		ShaderProgram.prependVertexCode = "#version 300 es\n";
 		ShaderProgram.prependFragmentCode = "#version 300 es\n";
 		shader = new ShaderProgram(Gdx.files.internal("data/shaders/instanced-rendering.vert"),
@@ -52,6 +55,9 @@ public class InstancedRenderingTest extends GdxTest {
 		if (!shader.isCompiled()) {
 			throw new GdxRuntimeException("Shader compile error: " + shader.getLog());
 		}
+
+		ShaderProgram.prependVertexCode = ovs;
+		ShaderProgram.prependFragmentCode = ofs;
 
 		mesh = new Mesh(true, 6, 0, new VertexAttribute(Usage.Position, 2, "a_position"));
 

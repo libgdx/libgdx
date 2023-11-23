@@ -176,8 +176,10 @@ public abstract class OpenALMusic implements Music {
 			renderedSeconds = 0;
 		}
 		while (renderedSeconds < (position - maxSecondsPerBuffer)) {
-			if (read(tempBytes) <= 0) break;
-			renderedSeconds += maxSecondsPerBuffer;
+			int length = read(tempBytes);
+			if (length <= 0) break;
+			float currentBufferSeconds = maxSecondsPerBuffer * (float)length / (float)bufferSize;
+			renderedSeconds += currentBufferSeconds;
 		}
 		renderedSecondsQueue.add(renderedSeconds);
 		boolean filled = false;

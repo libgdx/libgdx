@@ -59,7 +59,7 @@ class NumericPanel extends ParticleValuePanel<NumericValue> {
 		}
 		valueSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				NumericPanel.this.value.setValue((Float)valueSpinner.getValue());
+				NumericPanel.this.value.setValue(((Number)valueSpinner.getValue()).floatValue());
 			}
 		});
 	}

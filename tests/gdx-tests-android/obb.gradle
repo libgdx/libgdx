@@ -1,4 +1,4 @@
-task copyAssets {
+tasks.register('copyAssets') {
 	doLast {
 		def assets = fileTree('assets')
 		copy {
@@ -11,11 +11,11 @@ task copyAssets {
 	}
 }
 
-task zipAssets(type: Zip) {
-	destinationDir = file("build/obb")
+tasks.register('zipAssets', Zip) {
+	destinationDirectory = file("build/obb")
 	entryCompression = ZipEntryCompression.STORED
 	from "build/obbassets"
-	archiveName = "main.1.com.badlogic.gdx.tests.android.obb"
+	archiveFileName = "main.1.com.badlogic.gdx.tests.android.obb"
 }
 
 def getADBPath() {
@@ -40,11 +40,11 @@ def getADBPath() {
 	adb
 }
 
-task createOBBDir(type: Exec) {
+tasks.register('createOBBDir', Exec) {
 	def adb = getADBPath()
 	commandLine "$adb", 'shell', 'mkdir', '-p', '/mnt/sdcard/Android/obb/com.badlogic.gdx.tests.android'
 }
-task uploadOBB(type: Exec) {
+tasks.register('uploadOBB', Exec) {
 	def adb = getADBPath()
 	commandLine "$adb", 'push', 'build/obb/main.1.com.badlogic.gdx.tests.android.obb', '/mnt/sdcard/Android/obb/com.badlogic.gdx.tests.android'
 }

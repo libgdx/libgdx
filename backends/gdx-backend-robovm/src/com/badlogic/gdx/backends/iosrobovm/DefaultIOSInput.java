@@ -177,10 +177,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	protected void setupPressure () {
-		if (app.getVersion() >= 9) {
-			UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
-			pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
-		}
+		UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
+		pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
 	}
 
 	// need to retain a reference so GC doesn't get right of the

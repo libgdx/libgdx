@@ -143,10 +143,10 @@ public class Container<T extends Actor> extends WidgetGroup {
 			y += (containerHeight - height) / 2;
 
 		if (round) {
-			x = Math.round(x);
-			y = Math.round(y);
-			width = Math.round(width);
-			height = Math.round(height);
+			x = (float)Math.floor(x);
+			y = (float)Math.floor(y);
+			width = (float)Math.ceil(width);
+			height = (float)Math.ceil(height);
 		}
 
 		actor.setBounds(x, y, width, height);

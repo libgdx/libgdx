@@ -37,7 +37,6 @@
   </libs>
   <frameworks>
     <framework>UIKit</framework>
-    <framework>OpenGLES</framework>
     <framework>QuartzCore</framework>
     <framework>CoreGraphics</framework>
     <framework>OpenAL</framework>

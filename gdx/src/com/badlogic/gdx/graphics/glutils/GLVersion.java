@@ -28,6 +28,7 @@ public class GLVersion {
 	private int minorVersion;
 	private int releaseVersion;
 
+	private final String versionString;
 	private final String vendorString;
 	private final String rendererString;
 
@@ -65,7 +66,7 @@ public class GLVersion {
 			vendorString = "";
 			rendererString = "";
 		}
-
+		this.versionString = versionString;
 		this.vendorString = vendorString;
 		this.rendererString = rendererString;
 	}
@@ -117,6 +118,11 @@ public class GLVersion {
 	/** @return the release version of the current GL connection. -1 if running headless */
 	public int getReleaseVersion () {
 		return releaseVersion;
+	}
+
+	/** @return The version string as reported by `glGetString(GL_VERSION)` */
+	public String getVersionString () {
+		return versionString;
 	}
 
 	/** @return the vendor string associated with the current GL connection */

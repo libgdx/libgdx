@@ -100,7 +100,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 
-	/** Substracts the other vector from this vector.
+	/** Subtracts the other vector from this vector.
 	 * @param x The x-component of the other vector
 	 * @param y The y-component of the other vector
 	 * @return This vector for chaining */
@@ -184,6 +184,13 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.x += vec.x * mulVec.x;
 		this.y += vec.y * mulVec.y;
 		return this;
+	}
+
+	/** Returns true if this vector and the vector parameter have identical components.
+	 * @param vector The other vector
+	 * @return Whether this and the other vector are equal with exact precision */
+	public boolean idt (final Vector2 vector) {
+		return x == vector.x && y == vector.y;
 	}
 
 	public static float dst (float x1, float y1, float x2, float y2) {
@@ -328,7 +335,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	/** @return the angle in degrees of this vector (point) relative to the given vector. Angles are towards the negative y-axis
 	 *         (typically clockwise) between -180 and +180
-	 * @deprecated use {@link #angleDeg(Vector2)} instead. Be ware of the changes in returned angle to counter-clockwise and the
+	 * @deprecated use {@link #angleDeg(Vector2)} instead. Beware of the changes in returned angle to counter-clockwise and the
 	 *             range. */
 	@Deprecated
 	public float angle (Vector2 reference) {
@@ -351,6 +358,14 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return angle;
 	}
 
+	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis
+	 *         (typically counter-clockwise) and in the [0, 360) range. */
+	public static float angleDeg (float x, float y) {
+		float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
+		if (angle < 0) angle += 360;
+		return angle;
+	}
+
 	/** @return the angle in radians of this vector (point) relative to the x-axis. Angles are towards the positive y-axis.
 	 *         (typically counter-clockwise) */
 	public float angleRad () {
@@ -361,6 +376,12 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	 *         (typically counter-clockwise.) */
 	public float angleRad (Vector2 reference) {
 		return (float)Math.atan2(reference.crs(this), reference.dot(this));
+	}
+
+	/** @return the angle in radians of this vector (point) relative to the x-axis. Angles are towards the positive y-axis.
+	 *         (typically counter-clockwise) */
+	public static float angleRad (float x, float y) {
+		return (float)Math.atan2(y, x);
 	}
 
 	/** Sets the angle of the vector in degrees relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
