@@ -222,6 +222,6 @@ public class Lwjgl3DebugStarter {
 		}
 
 		System.setProperty("java.awt.headless", "true");
-		Lwjgl3Application app = new Lwjgl3Application(test, config);
+		new Lwjgl3Application(test, config);
 	}
 }
