@@ -443,7 +443,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 	private Lwjgl3Window createWindow (final Lwjgl3ApplicationConfiguration config, ApplicationListener listener,
 		final long sharedContext) {
-		final Lwjgl3Window window = new Lwjgl3Window(listener, config, this);
+		final Lwjgl3Window window = new Lwjgl3Window(listener, lifecycleListeners, config, this);
 		if (sharedContext == 0) {
 			// the main window is created immediately
 			createWindow(window, config, sharedContext);
