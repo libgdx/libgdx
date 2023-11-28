@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.io.PrintStream;
 import java.nio.IntBuffer;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.LifecycleListener;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
@@ -191,14 +192,14 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.foregroundFPS = fps;
 	}
 
-	/** Sets whether to render and fire {@link LifecycleListener#pause()}/{@link LifecycleListener#resume()} events on when window
-	 * is minimized/restored. **/
+	/** Sets whether to pause the application {@link ApplicationListener#pause()} and fire
+	 * {@link LifecycleListener#pause()}/{@link LifecycleListener#resume()} events on when window is minimized/restored. **/
 	public void setPauseWhenMinimized (boolean pauseWhenMinimized) {
 		this.pauseWhenMinimized = pauseWhenMinimized;
 	}
 
-	/** Sets whether to render and fire {@link LifecycleListener#pause()}/{@link LifecycleListener#resume()} events on when window
-	 * loses/gains focus. **/
+	/** Sets whether to pause the application {@link ApplicationListener#pause()} and fire
+	 * {@link LifecycleListener#pause()}/{@link LifecycleListener#resume()} events on when window loses/gains focus. **/
 	public void setPauseWhenLostFocus (boolean pauseWhenLostFocus) {
 		this.pauseWhenLostFocus = pauseWhenLostFocus;
 	}
