@@ -3,6 +3,7 @@
 - Fixed GlyphLayout for fixed width glyph offsets at the start and end of lines.
 - Fixed scene2d.ui layout for fractional positions and sizes.
 - LWJGL3: Added pauseWhenMinimized and pauseWhenLostFocus flags to Lwjgl3ApplicationConfiguration.
+- Fixed Timer#stop, remember time spent stopped and delay tasks when started again. #7281
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
