@@ -52,6 +52,7 @@ public class Timer {
 	}
 
 	final Array<Task> tasks = new Array(false, 8);
+	long stopTimeMillis;
 
 	public Timer () {
 		start();
@@ -94,20 +95,24 @@ public class Timer {
 		return task;
 	}
 
-	/** Stops the timer, tasks will not be executed and time that passes will not be applied to the task delays. */
+	/** Stops the timer if it was started. Tasks will not be executed while stopped. */
 	public void stop () {
 		synchronized (threadLock) {
-			thread().instances.removeValue(this, true);
+			if (thread().instances.removeValue(this, true)) stopTimeMillis = System.nanoTime() / 1000000;
 		}
 	}
 
-	/** Starts the timer if it was stopped. */
+	/** Starts the timer if it was stopped. Tasks are delayed by the time passed while stopped. */
 	public void start () {
 		synchronized (threadLock) {
 			TimerThread thread = thread();
 			Array<Timer> instances = thread.instances;
 			if (instances.contains(this, true)) return;
 			instances.add(this);
+			if (stopTimeMillis > 0) {
+				delay(System.nanoTime() / 1000000 - stopTimeMillis);
+				stopTimeMillis = 0;
+			}
 			threadLock.notifyAll();
 		}
 	}

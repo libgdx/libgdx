@@ -17,7 +17,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
       - name: Generate MobiVM MetalANGLE backend
-        run: ./gradlew :backends:gdx-backend-robovm-metalangle:generate :backends:gdx-backend-robovm-metalangle:spotlessApply
+        run: |
+          ./gradlew :backends:gdx-backend-robovm-metalangle:generate 
+          ./gradlew :backends:gdx-backend-robovm-metalangle:spotlessApply
       - name: Commit generation changes
         run: |
           git config --local user.email "action@github.com"
