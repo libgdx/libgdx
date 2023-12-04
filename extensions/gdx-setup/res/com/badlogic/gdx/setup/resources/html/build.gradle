@@ -85,7 +85,6 @@ tasks.register('addSource') {
 tasks.compileGwt.dependsOn(addSource)
 tasks.draftCompileGwt.dependsOn(addSource)
 tasks.checkGwt.dependsOn(addSource)
-checkGwt.war = file("war")
 
 sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
