@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
@@ -48,6 +49,22 @@ public class Lwjgl3DebugStarter {
 
 			@Override
 			public void create () {
+				Gdx.app.addLifecycleListener(new LifecycleListener() {
+					@Override
+					public void pause () {
+						Gdx.app.log("LifecycleListener", "Application pause()");
+					}
+
+					@Override
+					public void resume () {
+						Gdx.app.log("LifecycleListener", "Application resume()");
+					}
+
+					@Override
+					public void dispose () {
+						Gdx.app.log("LifecycleListener", "Application dispose()");
+					}
+				});
 				BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_4BYTE_ABGR);
 				texture = new Texture("data/badlogic.jpg");
 				batch = new SpriteBatch();
