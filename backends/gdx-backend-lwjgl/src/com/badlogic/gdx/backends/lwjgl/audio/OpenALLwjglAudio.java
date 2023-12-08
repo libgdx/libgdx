@@ -135,6 +135,16 @@ public class OpenALLwjglAudio implements LwjglAudio {
 		}
 	}
 
+	@Override
+	public boolean switchOutputDevice (String deviceIdentifier) {
+		return true;
+	}
+
+	@Override
+	public String[] getAvailableOutputDevices () {
+		return new String[0];
+	}
+
 	int obtainSource (boolean isMusic) {
 		if (noDevice) return 0;
 		for (int i = 0, n = idleSources.size; i < n; i++) {

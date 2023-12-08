@@ -207,6 +207,7 @@ public class Slider extends ProgressBar {
 	/** Makes this progress bar snap to the specified values, if the knob is within the threshold.
 	 * @param values May be null to disable snapping.
 	 * @deprecated Use {@link #setSnapToValues(float, float...)}. */
+	@Deprecated
 	public void setSnapToValues (@Null float[] values, float threshold) {
 		setSnapToValues(threshold, values);
 	}

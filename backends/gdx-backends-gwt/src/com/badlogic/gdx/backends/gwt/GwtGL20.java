@@ -99,7 +99,6 @@ public class GwtGL20 implements GL20 {
 	Int32Array intBuffer = TypedArrays.createInt32Array(2000 * 6);
 	Int16Array shortBuffer = TypedArrays.createInt16Array(2000 * 6);
 	Int8Array byteBuffer = TypedArrays.createInt8Array(2000 * 6);
-	float[] floatArray = new float[16000];
 
 	public final WebGLRenderingContext gl;
 
@@ -168,7 +167,7 @@ public class GwtGL20 implements GL20 {
 		}
 	}
 
-	private void ensureCapacity (IntBuffer buffer) {
+	protected void ensureCapacity (IntBuffer buffer) {
 		if (buffer.remaining() > intBuffer.length()) {
 			intBuffer = TypedArrays.createInt32Array(buffer.remaining());
 		}
@@ -180,7 +179,7 @@ public class GwtGL20 implements GL20 {
 		}
 	}
 
-	private WebGLUniformLocation getUniformLocation (int location) {
+	protected WebGLUniformLocation getUniformLocation (int location) {
 		return uniforms.get(currProgram).get(location);
 	}
 
@@ -639,8 +638,25 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glGetFramebufferAttachmentParameteriv (int target, int attachment, int pname, IntBuffer params) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		switch (pname) {
+		case GL20.GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE:
+		case GL20.GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL:
+		case GL20.GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE:
+			params.put(0, gl.getFramebufferAttachmentParameteri(target, attachment, pname));
+			params.flip();
+			break;
+		case GL20.GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME:
+			WebGLTexture tex = gl.getParametero(pname);
+			if (tex == null) {
+				params.put(0);
+			} else {
+				params.put(textures.getKey(tex));
+			}
+			params.flip();
+			return;
+		default:
+			throw new GdxRuntimeException("glGetFramebufferAttachmentParameteriv Invalid enum for WebGL backend.");
+		}
 	}
 
 	@Override

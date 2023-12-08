@@ -60,12 +60,20 @@ public interface IndexData extends Disposable {
 
 	/**
 	 * <p>
-	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
-	 * If you need immediate uploading use {@link #setIndices(short[], int, int)}.
+	 * Returns the underlying ShortBuffer. If you modify the buffer contents they will be uploaded on the next call to
+	 * {@link #bind()}. If you need immediate uploading use {@link #setIndices(short[], int, int)}.
 	 * </p>
 	 * 
-	 * @return the underlying short buffer. */
+	 * @return the underlying short buffer.
+	 * @deprecated use {@link #getBuffer(boolean)} instead */
+	@Deprecated
 	public ShortBuffer getBuffer ();
+
+	/** Returns the underlying ShortBuffer for reading or writing.
+	 * @param forWriting when true, the underlying buffer will be uploaded on the next call to {@link #bind()}. If you need
+	 *           immediate uploading use {@link #setIndices(short[], int, int)}.
+	 * @return the underlying short buffer. */
+	public ShortBuffer getBuffer (boolean forWriting);
 
 	/** Binds this IndexBufferObject for rendering with glDrawElements. */
 	public void bind ();

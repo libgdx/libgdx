@@ -150,6 +150,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthStencilPackedBufferHandle);
 			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, bufferBuilder.packedStencilDepthRenderBufferSpec.internalFormat, width,
 				height);
+			hasDepthStencilPackedBuffer = true;
 		}
 
 		isMRT = bufferBuilder.textureAttachmentSpecs.size > 1;
@@ -270,7 +271,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		boolean runningGL30 = Gdx.graphics.isGL30Available();
 
 		if (!runningGL30) {
-			if (bufferBuilder.hasPackedStencilDepthRenderBuffer) {
+			final boolean supportsPackedDepthStencil = Gdx.graphics.supportsExtension("GL_OES_packed_depth_stencil")
+				|| Gdx.graphics.supportsExtension("GL_EXT_packed_depth_stencil");
+
+			if (bufferBuilder.hasPackedStencilDepthRenderBuffer && !supportsPackedDepthStencil) {
 				throw new GdxRuntimeException("Packed Stencil/Render render buffers are not available on GLES 2.0");
 			}
 			if (bufferBuilder.textureAttachmentSpecs.size > 1) {
