@@ -39,7 +39,7 @@ jar {
 
 dependencies {
 	testImplementation libraries.junit
-	api "com.badlogicgames.gdx:gdx-jnigen-loader:2.5.0"
+	api "com.badlogicgames.gdx:gdx-jnigen-loader:2.5.1"
 }
 
 test {
