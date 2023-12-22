@@ -263,6 +263,10 @@ public class NetJavaImpl {
 		}
 	}
 
+	public boolean isHttpRequestPending (HttpRequest httpRequest) {
+		return getFromListeners(httpRequest) != null;
+	}
+
 	private void cancelTask (HttpRequest httpRequest) {
 		Future<?> task = tasks.get(httpRequest);
 
