@@ -68,12 +68,7 @@ public class ParticleEffect implements Disposable {
 	 * @param resetScaling Whether to restore the original size and motion parameters if they were scaled. Repeated scaling and
 	 *           resetting may introduce error. */
 	public void reset (boolean resetScaling) {
-		for (int i = 0, n = emitters.size; i < n; i++)
-			emitters.get(i).reset();
-		if (resetScaling && (xSizeScale != 1f || ySizeScale != 1f || motionScale != 1f)) {
-			scaleEffect(1f / xSizeScale, 1f / ySizeScale, 1f / motionScale);
-			xSizeScale = ySizeScale = motionScale = 1f;
-		}
+		reset(resetScaling, true);
 	}
 
 	/** Resets the effect so it can be started again like a new effect.
