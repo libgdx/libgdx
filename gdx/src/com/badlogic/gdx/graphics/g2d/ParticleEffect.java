@@ -61,7 +61,7 @@ public class ParticleEffect implements Disposable {
 	/** Resets the effect so it can be started again like a new effect. Any changes to scale are reverted. See
 	 * {@link #reset(boolean)}. */
 	public void reset () {
-		reset(true);
+		reset(true, true);
 	}
 
 	/** Resets the effect so it can be started again like a new effect.
