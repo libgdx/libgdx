@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
 
@@ -34,7 +33,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,38 +113,12 @@ public class DefaultAndroidAudio implements AndroidAudio {
 		if (soundPool == null) {
 			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
 		}
-		AndroidFileHandle aHandle = (AndroidFileHandle)file;
 
-		MediaPlayer mediaPlayer = createMediaPlayer();
-
-		if (aHandle.type() == FileType.Internal) {
-			try {
-				AssetFileDescriptor descriptor = aHandle.getAssetFileDescriptor();
-				mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
-				descriptor.close();
-				mediaPlayer.prepare();
-				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
-				synchronized (musics) {
-					musics.add(music);
-				}
-				return music;
-			} catch (Exception ex) {
-				throw new GdxRuntimeException(
-					"Error loading audio file: " + file + "\nNote: Internal audio files must be placed in the assets directory.", ex);
-			}
-		} else {
-			try {
-				mediaPlayer.setDataSource(aHandle.file().getPath());
-				mediaPlayer.prepare();
-				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
-				synchronized (musics) {
-					musics.add(music);
-				}
-				return music;
-			} catch (Exception ex) {
-				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
-			}
+		AndroidMusic music = new AndroidMusic(this, file);
+		synchronized (musics) {
+			musics.add(music);
 		}
+		return music;
 
 	}
 
@@ -162,30 +134,22 @@ public class DefaultAndroidAudio implements AndroidAudio {
 
 	/** Creates a new Music instance from the provided FileDescriptor. It is the caller's responsibility to close the file
 	 * descriptor. It is safe to do so as soon as this call returns.
-	 * 
+	 *
 	 * @param fd the FileDescriptor from which to create the Music
-	 * 
+	 *
 	 * @see Audio#newMusic(FileHandle) */
-	public Music newMusic (FileDescriptor fd) {
-		if (soundPool == null) {
-			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
-		}
-
-		MediaPlayer mediaPlayer = createMediaPlayer();
-
-		try {
-			mediaPlayer.setDataSource(fd);
-			mediaPlayer.prepare();
-
-			AndroidMusic music = new AndroidMusic(this, mediaPlayer);
-			synchronized (musics) {
-				musics.add(music);
-			}
-			return music;
-		} catch (Exception ex) {
-			throw new GdxRuntimeException("Error loading audio from FileDescriptor", ex);
-		}
-	}
+	// todo
+	/*
+	 * public Music newMusic (FileDescriptor fd) { if (soundPool == null) { throw new
+	 * GdxRuntimeException("Android audio is not enabled by the application config."); }
+	 * 
+	 * MediaPlayer mediaPlayer = createMediaPlayer(); MediaPlayer mediaPlayer2 = createMediaPlayer();
+	 * 
+	 * try { mediaPlayer.setDataSource(fd); mediaPlayer2.setDataSource(fd); mediaPlayer.prepare(); mediaPlayer2.prepare();
+	 * 
+	 * AndroidMusic music = new AndroidMusic(this, mediaPlayer, mediaPlayer2); synchronized (musics) { musics.add(music); } return
+	 * music; } catch (Exception ex) { throw new GdxRuntimeException("Error loading audio from FileDescriptor", ex); } }
+	 */
 
 	/** {@inheritDoc} */
 	@Override
@@ -246,14 +210,4 @@ public class DefaultAndroidAudio implements AndroidAudio {
 		}
 	}
 
-	protected MediaPlayer createMediaPlayer () {
-		MediaPlayer mediaPlayer = new MediaPlayer();
-		if (Build.VERSION.SDK_INT <= 21) {
-			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		} else {
-			mediaPlayer.setAudioAttributes(new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-				.setUsage(AudioAttributes.USAGE_GAME).build());
-		}
-		return mediaPlayer;
-	}
 }
