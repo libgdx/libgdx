@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
@@ -164,7 +163,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		createWakeLock(config.useWakelock);
 		useImmersiveMode(this.useImmersiveMode);
-		if (this.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT) {
+		if (this.useImmersiveMode) {
 			AndroidVisibilityListener vlistener = new AndroidVisibilityListener();
 			vlistener.createListener(this);
 		}
@@ -204,7 +203,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@TargetApi(19)
 	@Override
 	public void useImmersiveMode (boolean use) {
-		if (!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
+		if (!use) return;
 
 		View view = getWindow().getDecorView();
 		int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
