@@ -34,7 +34,6 @@ public class OALIOSAudio implements IOSAudio {
 
 	public OALIOSAudio (IOSApplicationConfiguration config) {
 		this.config = config;
-		if (!config.useAudio) return;
 		OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
 		if (audio != null) {
 			audio.setAllowIpod(config.allowIpod);
