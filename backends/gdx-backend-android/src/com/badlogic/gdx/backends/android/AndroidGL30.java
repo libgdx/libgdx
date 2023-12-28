@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.annotation.TargetApi;
 import android.opengl.GLES30;
 
 import com.badlogic.gdx.graphics.GL30;

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.android;
 
-import android.annotation.TargetApi;
 import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
