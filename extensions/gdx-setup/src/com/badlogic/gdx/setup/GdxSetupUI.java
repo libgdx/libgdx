@@ -186,6 +186,10 @@ public class GdxSetupUI extends JFrame {
 			modules.remove(ProjectType.HTML);
 		}
 
+		if (modules.contains(ProjectType.IOS)) {
+			JOptionPane.showMessageDialog(this, "WARNING. iOS has limited support to Java 8 languages features and APIs.");
+		}
+
 		if (modules.contains(ProjectType.ANDROID)) {
 			if (!GdxSetup.isSdkUpToDate(sdkLocation)) {
 				File sdkLocationFile = new File(sdkLocation);
