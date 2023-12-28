@@ -97,7 +97,6 @@ public class GLSurfaceView20 extends GLSurfaceView {
 				return super.deleteSurroundingText(beforeLength, afterLength);
 			}
 
-			@TargetApi(16)
 			private void sendDownUpKeyEventForBackwardCompatibility (final int code) {
 				final long eventTime = SystemClock.uptimeMillis();
 				super.sendKeyEvent(new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, 0,

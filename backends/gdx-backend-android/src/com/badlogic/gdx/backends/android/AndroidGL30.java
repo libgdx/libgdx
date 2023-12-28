@@ -22,7 +22,6 @@ import android.opengl.GLES30;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-@TargetApi(18)
 public class AndroidGL30 extends AndroidGL20 implements GL30 {
 	@Override
 	public void glReadBuffer (int mode) {

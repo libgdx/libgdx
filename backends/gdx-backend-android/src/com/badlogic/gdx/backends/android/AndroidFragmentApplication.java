@@ -85,7 +85,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		}
 	}
 
-	@TargetApi(19)
 	@Override
 	public void useImmersiveMode (boolean use) {
 		if (!use) return;

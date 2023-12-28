@@ -200,7 +200,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 	}
 
-	@TargetApi(19)
 	@Override
 	public void useImmersiveMode (boolean use) {
 		if (!use) return;

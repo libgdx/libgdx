@@ -24,7 +24,6 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidDaydream;
 import com.badlogic.gdx.tests.MeshShaderTest;
 
-@TargetApi(17)
 public class Daydream extends AndroidDaydream {
 	@Override
 	public void onAttachedToWindow () {
