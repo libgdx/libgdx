@@ -229,8 +229,8 @@ public class NetJavaImpl {
 							if (listener != null) {
 								listener.handleHttpResponse(clientResponse);
 							}
-							removeFromConnectionsAndListeners(httpRequest);
 						} finally {
+							removeFromConnectionsAndListeners(httpRequest);
 							connection.disconnect();
 						}
 					} catch (final Exception e) {
