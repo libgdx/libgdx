@@ -97,7 +97,7 @@ public class DefaultGwtAudio implements GwtAudio {
 			.enumerateDevices()
 			.then(function(devices) {
 				var dev = devices.filter(function(device) {
-					return device.deviceId && device.kind === 'audiooutput';
+					return device.deviceId && device.kind === 'audiooutput' && device.deviceId !== 'default';
 				})
 					.map(function(device) {
 						return device.deviceId;
