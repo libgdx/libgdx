@@ -24,12 +24,13 @@ import com.badlogic.gdx.backends.gwt.webaudio.WebAudioAPIManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.google.gwt.user.client.Timer;
 
 public class DefaultGwtAudio implements GwtAudio {
 	private WebAudioAPIManager webAudioAPIManager = null;
 
-	private String[] availableOutputDevices = new String[] {};
+	private ObjectMap<String, String> outputDeviceLabelsIds = new ObjectMap<>();
 
 	public DefaultGwtAudio () {
 		webAudioAPIManager = new WebAudioAPIManager();
@@ -40,8 +41,11 @@ public class DefaultGwtAudio implements GwtAudio {
 			public void run () {
 				fetchAvailableOutputDevices(new DeviceListener() {
 					@Override
-					public void onDevicesChanged (String[] devices) {
-						availableOutputDevices = devices;
+					public void onDevicesChanged (String[] ids, String[] labels) {
+						outputDeviceLabelsIds.clear();
+						for (int i = 0; i < ids.length; i++) {
+							outputDeviceLabelsIds.put(labels[i], ids[i]);
+						}
 					}
 				});
 			}
@@ -70,12 +74,15 @@ public class DefaultGwtAudio implements GwtAudio {
 	}
 
 	@Override
-	public boolean switchOutputDevice (String deviceIdentifier) {
+	public boolean switchOutputDevice (String label) {
 		String[] features = GwtFeaturePolicy.features();
 		if (features == null || !Array.with(features).contains("speaker-selection", false)
 			|| GwtFeaturePolicy.allowsFeature("speaker-selection")) {
-			if (deviceIdentifier == null || deviceIdentifier.equals("default")) {
+			String deviceIdentifier;
+			if (label == null) {
 				deviceIdentifier = ""; // Empty = default
+			} else {
+				deviceIdentifier = outputDeviceLabelsIds.get(label);
 			}
 			webAudioAPIManager.setSinkId(deviceIdentifier);
 			return true;
@@ -85,7 +92,7 @@ public class DefaultGwtAudio implements GwtAudio {
 
 	@Override
 	public String[] getAvailableOutputDevices () {
-		return availableOutputDevices;
+		return outputDeviceLabelsIds.keys().toArray().toArray(String.class);
 	}
 
 	private native void getUserMedia () /*-{
@@ -99,14 +106,17 @@ public class DefaultGwtAudio implements GwtAudio {
 				var dev = devices.filter(function(device) {
 					return device.deviceId && device.kind === 'audiooutput' && device.deviceId !== 'default';
 				})
-					.map(function(device) {
-						return device.deviceId;
-					});
-                listener.@com.badlogic.gdx.backends.gwt.DefaultGwtAudio.DeviceListener::onDevicesChanged([Ljava/lang/String;)(@com.badlogic.gdx.backends.gwt.GwtUtils::toStringArray(Lcom/google/gwt/core/client/JsArrayString;)(dev));
+				var ids = @com.badlogic.gdx.backends.gwt.GwtUtils::toStringArray(Lcom/google/gwt/core/client/JsArrayString;)(dev.map(function(device) {
+					return device.deviceId;
+				}));
+				var labels = @com.badlogic.gdx.backends.gwt.GwtUtils::toStringArray(Lcom/google/gwt/core/client/JsArrayString;)(dev.map(function(device) {
+					return device.label;
+				}));
+				listener.@com.badlogic.gdx.backends.gwt.DefaultGwtAudio.DeviceListener::onDevicesChanged([Ljava/lang/String;[Ljava/lang/String;)(ids, labels);
 			});
 	}-*/;
 
 	private interface DeviceListener {
-		void onDevicesChanged (String[] devices);
+		void onDevicesChanged (String[] ids, String[] labels);
 	}
 }
