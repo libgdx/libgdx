@@ -175,7 +175,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		// detect an already connected bluetooth keyboardAvailable
 		if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS) input.setKeyboardAvailable(true);
 
-		tryRenderUnderCutout(this.renderUnderCutout);
+		setLayoutInDisplayCutoutMode(this.renderUnderCutout);
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -191,12 +191,11 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 	}
 
-	@TargetApi(28)
-	private void tryRenderUnderCutout(boolean render) {
+	@TargetApi(Build.VERSION_CODES.P)
+	private void setLayoutInDisplayCutoutMode(boolean render) {
 		if(render && getVersion() >= Build.VERSION_CODES.P) {
 			WindowManager.LayoutParams lp = getWindow().getAttributes();
 			lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-			getWindow().setAttributes(lp);
 		}
 	}
 

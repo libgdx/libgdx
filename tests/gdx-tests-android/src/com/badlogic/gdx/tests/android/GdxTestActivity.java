@@ -31,13 +31,6 @@ public class GdxTestActivity extends AndroidApplication {
 	public void onCreate (Bundle bundle) {
 		super.onCreate(bundle);
 
-		// use the full display, even if we have a device with a notch
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-			Window applicationWindow = getApplicationWindow();
-			WindowManager.LayoutParams attrib = applicationWindow.getAttributes();
-			attrib.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-		}
-
 		// obtain the test info
 		Bundle extras = getIntent().getExtras();
 		String testName = (String)extras.get("test");
@@ -48,6 +41,7 @@ public class GdxTestActivity extends AndroidApplication {
 		config.useImmersiveMode = true;
 		config.useRotationVectorSensor = true;
 		config.useGyroscope = true;
+		config.renderUnderCutout = true;
 		initialize(test, config);
 	}
 }
