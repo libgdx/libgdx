@@ -113,5 +113,5 @@ tasks.register('buildRunnables') {
 }
 
 tasks.named('processResources').configure {
-    dependsOn ':fetchNatives'
+	dependsOn ':fetchNatives'
 }
