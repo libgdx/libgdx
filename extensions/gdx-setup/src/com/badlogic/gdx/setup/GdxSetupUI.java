@@ -86,7 +86,7 @@ import com.badlogic.gdx.setup.DependencyBank.ProjectDependency;
 import com.badlogic.gdx.setup.DependencyBank.ProjectType;
 import com.badlogic.gdx.setup.Executor.CharCallback;
 
-//@SuppressWarnings("serial")
+@SuppressWarnings("serial")
 public class GdxSetupUI extends JFrame {
 
 	// DependencyBank dependencyBank;
