@@ -61,6 +61,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	private int wasFocusChanged = -1;
 	private boolean isWaitingForAudio = false;
 
+	protected boolean renderUnderCutout = false;
+
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
 	 * 
@@ -124,6 +126,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
 		this.clipboard = new AndroidClipboard(this);
+		this.renderUnderCutout = config.renderUnderCutout;
 
 		// Add a specialized audio lifecycle listener
 		addLifecycleListener(new LifecycleListener() {
@@ -171,6 +174,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		// detect an already connected bluetooth keyboardAvailable
 		if (getResources().getConfiguration().keyboard != Configuration.KEYBOARD_NOKEYS) input.setKeyboardAvailable(true);
+
+		tryRenderUnderCutout(this.renderUnderCutout);
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -183,6 +188,15 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected void createWakeLock (boolean use) {
 		if (use) {
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
+	}
+
+	@TargetApi(28)
+	private void tryRenderUnderCutout(boolean render) {
+		if(render && getVersion() >= Build.VERSION_CODES.P) {
+			WindowManager.LayoutParams lp = getWindow().getAttributes();
+			lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+			getWindow().setAttributes(lp);
 		}
 	}
 
