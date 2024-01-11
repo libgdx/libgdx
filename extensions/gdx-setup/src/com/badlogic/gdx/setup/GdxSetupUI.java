@@ -86,7 +86,7 @@ import com.badlogic.gdx.setup.DependencyBank.ProjectDependency;
 import com.badlogic.gdx.setup.DependencyBank.ProjectType;
 import com.badlogic.gdx.setup.Executor.CharCallback;
 
-@SuppressWarnings("serial")
+//@SuppressWarnings("serial")
 public class GdxSetupUI extends JFrame {
 
 	// DependencyBank dependencyBank;
@@ -144,7 +144,8 @@ public class GdxSetupUI extends JFrame {
 		boolean matches = matcher.matches();
 
 		if (!matches) {
-			JOptionPane.showMessageDialog(this, "Invalid package name. Please check the following: \n Make sure there are 2 separate segments in the package name (1 or more dots). \n Ensure each segment starts with a letter. \n Ensure all characters are alphanumeric, or an underscore.");
+			JOptionPane.showMessageDialog(this,
+				"Invalid package name. Please check the following: \n Make sure there are 2 separate segments in the package name (1 or more dots). \n Ensure each segment starts with a letter. \n Ensure all characters are alphanumeric, or an underscore.");
 			return;
 		}
 
