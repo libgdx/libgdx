@@ -14,7 +14,7 @@ gwt {
     }
 }
 
-import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
+import org.docstr.gradle.plugins.gwt.GwtSuperDev
 import org.akhikhl.gretty.AppBeforeIntegrationTestTask
 
 gretty.httpPort = 8080
@@ -85,9 +85,8 @@ tasks.register('addSource') {
 tasks.compileGwt.dependsOn(addSource)
 tasks.draftCompileGwt.dependsOn(addSource)
 tasks.checkGwt.dependsOn(addSource)
-checkGwt.war = file("war")
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project.name = appName + "-html"

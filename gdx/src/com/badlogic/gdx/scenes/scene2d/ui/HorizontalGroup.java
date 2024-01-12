@@ -124,8 +124,8 @@ public class HorizontalGroup extends WidgetGroup {
 		}
 		prefHeight += padTop + padBottom;
 		if (round) {
-			prefWidth = Math.round(prefWidth);
-			prefHeight = Math.round(prefHeight);
+			prefWidth = (float)Math.ceil(prefWidth);
+			prefHeight = (float)Math.ceil(prefHeight);
 		}
 	}
 
@@ -193,7 +193,7 @@ public class HorizontalGroup extends WidgetGroup {
 				y += (rowHeight - height) / 2;
 
 			if (round)
-				child.setBounds(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
+				child.setBounds((float)Math.floor(x), (float)Math.floor(y), (float)Math.ceil(width), (float)Math.ceil(height));
 			else
 				child.setBounds(x, y, width, height);
 			x += width + space;
@@ -283,7 +283,7 @@ public class HorizontalGroup extends WidgetGroup {
 				y += (rowHeight - height) / 2;
 
 			if (round)
-				child.setBounds(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
+				child.setBounds((float)Math.floor(x), (float)Math.floor(y), (float)Math.ceil(width), (float)Math.ceil(height));
 			else
 				child.setBounds(x, y, width, height);
 			x += width + space;
