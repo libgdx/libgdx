@@ -112,6 +112,6 @@ tasks.register('buildRunnables') {
 	}
 }
 
-tasks.named('processResources').configure {
-    dependsOn ':fetchNatives'
+processResources.configure {
+	mustRunAfter ':fetchNatives'
 }

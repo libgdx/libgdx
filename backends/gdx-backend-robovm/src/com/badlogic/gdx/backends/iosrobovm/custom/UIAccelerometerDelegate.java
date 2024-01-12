@@ -26,7 +26,7 @@ import org.robovm.apple.foundation.*;
 /*</javadoc>*/
 /*<annotations>*//*</annotations>*/
 /*<visibility>*/public/* </visibility> */ interface /* <name> */ UIAccelerometerDelegate/* </name> */
-	/* <implements> */extends NSObjectProtocol/* </implements> */ {
+	/* <implements> */ extends NSObjectProtocol/* </implements> */ {
 
 	/* <ptr> */
 	/* </ptr> */

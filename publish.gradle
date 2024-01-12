@@ -112,8 +112,7 @@ configure([
 					maven {
 						url = version.endsWith('SNAPSHOT') ? getSnapshotRepositoryUrl() : getReleaseRepositoryUrl()
 
-						if (getRepositoryUsername() || getRepositoryPassword())
-						{
+						if (getRepositoryUsername() || getRepositoryPassword()) {
 							credentials {
 								username = getRepositoryUsername()
 								password = getRepositoryPassword()
