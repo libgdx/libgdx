@@ -192,8 +192,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	}
 
 	@TargetApi(Build.VERSION_CODES.P)
-	private void setLayoutInDisplayCutoutMode(boolean render) {
-		if(render && getVersion() >= Build.VERSION_CODES.P) {
+	private void setLayoutInDisplayCutoutMode (boolean render) {
+		if (render && getVersion() >= Build.VERSION_CODES.P) {
 			WindowManager.LayoutParams lp = getWindow().getAttributes();
 			lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
 		}
