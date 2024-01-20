@@ -145,7 +145,7 @@ public class GdxSetupUI extends JFrame {
 
 		if (!matches) {
 			JOptionPane.showMessageDialog(this,
-				"Invalid package name. Please check the following: \n Make sure there are at least 2 separate segments in the package name (1 or more dots). \n Ensure that the first segment does NOT start with a number or underscore. \n Ensure all characters are lowercase a-z, numbers, or an underscore.");
+				"Invalid package name. Please check the following:\nMake sure there are at least 2 separate segments in the package name (1 or more dots).\nEnsure that the first segment does NOT start with a number or underscore.\nEnsure all characters are lowercase a-z, numbers, or an underscore.");
 			return;
 		}
 
