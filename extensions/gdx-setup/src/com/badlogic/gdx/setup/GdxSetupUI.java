@@ -144,7 +144,8 @@ public class GdxSetupUI extends JFrame {
 		boolean matches = matcher.matches();
 
 		if (!matches) {
-			JOptionPane.showMessageDialog(this, "Invalid package name");
+			JOptionPane.showMessageDialog(this,
+				"Invalid package name. Please check the following:\nMake sure there are at least 2 separate segments in the package name (1 or more dots).\nEnsure that the first segment does NOT start with a number or underscore.\nEnsure all characters are lowercase a-z, numbers, or an underscore.");
 			return;
 		}
 
