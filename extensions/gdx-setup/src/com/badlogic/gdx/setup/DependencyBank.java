@@ -119,7 +119,7 @@ public class DependencyBank {
 						new String[] {"com.badlogicgames.gdx:gdx-tools:$gdxVersion"}, new String[] {}, new String[] {}, new String[] {},
 						new String[] {}, new String[] {},
 
-						"Collection of tools, including 2D/3D particle editors, texture packers, and file processors"), CONTROLLERS(
+						"Collection of tools, including 3D particle editor, texture packers, and file processors"), CONTROLLERS(
 							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"},
 							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},
 							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},
