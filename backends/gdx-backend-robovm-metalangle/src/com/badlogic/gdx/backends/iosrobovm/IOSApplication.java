@@ -157,7 +157,10 @@ public class IOSApplication implements Application {
 	}
 
 	protected IOSAudio createAudio (IOSApplicationConfiguration config) {
-		return new OALIOSAudio(config);
+		if (config.useAudio)
+			return new OALIOSAudio(config);
+		else
+			return new DisabledIOSAudio();
 	}
 
 	protected IOSGraphics createGraphics () {

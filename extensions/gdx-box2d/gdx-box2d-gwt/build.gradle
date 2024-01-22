@@ -37,20 +37,34 @@ eclipse {
 			withXml {
 				def node = it.asNode()
 
-				//Exclude emu folder from main classpath entry
+				// Collect nodes to modify
+				def nodesToModify = []
 				node.children().each { c ->
-					if(c.attribute('path').equals('src')) {
-						c.attributes().put('excluding', 'com/badlogic/gdx/physics/box2d/gwt/emu/')
+					if (c.attribute('path').equals('src')) {
+						nodesToModify << c
 					}
 				}
 
-				//Add second classpath entry for emu folder if not exists
+				// Modify the collected nodes
+				nodesToModify.each { c ->
+					def newAttrs = c.attributes().collectEntries { [(it.key): it.value] }
+					newAttrs.put('excluding', 'com/badlogic/gdx/physics/box2d/gwt/emu/')
+
+					def newNode = new Node(c.parent(), c.name(), newAttrs)
+					c.children().each { child ->
+						newNode.append(child)
+					}
+					c.replaceNode(newNode)
+				}
+
+				// Add second classpath entry for emu folder if not exists
 				def emuNodes = node.children().findAll { it.name() == 'classpathentry' && it.'@path'.equals('src/com/badlogic/gdx/physics/box2d/gwt/emu/')}
 				if (emuNodes.size() == 0) {
-					def emuNode = node.appendNode('classpathentry')
-					emuNode.attributes().put('kind', 'src')
-					emuNode.attributes().put('path', 'src/com/badlogic/gdx/physics/box2d/gwt/emu/')
-					emuNode.attributes().put('excluding', 'java/lang/System.java')
+					node.appendNode('classpathentry', [
+						kind: 'src',
+						path: 'src/com/badlogic/gdx/physics/box2d/gwt/emu/',
+						excluding: 'java/lang/System.java'
+					])
 				}
 			}
 		}
