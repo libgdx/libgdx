@@ -210,10 +210,10 @@ jobs:
 
       - name: Download NDK
         run: |
-          wget https://dl.google.com/android/repository/android-ndk-r23c-linux.zip -O android-ndk.zip
-          echo "e5053c126a47e84726d9f7173a04686a71f9a67a  android-ndk.zip" | sha256sum --check
+          wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -O android-ndk.zip
+          echo "53af80a1cce9144025b81c78c8cd556bff42bd0e  android-ndk.zip" | sha256sum --check
           unzip android-ndk.zip
-          echo "NDK_HOME=$(pwd)/android-ndk-r23c" >> $GITHUB_ENV
+          echo "NDK_HOME=$(pwd)/android-ndk-r25c" >> $GITHUB_ENV
 
       - name: Build Android natives
         run: |
