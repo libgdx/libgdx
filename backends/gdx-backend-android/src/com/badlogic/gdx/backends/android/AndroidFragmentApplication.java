@@ -1,12 +1,10 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
@@ -86,10 +84,9 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		}
 	}
 
-	@TargetApi(19)
 	@Override
 	public void useImmersiveMode (boolean use) {
-		if (!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
+		if (!use) return;
 
 		View view = this.graphics.getView();
 
@@ -168,7 +165,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		Gdx.net = this.getNet();
 		createWakeLock(config.useWakelock);
 		useImmersiveMode(config.useImmersiveMode);
-		if (config.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT) {
+		if (config.useImmersiveMode) {
 			AndroidVisibilityListener vlistener = new AndroidVisibilityListener();
 			vlistener.createListener(this);
 		}
