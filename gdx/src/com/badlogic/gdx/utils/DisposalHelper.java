@@ -21,11 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Util class for disposing resources.
- * It's useful for disposing multiple resources.
- * Null-safe: provided disposable resources could be null.
- * There is a guarantee that all resources are disposed of, even when exception(s) occurs.
- *
+ * Util class for disposing resources. It's useful for disposing multiple resources. Null-safe: provided disposable resources
+ * could be null. There is a guarantee that all resources are disposed of, even when exception(s) occurs.
  * @author Anton-Samarkyi
  */
 public class DisposalHelper implements Disposable {
@@ -40,7 +37,6 @@ public class DisposalHelper implements Disposable {
 
 	/**
 	 * Constructs a DisposalHelper with disposableItems set to dispose.
-	 *
 	 * @param disposableItems items to dispose
 	 */
 	public DisposalHelper (Disposable... disposableItems) {
@@ -49,7 +45,6 @@ public class DisposalHelper implements Disposable {
 
 	/**
 	 * Constructs a DisposalHelper with disposableItems set to dispose.
-	 *
 	 * @param disposableItems items to dispose
 	 */
 	public DisposalHelper (Iterable<Disposable> disposableItems) {
@@ -58,7 +53,6 @@ public class DisposalHelper implements Disposable {
 
 	/**
 	 * Adds item to dispose.
-	 *
 	 * @param disposableItem item to dispose
 	 * @return this helper
 	 */
@@ -69,7 +63,6 @@ public class DisposalHelper implements Disposable {
 
 	/**
 	 * Adds items to dispose.
-	 *
 	 * @param disposableItems items to dispose
 	 * @return this helper
 	 */
@@ -80,7 +73,6 @@ public class DisposalHelper implements Disposable {
 
 	/**
 	 * Adds items to dispose.
-	 *
 	 * @param disposableItems items to dispose
 	 * @return this helper
 	 */
@@ -108,7 +100,7 @@ public class DisposalHelper implements Disposable {
 			if (exceptions.size() == 1) {
 				Exception exception = exceptions.get(0);
 				if (exception instanceof RuntimeException) {
-					throw (RuntimeException) exception;
+					throw (RuntimeException)exception;
 				} else {
 					throw new GdxRuntimeException("Disposal exception", exception);
 				}
@@ -119,8 +111,7 @@ public class DisposalHelper implements Disposable {
 	}
 
 	/**
-	 * Dispose without throwing any exception.
-	 * By default, prints stacktrace of occurred exception to the standard output.
+	 * Dispose without throwing any exception. By default, prints stacktrace of occurred exception to the standard output.
 	 */
 	public void disposeSilently () {
 		disposeSilently(true);
@@ -128,7 +119,6 @@ public class DisposalHelper implements Disposable {
 
 	/**
 	 * Dispose without throwing any exception.
-	 *
 	 * @param printStackTrace if true, prints stacktrace of occurred exception to the standard output
 	 */
 	public void disposeSilently (Boolean printStackTrace) {
@@ -155,9 +145,7 @@ public class DisposalHelper implements Disposable {
 	}
 
 	/**
-	 * Disposes multiple items.
-	 * There is a guarantee that all resources are disposed of, even when exception(s) occurs.
-	 *
+	 * Disposes multiple items. There is a guarantee that all resources are disposed of, even when exception(s) occurs.
 	 * @param disposableItems items to dispose
 	 */
 	public static void disposeAll (Disposable... disposableItems) {
@@ -165,9 +153,7 @@ public class DisposalHelper implements Disposable {
 	}
 
 	/**
-	 * Disposes multiple items.
-	 * There is a guarantee that all resources are disposed of, even when exception(s) occurs.
-	 *
+	 * Disposes multiple items. There is a guarantee that all resources are disposed of, even when exception(s) occurs.
 	 * @param disposableItems items to dispose
 	 */
 	public static void disposeAll (Iterable<Disposable> disposableItems) {
@@ -175,9 +161,8 @@ public class DisposalHelper implements Disposable {
 	}
 
 	/**
-	 * Disposes multiple items without throwing any exception.
-	 * There is a guarantee that all resources are disposed of, even when exception(s) occurs.
-	 *
+	 * Disposes multiple items without throwing any exception. There is a guarantee that all resources are disposed of, even when
+	 * exception(s) occurs.
 	 * @param disposableItems items to dispose
 	 */
 	public static void disposeAllSilently (Disposable... disposableItems) {
@@ -185,9 +170,8 @@ public class DisposalHelper implements Disposable {
 	}
 
 	/**
-	 * Disposes multiple items without throwing any exception.
-	 * There is a guarantee that all resources are disposed of, even when exception(s) occurs.
-	 *
+	 * Disposes multiple items without throwing any exception. There is a guarantee that all resources are disposed of, even when
+	 * exception(s) occurs.
 	 * @param disposableItems items to dispose
 	 */
 	public static void disposeAllSilently (Iterable<Disposable> disposableItems) {
