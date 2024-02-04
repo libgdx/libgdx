@@ -20,62 +20,48 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Util class for disposing resources. It's useful for disposing multiple resources. Null-safe: provided disposable resources
+/** Util class for disposing resources. It's useful for disposing multiple resources. Null-safe: provided disposable resources
  * could be null. There is a guarantee that all resources are disposed of, even when exception(s) occurs.
- * @author Anton-Samarkyi
- */
+ * @author Anton-Samarkyi */
 public class DisposalHelper implements Disposable {
 	private final List<Disposable> toDispose = new ArrayList<>();
 	private List<Exception> exceptions;
 
-	/**
-	 * Constructs an empty DisposalHelper.
-	 */
+	/** Constructs an empty DisposalHelper. */
 	public DisposalHelper () {
 	}
 
-	/**
-	 * Constructs a DisposalHelper with disposableItems set to dispose.
-	 * @param disposableItems items to dispose
-	 */
+	/** Constructs a DisposalHelper with disposableItems set to dispose.
+	 * @param disposableItems items to dispose */
 	public DisposalHelper (Disposable... disposableItems) {
 		addAll(disposableItems);
 	}
 
-	/**
-	 * Constructs a DisposalHelper with disposableItems set to dispose.
-	 * @param disposableItems items to dispose
-	 */
+	/** Constructs a DisposalHelper with disposableItems set to dispose.
+	 * @param disposableItems items to dispose */
 	public DisposalHelper (Iterable<Disposable> disposableItems) {
 		addAll(disposableItems);
 	}
 
-	/**
-	 * Adds item to dispose.
+	/** Adds item to dispose.
 	 * @param disposableItem item to dispose
-	 * @return this helper
-	 */
+	 * @return this helper */
 	public DisposalHelper add (Disposable disposableItem) {
 		toDispose.add(disposableItem);
 		return this;
 	}
 
-	/**
-	 * Adds items to dispose.
+	/** Adds items to dispose.
 	 * @param disposableItems items to dispose
-	 * @return this helper
-	 */
+	 * @return this helper */
 	public DisposalHelper addAll (Disposable... disposableItems) {
 		if (disposableItems != null) Collections.addAll(toDispose, disposableItems);
 		return this;
 	}
 
-	/**
-	 * Adds items to dispose.
+	/** Adds items to dispose.
 	 * @param disposableItems items to dispose
-	 * @return this helper
-	 */
+	 * @return this helper */
 	public DisposalHelper addAll (Iterable<Disposable> disposableItems) {
 		if (disposableItems == null) return this;
 		for (Disposable item : disposableItems) {
@@ -110,17 +96,13 @@ public class DisposalHelper implements Disposable {
 		}
 	}
 
-	/**
-	 * Dispose without throwing any exception. By default, prints stacktrace of occurred exception to the standard output.
-	 */
+	/** Dispose without throwing any exception. By default, prints stacktrace of occurred exception to the standard output. */
 	public void disposeSilently () {
 		disposeSilently(true);
 	}
 
-	/**
-	 * Dispose without throwing any exception.
-	 * @param printStackTrace if true, prints stacktrace of occurred exception to the standard output
-	 */
+	/** Dispose without throwing any exception.
+	 * @param printStackTrace if true, prints stacktrace of occurred exception to the standard output */
 	public void disposeSilently (Boolean printStackTrace) {
 		try {
 			dispose();
@@ -144,36 +126,28 @@ public class DisposalHelper implements Disposable {
 		exceptions.add(e);
 	}
 
-	/**
-	 * Disposes multiple items. There is a guarantee that all resources are disposed of, even when exception(s) occurs.
-	 * @param disposableItems items to dispose
-	 */
+	/** Disposes multiple items. There is a guarantee that all resources are disposed of, even when exception(s) occurs.
+	 * @param disposableItems items to dispose */
 	public static void disposeAll (Disposable... disposableItems) {
 		new DisposalHelper(disposableItems).dispose();
 	}
 
-	/**
-	 * Disposes multiple items. There is a guarantee that all resources are disposed of, even when exception(s) occurs.
-	 * @param disposableItems items to dispose
-	 */
+	/** Disposes multiple items. There is a guarantee that all resources are disposed of, even when exception(s) occurs.
+	 * @param disposableItems items to dispose */
 	public static void disposeAll (Iterable<Disposable> disposableItems) {
 		new DisposalHelper(disposableItems).dispose();
 	}
 
-	/**
-	 * Disposes multiple items without throwing any exception. There is a guarantee that all resources are disposed of, even when
+	/** Disposes multiple items without throwing any exception. There is a guarantee that all resources are disposed of, even when
 	 * exception(s) occurs.
-	 * @param disposableItems items to dispose
-	 */
+	 * @param disposableItems items to dispose */
 	public static void disposeAllSilently (Disposable... disposableItems) {
 		new DisposalHelper(disposableItems).disposeSilently();
 	}
 
-	/**
-	 * Disposes multiple items without throwing any exception. There is a guarantee that all resources are disposed of, even when
+	/** Disposes multiple items without throwing any exception. There is a guarantee that all resources are disposed of, even when
 	 * exception(s) occurs.
-	 * @param disposableItems items to dispose
-	 */
+	 * @param disposableItems items to dispose */
 	public static void disposeAllSilently (Iterable<Disposable> disposableItems) {
 		new DisposalHelper(disposableItems).disposeSilently();
 	}
