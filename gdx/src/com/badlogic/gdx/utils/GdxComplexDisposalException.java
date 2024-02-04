@@ -29,7 +29,7 @@ public class GdxComplexDisposalException extends GdxRuntimeException {
 
 	final List<Exception> exceptions;
 
-	public GdxComplexDisposeException( List<Exception> exceptions) {
+	public GdxComplexDisposeException (List<Exception> exceptions) {
 		super(composeMessage(exceptions));
 		this.exceptions = exceptions;
 	}
