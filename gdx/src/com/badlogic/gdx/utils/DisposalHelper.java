@@ -17,7 +17,6 @@
 package com.badlogic.gdx.utils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,7 +51,7 @@ public class DisposalHelper implements Disposable {
 	 *
 	 * @param disposableItems items to dispose
 	 */
-	public DisposalHelper (Collection<Disposable> disposableItems) {
+	public DisposalHelper (Iterable<Disposable> disposableItems) {
 		addAll(disposableItems);
 	}
 
@@ -84,8 +83,10 @@ public class DisposalHelper implements Disposable {
 	 * @param disposableItems items to dispose
 	 * @return this helper
 	 */
-	public DisposalHelper addAll (Collection<Disposable> disposableItems) {
-		toDispose.addAll(disposableItems);
+	public DisposalHelper addAll (Iterable<Disposable> disposableItems) {
+		for (Disposable item : disposableItems) {
+			toDispose.add(item);
+		}
 		return this;
 	}
 
@@ -167,7 +168,7 @@ public class DisposalHelper implements Disposable {
 	 *
 	 * @param disposableItems items to dispose
 	 */
-	public static void disposeAll (Collection<Disposable> disposableItems) {
+	public static void disposeAll (Iterable<Disposable> disposableItems) {
 		new DisposalHelper(disposableItems).dispose();
 	}
 
@@ -187,7 +188,7 @@ public class DisposalHelper implements Disposable {
 	 *
 	 * @param disposableItems items to dispose
 	 */
-	public static void disposeAllSilently (Collection<Disposable> disposableItems) {
+	public static void disposeAllSilently (Iterable<Disposable> disposableItems) {
 		new DisposalHelper(disposableItems).disposeSilently();
 	}
 }
