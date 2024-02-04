@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.utils.StringBuilder;
+
 import java.util.List;
 
 /** Runtime exception that contains list of exceptions occurred during the disposing process.
