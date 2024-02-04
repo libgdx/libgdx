@@ -16,22 +16,20 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.List;
-
-/** Runtime exception that contains list of exceptions occurred during the disposing process.
+/** Runtime exception that contains array of exceptions occurred during the disposing process.
  * @author Anton-Samarkyi */
 public class GdxComplexDisposalException extends GdxRuntimeException {
 	private static final long serialVersionUID = 1L;
 	private static final String MESSAGE = "Multiple exceptions occurred during the disposal process: ";
 
-	public final List<Exception> exceptions;
+	public final Array<Exception> exceptions;
 
-	public GdxComplexDisposalException (List<Exception> exceptions) {
+	public GdxComplexDisposalException (Array<Exception> exceptions) {
 		super(composeMessage(exceptions));
 		this.exceptions = exceptions;
 	}
 
-	private static String composeMessage (List<Exception> exceptions) {
+	private static String composeMessage (Array<Exception> exceptions) {
 		StringBuilder builder = new StringBuilder(MESSAGE);
 
 		for (Exception exception : exceptions) {

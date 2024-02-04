@@ -16,16 +16,12 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /** Util class for disposing resources. It's useful for disposing multiple resources. Null-safe: provided disposable resources
  * could be null. There is a guarantee that all resources are disposed of, even when exception(s) occurs.
  * @author Anton-Samarkyi */
 public class DisposalHelper implements Disposable {
-	private final List<Disposable> toDispose = new ArrayList<>();
-	private List<Exception> exceptions;
+	private final Array<Disposable> toDispose = new Array<>();
+	private Array<Exception> exceptions;
 
 	/** Constructs an empty DisposalHelper. */
 	public DisposalHelper () {
@@ -55,7 +51,10 @@ public class DisposalHelper implements Disposable {
 	 * @param disposableItems items to dispose
 	 * @return this helper */
 	public DisposalHelper addAll (Disposable... disposableItems) {
-		if (disposableItems != null) Collections.addAll(toDispose, disposableItems);
+		if (disposableItems == null) return this;
+		for (Disposable item : disposableItems) {
+			toDispose.add(item);
+		}
 		return this;
 	}
 
@@ -83,7 +82,7 @@ public class DisposalHelper implements Disposable {
 		}
 
 		if (exceptions != null) {
-			if (exceptions.size() == 1) {
+			if (exceptions.size == 1) {
 				Exception exception = exceptions.get(0);
 				if (exception instanceof RuntimeException) {
 					throw (RuntimeException)exception;
@@ -121,7 +120,7 @@ public class DisposalHelper implements Disposable {
 
 	private void addException (Exception e) {
 		if (exceptions == null) {
-			exceptions = new ArrayList<>();
+			exceptions = new Array<>();
 		}
 		exceptions.add(e);
 	}
