@@ -27,7 +27,7 @@ public class GdxComplexDisposalException extends GdxRuntimeException {
 	private static final long serialVersionUID = 1L;
 	private static final String MESSAGE = "Multiple exceptions occurred during the disposal process: ";
 
-	final List<Exception> exceptions;
+	public final List<Exception> exceptions;
 
 	public GdxComplexDisposeException (List<Exception> exceptions) {
 		super(composeMessage(exceptions));
