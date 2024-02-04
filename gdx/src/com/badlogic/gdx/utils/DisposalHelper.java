@@ -23,6 +23,7 @@ import java.util.List;
 /**
  * Util class for disposing resources.
  * It's useful for disposing multiple resources.
+ * Null-safe: provided disposable resources could be null.
  * There is a guarantee that all resources are disposed of, even when exception(s) occurs.
  *
  * @author Anton-Samarkyi
@@ -73,7 +74,7 @@ public class DisposalHelper implements Disposable {
 	 * @return this helper
 	 */
 	public DisposalHelper addAll (Disposable... disposableItems) {
-		Collections.addAll(toDispose, disposableItems);
+		if (disposableItems != null) Collections.addAll(toDispose, disposableItems);
 		return this;
 	}
 
@@ -84,6 +85,7 @@ public class DisposalHelper implements Disposable {
 	 * @return this helper
 	 */
 	public DisposalHelper addAll (Iterable<Disposable> disposableItems) {
+		if (disposableItems == null) return this;
 		for (Disposable item : disposableItems) {
 			toDispose.add(item);
 		}
