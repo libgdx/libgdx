@@ -19,6 +19,7 @@ package com.badlogic.gdx.utils.viewport;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -211,6 +212,30 @@ public abstract class Viewport {
 		this.screenY = screenY;
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
+	}
+
+	/** Anchors the viewport to a desired point on the screen regardless of
+	 * aspect ratio. This is typically called after {@link #update(int, int, boolean)}
+	 * @param width the new width in pixels from ApplicationListener#resize(int, int)
+	 * @param height the new height in pixels from ApplicationListener#resize(int, int)
+	 * @see ApplicationListener#resize(int, int)
+	 * @author Colten Reissmann */
+	public void updateAnchor (int width, int height, Align anchorPoint) {
+		if (Align.isLeft(anchorPoint)) {
+            setScreenX(0);
+        } else if ((Align.isRight(anchorPoint))) {
+            setScreenX(width - getScreenWidth());
+        } else if (Align.isCenterHorizontal(anchorPoint)) {
+            setScreenX((width - getScreenWidth()) / 2);
+        }
+
+        if ((Align.isTop(anchorPoint))) {
+            setScreenY(height - getScreenHeight());
+        } else if (Align.isBottom(anchorPoint)) {
+			setScreenY(0);
+        } else if (Align.isCenterVertical(anchorPoint)) {
+            setScreenY((height - getScreenHeight()) / 2);
+        }
 	}
 
 	/** Returns the left gutter (black bar) width in screen coordinates. */
