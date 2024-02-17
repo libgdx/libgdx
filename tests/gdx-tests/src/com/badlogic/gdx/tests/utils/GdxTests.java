@@ -226,6 +226,7 @@ public class GdxTests {
 		NonPowerOfTwoTest.class,
 		OctreeTest.class,
 		OnscreenKeyboardTest.class,
+		NativeInputTest.class,
 		OrientedBoundingBoxTest.class,
 		PathTest.class,
 		ParallaxTest.class,

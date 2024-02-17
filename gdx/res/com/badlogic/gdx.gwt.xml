@@ -286,6 +286,8 @@
 						
 	<!-- input -->
 		<include name="input/GestureDetector.java"/>
+		<include name="input/TextInputWrapper.java"/>
+		<include name="input/NativeInputConfiguration.java"/>
 		<exclude name="input/RemoteInput.java"/> <!-- Reason: Networking -->
 		<exclude name="input/RemoteSender.java"/> <!-- Reason: Networking -->
 		
