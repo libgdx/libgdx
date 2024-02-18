@@ -121,7 +121,9 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			Class loader = Class.forName("com.badlogic.gdx.backends.lwjgl3.awt.GlfwAWTLoader");
 			Method load = loader.getMethod("load");
 			File sharedLib = (File)load.invoke(loader);
-			Configuration.GLFW_LIBRARY_NAME.set(sharedLib.getAbsolutePath());
+			if (Configuration.GLFW_LIBRARY_NAME.get() == null) {
+				Configuration.GLFW_LIBRARY_NAME.set(sharedLib.getAbsolutePath());
+			}
 			Configuration.GLFW_CHECK_THREAD0.set(false);
 		} catch (ClassNotFoundException t) {
 			return;
