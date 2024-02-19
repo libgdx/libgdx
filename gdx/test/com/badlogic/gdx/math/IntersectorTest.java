@@ -5,9 +5,7 @@ import com.badlogic.gdx.math.Intersector.SplitTriangle;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class IntersectorTest {
 
@@ -222,5 +220,15 @@ public class IntersectorTest {
 		assertFalse(Intersector.isPointInTriangle(new Vector3(-5120.8345f, 8946.126f, -3270.5813f),
 			new Vector3(50.008057f, 22.20586f, 124.62208f), new Vector3(62.282288f, 22.205864f, 109.665924f),
 			new Vector3(70.92052f, 7.205861f, 115.437805f)));
+	}
+
+	@Test
+	public void testIntersectPolygons () {
+		// Corner case with extremely small overlap polygon
+		Polygon intersectionPolygon = new Polygon();
+		assertFalse(
+			Intersector.intersectPolygons(new Polygon(new float[] {3200.1453f, 88.00839f, 3233.9087f, 190.34174f, 3266.2905f, 0.0f}),
+				new Polygon(new float[] {3213.0f, 131.0f, 3214.0f, 131.0f, 3214.0f, 130.0f, 3213.0f, 130.0f}), intersectionPolygon));
+		assertEquals(0, intersectionPolygon.getVertexCount());
 	}
 }
