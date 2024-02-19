@@ -96,6 +96,10 @@ public class WebAudioAPIManager implements LifecycleListener {
 		soundUnlocked = true;
 	}
 
+	public void setSinkId (String sinkId) {
+		setSinkIdJSNI(audioContext, sinkId);
+	}
+
 	public static boolean isSoundUnlocked () {
 		return soundUnlocked;
 	}
@@ -105,7 +109,7 @@ public class WebAudioAPIManager implements LifecycleListener {
 	}-*/;
 
 	/** Older browsers do not support the Web Audio API. This is where we find out.
-	 * 
+	 *
 	 * @return is the WebAudioAPI available in this browser? */
 	public static native boolean isSupported () /*-{
 		return typeof (window.AudioContext || window.webkitAudioContext) != "undefined";
@@ -118,6 +122,11 @@ public class WebAudioAPIManager implements LifecycleListener {
 			return audioContext;
 		}
 		return null;
+	}-*/;
+
+	private static native void setSinkIdJSNI (JavaScriptObject audioContext, String sinkId) /*-{
+		if (!audioContext.setSinkId) return;
+		audioContext.setSinkId(sinkId);
 	}-*/;
 
 	private native JavaScriptObject createGlobalVolumeNodeJSNI () /*-{
