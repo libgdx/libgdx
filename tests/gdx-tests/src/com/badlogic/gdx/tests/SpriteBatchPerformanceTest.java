@@ -29,65 +29,60 @@ import com.badlogic.gdx.utils.StringBuilder;
 @GdxTestConfig
 public class SpriteBatchPerformanceTest extends GdxTest {
 
-    private Texture texture;
-    private SpriteBatch spriteBatch;
-    private WindowedMean counter = new WindowedMean(10000);
-    private StringBuilder stringBuilder = new StringBuilder();
+	private Texture texture;
+	private SpriteBatch spriteBatch;
+	private WindowedMean counter = new WindowedMean(10000);
+	private StringBuilder stringBuilder = new StringBuilder();
 
-    private BitmapFont bitmapFont;
+	private BitmapFont bitmapFont;
 
-    @Override
-    public void create () {
-        texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
-        spriteBatch = new SpriteBatch(8191);
-        bitmapFont = new BitmapFont();
-    }
+	@Override
+	public void create () {
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		spriteBatch = new SpriteBatch(8191);
+		bitmapFont = new BitmapFont();
+	}
 
+	@Override
+	public void render () {
+		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+		Gdx.gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-    @Override
-    public void render () {
-        Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-        Gdx.gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.begin();
 
-        spriteBatch.begin();
+		// Accelerate the draws
+		for (int j = 0; j < 100; j++) {
 
+			// fill the batch
+			for (int i = 0; i < 8190; i++) {
+				spriteBatch.draw(texture, 0, 0, 1, 1);
+			}
 
-        //Accelerate the draws
-        for (int j = 0; j < 100; j++) {
+			long beforeFlush = System.nanoTime();
 
+			spriteBatch.flush();
+			Gdx.gl.glFlush();
+			long afterFlush = System.nanoTime();
 
-            //fill the batch
-            for (int i = 0; i < 8190; i++) {
-                spriteBatch.draw(texture, 0, 0, 1, 1);
-            }
+			counter.addValue(afterFlush - beforeFlush);
 
-            long beforeFlush = System.nanoTime();
+		}
 
-            spriteBatch.flush();
-            Gdx.gl.glFlush();
-            long afterFlush = System.nanoTime();
+		spriteBatch.end();
 
-            counter.addValue(afterFlush - beforeFlush);
+		spriteBatch.begin();
+		stringBuilder.setLength(0);
+		stringBuilder.append("Mean Time ms: ");
+		stringBuilder.append(counter.getMean() / 1e6);
+		bitmapFont.draw(spriteBatch, stringBuilder, 0, 200);
+		spriteBatch.end();
+	}
 
-        }
-
-
-        spriteBatch.end();
-
-
-        spriteBatch.begin();
-        stringBuilder.setLength(0);
-        stringBuilder.append("Mean Time ms: ");
-        stringBuilder.append(counter.getMean()/1e6);
-        bitmapFont.draw(spriteBatch, stringBuilder, 0, 200);
-        spriteBatch.end();
-    }
-
-    @Override
-    public void dispose () {
-        texture.dispose();
-        spriteBatch.dispose();
-    }
+	@Override
+	public void dispose () {
+		texture.dispose();
+		spriteBatch.dispose();
+	}
 
 }
