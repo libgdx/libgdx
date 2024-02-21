@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.VertexArray;
 import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -128,6 +129,12 @@ public class SpriteBatch implements Batch {
 			ownsShader = true;
 		} else
 			shader = defaultShader;
+
+		//Pre bind the mesh to force the upload of indices data.
+		if (vertexDataType != VertexDataType.VertexArray) {
+			mesh.bind(shader);
+			mesh.unbind(shader);
+		}
 	}
 
 	/** Returns a new instance of the default shader used by SpriteBatch for GL2 when no shader is specified. */
@@ -956,7 +963,7 @@ public class SpriteBatch implements Batch {
 		lastTexture.bind();
 		Mesh mesh = this.mesh;
 		mesh.setVertices(vertices, 0, idx);
-		Buffer indicesBuffer = (Buffer)mesh.getIndicesBuffer(true);
+		Buffer indicesBuffer = (Buffer)mesh.getIndicesBuffer(false);
 		indicesBuffer.position(0);
 		indicesBuffer.limit(count);
 
