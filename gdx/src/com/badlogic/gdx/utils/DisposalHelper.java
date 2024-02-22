@@ -95,29 +95,6 @@ public class DisposalHelper implements Disposable {
 		}
 	}
 
-	/** Dispose without throwing any exception. By default, prints stacktrace of occurred exception to the standard output. */
-	public void disposeSilently () {
-		disposeSilently(true);
-	}
-
-	/** Dispose without throwing any exception.
-	 * @param printStackTrace if true, prints stacktrace of occurred exception to the standard output */
-	public void disposeSilently (Boolean printStackTrace) {
-		try {
-			dispose();
-		} catch (Exception e) {
-			if (printStackTrace) {
-				if (e instanceof GdxComplexDisposalException) {
-					for (Exception exception : exceptions) {
-						exception.printStackTrace();
-					}
-				} else {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
 	private void addException (Exception e) {
 		if (exceptions == null) {
 			exceptions = new Array<>();
@@ -135,19 +112,5 @@ public class DisposalHelper implements Disposable {
 	 * @param disposableItems items to dispose */
 	public static void disposeAll (Iterable<Disposable> disposableItems) {
 		new DisposalHelper(disposableItems).dispose();
-	}
-
-	/** Disposes multiple items without throwing any exception. There is a guarantee that all resources are disposed of, even when
-	 * exception(s) occurs.
-	 * @param disposableItems items to dispose */
-	public static void disposeAllSilently (Disposable... disposableItems) {
-		new DisposalHelper(disposableItems).disposeSilently();
-	}
-
-	/** Disposes multiple items without throwing any exception. There is a guarantee that all resources are disposed of, even when
-	 * exception(s) occurs.
-	 * @param disposableItems items to dispose */
-	public static void disposeAllSilently (Iterable<Disposable> disposableItems) {
-		new DisposalHelper(disposableItems).disposeSilently();
 	}
 }
