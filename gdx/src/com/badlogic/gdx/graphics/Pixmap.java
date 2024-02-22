@@ -391,7 +391,7 @@ public class Pixmap implements Disposable {
 
 	/** Releases all resources associated with this Pixmap. */
 	public void dispose () {
-		if (disposed) throw new GdxRuntimeException("Pixmap already disposed!");
+		if (disposed) Gdx.app.error("Pixmap", "Pixmap already disposed!");
 		pixmap.dispose();
 		disposed = true;
 	}
