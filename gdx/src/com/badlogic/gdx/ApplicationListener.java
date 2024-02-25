@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.utils.Disposable;
+
 /**
  * <p>
  * An <code>ApplicationListener</code> is called when the {@link Application} is created, resumed, rendering, paused or destroyed.
@@ -29,7 +31,7 @@ package com.badlogic.gdx;
  * </p>
  * 
  * @author mzechner */
-public interface ApplicationListener {
+public interface ApplicationListener implements Disposable {
 	/** Called when the {@link Application} is first created. */
 	public void create ();
 
