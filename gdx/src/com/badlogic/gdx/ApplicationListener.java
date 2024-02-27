@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.Disposable;
  * </p>
  * 
  * @author mzechner */
-public interface ApplicationListener implements Disposable {
+public interface ApplicationListener extends Disposable {
 	/** Called when the {@link Application} is first created. */
 	public void create ();
 

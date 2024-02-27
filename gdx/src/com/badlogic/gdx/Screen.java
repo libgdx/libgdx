@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.Disposable;
  * Note that {@link #dispose()} is not called automatically.
  * </p>
  * @see Game */
-public interface Screen implements Disposable {
+public interface Screen extends Disposable {
 
 	/** Called when this screen becomes the current screen for a {@link Game}. */
 	public void show ();
