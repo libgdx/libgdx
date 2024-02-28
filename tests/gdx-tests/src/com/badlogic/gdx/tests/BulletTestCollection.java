@@ -40,7 +40,8 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), new CollisionWorldTest(), new CollisionTest(),
 		new FrustumCullingTest(), new CollisionDispatcherTest(), new ContactCallbackTest(), new ContactCallbackTest2(),
 		new ContactCacheTest(), new SoftBodyTest(), new SoftMeshTest(), new VehicleTest(), new VehicleFilterTest(),
-		new CharacterTest(), new ImportTest(), new TriangleRaycastTest(), new OcclusionCullingTest(), new PairCacheTest()};
+		new CharacterTest(), new ImportTest(), new TriangleRaycastTest(), new OcclusionCullingTest(), new PairCacheTest(),
+		new HeightFieldTest()};
 
 	protected int testIndex = 0;
 

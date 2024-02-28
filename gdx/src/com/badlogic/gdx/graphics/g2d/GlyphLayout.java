@@ -446,12 +446,13 @@ public class GlyphLayout implements Poolable {
 
 	/** Returns the distance from the glyph's drawing position to the right edge of the glyph. */
 	private float getGlyphWidth (Glyph glyph, BitmapFontData fontData) {
-		return (glyph.width + glyph.xoffset) * fontData.scaleX - fontData.padRight;
+		return (glyph.fixedWidth ? glyph.xadvance : glyph.width + glyph.xoffset) * fontData.scaleX - fontData.padRight;
 	}
 
 	/** Returns an X offset for the first glyph so when drawn, none of it is left of the line's drawing position. */
 	private float getLineOffset (Array<Glyph> glyphs, BitmapFontData fontData) {
-		return -glyphs.first().xoffset * fontData.scaleX - fontData.padLeft;
+		Glyph first = glyphs.first();
+		return (first.fixedWidth ? 0 : -first.xoffset * fontData.scaleX) - fontData.padLeft;
 	}
 
 	private int parseColorMarkup (CharSequence str, int start, int end) {

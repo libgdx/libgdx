@@ -34,14 +34,7 @@ configure([
 							from components.release
 						}
 
-						versionMapping {
-							usage('java-api') {
-								fromResolutionOf('runtimeClasspath')
-							}
-							usage('java-runtime') {
-								fromResolutionResult()
-							}
-						}
+
 						pom {
 							name = POM_NAME
 							if(!POM_DESCRIPTION.isEmpty())

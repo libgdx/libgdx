@@ -723,14 +723,9 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		Display display;
 		DisplayMetrics metrics = new DisplayMetrics();
 
-		if (Build.VERSION.SDK_INT >= 17) {
-			DisplayManager displayManager = (DisplayManager)app.getContext().getSystemService(Context.DISPLAY_SERVICE);
-			display = displayManager.getDisplay(Display.DEFAULT_DISPLAY);
-			display.getRealMetrics(metrics); // Deprecated but no direct equivalent
-		} else {
-			display = app.getWindowManager().getDefaultDisplay();
-			display.getMetrics(metrics); // Excludes system UI!
-		}
+		DisplayManager displayManager = (DisplayManager)app.getContext().getSystemService(Context.DISPLAY_SERVICE);
+		display = displayManager.getDisplay(Display.DEFAULT_DISPLAY);
+		display.getRealMetrics(metrics); // Deprecated but no direct equivalent
 
 		int width = metrics.widthPixels;
 		int height = metrics.heightPixels;

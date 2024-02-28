@@ -229,8 +229,8 @@ public class NetJavaImpl {
 							if (listener != null) {
 								listener.handleHttpResponse(clientResponse);
 							}
-							removeFromConnectionsAndListeners(httpRequest);
 						} finally {
+							removeFromConnectionsAndListeners(httpRequest);
 							connection.disconnect();
 						}
 					} catch (final Exception e) {
@@ -261,6 +261,10 @@ public class NetJavaImpl {
 			cancelTask(httpRequest);
 			removeFromConnectionsAndListeners(httpRequest);
 		}
+	}
+
+	public boolean isHttpRequestPending (HttpRequest httpRequest) {
+		return getFromListeners(httpRequest) != null;
 	}
 
 	private void cancelTask (HttpRequest httpRequest) {

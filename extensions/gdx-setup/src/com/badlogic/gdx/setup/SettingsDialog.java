@@ -190,7 +190,7 @@ public class SettingsDialog extends JDialog {
 		kotlinDesc.setForeground(new Color(170, 170, 170));
 
 		JLabel oldAssetsLabel = new JLabel("Legacy Assets Dir");
-		JLabel oldAssetsDesc = new JLabel("Store assets in the pre-1.10.1 location");
+		JLabel oldAssetsDesc = new JLabel("Store assets in the pre-1.11.0 location");
 		oldAssetsDesc.setToolTipText("(in android or core folder instead of project root)");
 		oldAssetsBox = new SetupCheckBox();
 		oldAssetsLabel.setForeground(new Color(170, 170, 170));

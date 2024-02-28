@@ -24,7 +24,6 @@ dependencies {
 sourceSets.main.resources.srcDirs = ["assets"]
 
 ext {
-	particles2DMainClass = "com.badlogic.gdx.tools.particleeditor.ParticleEditor"
 	particles3DMainClass = "com.badlogic.gdx.tools.flame.FlameMain"
 	hieroMainClass = "com.badlogic.gdx.tools.hiero.Hiero"
 	texturePackerMainClass = "com.badlogic.gdx.tools.texturepacker.TexturePacker"
@@ -32,22 +31,10 @@ ext {
 	toolsAssetsDir = ["assets"]
 }
 
-task dist2DParticles (type: Jar, dependsOn: configurations.runtimeClasspath) {
-	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+tasks.register('dist3DParticles', Jar) {
+	dependsOn("build")
 
-	from files(sourceSets.main.java.classesDirectory)
-	from files(sourceSets.main.output.resourcesDir)
-	from {configurations.runtimeClasspath.collect {zipTree(it)}}
-	from files(toolsAssetsDir)
-
-	archiveFileName = "runnable-2D-particles.jar"
-
-	manifest {
-		attributes 'Main-Class': particles2DMainClass
-	}
-}
-
-task dist3DParticles (type: Jar, dependsOn: configurations.runtimeClasspath) {
+	dependsOn configurations.runtimeClasspath
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
 	from files(sourceSets.main.java.classesDirectory)
@@ -62,7 +49,10 @@ task dist3DParticles (type: Jar, dependsOn: configurations.runtimeClasspath) {
 	}
 }
 
-task distHiero (type: Jar, dependsOn: configurations.runtimeClasspath) {
+tasks.register('distHiero', Jar) {
+	dependsOn("build")
+
+	dependsOn configurations.runtimeClasspath
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
 	from files(sourceSets.main.java.classesDirectory)
@@ -77,7 +67,10 @@ task distHiero (type: Jar, dependsOn: configurations.runtimeClasspath) {
 	}
 }
 
-task distTexturePacker (type: Jar, dependsOn: configurations.runtimeClasspath) {
+tasks.register('distTexturePacker', Jar) {
+	dependsOn("build")
+
+	dependsOn configurations.runtimeClasspath
 	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
 	from files(sourceSets.main.java.classesDirectory)
@@ -92,12 +85,9 @@ task distTexturePacker (type: Jar, dependsOn: configurations.runtimeClasspath) {
 	}
 }
 
-task buildRunnables (dependsOn: [
-	dist2DParticles,
-	dist3DParticles,
-	distHiero,
-	distTexturePacker
-]) {
+tasks.register('buildRunnables') {
+	dependsOn("build")
+	dependsOn dist3DParticles, distHiero, distTexturePacker
 	doLast {
 		println "Building ye runnables"
 	}
