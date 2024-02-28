@@ -1,25 +1,30 @@
 package %PACKAGE%;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class %MAIN_CLASS% extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
+	Vector2 imgPos = new Vector2();
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		img = new Texture("logo_dark.png");
+		imgPos.x = (Gdx.graphics.getWidth() - img.getWidth()) / 2f;
+		imgPos.y = (Gdx.graphics.getHeight() - img.getHeight()) / 2f;
 	}
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(1, 0, 0, 1);
+		ScreenUtils.clear(0.14f, 0.14f, 0.14f, 1);
 		batch.begin();
-		batch.draw(img, 0, 0);
+		batch.draw(img, imgPos.x, imgPos.y);
 		batch.end();
 	}
 	
