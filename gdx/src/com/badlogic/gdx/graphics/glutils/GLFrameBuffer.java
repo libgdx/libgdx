@@ -464,8 +464,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 				copyBits, GL20.GL_NEAREST);
 		}
 
-		// restore draw buffers for destination
-		Gdx.gl30.glDrawBuffers(destination.defaultDrawBuffers.limit(), destination.defaultDrawBuffers);
+		// restore draw buffers for destination (in case of MRT only)
+		if(destination.defaultDrawBuffers != null) {
+			Gdx.gl30.glDrawBuffers(destination.defaultDrawBuffers.limit(), destination.defaultDrawBuffers);
+		}
 
 		Gdx.gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0);
 		Gdx.gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
