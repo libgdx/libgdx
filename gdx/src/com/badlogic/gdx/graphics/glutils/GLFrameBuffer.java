@@ -413,8 +413,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		for (FrameBufferTextureAttachmentSpec attachment : destination.bufferBuilder.textureAttachmentSpecs) {
 			if (attachment.isDepth && (bufferBuilder.hasDepthRenderBuffer || bufferBuilder.hasPackedStencilDepthRenderBuffer)) {
 				copyBits |= GL20.GL_DEPTH_BUFFER_BIT;
-			} else if (attachment.isStencil && (bufferBuilder.hasStencilRenderBuffer
-				|| bufferBuilder.hasPackedStencilDepthRenderBuffer)) {
+			} else if (attachment.isStencil
+				&& (bufferBuilder.hasStencilRenderBuffer || bufferBuilder.hasPackedStencilDepthRenderBuffer)) {
 				copyBits |= GL20.GL_STENCIL_BUFFER_BIT;
 			} else if (colorBufferHandles.size > 0) {
 				copyBits |= GL20.GL_COLOR_BUFFER_BIT;
@@ -431,11 +431,11 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	 *           GL20.GL_COLOR_BUFFER_BIT is present, every color buffers will be copied to each corresponding color texture
 	 *           buffers in the destination framebuffer. */
 	public void transfer (GLFrameBuffer<T> destination, int copyBits) {
-		
-		if(destination.getWidth() != getWidth() || destination.getHeight() != getHeight()) {
+
+		if (destination.getWidth() != getWidth() || destination.getHeight() != getHeight()) {
 			throw new IllegalArgumentException("source and destination frame buffers must have same size.");
 		}
-		
+
 		Gdx.gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferHandle);
 		Gdx.gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, destination.framebufferHandle);
 
@@ -465,7 +465,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		}
 
 		// restore draw buffers for destination (in case of MRT only)
-		if(destination.defaultDrawBuffers != null) {
+		if (destination.defaultDrawBuffers != null) {
 			Gdx.gl30.glDrawBuffers(destination.defaultDrawBuffers.limit(), destination.defaultDrawBuffers);
 		}
 

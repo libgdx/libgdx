@@ -84,7 +84,7 @@ public class GL31FrameBufferMultisampleTest extends GdxTest {
 		fboMS.end();
 
 		fboMS.transfer(fbo);
-		
+
 		batch.begin();
 		batch.draw(fbo.getColorBufferTexture(), 1, 0, 1, 1, 0, 0, 1, 1);
 		batch.end();
