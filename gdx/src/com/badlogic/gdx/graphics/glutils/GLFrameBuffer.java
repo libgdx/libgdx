@@ -426,11 +426,16 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 	/** Transfer pixels from this frame buffer to the destination frame buffer. Usually used when using multisample, it resolves
 	 * samples from this multisample FBO to a non-multisample as destination in order to be used as textures.
-	 * @param destination the destination of the copy.
+	 * @param destination the destination of the copy (should be same size as this frame buffer).
 	 * @param copyBits combination of GL20.GL_COLOR_BUFFER_BIT, GL20.GL_STENCIL_BUFFER_BIT, and GL20.GL_DEPTH_BUFFER_BIT. When
 	 *           GL20.GL_COLOR_BUFFER_BIT is present, every color buffers will be copied to each corresponding color texture
 	 *           buffers in the destination framebuffer. */
 	public void transfer (GLFrameBuffer<T> destination, int copyBits) {
+		
+		if(destination.getWidth() != getWidth() || destination.getHeight() != getHeight()) {
+			throw new IllegalArgumentException("source and destination frame buffers must have same size.");
+		}
+		
 		Gdx.gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferHandle);
 		Gdx.gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, destination.framebufferHandle);
 
