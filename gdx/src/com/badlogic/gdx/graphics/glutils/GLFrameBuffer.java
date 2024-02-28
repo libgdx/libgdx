@@ -411,10 +411,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 		int copyBits = 0;
 		for (FrameBufferTextureAttachmentSpec attachment : destination.bufferBuilder.textureAttachmentSpecs) {
-			if (attachment.isDepth && bufferBuilder.hasDepthRenderBuffer || bufferBuilder.hasPackedStencilDepthRenderBuffer) {
+			if (attachment.isDepth && (bufferBuilder.hasDepthRenderBuffer || bufferBuilder.hasPackedStencilDepthRenderBuffer)) {
 				copyBits |= GL20.GL_DEPTH_BUFFER_BIT;
-			} else if (attachment.isStencil && bufferBuilder.hasStencilRenderBuffer
-				|| bufferBuilder.hasPackedStencilDepthRenderBuffer) {
+			} else if (attachment.isStencil && (bufferBuilder.hasStencilRenderBuffer
+				|| bufferBuilder.hasPackedStencilDepthRenderBuffer)) {
 				copyBits |= GL20.GL_STENCIL_BUFFER_BIT;
 			} else if (colorBufferHandles.size > 0) {
 				copyBits |= GL20.GL_COLOR_BUFFER_BIT;
