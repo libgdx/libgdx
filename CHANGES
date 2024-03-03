@@ -8,6 +8,7 @@
 - Fixed Timer#stop, remember time spent stopped and delay tasks when started again. #7281
 - Android: Add configuration option to render under the cutout if available on the device.
 - Fix: Keep SelectBox popup from extending past right edge of stage.
+- Added Framebuffer multisample support (see GL31FrameBufferMultisampleTest.java for basic usage)
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
