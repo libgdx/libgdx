@@ -38,6 +38,7 @@
         <key>UIRequiredDeviceCapabilities</key>
         <array>
             <string>opengles-2</string>
+            <string>arm64</string>
         </array>
         <key>UISupportedInterfaceOrientations</key>
         <array>
