@@ -35,7 +35,6 @@ import org.lwjgl.openal.AL10;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
@@ -360,8 +359,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 	public void setSoundPan (long soundId, float pan, float volume) {
 		int sourceId = soundIdToSource.get(soundId, -1);
 		if (sourceId != -1) {
-			AL10.alSource3f(sourceId, AL10.AL_POSITION, pan, 0,
-							(float) -Math.sqrt(1f - pan * pan));
+			AL10.alSource3f(sourceId, AL10.AL_POSITION, pan, 0, (float)-Math.sqrt(1f - pan * pan));
 			AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
 		}
 	}
