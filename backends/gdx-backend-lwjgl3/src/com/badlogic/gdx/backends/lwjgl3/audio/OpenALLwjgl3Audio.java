@@ -109,6 +109,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 			if (alGetError() != AL_NO_ERROR) break;
 			alSourcef(sourceID, AL_ROLLOFF_FACTOR, 0f);
 			alSourcei(sourceID, AL_SOURCE_RELATIVE, AL_TRUE);
+			alSourcei(sourceID, SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT, SOFTDirectChannelsRemix.AL_REMIX_UNMATCHED_SOFT);
 			allSources.add(sourceID);
 		}
 		idleSources = new IntArray(allSources);
@@ -250,7 +251,6 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 				AL10.alSourcef(sourceId, AL10.AL_GAIN, 1);
 				AL10.alSourcef(sourceId, AL10.AL_PITCH, 1);
 				AL10.alSource3f(sourceId, AL10.AL_POSITION, 0, 0, 0);
-				AL10.alSourcei(sourceId, SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT, SOFTDirectChannelsRemix.AL_REMIX_UNMATCHED_SOFT);
 				return sourceId;
 			}
 		}
