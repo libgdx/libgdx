@@ -21,6 +21,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
 
 import com.badlogic.gdx.audio.Music;
@@ -157,8 +158,7 @@ public abstract class OpenALMusic implements Music {
 		this.pan = pan;
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
-		alSource3f(sourceID, AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.HALF_PI), 0,
-			MathUtils.sin((pan + 1) * MathUtils.HALF_PI));
+		alSource3f(sourceID, AL_POSITION, pan, 0, (float)-Math.sqrt(1d - pan * pan));
 		alSourcef(sourceID, AL_GAIN, volume);
 	}
 
