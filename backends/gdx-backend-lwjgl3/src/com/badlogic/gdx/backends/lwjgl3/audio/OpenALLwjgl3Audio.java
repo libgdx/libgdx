@@ -249,7 +249,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 				alSourcei(sourceId, AL_BUFFER, 0);
 				AL10.alSourcef(sourceId, AL10.AL_GAIN, 1);
 				AL10.alSourcef(sourceId, AL10.AL_PITCH, 1);
-				AL10.alSource3f(sourceId, AL10.AL_POSITION, 0, 0, 0f);
+				AL10.alSource3f(sourceId, AL10.AL_POSITION, 0, 0, 0);
 				AL10.alSourcei(sourceId, SOFTDirectChannels.AL_DIRECT_CHANNELS_SOFT, SOFTDirectChannelsRemix.AL_REMIX_UNMATCHED_SOFT);
 				return sourceId;
 			}
@@ -359,7 +359,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 	public void setSoundPan (long soundId, float pan, float volume) {
 		int sourceId = soundIdToSource.get(soundId, -1);
 		if (sourceId != -1) {
-			AL10.alSource3f(sourceId, AL10.AL_POSITION, pan, 0, (float)-Math.sqrt(1f - pan * pan));
+			AL10.alSource3f(sourceId, AL10.AL_POSITION, pan, 0, (float)-Math.sqrt(1d - pan * pan));
 			AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
 		}
 	}
