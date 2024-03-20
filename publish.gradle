@@ -13,7 +13,6 @@ configure([
 	project(":extensions:gdx-bullet"),
 	project(":extensions:gdx-freetype"),
 	project(":extensions:gdx-lwjgl3-angle"),
-	project(":extensions:gdx-lwjgl3-glfw-awt-macos"),
 	project(":extensions:gdx-tools")
 ]) {
 	apply plugin: 'maven-publish'
