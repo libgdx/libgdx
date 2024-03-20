@@ -76,6 +76,9 @@ public class GwtApplicationConfiguration {
 	/** whether to make the webgl context compatible with WebXR, may have positive performance impact **/
 	public boolean xrCompatible = false;
 
+	/** Whether to fetch available output devices. It asks the user automatically for permission */
+	public boolean fetchAvailableOutputDevices = false;
+
 	/** Creates configuration for a resizable application, using available browser window space minus padding (see
 	 * {@link #padVertical}, {@link #padHorizontal}). */
 	public GwtApplicationConfiguration () {
