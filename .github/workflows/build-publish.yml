@@ -208,9 +208,15 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
+      - name: Download NDK
+        run: |
+          wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -O android-ndk.zip
+          echo "53af80a1cce9144025b81c78c8cd556bff42bd0e  android-ndk.zip" | sha256sum --check
+          unzip android-ndk.zip
+          echo "NDK_HOME=$(pwd)/android-ndk-r25c" >> $GITHUB_ENV
+
       - name: Build Android natives
         run: |
-          export NDK_HOME=$ANDROID_NDK_HOME
           ./gradlew jniGen jnigenBuildAndroid
 
       - name: Pack artifacts
