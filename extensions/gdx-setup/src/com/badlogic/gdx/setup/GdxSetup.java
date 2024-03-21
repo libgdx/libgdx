@@ -270,7 +270,7 @@ public class GdxSetup {
 		}
 
 		// Assets
-		project.files.add(new ProjectFile("assets/badlogic.jpg", assetPath + "/badlogic.jpg", false));
+		project.files.add(new ProjectFile("assets/logo_dark.png", assetPath + "/logo_dark.png", false));
 
 		// android project
 		if (builder.modules.contains(ProjectType.ANDROID)) {
