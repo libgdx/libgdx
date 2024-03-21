@@ -23,8 +23,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class Fixture {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
-	 */
+#include <box2d/box2d.h>
+	 */ // @on
 	/** body **/
 	private Body body;
 
@@ -39,7 +39,7 @@ public class Fixture {
 
 	/** the fixture filter data **/
 	private final Filter filter = new Filter();
-	
+
 	/** flag to indicate if filter data needs to be updated with a JNI call **/
 	private boolean dirtyFilter = true;
 
@@ -77,6 +77,7 @@ public class Fixture {
 	}
 
 	private native int jniGetType (long addr); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		b2Shape::Type type = fixture->GetType();
 		switch( type )
@@ -88,7 +89,7 @@ public class Fixture {
 		default:
 			return -1;
 		}
-	*/
+	*/ // @on
 
 	/** Returns the shape of this fixture */
 	public Shape getShape () {
@@ -119,9 +120,10 @@ public class Fixture {
 	}
 
 	private native long jniGetShape (long addr); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return (jlong)fixture->GetShape();
-	*/
+	*/ // @on
 
 	/** Set if this fixture is a sensor. */
 	public void setSensor (boolean sensor) {
@@ -129,9 +131,10 @@ public class Fixture {
 	}
 
 	private native void jniSetSensor (long addr, boolean sensor); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetSensor(sensor);
-	*/
+	*/ // @on
 
 	/** Is this fixture a sensor (non-solid)?
 	 * @return the true if the shape is a sensor. */
@@ -140,12 +143,13 @@ public class Fixture {
 	}
 
 	private native boolean jniIsSensor (long addr); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->IsSensor();
-	*/
+	*/ // @on
 
-	/** Set the contact filtering data. This will not update contacts until the next time step when either parent body is active and
-	 * awake. This automatically calls Refilter. */
+	/** Set the contact filtering data. This will not update contacts until the next time step when either parent body is active
+	 * and awake. This automatically calls Refilter. */
 	public void setFilterData (Filter filter) {
 		jniSetFilterData(addr, filter.categoryBits, filter.maskBits, filter.groupIndex);
 		this.filter.set(filter);
@@ -153,13 +157,14 @@ public class Fixture {
 	}
 
 	private native void jniSetFilterData (long addr, short categoryBits, short maskBits, short groupIndex); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		b2Filter filter;
 		filter.categoryBits = categoryBits;
 		filter.maskBits = maskBits;
 		filter.groupIndex = groupIndex;
 		fixture->SetFilterData(filter);
-	*/
+	*/ // @on
 
 	/** Get the contact filtering data. */
 	private final short[] tmp = new short[3];
@@ -178,13 +183,14 @@ public class Fixture {
 	}
 
 	private native void jniGetFilterData (long addr, short[] filter); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		unsigned short* filterOut = (unsigned short*)filter;
 		b2Filter f = fixture->GetFilterData();
 		filterOut[0] = f.maskBits;
 		filterOut[1] = f.categoryBits;
 		filterOut[2] = f.groupIndex;
-	*/
+	*/ // @on
 
 	/** Call this if you want to establish collision that was previously disabled by b2ContactFilter::ShouldCollide. */
 	public void refilter () {
@@ -192,9 +198,10 @@ public class Fixture {
 	}
 
 	private native void jniRefilter (long addr); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->Refilter();
-	*/
+	*/ // @on
 
 	/** Get the parent body of this fixture. This is NULL if the fixture is not attached. */
 	public Body getBody () {
@@ -215,9 +222,10 @@ public class Fixture {
 	}
 
 	private native boolean jniTestPoint (long addr, float x, float y); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->TestPoint( b2Vec2( x, y ) );
-	*/
+	*/ // @on
 
 // const b2Body* GetBody() const;
 //
@@ -250,9 +258,10 @@ public class Fixture {
 	}
 
 	private native void jniSetDensity (long addr, float density); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetDensity(density);
-	*/
+	*/ // @on
 
 	/** Get the density of this fixture. */
 	public float getDensity () {
@@ -260,9 +269,10 @@ public class Fixture {
 	}
 
 	private native float jniGetDensity (long addr); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->GetDensity();
-	*/
+	*/ // @on
 
 	/** Get the coefficient of friction. */
 	public float getFriction () {
@@ -270,9 +280,10 @@ public class Fixture {
 	}
 
 	private native float jniGetFriction (long addr); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->GetFriction();
-	*/
+	*/ // @on
 
 	/** Set the coefficient of friction. */
 	public void setFriction (float friction) {
@@ -280,9 +291,10 @@ public class Fixture {
 	}
 
 	private native void jniSetFriction (long addr, float friction); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetFriction(friction);
-	*/
+	*/ // @on
 
 	/** Get the coefficient of restitution. */
 	public float getRestitution () {
@@ -290,9 +302,10 @@ public class Fixture {
 	}
 
 	private native float jniGetRestitution (long addr); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->GetRestitution();
-	*/
+	*/ // @on
 
 	/** Set the coefficient of restitution. */
 	public void setRestitution (float restitution) {
@@ -300,9 +313,32 @@ public class Fixture {
 	}
 
 	private native void jniSetRestitution (long addr, float restitution); /*
+		// @off
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetRestitution(restitution);
-	*/
+	*/ // @on
+
+	/** Set the restitution velocity threshold. This will not change the restitution threshold of existing contacts. */
+	public void setRestitutionThreshold (float restitutionThreshold) {
+		jniSetRestitutionThreshold(addr, restitutionThreshold);
+	}
+
+	private native void jniSetRestitutionThreshold (long addr, float restitutionThreshold); /*
+		// @off
+		b2Fixture* fixture = (b2Fixture*)addr;
+		fixture->SetRestitutionThreshold(restitutionThreshold);
+	*/ // @on
+
+	/** Get the restitution velocity threshold. */
+	public float getRestitutionThreshold () {
+		return jniGetRestitutionThreshold(addr);
+	}
+
+	private native float jniGetRestitutionThreshold (long addr); /*
+		// @off
+		b2Fixture* fixture = (b2Fixture*)addr;
+		return fixture->GetRestitutionThreshold();
+	*/ // @on
 
 // /// Get the fixture's AABB. This AABB may be enlarge and/or stale.
 // /// If you need a more accurate AABB, compute it using the shape and
