@@ -341,6 +341,11 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 				}
 			}
 		}
+
+		if (bufferBuilder.hasPackedStencilDepthRenderBuffer) {
+			if (bufferBuilder.hasDepthRenderBuffer || bufferBuilder.hasStencilRenderBuffer) throw new GdxRuntimeException(
+				"Frame buffer couldn't be constructed: packed stencil depth buffer cannot be specified together with separated depth or stencil buffer");
+		}
 	}
 
 	/** Releases all resources associated with the FrameBuffer. */
@@ -352,12 +357,9 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			disposeColorTexture(texture);
 		}
 
-		if (hasDepthStencilPackedBuffer) {
-			gl.glDeleteRenderbuffer(depthStencilPackedBufferHandle);
-		} else {
-			if (bufferBuilder.hasDepthRenderBuffer) gl.glDeleteRenderbuffer(depthbufferHandle);
-			if (bufferBuilder.hasStencilRenderBuffer) gl.glDeleteRenderbuffer(stencilbufferHandle);
-		}
+		gl.glDeleteRenderbuffer(depthStencilPackedBufferHandle);
+		gl.glDeleteRenderbuffer(depthbufferHandle);
+		gl.glDeleteRenderbuffer(stencilbufferHandle);
 
 		gl.glDeleteFramebuffer(framebufferHandle);
 
