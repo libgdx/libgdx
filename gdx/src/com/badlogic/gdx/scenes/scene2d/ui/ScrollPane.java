@@ -218,6 +218,7 @@ public class ScrollPane extends WidgetGroup {
 	protected void addScrollListener () {
 		addListener(new InputListener() {
 			public boolean scrolled (InputEvent event, float x, float y, float scrollAmountX, float scrollAmountY) {
+				if (getStage().getScrollFocus() != ScrollPane.this) return false;
 				setScrollbarsVisible(true);
 				if (scrollY || scrollX) {
 					if (scrollY) {
