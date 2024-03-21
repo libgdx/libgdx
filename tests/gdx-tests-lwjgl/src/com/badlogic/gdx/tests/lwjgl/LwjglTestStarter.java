@@ -45,6 +45,7 @@ import com.badlogic.gdx.tests.utils.CommandLineOptions;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTests;
+import com.badlogic.gdx.utils.Os;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class LwjglTestStarter extends JFrame {
@@ -77,7 +78,7 @@ public class LwjglTestStarter extends JFrame {
 		config.forceExit = false;
 		if (useGL30) {
 			config.useGL30 = true;
-			if (!SharedLibraryLoader.isMac) {
+			if (SharedLibraryLoader.os != Os.MacOsX) {
 				config.gles30ContextMajorVersion = 4;
 				config.gles30ContextMinorVersion = 3;
 			}

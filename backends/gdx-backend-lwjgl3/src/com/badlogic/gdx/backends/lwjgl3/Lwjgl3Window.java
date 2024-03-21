@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import java.nio.IntBuffer;
 
+import com.badlogic.gdx.utils.Os;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
@@ -278,7 +279,7 @@ public class Lwjgl3Window implements Disposable {
 	}
 
 	static void setIcon (long windowHandle, String[] imagePaths, Files.FileType imageFileType) {
-		if (SharedLibraryLoader.isMac) return;
+		if (SharedLibraryLoader.os == Os.MacOsX) return;
 
 		Pixmap[] pixmaps = new Pixmap[imagePaths.length];
 		for (int i = 0; i < imagePaths.length; i++) {
@@ -293,7 +294,7 @@ public class Lwjgl3Window implements Disposable {
 	}
 
 	static void setIcon (long windowHandle, Pixmap[] images) {
-		if (SharedLibraryLoader.isMac) return;
+		if (SharedLibraryLoader.os == Os.MacOsX) return;
 
 		GLFWImage.Buffer buffer = GLFWImage.malloc(images.length);
 		Pixmap[] tmpPixmaps = new Pixmap[images.length];
