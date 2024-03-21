@@ -276,6 +276,7 @@ public class GdxTests {
 		SortedSpriteTest.class,
 		SoundTest.class,
 		SpriteBatchRotationTest.class,
+		SpriteBatchPerformanceTest.class,
 		SpriteBatchShaderTest.class,
 		SpriteBatchTest.class,
 		SpriteCacheOffsetTest.class,
