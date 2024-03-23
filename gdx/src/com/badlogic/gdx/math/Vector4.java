@@ -684,10 +684,8 @@ public class Vector4 implements Serializable, Vector<Vector4> {
 	 * @param wMin The minimum value to clamp the vector's W-component
 	 * @param wMax The maximum value to clamp the vector's W-component
 	 * @return this vector for chaining */
-	public Vector4 clampComponents (float xMin, float xMax,
-									float yMin, float yMax,
-									float zMin, float zMax,
-									float wMin, float wMax) {
+	public Vector4 clampComponents (float xMin, float xMax, float yMin, float yMax, float zMin, float zMax, float wMin,
+		float wMax) {
 		x = MathUtils.clamp(x, xMin, xMax);
 		y = MathUtils.clamp(y, yMin, yMax);
 		z = MathUtils.clamp(z, zMin, zMax);
