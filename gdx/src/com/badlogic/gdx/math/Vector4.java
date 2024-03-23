@@ -601,6 +601,11 @@ public class Vector4 implements Serializable, Vector<Vector4> {
 	}
 
 	@Override
+	public Vector4 clampComponents (float min, float max) {
+		return clampComponents(min, max, min, max, min, max, min, max);
+	}
+
+	@Override
 	public int hashCode () {
 		final int prime = 31;
 		int result = 1;
@@ -666,6 +671,28 @@ public class Vector4 implements Serializable, Vector<Vector4> {
 	 * @return true if the vectors are equal, otherwise false */
 	public boolean epsilonEquals (float x, float y, float z, float w) {
 		return epsilonEquals(x, y, z, w, MathUtils.FLOAT_ROUNDING_ERROR);
+	}
+
+	/** Clamps the vector's X, Y, Z and W with the given boundaries.
+	 *
+	 * @param xMin The minimum value to clamp the vector's X-component
+	 * @param xMax The maximum value to clamp the vector's X-component
+	 * @param yMin The minimum value to clamp the vector's Y-component
+	 * @param yMax The maximum value to clamp the vector's Y-component
+	 * @param zMin The minimum value to clamp the vector's Z-component
+	 * @param zMax The maximum value to clamp the vector's Z-component
+	 * @param wMin The minimum value to clamp the vector's W-component
+	 * @param wMax The maximum value to clamp the vector's W-component
+	 * @return this vector for chaining */
+	public Vector4 clampComponents (float xMin, float xMax,
+									float yMin, float yMax,
+									float zMin, float zMax,
+									float wMin, float wMax) {
+		x = MathUtils.clamp(x, xMin, xMax);
+		y = MathUtils.clamp(y, yMin, yMax);
+		z = MathUtils.clamp(z, zMin, zMax);
+		w = MathUtils.clamp(w, wMin, wMax);
+		return this;
 	}
 
 	@Override

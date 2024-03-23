@@ -721,7 +721,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return epsilonEquals(x, y, z, MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
-	/** Clamps the vector's X and Y with the given boundaries.
+	/** Clamps the vector's X, Y and Z with the given boundaries.
 	 *
 	 * @param xMin The minimum value to clamp the vector's X-component
 	 * @param xMax The maximum value to clamp the vector's X-component
