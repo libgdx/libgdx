@@ -658,6 +658,11 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	@Override
+	public Vector3 clampComponents(float min, float max) {
+		return clampComponents(min, max, min, max, min, max);
+	}
+
+	@Override
 	public int hashCode () {
 		final int prime = 31;
 		int result = 1;
@@ -716,16 +721,20 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/**
-	 * Clamps the vector's X, Y and Z with the given boundaries.
+	 * Clamps the vector's X and Y  with the given boundaries.
 	 *
-	 * @param min The minimum value to clamp the vector's components
-	 * @param max The maximum value to clamp the vector's components
+	 * @param xMin The minimum value to clamp the vector's X-component
+	 * @param xMax The maximum value to clamp the vector's X-component
+	 * @param yMin The minimum value to clamp the vector's Y-component
+	 * @param yMax The maximum value to clamp the vector's Y-component
+	 * @param zMin The minimum value to clamp the vector's Z-component
+	 * @param zMax The maximum value to clamp the vector's Z-component
 	 * @return this vector for chaining
 	 */
-	public Vector3 clampComponents(float min, float max) {
-		x = MathUtils.clamp(x, min, max);
-		y = MathUtils.clamp(y, min, max);
-		z = MathUtils.clamp(z, min, max);
+	public Vector3 clampComponents(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax) {
+		x = MathUtils.clamp(x, xMin, xMax);
+		y = MathUtils.clamp(y, yMin, yMax);
+		z = MathUtils.clamp(z, zMin, zMax);
 		return this;
 	}
 

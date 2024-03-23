@@ -256,6 +256,11 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	@Override
+	public Vector2 clampComponents(float min, float max) {
+		return clampComponents(min, max, min, max);
+	}
+
+	@Override
 	public Vector2 setLength (float len) {
 		return setLength2(len * len);
 	}
@@ -519,6 +524,21 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	 * @return true if vector are equal, otherwise false */
 	public boolean epsilonEquals (float x, float y) {
 		return epsilonEquals(x, y, MathUtils.FLOAT_ROUNDING_ERROR);
+	}
+
+	/**
+	 * Clamps the vector's X and Y  with the given boundaries.
+	 *
+	 * @param xMin The minimum value to clamp the vector's X-component
+	 * @param xMax The maximum value to clamp the vector's X-component
+	 * @param yMin The minimum value to clamp the vector's Y-component
+	 * @param yMax The maximum value to clamp the vector's Y-component
+	 * @return this vector for chaining
+	 */
+	public Vector2 clampComponents(float xMin, float xMax, float yMin, float yMax) {
+		x = MathUtils.clamp(x, xMin, xMax);
+		y = MathUtils.clamp(y, yMin, yMax);
+		return this;
 	}
 
 	@Override

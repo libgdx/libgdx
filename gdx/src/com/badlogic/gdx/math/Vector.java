@@ -63,6 +63,15 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining */
 	T clamp (float min, float max);
 
+	/**
+	 * Clamps the vector's components with the given boundaries.
+	 *
+	 * @param min The minimum value to clamp the vector's components
+	 * @param max The maximum value to clamp the vector's components
+	 * @return this vector for chaining
+	 */
+	T clampComponents (float min, float max);
+
 	/** Sets this vector from the given vector
 	 * @param v The vector
 	 * @return This vector for chaining */
