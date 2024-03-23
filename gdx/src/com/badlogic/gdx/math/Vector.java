@@ -23,12 +23,12 @@ public interface Vector<T extends Vector<T>> {
 	/** @return a copy of this vector */
 	T cpy ();
 
-	/** @return The euclidean length */
+	/** @return The Euclidean length */
 	float len ();
 
 	/** This method is faster than {@link Vector#len()} because it avoids calculating a square root. It is useful for comparisons,
 	 * but not for getting exact lengths, as the return value is the square of the actual length.
-	 * @return The squared euclidean length */
+	 * @return The squared Euclidean length */
 	float len2 ();
 
 	/** Limits the length of this vector, based on the desired maximum length.

@@ -25,7 +25,8 @@ dependencies {
 	implementation testnatives.desktop
 }
 
-task launchTestsLwjgl (dependsOn: classes, type: JavaExec) {
+tasks.register('launchTestsLwjgl', JavaExec) {
+	dependsOn classes
 	mainClass = mainTestClass
 	classpath = sourceSets.main.runtimeClasspath
 	standardInput = System.in
@@ -36,7 +37,8 @@ configure (launchTestsLwjgl) {
 	group "LibGDX"
 	description = "Run the Lwjgl tests"
 }
-task dist(type: Jar, dependsOn: classes) {
+tasks.register('dist', Jar) {
+	dependsOn classes
 	manifest {
 		attributes 'Main-Class': project.mainTestClass
 	}

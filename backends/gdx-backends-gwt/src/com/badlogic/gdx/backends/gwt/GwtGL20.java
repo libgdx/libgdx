@@ -638,8 +638,25 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glGetFramebufferAttachmentParameteriv (int target, int attachment, int pname, IntBuffer params) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		switch (pname) {
+		case GL20.GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE:
+		case GL20.GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL:
+		case GL20.GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE:
+			params.put(0, gl.getFramebufferAttachmentParameteri(target, attachment, pname));
+			params.flip();
+			break;
+		case GL20.GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME:
+			WebGLTexture tex = gl.getParametero(pname);
+			if (tex == null) {
+				params.put(0);
+			} else {
+				params.put(textures.getKey(tex));
+			}
+			params.flip();
+			return;
+		default:
+			throw new GdxRuntimeException("glGetFramebufferAttachmentParameteriv Invalid enum for WebGL backend.");
+		}
 	}
 
 	@Override

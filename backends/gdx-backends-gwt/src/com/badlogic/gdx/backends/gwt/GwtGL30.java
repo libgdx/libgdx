@@ -580,6 +580,27 @@ public class GwtGL30 extends GwtGL20 implements GL30 {
 	}
 
 	@Override
+	public void glGetFramebufferAttachmentParameteriv (int target, int attachment, int pname, IntBuffer params) {
+		switch (pname) {
+		case GL30.GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE:
+		case GL30.GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE:
+		case GL30.GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING:
+		case GL30.GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE:
+		case GL30.GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE:
+		case GL30.GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE:
+		case GL30.GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE:
+		case GL30.GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE:
+		case GL30.GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER:
+			params.put(0, gl.getFramebufferAttachmentParameteri(target, attachment, pname));
+			params.flip();
+			break;
+		default:
+			// Assume it is a GL20 pname
+			super.glGetFramebufferAttachmentParameteriv(target, attachment, pname, params);
+		}
+	}
+
+	@Override
 	public void glGetQueryiv (int target, int pname, IntBuffer params) {
 		// Not 100% clear on this one. Returning the integer key for the query.
 		// Similar to how GwtGL20 handles FBO in glGetIntegerv

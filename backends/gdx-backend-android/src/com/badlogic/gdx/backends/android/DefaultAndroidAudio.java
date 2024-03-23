@@ -48,33 +48,24 @@ public class DefaultAndroidAudio implements AndroidAudio {
 	private final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
 
 	public DefaultAndroidAudio (Context context, AndroidApplicationConfiguration config) {
-		if (!config.disableAudio) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				AudioAttributes audioAttrib = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
-					.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
-				soundPool = new SoundPool.Builder().setAudioAttributes(audioAttrib).setMaxStreams(config.maxSimultaneousSounds)
-					.build();
-			} else {
-				soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 0);// srcQuality: the sample-rate
-																																	// converter quality. Currently
-																																	// has no effect. Use 0 for the
-																																	// default.
-			}
-			manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-			if (context instanceof Activity) {
-				((Activity)context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
-			}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			AudioAttributes audioAttrib = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
+				.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
+			soundPool = new SoundPool.Builder().setAudioAttributes(audioAttrib).setMaxStreams(config.maxSimultaneousSounds).build();
 		} else {
-			soundPool = null;
-			manager = null;
+			soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 0);// srcQuality: the sample-rate
+																																// converter quality. Currently
+																																// has no effect. Use 0 for the
+																																// default.
+		}
+		manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+		if (context instanceof Activity) {
+			((Activity)context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		}
 	}
 
 	@Override
 	public void pause () {
-		if (soundPool == null) {
-			return;
-		}
 		synchronized (musics) {
 			for (AndroidMusic music : musics) {
 				if (music.isPlaying()) {
@@ -89,9 +80,6 @@ public class DefaultAndroidAudio implements AndroidAudio {
 
 	@Override
 	public void resume () {
-		if (soundPool == null) {
-			return;
-		}
 		synchronized (musics) {
 			for (int i = 0; i < musics.size(); i++) {
 				if (musics.get(i).wasPlaying) musics.get(i).play();
@@ -103,18 +91,12 @@ public class DefaultAndroidAudio implements AndroidAudio {
 	/** {@inheritDoc} */
 	@Override
 	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
-		if (soundPool == null) {
-			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
-		}
 		return new AndroidAudioDevice(samplingRate, isMono);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Music newMusic (FileHandle file) {
-		if (soundPool == null) {
-			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
-		}
 		AndroidFileHandle aHandle = (AndroidFileHandle)file;
 
 		MediaPlayer mediaPlayer = createMediaPlayer();
@@ -167,10 +149,6 @@ public class DefaultAndroidAudio implements AndroidAudio {
 	 * 
 	 * @see Audio#newMusic(FileHandle) */
 	public Music newMusic (FileDescriptor fd) {
-		if (soundPool == null) {
-			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
-		}
-
 		MediaPlayer mediaPlayer = createMediaPlayer();
 
 		try {
@@ -190,9 +168,6 @@ public class DefaultAndroidAudio implements AndroidAudio {
 	/** {@inheritDoc} */
 	@Override
 	public Sound newSound (FileHandle file) {
-		if (soundPool == null) {
-			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
-		}
 		AndroidSound androidSound;
 		AndroidFileHandle aHandle = (AndroidFileHandle)file;
 		if (aHandle.type() == FileType.Internal) {
@@ -217,18 +192,12 @@ public class DefaultAndroidAudio implements AndroidAudio {
 	/** {@inheritDoc} */
 	@Override
 	public AudioRecorder newAudioRecorder (int samplingRate, boolean isMono) {
-		if (soundPool == null) {
-			throw new GdxRuntimeException("Android audio is not enabled by the application config.");
-		}
 		return new AndroidAudioRecorder(samplingRate, isMono);
 	}
 
 	/** Kills the soundpool and all other resources */
 	@Override
 	public void dispose () {
-		if (soundPool == null) {
-			return;
-		}
 		synchronized (musics) {
 			// gah i hate myself.... music.dispose() removes the music from the list...
 			ArrayList<AndroidMusic> musicsCopy = new ArrayList<AndroidMusic>(musics);

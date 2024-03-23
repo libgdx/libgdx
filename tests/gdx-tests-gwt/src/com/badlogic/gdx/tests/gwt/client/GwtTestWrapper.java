@@ -11,6 +11,7 @@ import com.badlogic.gdx.tests.AnimationTest;
 import com.badlogic.gdx.tests.AnnotationTest;
 import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
+import com.badlogic.gdx.tests.AudioChangeDeviceTest;
 import com.badlogic.gdx.tests.BigMeshTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
 import com.badlogic.gdx.tests.BitmapFontFlipTest;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.BufferUtilsTest;
 import com.badlogic.gdx.tests.ClipboardTest;
+import com.badlogic.gdx.tests.TiledMapObjectPropertyTest;
 import com.badlogic.gdx.tests.ColorTest;
 import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
@@ -155,6 +157,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new AtlasIssueTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new AudioChangeDeviceTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
@@ -552,6 +559,12 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new TiledMapObjectLoadingTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			@Override
+			public GdxTest instance () {
+				return new TiledMapObjectPropertyTest();
 			}
 		});
 		tests.add(new GwtInstancer() {

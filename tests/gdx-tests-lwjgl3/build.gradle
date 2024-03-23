@@ -19,14 +19,13 @@ ext {
 }
 sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
 
-if(JavaVersion.current().isJava9Compatible()) {
+if (JavaVersion.current().isJava9Compatible()) {
 	compileJava {
 		options.release = versions.javaLwjgl3
 	}
-} else {
-	sourceCompatibility = versions.javaLwjgl3
-	targetCompatibility = versions.javaLwjgl3
 }
+sourceCompatibility = versions.javaLwjgl3
+targetCompatibility = versions.javaLwjgl3
 
 dependencies {
 	implementation project(":tests:gdx-tests")
@@ -36,7 +35,8 @@ dependencies {
 	implementation testnatives.desktop
 }
 
-task launchTestsLwjgl3 (dependsOn: classes, type: JavaExec) {
+tasks.register('launchTestsLwjgl3', JavaExec) {
+	dependsOn classes
 	mainClass = mainTestClass
 	classpath = sourceSets.main.runtimeClasspath
 	standardInput = System.in
@@ -47,7 +47,8 @@ configure (launchTestsLwjgl3) {
 	group "LibGDX"
 	description = "Run the Lwjgl3 tests"
 }
-task dist(type: Jar, dependsOn: classes) {
+tasks.register('dist', Jar) {
+	dependsOn classes
 	manifest {
 		attributes 'Main-Class': project.mainTestClass
 	}

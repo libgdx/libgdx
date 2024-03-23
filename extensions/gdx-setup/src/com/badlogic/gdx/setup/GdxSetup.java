@@ -74,12 +74,6 @@ public class GdxSetup {
 			} else {
 				DependencyBank.buildToolsVersion = newestLocalTool;
 			}
-		} else {
-			if (!versionsEqual(localToolVersion, targetToolVersion)) {
-				JOptionPane.showMessageDialog(null,
-					"Please update your Android SDK, you need build tools: " + DependencyBank.buildToolsVersion);
-				return false;
-			}
 		}
 
 		int newestLocalApi = getLatestApi(apis);
@@ -202,6 +196,7 @@ public class GdxSetup {
 		return true;
 	}
 
+	/** @return true if testVersion greater than version */
 	private static boolean compareVersions (int[] version, int[] testVersion) {
 		if (testVersion[0] > version[0]) {
 			return true;
@@ -279,8 +274,10 @@ public class GdxSetup {
 
 		// android project
 		if (builder.modules.contains(ProjectType.ANDROID)) {
-			project.files.add(new ProjectFile("android/res/values/color.xml"));
-			project.files.add(new ProjectFile("android/res/values/strings.xml"));
+			project.files.add(new ProjectFile("android/res/values/color.xml", false));
+			project.files.add(new ProjectFile("android/res/values/strings.xml", true));
+			project.files.add(new ProjectFile("android/res/values/styles.xml", false));
+			project.files.add(new ProjectFile("android/res/values-v21/styles.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-anydpi-v26/ic_launcher.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-anydpi-v26/ic_launcher_foreground.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-hdpi/ic_launcher.png", false));

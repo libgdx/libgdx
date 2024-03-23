@@ -66,6 +66,7 @@ public interface IndexData extends Disposable {
 	 * 
 	 * @return the underlying short buffer.
 	 * @deprecated use {@link #getBuffer(boolean)} instead */
+	@Deprecated
 	public ShortBuffer getBuffer ();
 
 	/** Returns the underlying ShortBuffer for reading or writing.

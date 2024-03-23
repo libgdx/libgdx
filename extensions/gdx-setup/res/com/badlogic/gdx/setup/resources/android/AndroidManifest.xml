@@ -11,6 +11,7 @@
         android:isGame="true"
         android:appCategory="game"
         android:label="@string/app_name"
+        android:theme="@style/AppTheme"
         tools:ignore="UnusedAttribute">
         <activity
             android:name="%PACKAGE%.AndroidLauncher"

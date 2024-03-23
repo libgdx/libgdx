@@ -145,7 +145,7 @@ public class ProgressBar extends Widget implements Disableable {
 					x + (width - knobAfter.getMinWidth()) * 0.5f, //
 					y + position + knobHeightHalf, //
 					knobAfter.getMinWidth(),
-					total - (round ? Math.round(beforeHeight - knobHeightHalf) : beforeHeight - knobHeightHalf));
+					total - (round ? (float)Math.ceil(beforeHeight - knobHeightHalf) : beforeHeight - knobHeightHalf));
 			}
 			if (currentKnob != null) {
 				float w = currentKnob.getMinWidth(), h = currentKnob.getMinHeight();
@@ -178,7 +178,8 @@ public class ProgressBar extends Widget implements Disableable {
 				drawRound(batch, knobAfter, //
 					x + position + knobWidthHalf, //
 					y + (height - knobAfter.getMinHeight()) * 0.5f, //
-					total - (round ? Math.round(beforeWidth - knobWidthHalf) : beforeWidth - knobWidthHalf), knobAfter.getMinHeight());
+					total - (round ? (float)Math.ceil(beforeWidth - knobWidthHalf) : beforeWidth - knobWidthHalf),
+					knobAfter.getMinHeight());
 			}
 			if (currentKnob != null) {
 				float w = currentKnob.getMinWidth(), h = currentKnob.getMinHeight();
@@ -192,10 +193,10 @@ public class ProgressBar extends Widget implements Disableable {
 
 	private void drawRound (Batch batch, Drawable drawable, float x, float y, float w, float h) {
 		if (round) {
-			x = Math.round(x);
-			y = Math.round(y);
-			w = Math.round(w);
-			h = Math.round(h);
+			x = (float)Math.floor(x);
+			y = (float)Math.floor(y);
+			w = (float)Math.ceil(w);
+			h = (float)Math.ceil(h);
 		}
 		drawable.draw(batch, x, y, w, h);
 	}

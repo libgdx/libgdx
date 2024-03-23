@@ -218,7 +218,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this;
 	}
 
-	/** @return The euclidean length */
+	/** @return The Euclidean length */
 	public static float len (final float x, final float y, final float z) {
 		return (float)Math.sqrt(x * x + y * y + z * z);
 	}
@@ -228,7 +228,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return (float)Math.sqrt(x * x + y * y + z * z);
 	}
 
-	/** @return The squared euclidean length */
+	/** @return The squared Euclidean length */
 	public static float len2 (final float x, final float y, final float z) {
 		return x * x + y * y + z * z;
 	}
@@ -238,13 +238,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return x * x + y * y + z * z;
 	}
 
-	/** @param vector The other vector
-	 * @return Whether this and the other vector are equal */
+	/** Returns true if this vector and the vector parameter have identical components.
+	 * @param vector The other vector
+	 * @return Whether this and the other vector are equal with exact precision */
 	public boolean idt (final Vector3 vector) {
 		return x == vector.x && y == vector.y && z == vector.z;
 	}
 
-	/** @return The euclidean distance between the two specified vectors */
+	/** @return The Euclidean distance between the two specified vectors */
 	public static float dst (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
 		final float a = x2 - x1;
 		final float b = y2 - y1;
@@ -351,7 +352,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 mul (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
+		final float[] l_mat = matrix.val;
 		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02] + l_mat[Matrix4.M03],
 			x * l_mat[Matrix4.M10] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12] + l_mat[Matrix4.M13],
 			x * l_mat[Matrix4.M20] + y * l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M23]);
@@ -361,7 +362,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 traMul (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
+		final float[] l_mat = matrix.val;
 		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M10] + z * l_mat[Matrix4.M20] + l_mat[Matrix4.M30],
 			x * l_mat[Matrix4.M01] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M21] + l_mat[Matrix4.M31],
 			x * l_mat[Matrix4.M02] + y * l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M32]);
@@ -371,7 +372,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 mul (Matrix3 matrix) {
-		final float l_mat[] = matrix.val;
+		final float[] l_mat = matrix.val;
 		return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M01] + z * l_mat[Matrix3.M02],
 			x * l_mat[Matrix3.M10] + y * l_mat[Matrix3.M11] + z * l_mat[Matrix3.M12],
 			x * l_mat[Matrix3.M20] + y * l_mat[Matrix3.M21] + z * l_mat[Matrix3.M22]);
@@ -381,7 +382,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 traMul (Matrix3 matrix) {
-		final float l_mat[] = matrix.val;
+		final float[] l_mat = matrix.val;
 		return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M10] + z * l_mat[Matrix3.M20],
 			x * l_mat[Matrix3.M01] + y * l_mat[Matrix3.M11] + z * l_mat[Matrix3.M21],
 			x * l_mat[Matrix3.M02] + y * l_mat[Matrix3.M12] + z * l_mat[Matrix3.M22]);
@@ -399,7 +400,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The matrix.
 	 * @return This vector for chaining */
 	public Vector3 prj (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
+		final float[] l_mat = matrix.val;
 		final float l_w = 1f / (x * l_mat[Matrix4.M30] + y * l_mat[Matrix4.M31] + z * l_mat[Matrix4.M32] + l_mat[Matrix4.M33]);
 		return this.set((x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02] + l_mat[Matrix4.M03]) * l_w,
 			(x * l_mat[Matrix4.M10] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12] + l_mat[Matrix4.M13]) * l_w,
@@ -411,7 +412,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 rot (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
+		final float[] l_mat = matrix.val;
 		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02],
 			x * l_mat[Matrix4.M10] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12],
 			x * l_mat[Matrix4.M20] + y * l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22]);
@@ -422,7 +423,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The transformation matrix
 	 * @return The vector for chaining */
 	public Vector3 unrotate (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
+		final float[] l_mat = matrix.val;
 		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M10] + z * l_mat[Matrix4.M20],
 			x * l_mat[Matrix4.M01] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M21],
 			x * l_mat[Matrix4.M02] + y * l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22]);
@@ -434,7 +435,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The transformation matrix
 	 * @return The vector for chaining */
 	public Vector3 untransform (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
+		final float[] l_mat = matrix.val;
 		x -= l_mat[Matrix4.M03];
 		y -= l_mat[Matrix4.M03];
 		z -= l_mat[Matrix4.M03];
