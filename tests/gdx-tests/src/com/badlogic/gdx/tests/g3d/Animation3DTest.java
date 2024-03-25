@@ -28,14 +28,12 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
-import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
@@ -61,8 +59,8 @@ public class Animation3DTest extends BaseG3dHudTest {
 		super.create();
 		lights = new Environment();
 		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
-		lights.add((shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f))
-			.set(0.8f, 0.8f, 0.8f, -.4f, -.4f, -.4f));
+		lights
+			.add((shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f)).set(0.8f, 0.8f, 0.8f, -.4f, -.4f, -.4f));
 		lights.shadowMap = shadowLight;
 		inputController.rotateLeftKey = inputController.rotateRightKey = inputController.forwardKey = inputController.backwardKey = 0;
 		cam.position.set(25, 25, 25);
@@ -84,7 +82,8 @@ public class Animation3DTest extends BaseG3dHudTest {
 		builder.node().id = "floor";
 		MeshPartBuilder part = builder.part("floor", GL20.GL_TRIANGLES, Usage.Position | Usage.TextureCoordinates | Usage.Normal,
 			new Material("concrete"));
-		((MeshBuilder)part).ensureRectangles(1600);
+		part.ensureVertices(4 * 1600);
+		part.ensureRectangleIndices(1600);
 		for (float x = -200f; x < 200f; x += 10f) {
 			for (float z = -200f; z < 200f; z += 10f) {
 				part.rect(x, 0, z + 10f, x + 10f, 0, z + 10f, x + 10f, 0, z, x, 0, z, 0, 1, 0);
@@ -93,9 +92,9 @@ public class Animation3DTest extends BaseG3dHudTest {
 		builder.node().id = "tree";
 		part = builder.part("tree", GL20.GL_TRIANGLES, Usage.Position | Usage.TextureCoordinates | Usage.Normal,
 			new Material("tree"));
-		part.rect( 0f, 0f, -10f, 10f, 0f, -10f, 10f, 10f, -10f,  0f, 10f, -10f, 0, 0, 1f);
+		part.rect(0f, 0f, -10f, 10f, 0f, -10f, 10f, 10f, -10f, 0f, 10f, -10f, 0, 0, 1f);
 		part.setUVRange(1, 0, 0, 1);
-		part.rect(10f, 0f, -10f,  0f, 0f, -10f,  0f, 10f, -10f, 10f, 10f, -10f, 0, 0, -1f);
+		part.rect(10f, 0f, -10f, 0f, 0f, -10f, 0f, 10f, -10f, 10f, 10f, -10f, 0, 0, -1f);
 		floorModel = builder.end();
 
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
@@ -151,8 +150,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 			if (Gdx.input.isKeyPressed(Keys.SPACE) && !animation.inAction) {
 				animation.action("Attack", 1, 1f, null, 0.2f);
 			}
-			if (Gdx.input.isKeyJustPressed(Keys.Z))
-				ship.parts.get(0).enabled = !ship.parts.get(0).enabled; 
+			if (Gdx.input.isKeyJustPressed(Keys.Z)) ship.parts.get(0).enabled = !ship.parts.get(0).enabled;
 		}
 
 		if (character != null) {
@@ -186,11 +184,10 @@ public class Animation3DTest extends BaseG3dHudTest {
 	protected void onLoaded () {
 		if (skydome == null) {
 			skydome = new ModelInstance(assets.get("data/g3d/skydome.g3db", Model.class));
-			floorModel.getMaterial("concrete").set(TextureAttribute.createDiffuse(assets.get("data/g3d/concrete.png", Texture.class)));
-			floorModel.getMaterial("tree").set(
-				TextureAttribute.createDiffuse(assets.get("data/tree.png", Texture.class)),
-				new BlendingAttribute()
-				);
+			floorModel.getMaterial("concrete")
+				.set(TextureAttribute.createDiffuse(assets.get("data/g3d/concrete.png", Texture.class)));
+			floorModel.getMaterial("tree").set(TextureAttribute.createDiffuse(assets.get("data/tree.png", Texture.class)),
+				new BlendingAttribute());
 			instances.add(new ModelInstance(floorModel, "floor"));
 			instances.add(tree = new ModelInstance(floorModel, "tree"));
 			assets.load("data/g3d/knight.g3db", Model.class);

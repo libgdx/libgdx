@@ -20,7 +20,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -38,7 +37,7 @@ public class FreeTypeDisposeTest extends GdxTest {
 				if (font != null) {
 					font.dispose();
 				}
-				FileHandle fontFile = Gdx.files.internal("data/arial.ttf");
+				FileHandle fontFile = Gdx.files.internal("data/lsans.ttf");
 				FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
 
 				FreeTypeFontParameter parameter = new FreeTypeFontParameter();

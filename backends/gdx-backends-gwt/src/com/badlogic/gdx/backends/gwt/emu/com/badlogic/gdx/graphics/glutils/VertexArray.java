@@ -19,7 +19,8 @@ package com.badlogic.gdx.graphics.glutils;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 
-/** <p>
+/**
+ * <p>
  * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
  * </p>
  * 

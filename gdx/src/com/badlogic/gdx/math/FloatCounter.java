@@ -16,13 +16,13 @@
 
 package com.badlogic.gdx.math;
 
-import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** Track properties of a stream of float values. The properties (total value, minimum, etc) are updated as values are
  * {@link #put(float)} into the stream.
  * 
  * @author xoppa */
-public class FloatCounter {
+public class FloatCounter implements Poolable {
 	/** The amount of values added */
 	public int count;
 	/** The sum of all values */
@@ -68,6 +68,7 @@ public class FloatCounter {
 	}
 
 	/** Reset all values to their default value. */
+	@Override
 	public void reset () {
 		count = 0;
 		total = 0f;
@@ -77,5 +78,11 @@ public class FloatCounter {
 		latest = 0f;
 		value = 0f;
 		if (mean != null) mean.clear();
+	}
+
+	@Override
+	public String toString () {
+		return "FloatCounter{" + "count=" + count + ", total=" + total + ", min=" + min + ", max=" + max + ", average=" + average
+			+ ", latest=" + latest + ", value=" + value + '}';
 	}
 }

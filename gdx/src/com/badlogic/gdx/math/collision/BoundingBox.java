@@ -31,7 +31,11 @@ public class BoundingBox implements Serializable {
 
 	private final static Vector3 tmpVector = new Vector3();
 
+	/** Minimum vector. All XYZ components should be inferior to corresponding {@link #max} components. Call {@link #update()} if
+	 * you manually change this vector. */
 	public final Vector3 min = new Vector3();
+	/** Maximum vector. All XYZ components should be superior to corresponding {@link #min} components. Call {@link #update()} if
+	 * you manually change this vector. */
 	public final Vector3 max = new Vector3();
 
 	private final Vector3 cnt = new Vector3();
@@ -155,9 +159,14 @@ public class BoundingBox implements Serializable {
 			minimum.z < maximum.z ? minimum.z : maximum.z);
 		max.set(minimum.x > maximum.x ? minimum.x : maximum.x, minimum.y > maximum.y ? minimum.y : maximum.y,
 			minimum.z > maximum.z ? minimum.z : maximum.z);
+		update();
+		return this;
+	}
+
+	/** Should be called if you modify {@link #min} and/or {@link #max} vectors manually. */
+	public void update () {
 		cnt.set(min).add(max).scl(0.5f);
 		dim.set(max).sub(min);
-		return this;
 	}
 
 	/** Sets the bounding box minimum and maximum vector from the given points.
@@ -272,8 +281,18 @@ public class BoundingBox implements Serializable {
 	 * @param b The bounding box
 	 * @return Whether the given bounding box is contained */
 	public boolean contains (BoundingBox b) {
-		return !isValid()
-			|| (min.x <= b.min.x && min.y <= b.min.y && min.z <= b.min.z && max.x >= b.max.x && max.y >= b.max.y && max.z >= b.max.z);
+		return !isValid() || (min.x <= b.min.x && min.y <= b.min.y && min.z <= b.min.z && max.x >= b.max.x && max.y >= b.max.y
+			&& max.z >= b.max.z);
+	}
+
+	/** Returns whether the given oriented bounding box is contained in this oriented bounding box.
+	 * @param obb The bounding box
+	 * @return Whether the given oriented bounding box is contained */
+	public boolean contains (OrientedBoundingBox obb) {
+		return contains(obb.getCorner000(tmpVector)) && contains(obb.getCorner001(tmpVector))
+			&& contains(obb.getCorner010(tmpVector)) && contains(obb.getCorner011(tmpVector))
+			&& contains(obb.getCorner100(tmpVector)) && contains(obb.getCorner101(tmpVector))
+			&& contains(obb.getCorner110(tmpVector)) && contains(obb.getCorner111(tmpVector));
 	}
 
 	/** Returns whether the given bounding box is intersecting this bounding box (at least one point in).
@@ -294,7 +313,6 @@ public class BoundingBox implements Serializable {
 		float sumz = (this.dim.z / 2.0f) + (b.dim.z / 2.0f);
 
 		return (lx <= sumx && ly <= sumy && lz <= sumz);
-
 	}
 
 	/** Returns whether the given vector is contained in this bounding box.

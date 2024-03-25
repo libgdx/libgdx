@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,7 @@ public class AccelerometerTest extends GdxTest {
 
 	@Override
 	public void create () {
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 		batch = new SpriteBatch();
 	}
 
@@ -36,9 +36,12 @@ public class AccelerometerTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.draw(batch, "accel: [" + Gdx.input.getAccelerometerX() + "," + Gdx.input.getAccelerometerY() + ","
-			+ Gdx.input.getAccelerometerZ() + "]\n" + "orientation: " + Gdx.input.getNativeOrientation() + "\n" + "rotation: "
-			+ Gdx.input.getRotation() + "\n" + "wh: " + Gdx.graphics.getDisplayMode() + "\n", 0, 100);
+		font.draw(batch,
+			"accel: [" + Gdx.input.getAccelerometerX() + "," + Gdx.input.getAccelerometerY() + "," + Gdx.input.getAccelerometerZ()
+				+ "]\n" + "gyros: [" + Gdx.input.getGyroscopeX() + "," + Gdx.input.getGyroscopeY() + "," + Gdx.input.getGyroscopeZ()
+				+ "]\n" + "orientation: " + Gdx.input.getNativeOrientation() + "\n" + "rotation: " + Gdx.input.getRotation() + "\n"
+				+ "wh: " + Gdx.graphics.getDisplayMode() + "\n",
+			0, 100);
 		batch.end();
 	}
 

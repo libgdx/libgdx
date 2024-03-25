@@ -20,9 +20,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
 
-/** The pulley joint is connected to two bodies and two fixed ground points. The pulley supports a ratio such that: length1 + ratio
- * * length2 <= constant Yes, the force transmitted is scaled by the ratio. The pulley also enforces a maximum length limit on
- * both sides. This is useful to prevent one side of the pulley hitting the top. */
+/** The pulley joint is connected to two bodies and two fixed ground points. The pulley supports a ratio such that: length1 +
+ * ratio * length2 <= constant Yes, the force transmitted is scaled by the ratio. The pulley also enforces a maximum length limit
+ * on both sides. This is useful to prevent one side of the pulley hitting the top. */
 public class PulleyJoint extends Joint {
 	// @off
 	/*JNI

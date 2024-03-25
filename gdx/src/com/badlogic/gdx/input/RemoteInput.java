@@ -24,12 +24,11 @@ import java.net.Socket;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntSet;
 
-/** <p>
+/**
+ * <p>
  * An {@link Input} implementation that receives touch, key, accelerometer and compass events from a remote Android device. Just
  * instantiate it and specify the port it should listen on for incoming connections (default 8190). Then store the new RemoteInput
  * instance in Gdx.input. That's it.
@@ -37,7 +36,7 @@ import com.badlogic.gdx.utils.IntSet;
  * 
  * <p>
  * On your Android device you can use the gdx-remote application available on the Google Code page as an APK or in SVN
- * (extensions/gdx-remote). Open it, specify the IP address and the port of the PC your libgdx app is running on and then tap
+ * (extensions/gdx-remote). Open it, specify the IP address and the port of the PC your libGDX app is running on and then tap
  * away.
  * </p>
  * 
@@ -145,7 +144,7 @@ public class RemoteInput implements Runnable, Input {
 				}
 			} else {
 				if (touchEvent != null) {
-					switch(touchEvent.type) {
+					switch (touchEvent.type) {
 					case TouchEvent.TOUCH_DOWN:
 						deltaX[touchEvent.pointer] = 0;
 						deltaY[touchEvent.pointer] = 0;
@@ -277,7 +276,7 @@ public class RemoteInput implements Runnable, Input {
 					case RemoteSender.SIZE:
 						remoteWidth = in.readFloat();
 						remoteHeight = in.readFloat();
-						break;	
+						break;
 					case RemoteSender.GYRO:
 						gyrate[0] = in.readFloat();
 						gyrate[1] = in.readFloat();
@@ -347,7 +346,7 @@ public class RemoteInput implements Runnable, Input {
 	public float getAccelerometerZ () {
 		return accel[2];
 	}
-	
+
 	@Override
 	public float getGyroscopeX () {
 		return gyrate[0];
@@ -422,7 +421,7 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public boolean isButtonJustPressed(int button) {
+	public boolean isButtonJustPressed (int button) {
 		return button == Buttons.LEFT && justTouched;
 	}
 
@@ -454,22 +453,47 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public void getTextInput (TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type) {
+		Gdx.app.getInput().getTextInput(listener, title, text, hint, type);
+	}
+
+	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 	}
 
 	@Override
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
+	}
+
+	@Override
+	public void openTextInputField (NativeInputConfiguration configuration) {
+
+	}
+
+	@Override
+	public void closeTextInputField (boolean sendReturn) {
+
+	}
+
+	@Override
+	public void setKeyboardHeightObserver (KeyboardHeightObserver observer) {
+
+	}
+
+	@Override
 	public void vibrate (int milliseconds) {
-
 	}
 
 	@Override
-	public void vibrate (long[] pattern, int repeat) {
-
+	public void vibrate (int milliseconds, boolean fallback) {
 	}
 
 	@Override
-	public void cancelVibrate () {
+	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
+	}
 
+	@Override
+	public void vibrate (VibrationType vibrationType) {
 	}
 
 	@Override
@@ -493,15 +517,15 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public boolean isCatchBackKey() {
+	public boolean isCatchBackKey () {
 		return false;
 	}
-	
+
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
-		
+
 	}
-	
+
 	@Override
 	public boolean isCatchMenuKey () {
 		return false;
@@ -527,7 +551,8 @@ public class RemoteInput implements Runnable, Input {
 		return this.processor;
 	}
 
-	/** @return the IP addresses {@link RemoteSender} or gdx-remote should connect to. Most likely the LAN addresses if behind a NAT. */
+	/** @return the IP addresses {@link RemoteSender} or gdx-remote should connect to. Most likely the LAN addresses if behind a
+	 *         NAT. */
 	public String[] getIPs () {
 		return ips;
 	}

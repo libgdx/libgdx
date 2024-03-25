@@ -34,6 +34,11 @@ public class DefaultAssetFilter implements AssetFilter {
 	}
 
 	@Override
+	public boolean preload (String file) {
+		return true;
+	}
+
+	@Override
 	public AssetType getType (String file) {
 		String extension = extension(file).toLowerCase();
 		if (isImage(extension)) return AssetType.Image;
@@ -43,7 +48,8 @@ public class DefaultAssetFilter implements AssetFilter {
 	}
 
 	private boolean isImage (String extension) {
-		return extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png") || extension.equals("bmp") || extension.equals("gif");
+		return extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png") || extension.equals("bmp")
+			|| extension.equals("gif");
 	}
 
 	private boolean isText (String extension) {

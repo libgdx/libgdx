@@ -48,6 +48,8 @@ public class I18NMessageTest extends GdxTest {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
+		I18NBundle.setSimpleFormatter(false);
+
 		try {
 			FileHandle bfh = Gdx.files.internal("data/i18n/message1");
 			rb_root = I18NBundle.createBundle(bfh, new Locale("", "", "")); // Locale.ROOT doesn't exist in Android API level 8
@@ -87,7 +89,7 @@ public class I18NMessageTest extends GdxTest {
 	}
 
 	private String getParametricMessage (String header, I18NBundle rb) {
-		return header + " -> " + rb.format("msgWithArgs", "LibGDX", MathUtils.PI, now);
+		return header + " -> " + rb.format("msgWithArgs", "libGDX", MathUtils.PI, now);
 	}
 
 	private void println (String line) {

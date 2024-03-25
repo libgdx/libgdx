@@ -22,7 +22,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cubemap.CubemapSide;
-import com.badlogic.gdx.graphics.g3d.Attributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -114,7 +113,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			return result;
 		}
 	}
-	
+
 	protected Environment environment;
 	protected DirectionalLight dirLight;
 	protected TestShaderProvider shaderProvider;
@@ -171,7 +170,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			}
 		} else {
 			FileHandle root = Gdx.files.internal("data/g3d/environment");
-			FacedCubemapData faces = new FacedCubemapData(root.child(name + "_PX.png"), root.child(name+"_NX.png"),
+			FacedCubemapData faces = new FacedCubemapData(root.child(name + "_PX.png"), root.child(name + "_NX.png"),
 				root.child(name + "_PY.png"), root.child(name + "_NY.png"), root.child(name + "_PZ.png"),
 				root.child(name + "_NZ.png"), false); // FIXME mipmapping on desktop
 			cubemap = new Cubemap(faces);

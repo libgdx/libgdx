@@ -241,7 +241,7 @@ void b2BroadPhase::UpdatePairs(T* callback)
 	// Sort the pair buffer to expose duplicates.
 	//std::sort(m_pairBuffer, m_pairBuffer + m_pairCount, b2PairLessThan);
 
-	// FIX from http://www.box2d.org/forum/viewtopic.php?f=7&t=4756&start=0 to get rid of stl dependency
+	// FIX from https://web.archive.org/web/20100705061840/http://www.box2d.org/forum/viewtopic.php?f=7&t=4756&start=0 to get rid of stl dependency
 	qsort(m_pairBuffer, sizeof(m_pairBuffer) / sizeof(struct b2Pair) , sizeof(struct b2Pair), b2PairCompareQSort);
 	// Send the pairs back to the client.
 	int32 i = 0;

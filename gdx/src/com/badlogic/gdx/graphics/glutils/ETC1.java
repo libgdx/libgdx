@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,11 +19,11 @@ package com.badlogic.gdx.graphics.glutils;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -71,8 +71,8 @@ public class ETC1 {
 				while ((readBytes = in.read(buffer)) != -1) {
 					compressedData.put(buffer, 0, readBytes);
 				}
-				compressedData.position(0);
-				compressedData.limit(compressedData.capacity());
+				((Buffer)compressedData).position(0);
+				((Buffer)compressedData).limit(compressedData.capacity());
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't load pkm file '" + pkmFile + "'", e);
 			} finally {
@@ -82,7 +82,7 @@ public class ETC1 {
 			width = getWidthPKM(compressedData, 0);
 			height = getHeightPKM(compressedData, 0);
 			dataOffset = PKM_HEADER_SIZE;
-			compressedData.position(dataOffset);
+			((Buffer)compressedData).position(dataOffset);
 			checkNPOT();
 		}
 
@@ -103,8 +103,8 @@ public class ETC1 {
 			DataOutputStream write = null;
 			byte[] buffer = new byte[10 * 1024];
 			int writtenBytes = 0;
-			compressedData.position(0);
-			compressedData.limit(compressedData.capacity());
+			((Buffer)compressedData).position(0);
+			((Buffer)compressedData).limit(compressedData.capacity());
 			try {
 				write = new DataOutputStream(new GZIPOutputStream(file.write(false)));
 				write.writeInt(compressedData.capacity());
@@ -119,8 +119,8 @@ public class ETC1 {
 			} finally {
 				StreamUtils.closeQuietly(write);
 			}
-			compressedData.position(dataOffset);
-			compressedData.limit(compressedData.capacity());
+			((Buffer)compressedData).position(dataOffset);
+			((Buffer)compressedData).limit(compressedData.capacity());
 		}
 
 		/** Releases the native resources of the ETC1Data instance. */
@@ -204,7 +204,7 @@ public class ETC1 {
 	public static native int getCompressedDataSize (int width, int height); /*
 		return etc1_get_encoded_data_size(width, height);
 	*/
-	
+
 
 	/** Writes a PKM header to the {@link ByteBuffer}. Does not modify the position or limit of the ByteBuffer.
 	 * @param header the direct native order {@link ByteBuffer}

@@ -19,8 +19,6 @@ package com.badlogic.gdx.graphics.glutils;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +28,7 @@ public class GLVersion {
 	private int minorVersion;
 	private int releaseVersion;
 
+	private final String versionString;
 	private final String vendorString;
 	private final String rendererString;
 
@@ -38,21 +37,27 @@ public class GLVersion {
 	private final String TAG = "GLVersion";
 
 	public GLVersion (Application.ApplicationType appType, String versionString, String vendorString, String rendererString) {
-		if (appType == Application.ApplicationType.Android) this.type = Type.GLES;
-		else if (appType == Application.ApplicationType.iOS) this.type = Type.GLES;
-		else if (appType == Application.ApplicationType.Desktop) this.type = Type.OpenGL;
-		else if (appType == Application.ApplicationType.Applet) this.type = Type.OpenGL;
-		else if (appType == Application.ApplicationType.WebGL) this.type = Type.WebGL;
-		else this.type = Type.NONE;
+		if (appType == Application.ApplicationType.Android)
+			this.type = Type.GLES;
+		else if (appType == Application.ApplicationType.iOS)
+			this.type = Type.GLES;
+		else if (appType == Application.ApplicationType.Desktop)
+			this.type = Type.OpenGL;
+		else if (appType == Application.ApplicationType.Applet)
+			this.type = Type.OpenGL;
+		else if (appType == Application.ApplicationType.WebGL)
+			this.type = Type.WebGL;
+		else
+			this.type = Type.NONE;
 
 		if (type == Type.GLES) {
-			//OpenGL<space>ES<space><version number><space><vendor-specific information>.
+			// OpenGL<space>ES<space><version number><space><vendor-specific information>.
 			extractVersion("OpenGL ES (\\d(\\.\\d){0,2})", versionString);
 		} else if (type == Type.WebGL) {
-			//WebGL<space><version number><space><vendor-specific information>
+			// WebGL<space><version number><space><vendor-specific information>
 			extractVersion("WebGL (\\d(\\.\\d){0,2})", versionString);
 		} else if (type == Type.OpenGL) {
-			//<version number><space><vendor-specific information>
+			// <version number><space><vendor-specific information>
 			extractVersion("(\\d(\\.\\d){0,2})", versionString);
 		} else {
 			majorVersion = -1;
@@ -61,7 +66,7 @@ public class GLVersion {
 			vendorString = "";
 			rendererString = "";
 		}
-
+		this.versionString = versionString;
 		this.vendorString = vendorString;
 		this.rendererString = rendererString;
 	}
@@ -89,12 +94,13 @@ public class GLVersion {
 		try {
 			return Integer.parseInt(v);
 		} catch (NumberFormatException nfe) {
-			Gdx.app.error("LibGDX GL", "Error parsing number: " + v +", assuming: " + defaultValue);
+			Gdx.app.error("libGDX GL", "Error parsing number: " + v + ", assuming: " + defaultValue);
 			return defaultValue;
 		}
 	}
 
-	/** @return what {@link Type} of GL implementation this application has access to, e.g. {@link Type#OpenGL} or {@link Type#GLES}*/
+	/** @return what {@link Type} of GL implementation this application has access to, e.g. {@link Type#OpenGL} or
+	 *         {@link Type#GLES} */
 	public Type getType () {
 		return type;
 	}
@@ -114,40 +120,38 @@ public class GLVersion {
 		return releaseVersion;
 	}
 
+	/** @return The version string as reported by `glGetString(GL_VERSION)` */
+	public String getVersionString () {
+		return versionString;
+	}
+
 	/** @return the vendor string associated with the current GL connection */
 	public String getVendorString () {
 		return vendorString;
 	}
 
-	/** @return the name of the renderer associated with the current GL connection.
-	 * This name is typically specific to a particular configuration of a hardware platform. */
+	/** @return the name of the renderer associated with the current GL connection. This name is typically specific to a particular
+	 *         configuration of a hardware platform. */
 	public String getRendererString () {
 		return rendererString;
 	}
 
-	/**
-	 * Checks to see if the current GL connection version is higher, or equal to the provided test versions.
+	/** Checks to see if the current GL connection version is higher, or equal to the provided test versions.
 	 *
 	 * @param testMajorVersion the major version to test against
 	 * @param testMinorVersion the minor version to test against
-	 * @return true if the current version is higher or equal to the test version
-	 */
+	 * @return true if the current version is higher or equal to the test version */
 	public boolean isVersionEqualToOrHigher (int testMajorVersion, int testMinorVersion) {
 		return majorVersion > testMajorVersion || (majorVersion == testMajorVersion && minorVersion >= testMinorVersion);
 	}
 
 	/** @return a string with the current GL connection data */
 	public String getDebugVersionString () {
-		return "Type: " + type + "\n" +
-				"Version: " + majorVersion + ":" + minorVersion + ":" + releaseVersion + "\n" +
-				"Vendor: " + vendorString + "\n" +
-				"Renderer: " + rendererString;
+		return "Type: " + type + "\n" + "Version: " + majorVersion + ":" + minorVersion + ":" + releaseVersion + "\n" + "Vendor: "
+			+ vendorString + "\n" + "Renderer: " + rendererString;
 	}
 
 	public enum Type {
-		OpenGL,
-		GLES,
-		WebGL,
-		NONE
+		OpenGL, GLES, WebGL, NONE
 	}
 }

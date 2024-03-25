@@ -23,11 +23,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.storage.client.Storage;
 
 public class GwtFiles implements Files {
-	
-	public static final Storage LocalStorage = Storage.getLocalStorageIfSupported(); // Can be null if cookies are disabled or blocked by the browser with "block third-party cookies"
-	
-	final Preloader preloader;
-	
+
+	public static final Storage LocalStorage = Storage.getLocalStorageIfSupported(); // Can be null if cookies are disabled or
+																												// blocked by the browser with "block
+																												// third-party cookies"
+
+	protected final Preloader preloader;
+
 	public GwtFiles (Preloader preloader) {
 		this.preloader = preloader;
 	}
@@ -50,17 +52,17 @@ public class GwtFiles implements Files {
 
 	@Override
 	public FileHandle external (String path) {
-		throw new GdxRuntimeException("Not supported in GWT backend");
+		throw new GdxRuntimeException("external() not supported in GWT backend");
 	}
 
 	@Override
 	public FileHandle absolute (String path) {
-		throw new GdxRuntimeException("Not supported in GWT backend");
+		throw new GdxRuntimeException("absolute() not supported in GWT backend");
 	}
 
 	@Override
 	public FileHandle local (String path) {
-		throw new GdxRuntimeException("Not supported in GWT backend");
+		throw new GdxRuntimeException("local() not supported in GWT backend");
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://www.gwtproject.org/doctype/2.8.0/gwt-module.dtd">
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "https://www.gwtproject.org/doctype/2.10.0/gwt-module.dtd">
 <module>
 	<source path="tests">
 		<exclude name="**/AssetsFileGenerator.java"/> <!-- utility -->
@@ -11,11 +11,9 @@
 		<exclude name="**/BulletTestCollection.java"/> <!-- native -->
 		<exclude name="**/ContactListenerTest.java"/> <!-- String.format, Reflection -->
 		<exclude name="**/CullTest.java"/> <!-- GL ES 1.0 -->
-		<exclude name="**/DownloadTest.java"/> <!-- Incompatible Pixmap ctor -->
 		<exclude name="**/KTXTest.java"/> <!-- use ECT1 which is native -->
 		<exclude name="**/ETC1Test.java"/> <!-- native -->
 		<exclude name="**/FFTTest.java"/> <!-- native -->
-		<exclude name="**/FloatTextureTest.java"/> <!-- GLES 2.0 extension -->
 		<exclude name="**/FreeType*.java"/> <!-- native  -->
 		<exclude name="**/Gdx2DTest.java"/> <!-- native -->
 		<exclude name="**/GdxTests.java"/> <!-- utility -->
@@ -29,6 +27,7 @@
 		<exclude name="**/NetAPITest.java"/> <!-- abuses FileHandle() -->
 		<exclude name="**/NoncontinuousRenderingTest.java"/> <!-- Noncontinuous rendering not supported -->
 		<exclude name="**/PingPongSocketExample.java"/> <!-- networking -->
+		<exclude name="**/PixelBufferObjectTest.java"/> <!-- threading -->
 		<exclude name="**/PixmapPackerIOTest.java"/> <!-- gdx-tools -->
 		<exclude name="**/PngTest.java"/> <!-- Not compatible -->
 		<exclude name="**/RemoteTest.java"/> <!-- networking -->
@@ -36,14 +35,15 @@
 		<exclude name="**/SensorTest.java"/> <!-- Tests device accelerometer, compass, gyro -->
 		<exclude name="**/SoundTouchTest.java"/> <!-- native -->
 		<exclude name="**/StbTrueTypeTest.java"/> <!-- native -->
-		<exclude name="**/TextureArrayTest.java"/> <!-- GLES 3.0 -->
 		<exclude name="**/TextureDownloadTest.java"/> <!-- http utils missing -->
 		<exclude name="**/TTFFactoryTest.java"/> <!-- native -->
-		<exclude name="**/VBOWithVAOPerformanceTest.java"/> <!-- GLES 3.0 -->
+		<exclude name="**/VBOWithVAOPerformanceTest.java"/> <!-- GLES 3.0, Emulation issues -->
 		<exclude name="**/VorbisTest.java"/> <!-- native -->
 		<exclude name="**/WavTest.java"/> <!-- naive -->
 		<exclude name="**/voxel/*.java"/> <!-- PerlinNoiseGenerator uses a method not in the emulated version of Buffer -->
+		<exclude name="utils/CommandLineOptions.java"/>
 	</source>
 	<extend-configuration-property name="gdx.reflect.include" value="com.badlogic.gdx.tests.AnnotationTest" />
 	<extend-configuration-property name="gdx.reflect.include" value="com.badlogic.gdx.tests.ReflectionCorrectnessTest" />
+	<extend-configuration-property name="gdx.reflect.include" value="com.badlogic.gdx.tests.utils.GdxTestConfig" />
 </module>

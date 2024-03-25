@@ -40,7 +40,8 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), new CollisionWorldTest(), new CollisionTest(),
 		new FrustumCullingTest(), new CollisionDispatcherTest(), new ContactCallbackTest(), new ContactCallbackTest2(),
 		new ContactCacheTest(), new SoftBodyTest(), new SoftMeshTest(), new VehicleTest(), new VehicleFilterTest(),
-		new CharacterTest(), new ImportTest(), new TriangleRaycastTest(), new OcclusionCullingTest(), new PairCacheTest()};
+		new CharacterTest(), new ImportTest(), new TriangleRaycastTest(), new OcclusionCullingTest(), new PairCacheTest(),
+		new HeightFieldTest()};
 
 	protected int testIndex = 0;
 
@@ -77,7 +78,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		cameraController.translateTarget = false;
 		Gdx.input.setInputProcessor(new InputMultiplexer(cameraController, this, new GestureDetector(this)));
 
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 		hud = new Stage();
 		hud.addActor(fpsLabel = new Label(" ", new Label.LabelStyle(font, Color.WHITE)));
 		fpsLabel.setPosition(0, 0);
@@ -162,8 +163,8 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
-		return tests[testIndex].scrolled(amount);
+	public boolean scrolled (float amountX, float amountY) {
+		return tests[testIndex].scrolled(amountX, amountY);
 	}
 
 	@Override

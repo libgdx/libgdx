@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import javax.print.attribute.standard.DateTimeAtCompleted;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -32,7 +30,6 @@ import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btPersistentManifold;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
-import com.badlogic.gdx.tests.bullet.ContactCallbackTest2.TestContactListener;
 import com.badlogic.gdx.utils.Array;
 
 public class ContactCacheTest extends BaseBulletTest {
@@ -123,8 +120,8 @@ public class ContactCacheTest extends BaseBulletTest {
 		super.create();
 
 		final Model sphereModel = modelBuilder.createSphere(1f, 1f, 1f, 8, 8,
-			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)), Usage.Position
-				| Usage.Normal);
+			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)),
+			Usage.Position | Usage.Normal);
 		disposables.add(sphereModel);
 		final BulletConstructor sphereConstructor = new BulletConstructor(sphereModel, 0.5f, new btSphereShape(0.5f));
 		sphereConstructor.bodyInfo.setRestitution(1f);
@@ -132,8 +129,8 @@ public class ContactCacheTest extends BaseBulletTest {
 
 		final Model sceneModel = objLoader.loadModel(Gdx.files.internal("data/scene.obj"));
 		disposables.add(sceneModel);
-		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f, new btBvhTriangleMeshShape(
-			sceneModel.meshParts));
+		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f,
+			new btBvhTriangleMeshShape(sceneModel.meshParts));
 		sceneConstructor.bodyInfo.setRestitution(0.25f);
 		world.addConstructor("scene", sceneConstructor);
 
@@ -171,7 +168,7 @@ public class ContactCacheTest extends BaseBulletTest {
 
 	@Override
 	public void update () {
-		float delta = Gdx.graphics.getRawDeltaTime();
+		float delta = Gdx.graphics.getDeltaTime();
 		time += delta;
 		super.update();
 		if (contactCache != null) contactCache.update(delta);

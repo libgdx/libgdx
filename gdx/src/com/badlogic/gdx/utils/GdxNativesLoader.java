@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.Gdx;
-
 public class GdxNativesLoader {
 	static public boolean disableNativesLoading = false;
 
@@ -26,10 +24,10 @@ public class GdxNativesLoader {
 	/** Loads the libgdx native libraries if they have not already been loaded. */
 	static public synchronized void load () {
 		if (nativesLoaded) return;
-		nativesLoaded = true;
 
 		if (disableNativesLoading) return;
 
 		new SharedLibraryLoader().load("gdx");
+		nativesLoaded = true;
 	}
 }

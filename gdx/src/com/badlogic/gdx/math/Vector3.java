@@ -218,7 +218,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this;
 	}
 
-	/** @return The euclidean length */
+	/** @return The Euclidean length */
 	public static float len (final float x, final float y, final float z) {
 		return (float)Math.sqrt(x * x + y * y + z * z);
 	}
@@ -228,7 +228,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return (float)Math.sqrt(x * x + y * y + z * z);
 	}
 
-	/** @return The squared euclidean length */
+	/** @return The squared Euclidean length */
 	public static float len2 (final float x, final float y, final float z) {
 		return x * x + y * y + z * z;
 	}
@@ -238,13 +238,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return x * x + y * y + z * z;
 	}
 
-	/** @param vector The other vector
-	 * @return Whether this and the other vector are equal */
+	/** Returns true if this vector and the vector parameter have identical components.
+	 * @param vector The other vector
+	 * @return Whether this and the other vector are equal with exact precision */
 	public boolean idt (final Vector3 vector) {
 		return x == vector.x && y == vector.y && z == vector.z;
 	}
 
-	/** @return The euclidean distance between the two specified vectors */
+	/** @return The Euclidean distance between the two specified vectors */
 	public static float dst (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
 		final float a = x2 - x1;
 		final float b = y2 - y1;
@@ -343,46 +344,48 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 mul4x3 (float[] matrix) {
-		return set(x * matrix[0] + y * matrix[3] + z * matrix[6] + matrix[9], x * matrix[1] + y * matrix[4] + z * matrix[7]
-			+ matrix[10], x * matrix[2] + y * matrix[5] + z * matrix[8] + matrix[11]);
+		return set(x * matrix[0] + y * matrix[3] + z * matrix[6] + matrix[9],
+			x * matrix[1] + y * matrix[4] + z * matrix[7] + matrix[10], x * matrix[2] + y * matrix[5] + z * matrix[8] + matrix[11]);
 	}
 
 	/** Left-multiplies the vector by the given matrix, assuming the fourth (w) component of the vector is 1.
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 mul (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
-		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02] + l_mat[Matrix4.M03], x
-			* l_mat[Matrix4.M10] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12] + l_mat[Matrix4.M13], x * l_mat[Matrix4.M20] + y
-			* l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M23]);
+		final float[] l_mat = matrix.val;
+		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02] + l_mat[Matrix4.M03],
+			x * l_mat[Matrix4.M10] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12] + l_mat[Matrix4.M13],
+			x * l_mat[Matrix4.M20] + y * l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M23]);
 	}
 
 	/** Multiplies the vector by the transpose of the given matrix, assuming the fourth (w) component of the vector is 1.
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 traMul (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
-		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M10] + z * l_mat[Matrix4.M20] + l_mat[Matrix4.M30], x
-			* l_mat[Matrix4.M01] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M21] + l_mat[Matrix4.M31], x * l_mat[Matrix4.M02] + y
-			* l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M32]);
+		final float[] l_mat = matrix.val;
+		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M10] + z * l_mat[Matrix4.M20] + l_mat[Matrix4.M30],
+			x * l_mat[Matrix4.M01] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M21] + l_mat[Matrix4.M31],
+			x * l_mat[Matrix4.M02] + y * l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M32]);
 	}
 
 	/** Left-multiplies the vector by the given matrix.
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 mul (Matrix3 matrix) {
-		final float l_mat[] = matrix.val;
-		return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M01] + z * l_mat[Matrix3.M02], x * l_mat[Matrix3.M10] + y
-			* l_mat[Matrix3.M11] + z * l_mat[Matrix3.M12], x * l_mat[Matrix3.M20] + y * l_mat[Matrix3.M21] + z * l_mat[Matrix3.M22]);
+		final float[] l_mat = matrix.val;
+		return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M01] + z * l_mat[Matrix3.M02],
+			x * l_mat[Matrix3.M10] + y * l_mat[Matrix3.M11] + z * l_mat[Matrix3.M12],
+			x * l_mat[Matrix3.M20] + y * l_mat[Matrix3.M21] + z * l_mat[Matrix3.M22]);
 	}
 
 	/** Multiplies the vector by the transpose of the given matrix.
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 traMul (Matrix3 matrix) {
-		final float l_mat[] = matrix.val;
-		return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M10] + z * l_mat[Matrix3.M20], x * l_mat[Matrix3.M01] + y
-			* l_mat[Matrix3.M11] + z * l_mat[Matrix3.M21], x * l_mat[Matrix3.M02] + y * l_mat[Matrix3.M12] + z * l_mat[Matrix3.M22]);
+		final float[] l_mat = matrix.val;
+		return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M10] + z * l_mat[Matrix3.M20],
+			x * l_mat[Matrix3.M01] + y * l_mat[Matrix3.M11] + z * l_mat[Matrix3.M21],
+			x * l_mat[Matrix3.M02] + y * l_mat[Matrix3.M12] + z * l_mat[Matrix3.M22]);
 	}
 
 	/** Multiplies the vector by the given {@link Quaternion}.
@@ -397,11 +400,11 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The matrix.
 	 * @return This vector for chaining */
 	public Vector3 prj (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
+		final float[] l_mat = matrix.val;
 		final float l_w = 1f / (x * l_mat[Matrix4.M30] + y * l_mat[Matrix4.M31] + z * l_mat[Matrix4.M32] + l_mat[Matrix4.M33]);
-		return this.set((x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02] + l_mat[Matrix4.M03]) * l_w, (x
-			* l_mat[Matrix4.M10] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12] + l_mat[Matrix4.M13])
-			* l_w, (x * l_mat[Matrix4.M20] + y * l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M23]) * l_w);
+		return this.set((x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02] + l_mat[Matrix4.M03]) * l_w,
+			(x * l_mat[Matrix4.M10] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12] + l_mat[Matrix4.M13]) * l_w,
+			(x * l_mat[Matrix4.M20] + y * l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M23]) * l_w);
 	}
 
 	/** Multiplies this vector by the first three columns of the matrix, essentially only applying rotation and scaling.
@@ -409,9 +412,10 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 rot (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
-		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02], x * l_mat[Matrix4.M10] + y
-			* l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12], x * l_mat[Matrix4.M20] + y * l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22]);
+		final float[] l_mat = matrix.val;
+		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02],
+			x * l_mat[Matrix4.M10] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12],
+			x * l_mat[Matrix4.M20] + y * l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22]);
 	}
 
 	/** Multiplies this vector by the transpose of the first three columns of the matrix. Note: only works for translation and
@@ -419,9 +423,10 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The transformation matrix
 	 * @return The vector for chaining */
 	public Vector3 unrotate (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
-		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M10] + z * l_mat[Matrix4.M20], x * l_mat[Matrix4.M01] + y
-			* l_mat[Matrix4.M11] + z * l_mat[Matrix4.M21], x * l_mat[Matrix4.M02] + y * l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22]);
+		final float[] l_mat = matrix.val;
+		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M10] + z * l_mat[Matrix4.M20],
+			x * l_mat[Matrix4.M01] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M21],
+			x * l_mat[Matrix4.M02] + y * l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22]);
 	}
 
 	/** Translates this vector in the direction opposite to the translation of the matrix and the multiplies this vector by the
@@ -430,12 +435,13 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @param matrix The transformation matrix
 	 * @return The vector for chaining */
 	public Vector3 untransform (final Matrix4 matrix) {
-		final float l_mat[] = matrix.val;
+		final float[] l_mat = matrix.val;
 		x -= l_mat[Matrix4.M03];
 		y -= l_mat[Matrix4.M03];
 		z -= l_mat[Matrix4.M03];
-		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M10] + z * l_mat[Matrix4.M20], x * l_mat[Matrix4.M01] + y
-			* l_mat[Matrix4.M11] + z * l_mat[Matrix4.M21], x * l_mat[Matrix4.M02] + y * l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22]);
+		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M10] + z * l_mat[Matrix4.M20],
+			x * l_mat[Matrix4.M01] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M21],
+			x * l_mat[Matrix4.M02] + y * l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22]);
 	}
 
 	/** Rotates this vector by the given angle in degrees around the given axis.
@@ -507,7 +513,8 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	@Override
 	public boolean isOnLine (Vector3 other) {
-		return len2(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x) <= MathUtils.FLOAT_ROUNDING_ERROR;
+		return len2(y * other.z - z * other.y, z * other.x - x * other.z,
+			x * other.y - y * other.x) <= MathUtils.FLOAT_ROUNDING_ERROR;
 	}
 
 	@Override
@@ -691,24 +698,20 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return true;
 	}
 
-	/**
-	 * Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
+	/** Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
 	 *
 	 * @param other other vector to compare
-	 * @return true if vector are equal, otherwise false
-	 */
+	 * @return true if vector are equal, otherwise false */
 	public boolean epsilonEquals (final Vector3 other) {
 		return epsilonEquals(other, MathUtils.FLOAT_ROUNDING_ERROR);
 	}
 
-	/**
-	 * Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
+	/** Compares this vector with the other vector using MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
 	 *
 	 * @param x x component of the other vector to compare
 	 * @param y y component of the other vector to compare
 	 * @param z z component of the other vector to compare
-	 * @return true if vector are equal, otherwise false
-	 */
+	 * @return true if vector are equal, otherwise false */
 	public boolean epsilonEquals (float x, float y, float z) {
 		return epsilonEquals(x, y, z, MathUtils.FLOAT_ROUNDING_ERROR);
 	}

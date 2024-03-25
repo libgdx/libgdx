@@ -20,8 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Null;
 
-/** Value placeholder, allowing the value to be computed on request. Values are provided an actor for context which reduces the
- * number of value instances that need to be created and reduces verbosity in code that specifies values.
+/** Value placeholder, allowing the value to be computed on request. Values can be provided an actor for context to reduce the
+ * number of value instances that need to be created and reduce verbosity in code that specifies values.
  * @author Nathan Sweet */
 abstract public class Value {
 	/** Calls {@link #get(Actor)} with null. */

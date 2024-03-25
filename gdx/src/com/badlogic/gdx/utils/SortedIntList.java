@@ -21,7 +21,7 @@ package com.badlogic.gdx.utils;
  * @param <E> */
 public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 	private NodePool<E> nodePool = new NodePool<E>(); // avoid allocating nodes
-	private Iterator iterator;
+	private transient Iterator iterator;
 	int size = 0;
 
 	Node<E> first;
@@ -35,8 +35,7 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 	 * @param index Index of the element
 	 * @param value Element to insert
 	 * @return Element replaced by newly inserted element, null if nothing was replaced */
-	@Null
-	public E insert (int index, E value) {
+	public @Null E insert (int index, E value) {
 		if (first != null) {
 			Node<E> c = first;
 			// iterate to the right until we can't move any further because the next number is bigger than index
@@ -116,13 +115,17 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 	 * Use the {@link Iterator} constructor for nested or multithreaded iteration. */
 	public java.util.Iterator<Node<E>> iterator () {
 		if (Collections.allocateIterators) return new Iterator();
-		if (iterator == null) iterator = new Iterator();
+		if (iterator == null) return iterator = new Iterator();
 		return iterator.reset();
 	}
 
 	public class Iterator implements java.util.Iterator<Node<E>> {
 		private Node<E> position;
 		private Node<E> previousPosition;
+
+		public Iterator () {
+			reset();
+		}
 
 		@Override
 		public boolean hasNext () {

@@ -42,7 +42,7 @@ import java.util.NoSuchElementException;
  * @author Tommy Ettinger */
 public class OrderedSet<T> extends ObjectSet<T> {
 	final Array<T> items;
-	OrderedSetIterator iterator1, iterator2;
+	transient OrderedSetIterator iterator1, iterator2;
 
 	public OrderedSet () {
 		items = new Array();
@@ -69,8 +69,8 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		return true;
 	}
 
-	/** Sets the key at the specfied index. Returns true if the key was not already in the set. If this set already contains the
-	 * key, the existing key's index is changed if needed and false is returned. */
+	/** Sets the key at the specfied index. Returns true if the key was added to the set or false if it was already in the set. If
+	 * this set already contains the key, the existing key's index is changed if needed and false is returned. */
 	public boolean add (T key, int index) {
 		if (!super.add(key)) {
 			int oldIndex = items.indexOf(key, true);

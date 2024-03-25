@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class BitmapFontTest extends GdxTest {
@@ -50,9 +51,9 @@ public class BitmapFontTest extends GdxTest {
 	public void create () {
 		spriteBatch = new SpriteBatch();
 		// font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), false);
-		font = new BitmapFont(Gdx.files.internal("data/arial-32-pad.fnt"), false);
-		smallFont = new BitmapFont(); // uses Arial 15, the default
-		// font = new FreeTypeFontGenerator(Gdx.files.internal("data/arial.ttf")).generateFont(new FreeTypeFontParameter());
+		font = new BitmapFont(Gdx.files.internal("data/lsans-32-pad.fnt"), false);
+		smallFont = new BitmapFont(); // uses LSans 15, the default
+		// font = new FreeTypeFontGenerator(Gdx.files.internal("data/lsans.ttf")).generateFont(new FreeTypeFontParameter());
 		font.getData().markupEnabled = true;
 		font.getData().breakChars = new char[] {'-'};
 
@@ -91,19 +92,19 @@ public class BitmapFontTest extends GdxTest {
 
 		int viewHeight = Gdx.graphics.getHeight();
 
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0, 0, 0, 1);
 
 		// Test wrapping or truncation with the font directly.
-		if (false) {
+		if (true) {
 			// BitmapFont font = label.getStyle().font;
 			BitmapFont font = this.font;
+			font.getData().markupEnabled = true;
 			font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
 			font.getData().setScale(2f);
 			renderer.begin(ShapeRenderer.ShapeType.Line);
 			renderer.setColor(0, 1, 0, 1);
-			float w = Gdx.input.getX();
+			float w = Gdx.input.getX() - 10;
 			// w = 855;
 			renderer.rect(10, 10, w, 500);
 			renderer.end();
@@ -111,9 +112,10 @@ public class BitmapFontTest extends GdxTest {
 			spriteBatch.begin();
 			String text = "your new";
 			// text = "How quickly da[RED]ft jumping zebras vex.";
-			text = "Another font wrap is-sue,  this time with multiple whitespace characters.";
-			// text = "test with AGWlWi      AGWlWi issue";
-			text = "AAA BBB CCC DDD    [RED]EEE";
+			// text = "Another font wrap is-sue, this time with multiple whitespace characters.";
+			// text = "test with AGWlWi AGWlWi issue";
+			// text = "AA BB \nEE"; // When wrapping after BB, there should not be a blank line before EE.
+			text = "[BLUE]A[]A BB [#00f000]EE[] T [GREEN]e[]   \r\r[PINK]\n\nV[][YELLOW]a bb[] ([CYAN]5[]FFFurz)\nV[PURPLE]a[]\nVa\n[PURPLE]V[]a";
 			if (true) { // Test wrap.
 				layout.setText(font, text, 0, text.length(), font.getColor(), w, Align.center, true, null);
 			} else { // Test truncation.
@@ -123,9 +125,24 @@ public class BitmapFontTest extends GdxTest {
 			font.draw(spriteBatch, layout, 10, 10 + meowy);
 			spriteBatch.end();
 
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE);
 			renderer.begin(ShapeRenderer.ShapeType.Line);
-			renderer.setColor(0, 1, 0, 1);
+			float c = 0.8f;
+
+			// GlyphLayout bounds
+			if (true) {
+				renderer.setColor(c, c, c, 1);
+				renderer.rect(10 + 0.5f * (w - layout.width), 10 + meowy, layout.width, -layout.height);
+			}
+			// GlyphRun bounds
 			for (int i = 0, n = layout.runs.size; i < n; i++) {
+				if (i % 3 == 0)
+					renderer.setColor(c, 0, c, 1);
+				else if (i % 2 == 0)
+					renderer.setColor(0, c, c, 1);
+				else
+					renderer.setColor(c, c, 0, 1);
 				GlyphRun r = layout.runs.get(i);
 				renderer.rect(10 + r.x, 10 + meowy + r.y, r.width, -font.getLineHeight());
 			}

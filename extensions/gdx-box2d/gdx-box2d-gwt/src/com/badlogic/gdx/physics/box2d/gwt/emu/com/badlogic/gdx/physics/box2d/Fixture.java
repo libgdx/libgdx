@@ -77,8 +77,8 @@ public class Fixture {
 		return fixture.isSensor();
 	}
 
-	/** Set the contact filtering data. This will not update contacts until the next time step when either parent body is active and
-	 * awake. This automatically calls Refilter. */
+	/** Set the contact filtering data. This will not update contacts until the next time step when either parent body is active
+	 * and awake. This automatically calls Refilter. */
 	public void setFilterData (Filter filter) {
 		org.jbox2d.dynamics.Filter f = new org.jbox2d.dynamics.Filter();
 		f.categoryBits = filter.categoryBits;

@@ -68,7 +68,7 @@ public class Window extends Table {
 		setTouchable(Touchable.enabled);
 		setClip(true);
 
-		titleLabel = new Label(title, new LabelStyle(style.titleFont, style.titleFontColor));
+		titleLabel = newLabel(title, new LabelStyle(style.titleFont, style.titleFontColor));
 		titleLabel.setEllipsis(true);
 
 		titleTable = new Table() {
@@ -194,9 +194,14 @@ public class Window extends Table {
 		});
 	}
 
+	protected Label newLabel (String text, LabelStyle style) {
+		return new Label(text, style);
+	}
+
 	public void setStyle (WindowStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
+
 		setBackground(style.background);
 		titleLabel.setStyle(new LabelStyle(style.titleFont, style.titleFontColor));
 		invalidateHierarchy();
@@ -271,8 +276,7 @@ public class Window extends Table {
 		drawTitleTable = false; // Avoid drawing the title table again in drawChildren.
 	}
 
-	@Null
-	public Actor hit (float x, float y, boolean touchable) {
+	public @Null Actor hit (float x, float y, boolean touchable) {
 		if (!isVisible()) return null;
 		Actor hit = super.hit(x, y, touchable);
 		if (hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
@@ -339,27 +343,25 @@ public class Window extends Table {
 	/** The style for a window, see {@link Window}.
 	 * @author Nathan Sweet */
 	static public class WindowStyle {
-		/** Optional. */
-		@Null public Drawable background;
+		public @Null Drawable background;
 		public BitmapFont titleFont;
-		/** Optional. */
-		public Color titleFontColor = new Color(1, 1, 1, 1);
-		/** Optional. */
-		@Null public Drawable stageBackground;
+		public @Null Color titleFontColor = new Color(1, 1, 1, 1);
+		public @Null Drawable stageBackground;
 
 		public WindowStyle () {
 		}
 
 		public WindowStyle (BitmapFont titleFont, Color titleFontColor, @Null Drawable background) {
-			this.background = background;
 			this.titleFont = titleFont;
 			this.titleFontColor.set(titleFontColor);
+			this.background = background;
 		}
 
 		public WindowStyle (WindowStyle style) {
-			this.background = style.background;
-			this.titleFont = style.titleFont;
-			this.titleFontColor = new Color(style.titleFontColor);
+			titleFont = style.titleFont;
+			if (style.titleFontColor != null) titleFontColor = new Color(style.titleFontColor);
+			background = style.background;
+			stageBackground = style.stageBackground;
 		}
 	}
 }

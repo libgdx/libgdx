@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,6 +44,10 @@ import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyHelpers;
 import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyRigidBodyCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyWorldInfo;
 import com.badlogic.gdx.physics.bullet.softbody.btSoftRigidDynamicsWorld;
+
+import java.nio.Buffer;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 /** @author xoppa */
 public class SoftBodyTest extends BaseBulletTest {
@@ -93,15 +97,17 @@ public class SoftBodyTest extends BaseBulletTest {
 		final int vertCount = softBody.getNodeCount();
 		final int faceCount = softBody.getFaceCount();
 		mesh = new Mesh(false, vertCount, faceCount * 3, new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
-			new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2,
-				ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+			new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE),
+			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		final int vertSize = mesh.getVertexSize() / 4;
-		mesh.getVerticesBuffer().position(0);
-		mesh.getVerticesBuffer().limit(vertCount * vertSize);
-		mesh.getIndicesBuffer().position(0);
-		mesh.getIndicesBuffer().limit(faceCount * 3);
-		softBody.getVertices(mesh.getVerticesBuffer(), vertCount, mesh.getVertexSize(), 0);
-		softBody.getIndices(mesh.getIndicesBuffer(), faceCount);
+		FloatBuffer verticesBuffer = mesh.getVerticesBuffer(true);
+		((Buffer)verticesBuffer).position(0);
+		((Buffer)verticesBuffer).limit(vertCount * vertSize);
+		ShortBuffer indicesBuffer = mesh.getIndicesBuffer(true);
+		((Buffer)indicesBuffer).position(0);
+		((Buffer)indicesBuffer).limit(faceCount * 3);
+		softBody.getVertices(verticesBuffer, vertCount, mesh.getVertexSize(), 0);
+		softBody.getIndices(indicesBuffer, faceCount);
 
 		final float[] verts = new float[vertCount * vertSize];
 		final int uvOffset = mesh.getVertexAttribute(Usage.TextureCoordinates).offset / 4;
@@ -119,10 +125,9 @@ public class SoftBodyTest extends BaseBulletTest {
 
 		ModelBuilder builder = new ModelBuilder();
 		builder.begin();
-		builder.part(
-			new MeshPart("", mesh, 0, mesh.getNumIndices(), GL20.GL_TRIANGLES),
-			new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
-				.createShininess(64f), IntAttribute.createCullFace(0)));
+		builder.part(new MeshPart("", mesh, 0, mesh.getNumIndices(), GL20.GL_TRIANGLES),
+			new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(Color.WHITE),
+				FloatAttribute.createShininess(64f), IntAttribute.createCullFace(0)));
 		model = builder.end();
 
 		instance = new ModelInstance(model);
@@ -149,7 +154,7 @@ public class SoftBodyTest extends BaseBulletTest {
 
 	@Override
 	protected void renderWorld () {
-		softBody.getVertices(mesh.getVerticesBuffer(), softBody.getNodeCount(), mesh.getVertexSize(), 0);
+		softBody.getVertices(mesh.getVerticesBuffer(true), softBody.getNodeCount(), mesh.getVertexSize(), 0);
 		softBody.getWorldTransform(instance.transform);
 		super.renderWorld();
 

@@ -18,6 +18,10 @@ package com.badlogic.gdx.math;
 
 /** @author Nathan Sweet */
 public final class GeometryUtils {
+
+	private GeometryUtils () {
+	}
+
 	static private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
 
 	/** Computes the barycentric coordinates v,w for the specified point in the triangle.
@@ -27,10 +31,13 @@ public final class GeometryUtils {
 	 * If vertices a,b,c have values aa,bb,cc then to get an interpolated value at point p:
 	 * 
 	 * <pre>
-	 * GeometryUtils.barycentric(p, a, b, c, barycentric);
-	 * float u = 1.f - barycentric.x - barycentric.y;
+	 * GeometryUtils.toBarycoord(p, a, b, c, barycentric);
+	 * // THEN:
+	 * float u = 1f - barycentric.x - barycentric.y;
 	 * float x = u * aa.x + barycentric.x * bb.x + barycentric.y * cc.x;
 	 * float y = u * aa.y + barycentric.x * bb.y + barycentric.y * cc.y;
+	 * // OR:
+	 * GeometryUtils.fromBarycoord(barycentric, aa, bb, cc, out);
 	 * </pre>
 	 * 
 	 * @return barycentricOut */
@@ -70,8 +77,8 @@ public final class GeometryUtils {
 		return u * a + barycentric.x * b + barycentric.y * c;
 	}
 
-	/** Returns the lowest positive root of the quadric equation given by a* x * x + b * x + c = 0. If no solution is given
-	 * Float.Nan is returned.
+	/** Returns the lowest positive root of the quadric equation given by a * x * x + b * x + c = 0. If no solution is given,
+	 * Float.NaN is returned.
 	 * @param a the first coefficient of the quadric equation
 	 * @param b the second coefficient of the quadric equation
 	 * @param c the third coefficient of the quadric equation
@@ -156,10 +163,10 @@ public final class GeometryUtils {
 	 * Gary L. Miller, Dafna Talmor, Shang-Hua Teng, and Noel Walkington. A Delaunay Based Numerical Method for Three Dimensions:
 	 * Generation, Formulation, and Partition. */
 	static public float triangleQuality (float x1, float y1, float x2, float y2, float x3, float y3) {
-		float length1 = (float)Math.sqrt(x1 * x1 + y1 * y1);
-		float length2 = (float)Math.sqrt(x2 * x2 + y2 * y2);
-		float length3 = (float)Math.sqrt(x3 * x3 + y3 * y3);
-		return Math.min(length1, Math.min(length2, length3)) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
+		float sqLength1 = x1 * x1 + y1 * y1;
+		float sqLength2 = x2 * x2 + y2 * y2;
+		float sqLength3 = x3 * x3 + y3 * y3;
+		return (float)Math.sqrt(Math.min(sqLength1, Math.min(sqLength2, sqLength3))) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
 	}
 
 	static public float triangleArea (float x1, float y1, float x2, float y2, float x3, float y3) {
@@ -224,6 +231,19 @@ public final class GeometryUtils {
 
 	static public void ensureCCW (float[] polygon, int offset, int count) {
 		if (!isClockwise(polygon, offset, count)) return;
+		reverseVertices(polygon, offset, count);
+	}
+
+	static public void ensureClockwise (float[] polygon) {
+		ensureClockwise(polygon, 0, polygon.length);
+	}
+
+	static public void ensureClockwise (float[] polygon, int offset, int count) {
+		if (isClockwise(polygon, offset, count)) return;
+		reverseVertices(polygon, offset, count);
+	}
+
+	static public void reverseVertices (float[] polygon, int offset, int count) {
 		int lastX = offset + count - 2;
 		for (int i = offset, n = offset + count / 2; i < n; i += 2) {
 			int other = lastX - i;
@@ -248,5 +268,9 @@ public final class GeometryUtils {
 			y1 = y2;
 		}
 		return area < 0;
+	}
+
+	static public boolean isCCW (float[] polygon, int offset, int count) {
+		return !isClockwise(polygon, offset, count);
 	}
 }

@@ -61,7 +61,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	 * hash. */
 	protected int mask;
 
-	private ObjectSetIterator iterator1, iterator2;
+	private transient ObjectSetIterator iterator1, iterator2;
 
 	/** Creates a new set with an initial capacity of 51 and a load factor of 0.8. */
 	public ObjectSet () {
@@ -69,14 +69,14 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	/** Creates a new set with a load factor of 0.8.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public ObjectSet (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
 	/** Creates a new set with the specified initial capacity and load factor. This set will hold initialCapacity items before
 	 * growing the backing table.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public ObjectSet (int initialCapacity, float loadFactor) {
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
@@ -127,8 +127,8 @@ public class ObjectSet<T> implements Iterable<T> {
 		}
 	}
 
-	/** Returns true if the key was not already in the set. If this set already contains the key, the call leaves the set unchanged
-	 * and returns false. */
+	/** Returns true if the key was added to the set or false if it was already in the set. If this set already contains the key,
+	 * the call leaves the set unchanged and returns false. */
 	public boolean add (T key) {
 		int i = locateKey(key);
 		if (i >= 0) return false; // Existing key was found.
@@ -243,8 +243,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		return locateKey(key) >= 0;
 	}
 
-	@Null
-	public T get (T key) {
+	public @Null T get (T key) {
 		int i = locateKey(key);
 		return i < 0 ? null : keyTable[i];
 	}

@@ -18,15 +18,16 @@ package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.FloatCounter;
-import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.math.MathUtils;
 
 /** Class to keep track of the time and load (percentage of total time) a specific task takes. Call {@link #start()} just before
  * starting the task and {@link #stop()} right after. You can do this multiple times if required. Every render or update call
  * {@link #tick()} to update the values. The {@link #time} {@link FloatCounter} provides access to the minimum, maximum, average,
- * total and current time (in seconds) the task takes. Likewise for the {@link #load} value, which is the percentage of the total time.
+ * total and current time (in seconds) the task takes. Likewise for the {@link #load} value, which is the percentage of the total
+ * time.
  * @author xoppa */
 public class PerformanceCounter {
-	private final static float nano2seconds = 1f / 1000000000.0f;
+	private final static float nano2seconds = MathUtils.nanoToSec;
 	private long startTime = 0L;
 	private long lastTick = 0L;
 
@@ -36,8 +37,8 @@ public class PerformanceCounter {
 	public final FloatCounter load;
 	/** The name of this counter */
 	public final String name;
-	/** The current value in seconds, you can manually increase this using your own timing mechanism if needed, if you do so, you also need to
-	 * update {@link #valid}. */
+	/** The current value in seconds, you can manually increase this using your own timing mechanism if needed, if you do so, you
+	 * also need to update {@link #valid}. */
 	public float current = 0f;
 	/** Flag to indicate that the current value is valid, you need to set this to true if using your own timing mechanism */
 	public boolean valid = false;
@@ -77,7 +78,8 @@ public class PerformanceCounter {
 		valid = false;
 	}
 
-	/** Start counting, call this method just before performing the task you want to keep track of. Call {@link #stop()} when done. */
+	/** Start counting, call this method just before performing the task you want to keep track of. Call {@link #stop()} when
+	 * done. */
 	public void start () {
 		startTime = TimeUtils.nanoTime();
 		valid = false;

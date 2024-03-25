@@ -26,6 +26,7 @@ import static java.awt.GridBagConstraints.SOUTHEAST;
 import static java.awt.GridBagConstraints.WEST;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.GridBagConstraints;
@@ -68,9 +69,11 @@ public class SettingsDialog extends JDialog {
 	private JTextField mavenTextField;
 	SetupCheckBox offlineBox;
 	SetupCheckBox kotlinBox;
+	SetupCheckBox oldAssetsBox;
 	private String mavenSnapshot;
 	private boolean offlineSnapshot;
 	private boolean kotlinSnapshot;
+	private boolean oldAssetsSnapshot;
 
 	public SettingsDialog (final SetupCheckBox gwtCheckBox) {
 		contentPane = new JPanel(new GridBagLayout());
@@ -84,7 +87,9 @@ public class SettingsDialog extends JDialog {
 		buttonOK.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
 				if (offlineBox.isSelected()) {
-					int value = JOptionPane.showConfirmDialog(null, "You have selected offline mode. This requires you to have your dependencies already in your maven/gradle cache.\n\nThe setup will fail if you do not have the correct dependenices already.\n\nDo you want to continue?", "Warning!", JOptionPane.YES_NO_OPTION);
+					int value = JOptionPane.showConfirmDialog(null,
+						"You have selected offline mode. This requires you to have your dependencies already in your maven/gradle cache.\n\nThe setup will fail if you do not have the correct dependencies already.\n\nDo you want to continue?",
+						"Warning!", JOptionPane.YES_NO_OPTION);
 					if (value == 0) {
 						onOK();
 					}
@@ -108,7 +113,7 @@ public class SettingsDialog extends JDialog {
 						Desktop desktop = Desktop.getDesktop();
 						try {
 							URI uri = new URI(
-								"https://github.com/libgdx/libgdx/wiki/Improving-workflow-with-Gradle#how-to-remove-gradle-ide-integration-from-your-project");
+								"https://libgdx.com/wiki/articles/improving-workflow-with-gradle#how-to-remove-gradle-ide-integration-from-your-project");
 							desktop.browse(uri);
 						} catch (IOException ex) {
 							ex.printStackTrace();
@@ -152,37 +157,45 @@ public class SettingsDialog extends JDialog {
 		content.add(settings, new GridBagConstraints(0, 0, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		content.add(description, new GridBagConstraints(3, 0, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 
-		JLabel mavenLabel = new JLabel("Maven Mirror Url");
+		JLabel mavenLabel = new JLabel("Maven Mirror URL");
 		JLabel mavenDesc = new JLabel("Replaces Maven Central with this repository");
 		mavenTextField = new JTextField(15);
 		mavenTextField.setMinimumSize(mavenTextField.getPreferredSize());
 		mavenLabel.setForeground(new Color(170, 170, 170));
 		mavenDesc.setForeground(new Color(170, 170, 170));
+
 		JLabel offlineLabel = new JLabel("Offline Mode");
 		JLabel offlineDesc = new JLabel("Don't force download dependencies");
-		JLabel kotlinLabel = new JLabel("Use Kotlin");
-		JLabel kotlinDesc = new JLabel("Use Kotlin as the main language.");
 		offlineBox = new SetupCheckBox();
 		offlineLabel.setForeground(new Color(170, 170, 170));
 		offlineDesc.setForeground(new Color(170, 170, 170));
 		offlineBox.setBackground(new Color(36, 36, 36));
+
+		JLabel kotlinLabel = new JLabel("Use Kotlin");
+		JLabel kotlinDesc = new JLabel("Use Kotlin as the main language");
 		kotlinBox = new SetupCheckBox();
 		kotlinBox.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed (ActionEvent e) {
 				final String message = "Using Kotlin with the HTML backend is not supported. Do you want to disable the HTML backend?";
-				if(kotlinBox.isSelected() && gwtCheckBox.isSelected() &&
-						JOptionPane.showConfirmDialog(kotlinBox, message, "Warning!", 
-						JOptionPane.YES_NO_OPTION) == 0) {
+				if (kotlinBox.isSelected() && gwtCheckBox.isSelected()
+					&& JOptionPane.showConfirmDialog(kotlinBox, message, "Warning!", JOptionPane.YES_NO_OPTION) == 0) {
 					gwtCheckBox.setSelected(false);
-				} else if(gwtCheckBox.isSelected()) {
+				} else if (gwtCheckBox.isSelected()) {
 					kotlinBox.setSelected(false);
 				}
 			}
 		});
-		offlineBox.setBackground(new Color(36, 36, 36));
 		kotlinLabel.setForeground(new Color(170, 170, 170));
 		kotlinDesc.setForeground(new Color(170, 170, 170));
+
+		JLabel oldAssetsLabel = new JLabel("Legacy Assets Dir");
+		JLabel oldAssetsDesc = new JLabel("Store assets in the pre-1.11.0 location");
+		oldAssetsDesc.setToolTipText("(in android or core folder instead of project root)");
+		oldAssetsBox = new SetupCheckBox();
+		oldAssetsLabel.setForeground(new Color(170, 170, 170));
+		oldAssetsDesc.setForeground(new Color(170, 170, 170));
+		oldAssetsBox.setBackground(new Color(36, 36, 36));
 
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(85, 85, 85));
@@ -197,11 +210,14 @@ public class SettingsDialog extends JDialog {
 		content.add(offlineLabel, new GridBagConstraints(0, 3, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		content.add(offlineBox, new GridBagConstraints(1, 3, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 		content.add(offlineDesc, new GridBagConstraints(3, 3, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
-		
+
 		content.add(kotlinLabel, new GridBagConstraints(0, 4, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		content.add(kotlinBox, new GridBagConstraints(1, 4, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 		content.add(kotlinDesc, new GridBagConstraints(3, 4, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 
+		content.add(oldAssetsLabel, new GridBagConstraints(0, 5, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		content.add(oldAssetsBox, new GridBagConstraints(1, 5, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		content.add(oldAssetsDesc, new GridBagConstraints(3, 5, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 
 		String text = "<p style=\"font-size:10\">Click for more info on using Gradle without IDE integration</p>";
 		linkText = new JLabel("<html>" + text + "</html>");
@@ -232,8 +248,10 @@ public class SettingsDialog extends JDialog {
 		mavenTextField.setForeground(new Color(255, 255, 255));
 	}
 
-	public void showDialog (SetupCheckBox gwtCheckBox) {
+	public void showDialog (Component parent, SetupCheckBox gwtCheckBox) {
 		takeSnapshot();
+		setLocationRelativeTo(parent);
+		setAlwaysOnTop(true);
 		setVisible(true);
 		if (gwtCheckBox.isSelected()) {
 			kotlinBox.setSelected(false);
@@ -245,7 +263,7 @@ public class SettingsDialog extends JDialog {
 		List<String> list = new ArrayList<String>();
 		list.add("--no-daemon");
 		if (offlineBox.isSelected()) {
-			list.add("--offline");	
+			list.add("--offline");
 		}
 		return list;
 	}
@@ -268,11 +286,13 @@ public class SettingsDialog extends JDialog {
 		mavenSnapshot = mavenTextField.getText();
 		offlineSnapshot = offlineBox.isSelected();
 		kotlinSnapshot = kotlinBox.isSelected();
+		oldAssetsSnapshot = oldAssetsBox.isSelected();
 	}
 
 	private void restore () {
 		mavenTextField.setText(mavenSnapshot);
 		offlineBox.setSelected(offlineSnapshot);
 		kotlinBox.setSelected(kotlinSnapshot);
+		oldAssetsBox.setSelected(oldAssetsSnapshot);
 	}
 }

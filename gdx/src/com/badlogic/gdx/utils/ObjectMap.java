@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys and values are objects. Null keys are not allowed. No allocation is done except when growing
  * the table size.
@@ -64,9 +64,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 * hash. */
 	protected int mask;
 
-	Entries entries1, entries2;
-	Values values1, values2;
-	Keys keys1, keys2;
+	transient Entries entries1, entries2;
+	transient Values values1, values2;
+	transient Keys keys1, keys2;
 
 	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public ObjectMap () {
@@ -74,14 +74,14 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Creates a new map with a load factor of 0.8.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public ObjectMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
 	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
 	 * growing the backing table.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public ObjectMap (int initialCapacity, float loadFactor) {
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
@@ -135,8 +135,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Returns the old value associated with the specified key, or null. */
-	@Null
-	public V put (K key, @Null V value) {
+	public @Null V put (K key, @Null V value) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
 			V oldValue = valueTable[i];
@@ -174,8 +173,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Returns the value for the specified key, or null if the key is not in the map. */
-	@Null
-	public <T extends K> V get (T key) {
+	public @Null <T extends K> V get (T key) {
 		int i = locateKey(key);
 		return i < 0 ? null : valueTable[i];
 	}
@@ -186,8 +184,8 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return i < 0 ? defaultValue : valueTable[i];
 	}
 
-	@Null
-	public V remove (K key) {
+	/** Returns the value for the removed key, or null if the key is not in the map. */
+	public @Null V remove (K key) {
 		int i = locateKey(key);
 		if (i < 0) return null;
 		K[] keyTable = this.keyTable;
@@ -274,8 +272,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 * every value, which may be an expensive operation.
 	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
 	 *           {@link #equals(Object)}. */
-	@Null
-	public K findKey (@Null Object value, boolean identity) {
+	public @Null K findKey (@Null Object value, boolean identity) {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
 			K[] keyTable = this.keyTable;
@@ -478,7 +475,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 	static public class Entry<K, V> {
 		public K key;
-		@Null public V value;
+		public @Null V value;
 
 		public String toString () {
 			return key + "=" + value;
@@ -577,8 +574,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			return hasNext;
 		}
 
-		@Null
-		public V next () {
+		public @Null V next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			V value = map.valueTable[nextIndex];

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.lwjgl.audio;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -25,7 +26,6 @@ import org.lwjgl.openal.AL11;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -41,7 +41,7 @@ public abstract class OpenALMusic implements Music {
 
 	private FloatArray renderedSecondsQueue = new FloatArray(bufferCount);
 
-	private final OpenALAudio audio;
+	private final OpenALLwjglAudio audio;
 	private IntBuffer buffers;
 	private int sourceID = -1;
 	private int format, sampleRate;
@@ -54,7 +54,7 @@ public abstract class OpenALMusic implements Music {
 
 	private OnCompletionListener onCompletionListener;
 
-	public OpenALMusic (OpenALAudio audio, FileHandle file) {
+	public OpenALMusic (OpenALLwjglAudio audio, FileHandle file) {
 		this.audio = audio;
 		this.file = file;
 		this.onCompletionListener = null;
@@ -76,6 +76,7 @@ public abstract class OpenALMusic implements Music {
 
 			if (buffers == null) {
 				buffers = BufferUtils.createIntBuffer(bufferCount);
+				alGetError();
 				alGenBuffers(buffers);
 				int errorCode = alGetError();
 				if (errorCode != AL_NO_ERROR)
@@ -83,6 +84,8 @@ public abstract class OpenALMusic implements Music {
 			}
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			setPan(pan, volume);
+
+			alGetError();
 
 			boolean filled = false; // Check if there's anything to actually play.
 			for (int i = 0; i < bufferCount; i++) {
@@ -136,7 +139,9 @@ public abstract class OpenALMusic implements Music {
 		return isLooping;
 	}
 
+	/** @param volume Must be > 0. */
 	public void setVolume (float volume) {
+		if (volume < 0) throw new IllegalArgumentException("volume cannot be < 0: " + volume);
 		this.volume = volume;
 		if (audio.noDevice) return;
 		if (sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
@@ -151,8 +156,8 @@ public abstract class OpenALMusic implements Music {
 		this.pan = pan;
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
-		alSource3f(sourceID, AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.PI / 2), 0,
-			MathUtils.sin((pan + 1) * MathUtils.PI / 2));
+		alSource3f(sourceID, AL_POSITION, MathUtils.cos((pan - 1) * MathUtils.HALF_PI), 0,
+			MathUtils.sin((pan + 1) * MathUtils.HALF_PI));
 		alSourcef(sourceID, AL_GAIN, volume);
 	}
 
@@ -171,8 +176,10 @@ public abstract class OpenALMusic implements Music {
 			renderedSeconds = 0;
 		}
 		while (renderedSeconds < (position - maxSecondsPerBuffer)) {
-			if (read(tempBytes) <= 0) break;
-			renderedSeconds += maxSecondsPerBuffer;
+			int length = read(tempBytes);
+			if (length <= 0) break;
+			float currentBufferSeconds = maxSecondsPerBuffer * (float)length / (float)bufferSize;
+			renderedSeconds += currentBufferSeconds;
 		}
 		renderedSecondsQueue.add(renderedSeconds);
 		boolean filled = false;
@@ -246,7 +253,7 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	private boolean fill (int bufferID) {
-		tempBuffer.clear();
+		((Buffer)tempBuffer).clear();
 		int length = read(tempBytes);
 		if (length <= 0) {
 			if (isLooping) {
@@ -263,7 +270,7 @@ public abstract class OpenALMusic implements Music {
 		float currentBufferSeconds = maxSecondsPerBuffer * (float)length / (float)bufferSize;
 		renderedSecondsQueue.insert(0, previousLoadedSeconds + currentBufferSeconds);
 
-		tempBuffer.put(tempBytes, 0, length).flip();
+		((Buffer)tempBuffer.put(tempBytes, 0, length)).flip();
 		alBufferData(bufferID, format, tempBuffer, sampleRate);
 		return true;
 	}

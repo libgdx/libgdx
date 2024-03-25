@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public abstract class BaseG3dTest extends GdxTest {
 	public AssetManager assets;
@@ -102,15 +103,14 @@ public abstract class BaseG3dTest extends GdxTest {
 
 	@Override
 	public void render () {
-		if (loading && assets.update()) {
+		if (loading && assets.update(16)) {
 			loading = false;
 			onLoaded();
 		}
 
 		inputController.update();
 
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
+		ScreenUtils.clear(bgColor, true);
 
 		render(instances);
 	}

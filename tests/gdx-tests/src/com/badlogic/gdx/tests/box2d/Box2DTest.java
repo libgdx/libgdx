@@ -126,7 +126,7 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 		createWorld(world);
 
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 	}
 
 	@Override
@@ -227,12 +227,17 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 	}
 
 	@Override
+	public boolean touchCancelled (int x, int y, int pointer, int button) {
+		return touchUp(x, y, pointer, button);
+	}
+
+	@Override
 	public boolean mouseMoved (int x, int y) {
 		return false;
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
+	public boolean scrolled (float amountX, float amountY) {
 		return false;
 	}
 

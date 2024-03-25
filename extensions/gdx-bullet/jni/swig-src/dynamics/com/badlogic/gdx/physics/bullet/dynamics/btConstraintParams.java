@@ -9,9 +9,8 @@
 package com.badlogic.gdx.physics.bullet.dynamics;
 
 public final class btConstraintParams {
-  public final static int BT_CONSTRAINT_ERP = 1;
-  public final static int BT_CONSTRAINT_STOP_ERP = BT_CONSTRAINT_ERP + 1;
-  public final static int BT_CONSTRAINT_CFM = BT_CONSTRAINT_STOP_ERP + 1;
-  public final static int BT_CONSTRAINT_STOP_CFM = BT_CONSTRAINT_CFM + 1;
+	public final static int BT_CONSTRAINT_ERP = 1;
+	public final static int BT_CONSTRAINT_STOP_ERP = BT_CONSTRAINT_ERP + 1;
+	public final static int BT_CONSTRAINT_CFM = BT_CONSTRAINT_STOP_ERP + 1;
+	public final static int BT_CONSTRAINT_STOP_CFM = BT_CONSTRAINT_CFM + 1;
 }
-

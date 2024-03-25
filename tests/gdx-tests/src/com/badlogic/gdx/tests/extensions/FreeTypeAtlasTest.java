@@ -17,31 +17,25 @@
 package com.badlogic.gdx.tests.extensions;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.EnumMap;
 
-/**
- * An example of packing many glyphs into a single texture atlas, using FreeTypeFontGenerator.
+/** An example of packing many glyphs into a single texture atlas, using FreeTypeFontGenerator.
  * <p/>
  * This example uses enum ordinals for fast access to a two-dimensional array, which stores BitmapFonts by size and style. A more
  * flexible solution might be to use an ObjectMap and and IntMap instead.
  * <p/>
- * This test uses a less efficient but more convenient way to pack multiple generated fonts into a single texture atlas
- * compared with FreeTypePackTest - each texture page will be generated and refreshed once.  Refreshing textures is slow
- * on mobile devices.
- */
+ * This test uses a less efficient but more convenient way to pack multiple generated fonts into a single texture atlas compared
+ * with FreeTypePackTest - each texture page will be generated and refreshed once. Refreshing textures is slow on mobile
+ * devices. */
 public class FreeTypeAtlasTest extends GdxTest {
 
 	// Define font sizes here...
@@ -50,18 +44,18 @@ public class FreeTypeAtlasTest extends GdxTest {
 
 		public final int size;
 
-		FontSize(int size) {
+		FontSize (int size) {
 			this.size = size;
 		}
 	}
 
 	// Define font styles here...
 	static enum FontStyle {
-		Regular("data/arial.ttf"), Italic("data/arial-italic.ttf");
+		Regular("data/lsans.ttf"), Italic("data/lsans-italic.ttf");
 
 		public final String path;
 
-		FontStyle(String path) {
+		FontStyle (String path) {
 			this.path = path;
 		}
 	}
@@ -82,10 +76,10 @@ public class FreeTypeAtlasTest extends GdxTest {
 	// Note: the set in FreeTypeFontGenerator.DEFAULT_CHARS is more extensive
 	// Also note that this string must be contained of unique characters; no duplicates!
 	public static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz\n1234567890"
-			+ "\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*";
+		+ "\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*";
 
 	@Override
-	public void create() {
+	public void create () {
 		camera = new OrthographicCamera();
 		batch = new SpriteBatch();
 
@@ -97,9 +91,8 @@ public class FreeTypeAtlasTest extends GdxTest {
 	}
 
 	@Override
-	public void render() {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	public void render () {
+		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.setProjectionMatrix(camera.combined);
@@ -133,18 +126,18 @@ public class FreeTypeAtlasTest extends GdxTest {
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		super.dispose();
 		packer.dispose();
 		batch.dispose();
 	}
 
 	// Utility method to grab a font by style/size pair
-	public BitmapFont getFont(FontStyle style, FontSize size) {
+	public BitmapFont getFont (FontStyle style, FontSize size) {
 		return fontMap.get(style).get(size);
 	}
 
-	protected int createFonts() {
+	protected int createFonts () {
 		// This test uses a less efficient but more convenient way to pack multiple generated fonts into a single
 		// texture atlas.
 		//
@@ -190,7 +183,7 @@ public class FreeTypeAtlasTest extends GdxTest {
 	// We use a nested EnumMap for fast access
 	class FontMap<T> extends EnumMap<FontStyle, EnumMap<FontSize, T>> {
 
-		public FontMap() {
+		public FontMap () {
 			super(FontStyle.class);
 
 			// create the enum map for each FontSize

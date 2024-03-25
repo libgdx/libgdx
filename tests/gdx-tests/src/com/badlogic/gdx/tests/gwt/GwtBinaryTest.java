@@ -21,15 +21,15 @@ import java.io.IOException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GwtBinaryTest extends GdxTest {
 	byte[] bytes;
 
 	@Override
 	public void create () {
-		FileHandle handle = Gdx.files.internal("data/arial.ttf");
+		FileHandle handle = Gdx.files.internal("data/lsans.ttf");
 		bytes = new byte[(int)handle.length()];
 		DataInputStream in = new DataInputStream(handle.read());
 		for (int i = 0; i < 100; i++) {
@@ -43,7 +43,6 @@ public class GwtBinaryTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(1, 0, 0, 1);
 	}
 }

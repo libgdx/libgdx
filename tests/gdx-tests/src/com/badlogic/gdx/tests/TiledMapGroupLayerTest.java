@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -5,7 +6,6 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,6 +17,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapGroupLayerTest extends GdxTest {
 
@@ -30,7 +31,8 @@ public class TiledMapGroupLayerTest extends GdxTest {
 	String errorMessage;
 	private String fileName = "data/maps/tiled-groups/test.tmx";
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
@@ -52,7 +54,8 @@ public class TiledMapGroupLayerTest extends GdxTest {
 
 		assetManager = new AssetManager();
 		assetManager.setErrorListener(new AssetErrorListener() {
-			@Override public void error (AssetDescriptor asset, Throwable throwable) {
+			@Override
+			public void error (AssetDescriptor asset, Throwable throwable) {
 				errorMessage = throwable.getMessage();
 			}
 		});
@@ -61,11 +64,11 @@ public class TiledMapGroupLayerTest extends GdxTest {
 		assetManager.load(fileName, TiledMap.class);
 	}
 
-	@Override public void render () {
-		Gdx.gl.glClearColor(100f / 255f, 100f / 255f, 250f / 255f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	@Override
+	public void render () {
+		ScreenUtils.clear(100f / 255f, 100f / 255f, 250f / 255f, 1f);
 		camera.update();
-		assetManager.update();
+		assetManager.update(16);
 		if (renderer == null && assetManager.isLoaded(fileName)) {
 			map = assetManager.get(fileName);
 			renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);

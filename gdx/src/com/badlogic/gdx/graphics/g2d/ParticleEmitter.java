@@ -136,7 +136,7 @@ public class ParticleEmitter {
 		premultipliedAlpha = emitter.premultipliedAlpha;
 		cleansUpBlendFunction = emitter.cleansUpBlendFunction;
 		spriteMode = emitter.spriteMode;
-		setPosition(emitter.getX(),emitter.getY());
+		setPosition(emitter.getX(), emitter.getY());
 	}
 
 	private void initialize () {
@@ -342,13 +342,17 @@ public class ParticleEmitter {
 	}
 
 	public void reset () {
+		reset(true);
+	}
+
+	public void reset (boolean start) {
 		emissionDelta = 0;
 		durationTimer = duration;
 		boolean[] active = this.active;
 		for (int i = 0, n = active.length; i < n; i++)
 			active[i] = false;
 		activeCount = 0;
-		start();
+		if (start) start();
 	}
 
 	private void restart () {
@@ -703,10 +707,8 @@ public class ParticleEmitter {
 		this.spriteMode = spriteMode;
 	}
 
-	/**
-	 * Allocates max particles emitter can hold. Usually called early on to avoid allocation on updates.
-	 * {@link #setSprites(Array)} must have been set before calling this method
-	 */
+	/** Allocates max particles emitter can hold. Usually called early on to avoid allocation on updates.
+	 * {@link #setSprites(Array)} must have been set before calling this method */
 	public void preAllocateParticles () {
 		if (sprites.isEmpty())
 			throw new IllegalStateException("ParticleEmitter.setSprites() must have been called before preAllocateParticles()");
@@ -718,7 +720,6 @@ public class ParticleEmitter {
 			}
 		}
 	}
-
 
 	/** Ignores the {@link #setContinuous(boolean) continuous} setting until the emitter is started again. This allows the emitter
 	 * to stop smoothly. */
@@ -1558,8 +1559,7 @@ public class ParticleEmitter {
 		public void load (BufferedReader reader) throws IOException {
 			super.load(reader);
 			// For backwards compatibility, independent property may not be defined
-			if (reader.markSupported())
-				reader.mark(100);
+			if (reader.markSupported()) reader.mark(100);
 			String line = reader.readLine();
 			if (line == null) throw new IOException("Missing value: independent");
 			if (line.contains("independent"))
@@ -1569,9 +1569,9 @@ public class ParticleEmitter {
 			else {
 				// @see java.io.BufferedReader#markSupported may return false in some platforms (such as GWT),
 				// in that case backwards commpatibility is not possible
-				String errorMessage = "The loaded particle effect descriptor file uses an old invalid format. " +
-						"Please download the latest version of the Particle Editor tool and recreate the file by" +
-						" loading and saving it again.";
+				String errorMessage = "The loaded particle effect descriptor file uses an old invalid format. "
+					+ "Please download the latest version of the Particle Editor tool and recreate the file by"
+					+ " loading and saving it again.";
 				Gdx.app.error("ParticleEmitter", errorMessage);
 				throw new IOException(errorMessage);
 			}

@@ -32,12 +32,12 @@ public class FreeTypeFontLoaderTest extends GdxTest {
 		// of the font to be generated. The names of the fonts are arbitrary and are not pointing
 		// to a file on disk (but must end with the font's file format '.ttf')!
 		FreeTypeFontLoaderParameter size1Params = new FreeTypeFontLoaderParameter();
-		size1Params.fontFileName = "data/arial.ttf";
+		size1Params.fontFileName = "data/lsans.ttf";
 		size1Params.fontParameters.size = 10;
 		manager.load("size10.ttf", BitmapFont.class, size1Params);
 
 		FreeTypeFontLoaderParameter size2Params = new FreeTypeFontLoaderParameter();
-		size2Params.fontFileName = "data/arial.ttf";
+		size2Params.fontFileName = "data/lsans.ttf";
 		size2Params.fontParameters.size = 20;
 		manager.load("size20.ttf", BitmapFont.class, size2Params);
 
@@ -50,7 +50,7 @@ public class FreeTypeFontLoaderTest extends GdxTest {
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		if (manager.update() && manager.isLoaded("size10.ttf")) {
+		if (manager.update(16) && manager.isLoaded("size10.ttf")) {
 			batch.begin();
 			manager.get("size10.ttf", BitmapFont.class).draw(batch, "First font!", 20, 20);
 			manager.get("size20.ttf", BitmapFont.class).draw(batch, "Second font!", 20, 50);

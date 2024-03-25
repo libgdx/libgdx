@@ -83,8 +83,8 @@ class TimSort<T> {
 	private final int[] runBase;
 	private final int[] runLen;
 
-	/** Asserts have been placed in if-statements for performance. To enable them, set this field to true and enable them in VM with
-	 * a command line flag. If you modify this class, please do test the asserts! */
+	/** Asserts have been placed in if-statements for performance. To enable them, set this field to true and enable them in VM
+	 * with a command line flag. If you modify this class, please do test the asserts! */
 	private static final boolean DEBUG = false;
 
 	TimSort () {
@@ -370,9 +370,9 @@ class TimSort<T> {
 	 * 
 	 * where n is the index of the last run in runLen.
 	 * 
-	 * This method has been formally verified to be correct after checking the last 4 runs.
-	 * Checking for 3 runs results in an exception for large arrays.
-	 * (Source: http://envisage-project.eu/proving-android-java-and-python-sorting-algorithm-is-broken-and-how-to-fix-it/)
+	 * This method has been formally verified to be correct after checking the last 4 runs. Checking for 3 runs results in an
+	 * exception for large arrays. (Source:
+	 * http://envisage-project.eu/proving-android-java-and-python-sorting-algorithm-is-broken-and-how-to-fix-it/)
 	 * 
 	 * This method is called each time a new run is pushed onto the stack, so the invariants are guaranteed to hold for i <
 	 * stackSize upon entry to the method. */
@@ -616,7 +616,7 @@ class TimSort<T> {
 		}
 
 		Comparator<? super T> c = this.c; // Use local variable for performance
-		int minGallop = this.minGallop; // "    " "     " "
+		int minGallop = this.minGallop; // " " " " "
 		outer:
 		while (true) {
 			int count1 = 0; // Number of times in a row that first run won
@@ -722,7 +722,7 @@ class TimSort<T> {
 		}
 
 		Comparator<? super T> c = this.c; // Use local variable for performance
-		int minGallop = this.minGallop; // "    " "     " "
+		int minGallop = this.minGallop; // " " " " "
 		outer:
 		while (true) {
 			int count1 = 0; // Number of times in a row that first run won

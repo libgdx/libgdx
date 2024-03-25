@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys are objects and the values are unboxed floats. Null keys are not allowed. No allocation is
  * done except when growing the table size.
@@ -62,9 +62,9 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	 * hash. */
 	protected int mask;
 
-	Entries entries1, entries2;
-	Values values1, values2;
-	Keys keys1, keys2;
+	transient Entries entries1, entries2;
+	transient Values values1, values2;
+	transient Keys keys1, keys2;
 
 	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public ObjectFloatMap () {
@@ -72,14 +72,14 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 	}
 
 	/** Creates a new map with a load factor of 0.8.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public ObjectFloatMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
 	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
 	 * growing the backing table.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public ObjectFloatMap (int initialCapacity, float loadFactor) {
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
@@ -132,11 +132,6 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		}
 	}
 
-	/** You can use {@link #get(Object, float)} with a defaultValue of {@link Float#NaN} if you want to tell with certainty that a
-	 * key is not present; comparing with NaN is tricky but {@link Float#isNaN(float)} makes it easy. If isNaN returns true, you
-	 * can generally act like another Map had returned null in the same situation (meaning the value is unusable). This works
-	 * because this class will never insert a NaN value into the map unless one is explicitly inserted, and since NaN acts so
-	 * strangely in its everyday usage, virtually all code will not place NaN in a map. */
 	public void put (K key, float value) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
@@ -147,6 +142,22 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		keyTable[i] = key;
 		valueTable[i] = value;
 		if (++size >= threshold) resize(keyTable.length << 1);
+	}
+
+	/** Returns the old value associated with the specified key, or the specified default value.
+	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
+	public float put (K key, float value, float defaultValue) {
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			float oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
+		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
 	}
 
 	public void putAll (ObjectFloatMap<? extends K> map) {
@@ -172,7 +183,8 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		}
 	}
 
-	/** Returns the value for the specified key, or the default value if the key is not in the map. */
+	/** Returns the value for the specified key, or the default value if the key is not in the map.
+	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
 	public float get (K key, float defaultValue) {
 		int i = locateKey(key);
 		return i < 0 ? defaultValue : valueTable[i];
@@ -194,6 +206,8 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return defaultValue;
 	}
 
+	/** Returns the value for the removed key, or the default value if the key is not in the map.
+	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
 	public float remove (K key, float defaultValue) {
 		int i = locateKey(key);
 		if (i < 0) return defaultValue;
@@ -261,19 +275,40 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return false;
 	}
 
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+	 * be an expensive operation. */
+	public boolean containsValue (float value, float epsilon) {
+		K[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = valueTable.length - 1; i >= 0; i--)
+			if (keyTable[i] != null && Math.abs(valueTable[i] - value) <= epsilon) return true;
+		return false;
+	}
+
 	public boolean containsKey (K key) {
 		return locateKey(key) >= 0;
 	}
 
 	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
 	 * every value, which may be an expensive operation. */
-	@Null
-	public K findKey (float value) {
+	public @Null K findKey (float value) {
 		K[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		for (int i = valueTable.length - 1; i >= 0; i--) {
 			K key = keyTable[i];
 			if (key != null && valueTable[i] == value) return key;
+		}
+		return null;
+	}
+
+	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
+	 * every value, which may be an expensive operation. */
+	public @Null K findKey (float value, float epsilon) {
+		K[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = valueTable.length - 1; i >= 0; i--) {
+			K key = keyTable[i];
+			if (key != null && Math.abs(valueTable[i] - value) <= epsilon) return key;
 		}
 		return null;
 	}

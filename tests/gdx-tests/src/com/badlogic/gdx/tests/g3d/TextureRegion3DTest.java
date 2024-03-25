@@ -1,23 +1,19 @@
+
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
@@ -42,7 +38,7 @@ public class TextureRegion3DTest extends GdxTest {
 	@Override
 	public void create () {
 		Gdx.gl.glClearColor(0.2f, 0.3f, 1.0f, 0.f);
-		
+
 		atlas = new TextureAtlas(Gdx.files.internal("data/testpack"));
 		regions = atlas.getRegions();
 
@@ -60,14 +56,15 @@ public class TextureRegion3DTest extends GdxTest {
 		cam.update();
 
 		ModelBuilder modelBuilder = new ModelBuilder();
-		final Material material = new Material(ColorAttribute.createDiffuse(1f, 1f, 1f, 1f), new TextureAttribute(TextureAttribute.Diffuse));
+		final Material material = new Material(ColorAttribute.createDiffuse(1f, 1f, 1f, 1f),
+			new TextureAttribute(TextureAttribute.Diffuse));
 		model = modelBuilder.createBox(5f, 5f, 5f, material, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		instance = new ModelInstance(model);
 		attribute = instance.materials.get(0).get(TextureAttribute.class, TextureAttribute.Diffuse);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
 	}
-	
+
 	@Override
 	public void render () {
 		inputController.update();
@@ -75,7 +72,7 @@ public class TextureRegion3DTest extends GdxTest {
 			time -= 1f;
 			index = (index + 1) % regions.size;
 			attribute.set(regions.get(index));
-			Gdx.app.log("TextureRegion3DTest", "Current region = "+regions.get(index).name);
+			Gdx.app.log("TextureRegion3DTest", "Current region = " + regions.get(index).name);
 		}
 
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());

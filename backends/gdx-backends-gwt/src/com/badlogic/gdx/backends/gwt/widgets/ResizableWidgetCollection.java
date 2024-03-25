@@ -25,7 +25,6 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.WindowResizeListener;
 
 /** A collection of {@link ResizableWidget} that periodically checks the outer dimensions of a widget and redraws it as necessary.
  * Every {@link ResizableWidgetCollection} uses a timer, so consider the cost when adding one.
@@ -127,7 +126,7 @@ public class ResizableWidgetCollection implements ResizeHandler, Iterable<Resiza
 	};
 
 	/** A hash map of the resizable widgets this collection is checking. */
-	private Map<ResizableWidget, ResizableWidgetInfo> widgets = new HashMap<ResizableWidget, ResizableWidgetInfo>();
+	private final Map<ResizableWidget, ResizableWidgetInfo> widgets = new HashMap<>();
 
 	/** The current window height. */
 	int windowHeight = 0;
@@ -226,9 +225,9 @@ public class ResizableWidgetCollection implements ResizeHandler, Iterable<Resiza
 		this.resizeCheckDelay = resizeCheckDelay;
 	}
 
-	/** Set whether or not resize checking is enabled. If disabled, elements will still be resized on window events, but the timer
-	 * will not check their dimensions periodically.
-	 * 
+	/** Set whether resize checking is enabled. If disabled, elements will still be resized on window events, but the timer will
+	 * not check their dimensions periodically.
+	 *
 	 * @param enabled true to enable the resize checking timer */
 	public void setResizeCheckingEnabled (boolean enabled) {
 		if (enabled && !resizeCheckingEnabled) {
@@ -262,9 +261,7 @@ public class ResizableWidgetCollection implements ResizeHandler, Iterable<Resiza
 		}
 	}
 
-	/** Called when the browser window is resized.
-	 *
-	 */
+	/** Called when the browser window is resized. */
 	@Override
 	public void onResize (ResizeEvent event) {
 		checkWidgetSize();

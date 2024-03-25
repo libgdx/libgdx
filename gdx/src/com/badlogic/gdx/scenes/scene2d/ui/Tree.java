@@ -188,15 +188,11 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Removes all tree nodes. */
-	public void clearChildren () {
-		super.clearChildren();
+	public void clearChildren (boolean unfocus) {
+		super.clearChildren(unfocus);
 		setOverNode(null);
 		rootNodes.clear();
 		selection.clear();
-	}
-
-	public Array<N> getNodes () {
-		return rootNodes;
 	}
 
 	public void invalidate () {
@@ -272,8 +268,9 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	public void draw (Batch batch, float parentAlpha) {
 		drawBackground(batch, parentAlpha);
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		draw(batch, rootNodes, paddingLeft, plusMinusWidth());
+		float a = color.a * parentAlpha;
+		batch.setColor(color.r, color.g, color.b, a);
+		drawIcons(batch, color.r, color.g, color.b, a, null, rootNodes, paddingLeft, plusMinusWidth());
 		super.draw(batch, parentAlpha); // Draw node actors.
 	}
 
@@ -286,8 +283,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		}
 	}
 
-	/** Draws selection, icons, and expand icons. */
-	private void draw (Batch batch, Array<N> nodes, float indent, float plusMinusWidth) {
+	/** Draws selection, icons, and expand icons.
+	 * @param parent null for the root nodes.
+	 * @return The Y position of the last visible actor for the nodes. */
+	protected float drawIcons (Batch batch, float r, float g, float b, float a, @Null N parent, Array<N> nodes, float indent,
+		float plusMinusWidth) {
+
 		Rectangle cullingArea = getCullingArea();
 		float cullBottom = 0, cullTop = 0;
 		if (cullingArea != null) {
@@ -295,11 +296,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			cullTop = cullBottom + cullingArea.height;
 		}
 		TreeStyle style = this.style;
-		float x = getX(), y = getY(), expandX = x + indent, iconX = expandX + plusMinusWidth + iconSpacingLeft;
+		float x = getX(), y = getY(), expandX = x + indent, iconX = expandX + plusMinusWidth + iconSpacingLeft, actorY = 0;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			N node = nodes.get(i);
 			Actor actor = node.actor;
-			float actorY = actor.getY(), height = node.height;
+			actorY = actor.getY();
+			float height = node.height;
 			if (cullingArea == null || (actorY + height >= cullBottom && actorY <= cullTop)) {
 				if (selection.contains(node) && style.selection != null) {
 					drawSelection(node, style.selection, batch, x, y + actorY - ySpacing / 2, getWidth(), height + ySpacing);
@@ -309,9 +311,10 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 
 				if (node.icon != null) {
 					float iconY = y + actorY + Math.round((height - node.icon.getMinHeight()) / 2);
-					batch.setColor(actor.getColor());
+					Color actorColor = actor.getColor();
+					batch.setColor(actorColor.r, actorColor.g, actorColor.b, actorColor.a * a);
 					drawIcon(node, node.icon, batch, iconX, iconY);
-					batch.setColor(1, 1, 1, 1);
+					batch.setColor(r, g, b, a);
 				}
 
 				if (node.children.size > 0) {
@@ -319,11 +322,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 					float iconY = y + actorY + Math.round((height - expandIcon.getMinHeight()) / 2);
 					drawExpandIcon(node, expandIcon, batch, expandX, iconY);
 				}
-			} else if (actorY < cullBottom) {
-				return;
-			}
-			if (node.expanded && node.children.size > 0) draw(batch, node.children, indent + indentSpacing, plusMinusWidth);
+			} else if (actorY < cullBottom) //
+				break;
+			if (node.expanded && node.children.size > 0)
+				drawIcons(batch, r, g, b, a, node, node.children, indent + indentSpacing, plusMinusWidth);
 		}
+		return actorY;
 	}
 
 	protected void drawSelection (N node, Drawable selection, Batch batch, float x, float y, float width, float height) {
@@ -347,27 +351,28 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	 * <code>iconX</code>, and clicking would expand the node.
 	 * @param iconX The X coordinate of the over node's icon. */
 	protected Drawable getExpandIcon (N node, float iconX) {
-		boolean over = false;
 		if (node == overNode //
 			&& Gdx.app.getType() == ApplicationType.Desktop //
 			&& (!selection.getMultiple() || (!UIUtils.ctrl() && !UIUtils.shift())) //
 		) {
-			float mouseX = screenToLocalCoordinates(tmp.set(Gdx.input.getX(), 0)).x;
-			if (mouseX >= 0 && mouseX < iconX) over = true;
-		}
-		if (over) {
-			Drawable icon = node.expanded ? style.minusOver : style.plusOver;
-			if (icon != null) return icon;
+			float mouseX = screenToLocalCoordinates(tmp.set(Gdx.input.getX(), 0)).x + getX();
+			if (mouseX >= 0 && mouseX < iconX) {
+				Drawable icon = node.expanded ? style.minusOver : style.plusOver;
+				if (icon != null) return icon;
+			}
 		}
 		return node.expanded ? style.minus : style.plus;
 	}
 
 	/** @return May be null. */
-	@Null
-	public N getNodeAt (float y) {
+	public @Null N getNodeAt (float y) {
 		foundNode = null;
 		getNodeAt(rootNodes, y, getHeight());
-		return foundNode;
+		try {
+			return foundNode;
+		} finally {
+			foundNode = null;
+		}
 	}
 
 	private float getNodeAt (Array<N> nodes, float y, float rowY) {
@@ -403,14 +408,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Returns the first selected node, or null. */
-	@Null
-	public N getSelectedNode () {
+	public @Null N getSelectedNode () {
 		return selection.first();
 	}
 
 	/** Returns the first selected value, or null. */
-	@Null
-	public V getSelectedValue () {
+	public @Null V getSelectedValue () {
 		N node = selection.first();
 		return node == null ? null : (V)node.getValue();
 	}
@@ -422,6 +425,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	/** If the order of the root nodes is changed, {@link #updateRootNodes()} must be called to ensure the nodes' actors are in the
 	 * correct order. */
 	public Array<N> getRootNodes () {
+		return rootNodes;
+	}
+
+	/** @deprecated Use {@link #getRootNodes()}. */
+	@Deprecated
+	public Array<N> getNodes () {
 		return rootNodes;
 	}
 
@@ -439,14 +448,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** @return May be null. */
-	@Null
-	public N getOverNode () {
+	public @Null N getOverNode () {
 		return overNode;
 	}
 
 	/** @return May be null. */
-	@Null
-	public V getOverValue () {
+	public @Null V getOverValue () {
 		if (overNode == null) return null;
 		return (V)overNode.getValue();
 	}
@@ -527,14 +534,12 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	}
 
 	/** Returns the node with the specified value, or null. */
-	@Null
-	public N findNode (V value) {
+	public @Null N findNode (V value) {
 		if (value == null) throw new IllegalArgumentException("value cannot be null.");
 		return (N)findNode(rootNodes, value);
 	}
 
-	@Null
-	static Node findNode (Array<? extends Node> nodes, Object value) {
+	static @Null Node findNode (Array<? extends Node> nodes, Object value) {
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			if (value.equals(node.value)) return node;
@@ -708,8 +713,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 
 		/** Returns the tree this node's actor is currently in, or null. The actor is only in the tree when all of its parent nodes
 		 * are expanded. */
-		@Null
-		public Tree<N, V> getTree () {
+		public @Null Tree<N, V> getTree () {
 			Group parent = actor.getParent();
 			if (parent instanceof Tree) return (Tree)parent;
 			return null;
@@ -763,8 +767,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		}
 
 		/** @return May be null. */
-		@Null
-		public N getParent () {
+		public @Null N getParent () {
 			return parent;
 		}
 
@@ -773,8 +776,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			this.icon = icon;
 		}
 
-		@Null
-		public V getValue () {
+		public @Null V getValue () {
 			return value;
 		}
 
@@ -783,8 +785,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 			this.value = value;
 		}
 
-		@Null
-		public Drawable getIcon () {
+		public @Null Drawable getIcon () {
 			return icon;
 		}
 
@@ -799,8 +800,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		}
 
 		/** Returns this node or the child node with the specified value, or null. */
-		@Null
-		public N findNode (V value) {
+		public @Null N findNode (V value) {
 			if (value == null) throw new IllegalArgumentException("value cannot be null.");
 			if (value.equals(this.value)) return (N)this;
 			return (N)Tree.findNode(children, value);
@@ -882,9 +882,8 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	 * @author Nathan Sweet */
 	static public class TreeStyle {
 		public Drawable plus, minus;
-		/** Optional. */
-		@Null public Drawable plusOver, minusOver;
-		@Null public Drawable over, selection, background;
+		public @Null Drawable plusOver, minusOver;
+		public @Null Drawable over, selection, background;
 
 		public TreeStyle () {
 		}
@@ -896,13 +895,15 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 		}
 
 		public TreeStyle (TreeStyle style) {
-			this.plus = style.plus;
-			this.minus = style.minus;
-			this.plusOver = style.plusOver;
-			this.minusOver = style.minusOver;
-			this.over = style.over;
-			this.selection = style.selection;
-			this.background = style.background;
+			plus = style.plus;
+			minus = style.minus;
+
+			plusOver = style.plusOver;
+			minusOver = style.minusOver;
+
+			over = style.over;
+			selection = style.selection;
+			background = style.background;
 		}
 	}
 }

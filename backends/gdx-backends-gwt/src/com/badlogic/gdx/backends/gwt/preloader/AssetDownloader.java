@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.gwt.preloader;
 
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.typedarrays.shared.Int8Array;
@@ -51,11 +52,11 @@ public class AssetDownloader {
 
 	public interface AssetLoaderListener<T> {
 
-		public void onProgress (double amount);
+		void onProgress (double amount);
 
-		public void onFailure ();
+		void onFailure ();
 
-		public void onSuccess (T result);
+		void onSuccess (T result);
 
 	}
 
@@ -102,7 +103,7 @@ public class AssetDownloader {
 	}
 
 	public void loadBinary (final String url, final AssetLoaderListener<Blob> listener) {
-		XMLHttpRequest request = XMLHttpRequest.create();		
+		XMLHttpRequest request = XMLHttpRequest.create();
 		request.setOnReadyStateChange(new ReadyStateChangeHandler() {
 			@Override
 			public void onReadyStateChange (XMLHttpRequest xhr) {
@@ -143,10 +144,18 @@ public class AssetDownloader {
 	}
 
 	public void loadImage (final String url, final String mimeType, final AssetLoaderListener<ImageElement> listener) {
-		loadImage(url, mimeType, null, listener);
+		String crossOrigin = null;
+
+		// Enable CORS if we're running from a different URL to the host page
+		if (!url.startsWith(GWT.getHostPageBaseURL())) {
+			crossOrigin = "anonymous";
+		}
+
+		loadImage(url, mimeType, crossOrigin, listener);
 	}
-	
-	public void loadImage (final String url, final String mimeType, final String crossOrigin, final AssetLoaderListener<ImageElement> listener) {
+
+	public void loadImage (final String url, final String mimeType, final String crossOrigin,
+		final AssetLoaderListener<ImageElement> listener) {
 		if (useBrowserCache || useInlineBase64) {
 			loadBinary(url, new AssetLoaderListener<Blob>() {
 				@Override
@@ -200,8 +209,8 @@ public class AssetDownloader {
 		}
 	}
 
-	private static interface ImgEventListener {
-		public void onEvent (NativeEvent event);
+	private interface ImgEventListener {
+		void onEvent (NativeEvent event);
 	}
 
 	static native void hookImgListener (ImageElement img, ImgEventListener h) /*-{
@@ -223,8 +232,7 @@ public class AssetDownloader {
 		return new Image();
 	}-*/;
 
-	private native static void setOnProgress (XMLHttpRequest req, AssetLoaderListener listener) /*-{
-		var _this = this;
+	private native static void setOnProgress (XMLHttpRequest req, AssetLoaderListener<?> listener) /*-{
 		this.onprogress = $entry(function(evt) {
 			listener.@com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener::onProgress(D)(evt.loaded);
 		});

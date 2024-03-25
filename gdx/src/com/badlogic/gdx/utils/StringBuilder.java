@@ -502,6 +502,15 @@ public class StringBuilder implements Appendable, CharSequence {
 		return new String(chars, 0, length);
 	}
 
+	/** Returns the current String representation and clears the StringBuilder.
+	 * 
+	 * @return a String containing the characters in this instance. */
+	public String toStringAndClear () {
+		final String s = toString();
+		clear();
+		return s;
+	}
+
 	/** Returns a {@code CharSequence} of the subsequence from the {@code start} index to the {@code end} index.
 	 * 
 	 * @param start the inclusive start index to begin the subsequence.
@@ -918,6 +927,13 @@ public class StringBuilder implements Appendable, CharSequence {
 		return this;
 	}
 
+	/** Appends the specified separator if the builder is not empty, then the specified string. */
+	public StringBuilder append (String str, String separator) {
+		if (length > 0) append0(separator);
+		append0(str);
+		return this;
+	}
+
 	/** Appends the contents of the specified string, then create a new line. If the string is {@code null}, then the string
 	 * {@code "null"} is appended.
 	 * 
@@ -1262,10 +1278,9 @@ public class StringBuilder implements Appendable, CharSequence {
 	}
 
 	public int hashCode () {
-		final int prime = 31;
-		int result = 1;
-		result = prime + length;
-		result = prime * result + Arrays.hashCode(chars);
+		int result = 31 + length;
+		for (int index = 0; index < length; ++index)
+			result = 31 * result + chars[index];
 		return result;
 	}
 

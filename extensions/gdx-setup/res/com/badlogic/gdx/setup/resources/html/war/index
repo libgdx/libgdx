@@ -5,8 +5,6 @@
               <meta http-equiv="content-type" content="text/html; charset=UTF-8">
               <meta id="gameViewport" name="viewport" content="width=device-width initial-scale=1">
               <link href="styles.css" rel="stylesheet" type="text/css">
-              <script src="soundmanager2-setup.js"></script>
-  			  <script src="soundmanager2-jsmin.js"></script>
        </head>
 
        <body>
@@ -16,9 +14,6 @@
        </body>
 
        <script>
-              document.getElementById('gameViewport').setAttribute('content',
-                 'width=device-width initial-scale=' + 1/window.devicePixelRatio);
-
               function handleMouseDown(evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
@@ -29,6 +24,7 @@
                 evt.preventDefault();
                 evt.stopPropagation();
               }
+              document.addEventListener('contextmenu', event => event.preventDefault());
               document.getElementById('embed-html').addEventListener('mousedown', handleMouseDown, false);
               document.getElementById('embed-html').addEventListener('mouseup', handleMouseUp, false);
        </script>

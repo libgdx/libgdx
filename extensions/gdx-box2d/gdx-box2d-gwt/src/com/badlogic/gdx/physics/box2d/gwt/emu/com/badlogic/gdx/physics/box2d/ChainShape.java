@@ -45,7 +45,7 @@ public class ChainShape extends Shape {
 		Vec2[] v = new Vec2[vertices.length / 2];
 		for (int i = 0, vi = 0; i < vertices.length; i += 2, vi++) {
 			v[vi] = new Vec2(vertices[i], vertices[i + 1]);
-		}		
+		}
 		shape.createLoop(v, v.length);
 		isLooped = true;
 	}
@@ -63,14 +63,14 @@ public class ChainShape extends Shape {
 		shape.createLoop(v, vertexCount);
 		isLooped = true;
 	}
-	
+
 	/** Create a loop. This automatically adjusts connectivity.
 	 * @param vertices an array of vertices, these are copied */
 	public void createLoop (Vector2[] vertices) {
 		Vec2[] v = new Vec2[vertices.length];
 		for (int i = 0; i < vertices.length; i++) {
 			v[i] = new Vec2(vertices[i].x, vertices[i].y);
-		}		
+		}
 		shape.createLoop(v, v.length);
 		isLooped = true;
 	}
@@ -142,6 +142,11 @@ public class ChainShape extends Shape {
 	public void getVertex (int index, Vector2 vertex) {
 		Vec2 v = shape.m_vertices[index];
 		vertex.set(v.x, v.y);
+	}
+
+	/** Clear all vertices in the chain and free the memory. */
+	public void clear () {
+		shape.clear();
 	}
 
 	@Override

@@ -15,13 +15,16 @@
  ******************************************************************************/
 
 subprojects {
-    apply plugin: "java"
+	apply plugin: "java"
 
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+	if (JavaVersion.current().isJava9Compatible()) {
+		compileJava {
+			options.release = versions.java
+		}
+	}
+	sourceCompatibility = versions.java
+	targetCompatibility = versions.java
 
-    compileJava.options.encoding = 'UTF-8'
-
-    sourceSets.main.java.srcDirs = ["src"]
-    sourceSets.main.resources.srcDirs = ["res"]
+	sourceSets.main.java.srcDirs = ["src"]
+	sourceSets.main.resources.srcDirs = ["res"]
 }

@@ -15,18 +15,19 @@
 package com.badlogic.gdx.backends.android;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.WindowManager;
+import android.app.WallpaperColors;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.graphics.Color;
 
 /** An implementation of the {@link Application} interface dedicated for android live wallpapers.
  * 
@@ -54,9 +55,6 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * 
  * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com> */
 public abstract class AndroidLiveWallpaperService extends WallpaperService {
-	static {
-		GdxNativesLoader.load();
-	}
 
 	static final String TAG = "WallpaperService";
 	static boolean DEBUG = false; // TODO remember to disable this
@@ -210,8 +208,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		return (WindowManager)getSystemService(Context.WINDOW_SERVICE);
 	}
 
-	/** Bridge between surface on which wallpaper is rendered and the wallpaper service. The problem is that there can be a group of
-	 * Engines at one time and we must share libGDX application between them.
+	/** Bridge between surface on which wallpaper is rendered and the wallpaper service. The problem is that there can be a group
+	 * of Engines at one time and we must share libGDX application between them.
 	 * 
 	 * @author libGDX team and Jaroslaw Wisniewski <j.wisniewski@appsisle.com> */
 	public class AndroidWallpaperEngine extends Engine {
@@ -231,9 +229,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 		@Override
 		public void onCreate (final SurfaceHolder surfaceHolder) {
-			if (DEBUG)
-				Log.d(TAG, " > AndroidWallpaperEngine - onCreate() " + hashCode() + " running: " + engines + ", linked: "
-					+ (linkedEngine == this) + ", thread: " + Thread.currentThread().toString());
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onCreate() " + hashCode() + " running: " + engines + ", linked: "
+				+ (linkedEngine == this) + ", thread: " + Thread.currentThread().toString());
 			super.onCreate(surfaceHolder);
 		}
 
@@ -245,9 +242,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			engines++;
 			setLinkedEngine(this);
 
-			if (DEBUG)
-				Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceCreated() " + hashCode() + ", running: " + engines + ", linked: "
-					+ (linkedEngine == this));
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceCreated() " + hashCode() + ", running: " + engines
+				+ ", linked: " + (linkedEngine == this));
 			Log.i(TAG, "engine surface created");
 
 			super.onSurfaceCreated(holder);
@@ -265,9 +261,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 				app = new AndroidLiveWallpaper(AndroidLiveWallpaperService.this);
 
 				onCreateApplication();
-				if (app.graphics == null)
-					throw new Error(
-						"You must override 'AndroidLiveWallpaperService.onCreateApplication' method and call 'initialize' from its body.");
+				if (app.graphics == null) throw new Error(
+					"You must override 'AndroidLiveWallpaperService.onCreateApplication' method and call 'initialize' from its body.");
 			}
 
 			view = (SurfaceHolder.Callback)app.graphics.view;
@@ -299,9 +294,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		 * surfaceCreated(SurfaceHolder). */
 		@Override
 		public void onSurfaceChanged (final SurfaceHolder holder, final int format, final int width, final int height) {
-			if (DEBUG)
-				Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceChanged() isPreview: " + isPreview() + ", " + hashCode()
-					+ ", running: " + engines + ", linked: " + (linkedEngine == this) + ", sufcace valid: "
+			if (DEBUG) Log.d(TAG,
+				" > AndroidWallpaperEngine - onSurfaceChanged() isPreview: " + isPreview() + ", " + hashCode() + ", running: "
+					+ engines + ", linked: " + (linkedEngine == this) + ", sufcace valid: "
 					+ getSurfaceHolder().getSurface().isValid());
 			Log.i(TAG, "engine surface changed");
 
@@ -346,9 +341,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		public void onVisibilityChanged (final boolean visible) {
 			boolean reportedVisible = isVisible();
 
-			if (DEBUG)
-				Log.d(TAG, " > AndroidWallpaperEngine - onVisibilityChanged(paramVisible: " + visible + " reportedVisible: "
-					+ reportedVisible + ") " + hashCode() + ", sufcace valid: " + getSurfaceHolder().getSurface().isValid());
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onVisibilityChanged(paramVisible: " + visible + " reportedVisible: "
+				+ reportedVisible + ") " + hashCode() + ", sufcace valid: " + getSurfaceHolder().getSurface().isValid());
 			super.onVisibilityChanged(visible);
 
 			// Android WallpaperService sends fake visibility changed events to force some buggy live wallpapers to shut down after
@@ -376,9 +370,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 		public void onResume () {
 			visibleEngines++;
-			if (DEBUG)
-				Log.d(TAG, " > AndroidWallpaperEngine - onResume() " + hashCode() + ", running: " + engines + ", linked: "
-					+ (linkedEngine == this) + ", visible: " + visibleEngines);
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onResume() " + hashCode() + ", running: " + engines + ", linked: "
+				+ (linkedEngine == this) + ", visible: " + visibleEngines);
 			Log.i(TAG, "engine resumed");
 
 			if (linkedEngine != null) {
@@ -411,9 +404,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 		public void onPause () {
 			visibleEngines--;
-			if (DEBUG)
-				Log.d(TAG, " > AndroidWallpaperEngine - onPause() " + hashCode() + ", running: " + engines + ", linked: "
-					+ (linkedEngine == this) + ", visible: " + visibleEngines);
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onPause() " + hashCode() + ", running: " + engines + ", linked: "
+				+ (linkedEngine == this) + ", visible: " + visibleEngines);
 			Log.i(TAG, "engine paused");
 
 			// this shouldn't never happen, but if it will.. live wallpaper will not be stopped when device will pause and lwp will
@@ -439,15 +431,14 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		@Override
 		public void onSurfaceDestroyed (final SurfaceHolder holder) {
 			engines--;
-			if (DEBUG)
-				Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceDestroyed() " + hashCode() + ", running: " + engines + " ,linked: "
-					+ (linkedEngine == this) + ", isVisible: " + engineIsVisible);
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onSurfaceDestroyed() " + hashCode() + ", running: " + engines
+				+ " ,linked: " + (linkedEngine == this) + ", isVisible: " + engineIsVisible);
 			Log.i(TAG, "engine surface destroyed");
 
 			// application can be in resumed state at this moment if app surface had been lost just after it was created (wallpaper
 // selected too fast from preview mode etc)
-			// it is too late probably - calling on pause causes deadlock
-			// notifyVisibilityChanged(false);
+// it is too late probably - calling on pause causes deadlock
+// notifyVisibilityChanged(false);
 
 			// it is too late to call app.onDispose, just free native resources
 			if (engines == 0) onDeepPauseApplication();
@@ -474,18 +465,17 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		// end of lifecycle methods ////////////////////////////////////////////////////////
 
 		// input
-		
+
 		boolean iconDropConsumed = true;
 		int xIconDrop, yIconDrop;
 
 		@Override
 		public Bundle onCommand (final String pAction, final int pX, final int pY, final int pZ, final Bundle pExtras,
 			final boolean pResultRequested) {
-			if (DEBUG)
-				Log.d(TAG, " > AndroidWallpaperEngine - onCommand(" + pAction + " " + pX + " " + pY + " " + pZ + " " + pExtras + " "
-					+ pResultRequested + ")" + ", linked: " + (linkedEngine == this));
-			
-			if (pAction.equals("android.home.drop")){
+			if (DEBUG) Log.d(TAG, " > AndroidWallpaperEngine - onCommand(" + pAction + " " + pX + " " + pY + " " + pZ + " " + pExtras
+				+ " " + pResultRequested + ")" + ", linked: " + (linkedEngine == this));
+
+			if (pAction.equals("android.home.drop")) {
 				iconDropConsumed = false;
 				xIconDrop = pX;
 				yIconDrop = pY;
@@ -494,7 +484,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 			return super.onCommand(pAction, pX, pY, pZ, pExtras, pResultRequested);
 		}
-		
+
 		protected void notifyIconDropped () {
 			if (linkedEngine == this && app.listener instanceof AndroidWallpaperListener) {
 				if (!iconDropConsumed) { // same type of synchronization as in notifyOffsetsChanged()
@@ -507,8 +497,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 							synchronized (sync) {
 								isCurrent = (linkedEngine == AndroidWallpaperEngine.this);
 							}
-							if (isCurrent)
-								((AndroidWallpaperListener)app.listener).iconDropped(xIconDrop, yIconDrop);
+							if (isCurrent) ((AndroidWallpaperListener)app.listener).iconDropped(xIconDrop, yIconDrop);
 						}
 					});
 				}
@@ -571,9 +560,8 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 								isCurrent = (linkedEngine == AndroidWallpaperEngine.this); // without this app can crash when fast
 // switching between engines (tested!)
 							}
-							if (isCurrent)
-								((AndroidWallpaperListener)app.listener).offsetChange(xOffset, yOffset, xOffsetStep, yOffsetStep,
-									xPixelOffset, yPixelOffset);
+							if (isCurrent) ((AndroidWallpaperListener)app.listener).offsetChange(xOffset, yOffset, xOffsetStep,
+								yOffsetStep, xPixelOffset, yPixelOffset);
 						}
 					});
 				}
@@ -606,6 +594,20 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 				});
 			}
 		}
-		
+
+		@Override
+		public WallpaperColors onComputeColors () {
+			Application app = Gdx.app;
+			if (Build.VERSION.SDK_INT >= 27 && app instanceof AndroidLiveWallpaper) {
+				AndroidLiveWallpaper liveWallpaper = (AndroidLiveWallpaper)app;
+				Color[] colors = liveWallpaper.wallpaperColors;
+				if (colors != null)
+					return new WallpaperColors(android.graphics.Color.valueOf(colors[0].r, colors[0].g, colors[0].b, colors[0].a),
+						android.graphics.Color.valueOf(colors[1].r, colors[1].g, colors[1].b, colors[1].a),
+						android.graphics.Color.valueOf(colors[2].r, colors[2].g, colors[2].b, colors[2].a));
+			}
+			return super.onComputeColors();
+		}
+
 	}
 }

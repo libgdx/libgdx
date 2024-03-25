@@ -43,8 +43,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		public TextureFilter textureMagFilter = TextureFilter.Nearest;
 		/** Whether to convert the objects' pixel position and size to the equivalent in tile space. **/
 		public boolean convertObjectToTileSpace = false;
-		/** Whether to flip all Y coordinates so that Y positive is up. All LibGDX renderers require flipped Y coordinates, and
-		 * thus flipY set to true. This parameter is included for non-rendering related purposes of TMX files, or custom renderers. */
+		/** Whether to flip all Y coordinates so that Y positive is up. All libGDX renderers require flipped Y coordinates, and thus
+		 * flipY set to true. This parameter is included for non-rendering related purposes of TMX files, or custom renderers. */
 		public boolean flipY = true;
 	}
 
@@ -64,6 +64,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 	protected int mapHeightInPixels;
 
 	protected TiledMap map;
+	protected IntMap<MapObject> idToObject;
+	protected Array<Runnable> runOnEndOfLoadTiled;
 
 	public BaseTmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -83,18 +85,28 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		return getDependencyAssetDescriptors(tmxFile, textureParameter);
 	}
 
-	protected abstract Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile, TextureLoader.TextureParameter textureParameter);
-
-	/**
-	 * Loads the map data, given the XML root element
+	/** Gets a map of the object ids to the {@link MapObject} instances. Returns null if
+	 * {@link #loadTiledMap(FileHandle, Parameters, ImageResolver)} has not been called yet.
 	 *
-	 * @param tmxFile       the Filehandle of the tmx file
+	 * @return the map of the ids to {@link MapObject}, or null if {@link #loadTiledMap(FileHandle, Parameters, ImageResolver)}
+	 *         method has not been called yet. */
+	public @Null IntMap<MapObject> getIdToObject () {
+		return idToObject;
+	}
+
+	protected abstract Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,
+		TextureLoader.TextureParameter textureParameter);
+
+	/** Loads the map data, given the XML root element
+	 *
+	 * @param tmxFile the Filehandle of the tmx file
 	 * @param parameter
 	 * @param imageResolver
-	 * @return the {@link TiledMap}
-	 */
+	 * @return the {@link TiledMap} */
 	protected TiledMap loadTiledMap (FileHandle tmxFile, P parameter, ImageResolver imageResolver) {
 		this.map = new TiledMap();
+		this.idToObject = new IntMap<>();
+		this.runOnEndOfLoadTiled = new Array<>();
 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
@@ -161,10 +173,35 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			Element element = root.getChild(i);
 			loadLayer(map, map.getLayers(), element, tmxFile, imageResolver);
 		}
+
+		// update hierarchical parallax scrolling factors
+		// in Tiled the final parallax scrolling factor of a layer is the multiplication of its factor with all its parents
+		// 1) get top level groups
+		final Array<MapGroupLayer> groups = map.getLayers().getByType(MapGroupLayer.class);
+		while (groups.notEmpty()) {
+			final MapGroupLayer group = groups.first();
+			groups.removeIndex(0);
+
+			for (MapLayer child : group.getLayers()) {
+				child.setParallaxX(child.getParallaxX() * group.getParallaxX());
+				child.setParallaxY(child.getParallaxY() * group.getParallaxY());
+				if (child instanceof MapGroupLayer) {
+					// 2) handle any child groups
+					groups.add((MapGroupLayer)child);
+				}
+			}
+		}
+
+		for (Runnable runnable : runOnEndOfLoadTiled) {
+			runnable.run();
+		}
+		runOnEndOfLoadTiled = null;
+
 		return map;
 	}
 
-	protected void loadLayer (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+	protected void loadLayer (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile,
+		ImageResolver imageResolver) {
 		String name = element.getName();
 		if (name.equals("group")) {
 			loadLayerGroup(map, parentLayers, element, tmxFile, imageResolver);
@@ -177,7 +214,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		}
 	}
 
-	protected void loadLayerGroup (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+	protected void loadLayerGroup (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile,
+		ImageResolver imageResolver) {
 		if (element.getName().equals("group")) {
 			MapGroupLayer groupLayer = new MapGroupLayer();
 			loadBasicLayerInfo(groupLayer, element);
@@ -253,7 +291,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		}
 	}
 
-	protected void loadImageLayer (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+	protected void loadImageLayer (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile,
+		ImageResolver imageResolver) {
 		if (element.getName().equals("imagelayer")) {
 			float x = 0;
 			float y = 0;
@@ -299,12 +338,16 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		boolean visible = element.getIntAttribute("visible", 1) == 1;
 		float offsetX = element.getFloatAttribute("offsetx", 0);
 		float offsetY = element.getFloatAttribute("offsety", 0);
+		float parallaxX = element.getFloatAttribute("parallaxx", 1f);
+		float parallaxY = element.getFloatAttribute("parallaxy", 1f);
 
 		layer.setName(name);
 		layer.setOpacity(opacity);
 		layer.setVisible(visible);
 		layer.setOffsetX(offsetX);
 		layer.setOffsetY(offsetY);
+		layer.setParallaxX(parallaxX);
+		layer.setParallaxY(parallaxY);
 	}
 
 	protected void loadObject (TiledMap map, MapLayer layer, Element element) {
@@ -393,7 +436,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				object.getProperties().put("id", id);
 			}
 			object.getProperties().put("x", x);
-			
+
 			if (object instanceof TiledMapTileMapObject) {
 				object.getProperties().put("y", y);
 			} else {
@@ -406,27 +449,49 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			if (properties != null) {
 				loadProperties(object.getProperties(), properties);
 			}
+			idToObject.put(id, object);
 			objects.add(object);
 		}
 	}
 
-	protected void loadProperties (MapProperties properties, Element element) {
+	protected void loadProperties (final MapProperties properties, Element element) {
 		if (element == null) return;
 		if (element.getName().equals("properties")) {
 			for (Element property : element.getChildrenByName("property")) {
-				String name = property.getAttribute("name", null);
+				final String name = property.getAttribute("name", null);
 				String value = property.getAttribute("value", null);
 				String type = property.getAttribute("type", null);
 				if (value == null) {
 					value = property.getText();
 				}
-				Object castValue = castProperty(name, value, type);
-				properties.put(name, castValue);
+				if (type != null && type.equals("object")) {
+					// Wait until the end of [loadTiledMap] to fetch the object
+					try {
+						// Value should be the id of the object being pointed to
+						final int id = Integer.parseInt(value);
+						// Create [Runnable] to fetch object and add it to props
+						Runnable fetch = new Runnable() {
+							@Override
+							public void run () {
+								MapObject object = idToObject.get(id);
+								properties.put(name, object);
+							}
+						};
+						// [Runnable] should not run until the end of [loadTiledMap]
+						runOnEndOfLoadTiled.add(fetch);
+					} catch (Exception exception) {
+						throw new GdxRuntimeException(
+							"Error parsing property [\" + name + \"] of type \"object\" with value: [" + value + "]", exception);
+					}
+				} else {
+					Object castValue = castProperty(name, value, type);
+					properties.put(name, castValue);
+				}
 			}
 		}
 	}
 
-	private Object castProperty (String name, String value, String type) {
+	protected Object castProperty (String name, String value, String type) {
 		if (type == null) {
 			return value;
 		} else if (type.equals("int")) {
@@ -441,8 +506,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			String alpha = value.substring(1, 3);
 			return Color.valueOf(opaqueColor + alpha);
 		} else {
-			throw new GdxRuntimeException("Wrong type given for property " + name + ", given : " + type
-				+ ", supported : string, bool, int, float, color");
+			throw new GdxRuntimeException(
+				"Wrong type given for property " + name + ", given : " + type + ", supported : string, bool, int, float, color");
 		}
 	}
 
@@ -479,46 +544,45 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			for (int i = 0; i < array.length; i++)
 				ids[i] = (int)Long.parseLong(array[i].trim());
 		} else {
-			if (true)
-				if (encoding.equals("base64")) {
-					InputStream is = null;
-					try {
-						String compression = data.getAttribute("compression", null);
-						byte[] bytes = Base64Coder.decode(data.getText());
-						if (compression == null)
-							is = new ByteArrayInputStream(bytes);
-						else if (compression.equals("gzip"))
-							is = new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length));
-						else if (compression.equals("zlib"))
-							is = new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(bytes)));
-						else
-							throw new GdxRuntimeException("Unrecognised compression (" + compression + ") for TMX Layer Data");
+			if (true) if (encoding.equals("base64")) {
+				InputStream is = null;
+				try {
+					String compression = data.getAttribute("compression", null);
+					byte[] bytes = Base64Coder.decode(data.getText());
+					if (compression == null)
+						is = new ByteArrayInputStream(bytes);
+					else if (compression.equals("gzip"))
+						is = new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length));
+					else if (compression.equals("zlib"))
+						is = new BufferedInputStream(new InflaterInputStream(new ByteArrayInputStream(bytes)));
+					else
+						throw new GdxRuntimeException("Unrecognised compression (" + compression + ") for TMX Layer Data");
 
-						byte[] temp = new byte[4];
-						for (int y = 0; y < height; y++) {
-							for (int x = 0; x < width; x++) {
-								int read = is.read(temp);
-								while (read < temp.length) {
-									int curr = is.read(temp, read, temp.length - read);
-									if (curr == -1) break;
-									read += curr;
-								}
-								if (read != temp.length)
-									throw new GdxRuntimeException("Error Reading TMX Layer Data: Premature end of tile data");
-								ids[y * width + x] = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
-									| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
+					byte[] temp = new byte[4];
+					for (int y = 0; y < height; y++) {
+						for (int x = 0; x < width; x++) {
+							int read = is.read(temp);
+							while (read < temp.length) {
+								int curr = is.read(temp, read, temp.length - read);
+								if (curr == -1) break;
+								read += curr;
 							}
+							if (read != temp.length)
+								throw new GdxRuntimeException("Error Reading TMX Layer Data: Premature end of tile data");
+							ids[y * width + x] = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
+								| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
 						}
-					} catch (IOException e) {
-						throw new GdxRuntimeException("Error Reading TMX Layer Data - IOException: " + e.getMessage());
-					} finally {
-						StreamUtils.closeQuietly(is);
 					}
-				} else {
-					// any other value of 'encoding' is one we're not aware of, probably a feature of a future version of Tiled
-					// or another editor
-					throw new GdxRuntimeException("Unrecognised encoding (" + encoding + ") for TMX Layer Data");
+				} catch (IOException e) {
+					throw new GdxRuntimeException("Error Reading TMX Layer Data - IOException: " + e.getMessage());
+				} finally {
+					StreamUtils.closeQuietly(is);
 				}
+			} else {
+				// any other value of 'encoding' is one we're not aware of, probably a feature of a future version of Tiled
+				// or another editor
+				throw new GdxRuntimeException("Unrecognised encoding (" + encoding + ") for TMX Layer Data");
+			}
 		}
 		return ids;
 	}
@@ -640,6 +704,10 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		String probability = tileElement.getAttribute("probability", null);
 		if (probability != null) {
 			tile.getProperties().put("probability", probability);
+		}
+		String type = tileElement.getAttribute("type", null);
+		if (type != null) {
+			tile.getProperties().put("type", type);
 		}
 		Element properties = tileElement.getChildByName("properties");
 		if (properties != null) {

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry excluding="com/badlogic/gdx/backends/gwt/emu/" kind="src" path="src"/>
-	<classpathentry excluding="java/lang/System.java" kind="src" path="src/com/badlogic/gdx/backends/gwt/emu"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
-	<classpathentry kind="output" path="war/WEB-INF/classes"/>
-</classpath>

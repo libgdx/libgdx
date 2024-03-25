@@ -32,7 +32,7 @@ public class GL20Interceptor extends GLInterceptor implements GL20 {
 		super(glProfiler);
 		this.gl20 = gl20;
 	}
-	
+
 	private void check () {
 		int error = gl20.glGetError();
 		while (error != GL20.GL_NO_ERROR) {
@@ -241,7 +241,7 @@ public class GL20Interceptor extends GLInterceptor implements GL20 {
 	@Override
 	public int glGetError () {
 		calls++;
-		//Errors by glGetError are undetectable
+		// Errors by glGetError are undetectable
 		return gl20.glGetError();
 	}
 
@@ -614,7 +614,7 @@ public class GL20Interceptor extends GLInterceptor implements GL20 {
 	}
 
 	@Override
-	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
+	public String glGetActiveAttrib (int program, int index, IntBuffer size, IntBuffer type) {
 		calls++;
 		String result = gl20.glGetActiveAttrib(program, index, size, type);
 		check();
@@ -622,7 +622,7 @@ public class GL20Interceptor extends GLInterceptor implements GL20 {
 	}
 
 	@Override
-	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
+	public String glGetActiveUniform (int program, int index, IntBuffer size, IntBuffer type) {
 		calls++;
 		String result = gl20.glGetActiveUniform(program, index, size, type);
 		check();

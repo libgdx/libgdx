@@ -878,7 +878,6 @@
 		{
 			"id": "knight__Knight_png", 
 			"diffuse": [ 0.800000,  0.800000,  0.800000], 
-			"emissive": [ 0.800000,  0.800000,  0.800000], 
 			"textures": [
 				{
 					"id": "Knight_png", 

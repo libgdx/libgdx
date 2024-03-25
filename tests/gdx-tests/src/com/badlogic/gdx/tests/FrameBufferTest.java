@@ -42,10 +42,8 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-/**
- * Draws a triangle and a trapezoid. The trapezoid is intersection between two triangles, one stencil 
- * and the triangle shown on left.
- */
+/** Draws a triangle and a trapezoid. The trapezoid is intersection between two triangles, one stencil and the triangle shown on
+ * left. */
 public class FrameBufferTest extends GdxTest {
 	FrameBuffer stencilFrameBuffer;
 	FrameBuffer frameBuffer;
@@ -62,7 +60,6 @@ public class FrameBufferTest extends GdxTest {
 		Gdx.gl20.glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
 		Gdx.gl20.glClearColor(0f, 1f, 0f, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
 		texture.bind();
 		meshShader.bind();
 		meshShader.setUniformi("u_texture", 0);
@@ -73,7 +70,6 @@ public class FrameBufferTest extends GdxTest {
 		Gdx.gl20.glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
 		Gdx.gl20.glClearColor(1f, 1f, 0f, 1);
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
-		Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
 
 		Gdx.gl20.glEnable(GL20.GL_STENCIL_TEST);
 
@@ -107,30 +103,30 @@ public class FrameBufferTest extends GdxTest {
 		spriteBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, 256, 256, 0, 0, frameBuffer.getColorBufferTexture().getWidth(),
 			frameBuffer.getColorBufferTexture().getHeight(), false, true);
 
-		spriteBatch.draw(stencilFrameBuffer.getColorBufferTexture(), 256, 256, 256, 256, 0, 0, frameBuffer.getColorBufferTexture()
-			.getWidth(), frameBuffer.getColorBufferTexture().getHeight(), false, true);
+		spriteBatch.draw(stencilFrameBuffer.getColorBufferTexture(), 256, 256, 256, 256, 0, 0,
+			frameBuffer.getColorBufferTexture().getWidth(), frameBuffer.getColorBufferTexture().getHeight(), false, true);
 		spriteBatch.end();
 	}
 
 	@Override
 	public void create () {
-		mesh = new Mesh(true, 3, 0, new VertexAttribute(Usage.Position, 3, "a_Position"), new VertexAttribute(Usage.ColorPacked, 4,
-			"a_Color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
+		mesh = new Mesh(true, 3, 0, new VertexAttribute(Usage.Position, 3, "a_Position"),
+			new VertexAttribute(Usage.ColorPacked, 4, "a_Color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 		float c1 = Color.toFloatBits(255, 0, 0, 255);
 		float c2 = Color.toFloatBits(255, 0, 0, 255);
 		float c3 = Color.toFloatBits(0, 0, 255, 255);
 
 		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, c1, 0, 0, 0.5f, -0.5f, 0, c2, 1, 0, 0, 0.5f, 0, c3, 0.5f, 1});
 
-		stencilMesh = new Mesh(true, 3, 0, new VertexAttribute(Usage.Position, 3, "a_Position"), new VertexAttribute(
-			Usage.ColorPacked, 4, "a_Color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
+		stencilMesh = new Mesh(true, 3, 0, new VertexAttribute(Usage.Position, 3, "a_Position"),
+			new VertexAttribute(Usage.ColorPacked, 4, "a_Color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 		stencilMesh.setVertices(new float[] {-0.5f, 0.5f, 0, c1, 0, 0, 0.5f, 0.5f, 0, c2, 1, 0, 0, -0.5f, 0, c3, 0.5f, 1});
 
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 
 		spriteBatch = new SpriteBatch();
 		frameBuffer = new FrameBuffer(Format.RGB565, 128, 128, false);
-		stencilFrameBuffer = new FrameBuffer(Format.RGB565, 128, 128, true, true);
+		stencilFrameBuffer = new FrameBuffer(Format.RGB565, 128, 128, false, true);
 		createShader(Gdx.graphics);
 	}
 

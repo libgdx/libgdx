@@ -61,8 +61,8 @@ public abstract class Camera {
 	private final Vector3 tmpVec = new Vector3();
 	private final Ray ray = new Ray(new Vector3(), new Vector3());
 
-	/** Recalculates the projection and view matrix of this camera and the {@link Frustum} planes. Use this after you've manipulated
-	 * any of the attributes of the camera. */
+	/** Recalculates the projection and view matrix of this camera and the {@link Frustum} planes. Use this after you've
+	 * manipulated any of the attributes of the camera. */
 	public abstract void update ();
 
 	/** Recalculates the projection and view matrix of this camera and the {@link Frustum} planes if <code>updateFrustum</code> is
@@ -98,7 +98,7 @@ public abstract class Camera {
 	/** Normalizes the up vector by first calculating the right vector via a cross product between direction and up, and then
 	 * recalculating the up vector via a cross product between right and direction. */
 	public void normalizeUp () {
-		tmpVec.set(direction).crs(up).nor();
+		tmpVec.set(direction).crs(up);
 		up.set(tmpVec).crs(direction).nor();
 	}
 
@@ -142,8 +142,8 @@ public abstract class Camera {
 		quat.transform(up);
 	}
 
-	/** Rotates the direction and up vector of this camera by the given angle around the given axis, with the axis attached to given
-	 * point. The direction and up vector will not be orthogonalized.
+	/** Rotates the direction and up vector of this camera by the given angle around the given axis, with the axis attached to
+	 * given point. The direction and up vector will not be orthogonalized.
 	 * 
 	 * @param point the point to attach the axis to
 	 * @param axis the axis to rotate around
@@ -192,10 +192,7 @@ public abstract class Camera {
 	 * @param viewportHeight the height of the viewport in pixels
 	 * @return the mutated and unprojected screenCoords {@link Vector3} */
 	public Vector3 unproject (Vector3 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
-		float x = screenCoords.x, y = screenCoords.y;
-		x = x - viewportX;
-		y = Gdx.graphics.getHeight() - y;
-		y = y - viewportY;
+		float x = screenCoords.x - viewportX, y = Gdx.graphics.getHeight() - screenCoords.y - viewportY;
 		screenCoords.x = (2 * x) / viewportWidth - 1;
 		screenCoords.y = (2 * y) / viewportHeight - 1;
 		screenCoords.z = 2 * screenCoords.z - 1;

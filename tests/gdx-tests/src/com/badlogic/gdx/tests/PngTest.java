@@ -17,8 +17,6 @@
 package com.badlogic.gdx.tests;
 
 import java.io.IOException;
-import java.util.zip.Deflater;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
@@ -28,7 +26,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.ScreenUtils;
 
 public class PngTest extends GdxTest {
 	SpriteBatch batch;
@@ -50,7 +47,7 @@ public class PngTest extends GdxTest {
 
 			FileHandle file = FileHandle.tempFile("screenshot-");
 			System.out.println(file.file().getAbsolutePath());
-			Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			Pixmap pixmap = Pixmap.createFromFrameBuffer(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			try {
 				PNG writer = new PNG((int)(pixmap.getWidth() * pixmap.getHeight() * 1.5f));
 				// writer.setCompression(Deflater.NO_COMPRESSION);

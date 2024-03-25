@@ -34,7 +34,7 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 		super(glProfiler);
 		this.gl30 = gl30;
 	}
-	
+
 	private void check () {
 		int error = gl30.glGetError();
 		while (error != GL20.GL_NO_ERROR) {
@@ -243,7 +243,7 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 	@Override
 	public int glGetError () {
 		calls++;
-		//Errors by glGetError are undetectable
+		// Errors by glGetError are undetectable
 		return gl30.glGetError();
 	}
 
@@ -334,6 +334,14 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 	}
 
 	@Override
+	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
+		int offset) {
+		calls++;
+		gl30.glTexImage2D(target, level, internalformat, width, height, border, format, type, offset);
+		check();
+	}
+
+	@Override
 	public void glTexParameterf (int target, int pname, float param) {
 		calls++;
 		gl30.glTexParameterf(target, pname, param);
@@ -345,6 +353,14 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 		Buffer pixels) {
 		calls++;
 		gl30.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+		check();
+	}
+
+	@Override
+	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
+		int offset) {
+		calls++;
+		gl30.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, offset);
 		check();
 	}
 
@@ -616,7 +632,7 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 	}
 
 	@Override
-	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
+	public String glGetActiveAttrib (int program, int index, IntBuffer size, IntBuffer type) {
 		calls++;
 		String result = gl30.glGetActiveAttrib(program, index, size, type);
 		check();
@@ -624,7 +640,7 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 	}
 
 	@Override
-	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
+	public String glGetActiveUniform (int program, int index, IntBuffer size, IntBuffer type) {
 		calls++;
 		String result = gl30.glGetActiveUniform(program, index, size, type);
 		check();
@@ -1427,6 +1443,14 @@ public class GL30Interceptor extends GLInterceptor implements GL30 {
 		calls++;
 		gl30.glFramebufferTextureLayer(target, attachment, texture, level, layer);
 		check();
+	}
+
+	@Override
+	public Buffer glMapBufferRange (int target, int offset, int length, int access) {
+		calls++;
+		Buffer result = gl30.glMapBufferRange(target, offset, length, access);
+		check();
+		return result;
 	}
 
 	@Override

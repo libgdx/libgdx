@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 /** Provides utility methods to copy streams. */
@@ -73,9 +74,9 @@ public final class StreamUtils {
 		while ((bytesRead = input.read(buffer)) != -1) {
 			BufferUtils.copy(buffer, 0, output, bytesRead);
 			total += bytesRead;
-			output.position(startPosition + total);
+			((Buffer)output).position(startPosition + total);
 		}
-		output.position(startPosition);
+		((Buffer)output).position(startPosition);
 		return total;
 	}
 
@@ -92,8 +93,8 @@ public final class StreamUtils {
 		return baos.toByteArray();
 	}
 
-	/** Calls {@link #copyStreamToString(InputStream, int, String)} using the input's {@link InputStream#available() available} size
-	 * and the platform's default charset. */
+	/** Calls {@link #copyStreamToString(InputStream, int, String)} using the input's {@link InputStream#available() available}
+	 * size and the platform's default charset. */
 	public static String copyStreamToString (InputStream input) throws IOException {
 		return copyStreamToString(input, input.available(), null);
 	}

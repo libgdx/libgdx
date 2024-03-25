@@ -32,21 +32,19 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
-import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ShaderTest extends GdxTest {
-	// Create a custom attribute, see https://github.com/libgdx/libgdx/wiki/Material-and-environment
-	// See also: http://blog.xoppa.com/using-materials-with-libgdx/
+	// Create a custom attribute, see https://libgdx.com/wiki/graphics/3d/material-and-environment
+	// See also: https://xoppa.github.io/blog/using-materials-with-libgdx/
 	public static class TestAttribute extends Attribute {
 		public final static String Alias = "Test";
 		public final static long ID = register(Alias);
@@ -67,7 +65,7 @@ public class ShaderTest extends GdxTest {
 		protected boolean equals (Attribute other) {
 			return ((TestAttribute)other).value == value;
 		}
-		
+
 		@Override
 		public int compareTo (Attribute o) {
 			if (type != o.type) return type < o.type ? -1 : 1;
@@ -76,7 +74,7 @@ public class ShaderTest extends GdxTest {
 		}
 	}
 
-	// Create a custom shader, see also http://blog.xoppa.com/creating-a-shader-with-libgdx
+	// Create a custom shader, see also https://xoppa.github.io/blog/creating-a-shader-with-libgdx/
 	// BaseShader adds some basic functionality used to manage uniforms etc.
 	public static class TestShader extends BaseShader {
 		// @off

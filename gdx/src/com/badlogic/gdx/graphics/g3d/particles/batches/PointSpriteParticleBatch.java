@@ -48,10 +48,11 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 	private static boolean pointSpritesEnabled = false;
 	protected static final Vector3 TMP_V1 = new Vector3();
 	protected static final int sizeAndRotationUsage = 1 << 9;
-	protected static final VertexAttributes CPU_ATTRIBUTES = new VertexAttributes(new VertexAttribute(Usage.Position, 3,
-		ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
-		new VertexAttribute(Usage.TextureCoordinates, 4, "a_region"), new VertexAttribute(sizeAndRotationUsage, 3,
-			"a_sizeAndRotation"));
+	protected static final VertexAttributes CPU_ATTRIBUTES = new VertexAttributes(
+		new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+		new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+		new VertexAttribute(Usage.TextureCoordinates, 4, "a_region"),
+		new VertexAttribute(sizeAndRotationUsage, 3, "a_sizeAndRotation"));
 	protected static final int CPU_VERTEX_SIZE = (short)(CPU_ATTRIBUTES.vertexSize / 4),
 		CPU_POSITION_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.Position).offset / 4),
 		CPU_COLOR_OFFSET = (short)(CPU_ATTRIBUTES.findByUsage(Usage.ColorUnpacked).offset / 4),
@@ -68,6 +69,8 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 
 	private float[] vertices;
 	Renderable renderable;
+	protected BlendingAttribute blendingAttribute;
+	protected DepthTestAttribute depthTestAttribute;
 
 	public PointSpriteParticleBatch () {
 		this(1000);
@@ -76,11 +79,23 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 	public PointSpriteParticleBatch (int capacity) {
 		this(capacity, new ParticleShader.Config(ParticleType.Point));
 	}
-	
+
 	public PointSpriteParticleBatch (int capacity, ParticleShader.Config shaderConfig) {
+		this(capacity, shaderConfig, null, null);
+	}
+
+	public PointSpriteParticleBatch (int capacity, ParticleShader.Config shaderConfig, BlendingAttribute blendingAttribute,
+		DepthTestAttribute depthTestAttribute) {
 		super(PointSpriteControllerRenderData.class);
 
 		if (!pointSpritesEnabled) enablePointSprites();
+
+		this.blendingAttribute = blendingAttribute;
+		this.depthTestAttribute = depthTestAttribute;
+
+		if (this.blendingAttribute == null)
+			this.blendingAttribute = new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f);
+		if (this.depthTestAttribute == null) this.depthTestAttribute = new DepthTestAttribute(GL20.GL_LEQUAL, false);
 
 		allocRenderable();
 		ensureCapacity(capacity);
@@ -99,8 +114,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 		renderable = new Renderable();
 		renderable.meshPart.primitiveType = GL20.GL_POINTS;
 		renderable.meshPart.offset = 0;
-		renderable.material = new Material(new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f),
-			new DepthTestAttribute(GL20.GL_LEQUAL, false), TextureAttribute.createDiffuse((Texture)null));
+		renderable.material = new Material(blendingAttribute, depthTestAttribute, TextureAttribute.createDiffuse((Texture)null));
 	}
 
 	public void setTexture (Texture texture) {
@@ -111,6 +125,10 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 	public Texture getTexture () {
 		TextureAttribute attribute = (TextureAttribute)renderable.material.get(TextureAttribute.Diffuse);
 		return attribute.textureDescription.texture;
+	}
+
+	public BlendingAttribute getBlendingAttribute () {
+		return blendingAttribute;
 	}
 
 	@Override

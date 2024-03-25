@@ -47,7 +47,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		public boolean forceTextureFilters = false;
 	}
 
-	private interface AtlasResolver extends ImageResolver {
+	protected interface AtlasResolver extends ImageResolver {
 
 		public TextureAtlas getAtlas ();
 
@@ -139,7 +139,8 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 	}
 
 	@Override
-	protected Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile, TextureLoader.TextureParameter textureParameter) {
+	protected Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,
+		TextureLoader.TextureParameter textureParameter) {
 		Array<AssetDescriptor> descriptors = new Array<AssetDescriptor>();
 
 		// Atlas dependencies
@@ -195,15 +196,14 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 					String regionName = imageElement.getAttribute("source");
 					regionName = regionName.substring(0, regionName.lastIndexOf('.'));
 					AtlasRegion region = atlas.findRegion(regionName);
-					if (region == null)
-						throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionName);
+					if (region == null) throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionName);
 					addStaticTiledMapTile(tileSet, region, tileId, offsetX, offsetY);
 				}
 			}
 		}
 	}
 
-	private FileHandle getAtlasFileHandle (FileHandle tmxFile) {
+	protected FileHandle getAtlasFileHandle (FileHandle tmxFile) {
 		Element properties = root.getChildByName("properties");
 
 		String atlasFilePath = null;
@@ -227,7 +227,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		}
 	}
 
-	private void setTextureFilters (Texture.TextureFilter min, Texture.TextureFilter mag) {
+	protected void setTextureFilters (Texture.TextureFilter min, Texture.TextureFilter mag) {
 		for (Texture texture : trackedTextures) {
 			texture.setFilter(min, mag);
 		}

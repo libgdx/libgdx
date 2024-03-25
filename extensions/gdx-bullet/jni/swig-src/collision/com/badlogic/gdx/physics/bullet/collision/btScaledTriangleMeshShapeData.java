@@ -10,44 +10,40 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btScaledTriangleMeshShapeData extends BulletBase {
 	private long swigCPtr;
-	
-	protected btScaledTriangleMeshShapeData(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btScaledTriangleMeshShapeData (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btScaledTriangleMeshShapeData, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btScaledTriangleMeshShapeData(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btScaledTriangleMeshShapeData, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btScaledTriangleMeshShapeData (long cPtr, boolean cMemoryOwn) {
 		this("btScaledTriangleMeshShapeData", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btScaledTriangleMeshShapeData obj) {
+
+	public static long getCPtr (btScaledTriangleMeshShapeData obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,26 +54,27 @@ public class btScaledTriangleMeshShapeData extends BulletBase {
 		super.delete();
 	}
 
-  public void setTrimeshShapeData(btTriangleMeshShapeData value) {
-    CollisionJNI.btScaledTriangleMeshShapeData_trimeshShapeData_set(swigCPtr, this, btTriangleMeshShapeData.getCPtr(value), value);
-  }
+	public void setTrimeshShapeData (btTriangleMeshShapeData value) {
+		CollisionJNI.btScaledTriangleMeshShapeData_trimeshShapeData_set(swigCPtr, this, btTriangleMeshShapeData.getCPtr(value),
+			value);
+	}
 
-  public btTriangleMeshShapeData getTrimeshShapeData() {
-    long cPtr = CollisionJNI.btScaledTriangleMeshShapeData_trimeshShapeData_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btTriangleMeshShapeData(cPtr, false);
-  }
+	public btTriangleMeshShapeData getTrimeshShapeData () {
+		long cPtr = CollisionJNI.btScaledTriangleMeshShapeData_trimeshShapeData_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btTriangleMeshShapeData(cPtr, false);
+	}
 
-  public void setLocalScaling(btVector3FloatData value) {
-    CollisionJNI.btScaledTriangleMeshShapeData_localScaling_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
+	public void setLocalScaling (btVector3FloatData value) {
+		CollisionJNI.btScaledTriangleMeshShapeData_localScaling_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+	}
 
-  public btVector3FloatData getLocalScaling() {
-    long cPtr = CollisionJNI.btScaledTriangleMeshShapeData_localScaling_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
-  }
+	public btVector3FloatData getLocalScaling () {
+		long cPtr = CollisionJNI.btScaledTriangleMeshShapeData_localScaling_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
+	}
 
-  public btScaledTriangleMeshShapeData() {
-    this(CollisionJNI.new_btScaledTriangleMeshShapeData(), true);
-  }
+	public btScaledTriangleMeshShapeData () {
+		this(CollisionJNI.new_btScaledTriangleMeshShapeData(), true);
+	}
 
 }

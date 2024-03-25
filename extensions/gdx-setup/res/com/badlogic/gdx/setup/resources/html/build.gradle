@@ -14,42 +14,51 @@ gwt {
     }
 }
 
-import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
+import org.docstr.gradle.plugins.gwt.GwtSuperDev
+import org.akhikhl.gretty.AppBeforeIntegrationTestTask
 
-def HttpFileServer server = null
-def httpFilePort = 8080
+gretty.httpPort = 8080
+gretty.resourceBase = project.buildDir.path + "/gwt/draftOut"
+gretty.contextPath = "/"
+gretty.portPropertiesFileName = "TEMP_PORTS.properties"
 
-task startHttpServer () {
+tasks.register('startHttpServer') {
     dependsOn draftCompileGwt
 
-    String output = project.buildDir.path + "/gwt/draftOut"
-
-    doLast {
+    doFirst {
         copy {
             from "webapp"
-            into output
+            into gretty.resourceBase
         }
 
         copy {
             from "war"
-            into output
+            into gretty.resourceBase
         }
-
-        server = new SimpleHttpFileServerFactory().start(new File(output), httpFilePort)
-
-        println "Server started in directory " + server.getContentRoot() + ", http://localhost:" + server.getPort()
     }
 }
 
-task superDev (type: GwtSuperDev) {
+task beforeRun(type: AppBeforeIntegrationTestTask, dependsOn: startHttpServer) {
+    // The next line allows ports to be reused instead of
+    // needing a process to be manually terminated.
+    file("build/TEMP_PORTS.properties").delete()
+    // Somewhat of a hack; uses Gretty's support for wrapping a task in
+    // a start and then stop of a Jetty server that serves files while
+    // also running the SuperDev code server.
+    integrationTestTask 'superDev'
+
+    interactive false
+}
+
+tasks.register('superDev', GwtSuperDev) {
     dependsOn startHttpServer
     doFirst {
         gwt.modules = gwt.devModules
     }
 }
 
-
-task dist(dependsOn: [clean, compileGwt]) {
+tasks.register('dist') {
+    dependsOn clean, compileGwt
     doLast {
         file("build/dist").mkdirs()
         copy {
@@ -59,7 +68,7 @@ task dist(dependsOn: [clean, compileGwt]) {
         copy {
             from "webapp"
             into "build/dist"
-            }
+        }
         copy {
             from "war"
             into "build/dist"
@@ -67,7 +76,7 @@ task dist(dependsOn: [clean, compileGwt]) {
     }
 }
 
-task addSource {
+tasks.register('addSource') {
     doLast {
         sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJava.srcDirs)
     }
@@ -75,8 +84,9 @@ task addSource {
 
 tasks.compileGwt.dependsOn(addSource)
 tasks.draftCompileGwt.dependsOn(addSource)
+tasks.checkGwt.dependsOn(addSource)
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project.name = appName + "-html"

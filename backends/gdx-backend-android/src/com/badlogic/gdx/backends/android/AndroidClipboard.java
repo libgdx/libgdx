@@ -23,10 +23,15 @@ import com.badlogic.gdx.utils.Clipboard;
 
 public class AndroidClipboard implements Clipboard {
 
-	private android.content.ClipboardManager clipboard;
+	private final android.content.ClipboardManager clipboard;
 
 	public AndroidClipboard (Context context) {
 		clipboard = (android.content.ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+	}
+
+	@Override
+	public boolean hasContents () {
+		return clipboard.hasPrimaryClip();
 	}
 
 	@Override

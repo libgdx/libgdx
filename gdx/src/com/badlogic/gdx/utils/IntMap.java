@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys are unboxed ints and values are objects. No allocation is done except when growing the table
  * size.
@@ -65,9 +65,9 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 	 * hash. */
 	protected int mask;
 
-	private Entries entries1, entries2;
-	private Values values1, values2;
-	private Keys keys1, keys2;
+	private transient Entries entries1, entries2;
+	private transient Values values1, values2;
+	private transient Keys keys1, keys2;
 
 	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public IntMap () {
@@ -76,14 +76,14 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 
 	/** Creates a new map with a load factor of 0.8.
 	 *
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public IntMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
 	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
 	 * growing the backing table.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public IntMap (int initialCapacity, float loadFactor) {
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
@@ -137,8 +137,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 		}
 	}
 
-	@Null
-	public V put (int key, @Null V value) {
+	public @Null V put (int key, @Null V value) {
 		if (key == 0) {
 			V oldValue = zeroValue;
 			zeroValue = value;
@@ -196,8 +195,8 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 		return i >= 0 ? valueTable[i] : defaultValue;
 	}
 
-	@Null
-	public V remove (int key) {
+	/** Returns the value for the removed key, or null if the key is not in the map. */
+	public @Null V remove (int key) {
 		if (key == 0) {
 			if (!hasZeroValue) return null;
 			hasZeroValue = false;
@@ -223,6 +222,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 			next = next + 1 & mask;
 		}
 		keyTable[i] = 0;
+		valueTable[i] = null;
 		size--;
 		return oldValue;
 	}
@@ -559,6 +559,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 			int i = currentIndex;
 			if (i == INDEX_ZERO && map.hasZeroValue) {
 				map.hasZeroValue = false;
+				map.zeroValue = null;
 			} else if (i < 0) {
 				throw new IllegalStateException("next must be called before remove.");
 			} else {
@@ -575,6 +576,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 					next = next + 1 & mask;
 				}
 				keyTable[i] = 0;
+				valueTable[i] = null;
 				if (i != currentIndex) --nextIndex;
 			}
 			currentIndex = INDEX_ILLEGAL;
@@ -626,8 +628,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 			return hasNext;
 		}
 
-		@Null
-		public V next () {
+		public @Null V next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			V value;

@@ -1,7 +1,7 @@
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapModifiedExternalTilesetTest extends GdxTest {
 	private TiledMap map;
@@ -39,15 +40,14 @@ public class TiledMapModifiedExternalTilesetTest extends GdxTest {
 		// These two maps should appear identical -- a ring of grass with water inside and out.
 		// The original is correct, without the bug fix to TiledMapTileSets.java that acompanies
 		// this test, the latter appears as all grass.
-//		map = new TmxMapLoader().load("data/maps/tiled/external-tilesets/test_original.tmx");
+// map = new TmxMapLoader().load("data/maps/tiled/external-tilesets/test_original.tmx");
 		map = new TmxMapLoader().load("data/maps/tiled/external-tilesets/test_extended.tmx");
 		renderer = new IsometricTiledMapRenderer(map, 1f / 32f);
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.55f, 0.55f, 0.55f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.55f, 0.55f, 0.55f, 1f);
 		camera.update();
 		renderer.setView(camera);
 		renderer.render();

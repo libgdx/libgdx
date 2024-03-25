@@ -25,7 +25,8 @@ import com.google.gwt.typedarrays.shared.ArrayBuffer;
  * </p>
  * <p>
  * This class is marked final for runtime performance.
- * </p> */
+ * </p>
+ */
 final class DirectReadOnlyByteBuffer extends DirectByteBuffer {
 
 	static DirectReadOnlyByteBuffer copy (DirectByteBuffer other, int markOfOther) {
@@ -139,8 +140,8 @@ final class DirectReadOnlyByteBuffer extends DirectByteBuffer {
 	}
 
 	public ByteBuffer slice () {
-		DirectReadOnlyByteBuffer slice = new DirectReadOnlyByteBuffer(byteArray.buffer(), remaining(), byteArray.byteOffset()
-			+ position);
+		DirectReadOnlyByteBuffer slice = new DirectReadOnlyByteBuffer(byteArray.buffer(), remaining(),
+			byteArray.byteOffset() + position);
 		slice.order = order;
 		return slice;
 	}

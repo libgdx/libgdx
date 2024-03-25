@@ -53,8 +53,8 @@ public class OrthographicCamera extends Camera {
 
 	@Override
 	public void update (boolean updateFrustum) {
-		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * (viewportWidth / 2), zoom * -(viewportHeight / 2), zoom
-			* viewportHeight / 2, near, far);
+		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * (viewportWidth / 2), zoom * -(viewportHeight / 2),
+			zoom * viewportHeight / 2, near, far);
 		view.setToLookAt(position, tmp.set(position).add(direction), up);
 		combined.set(projection);
 		Matrix4.mul(combined.val, view.val);
@@ -73,8 +73,8 @@ public class OrthographicCamera extends Camera {
 		setToOrtho(yDown, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
-	/** Sets this camera to an orthographic projection, centered at (viewportWidth/2, viewportHeight/2), with the y-axis pointing up
-	 * or down.
+	/** Sets this camera to an orthographic projection, centered at (viewportWidth/2, viewportHeight/2), with the y-axis pointing
+	 * up or down.
 	 * @param yDown whether y should be pointing down.
 	 * @param viewportWidth
 	 * @param viewportHeight */

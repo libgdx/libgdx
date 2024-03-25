@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.setup;
 
-
 import com.badlogic.gdx.setup.DependencyBank.ProjectType;
 
 import java.io.BufferedWriter;
@@ -27,22 +26,22 @@ public class BuildScriptHelper {
 
 	private static int indent = 0;
 
-	public static void addBuildScript(Language language, List<ProjectType> projects, BufferedWriter wr) throws IOException {
+	public static void addBuildScript (Language language, List<ProjectType> projects, BufferedWriter wr) throws IOException {
 		write(wr, "buildscript {");
 		write(wr, language.buildScript + "\n");
-		//repos
+		// repos
 		write(wr, "repositories {");
 		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
-		write(wr, "maven { url \"" + DependencyBank.gradlePlugins + "\" }");
+		write(wr, DependencyBank.gradlePlugins);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
-		write(wr, DependencyBank.jCenter);
 		write(wr, DependencyBank.google);
 		write(wr, "}");
-		//dependencies
+		// dependencies
 		write(wr, "dependencies {");
 		if (projects.contains(ProjectType.HTML)) {
 			write(wr, "classpath '" + DependencyBank.gwtPluginImport + "'");
+			write(wr, "classpath '" + DependencyBank.grettyPluginImport + "'");
 		}
 		if (projects.contains(ProjectType.ANDROID)) {
 			write(wr, "classpath '" + DependencyBank.androidPluginImport + "'");
@@ -50,16 +49,13 @@ public class BuildScriptHelper {
 		if (projects.contains(ProjectType.IOS)) {
 			write(wr, "classpath '" + DependencyBank.roboVMPluginImport + "'");
 		}
-		if (projects.contains(ProjectType.IOSMOE)) {
-			write(wr, "classpath '" + DependencyBank.moePluginImport + "'");
-		}
 		write(wr, language.buildScriptDependencies + "\n");
 		write(wr, "}");
 		write(wr, "}");
 		space(wr);
 	}
 
-	public static void addAllProjects(BufferedWriter wr) throws IOException {
+	public static void addAllProjects (BufferedWriter wr) throws IOException {
 		write(wr, "allprojects {");
 		write(wr, "apply plugin: \"eclipse\"");
 		space(wr);
@@ -71,20 +67,23 @@ public class BuildScriptHelper {
 		write(wr, "box2DLightsVersion = '" + DependencyBank.box2DLightsVersion + "'");
 		write(wr, "ashleyVersion = '" + DependencyBank.ashleyVersion + "'");
 		write(wr, "aiVersion = '" + DependencyBank.aiVersion + "'");
+		write(wr, "gdxControllersVersion = '" + DependencyBank.controllersVersion + "'");
 		write(wr, "}");
 		space(wr);
 		write(wr, "repositories {");
 		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
-		write(wr, DependencyBank.jCenter);
 		write(wr, DependencyBank.google);
+		write(wr, DependencyBank.gradlePlugins);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
+		write(wr, "maven { url \"" + DependencyBank.jitpackUrl + "\" }");
 		write(wr, "}");
 		write(wr, "}");
 	}
 
-	public static void addProject(Language language, ProjectType project, List<Dependency> dependencies, BufferedWriter wr) throws IOException {
+	public static void addProject (Language language, ProjectType project, List<Dependency> dependencies, BufferedWriter wr)
+		throws IOException {
 		space(wr);
 		write(wr, "project(\":" + project.getName() + "\") {");
 		for (String plugin : project.getPlugins(language)) {
@@ -97,7 +96,8 @@ public class BuildScriptHelper {
 		write(wr, "}");
 	}
 
-	private static void addDependencies(Language language, ProjectType project, List<Dependency> dependencyList, BufferedWriter wr) throws IOException {
+	private static void addDependencies (Language language, ProjectType project, List<Dependency> dependencyList,
+		BufferedWriter wr) throws IOException {
 		write(wr, "dependencies {");
 		if (!project.equals(ProjectType.CORE)) {
 			write(wr, "implementation project(\":" + ProjectType.CORE.getName() + "\")");
@@ -106,7 +106,7 @@ public class BuildScriptHelper {
 			if (dep.getDependencies(project) == null) continue;
 			for (String moduleDependency : dep.getDependencies(project)) {
 				if (moduleDependency == null) continue;
-				if ((project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) && moduleDependency.contains("native")) {
+				if (project.equals(ProjectType.ANDROID) && moduleDependency.contains("native")) {
 					write(wr, "natives \"" + moduleDependency + "\"");
 				} else {
 					write(wr, "api \"" + moduleDependency + "\"");
@@ -117,13 +117,13 @@ public class BuildScriptHelper {
 		write(wr, "}");
 	}
 
-	private static void addConfigurations(ProjectType project, BufferedWriter wr) throws IOException {
-		if (project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOSMOE)) {
+	private static void addConfigurations (ProjectType project, BufferedWriter wr) throws IOException {
+		if (project.equals(ProjectType.ANDROID)) {
 			write(wr, "configurations { natives }");
 		}
 	}
 
-	private static void write(BufferedWriter wr, String input) throws IOException {
+	private static void write (BufferedWriter wr, String input) throws IOException {
 		int delta = StringUtils.countMatches(input, '{') - StringUtils.countMatches(input, '}');
 		indent += delta *= 4;
 		indent = clamp(indent);
@@ -136,11 +136,11 @@ public class BuildScriptHelper {
 		}
 	}
 
-	private static void space(BufferedWriter wr) throws IOException {
+	private static void space (BufferedWriter wr) throws IOException {
 		wr.write("\n");
 	}
 
-	private static int clamp(int indent) {
+	private static int clamp (int indent) {
 		if (indent < 0) {
 			return 0;
 		}
@@ -149,7 +149,7 @@ public class BuildScriptHelper {
 
 	static class StringUtils {
 
-		public static int countMatches(String input, char match) {
+		public static int countMatches (String input, char match) {
 			int count = 0;
 			for (int i = 0; i < input.length(); i++) {
 				if (input.charAt(i) == match) {
@@ -159,7 +159,7 @@ public class BuildScriptHelper {
 			return count;
 		}
 
-		public static String repeat(String toRepeat, int count) {
+		public static String repeat (String toRepeat, int count) {
 			String repeat = "";
 			for (int i = 0; i < count; i++) {
 				repeat += toRepeat;

@@ -37,6 +37,9 @@ public class Matrix3 implements Serializable {
 	public static final int M22 = 8;
 	public float[] val = new float[9];
 	private float[] tmp = new float[9];
+	{
+		tmp[M22] = 1;
+	}
 
 	public Matrix3 () {
 		idt();
@@ -47,9 +50,9 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Constructs a matrix from the given float array. The array must have at least 9 elements; the first 9 will be copied.
-	 * @param values The float array to copy. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order. (The float array is
-	 *           not modified.) */
+	 * @param values The float array to copy. Remember that this matrix is in
+	 *           <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order. (The float array
+	 *           is not modified.) */
 	public Matrix3 (float[] values) {
 		this.set(values);
 	}
@@ -75,6 +78,7 @@ public class Matrix3 implements Serializable {
 	 * <pre>
 	 * A.mul(B) results in A := AB
 	 * </pre>
+	 * 
 	 * @param m Matrix to multiply by.
 	 * @return This matrix for the purpose of chaining operations together. */
 	public Matrix3 mul (Matrix3 m) {
@@ -110,6 +114,7 @@ public class Matrix3 implements Serializable {
 	 * <pre>
 	 * A.mulLeft(B) results in A := BA
 	 * </pre>
+	 * 
 	 * @param m The other Matrix to multiply by
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 mulLeft (Matrix3 m) {
@@ -178,13 +183,13 @@ public class Matrix3 implements Serializable {
 		float[] val = this.val;
 		float oc = 1.0f - cos;
 		val[M00] = oc * axis.x * axis.x + cos;
-		val[M10] = oc * axis.x * axis.y - axis.z * sin;
-		val[M20] = oc * axis.z * axis.x + axis.y * sin;
-		val[M01] = oc * axis.x * axis.y + axis.z * sin;
+		val[M01] = oc * axis.x * axis.y - axis.z * sin;
+		val[M02] = oc * axis.z * axis.x + axis.y * sin;
+		val[M10] = oc * axis.x * axis.y + axis.z * sin;
 		val[M11] = oc * axis.y * axis.y + cos;
-		val[M21] = oc * axis.y * axis.z - axis.x * sin;
-		val[M02] = oc * axis.z * axis.x - axis.y * sin;
-		val[M12] = oc * axis.y * axis.z + axis.x * sin;
+		val[M12] = oc * axis.y * axis.z - axis.x * sin;
+		val[M20] = oc * axis.z * axis.x - axis.y * sin;
+		val[M21] = oc * axis.y * axis.z + axis.x * sin;
 		val[M22] = oc * axis.z * axis.z + cos;
 		return this;
 	}
@@ -278,8 +283,8 @@ public class Matrix3 implements Serializable {
 	/** @return The determinant of this matrix */
 	public float det () {
 		float[] val = this.val;
-		return val[M00] * val[M11] * val[M22] + val[M01] * val[M12] * val[M20] + val[M02] * val[M10] * val[M21] - val[M00]
-			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] - val[M02] * val[M11] * val[M20];
+		return val[M00] * val[M11] * val[M22] + val[M01] * val[M12] * val[M20] + val[M02] * val[M10] * val[M21]
+			- val[M00] * val[M12] * val[M21] - val[M01] * val[M10] * val[M22] - val[M02] * val[M11] * val[M20];
 	}
 
 	/** Inverts this matrix given that the determinant is != 0.
@@ -290,27 +295,27 @@ public class Matrix3 implements Serializable {
 		if (det == 0) throw new GdxRuntimeException("Can't invert a singular matrix");
 
 		float inv_det = 1.0f / det;
-		float[] tmp = this.tmp, val = this.val;
+		float[] val = this.val;
 
-		tmp[M00] = val[M11] * val[M22] - val[M21] * val[M12];
-		tmp[M10] = val[M20] * val[M12] - val[M10] * val[M22];
-		tmp[M20] = val[M10] * val[M21] - val[M20] * val[M11];
-		tmp[M01] = val[M21] * val[M02] - val[M01] * val[M22];
-		tmp[M11] = val[M00] * val[M22] - val[M20] * val[M02];
-		tmp[M21] = val[M20] * val[M01] - val[M00] * val[M21];
-		tmp[M02] = val[M01] * val[M12] - val[M11] * val[M02];
-		tmp[M12] = val[M10] * val[M02] - val[M00] * val[M12];
-		tmp[M22] = val[M00] * val[M11] - val[M10] * val[M01];
+		float v00 = val[M11] * val[M22] - val[M21] * val[M12];
+		float v10 = val[M20] * val[M12] - val[M10] * val[M22];
+		float v20 = val[M10] * val[M21] - val[M20] * val[M11];
+		float v01 = val[M21] * val[M02] - val[M01] * val[M22];
+		float v11 = val[M00] * val[M22] - val[M20] * val[M02];
+		float v21 = val[M20] * val[M01] - val[M00] * val[M21];
+		float v02 = val[M01] * val[M12] - val[M11] * val[M02];
+		float v12 = val[M10] * val[M02] - val[M00] * val[M12];
+		float v22 = val[M00] * val[M11] - val[M10] * val[M01];
 
-		val[M00] = inv_det * tmp[M00];
-		val[M10] = inv_det * tmp[M10];
-		val[M20] = inv_det * tmp[M20];
-		val[M01] = inv_det * tmp[M01];
-		val[M11] = inv_det * tmp[M11];
-		val[M21] = inv_det * tmp[M21];
-		val[M02] = inv_det * tmp[M02];
-		val[M12] = inv_det * tmp[M12];
-		val[M22] = inv_det * tmp[M22];
+		val[M00] = inv_det * v00;
+		val[M10] = inv_det * v10;
+		val[M20] = inv_det * v20;
+		val[M01] = inv_det * v01;
+		val[M11] = inv_det * v11;
+		val[M21] = inv_det * v21;
+		val[M02] = inv_det * v02;
+		val[M12] = inv_det * v12;
+		val[M22] = inv_det * v22;
 
 		return this;
 	}
@@ -362,8 +367,8 @@ public class Matrix3 implements Serializable {
 	/** Sets the matrix to the given matrix as a float array. The float array must have at least 9 elements; the first 9 will be
 	 * copied.
 	 * 
-	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
+	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in
+	 *           <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix3 set (float[] values) {
 		System.arraycopy(values, 0, val, 0, val.length);
@@ -404,18 +409,18 @@ public class Matrix3 implements Serializable {
 	 * @param y The y-component of the translation vector.
 	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 translate (float x, float y) {
-		float[] val = this.val;
+		float[] tmp = this.tmp;
 		tmp[M00] = 1;
 		tmp[M10] = 0;
-		tmp[M20] = 0;
+		// tmp[M20] = 0;
 
 		tmp[M01] = 0;
 		tmp[M11] = 1;
-		tmp[M21] = 0;
+		// tmp[M21] = 0;
 
 		tmp[M02] = x;
 		tmp[M12] = y;
-		tmp[M22] = 1;
+		// tmp[M22] = 1;
 		mul(val, tmp);
 		return this;
 	}
@@ -425,18 +430,18 @@ public class Matrix3 implements Serializable {
 	 * @param translation The translation vector.
 	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 translate (Vector2 translation) {
-		float[] val = this.val;
+		float[] tmp = this.tmp;
 		tmp[M00] = 1;
 		tmp[M10] = 0;
-		tmp[M20] = 0;
+		// tmp[M20] = 0;
 
 		tmp[M01] = 0;
 		tmp[M11] = 1;
-		tmp[M21] = 0;
+		// tmp[M21] = 0;
 
 		tmp[M02] = translation.x;
 		tmp[M12] = translation.y;
-		tmp[M22] = 1;
+		// tmp[M22] = 1;
 		mul(val, tmp);
 		return this;
 	}
@@ -457,19 +462,20 @@ public class Matrix3 implements Serializable {
 		if (radians == 0) return this;
 		float cos = (float)Math.cos(radians);
 		float sin = (float)Math.sin(radians);
-		float[] tmp = this.tmp;
 
+		float[] tmp = this.tmp;
 		tmp[M00] = cos;
 		tmp[M10] = sin;
-		tmp[M20] = 0;
+		// tmp[M20] = 0;
 
 		tmp[M01] = -sin;
 		tmp[M11] = cos;
-		tmp[M21] = 0;
+		// tmp[M21] = 0;
 
 		tmp[M02] = 0;
 		tmp[M12] = 0;
-		tmp[M22] = 1;
+		// tmp[M22] = 1;
+
 		mul(val, tmp);
 		return this;
 	}
@@ -483,13 +489,16 @@ public class Matrix3 implements Serializable {
 		float[] tmp = this.tmp;
 		tmp[M00] = scaleX;
 		tmp[M10] = 0;
-		tmp[M20] = 0;
+		// tmp[M20] = 0;
+
 		tmp[M01] = 0;
 		tmp[M11] = scaleY;
-		tmp[M21] = 0;
+		// tmp[M21] = 0;
+
 		tmp[M02] = 0;
 		tmp[M12] = 0;
-		tmp[M22] = 1;
+		// tmp[M22] = 1;
+
 		mul(val, tmp);
 		return this;
 	}
@@ -502,13 +511,16 @@ public class Matrix3 implements Serializable {
 		float[] tmp = this.tmp;
 		tmp[M00] = scale.x;
 		tmp[M10] = 0;
-		tmp[M20] = 0;
+		// tmp[M20] = 0;
+
 		tmp[M01] = 0;
 		tmp[M11] = scale.y;
-		tmp[M21] = 0;
+		// tmp[M21] = 0;
+
 		tmp[M02] = 0;
 		tmp[M12] = 0;
-		tmp[M22] = 1;
+		// tmp[M22] = 1;
+
 		mul(val, tmp);
 		return this;
 	}
@@ -525,6 +537,8 @@ public class Matrix3 implements Serializable {
 		return position;
 	}
 
+	/** @param scale The vector which will receive the (non-negative) scale components on each axis.
+	 * @return The provided vector for chaining. */
 	public Vector2 getScale (Vector2 scale) {
 		float[] val = this.val;
 		scale.x = (float)Math.sqrt(val[M00] * val[M00] + val[M01] * val[M01]);
@@ -592,6 +606,7 @@ public class Matrix3 implements Serializable {
 	 * <pre>
 	 * mul(A, B) => A := AB
 	 * </pre>
+	 * 
 	 * @param mata The float array representing the first matrix. Must have at least 9 elements.
 	 * @param matb The float array representing the second matrix. Must have at least 9 elements. */
 	private static void mul (float[] mata, float[] matb) {

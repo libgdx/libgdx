@@ -18,8 +18,8 @@ package com.google.gwt.webgl.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-/** The WebGLContextAttributes interface contains drawing surface attributes and is passed as the second parameter to getContext. A
- * native object may be supplied as this parameter; the specified attributes will be queried from this object. */
+/** The WebGLContextAttributes interface contains drawing surface attributes and is passed as the second parameter to getContext.
+ * A native object may be supplied as this parameter; the specified attributes will be queried from this object. */
 public class WebGLContextAttributes extends JavaScriptObject {
 
 	public static native WebGLContextAttributes create () /*-{
@@ -81,8 +81,22 @@ public class WebGLContextAttributes extends JavaScriptObject {
 	public final native void clearPremultipliedAlpha () /*-{
 																			delete this.premultipliedAlpha;
 																			}-*/;
-	
+
 	public final native void setPreserveDrawingBuffer (boolean preserveDrawingBuffer) /*-{
 																			this.preserveDrawingBuffer = preserveDrawingBuffer;
 																			}-*/;
+
+	/** Default: false. In order for a WebGL context to be used as a source for immersive XR imagery it must be created on a
+	 * compatible graphics adapter for the immersive XR device. What is considered a compatible graphics adapter is platform
+	 * dependent, but is understood to mean that the graphics adapter can supply imagery to the immersive XR device without undue
+	 * latency. If a WebGL context was not already created on the compatible graphics adapter, it typically must be re-created on
+	 * the adapter in question before it can be used with an XRWebGLLayer. */
+	public final native void setXrCompatible (boolean xrCompatible) /*-{
+																this.xrCompatible = xrCompatible;
+																}-*/;
+
+	public final native void clearXrCompatible () /*-{
+													delete this.xrCompatible;
+													}-*/;
+
 }

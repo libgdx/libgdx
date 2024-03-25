@@ -53,13 +53,14 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
  * regions in the atlas as ninepatches, sprites, drawables, etc. The get* methods return an instance of the object in the skin.
  * The new* methods return a copy of an instance in the skin.
  * <p>
- * See the <a href="https://github.com/libgdx/libgdx/wiki/Skin">documentation</a> for more.
+ * See the <a href="https://libgdx.com/wiki/graphics/2d/scene2d/skin">documentation</a> for more.
  * @author Nathan Sweet */
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
 	TextureAtlas atlas;
-	private final ObjectMap<String, Class> jsonClassTags = new ObjectMap(defaultTagClasses.length);
+	float scale = 1;
 
+	private final ObjectMap<String, Class> jsonClassTags = new ObjectMap(defaultTagClasses.length);
 	{
 		for (Class c : defaultTagClasses)
 			jsonClassTags.put(c.getSimpleName(), c);
@@ -166,8 +167,7 @@ public class Skin implements Disposable {
 
 	/** Returns a named resource of the specified type.
 	 * @return null if not found. */
-	@Null
-	public <T> T optional (String name, Class<T> type) {
+	public @Null <T> T optional (String name, Class<T> type) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (type == null) throw new IllegalArgumentException("type cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(type);
@@ -182,8 +182,7 @@ public class Skin implements Disposable {
 	}
 
 	/** Returns the name to resource mapping for the specified type, or null if no resources of that type exist. */
-	@Null
-	public <T> ObjectMap<String, T> getAll (Class<T> type) {
+	public @Null <T> ObjectMap<String, T> getAll (Class<T> type) {
 		return (ObjectMap<String, T>)resources.get(type);
 	}
 
@@ -209,8 +208,7 @@ public class Skin implements Disposable {
 	}
 
 	/** @return an array with the {@link TextureRegion} that have an index != -1, or null if none are found. */
-	@Null
-	public Array<TextureRegion> getRegions (String regionName) {
+	public @Null Array<TextureRegion> getRegions (String regionName) {
 		Array<TextureRegion> regions = null;
 		int i = 0;
 		TextureRegion region = optional(regionName + "_" + (i++), TextureRegion.class);
@@ -232,12 +230,16 @@ public class Skin implements Disposable {
 
 		tiled = new TiledDrawable(getRegion(name));
 		tiled.setName(name);
+		if (scale != 1) {
+			scale(tiled);
+			tiled.setScale(scale);
+		}
 		add(name, tiled, TiledDrawable.class);
 		return tiled;
 	}
 
 	/** Returns a registered ninepatch. If no ninepatch is found but a region exists with the name, a ninepatch is created from the
-	 * region and stored in the skin. If the region is an {@link AtlasRegion} then the {@link AtlasRegion#splits} are used,
+	 * region and stored in the skin. If the region is an {@link AtlasRegion} then its split {@link AtlasRegion#values} are used,
 	 * otherwise the ninepatch will have the region as the center patch. */
 	public NinePatch getPatch (String name) {
 		NinePatch patch = optional(name, NinePatch.class);
@@ -246,14 +248,15 @@ public class Skin implements Disposable {
 		try {
 			TextureRegion region = getRegion(name);
 			if (region instanceof AtlasRegion) {
-				int[] splits = ((AtlasRegion)region).splits;
+				int[] splits = ((AtlasRegion)region).findValue("split");
 				if (splits != null) {
 					patch = new NinePatch(region, splits[0], splits[1], splits[2], splits[3]);
-					int[] pads = ((AtlasRegion)region).pads;
+					int[] pads = ((AtlasRegion)region).findValue("pad");
 					if (pads != null) patch.setPadding(pads[0], pads[1], pads[2], pads[3]);
 				}
 			}
 			if (patch == null) patch = new NinePatch(region);
+			if (scale != 1) patch.scale(scale, scale);
 			add(name, patch, NinePatch.class);
 			return patch;
 		} catch (GdxRuntimeException ex) {
@@ -276,6 +279,7 @@ public class Skin implements Disposable {
 					sprite = new AtlasSprite(region);
 			}
 			if (sprite == null) sprite = new Sprite(textureRegion);
+			if (scale != 1) sprite.setSize(sprite.getWidth() * scale, sprite.getHeight() * scale);
 			add(name, sprite, Sprite.class);
 			return sprite;
 		} catch (GdxRuntimeException ex) {
@@ -294,12 +298,15 @@ public class Skin implements Disposable {
 			TextureRegion textureRegion = getRegion(name);
 			if (textureRegion instanceof AtlasRegion) {
 				AtlasRegion region = (AtlasRegion)textureRegion;
-				if (region.splits != null)
+				if (region.findValue("split") != null)
 					drawable = new NinePatchDrawable(getPatch(name));
 				else if (region.rotate || region.packedWidth != region.originalWidth || region.packedHeight != region.originalHeight)
 					drawable = new SpriteDrawable(getSprite(name));
 			}
-			if (drawable == null) drawable = new TextureRegionDrawable(textureRegion);
+			if (drawable == null) {
+				drawable = new TextureRegionDrawable(textureRegion);
+				if (scale != 1) scale(drawable);
+			}
 		} catch (GdxRuntimeException ignored) {
 		}
 
@@ -326,8 +333,7 @@ public class Skin implements Disposable {
 
 	/** Returns the name of the specified style object, or null if it is not in the skin. This compares potentially every style
 	 * object in the skin of the same type as the specified style, which may be a somewhat expensive operation. */
-	@Null
-	public String find (Object resource) {
+	public @Null String find (Object resource) {
 		if (resource == null) throw new IllegalArgumentException("style cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(resource.getClass());
 		if (typeResources == null) return null;
@@ -386,6 +392,28 @@ public class Skin implements Disposable {
 		return newDrawable;
 	}
 
+	/** Scales the drawable's {@link Drawable#getLeftWidth()}, {@link Drawable#getRightWidth()},
+	 * {@link Drawable#getBottomHeight()}, {@link Drawable#getTopHeight()}, {@link Drawable#getMinWidth()}, and
+	 * {@link Drawable#getMinHeight()}. */
+	public void scale (Drawable drawble) {
+		drawble.setLeftWidth(drawble.getLeftWidth() * scale);
+		drawble.setRightWidth(drawble.getRightWidth() * scale);
+		drawble.setBottomHeight(drawble.getBottomHeight() * scale);
+		drawble.setTopHeight(drawble.getTopHeight() * scale);
+		drawble.setMinWidth(drawble.getMinWidth() * scale);
+		drawble.setMinHeight(drawble.getMinHeight() * scale);
+	}
+
+	/** The scale used to size drawables created by this skin.
+	 * <p>
+	 * This can be useful when scaling an entire UI (eg with a stage's viewport) then using an atlas with images whose resolution
+	 * matches the UI scale. The skin can then be scaled the opposite amount so that the larger or smaller images are drawn at the
+	 * original size. For example, if the UI is scaled 2x, the atlas would have images that are twice the size, then the skin's
+	 * scale would be set to 0.5. */
+	public void setScale (float scale) {
+		this.scale = scale;
+	}
+
 	/** Sets the style on the actor to disabled or enabled. This is done by appending "-disabled" to the style name when enabled is
 	 * false, and removing "-disabled" from the style name when enabled is true. A method named "getStyle" is called the actor via
 	 * reflection and the name of that style is found in the skin. If the actor doesn't have a "getStyle" method or the style was
@@ -415,8 +443,7 @@ public class Skin implements Disposable {
 	}
 
 	/** Returns the {@link TextureAtlas} passed to this skin constructor, or null. */
-	@Null
-	public TextureAtlas getAtlas () {
+	public @Null TextureAtlas getAtlas () {
 		return atlas;
 	}
 
@@ -505,9 +532,10 @@ public class Skin implements Disposable {
 		json.setSerializer(BitmapFont.class, new ReadOnlySerializer<BitmapFont>() {
 			public BitmapFont read (Json json, JsonValue jsonData, Class type) {
 				String path = json.readValue("file", String.class, jsonData);
-				int scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
+				float scaledSize = json.readValue("scaledSize", float.class, -1f, jsonData);
 				Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
 				Boolean markupEnabled = json.readValue("markupEnabled", Boolean.class, false, jsonData);
+				Boolean useIntegerPositions = json.readValue("useIntegerPositions", Boolean.class, true, jsonData);
 
 				FileHandle fontFile = skinFile.parent().child(path);
 				if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
@@ -533,6 +561,7 @@ public class Skin implements Disposable {
 						}
 					}
 					font.getData().markupEnabled = markupEnabled;
+					font.setUseIntegerPositions(useIntegerPositions);
 					// Scaled size is the desired cap height to scale the font to.
 					if (scaledSize != -1) font.getData().setScale(scaledSize / font.getCapHeight());
 					return font;
@@ -590,8 +619,7 @@ public class Skin implements Disposable {
 		TextField.TextFieldStyle.class, TextTooltip.TextTooltipStyle.class, Touchpad.TouchpadStyle.class, Tree.TreeStyle.class,
 		Window.WindowStyle.class};
 
-	@Null
-	static private Method findMethod (Class type, String name) {
+	static private @Null Method findMethod (Class type, String name) {
 		Method[] methods = ClassReflection.getMethods(type);
 		for (int i = 0, n = methods.length; i < n; i++) {
 			Method method = methods[i];

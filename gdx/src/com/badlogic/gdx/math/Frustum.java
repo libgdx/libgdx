@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.OrientedBoundingBox;
 
 /** A truncated rectangular pyramid. Used to define the viewable region and its projection onto the screen.
  * @see Camera#frustum */
@@ -38,15 +39,15 @@ public class Frustum {
 			clipSpacePlanePointsArray[j++] = v.z;
 		}
 	}
-	
+
 	private final static Vector3 tmpV = new Vector3();
 
 	/** the six clipping planes, near, far, left, right, top, bottom **/
 	public final Plane[] planes = new Plane[6];
 
 	/** eight points making up the near and far clipping "rectangles". order is counter clockwise, starting at bottom left **/
-	public final Vector3[] planePoints = {new Vector3(), new Vector3(), new Vector3(), new Vector3(), new Vector3(),
-		new Vector3(), new Vector3(), new Vector3()};
+	public final Vector3[] planePoints = {new Vector3(), new Vector3(), new Vector3(), new Vector3(), new Vector3(), new Vector3(),
+		new Vector3(), new Vector3()};
 	protected final float[] planePointsArray = new float[8 * 3];
 
 	public Frustum () {
@@ -109,8 +110,8 @@ public class Frustum {
 	 * @return Whether the sphere is in the frustum */
 	public boolean sphereInFrustum (Vector3 center, float radius) {
 		for (int i = 0; i < 6; i++)
-			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius - planes[i].d))
-				return false;
+			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius
+				- planes[i].d)) return false;
 		return true;
 	}
 
@@ -134,8 +135,8 @@ public class Frustum {
 	 * @return Whether the sphere is in the frustum */
 	public boolean sphereInFrustumWithoutNearFar (Vector3 center, float radius) {
 		for (int i = 2; i < 6; i++)
-			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius - planes[i].d))
-				return false;
+			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius
+				- planes[i].d)) return false;
 		return true;
 	}
 
@@ -196,48 +197,23 @@ public class Frustum {
 		return true;
 	}
 
-// /**
-// * Calculates the pick ray for the given window coordinates. Assumes the window coordinate system has it's y downwards. The
-// * returned Ray is a member of this instance so don't reuse it outside this class.
-// *
-// * @param screen_width The window width in pixels
-// * @param screen_height The window height in pixels
-// * @param mouse_x The window x-coordinate
-// * @param mouse_y The window y-coordinate
-// * @param pos The camera position
-// * @param dir The camera direction, having unit length
-// * @param up The camera up vector, having unit length
-// * @return the picking ray.
-// */
-// public Ray calculatePickRay (float screen_width, float screen_height, float mouse_x, float mouse_y, Vector3 pos, Vector3 dir,
-// Vector3 up) {
-// float n_x = mouse_x - screen_width / 2.0f;
-// float n_y = mouse_y - screen_height / 2.0f;
-// n_x /= screen_width / 2.0f;
-// n_y /= screen_height / 2.0f;
-//
-// Z.set(dir.tmp().mul(-1)).nor();
-// X.set(up.tmp().crs(Z)).nor();
-// Y.set(Z.tmp().crs(X)).nor();
-// near_center.set(pos.tmp3().sub(Z.tmp2().mul(near)));
-// Vector3 near_point = X.tmp3().mul(near_width).mul(n_x).add(Y.tmp2().mul(near_height).mul(n_y));
-// near_point.add(near_center);
-//
-// return ray.set(near_point.tmp(), near_point.sub(pos).nor());
-// }
+	/** Returns whether the given {@link OrientedBoundingBox} is in the frustum.
+	 *
+	 * @param obb The oriented bounding box
+	 * @return Whether the oriented bounding box is in the frustum */
+	public boolean boundsInFrustum (OrientedBoundingBox obb) {
+		for (int i = 0, len2 = planes.length; i < len2; i++) {
+			if (planes[i].testPoint(obb.getCorner000(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner001(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner010(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner011(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner100(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner101(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner110(tmpV)) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(obb.getCorner111(tmpV)) != PlaneSide.Back) continue;
+			return false;
+		}
 
-// public static void main(String[] argv) {
-// PerspectiveCamera camera = new PerspectiveCamera(45, 2, 2);
-// // camera.rotate(90, 0, 1, 0);
-// camera.update();
-// System.out.println(camera.direction);
-// System.out.println(Arrays.toString(camera.frustum.planes));
-//
-// OrthographicCamera camOrtho = new OrthographicCamera(2, 2);
-// camOrtho.near = 1;
-// // camOrtho.rotate(90, 1, 0, 0);
-// camOrtho.update();
-// System.out.println(camOrtho.direction);
-// System.out.println(Arrays.toString(camOrtho.frustum.planes));
-// }
+		return true;
+	}
 }

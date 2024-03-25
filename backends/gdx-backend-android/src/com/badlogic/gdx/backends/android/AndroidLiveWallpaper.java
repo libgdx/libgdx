@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.android;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,6 +27,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.*;
 
 /** An implementation of the {@link Application} interface to be used with an AndroidLiveWallpaperService. Not directly
@@ -33,9 +35,6 @@ import com.badlogic.gdx.utils.*;
  * 
  * @author mzechner */
 public class AndroidLiveWallpaper implements AndroidApplicationBase {
-	static {
-		GdxNativesLoader.load();
-	}
 
 	protected AndroidLiveWallpaperService service;
 
@@ -49,9 +48,11 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(LifecycleListener.class);
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(
+		LifecycleListener.class);
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
+	protected volatile Color[] wallpaperColors = null;
 
 	public AndroidLiveWallpaper (AndroidLiveWallpaperService service) {
 		this.service = service;
@@ -59,11 +60,12 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		if (this.getVersion() < MINIMUM_SDK) {
-			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
+			throw new GdxRuntimeException("libGDX requires Android API Level " + MINIMUM_SDK + " or later.");
 		}
+		GdxNativesLoader.load();
 		setApplicationLogger(new AndroidApplicationLogger());
-		graphics = new AndroidGraphicsLiveWallpaper(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-			: config.resolutionStrategy);
+		graphics = new AndroidGraphicsLiveWallpaper(this, config,
+			config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
 
 		// factory in use, but note: AndroidInputFactory causes exceptions when obfuscated: java.lang.RuntimeException: Couldn't
 		// construct AndroidInput, this should never happen, proguard deletes constructor used only by reflection
@@ -71,10 +73,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		// input = new AndroidInput(this, this.getService(), null, config);
 
 		audio = createAudio(this.getService(), config);
-
-		// added initialization of android local storage: /data/data/<app package>/files/
-		this.getService().getFilesDir(); // workaround for Android bug #10515463
-		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
+		files = createFiles();
 		net = new AndroidNet(this, config);
 		this.listener = listener;
 		clipboard = new AndroidClipboard(this.getService());
@@ -348,12 +347,21 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 	@Override
 	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
-		return new AndroidAudioImpl(context, config);
+		if (!config.disableAudio)
+			return new DefaultAndroidAudio(context, config);
+		else
+			return new DisabledAndroidAudio();
 	}
 
 	@Override
 	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
-		return new AndroidInputImpl(this, this.getService(), graphics.view, config);
+		return new DefaultAndroidInput(this, this.getService(), graphics.view, config);
+	}
+
+	protected AndroidFiles createFiles () {
+		// added initialization of android local storage: /data/data/<app package>/files/
+		this.getService().getFilesDir(); // workaround for Android bug #10515463
+		return new DefaultAndroidFiles(this.getService().getAssets(), this.getService(), true);
 	}
 
 	@Override
@@ -374,4 +382,19 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		throw new UnsupportedOperationException();
 	}
 
+	/** Notify the wallpaper engine that the significant colors of the wallpaper have changed. This method may be called before
+	 * initializing the live wallpaper.
+	 * @param primaryColor The most visually significant color.
+	 * @param secondaryColor The second most visually significant color.
+	 * @param tertiaryColor The third most visually significant color. */
+	public void notifyColorsChanged (Color primaryColor, Color secondaryColor, Color tertiaryColor) {
+		if (Build.VERSION.SDK_INT < 27) return;
+		final Color[] colors = new Color[3];
+		colors[0] = new Color(primaryColor);
+		colors[1] = new Color(secondaryColor);
+		colors[2] = new Color(tertiaryColor);
+		wallpaperColors = colors;
+		AndroidLiveWallpaperService.AndroidWallpaperEngine engine = service.linkedEngine;
+		if (engine != null) engine.notifyColorsChanged();
+	}
 }

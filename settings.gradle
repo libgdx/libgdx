@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
 include ":gdx"
 
 include ":backends"
@@ -22,21 +21,20 @@ include ":backends:gdx-backend-headless"
 include ":backends:gdx-backend-lwjgl"
 include ":backends:gdx-backend-lwjgl3"
 include ":backends:gdx-backend-robovm"
-include ":backends:gdx-backend-moe"
+include ":backends:gdx-backend-robovm-metalangle"
 include ":backends:gdx-backends-gwt"
+project(":backends:gdx-backends-gwt").name = "gdx-backend-gwt"
 
-include ":extensions:gdx-box2d:gdx-box2d"
-include ":extensions:gdx-box2d:gdx-box2d-gwt"
+include(":extensions:gdx-box2d")
+project(":extensions:gdx-box2d").name = "gdx-box2d-parent"
+include ":extensions:gdx-box2d-parent:gdx-box2d"
+include ":extensions:gdx-box2d-parent:gdx-box2d-gwt"
 include ":extensions:gdx-bullet"
-include ":extensions:gdx-controllers:gdx-controllers"
-include ":extensions:gdx-controllers:gdx-controllers-android"
-include ":extensions:gdx-controllers:gdx-controllers-desktop"
-include ":extensions:gdx-controllers:gdx-controllers-lwjgl3"
-include ":extensions:gdx-controllers:gdx-controllers-gwt"
 include ":extensions:gdx-freetype"
-include ":extensions:gdx-jnigen"
 include ":extensions:gdx-setup"
 include ":extensions:gdx-tools"
+include ":extensions:gdx-lwjgl3-angle"
+include ":extensions:gdx-lwjgl3-glfw-awt-macos"
 
 include ":tests"
 include ":tests:gdx-tests"
@@ -47,5 +45,3 @@ include ":tests:gdx-tests-lwjgl"
 include ":tests:gdx-tests-lwjgl3"
 
 rootProject.name = "libgdx"
-project(":extensions:gdx-box2d:gdx-box2d").name = "gdx-box2d-core"
-project(":extensions:gdx-controllers:gdx-controllers").name = "gdx-controllers-core"

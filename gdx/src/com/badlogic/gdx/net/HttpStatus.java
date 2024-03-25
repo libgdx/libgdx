@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.net;
 
-import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 

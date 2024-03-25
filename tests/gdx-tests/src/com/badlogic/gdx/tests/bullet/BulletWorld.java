@@ -19,9 +19,7 @@ package com.badlogic.gdx.tests.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.btBroadphaseInterface;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
@@ -55,7 +53,8 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	public float fixedTimeStep = 1f / 60f;
 
 	public BulletWorld (final btCollisionConfiguration collisionConfiguration, final btCollisionDispatcher dispatcher,
-		final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btCollisionWorld world, final Vector3 gravity) {
+		final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btCollisionWorld world,
+		final Vector3 gravity) {
 		this.collisionConfiguration = collisionConfiguration;
 		this.dispatcher = dispatcher;
 		this.broadphase = broadphase;

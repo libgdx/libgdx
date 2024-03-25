@@ -24,6 +24,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 /** Tests playing back audio from the external storage.
  * @author mzechner */
 public class ExternalMusicTest extends GdxTest {
+	Music music;
 
 	@Override
 	public void create () {
@@ -33,12 +34,14 @@ public class ExternalMusicTest extends GdxTest {
 		src.copyTo(dst);
 
 		// create a music instance and start playback
-		Music music = Gdx.audio.newMusic(dst);
+		music = Gdx.audio.newMusic(dst);
 		music.play();
 	}
 
 	@Override
 	public void dispose () {
+		music.stop();
+		music.dispose();
 		// delete the copy on the external storage
 		Gdx.files.external("8.12.mp3").delete();
 	}

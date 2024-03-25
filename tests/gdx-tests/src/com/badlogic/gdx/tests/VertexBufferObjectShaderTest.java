@@ -25,12 +25,14 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
+import com.badlogic.gdx.graphics.glutils.VertexBufferObjectWithVAO;
+import com.badlogic.gdx.graphics.glutils.VertexData;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class VertexBufferObjectShaderTest extends GdxTest {
 	Texture texture;
 	ShaderProgram shader;
-	VertexBufferObject vbo;
+	VertexData vbo;
 	IndexBufferObject indices;
 
 	@Override
@@ -48,13 +50,12 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 		Gdx.gl.glClearColor(0.7f, 0, 0, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		gl.glEnable(GL20.GL_TEXTURE_2D);
 		shader.bind();
 		shader.setUniformi("u_texture", 0);
 		texture.bind();
 		vbo.bind(shader);
 		indices.bind();
-		gl.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT, indices.getBuffer().position());
+		gl.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT, indices.getBuffer(false).position());
 		indices.unbind();
 		vbo.unbind(shader);
 	}
@@ -87,9 +88,16 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 		//@on
 
 		shader = new ShaderProgram(vertexShader, fragmentShader);
-		vbo = new VertexBufferObject(true, 3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_position"),
-			new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"), new VertexAttribute(
-				VertexAttributes.Usage.ColorPacked, 4, "a_color"));
+		if (Gdx.gl30 != null) {
+			vbo = new VertexBufferObjectWithVAO(true, 3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_position"),
+				new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"),
+				new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, "a_color"));
+		} else {
+
+			vbo = new VertexBufferObject(true, 3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_position"),
+				new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"),
+				new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, "a_color"));
+		}
 		float[] vertices = new float[] {-1, -1, 0, 0, Color.toFloatBits(1f, 0f, 0f, 1f), 0, 1, 0.5f, 1.0f,
 			Color.toFloatBits(0f, 1f, 0f, 1f), 1, -1, 1, 0, Color.toFloatBits(0f, 0f, 1f, 1f)};
 		vbo.setVertices(vertices, 0, vertices.length);

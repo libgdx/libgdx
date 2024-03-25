@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tools.flame;
 
 import java.awt.event.ActionEvent;
@@ -17,20 +18,21 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.UBJsonReader;
 
 /** @author Inferno */
-public abstract class LoaderButton<T> extends JButton{
+public abstract class LoaderButton<T> extends JButton {
 
-	public static class ParticleEffectLoaderButton extends LoaderButton<ParticleEffect>{
+	public static class ParticleEffectLoaderButton extends LoaderButton<ParticleEffect> {
 		public ParticleEffectLoaderButton (FlameMain editor) {
 			this(editor, null);
 		}
+
 		public ParticleEffectLoaderButton (FlameMain editor, Listener<ParticleEffect> listener) {
 			super(editor, "Load Controller", listener);
 		}
-		
+
 		protected void loadResource () {
 			File file = editor.showFileLoadDialog();
-			if(file != null){
-				try{
+			if (file != null) {
+				try {
 					String resource = file.getAbsolutePath();
 					listener.onResourceLoaded(editor.openEffect(file, false));
 				} catch (Exception ex) {
@@ -42,31 +44,30 @@ public abstract class LoaderButton<T> extends JButton{
 			}
 		}
 	}
-	
-	public static class ModelLoaderButton extends LoaderButton<Model>{
+
+	public static class ModelLoaderButton extends LoaderButton<Model> {
 		public ModelLoaderButton (FlameMain editor) {
 			this(editor, null);
 		}
+
 		public ModelLoaderButton (FlameMain editor, Listener<Model> listener) {
 			super(editor, "Load Model", listener);
 		}
-		
+
 		protected void loadResource () {
 			File file = editor.showFileLoadDialog();
-			if(file != null){
-				try{
+			if (file != null) {
+				try {
 					String resource = file.getAbsolutePath();
 					ModelLoader modelLoader = null;
-					if(resource.endsWith(".obj")){
+					if (resource.endsWith(".obj")) {
 						modelLoader = new ObjLoader(new AbsoluteFileHandleResolver());
-					}
-					else if(resource.endsWith(".g3dj")){
+					} else if (resource.endsWith(".g3dj")) {
 						modelLoader = new G3dModelLoader(new JsonReader(), new AbsoluteFileHandleResolver());
-					}
-					else if(resource.endsWith(".g3db")){
+					} else if (resource.endsWith(".g3db")) {
 						modelLoader = new G3dModelLoader(new UBJsonReader(), new AbsoluteFileHandleResolver());
-					}
-					else throw new Exception();
+					} else
+						throw new Exception();
 					listener.onResourceLoaded(editor.load(resource, Model.class, modelLoader, null));
 
 				} catch (Exception ex) {
@@ -78,15 +79,15 @@ public abstract class LoaderButton<T> extends JButton{
 			}
 		}
 	}
-	
-	public interface Listener<T>{
+
+	public interface Listener<T> {
 		void onResourceLoaded (T resource);
 	}
-	
+
 	private String lastDir;
 	protected Listener<T> listener;
 	FlameMain editor;
-	
+
 	public LoaderButton (FlameMain editor, String text, Listener<T> listener) {
 		super(text);
 		this.editor = editor;
@@ -98,15 +99,14 @@ public abstract class LoaderButton<T> extends JButton{
 			}
 		});
 	}
-	
-	public LoaderButton (FlameMain editor, String text){
+
+	public LoaderButton (FlameMain editor, String text) {
 		this(editor, text, null);
 	}
-	
-	public void setListener(Listener listener){
+
+	public void setListener (Listener listener) {
 		this.listener = listener;
 	}
-	
 
 	protected abstract void loadResource ();
 

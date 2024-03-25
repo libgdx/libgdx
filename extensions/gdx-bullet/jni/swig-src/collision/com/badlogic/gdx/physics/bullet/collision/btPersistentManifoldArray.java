@@ -10,44 +10,40 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btPersistentManifoldArray extends BulletBase {
 	private long swigCPtr;
-	
-	protected btPersistentManifoldArray(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btPersistentManifoldArray (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btPersistentManifoldArray, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btPersistentManifoldArray(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btPersistentManifoldArray, normally you should not need this constructor it's intended for low-level
+	 * usage. */
+	public btPersistentManifoldArray (long cPtr, boolean cMemoryOwn) {
 		this("btPersistentManifoldArray", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btPersistentManifoldArray obj) {
+
+	public static long getCPtr (btPersistentManifoldArray obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,167 +54,173 @@ public class btPersistentManifoldArray extends BulletBase {
 		super.delete();
 	}
 
-  public btPersistentManifoldArray operatorAssignment(btPersistentManifoldArray other) {
-    return new btPersistentManifoldArray(CollisionJNI.btPersistentManifoldArray_operatorAssignment(swigCPtr, this, btPersistentManifoldArray.getCPtr(other), other), false);
-  }
+	public btPersistentManifoldArray operatorAssignment (btPersistentManifoldArray other) {
+		return new btPersistentManifoldArray(CollisionJNI.btPersistentManifoldArray_operatorAssignment(swigCPtr, this,
+			btPersistentManifoldArray.getCPtr(other), other), false);
+	}
 
-  public btPersistentManifoldArray() {
-    this(CollisionJNI.new_btPersistentManifoldArray__SWIG_0(), true);
-  }
+	public btPersistentManifoldArray () {
+		this(CollisionJNI.new_btPersistentManifoldArray__SWIG_0(), true);
+	}
 
-  public btPersistentManifoldArray(btPersistentManifoldArray otherArray) {
-    this(CollisionJNI.new_btPersistentManifoldArray__SWIG_1(btPersistentManifoldArray.getCPtr(otherArray), otherArray), true);
-  }
+	public btPersistentManifoldArray (btPersistentManifoldArray otherArray) {
+		this(CollisionJNI.new_btPersistentManifoldArray__SWIG_1(btPersistentManifoldArray.getCPtr(otherArray), otherArray), true);
+	}
 
-  public int size() {
-    return CollisionJNI.btPersistentManifoldArray_size(swigCPtr, this);
-  }
+	public int size () {
+		return CollisionJNI.btPersistentManifoldArray_size(swigCPtr, this);
+	}
 
-  public btPersistentManifold atConst(int n) {
-    long cPtr = CollisionJNI.btPersistentManifoldArray_atConst(swigCPtr, this, n);
-    return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
-  }
+	public btPersistentManifold atConst (int n) {
+		long cPtr = CollisionJNI.btPersistentManifoldArray_atConst(swigCPtr, this, n);
+		return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
+	}
 
-  public SWIGTYPE_p_p_btPersistentManifold at(int n) {
-    return new SWIGTYPE_p_p_btPersistentManifold(CollisionJNI.btPersistentManifoldArray_at(swigCPtr, this, n), false);
-  }
+	public SWIGTYPE_p_p_btPersistentManifold at (int n) {
+		return new SWIGTYPE_p_p_btPersistentManifold(CollisionJNI.btPersistentManifoldArray_at(swigCPtr, this, n), false);
+	}
 
-  public btPersistentManifold operatorSubscriptConst(int n) {
-    long cPtr = CollisionJNI.btPersistentManifoldArray_operatorSubscriptConst(swigCPtr, this, n);
-    return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
-  }
+	public btPersistentManifold operatorSubscriptConst (int n) {
+		long cPtr = CollisionJNI.btPersistentManifoldArray_operatorSubscriptConst(swigCPtr, this, n);
+		return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
+	}
 
-  public SWIGTYPE_p_p_btPersistentManifold operatorSubscript(int n) {
-    return new SWIGTYPE_p_p_btPersistentManifold(CollisionJNI.btPersistentManifoldArray_operatorSubscript(swigCPtr, this, n), false);
-  }
+	public SWIGTYPE_p_p_btPersistentManifold operatorSubscript (int n) {
+		return new SWIGTYPE_p_p_btPersistentManifold(CollisionJNI.btPersistentManifoldArray_operatorSubscript(swigCPtr, this, n),
+			false);
+	}
 
-  public void clear() {
-    CollisionJNI.btPersistentManifoldArray_clear(swigCPtr, this);
-  }
+	public void clear () {
+		CollisionJNI.btPersistentManifoldArray_clear(swigCPtr, this);
+	}
 
-  public void pop_back() {
-    CollisionJNI.btPersistentManifoldArray_pop_back(swigCPtr, this);
-  }
+	public void pop_back () {
+		CollisionJNI.btPersistentManifoldArray_pop_back(swigCPtr, this);
+	}
 
-  public void resizeNoInitialize(int newsize) {
-    CollisionJNI.btPersistentManifoldArray_resizeNoInitialize(swigCPtr, this, newsize);
-  }
+	public void resizeNoInitialize (int newsize) {
+		CollisionJNI.btPersistentManifoldArray_resizeNoInitialize(swigCPtr, this, newsize);
+	}
 
-  public void resize(int newsize, btPersistentManifold fillData) {
-    CollisionJNI.btPersistentManifoldArray_resize__SWIG_0(swigCPtr, this, newsize, btPersistentManifold.getCPtr(fillData), fillData);
-  }
+	public void resize (int newsize, btPersistentManifold fillData) {
+		CollisionJNI.btPersistentManifoldArray_resize__SWIG_0(swigCPtr, this, newsize, btPersistentManifold.getCPtr(fillData),
+			fillData);
+	}
 
-  public void resize(int newsize) {
-    CollisionJNI.btPersistentManifoldArray_resize__SWIG_1(swigCPtr, this, newsize);
-  }
+	public void resize (int newsize) {
+		CollisionJNI.btPersistentManifoldArray_resize__SWIG_1(swigCPtr, this, newsize);
+	}
 
-  public SWIGTYPE_p_p_btPersistentManifold expandNonInitializing() {
-    return new SWIGTYPE_p_p_btPersistentManifold(CollisionJNI.btPersistentManifoldArray_expandNonInitializing(swigCPtr, this), false);
-  }
+	public SWIGTYPE_p_p_btPersistentManifold expandNonInitializing () {
+		return new SWIGTYPE_p_p_btPersistentManifold(CollisionJNI.btPersistentManifoldArray_expandNonInitializing(swigCPtr, this),
+			false);
+	}
 
-  public SWIGTYPE_p_p_btPersistentManifold expand(btPersistentManifold fillValue) {
-    return new SWIGTYPE_p_p_btPersistentManifold(CollisionJNI.btPersistentManifoldArray_expand__SWIG_0(swigCPtr, this, btPersistentManifold.getCPtr(fillValue), fillValue), false);
-  }
+	public SWIGTYPE_p_p_btPersistentManifold expand (btPersistentManifold fillValue) {
+		return new SWIGTYPE_p_p_btPersistentManifold(CollisionJNI.btPersistentManifoldArray_expand__SWIG_0(swigCPtr, this,
+			btPersistentManifold.getCPtr(fillValue), fillValue), false);
+	}
 
-  public SWIGTYPE_p_p_btPersistentManifold expand() {
-    return new SWIGTYPE_p_p_btPersistentManifold(CollisionJNI.btPersistentManifoldArray_expand__SWIG_1(swigCPtr, this), false);
-  }
+	public SWIGTYPE_p_p_btPersistentManifold expand () {
+		return new SWIGTYPE_p_p_btPersistentManifold(CollisionJNI.btPersistentManifoldArray_expand__SWIG_1(swigCPtr, this), false);
+	}
 
-  public void push_back(btPersistentManifold _Val) {
-    CollisionJNI.btPersistentManifoldArray_push_back(swigCPtr, this, btPersistentManifold.getCPtr(_Val), _Val);
-  }
+	public void push_back (btPersistentManifold _Val) {
+		CollisionJNI.btPersistentManifoldArray_push_back(swigCPtr, this, btPersistentManifold.getCPtr(_Val), _Val);
+	}
 
-  public int capacity() {
-    return CollisionJNI.btPersistentManifoldArray_capacity(swigCPtr, this);
-  }
+	public int capacity () {
+		return CollisionJNI.btPersistentManifoldArray_capacity(swigCPtr, this);
+	}
 
-  public void reserve(int _Count) {
-    CollisionJNI.btPersistentManifoldArray_reserve(swigCPtr, this, _Count);
-  }
+	public void reserve (int _Count) {
+		CollisionJNI.btPersistentManifoldArray_reserve(swigCPtr, this, _Count);
+	}
 
-  static public class less extends BulletBase {
-  	private long swigCPtr;
-  	
-  	protected less(final String className, long cPtr, boolean cMemoryOwn) {
-  		super(className, cPtr, cMemoryOwn);
-  		swigCPtr = cPtr;
-  	}
-  	
-  	/** Construct a new less, normally you should not need this constructor it's intended for low-level usage. */ 
-  	public less(long cPtr, boolean cMemoryOwn) {
-  		this("less", cPtr, cMemoryOwn);
-  		construct();
-  	}
-  	
-  	@Override
-  	protected void reset(long cPtr, boolean cMemoryOwn) {
-  		if (!destroyed)
-  			destroy();
-  		super.reset(swigCPtr = cPtr, cMemoryOwn);
-  	}
-  	
-  	public static long getCPtr(less obj) {
-  		return (obj == null) ? 0 : obj.swigCPtr;
-  	}
-  
-  	@Override
-  	protected void finalize() throws Throwable {
-  		if (!destroyed)
-  			destroy();
-  		super.finalize();
-  	}
-  
-    @Override protected synchronized void delete() {
-  		if (swigCPtr != 0) {
-  			if (swigCMemOwn) {
-  				swigCMemOwn = false;
-  				CollisionJNI.delete_btPersistentManifoldArray_less(swigCPtr);
-  			}
-  			swigCPtr = 0;
-  		}
-  		super.delete();
-  	}
-  
-    public boolean operatorFunctionCall(btPersistentManifold a, btPersistentManifold b) {
-      return CollisionJNI.btPersistentManifoldArray_less_operatorFunctionCall(swigCPtr, this, btPersistentManifold.getCPtr(a), a, btPersistentManifold.getCPtr(b), b);
-    }
-  
-    public less() {
-      this(CollisionJNI.new_btPersistentManifoldArray_less(), true);
-    }
-  
-  }
+	static public class less extends BulletBase {
+		private long swigCPtr;
 
-  public void swap(int index0, int index1) {
-    CollisionJNI.btPersistentManifoldArray_swap(swigCPtr, this, index0, index1);
-  }
+		protected less (final String className, long cPtr, boolean cMemoryOwn) {
+			super(className, cPtr, cMemoryOwn);
+			swigCPtr = cPtr;
+		}
 
-  public int findBinarySearch(btPersistentManifold key) {
-    return CollisionJNI.btPersistentManifoldArray_findBinarySearch(swigCPtr, this, btPersistentManifold.getCPtr(key), key);
-  }
+		/** Construct a new less, normally you should not need this constructor it's intended for low-level usage. */
+		public less (long cPtr, boolean cMemoryOwn) {
+			this("less", cPtr, cMemoryOwn);
+			construct();
+		}
 
-  public int findLinearSearch(btPersistentManifold key) {
-    return CollisionJNI.btPersistentManifoldArray_findLinearSearch(swigCPtr, this, btPersistentManifold.getCPtr(key), key);
-  }
+		@Override
+		protected void reset (long cPtr, boolean cMemoryOwn) {
+			if (!destroyed) destroy();
+			super.reset(swigCPtr = cPtr, cMemoryOwn);
+		}
 
-  public int findLinearSearch2(btPersistentManifold key) {
-    return CollisionJNI.btPersistentManifoldArray_findLinearSearch2(swigCPtr, this, btPersistentManifold.getCPtr(key), key);
-  }
+		public static long getCPtr (less obj) {
+			return (obj == null) ? 0 : obj.swigCPtr;
+		}
 
-  public void removeAtIndex(int index) {
-    CollisionJNI.btPersistentManifoldArray_removeAtIndex(swigCPtr, this, index);
-  }
+		@Override
+		protected void finalize () throws Throwable {
+			if (!destroyed) destroy();
+			super.finalize();
+		}
 
-  public void remove(btPersistentManifold key) {
-    CollisionJNI.btPersistentManifoldArray_remove(swigCPtr, this, btPersistentManifold.getCPtr(key), key);
-  }
+		@Override
+		protected synchronized void delete () {
+			if (swigCPtr != 0) {
+				if (swigCMemOwn) {
+					swigCMemOwn = false;
+					CollisionJNI.delete_btPersistentManifoldArray_less(swigCPtr);
+				}
+				swigCPtr = 0;
+			}
+			super.delete();
+		}
 
-  public void initializeFromBuffer(long buffer, int size, int capacity) {
-    CollisionJNI.btPersistentManifoldArray_initializeFromBuffer(swigCPtr, this, buffer, size, capacity);
-  }
+		public boolean operatorFunctionCall (btPersistentManifold a, btPersistentManifold b) {
+			return CollisionJNI.btPersistentManifoldArray_less_operatorFunctionCall(swigCPtr, this, btPersistentManifold.getCPtr(a),
+				a, btPersistentManifold.getCPtr(b), b);
+		}
 
-  public void copyFromArray(btPersistentManifoldArray otherArray) {
-    CollisionJNI.btPersistentManifoldArray_copyFromArray(swigCPtr, this, btPersistentManifoldArray.getCPtr(otherArray), otherArray);
-  }
+		public less () {
+			this(CollisionJNI.new_btPersistentManifoldArray_less(), true);
+		}
+
+	}
+
+	public void swap (int index0, int index1) {
+		CollisionJNI.btPersistentManifoldArray_swap(swigCPtr, this, index0, index1);
+	}
+
+	public int findBinarySearch (btPersistentManifold key) {
+		return CollisionJNI.btPersistentManifoldArray_findBinarySearch(swigCPtr, this, btPersistentManifold.getCPtr(key), key);
+	}
+
+	public int findLinearSearch (btPersistentManifold key) {
+		return CollisionJNI.btPersistentManifoldArray_findLinearSearch(swigCPtr, this, btPersistentManifold.getCPtr(key), key);
+	}
+
+	public int findLinearSearch2 (btPersistentManifold key) {
+		return CollisionJNI.btPersistentManifoldArray_findLinearSearch2(swigCPtr, this, btPersistentManifold.getCPtr(key), key);
+	}
+
+	public void removeAtIndex (int index) {
+		CollisionJNI.btPersistentManifoldArray_removeAtIndex(swigCPtr, this, index);
+	}
+
+	public void remove (btPersistentManifold key) {
+		CollisionJNI.btPersistentManifoldArray_remove(swigCPtr, this, btPersistentManifold.getCPtr(key), key);
+	}
+
+	public void initializeFromBuffer (long buffer, int size, int capacity) {
+		CollisionJNI.btPersistentManifoldArray_initializeFromBuffer(swigCPtr, this, buffer, size, capacity);
+	}
+
+	public void copyFromArray (btPersistentManifoldArray otherArray) {
+		CollisionJNI.btPersistentManifoldArray_copyFromArray(swigCPtr, this, btPersistentManifoldArray.getCPtr(otherArray),
+			otherArray);
+	}
 
 }

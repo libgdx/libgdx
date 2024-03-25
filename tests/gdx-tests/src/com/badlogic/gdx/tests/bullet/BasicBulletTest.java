@@ -92,33 +92,15 @@ public class BasicBulletTest extends BulletTest {
 		// Create the model batch
 		modelBatch = new ModelBatch();
 		// Create some basic models
-		final Model groundModel = modelBuilder.createRect(
-			20f,
-			0f,
-			-20f,
-			-20f,
-			0f,
-			-20f,
-			-20f,
-			0f,
-			20f,
-			20f,
-			0f,
-			20f,
-			0,
-			1,
-			0,
-			new Material(ColorAttribute.createDiffuse(Color.BLUE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
-				.createShininess(16f)), Usage.Position | Usage.Normal);
+		final Model groundModel = modelBuilder.createRect(20f, 0f, -20f, -20f, 0f, -20f, -20f, 0f, 20f, 20f, 0f, 20f, 0, 1, 0,
+			new Material(ColorAttribute.createDiffuse(Color.BLUE), ColorAttribute.createSpecular(Color.WHITE),
+				FloatAttribute.createShininess(16f)),
+			Usage.Position | Usage.Normal);
 		models.add(groundModel);
-		final Model sphereModel = modelBuilder.createSphere(
-			1f,
-			1f,
-			1f,
-			10,
-			10,
-			new Material(ColorAttribute.createDiffuse(Color.RED), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
-				.createShininess(64f)), Usage.Position | Usage.Normal);
+		final Model sphereModel = modelBuilder.createSphere(1f, 1f, 1f, 10, 10,
+			new Material(ColorAttribute.createDiffuse(Color.RED), ColorAttribute.createSpecular(Color.WHITE),
+				FloatAttribute.createShininess(64f)),
+			Usage.Position | Usage.Normal);
 		models.add(sphereModel);
 		// Load the bullet library
 		BaseBulletTest.init(); // Normally use: Bullet.init();

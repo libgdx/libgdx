@@ -24,7 +24,8 @@ import com.google.gwt.corp.compatibility.Numbers;
  * </p>
  * <p>
  * This class is marked final for runtime performance.
- * </p> */
+ * </p>
+ */
 final class ReadWriteHeapByteBuffer extends HeapByteBuffer {
 
 	static ReadWriteHeapByteBuffer copy (HeapByteBuffer other, int markOfOther) {

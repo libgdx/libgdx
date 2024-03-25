@@ -198,8 +198,8 @@ public class Rectangle implements Serializable, Shape2D {
 	/** @param circle the circle
 	 * @return whether the circle is contained in the rectangle */
 	public boolean contains (Circle circle) {
-		return (circle.x - circle.radius >= x) && (circle.x + circle.radius <= x + width)
-			&& (circle.y - circle.radius >= y) && (circle.y + circle.radius <= y + height);
+		return (circle.x - circle.radius >= x) && (circle.x + circle.radius <= x + width) && (circle.y - circle.radius >= y)
+			&& (circle.y + circle.radius <= y + height);
 	}
 
 	/** @param rectangle the other {@link Rectangle}.
@@ -239,13 +239,13 @@ public class Rectangle implements Serializable, Shape2D {
 	public Rectangle merge (Rectangle rect) {
 		float minX = Math.min(x, rect.x);
 		float maxX = Math.max(x + width, rect.x + rect.width);
-		x = minX;
-		width = maxX - minX;
+		this.x = minX;
+		this.width = maxX - minX;
 
 		float minY = Math.min(y, rect.y);
 		float maxY = Math.max(y + height, rect.y + rect.height);
-		y = minY;
-		height = maxY - minY;
+		this.y = minY;
+		this.height = maxY - minY;
 
 		return this;
 	}
@@ -375,8 +375,8 @@ public class Rectangle implements Serializable, Shape2D {
 		return "[" + x + "," + y + "," + width + "," + height + "]";
 	}
 
-	/** Sets this {@code Rectangle} to the value represented by the specified string according to the format of {@link #toString()}
-	 * .
+	/** Sets this {@code Rectangle} to the value represented by the specified string according to the format of
+	 * {@link #toString()}.
 	 * @param v the string.
 	 * @return this rectangle for chaining */
 	public Rectangle fromString (String v) {

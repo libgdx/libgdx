@@ -41,12 +41,17 @@ import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
 import com.badlogic.gdx.backends.lwjgl.LwjglPreferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.tests.utils.CommandLineOptions;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.tests.utils.GdxTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTests;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class LwjglTestStarter extends JFrame {
+	static CommandLineOptions options;
+
 	public LwjglTestStarter () throws HeadlessException {
-		super("libgdx Tests");
+		super("libGDX Tests");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setContentPane(new TestList());
 		pack();
@@ -55,14 +60,12 @@ public class LwjglTestStarter extends JFrame {
 		setVisible(true);
 	}
 
-	/**
-	 * Runs the {@link GdxTest} with the given name.
+	/** Runs the {@link GdxTest} with the given name.
 	 * 
 	 * @param testName the name of a test class
-	 * @return {@code true} if the test was found and run, {@code false} otherwise
-	 */
+	 * @return {@code true} if the test was found and run, {@code false} otherwise */
 	public static boolean runTest (String testName) {
-		boolean useGL30 = false;
+		boolean useGL30 = options.gl30;
 		GdxTest test = GdxTests.newTest(testName);
 		if (test == null) {
 			return false;
@@ -74,14 +77,18 @@ public class LwjglTestStarter extends JFrame {
 		config.forceExit = false;
 		if (useGL30) {
 			config.useGL30 = true;
+			if (!SharedLibraryLoader.isMac) {
+				config.gles30ContextMajorVersion = 4;
+				config.gles30ContextMinorVersion = 3;
+			}
 			ShaderProgram.prependVertexCode = "#version 140\n#define varying out\n#define attribute in\n";
 			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
 		} else {
 			config.useGL30 = false;
 			ShaderProgram.prependVertexCode = "";
-			ShaderProgram.prependFragmentCode = "";			
+			ShaderProgram.prependFragmentCode = "";
 		}
-		new LwjglApplication(test, config);
+		new LwjglApplication(new GdxTestWrapper(test, options.logGLErrors), config);
 		return true;
 	}
 
@@ -91,7 +98,7 @@ public class LwjglTestStarter extends JFrame {
 
 			final JButton button = new JButton("Run Test");
 
-			final JList list = new JList(GdxTests.getNames().toArray());
+			final JList list = new JList(options.getCompatibleTests());
 			JScrollPane pane = new JScrollPane(list);
 
 			DefaultListSelectionModel m = new DefaultListSelectionModel();
@@ -111,8 +118,8 @@ public class LwjglTestStarter extends JFrame {
 				}
 			});
 
-			final Preferences prefs = new LwjglPreferences(new FileHandle(new LwjglFiles().getExternalStoragePath()
-				+ ".prefs/lwjgl-tests"));
+			final Preferences prefs = new LwjglPreferences(
+				new FileHandle(new LwjglFiles().getExternalStoragePath() + ".prefs/lwjgl-tests"));
 			list.setSelectedValue(prefs.getString("last", null), true);
 
 			button.addActionListener(new ActionListener() {
@@ -134,17 +141,16 @@ public class LwjglTestStarter extends JFrame {
 		}
 	}
 
-	/**
-	 * Runs a libgdx test.
+	/** Runs a libGDX test.
 	 * 
-	 * If no arguments are provided on the command line, shows a list of tests to choose from.
-	 * If an argument is present, the test with that name will immediately be run.
+	 * If no arguments are provided on the command line, shows a list of tests to choose from. If an argument is present, the test
+	 * with that name will immediately be run. Additional options can be passed, see {@link CommandLineOptions}
 	 * 
-	 * @param argv command line arguments
-	 */
+	 * @param argv command line arguments */
 	public static void main (String[] argv) throws Exception {
-		if (argv.length > 0) {
-			if (runTest(argv[0])) {
+		options = new CommandLineOptions(argv);
+		if (options.startupTestName != null) {
+			if (runTest(options.startupTestName)) {
 				return;
 				// Otherwise, fall back to showing the list
 			}

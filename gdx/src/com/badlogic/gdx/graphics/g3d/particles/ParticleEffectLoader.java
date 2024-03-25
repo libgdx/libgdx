@@ -16,12 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.particles;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
-
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
@@ -33,6 +28,7 @@ import com.badlogic.gdx.graphics.g3d.particles.ResourceData.AssetData;
 import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
@@ -43,8 +39,8 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * be created, one will have to set the required batches manually otherwise the {@link ParticleController} instances contained
  * inside the effect will not be able to render themselves.
  * @author inferno */
-public class ParticleEffectLoader extends
-	AsynchronousAssetLoader<ParticleEffect, ParticleEffectLoader.ParticleEffectLoadParameter> {
+public class ParticleEffectLoader
+	extends AsynchronousAssetLoader<ParticleEffect, ParticleEffectLoader.ParticleEffectLoadParameter> {
 	protected Array<ObjectMap.Entry<String, ResourceData<ParticleEffect>>> items = new Array<ObjectMap.Entry<String, ResourceData<ParticleEffect>>>();
 
 	public ParticleEffectLoader (FileHandleResolver resolver) {
@@ -109,12 +105,18 @@ public class ParticleEffectLoader extends
 		}
 
 		// save
-		Json json = new Json();
-		json.toJson(data, parameter.file);
+		Json json = new Json(parameter.jsonOutputType);
+		if (parameter.prettyPrint) {
+			String prettyJson = json.prettyPrint(data);
+			parameter.file.writeString(prettyJson, false);
+		} else {
+			json.toJson(data, parameter.file);
+		}
 	}
 
 	@Override
-	public ParticleEffect loadSync (AssetManager manager, String fileName, FileHandle file, ParticleEffectLoadParameter parameter) {
+	public ParticleEffect loadSync (AssetManager manager, String fileName, FileHandle file,
+		ParticleEffectLoadParameter parameter) {
 		ResourceData<ParticleEffect> effectData = null;
 		synchronized (items) {
 			for (int i = 0; i < items.size; ++i) {
@@ -161,11 +163,20 @@ public class ParticleEffectLoader extends
 		/** Required parameters */
 		FileHandle file;
 		AssetManager manager;
+		JsonWriter.OutputType jsonOutputType;
+		boolean prettyPrint;
 
 		public ParticleEffectSaveParameter (FileHandle file, AssetManager manager, Array<ParticleBatch<?>> batches) {
+			this(file, manager, batches, JsonWriter.OutputType.minimal, false);
+		}
+
+		public ParticleEffectSaveParameter (FileHandle file, AssetManager manager, Array<ParticleBatch<?>> batches,
+			JsonWriter.OutputType jsonOutputType, boolean prettyPrint) {
 			this.batches = batches;
 			this.file = file;
 			this.manager = manager;
+			this.jsonOutputType = jsonOutputType;
+			this.prettyPrint = prettyPrint;
 		}
 	}
 

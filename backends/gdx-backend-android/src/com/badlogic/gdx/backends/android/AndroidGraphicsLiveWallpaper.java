@@ -17,11 +17,9 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import android.view.View;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
@@ -54,19 +52,15 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 	// Grabbed from AndroidGraphics superclass and modified to override
 	// getHolder in created GLSurfaceView20 instances
 	@Override
-	protected GLSurfaceView20 createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
-		if (!checkGL20()) throw new GdxRuntimeException("Libgdx requires OpenGL ES 2.0");
+	protected GLSurfaceView20 createGLSurfaceView (AndroidApplicationBase application,
+		final ResolutionStrategy resolutionStrategy) {
+		if (!checkGL20()) throw new GdxRuntimeException("libGDX requires OpenGL ES 2.0");
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
 		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy) {
 			@Override
 			public SurfaceHolder getHolder () {
 				return getSurfaceHolder();
-			}
-
-			// This method is invoked via reflection by AndroidLiveWallpaper.onDestroy()
-			public void onDestroy () {
-				onDetachedFromWindow(); // calls GLSurfaceView.mGLThread.requestExitAndWait();
 			}
 		};
 
@@ -83,11 +77,10 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 	public void onDestroyGLSurfaceView () {
 		if (view != null) {
 			try {
-				// onDestroy redirects to onDetachedFromWindow - which stops GLThread by calling mGLThread.requestExitAndWait()
-				view.getClass().getMethod("onDestroy").invoke(view);
-				if (AndroidLiveWallpaperService.DEBUG)
-					Log.d(AndroidLiveWallpaperService.TAG,
-						" > AndroidLiveWallpaper - onDestroy() stopped GLThread managed by GLSurfaceView");
+				// onDetachedFromWindow stops GLThread by calling mGLThread.requestExitAndWait()
+				view.onDetachedFromWindow();
+				if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG,
+					" > AndroidLiveWallpaper - onDestroy() stopped GLThread managed by GLSurfaceView");
 			} catch (Throwable t) {
 				// error while scheduling exit of GLThread, GLThread will remain live and wallpaper service
 				// wouldn't be able to shutdown completely
@@ -118,15 +111,13 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 	@Override
 	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
 		long time = System.nanoTime();
-		deltaTime = (time - lastFrameTime) / 1000000000.0f;
-		lastFrameTime = time;
-
 		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {
-			mean.addValue(deltaTime);
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		} else {
 			deltaTime = 0;
 		}
+		lastFrameTime = time;
 
 		boolean lrunning = false;
 		boolean lpause = false;
@@ -214,7 +205,7 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 	}
 
 	@Override
-	protected void logManagedCachesStatus() {
+	protected void logManagedCachesStatus () {
 		// to prevent creating too many string buffers in live wallpapers
 		if (AndroidLiveWallpaperService.DEBUG) {
 			super.logManagedCachesStatus();

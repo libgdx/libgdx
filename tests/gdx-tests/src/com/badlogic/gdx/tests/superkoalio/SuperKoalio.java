@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests.superkoalio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -38,9 +37,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.ScreenUtils;
 
-/** Super Mario Brothers-like very basic platformer, using a tile map built using <a href="http://www.mapeditor.org/">Tiled</a> and a
- * tileset and sprites by <a href="http://www.vickiwenderlich.com/">Vicky Wenderlich</a></p>
+/** Super Mario Brothers-like very basic platformer, using a tile map built using <a href="http://www.mapeditor.org/">Tiled</a>
+ * and a tileset and sprites by <a href="http://www.vickiwenderlich.com/">Vicky Wenderlich</a>
+ * </p>
  *
  * Shows simple platformer collision detection as well as on-the-fly map modifications through destructible blocks!
  * @author mzechner */
@@ -121,8 +122,7 @@ public class SuperKoalio extends GdxTest {
 	@Override
 	public void render () {
 		// clear the screen
-		Gdx.gl.glClearColor(0.7f, 0.7f, 1.0f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.7f, 0.7f, 1.0f, 1);
 
 		// get the delta time
 		float deltaTime = Gdx.graphics.getDeltaTime();
@@ -149,8 +149,7 @@ public class SuperKoalio extends GdxTest {
 	private void updateKoala (float deltaTime) {
 		if (deltaTime == 0) return;
 
-		if (deltaTime > 0.1f)
-			deltaTime = 0.1f;
+		if (deltaTime > 0.1f) deltaTime = 0.1f;
 
 		koala.stateTime += deltaTime;
 
@@ -173,15 +172,13 @@ public class SuperKoalio extends GdxTest {
 			koala.facesRight = true;
 		}
 
-		if (Gdx.input.isKeyJustPressed(Keys.B))
-			debug = !debug;
+		if (Gdx.input.isKeyJustPressed(Keys.B)) debug = !debug;
 
 		// apply gravity if we are falling
 		koala.velocity.add(0, GRAVITY);
 
 		// clamp the velocity to the maximum, x-axis only
-		koala.velocity.x = MathUtils.clamp(koala.velocity.x,
-				-Koala.MAX_VELOCITY, Koala.MAX_VELOCITY);
+		koala.velocity.x = MathUtils.clamp(koala.velocity.x, -Koala.MAX_VELOCITY, Koala.MAX_VELOCITY);
 
 		// If the velocity is < 1, set it to 0 and set state to Standing
 		if (Math.abs(koala.velocity.x) < 1) {
@@ -327,8 +324,7 @@ public class SuperKoalio extends GdxTest {
 			for (int x = 0; x <= layer.getWidth(); x++) {
 				Cell cell = layer.getCell(x, y);
 				if (cell != null) {
-					if (camera.frustum.boundsInFrustum(x + 0.5f, y + 0.5f, 0, 1, 1, 0))
-						debugRenderer.rect(x, y, 1, 1);
+					if (camera.frustum.boundsInFrustum(x + 0.5f, y + 0.5f, 0, 1, 1, 0)) debugRenderer.rect(x, y, 1, 1);
 				}
 			}
 		}

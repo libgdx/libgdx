@@ -45,8 +45,8 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	 * @param continuous If true the b-spline restarts at 0 when reaching 1
 	 * @param tmp A temporary vector used for the calculation
 	 * @return The value of out */
-	public static <T extends Vector<T>> T cubic_derivative (final T out, final float t, final T[] points,
-		final boolean continuous, final T tmp) {
+	public static <T extends Vector<T>> T cubic_derivative (final T out, final float t, final T[] points, final boolean continuous,
+		final T tmp) {
 		final int n = continuous ? points.length : points.length - 3;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
@@ -135,7 +135,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	 * @param i The span (0<=i<spanCount) spanCount = continuous ? points.length : points.length - degree
 	 * @param u The position (0<=u<=1) on the span
 	 * @param points The control points
-	 * @param degree The degree of the b-spline
+	 * @param degree The degree of the b-spline, only 3 is supported
 	 * @param continuous If true the b-spline restarts at 0 when reaching 1
 	 * @param tmp A temporary vector used for the calculation
 	 * @return The value of out */
@@ -145,7 +145,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		case 3:
 			return cubic(out, i, u, points, continuous, tmp);
 		}
-		return out;
+		throw new IllegalArgumentException();
 	}
 
 	/** Calculates the n-degree b-spline derivative for the given span (i) at the given position (u).
@@ -153,7 +153,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	 * @param i The span (0<=i<spanCount) spanCount = continuous ? points.length : points.length - degree
 	 * @param u The position (0<=u<=1) on the span
 	 * @param points The control points
-	 * @param degree The degree of the b-spline
+	 * @param degree The degree of the b-spline, only 3 is supported
 	 * @param continuous If true the b-spline restarts at 0 when reaching 1
 	 * @param tmp A temporary vector used for the calculation
 	 * @return The value of out */
@@ -163,7 +163,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		case 3:
 			return cubic_derivative(out, i, u, points, continuous, tmp);
 		}
-		return out;
+		throw new IllegalArgumentException();
 	}
 
 	public T[] controlPoints;

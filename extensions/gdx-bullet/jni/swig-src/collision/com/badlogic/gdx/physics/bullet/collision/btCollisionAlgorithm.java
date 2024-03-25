@@ -10,44 +10,39 @@ package com.badlogic.gdx.physics.bullet.collision;
 
 import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btCollisionAlgorithm extends BulletBase {
 	private long swigCPtr;
-	
-	protected btCollisionAlgorithm(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btCollisionAlgorithm (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btCollisionAlgorithm, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btCollisionAlgorithm, normally you should not need this constructor it's intended for low-level usage. */
+	public btCollisionAlgorithm (long cPtr, boolean cMemoryOwn) {
 		this("btCollisionAlgorithm", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btCollisionAlgorithm obj) {
+
+	public static long getCPtr (btCollisionAlgorithm obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,16 +53,23 @@ public class btCollisionAlgorithm extends BulletBase {
 		super.delete();
 	}
 
-  public void processCollision(btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
-    CollisionJNI.btCollisionAlgorithm_processCollision(swigCPtr, this, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
-  }
+	public void processCollision (btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap,
+		btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
+		CollisionJNI.btCollisionAlgorithm_processCollision(swigCPtr, this, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap,
+			btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo,
+			btManifoldResult.getCPtr(resultOut), resultOut);
+	}
 
-  public float calculateTimeOfImpact(btCollisionObject body0, btCollisionObject body1, btDispatcherInfo dispatchInfo, btManifoldResult resultOut) {
-    return CollisionJNI.btCollisionAlgorithm_calculateTimeOfImpact(swigCPtr, this, btCollisionObject.getCPtr(body0), body0, btCollisionObject.getCPtr(body1), body1, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo, btManifoldResult.getCPtr(resultOut), resultOut);
-  }
+	public float calculateTimeOfImpact (btCollisionObject body0, btCollisionObject body1, btDispatcherInfo dispatchInfo,
+		btManifoldResult resultOut) {
+		return CollisionJNI.btCollisionAlgorithm_calculateTimeOfImpact(swigCPtr, this, btCollisionObject.getCPtr(body0), body0,
+			btCollisionObject.getCPtr(body1), body1, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo,
+			btManifoldResult.getCPtr(resultOut), resultOut);
+	}
 
-  public void getAllContactManifolds(btPersistentManifoldArray manifoldArray) {
-    CollisionJNI.btCollisionAlgorithm_getAllContactManifolds(swigCPtr, this, btPersistentManifoldArray.getCPtr(manifoldArray), manifoldArray);
-  }
+	public void getAllContactManifolds (btPersistentManifoldArray manifoldArray) {
+		CollisionJNI.btCollisionAlgorithm_getAllContactManifolds(swigCPtr, this, btPersistentManifoldArray.getCPtr(manifoldArray),
+			manifoldArray);
+	}
 
 }

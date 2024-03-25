@@ -12,43 +12,39 @@ import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btVehicleRaycaster extends BulletBase {
 	private long swigCPtr;
-	
-	protected btVehicleRaycaster(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btVehicleRaycaster (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
-	/** Construct a new btVehicleRaycaster, normally you should not need this constructor it's intended for low-level usage. */ 
-	public btVehicleRaycaster(long cPtr, boolean cMemoryOwn) {
+
+	/** Construct a new btVehicleRaycaster, normally you should not need this constructor it's intended for low-level usage. */
+	public btVehicleRaycaster (long cPtr, boolean cMemoryOwn) {
 		this("btVehicleRaycaster", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
-	
-	public static long getCPtr(btVehicleRaycaster obj) {
+
+	public static long getCPtr (btVehicleRaycaster obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -59,83 +55,86 @@ public class btVehicleRaycaster extends BulletBase {
 		super.delete();
 	}
 
-  static public class btVehicleRaycasterResult extends BulletBase {
-  	private long swigCPtr;
-  	
-  	protected btVehicleRaycasterResult(final String className, long cPtr, boolean cMemoryOwn) {
-  		super(className, cPtr, cMemoryOwn);
-  		swigCPtr = cPtr;
-  	}
-  	
-  	/** Construct a new btVehicleRaycasterResult, normally you should not need this constructor it's intended for low-level usage. */ 
-  	public btVehicleRaycasterResult(long cPtr, boolean cMemoryOwn) {
-  		this("btVehicleRaycasterResult", cPtr, cMemoryOwn);
-  		construct();
-  	}
-  	
-  	@Override
-  	protected void reset(long cPtr, boolean cMemoryOwn) {
-  		if (!destroyed)
-  			destroy();
-  		super.reset(swigCPtr = cPtr, cMemoryOwn);
-  	}
-  	
-  	public static long getCPtr(btVehicleRaycasterResult obj) {
-  		return (obj == null) ? 0 : obj.swigCPtr;
-  	}
-  
-  	@Override
-  	protected void finalize() throws Throwable {
-  		if (!destroyed)
-  			destroy();
-  		super.finalize();
-  	}
-  
-    @Override protected synchronized void delete() {
-  		if (swigCPtr != 0) {
-  			if (swigCMemOwn) {
-  				swigCMemOwn = false;
-  				DynamicsJNI.delete_btVehicleRaycaster_btVehicleRaycasterResult(swigCPtr);
-  			}
-  			swigCPtr = 0;
-  		}
-  		super.delete();
-  	}
-  
-    public btVehicleRaycasterResult() {
-      this(DynamicsJNI.new_btVehicleRaycaster_btVehicleRaycasterResult(), true);
-    }
-  
-    public void setHitPointInWorld(btVector3 value) {
-      DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_hitPointInWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
-    }
-  
-    public btVector3 getHitPointInWorld() {
-      long cPtr = DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_hitPointInWorld_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btVector3(cPtr, false);
-    }
-  
-    public void setHitNormalInWorld(btVector3 value) {
-      DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_hitNormalInWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
-    }
-  
-    public btVector3 getHitNormalInWorld() {
-      long cPtr = DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_hitNormalInWorld_get(swigCPtr, this);
-      return (cPtr == 0) ? null : new btVector3(cPtr, false);
-    }
-  
-    public void setDistFraction(float value) {
-      DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_distFraction_set(swigCPtr, this, value);
-    }
-  
-    public float getDistFraction() {
-      return DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_distFraction_get(swigCPtr, this);
-    }
-  
-  }
+	static public class btVehicleRaycasterResult extends BulletBase {
+		private long swigCPtr;
 
-  public long castRay(Vector3 from, Vector3 to, btVehicleRaycaster.btVehicleRaycasterResult result) {
-    return DynamicsJNI.btVehicleRaycaster_castRay(swigCPtr, this, from, to, btVehicleRaycaster.btVehicleRaycasterResult.getCPtr(result), result);
-  }
+		protected btVehicleRaycasterResult (final String className, long cPtr, boolean cMemoryOwn) {
+			super(className, cPtr, cMemoryOwn);
+			swigCPtr = cPtr;
+		}
+
+		/** Construct a new btVehicleRaycasterResult, normally you should not need this constructor it's intended for low-level
+		 * usage. */
+		public btVehicleRaycasterResult (long cPtr, boolean cMemoryOwn) {
+			this("btVehicleRaycasterResult", cPtr, cMemoryOwn);
+			construct();
+		}
+
+		@Override
+		protected void reset (long cPtr, boolean cMemoryOwn) {
+			if (!destroyed) destroy();
+			super.reset(swigCPtr = cPtr, cMemoryOwn);
+		}
+
+		public static long getCPtr (btVehicleRaycasterResult obj) {
+			return (obj == null) ? 0 : obj.swigCPtr;
+		}
+
+		@Override
+		protected void finalize () throws Throwable {
+			if (!destroyed) destroy();
+			super.finalize();
+		}
+
+		@Override
+		protected synchronized void delete () {
+			if (swigCPtr != 0) {
+				if (swigCMemOwn) {
+					swigCMemOwn = false;
+					DynamicsJNI.delete_btVehicleRaycaster_btVehicleRaycasterResult(swigCPtr);
+				}
+				swigCPtr = 0;
+			}
+			super.delete();
+		}
+
+		public btVehicleRaycasterResult () {
+			this(DynamicsJNI.new_btVehicleRaycaster_btVehicleRaycasterResult(), true);
+		}
+
+		public void setHitPointInWorld (btVector3 value) {
+			DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_hitPointInWorld_set(swigCPtr, this, btVector3.getCPtr(value),
+				value);
+		}
+
+		public btVector3 getHitPointInWorld () {
+			long cPtr = DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_hitPointInWorld_get(swigCPtr, this);
+			return (cPtr == 0) ? null : new btVector3(cPtr, false);
+		}
+
+		public void setHitNormalInWorld (btVector3 value) {
+			DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_hitNormalInWorld_set(swigCPtr, this, btVector3.getCPtr(value),
+				value);
+		}
+
+		public btVector3 getHitNormalInWorld () {
+			long cPtr = DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_hitNormalInWorld_get(swigCPtr, this);
+			return (cPtr == 0) ? null : new btVector3(cPtr, false);
+		}
+
+		public void setDistFraction (float value) {
+			DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_distFraction_set(swigCPtr, this, value);
+		}
+
+		public float getDistFraction () {
+			return DynamicsJNI.btVehicleRaycaster_btVehicleRaycasterResult_distFraction_get(swigCPtr, this);
+		}
+
+	}
+
+	public long castRay (Vector3 from, Vector3 to, btVehicleRaycaster.btVehicleRaycasterResult result) {
+		return DynamicsJNI.btVehicleRaycaster_castRay(swigCPtr, this, from, to,
+			btVehicleRaycaster.btVehicleRaycasterResult.getCPtr(result), result);
+	}
 
 }

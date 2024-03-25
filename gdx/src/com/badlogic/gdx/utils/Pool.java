@@ -29,33 +29,20 @@ abstract public class Pool<T> {
 
 	/** Creates a pool with an initial capacity of 16 and no maximum. */
 	public Pool () {
-		this(16, Integer.MAX_VALUE, false);
+		this(16, Integer.MAX_VALUE);
 	}
 
 	/** Creates a pool with the specified initial capacity and no maximum. */
 	public Pool (int initialCapacity) {
-		this(initialCapacity, Integer.MAX_VALUE, false);
+		this(initialCapacity, Integer.MAX_VALUE);
 	}
 
-	/** @param max The maximum number of free objects to store in this pool. */
+	/** @param initialCapacity The initial size of the array supporting the pool. No objects are created/pre-allocated. Use
+	 *           {@link #fill(int)} after instantiation if needed.
+	 * @param max The maximum number of free objects to store in this pool. */
 	public Pool (int initialCapacity, int max) {
-		this(initialCapacity, max, false);
-	}
-
-	/** @param initialCapacity The initial size of the array supporting the pool. No objects are created unless preFill is true.
-	 * @param max The maximum number of free objects to store in this pool.
-	 * @param preFill Whether to pre-fill the pool with objects. The number of pre-filled objects will be equal to the initial
-	 *           capacity. */
-	public Pool (int initialCapacity, int max, boolean preFill) {
-		if (initialCapacity > max && preFill)
-			throw new IllegalArgumentException("max must be larger than initialCapacity if preFill is set to true.");
 		freeObjects = new Array(false, initialCapacity);
 		this.max = max;
-		if (preFill) {
-			for (int i = 0; i < initialCapacity; i++)
-				freeObjects.add(newObject());
-			peak = freeObjects.size;
-		}
 	}
 
 	abstract protected T newObject ();
@@ -67,7 +54,8 @@ abstract public class Pool<T> {
 	}
 
 	/** Puts the specified object in the pool, making it eligible to be returned by {@link #obtain()}. If the pool already contains
-	 * {@link #max} free objects, the specified object is reset but not added to the pool.
+	 * {@link #max} free objects, the specified object is {@link #discard(Object) discarded}, it is not reset and not added to the
+	 * pool.
 	 * <p>
 	 * The pool does not check if an object is already freed, so the same object must not be freed multiple times. */
 	public void free (T object) {
@@ -75,8 +63,9 @@ abstract public class Pool<T> {
 		if (freeObjects.size < max) {
 			freeObjects.add(object);
 			peak = Math.max(peak, freeObjects.size);
-		}
-		reset(object);
+			reset(object);
+		} else
+			discard(object);
 	}
 
 	/** Adds the specified number of new free objects to the pool. Usually called early on as a pre-allocation mechanism but can be
@@ -95,6 +84,12 @@ abstract public class Pool<T> {
 		if (object instanceof Poolable) ((Poolable)object).reset();
 	}
 
+	/** Called when an object is discarded. This is the case when an object is freed, but the maximum capacity of the pool is
+	 * reached, and when the pool is {@link #clear() cleared} */
+	protected void discard (T object) {
+		reset(object);
+	}
+
 	/** Puts the specified objects in the pool. Null objects within the array are silently ignored.
 	 * <p>
 	 * The pool does not check if an object is already freed, so the same object must not be freed multiple times.
@@ -103,17 +98,24 @@ abstract public class Pool<T> {
 		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
 		Array<T> freeObjects = this.freeObjects;
 		int max = this.max;
-		for (int i = 0; i < objects.size; i++) {
+		for (int i = 0, n = objects.size; i < n; i++) {
 			T object = objects.get(i);
 			if (object == null) continue;
-			if (freeObjects.size < max) freeObjects.add(object);
-			reset(object);
+			if (freeObjects.size < max) {
+				freeObjects.add(object);
+				reset(object);
+			} else {
+				discard(object);
+			}
 		}
 		peak = Math.max(peak, freeObjects.size);
 	}
 
-	/** Removes all free objects from this pool. */
+	/** Removes and discards all free objects from this pool. */
 	public void clear () {
+		Array<T> freeObjects = this.freeObjects;
+		for (int i = 0, n = freeObjects.size; i < n; i++)
+			discard(freeObjects.get(i));
 		freeObjects.clear();
 	}
 

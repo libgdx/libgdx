@@ -5,8 +5,7 @@ import com.badlogic.gdx.math.Intersector.SplitTriangle;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class IntersectorTest {
 
@@ -76,8 +75,8 @@ public class IntersectorTest {
 			assertTrue(triangleEquals(split.front, 0, 3, new float[] {0, 0, 5, 10, 0, 0, 0, 0, -5}));
 
 			// There are two ways to triangulate back
-			float[][] firstWay = { {-10, 0, 10, 0, 0, 5, 0, 0, -5}, {-10, 0, 10, 0, 0, -5, -10, 0, -10}};// ADE AEC
-			float[][] secondWay = { {-10, 0, 10, 0, 0, 5, -10, 0, -10}, {0, 0, 5, 0, 0, -5, -10, 0, -10}};// ADC DEC
+			float[][] firstWay = {{-10, 0, 10, 0, 0, 5, 0, 0, -5}, {-10, 0, 10, 0, 0, -5, -10, 0, -10}};// ADE AEC
+			float[][] secondWay = {{-10, 0, 10, 0, 0, 5, -10, 0, -10}, {0, 0, 5, 0, 0, -5, -10, 0, -10}};// ADC DEC
 			float[] base = split.back;
 			boolean first = (triangleEquals(base, 0, 3, firstWay[0]) && triangleEquals(base, 9, 3, firstWay[1]))
 				|| (triangleEquals(base, 0, 3, firstWay[1]) && triangleEquals(base, 9, 3, firstWay[0]));
@@ -96,8 +95,8 @@ public class IntersectorTest {
 			assertTrue(triangleEquals(split.back, 0, 3, new float[] {0, 0, 5, -10, 0, 0, 0, 0, -5}));
 
 			// There are two ways to triangulate front
-			float[][] firstWay = { {10, 0, 10, 0, 0, 5, 0, 0, -5}, {10, 0, 10, 0, 0, -5, 10, 0, -10}};// ADE AEC
-			float[][] secondWay = { {10, 0, 10, 0, 0, 5, 10, 0, -10}, {0, 0, 5, 0, 0, -5, 10, 0, -10}};// ADC DEC
+			float[][] firstWay = {{10, 0, 10, 0, 0, 5, 0, 0, -5}, {10, 0, 10, 0, 0, -5, 10, 0, -10}};// ADE AEC
+			float[][] secondWay = {{10, 0, 10, 0, 0, 5, 10, 0, -10}, {0, 0, 5, 0, 0, -5, 10, 0, -10}};// ADC DEC
 			float[] base = split.front;
 			boolean first = (triangleEquals(base, 0, 3, firstWay[0]) && triangleEquals(base, 9, 3, firstWay[1]))
 				|| (triangleEquals(base, 0, 3, firstWay[1]) && triangleEquals(base, 9, 3, firstWay[0]));
@@ -108,7 +107,7 @@ public class IntersectorTest {
 	}
 
 	@Test
-	public void intersectSegmentCircle() {
+	public void intersectSegmentCircle () {
 		Circle circle = new Circle(5f, 5f, 4f);
 		// Segment intersects, both segment points outside circle
 		boolean intersects = Intersector.intersectSegmentCircle(new Vector2(0, 1f), new Vector2(12f, 3f), circle, null);
@@ -138,5 +137,98 @@ public class IntersectorTest {
 		assertTrue(intersects);
 		assertTrue(mtv.normal.equals(new Vector2(0, 1f)) || mtv.normal.equals(new Vector2(0f, -1f)));
 		assertTrue(mtv.depth == 4f);
+	}
+
+	@Test
+	public void testIntersectPlanes () {
+		final int NEAR = 0;
+		final int FAR = 1;
+		final int LEFT = 2;
+		final int RIGHT = 3;
+		final int TOP = 4;
+		final int BOTTOM = 5;
+
+		/*
+		 * camera = new PerspectiveCamera(60, 1280, 720); camera.direction.set(0, 0, 1); camera.near = 0.1f; camera.far = 100f;
+		 * camera.update(); Plane[] planes = camera.frustum.planes;
+		 */
+		Plane[] planes = new Plane[6];
+		planes[NEAR] = new Plane(new Vector3(0.0f, 0.0f, 1.0f), -0.1f);
+		planes[FAR] = new Plane(new Vector3(0.0f, -0.0f, -1.0f), 99.99771f);
+		planes[LEFT] = new Plane(new Vector3(-0.69783056f, 0.0f, 0.71626294f), -9.3877316E-7f);
+		planes[RIGHT] = new Plane(new Vector3(0.6978352f, 0.0f, 0.71625835f), -0.0f);
+		planes[TOP] = new Plane(new Vector3(0.0f, -0.86602545f, 0.5f), -0.0f);
+		planes[BOTTOM] = new Plane(new Vector3(-0.0f, 0.86602545f, 0.5f), -0.0f);
+
+		Vector3 intersection = new Vector3();
+		Intersector.intersectPlanes(planes[TOP], planes[FAR], planes[LEFT], intersection);
+		assertEquals(102.63903f, intersection.x, 0.1f);
+		assertEquals(57.7337f, intersection.y, 0.1f);
+		assertEquals(100, intersection.z, 0.1f);
+
+		Intersector.intersectPlanes(planes[TOP], planes[FAR], planes[RIGHT], intersection);
+		assertEquals(-102.63903f, intersection.x, 0.1f);
+		assertEquals(57.7337f, intersection.y, 0.1f);
+		assertEquals(100, intersection.z, 0.1f);
+
+		Intersector.intersectPlanes(planes[BOTTOM], planes[FAR], planes[LEFT], intersection);
+		assertEquals(102.63903f, intersection.x, 0.1f);
+		assertEquals(-57.7337f, intersection.y, 0.1f);
+		assertEquals(100, intersection.z, 0.1f);
+
+		Intersector.intersectPlanes(planes[BOTTOM], planes[FAR], planes[RIGHT], intersection);
+		assertEquals(-102.63903f, intersection.x, 0.1f);
+		assertEquals(-57.7337f, intersection.y, 0.1f);
+		assertEquals(100, intersection.z, 0.1f);
+	}
+
+	@Test
+	public void testIsPointInTriangle2D () {
+		assertFalse(Intersector.isPointInTriangle(new Vector2(0.1f, 0), new Vector2(0, 0), new Vector2(1, 1), new Vector2(-1, -1)));
+
+		assertTrue(Intersector.isPointInTriangle(new Vector2(0, 0.1f), new Vector2(-1, 1), new Vector2(1, 1), new Vector2(-1, -2)));
+	}
+
+	@Test
+	public void testIsPointInTriangle3D () {
+		// 2D ---
+		assertFalse(Intersector.isPointInTriangle(new Vector3(0.1f, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 0),
+			new Vector3(-1, -1, 0)));
+
+		assertTrue(Intersector.isPointInTriangle(new Vector3(0, 0.1f, 0), new Vector3(-1, 1, 0), new Vector3(1, 1, 0),
+			new Vector3(-1, -2, 0)));
+
+		// 3D ---
+		assertTrue(Intersector.isPointInTriangle(new Vector3(0.2f, 0, 1.25f), new Vector3(-1, 1, 0), new Vector3(1.4f, 0.99f, 2.5f),
+			new Vector3(-1, -2, 0)));
+		// 1.2f away.
+		assertFalse(Intersector.isPointInTriangle(new Vector3(2.6f, 0, 3.75f), new Vector3(-1, 1, 0),
+			new Vector3(1.4f, 0.99f, 2.5f), new Vector3(-1, -2, 0)));
+		// In an edge.
+		assertTrue(Intersector.isPointInTriangle(new Vector3(0, -0.5f, 0.5f), new Vector3(-1, 1, 0), new Vector3(1, 1, 1),
+			new Vector3(-1, -2, 0)));
+		// Really close to the edge.
+		float epsilon = 0.0000001f; // One more 0 will fail.
+		float almost1 = 1 - epsilon;
+		assertFalse(Intersector.isPointInTriangle(new Vector3(0, -0.5f, 0.5f), new Vector3(-1, 1, 0), new Vector3(almost1, 1, 1),
+			new Vector3(-1, -2, 0)));
+
+		// A really long distance away.
+		assertFalse(Intersector.isPointInTriangle(new Vector3(199f, 1f, 500f), new Vector3(-1, 1, 0), new Vector3(1, 1, 5f),
+			new Vector3(-1, -2, 0)));
+
+		assertFalse(Intersector.isPointInTriangle(new Vector3(-5120.8345f, 8946.126f, -3270.5813f),
+			new Vector3(50.008057f, 22.20586f, 124.62208f), new Vector3(62.282288f, 22.205864f, 109.665924f),
+			new Vector3(70.92052f, 7.205861f, 115.437805f)));
+	}
+
+	@Test
+	public void testIntersectPolygons () {
+		// Corner case with extremely small overlap polygon
+		Polygon intersectionPolygon = new Polygon();
+		assertFalse(
+			Intersector.intersectPolygons(new Polygon(new float[] {3200.1453f, 88.00839f, 3233.9087f, 190.34174f, 3266.2905f, 0.0f}),
+				new Polygon(new float[] {3213.0f, 131.0f, 3214.0f, 131.0f, 3214.0f, 130.0f, 3213.0f, 130.0f}), intersectionPolygon));
+		assertEquals(0, intersectionPolygon.getVertexCount());
 	}
 }

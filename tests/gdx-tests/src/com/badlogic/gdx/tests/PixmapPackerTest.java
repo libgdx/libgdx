@@ -20,7 +20,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -30,9 +29,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.io.IOException;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class PixmapPackerTest extends GdxTest {
 
@@ -71,8 +68,8 @@ public class PixmapPackerTest extends GdxTest {
 		Pixmap pixmap4 = new Pixmap(Gdx.files.internal("data/textfield.9.png"));
 		Pixmap pixmap5 = new Pixmap(Gdx.files.internal("data/badlogic-with-whitespace.png"));
 
-		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false,
-				true, true, new PixmapPacker.GuillotineStrategy());
+		PixmapPacker packer = new PixmapPacker(1024, 1024, Format.RGBA8888, 8, false, true, true,
+			new PixmapPacker.GuillotineStrategy());
 		packer.setTransparentColor(Color.PINK);
 		for (int count = 1; count <= 3; ++count) {
 			packer.pack("badlogic " + count, pixmap1);
@@ -129,15 +126,13 @@ public class PixmapPackerTest extends GdxTest {
 		officialPatch = skin.getPatch("textfield");
 		officialPatch.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
-
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 		int size = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		int quarterSize = (int) (size/4f);
+		int quarterSize = (int)(size / 4f);
 		batch.begin();
 		batch.draw(textureRegions.get(pageToShow), 0, 0, size, size);
 		ninePatch.draw(batch, 10, 10, quarterSize, quarterSize);

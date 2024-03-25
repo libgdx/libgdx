@@ -9,9 +9,8 @@
 package com.badlogic.gdx.physics.bullet.inversedynamics;
 
 public final class JointType {
-  public final static int FIXED = 0;
-  public final static int REVOLUTE = FIXED + 1;
-  public final static int PRISMATIC = REVOLUTE + 1;
-  public final static int FLOATING = PRISMATIC + 1;
+	public final static int FIXED = 0;
+	public final static int REVOLUTE = FIXED + 1;
+	public final static int PRISMATIC = REVOLUTE + 1;
+	public final static int FLOATING = PRISMATIC + 1;
 }
-

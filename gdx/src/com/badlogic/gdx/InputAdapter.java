@@ -40,6 +40,10 @@ public class InputAdapter implements InputProcessor {
 		return false;
 	}
 
+	public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
 		return false;
 	}
@@ -50,7 +54,7 @@ public class InputAdapter implements InputProcessor {
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
+	public boolean scrolled (float amountX, float amountY) {
 		return false;
 	}
 }

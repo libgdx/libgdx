@@ -27,8 +27,6 @@ import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.CubemapLoader.CubemapParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.glutils.FacedCubemapData;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.Vector3;
@@ -95,6 +93,7 @@ public class Cubemap extends GLTexture {
 		super(GL20.GL_TEXTURE_CUBE_MAP);
 		this.data = data;
 		load(data);
+		if (data.isManaged()) addManagedCubemap(Gdx.app, this);
 	}
 
 	/** Construct a Cubemap with the specified texture files for the sides, does not generate mipmaps. */
@@ -119,31 +118,28 @@ public class Cubemap extends GLTexture {
 	/** Construct a Cubemap with the specified {@link Pixmap}s for the sides, optionally generating mipmaps. */
 	public Cubemap (Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ, Pixmap negativeZ,
 		boolean useMipMaps) {
-		this(positiveX == null ? null : new PixmapTextureData(positiveX, null, useMipMaps, false), negativeX == null ? null
-			: new PixmapTextureData(negativeX, null, useMipMaps, false), positiveY == null ? null : new PixmapTextureData(positiveY,
-			null, useMipMaps, false), negativeY == null ? null : new PixmapTextureData(negativeY, null, useMipMaps, false),
-			positiveZ == null ? null : new PixmapTextureData(positiveZ, null, useMipMaps, false), negativeZ == null ? null
-				: new PixmapTextureData(negativeZ, null, useMipMaps, false));
+		this(positiveX == null ? null : new PixmapTextureData(positiveX, null, useMipMaps, false),
+			negativeX == null ? null : new PixmapTextureData(negativeX, null, useMipMaps, false),
+			positiveY == null ? null : new PixmapTextureData(positiveY, null, useMipMaps, false),
+			negativeY == null ? null : new PixmapTextureData(negativeY, null, useMipMaps, false),
+			positiveZ == null ? null : new PixmapTextureData(positiveZ, null, useMipMaps, false),
+			negativeZ == null ? null : new PixmapTextureData(negativeZ, null, useMipMaps, false));
 	}
 
 	/** Construct a Cubemap with {@link Pixmap}s for each side of the specified size. */
 	public Cubemap (int width, int height, int depth, Format format) {
-		this(new PixmapTextureData(new Pixmap(depth, height, format), null, false, true), new PixmapTextureData(new Pixmap(depth,
-			height, format), null, false, true), new PixmapTextureData(new Pixmap(width, depth, format), null, false, true),
-			new PixmapTextureData(new Pixmap(width, depth, format), null, false, true), new PixmapTextureData(new Pixmap(width,
-				height, format), null, false, true), new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
+		this(new PixmapTextureData(new Pixmap(depth, height, format), null, false, true),
+			new PixmapTextureData(new Pixmap(depth, height, format), null, false, true),
+			new PixmapTextureData(new Pixmap(width, depth, format), null, false, true),
+			new PixmapTextureData(new Pixmap(width, depth, format), null, false, true),
+			new PixmapTextureData(new Pixmap(width, height, format), null, false, true),
+			new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
 	}
 
 	/** Construct a Cubemap with the specified {@link TextureData}'s for the sides */
 	public Cubemap (TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY,
 		TextureData positiveZ, TextureData negativeZ) {
-		super(GL20.GL_TEXTURE_CUBE_MAP);
-		minFilter = TextureFilter.Nearest;
-		magFilter = TextureFilter.Nearest;
-		uWrap = TextureWrap.ClampToEdge;
-		vWrap = TextureWrap.ClampToEdge;
-		data = new FacedCubemapData(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ);
-		load(data);
+		this(new FacedCubemapData(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ));
 	}
 
 	/** Sets the sides of this cubemap to the specified {@link CubemapData}. */

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,14 +27,13 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class GwtWindowModeTest extends GdxTest {
 	private Stage stage;
-	boolean isWindowed;
 	TextButton changeModeButton;
 	private final String windowedInstructions = "click for Full screen Mode";
 	private final String fullScreenInstructions = "click for window Mode";
+	private final String notSupported = "Changing the display mode is not supported";
 
 	public void create () {
 		stage = new Stage();
-		isWindowed = true;
 		Gdx.input.setInputProcessor(stage);
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
@@ -47,17 +46,17 @@ public class GwtWindowModeTest extends GdxTest {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
-				if (isWindowed) {
-					isWindowed = false;
-					changeModeButton.setText(fullScreenInstructions);
+				if (!Gdx.graphics.isFullscreen()) {
 					Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 				} else {
-					isWindowed = true;
-					changeModeButton.setText(windowedInstructions);
 					Gdx.graphics.setWindowedMode(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				}
 			}
 		});
+		if (!Gdx.graphics.supportsDisplayModeChange()) {
+			changeModeButton.setDisabled(true);
+			changeModeButton.setText(notSupported);
+		}
 	}
 
 	public void render () {
@@ -68,6 +67,13 @@ public class GwtWindowModeTest extends GdxTest {
 
 	public void resize (int width, int height) {
 		stage.getViewport().update(width, height, true);
+		if (Gdx.graphics.supportsDisplayModeChange()) {
+			if (Gdx.graphics.isFullscreen()) {
+				changeModeButton.setText(fullScreenInstructions);
+			} else {
+				changeModeButton.setText(windowedInstructions);
+			}
+		}
 	}
 
 	public void dispose () {

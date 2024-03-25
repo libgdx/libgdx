@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -40,7 +39,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /** This tests both {@link Actor#parentToLocalCoordinates(Vector2)} and {@link Actor#localToParentCoordinates(Vector2)}. */
@@ -130,20 +129,19 @@ public class GroupTest extends GdxTest {
 		horiz.fill();
 		horiz.expand();
 		horiz.invalidate();
-		
+
 		horizWrap.setVisible(true);
 		horizWrap.fill();
 		horizWrap.expand();
 		horizWrap.setWidth(Gdx.input.getX() - horizWrap.getX());
 		// horizWrap.setHeight(horizWrap.getPrefHeight());
 		horizWrap.setHeight(200);
-		
+
 		vert.setHeight(Gdx.graphics.getHeight() - Gdx.input.getY() - vert.getY());
 		// vert.setWidth(200);
 		vertWrap.setHeight(Gdx.graphics.getHeight() - Gdx.input.getY() - vertWrap.getY());
 // vertWrap.setWidth(vertWrap.getPrefWidth());
 		vertWrap.setWidth(200);
-		
 
 		// Vary the transforms to exercise the different code paths.
 		group2.setBounds(150, 150, 150, 150);
@@ -156,8 +154,7 @@ public class GroupTest extends GdxTest {
 		group1.setOrigin(25, 25);
 		group1.setScale(1.3f);
 
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0, 0, 0, 1);
 		stage.draw();
 
 		renderer.setProjectionMatrix(batch.getProjectionMatrix());
@@ -206,8 +203,8 @@ public class GroupTest extends GdxTest {
 
 		public void draw (Batch batch, float parentAlpha) {
 			// Use Stage#toScreenCoordinates, which we know is correct.
-			toScreenCoordinates.set(testX, testY).sub(getOriginX(), getOriginY()).scl(getScaleX(), getScaleY()).rotate(getRotation())
-				.add(getOriginX(), getOriginY()).add(getX(), getY());
+			toScreenCoordinates.set(testX, testY).sub(getOriginX(), getOriginY()).scl(getScaleX(), getScaleY())
+				.rotateDeg(getRotation()).add(getOriginX(), getOriginY()).add(getX(), getY());
 			getStage().toScreenCoordinates(toScreenCoordinates, batch.getTransformMatrix());
 
 			// Do the same as toScreenCoordinates via Actor#localToParentCoordinates.

@@ -73,7 +73,6 @@ import javax.swing.JTextPane;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
@@ -84,6 +83,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -311,9 +311,14 @@ public class Hiero extends JFrame {
 		unicodeFont.setGlyphPageHeight(((Number)glyphPageHeightCombo.getSelectedItem()).intValue());
 		if (nativeRadio.isSelected())
 			unicodeFont.setRenderType(RenderType.Native);
-		else if (freeTypeRadio.isSelected())
-			unicodeFont.setRenderType(RenderType.FreeType);
-		else
+		else if (freeTypeRadio.isSelected()) {
+			try {
+				unicodeFont.setRenderType(RenderType.FreeType);
+			} catch (GdxRuntimeException ex) {
+				unicodeFont.setRenderType(RenderType.Java);
+				javaRadio.doClick();
+			}
+		} else
 			unicodeFont.setRenderType(RenderType.Java);
 
 		for (Iterator iter = effectPanels.iterator(); iter.hasNext();) {
@@ -374,25 +379,24 @@ public class Hiero extends JFrame {
 
 		HieroSettings settings = new HieroSettings(file.getAbsolutePath());
 		fontList.setSelectedValue(settings.getFontName(), true);
-		fontSizeSpinner.setValue(new Integer(settings.getFontSize()));
+		fontSizeSpinner.setValue(settings.getFontSize());
 		boldCheckBox.setSelected(settings.isBold());
 		italicCheckBox.setSelected(settings.isItalic());
 		monoCheckBox.setSelected(settings.isMono());
-		gammaSpinner.setValue(new Float(settings.getGamma()));
-		padTopSpinner.setValue(new Integer(settings.getPaddingTop()));
-		padRightSpinner.setValue(new Integer(settings.getPaddingRight()));
-		padBottomSpinner.setValue(new Integer(settings.getPaddingBottom()));
-		padLeftSpinner.setValue(new Integer(settings.getPaddingLeft()));
-		padAdvanceXSpinner.setValue(new Integer(settings.getPaddingAdvanceX()));
-		padAdvanceYSpinner.setValue(new Integer(settings.getPaddingAdvanceY()));
-		glyphPageWidthCombo.setSelectedItem(new Integer(settings.getGlyphPageWidth()));
-		glyphPageHeightCombo.setSelectedItem(new Integer(settings.getGlyphPageHeight()));
+		gammaSpinner.setValue(settings.getGamma());
+		padTopSpinner.setValue(settings.getPaddingTop());
+		padRightSpinner.setValue(settings.getPaddingRight());
+		padBottomSpinner.setValue(settings.getPaddingBottom());
+		padLeftSpinner.setValue(settings.getPaddingLeft());
+		padAdvanceXSpinner.setValue(settings.getPaddingAdvanceX());
+		padAdvanceYSpinner.setValue(settings.getPaddingAdvanceY());
+		glyphPageWidthCombo.setSelectedItem(settings.getGlyphPageWidth());
+		glyphPageHeightCombo.setSelectedItem(settings.getGlyphPageHeight());
 		if (settings.getRenderType() == RenderType.Native.ordinal())
 			nativeRadio.setSelected(true);
 		else if (settings.getRenderType() == RenderType.FreeType.ordinal())
 			freeTypeRadio.setSelected(true);
-		else if (settings.getRenderType() == RenderType.Java.ordinal()) 
-			javaRadio.setSelected(true);
+		else if (settings.getRenderType() == RenderType.Java.ordinal()) javaRadio.setSelected(true);
 		String gt = settings.getGlyphText();
 		if (gt.length() > 0) {
 			sampleTextPane.setText(settings.getGlyphText());
@@ -826,7 +830,7 @@ public class Hiero extends JFrame {
 			buttonGroup.add(freeTypeRadio);
 			buttonGroup.add(javaRadio);
 			buttonGroup.add(nativeRadio);
-			freeTypeRadio.setSelected(true);
+			javaRadio.setSelected(true);
 		}
 		{
 			JPanel samplePanel = new JPanel();
@@ -914,15 +918,13 @@ public class Hiero extends JFrame {
 						GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
 				}
 				{
-					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(32), new Integer(64),
-						new Integer(128), new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
+					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {32, 64, 128, 256, 512, 1024, 2048}));
 					glyphCachePanel.add(glyphPageWidthCombo, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 					glyphPageWidthCombo.setSelectedIndex(4);
 				}
 				{
-					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(32), new Integer(64),
-						new Integer(128), new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
+					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {32, 64, 128, 256, 512, 1024, 2048}));
 					glyphCachePanel.add(glyphPageHeightCombo, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 					glyphPageHeightCombo.setSelectedIndex(4);

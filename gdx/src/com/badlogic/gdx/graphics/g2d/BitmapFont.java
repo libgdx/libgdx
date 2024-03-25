@@ -66,18 +66,18 @@ public class BitmapFont implements Disposable {
 	boolean integer;
 	private boolean ownsTexture;
 
-	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily
-	 * display text without bothering without generating a bitmap font yourself. */
+	/** Creates a BitmapFont using the default 15pt Liberation Sans font included in the libgdx JAR file. This is convenient to
+	 * easily display text without bothering without generating a bitmap font yourself. */
 	public BitmapFont () {
-		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"), Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"),
+		this(Gdx.files.classpath("com/badlogic/gdx/utils/lsans-15.fnt"), Gdx.files.classpath("com/badlogic/gdx/utils/lsans-15.png"),
 			false, true);
 	}
 
-	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily
-	 * display text without bothering without generating a bitmap font yourself.
+	/** Creates a BitmapFont using the default 15pt Liberation Sans font included in the libgdx JAR file. This is convenient to
+	 * easily display text without bothering without generating a bitmap font yourself.
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner. */
 	public BitmapFont (boolean flip) {
-		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"), Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"),
+		this(Gdx.files.classpath("com/badlogic/gdx/utils/lsans-15.fnt"), Gdx.files.classpath("com/badlogic/gdx/utils/lsans-15.png"),
 			flip, true);
 	}
 
@@ -825,19 +825,21 @@ public class BitmapFont implements Disposable {
 		/** Using the specified string, populates the glyphs and positions of the specified glyph run.
 		 * @param str Characters to convert to glyphs. Will not contain newline or color tags. May contain "[[" for an escaped left
 		 *           square bracket.
-		 * @param lastGlyph The glyph immediately before this run, or null if this is run is the first on a line of text. */
+		 * @param lastGlyph The glyph immediately before this run, or null if this is run is the first on a line of text. Used tp
+		 *           apply kerning between the specified glyph and the first glyph in this run. */
 		public void getGlyphs (GlyphRun run, CharSequence str, int start, int end, Glyph lastGlyph) {
+			int max = end - start;
+			if (max == 0) return;
 			boolean markupEnabled = this.markupEnabled;
 			float scaleX = this.scaleX;
-			Glyph missingGlyph = this.missingGlyph;
 			Array<Glyph> glyphs = run.glyphs;
 			FloatArray xAdvances = run.xAdvances;
 
 			// Guess at number of glyphs needed.
-			glyphs.ensureCapacity(end - start);
-			xAdvances.ensureCapacity(end - start + 1);
+			glyphs.ensureCapacity(max);
+			run.xAdvances.ensureCapacity(max + 1);
 
-			while (start < end) {
+			do {
 				char ch = str.charAt(start++);
 				if (ch == '\r') continue; // Ignore.
 				Glyph glyph = getGlyph(ch);
@@ -845,18 +847,15 @@ public class BitmapFont implements Disposable {
 					if (missingGlyph == null) continue;
 					glyph = missingGlyph;
 				}
-
 				glyphs.add(glyph);
-
-				if (lastGlyph == null) // First glyph on line, adjust the position so it isn't drawn left of 0.
-					xAdvances.add(glyph.fixedWidth ? 0 : -glyph.xoffset * scaleX - padLeft);
-				else
-					xAdvances.add((lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
+				xAdvances.add(lastGlyph == null // First glyph on line, adjust the position so it isn't drawn left of 0.
+					? (glyph.fixedWidth ? 0 : -glyph.xoffset * scaleX - padLeft)
+					: (lastGlyph.xadvance + lastGlyph.getKerning(ch)) * scaleX);
 				lastGlyph = glyph;
 
 				// "[[" is an escaped left square bracket, skip second character.
 				if (markupEnabled && ch == '[' && start < end && str.charAt(start) == '[') start++;
-			}
+			} while (start < end);
 			if (lastGlyph != null) {
 				float lastGlyphWidth = lastGlyph.fixedWidth ? lastGlyph.xadvance * scaleX
 					: (lastGlyph.width + lastGlyph.xoffset) * scaleX - padRight;
@@ -868,13 +867,13 @@ public class BitmapFont implements Disposable {
 		 * (typically) moving toward the beginning of the glyphs array. */
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
 			int i = start - 1;
-			char ch = (char)glyphs.get(i).id;
+			Object[] glyphsItems = glyphs.items;
+			char ch = (char)((Glyph)glyphsItems[i]).id;
 			if (isWhitespace(ch)) return i;
 			if (isBreakChar(ch)) i--;
 			for (; i > 0; i--) {
-				ch = (char)glyphs.get(i).id;
-				if (isBreakChar(ch)) return i + 1;
-				if (isWhitespace(ch)) return i + 1;
+				ch = (char)((Glyph)glyphsItems[i]).id;
+				if (isWhitespace(ch) || isBreakChar(ch)) return i + 1;
 			}
 			return 0;
 		}

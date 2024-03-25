@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys are unboxed ints and values are unboxed floats. No allocation is done except when growing the
  * table size.
@@ -65,9 +65,9 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 	 * hash. */
 	protected int mask;
 
-	private Entries entries1, entries2;
-	private Values values1, values2;
-	private Keys keys1, keys2;
+	private transient Entries entries1, entries2;
+	private transient Values values1, values2;
+	private transient Keys keys1, keys2;
 
 	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public IntFloatMap () {
@@ -76,14 +76,14 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 
 	/** Creates a new map with a load factor of 0.8.
 	 *
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public IntFloatMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
 	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
 	 * growing the backing table.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public IntFloatMap (int initialCapacity, float loadFactor) {
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
@@ -157,6 +157,32 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		if (++size >= threshold) resize(keyTable.length << 1);
 	}
 
+	/** Returns the old value associated with the specified key, or the specified default value.
+	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
+	public float put (int key, float value, float defaultValue) {
+		if (key == 0) {
+			float oldValue = zeroValue;
+			zeroValue = value;
+			if (!hasZeroValue) {
+				hasZeroValue = true;
+				size++;
+				return defaultValue;
+			}
+			return oldValue;
+		}
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			float oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
+		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
+	}
+
 	public void putAll (IntFloatMap map) {
 		ensureCapacity(map.size);
 		if (map.hasZeroValue) put(0, map.zeroValue);
@@ -180,6 +206,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		}
 	}
 
+	/** @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
 	public float get (int key, float defaultValue) {
 		if (key == 0) return hasZeroValue ? zeroValue : defaultValue;
 		int i = locateKey(key);
@@ -213,6 +240,8 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		return defaultValue;
 	}
 
+	/** Returns the value for the removed key, or the default value if the key is not in the map.
+	 * @param defaultValue {@link Float#NaN} can be used for a value unlikely to be in the map. */
 	public float remove (int key, float defaultValue) {
 		if (key == 0) {
 			if (!hasZeroValue) return defaultValue;
@@ -281,12 +310,23 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 
 	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
 	 * be an expensive operation. */
-	public boolean containsValue (int value) {
+	public boolean containsValue (float value) {
 		if (hasZeroValue && zeroValue == value) return true;
 		int[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
 		for (int i = valueTable.length - 1; i >= 0; i--)
 			if (keyTable[i] != 0 && valueTable[i] == value) return true;
+		return false;
+	}
+
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
+	 * be an expensive operation. */
+	public boolean containsValue (float value, float epsilon) {
+		if (hasZeroValue && Math.abs(zeroValue - value) <= epsilon) return true;
+		int[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = valueTable.length - 1; i >= 0; i--)
+			if (keyTable[i] != 0 && Math.abs(valueTable[i] - value) <= epsilon) return true;
 		return false;
 	}
 
@@ -297,14 +337,23 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 
 	/** Returns the key for the specified value, or notFound if it is not in the map. Note this traverses the entire map and
 	 * compares every value, which may be an expensive operation. */
-	public int findKey (int value, int notFound) {
+	public int findKey (float value, int notFound) {
 		if (hasZeroValue && zeroValue == value) return 0;
 		int[] keyTable = this.keyTable;
 		float[] valueTable = this.valueTable;
-		for (int i = valueTable.length - 1; i >= 0; i--) {
-			int key = keyTable[i];
-			if (key != 0 && valueTable[i] == value) return key;
-		}
+		for (int i = valueTable.length - 1; i >= 0; i--)
+			if (keyTable[i] != 0 && valueTable[i] == value) return keyTable[i];
+		return notFound;
+	}
+
+	/** Returns the key for the specified value, or notFound if it is not in the map. Note this traverses the entire map and
+	 * compares every value, which may be an expensive operation. */
+	public int findKey (float value, float epsilon, int notFound) {
+		if (hasZeroValue && Math.abs(zeroValue - value) <= epsilon) return 0;
+		int[] keyTable = this.keyTable;
+		float[] valueTable = this.valueTable;
+		for (int i = valueTable.length - 1; i >= 0; i--)
+			if (keyTable[i] != 0 && Math.abs(valueTable[i] - value) <= epsilon) return keyTable[i];
 		return notFound;
 	}
 
@@ -593,7 +642,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		public float next () {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
-			float value = map.valueTable[nextIndex];
+			float value = nextIndex == INDEX_ZERO ? map.zeroValue : map.valueTable[nextIndex];
 			currentIndex = nextIndex;
 			findNextIndex();
 			return value;

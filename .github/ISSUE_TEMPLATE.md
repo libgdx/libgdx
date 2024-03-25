@@ -4,10 +4,10 @@ Please ensure you have given all the following requested information in your rep
 _Please provide the details of your issue_
 
 #### Reproduction steps/code
-_Even if you think your issue is trivial to reproduce, please supply a [SSCCE](http://sscce.org/) that demonstrates your issue.  This saves time on our end, and makes it much more likely that your issue will be fixed.
-You can find barebones templates [here](https://github.com/libgdx/libgdx/wiki/Getting-help)_
+_Even if you think your issue is trivial to reproduce, please supply a [SSCCE](http://sscce.org/) that demonstrates your issue. This saves time on our end, and makes it much more likely that your issue will be fixed.
+You can find barebones templates [here](https://libgdx.com/wiki/articles/getting-help)_
 
-#### Version of LibGDX and/or relevant dependencies
+#### Version of libGDX and/or relevant dependencies
 _Please provide the version(s) affected._
 
 #### Stacktrace
@@ -17,9 +17,8 @@ _Please provide the version(s) affected._
 
 #### Please select the affected platforms
 - [ ] Android
-- [ ] iOS (robovm)
-- [ ] iOS (MOE)
+- [ ] iOS
 - [ ] HTML/GWT
 - [ ] Windows
 - [ ] Linux
-- [ ] MacOS
+- [ ] macOS

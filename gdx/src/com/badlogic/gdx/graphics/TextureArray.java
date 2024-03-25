@@ -18,18 +18,14 @@ package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Open GLES wrapper for TextureArray
+/** Open GLES wrapper for TextureArray
  * @author Tomski */
 public class TextureArray extends GLTexture {
 
@@ -79,7 +75,8 @@ public class TextureArray extends GLTexture {
 		this.data = data;
 
 		bind();
-		Gdx.gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, data.getInternalFormat(), data.getWidth(), data.getHeight(), data.getDepth(), 0, data.getInternalFormat(), data.getGLType(), null);
+		Gdx.gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, data.getInternalFormat(), data.getWidth(), data.getHeight(),
+			data.getDepth(), 0, data.getInternalFormat(), data.getGLType(), null);
 
 		if (!data.isPrepared()) data.prepare();
 
@@ -123,7 +120,6 @@ public class TextureArray extends GLTexture {
 		managedTextureArray.add(texture);
 		managedTextureArrays.put(app, managedTextureArray);
 	}
-
 
 	/** Clears all managed TextureArrays. This is an internal method. Do not use it! */
 	public static void clearAllTextureArrays (Application app) {

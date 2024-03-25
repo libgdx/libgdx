@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered map where the keys are objects and the values are unboxed ints. Null keys are not allowed. No allocation is done
  * except when growing the table size.
@@ -62,9 +62,9 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 	 * hash. */
 	protected int mask;
 
-	Entries entries1, entries2;
-	Values values1, values2;
-	Keys keys1, keys2;
+	transient Entries entries1, entries2;
+	transient Values values1, values2;
+	transient Keys keys1, keys2;
 
 	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
 	public ObjectIntMap () {
@@ -72,14 +72,14 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 	}
 
 	/** Creates a new map with a load factor of 0.8.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public ObjectIntMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
 	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
 	 * growing the backing table.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public ObjectIntMap (int initialCapacity, float loadFactor) {
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
@@ -132,7 +132,6 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		}
 	}
 
-	/** Doesn't return a value, unlike other maps. */
 	public void put (K key, int value) {
 		int i = locateKey(key);
 		if (i >= 0) { // Existing key was found.
@@ -143,6 +142,21 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		keyTable[i] = key;
 		valueTable[i] = value;
 		if (++size >= threshold) resize(keyTable.length << 1);
+	}
+
+	/** Returns the old value associated with the specified key, or the specified default value. */
+	public int put (K key, int value, int defaultValue) {
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			int oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
+		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
 	}
 
 	public void putAll (ObjectIntMap<? extends K> map) {
@@ -190,6 +204,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		return defaultValue;
 	}
 
+	/** Returns the value for the removed key, or the default value if the key is not in the map. */
 	public int remove (K key, int defaultValue) {
 		int i = locateKey(key);
 		if (i < 0) return defaultValue;
@@ -263,8 +278,7 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 
 	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
 	 * every value, which may be an expensive operation. */
-	@Null
-	public K findKey (int value) {
+	public @Null K findKey (int value) {
 		K[] keyTable = this.keyTable;
 		int[] valueTable = this.valueTable;
 		for (int i = valueTable.length - 1; i >= 0; i--) {

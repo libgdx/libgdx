@@ -28,8 +28,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Environment extends Attributes {
-	/** @deprecated Experimental, likely to change, do not use! */
-	@Deprecated
+
+	/** Shadow map used to render shadows */
 	public ShadowMap shadowMap;
 
 	public Environment () {
@@ -108,8 +108,7 @@ public class Environment extends Attributes {
 		if (has(DirectionalLightsAttribute.Type)) {
 			DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute)get(DirectionalLightsAttribute.Type));
 			dirLights.lights.removeValue(light, false);
-			if (dirLights.lights.size == 0)
-				remove(DirectionalLightsAttribute.Type);
+			if (dirLights.lights.size == 0) remove(DirectionalLightsAttribute.Type);
 		}
 		return this;
 	}
@@ -118,8 +117,7 @@ public class Environment extends Attributes {
 		if (has(PointLightsAttribute.Type)) {
 			PointLightsAttribute pointLights = ((PointLightsAttribute)get(PointLightsAttribute.Type));
 			pointLights.lights.removeValue(light, false);
-			if (pointLights.lights.size == 0)
-				remove(PointLightsAttribute.Type);
+			if (pointLights.lights.size == 0) remove(PointLightsAttribute.Type);
 		}
 		return this;
 	}
@@ -128,8 +126,7 @@ public class Environment extends Attributes {
 		if (has(SpotLightsAttribute.Type)) {
 			SpotLightsAttribute spotLights = ((SpotLightsAttribute)get(SpotLightsAttribute.Type));
 			spotLights.lights.removeValue(light, false);
-			if (spotLights.lights.size == 0)
-				remove(SpotLightsAttribute.Type);
+			if (spotLights.lights.size == 0) remove(SpotLightsAttribute.Type);
 		}
 		return this;
 	}

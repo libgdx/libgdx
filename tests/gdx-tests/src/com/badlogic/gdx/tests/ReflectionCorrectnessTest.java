@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 public class ReflectionCorrectnessTest extends GdxTest {
 
@@ -28,11 +27,17 @@ public class ReflectionCorrectnessTest extends GdxTest {
 	public AbstractAnnotationStatic abstractAnnotationStatic;
 	public StaticEnum staticEnum;
 
-	public AbstractInterfaceStatic[] AbstractInterfaceStatic () {	return null;}
+	public AbstractInterfaceStatic[] AbstractInterfaceStatic () {
+		return null;
+	}
 
-	public AbstractAnnotationStatic[] AbstractAnnotationStatic () {	return null;}
+	public AbstractAnnotationStatic[] AbstractAnnotationStatic () {
+		return null;
+	}
 
-	public StaticEnum[] StaticEnum () {	return null;}
+	public StaticEnum[] StaticEnum () {
+		return null;
+	}
 
 	public static class Expectation {
 		public Expectation mArray () {

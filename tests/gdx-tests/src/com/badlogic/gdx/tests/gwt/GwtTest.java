@@ -40,6 +40,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GwtTest extends GdxTest {
 	ShaderProgram shader;
@@ -82,18 +83,17 @@ public class GwtTest extends GdxTest {
 		sprite.setSize(64, 64);
 		sprite.setOrigin(32, 32);
 
-		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
+		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
 		cache = font.newFontCache();
 		cache.setColor(Color.RED);
 		cache.setText("This is a Test", 0, 0);
 
-		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
+		atlas = new TextureAtlas(Gdx.files.internal("data/pack.atlas"));
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 		texture.bind(0);
 		shader.bind();
 		shader.setUniformMatrix("u_projView", matrix);
@@ -107,8 +107,9 @@ public class GwtTest extends GdxTest {
 			sprite.setPosition(position.x, position.y);
 			sprite.draw(batch);
 		}
-		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime() + ", #sprites: "
-			+ numSprites, 0, 30);
+		font.draw(batch,
+			"fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime() + ", #sprites: " + numSprites, 0,
+			30);
 		cache.setPosition(200, 200);
 		cache.draw(batch);
 		batch.end();

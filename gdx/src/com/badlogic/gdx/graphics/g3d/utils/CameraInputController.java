@@ -18,7 +18,6 @@ package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.input.GestureDetector;
@@ -65,6 +64,7 @@ public class CameraInputController extends GestureDetector {
 	protected boolean rotateRightPressed;
 	public int rotateLeftKey = Keys.D;
 	protected boolean rotateLeftPressed;
+	protected boolean controlsInverted;
 	/** The camera. */
 	public Camera camera;
 	/** The current (first) button being pressed. */
@@ -174,6 +174,16 @@ public class CameraInputController extends GestureDetector {
 		return super.touchUp(screenX, screenY, pointer, button) || activatePressed;
 	}
 
+	/** Sets the CameraInputControllers' control inversion.
+	 * @param invertControls Whether or not to invert the controls */
+	public void setInvertedControls (boolean invertControls) {
+		if (this.controlsInverted != invertControls) {
+			// Flip the rotation angle
+			this.rotateAngle = -this.rotateAngle;
+		}
+		this.controlsInverted = invertControls;
+	}
+
 	protected boolean process (float deltaX, float deltaY, int button) {
 		if (button == rotateButton) {
 			tmpV1.set(camera.direction).crs(camera.up).y = 0f;
@@ -203,8 +213,8 @@ public class CameraInputController extends GestureDetector {
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
-		return zoom(amount * scrollFactor * translateUnits);
+	public boolean scrolled (float amountX, float amountY) {
+		return zoom(amountY * scrollFactor * translateUnits);
 	}
 
 	public boolean zoom (float amount) {

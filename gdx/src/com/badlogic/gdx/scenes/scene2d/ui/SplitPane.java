@@ -45,7 +45,7 @@ import com.badlogic.gdx.utils.Null;
  * @author Nathan Sweet */
 public class SplitPane extends WidgetGroup {
 	SplitPaneStyle style;
-	@Null private Actor firstWidget, secondWidget;
+	private @Null Actor firstWidget, secondWidget;
 	boolean vertical;
 	float splitAmount = 0.5f, minAmount, maxAmount = 1;
 
@@ -417,7 +417,7 @@ public class SplitPane extends WidgetGroup {
 		}
 
 		public SplitPaneStyle (SplitPaneStyle style) {
-			this.handle = style.handle;
+			handle = style.handle;
 		}
 	}
 }

@@ -25,7 +25,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
-import com.badlogic.gdx.graphics.Pixmap.Filter;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -121,20 +120,20 @@ public class PixmapPacker implements Disposable {
 
 	/** Uses {@link GuillotineStrategy}.
 	 * @see PixmapPacker#PixmapPacker(int, int, Format, int, boolean, boolean, boolean, PackStrategy) */
-	public PixmapPacker (int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder, PackStrategy packStrategy) {
+	public PixmapPacker (int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder,
+		PackStrategy packStrategy) {
 		this(pageWidth, pageHeight, pageFormat, padding, duplicateBorder, false, false, packStrategy);
 	}
 
-	/** Creates a new ImagePacker which will insert all supplied pixmaps into one or more <code>pageWidth</code> by
+	/** Creates a new PixmapPacker which will insert all supplied pixmaps into one or more <code>pageWidth</code> by
 	 * <code>pageHeight</code> pixmaps using the specified strategy.
 	 * @param padding the number of blank pixels to insert between pixmaps.
 	 * @param duplicateBorder duplicate the border pixels of the inserted images to avoid seams when rendering with bi-linear
 	 *           filtering on.
 	 * @param stripWhitespaceX strip whitespace in x axis
-	 * @param stripWhitespaceY strip whitespace in y axis
-	 *           */
-	public PixmapPacker (int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder, boolean stripWhitespaceX,
-		boolean stripWhitespaceY, PackStrategy packStrategy) {
+	 * @param stripWhitespaceY strip whitespace in y axis */
+	public PixmapPacker (int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder,
+		boolean stripWhitespaceX, boolean stripWhitespaceY, PackStrategy packStrategy) {
 		this.pageWidth = pageWidth;
 		this.pageHeight = pageHeight;
 		this.pageFormat = pageFormat;
@@ -183,7 +182,7 @@ public class PixmapPacker implements Disposable {
 			if (stripWhitespaceX || stripWhitespaceY) {
 				int originalWidth = image.getWidth();
 				int originalHeight = image.getHeight();
-				//Strip whitespace, manipulate the pixmap and return corrected Rect
+				// Strip whitespace, manipulate the pixmap and return corrected Rect
 				int top = 0;
 				int bottom = image.getHeight();
 				if (stripWhitespaceY) {
@@ -345,7 +344,7 @@ public class PixmapPacker implements Disposable {
 	/** Updates the {@link TextureAtlas}, adding any new {@link Pixmap} instances packed since the last call to this method. This
 	 * can be used to insert Pixmap instances on a separate thread via {@link #pack(String, Pixmap)} and update the TextureAtlas on
 	 * the rendering thread. This method must be called on the rendering thread. After calling this method, disposing the packer
-	 * will no longer dispose the page pixmaps. Has useIndexes on by default so as to keep backwards compatibility*/
+	 * will no longer dispose the page pixmaps. Has useIndexes on by default so as to keep backwards compatibility */
 	public synchronized void updateTextureAtlas (TextureAtlas atlas, TextureFilter minFilter, TextureFilter magFilter,
 		boolean useMipMaps) {
 		updateTextureAtlas(atlas, minFilter, magFilter, useMipMaps, true);
@@ -362,17 +361,18 @@ public class PixmapPacker implements Disposable {
 			if (page.addedRects.size > 0) {
 				for (String name : page.addedRects) {
 					PixmapPackerRectangle rect = page.rects.get(name);
-					TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(page.texture, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height);
+					TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(page.texture, (int)rect.x, (int)rect.y,
+						(int)rect.width, (int)rect.height);
 
 					if (rect.splits != null) {
-						region.splits = rect.splits;
-						region.pads = rect.pads;
+						region.names = new String[] {"split", "pad"};
+						region.values = new int[][] {rect.splits, rect.pads};
 					}
 
 					int imageIndex = -1;
 					String imageName = name;
 
-					if(useIndexes) {
+					if (useIndexes) {
 						Matcher matcher = indexPattern.matcher(imageName);
 						if (matcher.matches()) {
 							imageName = matcher.group(1);
@@ -815,6 +815,7 @@ public class PixmapPacker implements Disposable {
 	}
 
 	private Color c = new Color();
+
 	private int getSplitPoint (Pixmap raster, int startX, int startY, boolean startPoint, boolean xAxis) {
 		int[] rgba = new int[4];
 
@@ -838,7 +839,8 @@ public class PixmapPacker implements Disposable {
 			rgba[3] = (int)(c.a * 255);
 			if (rgba[3] == breakA) return next;
 
-			if (!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255)) System.out.println(x +"  " +  y + " " + rgba + " ");
+			if (!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255))
+				System.out.println(x + "  " + y + " " + rgba + " ");
 
 			next++;
 		}

@@ -14,7 +14,6 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 package java.util.zip;
 
 import java.io.IOException;

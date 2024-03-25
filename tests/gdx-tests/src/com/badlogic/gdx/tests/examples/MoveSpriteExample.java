@@ -17,12 +17,12 @@
 package com.badlogic.gdx.tests.examples;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 /** Demonstrates how to let a sprite follow a finger touching the screen.
  * 
@@ -53,8 +53,7 @@ public class MoveSpriteExample extends GdxTest {
 
 	public void render () {
 		// set the clear color and clear the screen.
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(1, 1, 1, 1);
 
 		// draw the sprite
 		batch.begin();

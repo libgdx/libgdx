@@ -18,8 +18,6 @@ package com.badlogic.gdx.maps;
 
 import java.util.Iterator;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** @brief Set of string indexed values representing map elements' properties, allowing to retrieve, modify and add properties to

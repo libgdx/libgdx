@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -29,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class BitmapFontDistanceFieldTest extends GdxTest {
 
@@ -69,7 +68,7 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 		camera = new OrthographicCamera();
 		spriteBatch = new SpriteBatch();
 
-		descriptionFont = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), true);
+		descriptionFont = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), true);
 		descriptionFont.setColor(Color.RED);
 
 		regularTexture = new Texture(Gdx.files.internal("data/verdana39.png"), true);
@@ -77,8 +76,8 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 		regularFont.setColor(COLOR);
 
 		distanceFieldTexture = new Texture(Gdx.files.internal("data/verdana39distancefield.png"), true);
-		distanceFieldFont = new BitmapFont(Gdx.files.internal("data/verdana39distancefield.fnt"), new TextureRegion(
-			distanceFieldTexture), true);
+		distanceFieldFont = new BitmapFont(Gdx.files.internal("data/verdana39distancefield.fnt"),
+			new TextureRegion(distanceFieldTexture), true);
 		distanceFieldFont.setColor(COLOR);
 
 		distanceFieldShader = new DistanceFieldShader();
@@ -87,8 +86,7 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(1, 1, 1, 1);
 
 		spriteBatch.begin();
 
@@ -102,7 +100,8 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 		spriteBatch.end();
 	}
 
-	private int drawFont (BitmapFont font, String description, boolean linearFiltering, boolean useShader, float smoothing, int x) {
+	private int drawFont (BitmapFont font, String description, boolean linearFiltering, boolean useShader, float smoothing,
+		int x) {
 		int y = 10;
 		float maxWidth = 0;
 

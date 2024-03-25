@@ -20,7 +20,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -47,6 +46,7 @@ import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapObjectLoadingTest extends GdxTest {
 
@@ -76,13 +76,13 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		map = new TmxMapLoader().load("data/maps/tiled-objects/test-load-mapobjects.tmx");
 		MapProperties properties = map.getProperties();
 		shapeRenderer = new ShapeRenderer();
-		
+
 		// Test get objects by type (adding circle manually because it doesn't exists in Tiledmap editor)
-		
+
 		loadingStatus = "loading status:\n";
 		MapLayer layer = map.getLayers().get("Objects");
 		MapObjects mapObjects = layer.getObjects();
-		
+
 		mapObjects.add(new CircleMapObject(280, 400, 50));
 
 		loadingStatus += "- MapObject : " + mapObjects.getByType(MapObject.class).size + "\n";
@@ -97,8 +97,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.55f, 0.55f, 0.55f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.55f, 0.55f, 0.55f, 1f);
 		camera.update();
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		batch.setProjectionMatrix(camera.combined);

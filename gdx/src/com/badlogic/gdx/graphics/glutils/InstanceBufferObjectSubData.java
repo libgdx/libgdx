@@ -27,12 +27,10 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-/**
- * Modification of the {@link VertexBufferObjectSubData} class.
- * Sets the glVertexAttribDivisor for every {@link VertexAttribute} automatically.
+/** Modification of the {@link VertexBufferObjectSubData} class. Sets the glVertexAttribDivisor for every {@link VertexAttribute}
+ * automatically.
  *
- * @author mrdlink
- */
+ * @author mrdlink */
 public class InstanceBufferObjectSubData implements InstanceData {
 
 	final VertexAttributes attributes;
@@ -45,24 +43,20 @@ public class InstanceBufferObjectSubData implements InstanceData {
 	boolean isDirty = false;
 	boolean isBound = false;
 
-	/**
-	 * Constructs a new interleaved InstanceBufferObject.
+	/** Constructs a new interleaved InstanceBufferObject.
 	 *
-	 * @param isStatic           whether the vertex data is static.
-	 * @param numInstances       the maximum number of vertices
-	 * @param instanceAttributes the {@link VertexAttributes}.
-	 */
+	 * @param isStatic whether the vertex data is static.
+	 * @param numInstances the maximum number of vertices
+	 * @param instanceAttributes the {@link VertexAttributes}. */
 	public InstanceBufferObjectSubData (boolean isStatic, int numInstances, VertexAttribute... instanceAttributes) {
 		this(isStatic, numInstances, new VertexAttributes(instanceAttributes));
 	}
 
-	/**
-	 * Constructs a new interleaved InstanceBufferObject.
+	/** Constructs a new interleaved InstanceBufferObject.
 	 *
-	 * @param isStatic           whether the vertex data is static.
-	 * @param numInstances       the maximum number of vertices
-	 * @param instanceAttributes the {@link VertexAttribute}s.
-	 */
+	 * @param isStatic whether the vertex data is static.
+	 * @param numInstances the maximum number of vertices
+	 * @param instanceAttributes the {@link VertexAttribute}s. */
 	public InstanceBufferObjectSubData (boolean isStatic, int numInstances, VertexAttributes instanceAttributes) {
 		this.isStatic = isStatic;
 		this.attributes = instanceAttributes;
@@ -72,8 +66,8 @@ public class InstanceBufferObjectSubData implements InstanceData {
 		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
 		buffer = byteBuffer.asFloatBuffer();
 		bufferHandle = createBufferObject();
-		buffer.flip();
-		byteBuffer.flip();
+		((Buffer)buffer).flip();
+		((Buffer)byteBuffer).flip();
 	}
 
 	private int createBufferObject () {
@@ -89,29 +83,33 @@ public class InstanceBufferObjectSubData implements InstanceData {
 		return attributes;
 	}
 
-	/**
-	 * Effectively returns {@link #getNumInstances()}.
+	/** Effectively returns {@link #getNumInstances()}.
 	 *
-	 * @return number of instances in this buffer
-	 */
+	 * @return number of instances in this buffer */
 	@Override
 	public int getNumInstances () {
 		return buffer.limit() * 4 / attributes.vertexSize;
 	}
 
-	/**
-	 * Effectively returns {@link #getNumMaxInstances()}.
+	/** Effectively returns {@link #getNumMaxInstances()}.
 	 *
-	 * @return maximum number of instances in this buffer
-	 */
+	 * @return maximum number of instances in this buffer */
 	@Override
 	public int getNumMaxInstances () {
 		return byteBuffer.capacity() / attributes.vertexSize;
 	}
 
+	/** @deprecated use {@link #getBuffer(boolean)} instead */
 	@Override
+	@Deprecated
 	public FloatBuffer getBuffer () {
 		isDirty = true;
+		return buffer;
+	}
+
+	@Override
+	public FloatBuffer getBuffer (boolean forWriting) {
+		isDirty |= forWriting;
 		return buffer;
 	}
 
@@ -128,14 +126,14 @@ public class InstanceBufferObjectSubData implements InstanceData {
 		isDirty = true;
 		if (isDirect) {
 			BufferUtils.copy(data, byteBuffer, count, offset);
-			buffer.position(0);
-			buffer.limit(count);
+			((Buffer)buffer).position(0);
+			((Buffer)buffer).limit(count);
 		} else {
-			buffer.clear();
+			((Buffer)buffer).clear();
 			buffer.put(data, offset, count);
-			buffer.flip();
-			byteBuffer.position(0);
-			byteBuffer.limit(buffer.limit() << 2);
+			((Buffer)buffer).flip();
+			((Buffer)byteBuffer).position(0);
+			((Buffer)byteBuffer).limit(buffer.limit() << 2);
 		}
 
 		bufferChanged();
@@ -146,14 +144,14 @@ public class InstanceBufferObjectSubData implements InstanceData {
 		isDirty = true;
 		if (isDirect) {
 			BufferUtils.copy(data, byteBuffer, count);
-			buffer.position(0);
-			buffer.limit(count);
+			((Buffer)buffer).position(0);
+			((Buffer)buffer).limit(count);
 		} else {
-			buffer.clear();
+			((Buffer)buffer).clear();
 			buffer.put(data);
-			buffer.flip();
-			byteBuffer.position(0);
-			byteBuffer.limit(buffer.limit() << 2);
+			((Buffer)buffer).flip();
+			((Buffer)byteBuffer).position(0);
+			((Buffer)byteBuffer).limit(buffer.limit() << 2);
 		}
 
 		bufferChanged();
@@ -164,9 +162,9 @@ public class InstanceBufferObjectSubData implements InstanceData {
 		isDirty = true;
 		if (isDirect) {
 			final int pos = byteBuffer.position();
-			byteBuffer.position(targetOffset * 4);
+			((Buffer)byteBuffer).position(targetOffset * 4);
 			BufferUtils.copy(data, sourceOffset, count, byteBuffer);
-			byteBuffer.position(pos);
+			((Buffer)byteBuffer).position(pos);
 		} else
 			throw new GdxRuntimeException("Buffer must be allocated direct."); // Should never happen
 
@@ -178,21 +176,19 @@ public class InstanceBufferObjectSubData implements InstanceData {
 		isDirty = true;
 		if (isDirect) {
 			final int pos = byteBuffer.position();
-			byteBuffer.position(targetOffset * 4);
-			data.position(sourceOffset * 4);
+			((Buffer)byteBuffer).position(targetOffset * 4);
+			((Buffer)data).position(sourceOffset * 4);
 			BufferUtils.copy(data, byteBuffer, count);
-			byteBuffer.position(pos);
+			((Buffer)byteBuffer).position(pos);
 		} else
 			throw new GdxRuntimeException("Buffer must be allocated direct."); // Should never happen
 
 		bufferChanged();
 	}
 
-	/**
-	 * Binds this InstanceBufferObject for rendering via glDrawArraysInstanced or glDrawElementsInstanced
+	/** Binds this InstanceBufferObject for rendering via glDrawArraysInstanced or glDrawElementsInstanced
 	 *
-	 * @param shader the shader
-	 */
+	 * @param shader the shader */
 	@Override
 	public void bind (final ShaderProgram shader) {
 		bind(shader, null);
@@ -204,7 +200,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
 
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
-			byteBuffer.limit(buffer.limit() * 4);
+			((Buffer)byteBuffer).limit(buffer.limit() * 4);
 			gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
 		}
@@ -214,35 +210,33 @@ public class InstanceBufferObjectSubData implements InstanceData {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = shader.getAttributeLocation(attribute.alias);
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				int unitOffset = +attribute.unit;
 				shader.enableVertexAttribute(location + unitOffset);
 
-				shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
+				shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 				Gdx.gl30.glVertexAttribDivisor(location + unitOffset, 1);
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = locations[i];
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				int unitOffset = +attribute.unit;
 				shader.enableVertexAttribute(location + unitOffset);
 
-				shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize, attribute.offset);
+				shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized,
+					attributes.vertexSize, attribute.offset);
 				Gdx.gl30.glVertexAttribDivisor(location + unitOffset, 1);
 			}
 		}
 		isBound = true;
 	}
 
-	/**
-	 * Unbinds this InstanceBufferObject.
+	/** Unbinds this InstanceBufferObject.
 	 *
-	 * @param shader the shader
-	 */
+	 * @param shader the shader */
 	@Override
 	public void unbind (final ShaderProgram shader) {
 		unbind(shader, null);
@@ -256,8 +250,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = shader.getAttributeLocation(attribute.alias);
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				int unitOffset = +attribute.unit;
 				shader.disableVertexAttribute(location + unitOffset);
 			}
@@ -265,8 +258,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = locations[i];
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				int unitOffset = +attribute.unit;
 				shader.enableVertexAttribute(location + unitOffset);
 			}
@@ -275,17 +267,13 @@ public class InstanceBufferObjectSubData implements InstanceData {
 		isBound = false;
 	}
 
-	/**
-	 * Invalidates the InstanceBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss.
-	 */
+	/** Invalidates the InstanceBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
 	public void invalidate () {
 		bufferHandle = createBufferObject();
 		isDirty = true;
 	}
 
-	/**
-	 * Disposes of all resources this InstanceBufferObject uses.
-	 */
+	/** Disposes of all resources this InstanceBufferObject uses. */
 	@Override
 	public void dispose () {
 		GL20 gl = Gdx.gl20;
@@ -294,11 +282,9 @@ public class InstanceBufferObjectSubData implements InstanceData {
 		bufferHandle = 0;
 	}
 
-	/**
-	 * Returns the InstanceBufferObject handle
+	/** Returns the InstanceBufferObject handle
 	 *
-	 * @return the InstanceBufferObject handle
-	 */
+	 * @return the InstanceBufferObject handle */
 	public int getBufferHandle () {
 		return bufferHandle;
 	}

@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests.lwjgl3;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -11,7 +12,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
@@ -22,32 +22,34 @@ import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MultiWindowTest {
 	static Texture sharedTexture;
 	static SpriteBatch sharedSpriteBatch;
-	
+
 	public static class MainWindow extends ApplicationAdapter {
-		Class[] childWindowClasses = { NoncontinuousRenderingTest.class, ShaderCollectionTest.class, Basic3DSceneTest.class, UITest.class };
+		Class[] childWindowClasses = {NoncontinuousRenderingTest.class, ShaderCollectionTest.class, Basic3DSceneTest.class,
+			UITest.class};
 		Lwjgl3Window latestWindow;
 		int index;
-		
+
 		@Override
 		public void create () {
+			System.out.println(Gdx.graphics.getGLVersion().getRendererString());
 			sharedSpriteBatch = new SpriteBatch();
 			sharedTexture = new Texture("data/badlogic.jpg");
 		}
 
-		@Override		
+		@Override
 		public void render () {
-			Gdx.gl.glClearColor(1, 0, 0, 1);
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			ScreenUtils.clear(1, 0, 0, 1);
 			sharedSpriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			sharedSpriteBatch.begin();
 			sharedSpriteBatch.draw(sharedTexture, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - 1);
 			sharedSpriteBatch.end();
-			
-			if(Gdx.input.justTouched()) {				
+
+			if (Gdx.input.justTouched()) {
 				Lwjgl3Application app = (Lwjgl3Application)Gdx.app;
 				Lwjgl3WindowConfiguration config = new Lwjgl3WindowConfiguration();
 				DisplayMode mode = Gdx.graphics.getDisplayMode();
@@ -56,7 +58,7 @@ public class MultiWindowTest {
 				config.useVsync(false);
 				config.setWindowListener(new Lwjgl3WindowAdapter() {
 					@Override
-					public void created(Lwjgl3Window window) {
+					public void created (Lwjgl3Window window) {
 						latestWindow = window;
 					}
 				});
@@ -65,7 +67,7 @@ public class MultiWindowTest {
 				app.newWindow(listener, config);
 			}
 
-			if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && latestWindow != null){
+			if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && latestWindow != null) {
 				latestWindow.setTitle("Retitled window");
 				int size = 48;
 				Pixmap icon = new Pixmap(size, size, Pixmap.Format.RGBA8888);
@@ -81,19 +83,20 @@ public class MultiWindowTest {
 			}
 		}
 
-		public ApplicationListener createChildWindowClass(Class clazz) {
+		public ApplicationListener createChildWindowClass (Class clazz) {
 			try {
-				return (ApplicationListener) clazz.newInstance();
-			} catch(Throwable t) {
+				return (ApplicationListener)clazz.newInstance();
+			} catch (Throwable t) {
 				throw new GdxRuntimeException("Couldn't instantiate app listener", t);
 			}
 		}
 	}
-	
-	public static void main(String[] argv) {
+
+	public static void main (String[] argv) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("Multi-window test");
 		config.useVsync(true);
+		config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 0, 0);
 		new Lwjgl3Application(new MainWindow(), config);
 	}
 }

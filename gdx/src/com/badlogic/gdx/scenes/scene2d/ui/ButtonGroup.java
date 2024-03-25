@@ -100,13 +100,16 @@ public class ButtonGroup<T extends Button> {
 		} else {
 			// Keep button unchecked to enforce maxCheckCount.
 			if (maxCheckCount != -1 && checkedButtons.size >= maxCheckCount) {
-				if (uncheckLast) {
+				if (!uncheckLast) return false;
+				for (int tries = 0;;) { // Try multiple times to allow the button states to settle.
 					int old = minCheckCount;
 					minCheckCount = 0;
-					lastChecked.setChecked(false);
+					lastChecked.setChecked(false); // May have listeners that change button states.
 					minCheckCount = old;
-				} else
-					return false;
+					if (button.isChecked == newState) return false;
+					if (checkedButtons.size < maxCheckCount) break;
+					if (tries++ > 10) return false; // Unable to uncheck another button.
+				}
 			}
 			checkedButtons.add(button);
 			lastChecked = button;
@@ -127,8 +130,7 @@ public class ButtonGroup<T extends Button> {
 	}
 
 	/** @return The first checked button, or null. */
-	@Null
-	public T getChecked () {
+	public @Null T getChecked () {
 		if (checkedButtons.size > 0) return checkedButtons.get(0);
 		return null;
 	}

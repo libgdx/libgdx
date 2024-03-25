@@ -327,7 +327,8 @@ b2ContactFilter defaultFilter;
 		Array<Fixture> fixtureList = body.getFixtureList();
 		while(fixtureList.size > 0) {
 			Fixture fixtureToDelete = fixtureList.removeIndex(0);
- 			this.fixtures.remove(fixtureToDelete.addr).setUserData(null);
+			fixtureToDelete.setUserData(null);
+ 			this.fixtures.remove(fixtureToDelete.addr);
  			freeFixtures.free(fixtureToDelete);
  		}
 		
@@ -983,25 +984,33 @@ b2ContactFilter defaultFilter;
 	private final ContactImpulse impulse = new ContactImpulse(this, 0);
 
 	private void beginContact (long contactAddr) {
-		contact.addr = contactAddr;
-		if (contactListener != null) contactListener.beginContact(contact);
+		if (contactListener != null) {
+			contact.addr = contactAddr;
+			contactListener.beginContact(contact);
+		}
 	}
 
 	private void endContact (long contactAddr) {
-		contact.addr = contactAddr;
-		if (contactListener != null) contactListener.endContact(contact);
+		if (contactListener != null) {
+			contact.addr = contactAddr;
+			contactListener.endContact(contact);
+		}
 	}
 
 	private void preSolve (long contactAddr, long manifoldAddr) {
-		contact.addr = contactAddr;
-		manifold.addr = manifoldAddr;
-		if (contactListener != null) contactListener.preSolve(contact, manifold);
+		if (contactListener != null) {
+			contact.addr = contactAddr;
+			manifold.addr = manifoldAddr;
+			contactListener.preSolve(contact, manifold);
+		}
 	}
 
 	private void postSolve (long contactAddr, long impulseAddr) {
-		contact.addr = contactAddr;
-		impulse.addr = impulseAddr;
-		if (contactListener != null) contactListener.postSolve(contact, impulse);
+		if (contactListener != null) {
+			contact.addr = contactAddr;
+			impulse.addr = impulseAddr;
+			contactListener.postSolve(contact, impulse);
+		}
 	}
 
 	private boolean reportFixture (long addr) {

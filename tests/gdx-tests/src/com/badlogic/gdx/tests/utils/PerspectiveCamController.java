@@ -26,9 +26,9 @@ import com.badlogic.gdx.math.Vector3;
 
 public class PerspectiveCamController extends InputAdapter {
 	private final static Vector3 tmpV = new Vector3();
-	
+
 	public PerspectiveCamera cam;
-	
+
 	enum TransformMode {
 		Rotate, Translate, Zoom, None
 	}
@@ -102,8 +102,8 @@ public class PerspectiveCamController extends InputAdapter {
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
-		cam.fieldOfView -= -amount * Gdx.graphics.getDeltaTime() * 100;
+	public boolean scrolled (float amountX, float amountY) {
+		cam.fieldOfView -= -amountY * Gdx.graphics.getDeltaTime() * 100;
 		cam.update();
 		return true;
 	}

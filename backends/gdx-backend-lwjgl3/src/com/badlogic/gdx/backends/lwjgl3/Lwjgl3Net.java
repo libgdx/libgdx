@@ -17,10 +17,8 @@
 package com.badlogic.gdx.backends.lwjgl3;
 
 import java.awt.Desktop;
-import java.io.IOException;
 import java.net.URI;
 
-import com.apple.eio.FileManager;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.NetJavaServerSocketImpl;
@@ -37,7 +35,7 @@ public class Lwjgl3Net implements Net {
 
 	NetJavaImpl netJavaImpl;
 
-	public Lwjgl3Net(Lwjgl3ApplicationConfiguration configuration) {
+	public Lwjgl3Net (Lwjgl3ApplicationConfiguration configuration) {
 		netJavaImpl = new NetJavaImpl(configuration.maxNetThreads);
 	}
 
@@ -45,12 +43,17 @@ public class Lwjgl3Net implements Net {
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener) {
 		netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
 	}
-	
+
 	@Override
 	public void cancelHttpRequest (HttpRequest httpRequest) {
 		netJavaImpl.cancelHttpRequest(httpRequest);
 	}
-	
+
+	@Override
+	public boolean isHttpRequestPending (HttpRequest httpRequest) {
+		return netJavaImpl.isHttpRequestPending(httpRequest);
+	}
+
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, String ipAddress, int port, ServerSocketHints hints) {
 		return new NetJavaServerSocketImpl(protocol, ipAddress, port, hints);
@@ -67,22 +70,29 @@ public class Lwjgl3Net implements Net {
 	}
 
 	@Override
-	public boolean openURI (String URI) {
-		if(SharedLibraryLoader.isMac) {
+	public boolean openURI (String uri) {
+		if (SharedLibraryLoader.isMac) {
 			try {
-				FileManager.openURL(URI);
+				(new ProcessBuilder("open", (new URI(uri).toString()))).start();
 				return true;
-			} catch (IOException e) {
+			} catch (Throwable t) {
 				return false;
 			}
-		} else {
+		} else if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
 			try {
-				Desktop.getDesktop().browse(new URI(URI));
+				Desktop.getDesktop().browse(new URI(uri));
+				return true;
+			} catch (Throwable t) {
+				return false;
+			}
+		} else if (SharedLibraryLoader.isLinux) {
+			try {
+				(new ProcessBuilder("xdg-open", (new URI(uri).toString()))).start();
 				return true;
 			} catch (Throwable t) {
 				return false;
 			}
 		}
+		return false;
 	}
-
 }

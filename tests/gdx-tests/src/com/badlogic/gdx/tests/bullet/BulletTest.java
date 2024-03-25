@@ -17,62 +17,20 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.FloatCounter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.PerformanceCounter;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** @author xoppa */
-public class BulletTest implements ApplicationListener, InputProcessor, GestureListener {
+public class BulletTest extends InputAdapter implements ApplicationListener, GestureListener {
 	public StringBuilder performance = new StringBuilder();
 	public String instructions = "Tap to shoot\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 	public PerformanceCounter performanceCounter = new PerformanceCounter(this.getClass().getSimpleName());
 	public FloatCounter fpsCounter = new FloatCounter(5);
 	public PerspectiveCamera camera;
-
-	@Override
-	public boolean keyDown (int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped (char character) {
-		return false;
-	}
-
-	@Override
-	public boolean keyUp (int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged (int screenX, int screenY, int pointer) {
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved (int screenX, int screenY) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled (int amount) {
-		return false;
-	}
 
 	@Override
 	public void create () {

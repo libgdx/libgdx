@@ -16,12 +16,10 @@
 
 package com.badlogic.gdx.graphics.g3d.particles.renderers;
 
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.particles.ParallelArray.ObjectChannel;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleChannels;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
-import com.badlogic.gdx.graphics.g3d.particles.batches.ModelInstanceParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -34,9 +32,8 @@ public class ParticleControllerControllerRenderer extends ParticleControllerRend
 	@Override
 	public void init () {
 		controllerChannel = controller.particles.getChannel(ParticleChannels.ParticleController);
-		if (controllerChannel == null)
-			throw new GdxRuntimeException(
-				"ParticleController channel not found, specify an influencer which will allocate it please.");
+		if (controllerChannel == null) throw new GdxRuntimeException(
+			"ParticleController channel not found, specify an influencer which will allocate it please.");
 	}
 
 	@Override

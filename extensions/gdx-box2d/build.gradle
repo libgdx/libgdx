@@ -14,10 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 
-group = "box2d-parent"
 
-subprojects { box2dproject ->
-    dependencies {
-        compileOnly project(":gdx")
-    }
+
+subprojects {
+	dependencies {
+		api project(":gdx")
+	}
 }

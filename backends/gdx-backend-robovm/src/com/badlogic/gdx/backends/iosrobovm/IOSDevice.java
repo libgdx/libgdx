@@ -24,13 +24,15 @@ public class IOSDevice {
 	final String machineString;
 	final int ppi;
 
-	public IOSDevice(String classifier, String machineString, int ppi) {
+	public IOSDevice (String classifier, String machineString, int ppi) {
 		this.classifier = classifier;
 		this.machineString = machineString;
 		this.ppi = ppi;
 	}
 
-	static ObjectMap<String, IOSDevice> populateWithKnownDevices() {
+	/** The devices information can be obtained from https://github.com/lmirosevic/GBDeviceInfo or
+	 * https://gist.github.com/adamawolf/3048717 */
+	static ObjectMap<String, IOSDevice> populateWithKnownDevices () {
 		ObjectMap<String, IOSDevice> deviceMap = new ObjectMap<String, IOSDevice>();
 
 		addDeviceToMap(deviceMap, "IPHONE_2G", "iPhone1,1", 163);
@@ -61,10 +63,14 @@ public class IOSDevice {
 		addDeviceToMap(deviceMap, "IPHONE_8", "iPhone10,4", 326);
 		addDeviceToMap(deviceMap, "IPHONE_8_PLUS", "iPhone10,5", 401);
 		addDeviceToMap(deviceMap, "IPHONE_X", "iPhone10,6", 458);
-		addDeviceToMap(deviceMap, "IPHONE_XR", "iPhone11,8", 326);
 		addDeviceToMap(deviceMap, "IPHONE_XS", "iPhone11,2", 458);
 		addDeviceToMap(deviceMap, "IPHONE_XS_MAX", "iPhone11,4", 458);
 		addDeviceToMap(deviceMap, "IPHONE_XS_MAX_2_NANO_SIM", "iPhone11,6", 458);
+		addDeviceToMap(deviceMap, "IPHONE_XR", "iPhone11,8", 326);
+		addDeviceToMap(deviceMap, "IPHONE_11", "iPhone12,1", 326);
+		addDeviceToMap(deviceMap, "IPHONE_11_PRO", "iPhone12,3", 458);
+		addDeviceToMap(deviceMap, "IPHONE_11_PRO_MAX", "iPhone12,5", 458);
+		addDeviceToMap(deviceMap, "IPHONE_SE_2G", "iPhone12,8", 326);
 
 		addDeviceToMap(deviceMap, "IPOD_TOUCH_1G", "iPod1,1", 163);
 		addDeviceToMap(deviceMap, "IPOD_TOUCH_2G", "iPod2,1", 163);
@@ -72,6 +78,7 @@ public class IOSDevice {
 		addDeviceToMap(deviceMap, "IPOD_TOUCH_4G", "iPod4,1", 326);
 		addDeviceToMap(deviceMap, "IPOD_TOUCH_5G", "iPod5,1", 326);
 		addDeviceToMap(deviceMap, "IPOD_TOUCH_6G", "iPod7,1", 326);
+		addDeviceToMap(deviceMap, "IPOD_TOUCH_7G", "iPod9,1", 326);
 
 		addDeviceToMap(deviceMap, "IPAD", "iPad1,1", 132);
 		addDeviceToMap(deviceMap, "IPAD_3G", "iPad1,2", 132);
@@ -121,14 +128,23 @@ public class IOSDevice {
 		addDeviceToMap(deviceMap, "IPAD_PRO_3_WIFI_6GB", "iPad8,6", 264);
 		addDeviceToMap(deviceMap, "IPAD_PRO_3_WIFI_CELLULAR", "iPad8,7", 264);
 		addDeviceToMap(deviceMap, "IPAD_PRO_3_WIFI_CELLULAR_6GB", "iPad8,8", 264);
+		addDeviceToMap(deviceMap, "IPAD_PRO_11_2G_WIFI", "iPad8,9", 264);
+		addDeviceToMap(deviceMap, "IPAD_PRO_11_2G_WIFI_CELLULAR", "iPad8,10", 264);
+		addDeviceToMap(deviceMap, "IPAD_PRO_12.9_4G_WIFI", "iPad8,11", 264);
+		addDeviceToMap(deviceMap, "IPAD_PRO_12.9_4G_WIFI_CELLULAR", "iPad8,12", 264);
+		addDeviceToMap(deviceMap, "IPAD_MINI_5G_WIFI", "iPad11,1", 326);
+		addDeviceToMap(deviceMap, "IPAD_MINI_5G_WIFI_CELLULAR", "iPad11,2", 326);
+		addDeviceToMap(deviceMap, "IPAD_AIR_3G_WIFI", "iPad11,3", 264);
+		addDeviceToMap(deviceMap, "IPAD_AIR_3G_WIFI_CELLULAR", "iPad11,4", 264);
 
 		addDeviceToMap(deviceMap, "SIMULATOR_32", "i386", 264);
 		addDeviceToMap(deviceMap, "SIMULATOR_64", "x86_64", 264);
+		addDeviceToMap(deviceMap, "SIMULATOR_ARM64", "arm64", 264);
 
 		return deviceMap;
 	}
 
-	static void addDeviceToMap(ObjectMap<String, IOSDevice> deviceMap, String classifier, String machineString, int ppi) {
+	static void addDeviceToMap (ObjectMap<String, IOSDevice> deviceMap, String classifier, String machineString, int ppi) {
 		deviceMap.put(machineString, new IOSDevice(classifier, machineString, ppi));
 	}
 }

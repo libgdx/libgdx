@@ -20,24 +20,48 @@ buildscript {
 	}
 }
 
+def localProperties = new File(rootProject.rootDir, "local.properties")
+def hasAndroidSDKDir = false
+if (localProperties.exists()) {
+	Properties properties = new Properties()
+	localProperties.withInputStream { instr ->
+		properties.load(instr)
+	}
+
+	def sdkDirProp = properties.getProperty('sdk.dir')
+
+	if (sdkDirProp != null) {
+		hasAndroidSDKDir = true;
+	} else {
+		sdkDirProp = properties.getProperty('android.dir')
+		if (sdkDirProp != null) {
+			hasAndroidSDKDir = true;
+		}
+	}
+}
+
+if(!hasAndroidSDKDir && System.getenv("ANDROID_HOME") == null && System.getenv("ANDROID_SDK_ROOT") == null) {
+	logger.warn("==============================================================================================");
+	logger.warn("sdk.dir/ANDROID_HOME/ANDROID_SDK_ROOT are unset, gdx-tests-android will not be properly setup.");
+	logger.warn("==============================================================================================");
+	apply plugin: "java-library"
+	return;
+}
+
 apply plugin: "com.android.application"
 apply from: "obb.gradle"
 
 dependencies {
 	implementation project(":tests:gdx-tests")
-	implementation project(":gdx")
-	implementation project(":extensions:gdx-box2d:gdx-box2d-core")
-	implementation project(":extensions:gdx-bullet")
-	implementation project(":extensions:gdx-controllers:gdx-controllers-android")
-	implementation project(":extensions:gdx-freetype")
 	implementation project(":backends:gdx-backend-android")
-	implementation libraries.android
+	implementation libraries.compileOnly.android
 	implementation "androidx.multidex:multidex:${versions.multiDex}"
 }
 
 android {
+	namespace "com.badlogic.gdx.tests.android"
 	buildToolsVersion versions.androidBuildTools
-	compileSdkVersion versions.androidSdk
+	compileSdkVersion versions.androidCompileSdk
 	sourceSets {
 		main {
 			manifest.srcFile 'AndroidManifest.xml'
@@ -47,16 +71,51 @@ android {
 			res.srcDirs = ['res']
 			assets.srcDirs = ['assets']
 			jniLibs.srcDirs = ['libs']
-		}		
+		}
 	}
 
 	defaultConfig {
 		multiDexEnabled true
-	}
-
-	lintOptions {
-		// Since this is a test apk, it is fine to ignore the missing densities for the icon.
-		disable 'IconMissingDensityFolder'
+		applicationId "com.badlogic.gdx.tests.android"
+		minSdkVersion versions.androidMinSdk
+		targetSdkVersion versions.androidTargetSdk
+		versionCode 1
+		versionName "1.0"
 	}
 }
 
+// called every time gradle gets executed, takes the native dependencies of
+// the natives configuration, and extracts them to the proper libs/ folders
+// so they get packed with the APK.
+tasks.register('copyAndroidNatives') {
+	doFirst {
+		file("libs/armeabi-v7a/").mkdirs();
+		file("libs/arm64-v8a/").mkdirs();
+		file("libs/x86_64/").mkdirs();
+		file("libs/x86/").mkdirs();
+
+		[
+			'arm64-v8a',
+			'armeabi-v7a',
+			'x86_64',
+			'x86'
+		].each { arch ->
+			[
+				project(":gdx"),
+				project(":extensions:gdx-bullet"),
+				project(":extensions:gdx-box2d-parent:gdx-box2d"),
+				project(":extensions:gdx-freetype")
+			].each { p ->
+				copy {
+					from new File(p.projectDir, "libs/${arch}")
+					into "libs/${arch}"
+					include "*.so"
+				}
+			}
+		}
+	}
+}
+
+tasks.matching { it.name.contains("merge") && it.name.contains("JniLibFolders") }.configureEach { packageTask ->
+	packageTask.dependsOn 'copyAndroidNatives'
+}

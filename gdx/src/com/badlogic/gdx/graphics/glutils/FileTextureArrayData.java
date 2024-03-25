@@ -60,7 +60,8 @@ public class FileTextureArrayData implements TextureArrayData {
 				continue;
 			}
 			if (width != data.getWidth() || height != data.getHeight()) {
-				throw new GdxRuntimeException("Error whilst preparing TextureArray: TextureArray Textures must have equal dimensions.");
+				throw new GdxRuntimeException(
+					"Error whilst preparing TextureArray: TextureArray Textures must have equal dimensions.");
 			}
 		}
 		prepared = true;
@@ -68,9 +69,11 @@ public class FileTextureArrayData implements TextureArrayData {
 
 	@Override
 	public void consumeTextureArrayData () {
+		boolean containsCustomData = false;
 		for (int i = 0; i < textureDatas.length; i++) {
 			if (textureDatas[i].getType() == TextureData.TextureDataType.Custom) {
 				textureDatas[i].consumeCustomData(GL30.GL_TEXTURE_2D_ARRAY);
+				containsCustomData = true;
 			} else {
 				TextureData texData = textureDatas[i];
 				Pixmap pixmap = texData.consumePixmap();
@@ -85,9 +88,13 @@ public class FileTextureArrayData implements TextureArrayData {
 					pixmap = temp;
 					disposePixmap = true;
 				}
-				Gdx.gl30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, pixmap.getWidth(), pixmap.getHeight(), 1, pixmap.getGLInternalFormat(), pixmap.getGLType(), pixmap.getPixels());
+				Gdx.gl30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, pixmap.getWidth(), pixmap.getHeight(), 1,
+					pixmap.getGLInternalFormat(), pixmap.getGLType(), pixmap.getPixels());
 				if (disposePixmap) pixmap.dispose();
 			}
+		}
+		if (useMipMaps && !containsCustomData) {
+			Gdx.gl20.glGenerateMipmap(GL30.GL_TEXTURE_2D_ARRAY);
 		}
 	}
 

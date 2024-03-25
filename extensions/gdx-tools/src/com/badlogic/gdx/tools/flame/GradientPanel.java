@@ -15,6 +15,7 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.tools.flame;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
@@ -44,8 +45,8 @@ class GradientPanel extends ParticleValuePanel<GradientColorValue> {
 	JPanel colorPanel;
 	private ColorSlider hueSlider;
 
-	public GradientPanel (FlameMain editor, GradientColorValue value, String name, String description, 
-																boolean hideGradientEditor) {
+	public GradientPanel (FlameMain editor, GradientColorValue value, String name, String description,
+		boolean hideGradientEditor) {
 		super(editor, name, description);
 		setValue(value);
 
@@ -93,8 +94,8 @@ class GradientPanel extends ParticleValuePanel<GradientColorValue> {
 				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 10));
 		}
 		{
-			hueSlider = new ColorSlider(new Color[] {Color.red, Color.yellow, Color.green, Color.cyan, Color.blue, Color.magenta,
-				Color.red}) {
+			hueSlider = new ColorSlider(
+				new Color[] {Color.red, Color.yellow, Color.green, Color.cyan, Color.blue, Color.magenta, Color.red}) {
 				protected void colorPicked () {
 					saturationSlider.setColors(new Color[] {new Color(Color.HSBtoRGB(getPercentage(), 1, 1)), Color.white});
 					updateColor();
@@ -153,8 +154,8 @@ class GradientPanel extends ParticleValuePanel<GradientColorValue> {
 	void updateColor () {
 		Color color = new Color(Color.HSBtoRGB(hueSlider.getPercentage(), 1 - saturationSlider.getPercentage(), 1));
 		lightnessSlider.setColors(new Color[] {color, Color.black});
-		color = new Color(Color.HSBtoRGB(hueSlider.getPercentage(), 1 - saturationSlider.getPercentage(),
-			1 - lightnessSlider.getPercentage()));
+		color = new Color(
+			Color.HSBtoRGB(hueSlider.getPercentage(), 1 - saturationSlider.getPercentage(), 1 - lightnessSlider.getPercentage()));
 		colorPanel.setBackground(color);
 		gradientEditor.setColor(color);
 

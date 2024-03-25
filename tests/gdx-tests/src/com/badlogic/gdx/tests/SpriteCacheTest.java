@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -28,6 +27,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class SpriteCacheTest extends GdxTest implements InputProcessor {
@@ -53,8 +53,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	}
 
 	private void renderNormal () {
-		Gdx.gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.7f, 0.7f, 0.7f, 1);
 
 		float begin = 0;
 		float end = 0;
@@ -82,8 +81,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	}
 
 	private void renderSprites () {
-		Gdx.gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.7f, 0.7f, 0.7f, 1);
 
 		float begin = 0;
 		float end = 0;

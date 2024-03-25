@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,12 +26,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 /** Demonstrates how to do simple z-sorting of sprites
  * @author mzechner */
 public class SortedSpriteTest extends GdxTest {
-	/** Sprite based class that adds a z-coordinate for depth sorting. Note that allt he constructors were auto-generated in Eclipse
-	 * (alt + shift + s, c).
+	/** Sprite based class that adds a z-coordinate for depth sorting. Note that allt he constructors were auto-generated in
+	 * Eclipse (alt + shift + s, c).
 	 * @author mzechner */
 	public class MySprite extends Sprite {
 		public float z;
@@ -115,8 +115,7 @@ public class SortedSpriteTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 
 		// sort the sprites (not necessary if we know
 		// the are already sorted).

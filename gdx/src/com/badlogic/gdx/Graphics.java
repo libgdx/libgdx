@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
+import com.badlogic.gdx.graphics.GL32;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -49,17 +51,17 @@ public interface Graphics {
 	/** Enumeration describing different types of {@link Graphics} implementations.
 	 *
 	 * @author mzechner */
-	public enum GraphicsType {
+	enum GraphicsType {
 		AndroidGL, LWJGL, WebGL, iOSGL, JGLFW, Mock, LWJGL3
 	}
 
 	/** Describe a fullscreen display mode
 	 *
 	 * @author mzechner */
-	public class DisplayMode {
+	class DisplayMode {
 		/** the width in physical pixels **/
 		public final int width;
-		/** the height in physical pixles **/
+		/** the height in physical pixels **/
 		public final int height;
 		/** the refresh rate in Hertz **/
 		public final int refreshRate;
@@ -80,9 +82,8 @@ public interface Graphics {
 
 	/** Describes a monitor
 	 *
-	 * @author badlogic
-	 */
-	public class Monitor {
+	 * @author badlogic */
+	class Monitor {
 		public final int virtualX;
 		public final int virtualY;
 		public final String name;
@@ -95,7 +96,7 @@ public interface Graphics {
 	}
 
 	/** Class describing the bits per pixel, depth buffer precision, stencil precision and number of MSAA samples. */
-	public static class BufferFormat {
+	class BufferFormat {
 		/* number of bits per color channel */
 		public final int r, g, b, a;
 		/* number of bits for depth and stencil buffer */
@@ -127,173 +128,202 @@ public interface Graphics {
 	 * {@link Application} instance to use OpenGL ES 3.0!
 	 *
 	 * @return whether OpenGL ES 3.0 is available */
-	public boolean isGL30Available ();
+	boolean isGL30Available ();
+
+	/** Returns whether OpenGL ES 3.1 is available. If it is you can get an instance of {@link GL31} via {@link #getGL31()} to
+	 * access OpenGL ES 3.1 functionality. Note that this functionality will only be available if you instructed the
+	 * {@link Application} instance to use OpenGL ES 3.1!
+	 *
+	 * @return whether OpenGL ES 3.1 is available */
+	boolean isGL31Available ();
+
+	/** Returns whether OpenGL ES 3.2 is available. If it is you can get an instance of {@link GL32} via {@link #getGL32()} to
+	 * access OpenGL ES 3.2 functionality. Note that this functionality will only be available if you instructed the
+	 * {@link Application} instance to use OpenGL ES 3.2!
+	 *
+	 * @return whether OpenGL ES 3.2 is available */
+	boolean isGL32Available ();
 
 	/** @return the {@link GL20} instance */
-	public GL20 getGL20 ();
+	GL20 getGL20 ();
 
 	/** @return the {@link GL30} instance or null if not supported */
-	public GL30 getGL30 ();
+	GL30 getGL30 ();
+
+	/** @return the {@link GL31} instance or null if not supported */
+	GL31 getGL31 ();
+
+	/** @return the {@link GL32} instance or null if not supported */
+	GL32 getGL32 ();
 
 	/** Set the GL20 instance **/
-	public void setGL20 (GL20 gl20);
+	void setGL20 (GL20 gl20);
 
 	/** Set the GL30 instance **/
-	public void setGL30 (GL30 gl30);
+	void setGL30 (GL30 gl30);
+
+	/** Set the GL31 instance **/
+	void setGL31 (GL31 gl31);
+
+	/** Set the GL32 instance **/
+	void setGL32 (GL32 gl32);
 
 	/** @return the width of the client area in logical pixels. */
-	public int getWidth ();
+	int getWidth ();
 
 	/** @return the height of the client area in logical pixels */
-	public int getHeight ();
+	int getHeight ();
 
 	/** @return the width of the framebuffer in physical pixels */
-	public int getBackBufferWidth ();
+	int getBackBufferWidth ();
 
 	/** @return the height of the framebuffer in physical pixels */
-	public int getBackBufferHeight ();
+	int getBackBufferHeight ();
 
-	/**
-	 * @return the inset from the left which avoids display cutouts in pixels
-	 */
-	int getSafeInsetLeft();
+	/** @return amount of pixels per logical pixel (point) */
+	float getBackBufferScale ();
 
-	/**
-	 * @return the inset from the top which avoids display cutouts in pixels
-	 */
-	int getSafeInsetTop();
+	/** @return the inset from the left which avoids display cutouts in logical pixels */
+	int getSafeInsetLeft ();
 
-	/**
-	 * @return the inset from the bottom which avoids display cutouts or floating gesture bars, in pixels
-	 */
-	int getSafeInsetBottom();
+	/** @return the inset from the top which avoids display cutouts in logical pixels */
+	int getSafeInsetTop ();
 
-	/**
-	 * @return the inset from the right which avoids display cutouts in pixels
-	 */
-	int getSafeInsetRight();
+	/** @return the inset from the bottom which avoids display cutouts or floating gesture bars, in logical pixels */
+	int getSafeInsetBottom ();
+
+	/** @return the inset from the right which avoids display cutouts in logical pixels */
+	int getSafeInsetRight ();
 
 	/** Returns the id of the current frame. The general contract of this method is that the id is incremented only when the
 	 * application is in the running state right before calling the {@link ApplicationListener#render()} method. Also, the id of
 	 * the first frame is 0; the id of subsequent frames is guaranteed to take increasing values for 2<sup>63</sup>-1 rendering
 	 * cycles.
 	 * @return the id of the current frame */
-	public long getFrameId ();
+	long getFrameId ();
 
-	/** @return the time span between the current frame and the last frame in seconds. Might be smoothed over n frames. */
-	public float getDeltaTime ();
+	/** @return the time span between the current frame and the last frame in seconds. */
+	float getDeltaTime ();
 
-	/** @return the time span between the current frame and the last frame in seconds, without smoothing **/
-	public float getRawDeltaTime ();
+	/** @return the time span between the current frame and the last frame in seconds, without smoothing
+	 * @deprecated use {@link #getDeltaTime()} instead. */
+	@Deprecated
+	float getRawDeltaTime ();
 
 	/** @return the average number of frames per second */
-	public int getFramesPerSecond ();
+	int getFramesPerSecond ();
 
 	/** @return the {@link GraphicsType} of this Graphics instance */
-	public GraphicsType getType ();
+	GraphicsType getType ();
 
 	/** @return the {@link GLVersion} of this Graphics instance */
-	public GLVersion getGLVersion ();
+	GLVersion getGLVersion ();
 
 	/** @return the pixels per inch on the x-axis */
-	public float getPpiX ();
+	float getPpiX ();
 
 	/** @return the pixels per inch on the y-axis */
-	public float getPpiY ();
+	float getPpiY ();
 
 	/** @return the pixels per centimeter on the x-axis */
-	public float getPpcX ();
+	float getPpcX ();
 
 	/** @return the pixels per centimeter on the y-axis. */
-	public float getPpcY ();
+	float getPpcY ();
 
 	/** This is a scaling factor for the Density Independent Pixel unit, following the same conventions as
 	 * android.util.DisplayMetrics#density, where one DIP is one pixel on an approximately 160 dpi screen. Thus on a 160dpi screen
 	 * this density value will be 1; on a 120 dpi screen it would be .75; etc.
 	 *
-	 * @return the logical density of the Display. */
-	public float getDensity ();
+	 * If the density could not be determined, this returns a default value of 1.
+	 *
+	 * Depending on the underlying platform implementation this might be a relatively expensive operation. Therefore it should not
+	 * be called continously on each frame.
+	 *
+	 * @return the Density Independent Pixel factor of the display. */
+	float getDensity ();
 
 	/** Whether the given backend supports a display mode change via calling {@link Graphics#setFullscreenMode(DisplayMode)}
 	 *
 	 * @return whether display mode changes are supported or not. */
-	public boolean supportsDisplayModeChange ();
+	boolean supportsDisplayModeChange ();
 
 	/** @return the primary monitor **/
-	public Monitor getPrimaryMonitor();
+	Monitor getPrimaryMonitor ();
 
 	/** @return the monitor the application's window is located on */
-	public Monitor getMonitor();
+	Monitor getMonitor ();
 
 	/** @return the currently connected {@link Monitor}s */
-	public Monitor[] getMonitors();
+	Monitor[] getMonitors ();
 
 	/** @return the supported fullscreen {@link DisplayMode}(s) of the monitor the window is on */
-	public DisplayMode[] getDisplayModes ();
+	DisplayMode[] getDisplayModes ();
 
 	/** @return the supported fullscreen {@link DisplayMode}s of the given {@link Monitor} */
-	public DisplayMode[] getDisplayModes(Monitor monitor);
+	DisplayMode[] getDisplayModes (Monitor monitor);
 
 	/** @return the current {@link DisplayMode} of the monitor the window is on. */
-	public DisplayMode getDisplayMode ();
+	DisplayMode getDisplayMode ();
 
 	/** @return the current {@link DisplayMode} of the given {@link Monitor} */
-	public DisplayMode getDisplayMode (Monitor monitor);
+	DisplayMode getDisplayMode (Monitor monitor);
 
 	/** Sets the window to full-screen mode.
 	 *
 	 * @param displayMode the display mode.
 	 * @return whether the operation succeeded. */
-	public boolean setFullscreenMode (DisplayMode displayMode);
+	boolean setFullscreenMode (DisplayMode displayMode);
 
 	/** Sets the window to windowed mode.
 	 *
 	 * @param width the width in pixels
 	 * @param height the height in pixels
-	 * @return whether the operation succeeded*/
-	public boolean setWindowedMode (int width, int height);
+	 * @return whether the operation succeeded */
+	boolean setWindowedMode (int width, int height);
 
 	/** Sets the title of the window. Ignored on Android.
 	 *
 	 * @param title the title. */
-	public void setTitle (String title);
+	void setTitle (String title);
 
-	/** Sets the window decoration as enabled or disabled. On Android, this will enable/disable
-	 *  the menu bar.
+	/** Sets the window decoration as enabled or disabled. On Android, this will enable/disable the menu bar.
 	 *
-	 *  Note that immediate behavior of this method may vary depending on the implementation. It
-	 *  may be necessary for the window to be recreated in order for the changes to take effect.
-	 *  Consult the documentation for the backend in use for more information.
+	 * Note that immediate behavior of this method may vary depending on the implementation. It may be necessary for the window to
+	 * be recreated in order for the changes to take effect. Consult the documentation for the backend in use for more information.
 	 *
-	 *  Supported on all GDX desktop backends and on Android (to disable the menu bar).
+	 * Supported on all GDX desktop backends and on Android (to disable the menu bar).
 	 *
-	 * @param undecorated true if the window border or status bar should be hidden. false otherwise.
-	 */
-	public void setUndecorated (boolean undecorated);
+	 * @param undecorated true if the window border or status bar should be hidden. false otherwise. */
+	void setUndecorated (boolean undecorated);
 
 	/** Sets whether or not the window should be resizable. Ignored on Android.
 	 *
-	 *  Note that immediate behavior of this method may vary depending on the implementation. It
-	 *  may be necessary for the window to be recreated in order for the changes to take effect.
-	 *  Consult the documentation for the backend in use for more information.
+	 * Note that immediate behavior of this method may vary depending on the implementation. It may be necessary for the window to
+	 * be recreated in order for the changes to take effect. Consult the documentation for the backend in use for more information.
 	 *
-	 *  Supported on all GDX desktop backends.
+	 * Supported on all GDX desktop backends.
 	 *
-	 * @param resizable
-	 */
-	public void setResizable (boolean resizable);
+	 * @param resizable */
+	void setResizable (boolean resizable);
 
 	/** Enable/Disable vsynching. This is a best-effort attempt which might not work on all platforms.
 	 *
 	 * @param vsync vsync enabled or not. */
-	public void setVSync (boolean vsync);
+	void setVSync (boolean vsync);
+
+	/** Sets the target framerate for the application when using continuous rendering. Might not work on all platforms. Is not
+	 * generally advised to be used on mobile platforms.
+	 *
+	 * @param fps the targeted fps; default differs by platform */
+	public void setForegroundFPS (int fps);
 
 	/** @return the format of the color, depth and stencil buffer in a {@link BufferFormat} instance */
-	public BufferFormat getBufferFormat ();
+	BufferFormat getBufferFormat ();
 
 	/** @param extension the extension name
 	 * @return whether the extension is supported */
-	public boolean supportsExtension (String extension);
+	boolean supportsExtension (String extension);
 
 	/** Sets whether to render continuously. In case rendering is performed non-continuously, the following events will trigger a
 	 * redraw:
@@ -301,46 +331,45 @@ public interface Graphics {
 	 * <ul>
 	 * <li>A call to {@link #requestRendering()}</li>
 	 * <li>Input events from the touch screen/mouse or keyboard</li>
-	 * <li>A {@link Runnable} is posted to the rendering thread via {@link Application#postRunnable(Runnable)}. In the case
-	 * of a multi-window app, all windows will request rendering if a runnable is posted to the application. To avoid this, 
-	 * post a runnable to the window instead. </li>
+	 * <li>A {@link Runnable} is posted to the rendering thread via {@link Application#postRunnable(Runnable)}. In the case of a
+	 * multi-window app, all windows will request rendering if a runnable is posted to the application. To avoid this, post a
+	 * runnable to the window instead.</li>
 	 * </ul>
 	 *
 	 * Life-cycle events will also be reported as usual, see {@link ApplicationListener}. This method can be called from any
 	 * thread.
 	 *
 	 * @param isContinuous whether the rendering should be continuous or not. */
-	public void setContinuousRendering (boolean isContinuous);
+	void setContinuousRendering (boolean isContinuous);
 
 	/** @return whether rendering is continuous. */
-	public boolean isContinuousRendering ();
+	boolean isContinuousRendering ();
 
 	/** Requests a new frame to be rendered if the rendering mode is non-continuous. This method can be called from any thread. */
-	public void requestRendering ();
+	void requestRendering ();
 
 	/** Whether the app is fullscreen or not */
-	public boolean isFullscreen ();
+	boolean isFullscreen ();
 
 	/** Create a new cursor represented by the {@link com.badlogic.gdx.graphics.Pixmap}. The Pixmap must be in RGBA8888 format,
-	 * width & height must be powers-of-two greater than zero (not necessarily equal) and of a certain minimum size (32x32 is a safe bet),
-	 * and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only). This function returns a Cursor object that can be set as the 
-	 * system cursor by calling {@link #setCursor(Cursor)} .
+	 * width & height must be powers-of-two greater than zero (not necessarily equal) and of a certain minimum size (32x32 is a
+	 * safe bet), and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only). This function returns a Cursor object that
+	 * can be set as the system cursor by calling {@link #setCursor(Cursor)} .
 	 *
 	 * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}
 	 * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)
 	 * @param yHotspot the y location of the hotspot pixel within the cursor image (origin top-left corner)
 	 * @return a cursor object that can be used by calling {@link #setCursor(Cursor)} or null if not supported */
-	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot);
+	Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot);
 
 	/** Only viable on the lwjgl-backend and on the gwt-backend. Browsers that support cursor:url() and support the png format (the
 	 * pixmap is converted to a data-url of type image/png) should also support custom cursors. Will set the mouse cursor image to
-	 * the image represented by the {@link com.badlogic.gdx.graphics.Cursor}. It is recommended to call this function in the main render thread, and maximum one time per frame.
+	 * the image represented by the {@link com.badlogic.gdx.graphics.Cursor}. It is recommended to call this function in the main
+	 * render thread, and maximum one time per frame.
 	 *
 	 * @param cursor the mouse cursor as a {@link com.badlogic.gdx.graphics.Cursor} */
-	public void setCursor (Cursor cursor);
+	void setCursor (Cursor cursor);
 
-	/**
-	 * Sets one of the predefined {@link SystemCursor}s
-	 */
-	public void setSystemCursor(SystemCursor systemCursor);
+	/** Sets one of the predefined {@link SystemCursor}s */
+	void setSystemCursor (SystemCursor systemCursor);
 }

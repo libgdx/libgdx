@@ -86,8 +86,8 @@ public class ScissorStack {
 	}
 
 	/** @return null if there are no scissors. */
-    @Null
-    public static Rectangle peekScissors () {
+	@Null
+	public static Rectangle peekScissors () {
 		if (scissors.size == 0) return null;
 		return scissors.peek();
 	}
@@ -109,8 +109,7 @@ public class ScissorStack {
 
 	/** Calculates a scissor rectangle using 0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight() as the viewport.
 	 * @see #calculateScissors(Camera, float, float, float, float, Matrix4, Rectangle, Rectangle) */
-	public static void calculateScissors (Camera camera, Matrix4 batchTransform,
-		Rectangle area, Rectangle scissor) {
+	public static void calculateScissors (Camera camera, Matrix4 batchTransform, Rectangle area, Rectangle scissor) {
 		calculateScissors(camera, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), batchTransform, area, scissor);
 	}
 

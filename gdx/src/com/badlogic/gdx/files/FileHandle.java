@@ -44,7 +44,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
-/** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
+/** Represents a file or directory on the filesystem, classpath, Android app storage, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
  * 
  * Because some of the file types are backed by composite files and may be compressed (for example, if they are in an Android .apk
@@ -263,20 +263,23 @@ public class FileHandle {
 	}
 
 	/** Attempts to memory map this file in READ_ONLY mode. Android files must not be compressed.
-	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory
+	 *            mapping fails, or is a {@link FileType#Classpath} file. */
 	public ByteBuffer map () {
 		return map(MapMode.READ_ONLY);
 	}
 
 	/** Attempts to memory map this file. Android files must not be compressed.
-	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory mapping fails, or is a {@link FileType#Classpath} file. */
+	 * @throws GdxRuntimeException if this file handle represents a directory, doesn't exist, or could not be read, or memory
+	 *            mapping fails, or is a {@link FileType#Classpath} file. */
 	public ByteBuffer map (FileChannel.MapMode mode) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot map a classpath file: " + this);
 		RandomAccessFile raf = null;
 		try {
-			raf = new RandomAccessFile(file, mode == MapMode.READ_ONLY ? "r" : "rw");
+			File f = file();
+			raf = new RandomAccessFile(f, mode == MapMode.READ_ONLY ? "r" : "rw");
 			FileChannel fileChannel = raf.getChannel();
-			ByteBuffer map = fileChannel.map(mode, 0, file.length());
+			ByteBuffer map = fileChannel.map(mode, 0, f.length());
 			map.order(ByteOrder.nativeOrder());
 			return map;
 		} catch (Exception ex) {

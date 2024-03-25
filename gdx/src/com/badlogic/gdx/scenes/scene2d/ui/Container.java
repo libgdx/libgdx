@@ -18,14 +18,14 @@ import com.badlogic.gdx.utils.Null;
  * {@link Table} with a single cell but is more lightweight.
  * @author Nathan Sweet */
 public class Container<T extends Actor> extends WidgetGroup {
-	@Null private T actor;
+	private @Null T actor;
 	private Value minWidth = Value.minWidth, minHeight = Value.minHeight;
 	private Value prefWidth = Value.prefWidth, prefHeight = Value.prefHeight;
 	private Value maxWidth = Value.zero, maxHeight = Value.zero;
 	private Value padTop = Value.zero, padLeft = Value.zero, padBottom = Value.zero, padRight = Value.zero;
 	private float fillX, fillY;
 	private int align;
-	@Null private Drawable background;
+	private @Null Drawable background;
 	private boolean clip;
 	private boolean round = true;
 
@@ -100,8 +100,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return this;
 	}
 
-	@Null
-	public Drawable getBackground () {
+	public @Null Drawable getBackground () {
 		return background;
 	}
 
@@ -144,10 +143,10 @@ public class Container<T extends Actor> extends WidgetGroup {
 			y += (containerHeight - height) / 2;
 
 		if (round) {
-			x = Math.round(x);
-			y = Math.round(y);
-			width = Math.round(width);
-			height = Math.round(height);
+			x = (float)Math.floor(x);
+			y = (float)Math.floor(y);
+			width = (float)Math.ceil(width);
+			height = (float)Math.ceil(height);
 		}
 
 		actor.setBounds(x, y, width, height);
@@ -169,8 +168,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	}
 
 	/** @return May be null. */
-	@Null
-	public T getActor () {
+	public @Null T getActor () {
 		return actor;
 	}
 
@@ -717,6 +715,17 @@ public class Container<T extends Actor> extends WidgetGroup {
 		this.round = round;
 	}
 
+	/** Sets clip to true. */
+	public Container<T> clip () {
+		setClip(true);
+		return this;
+	}
+
+	public Container<T> clip (boolean enabled) {
+		setClip(enabled);
+		return this;
+	}
+
 	/** Causes the contents to be clipped if they exceed the container bounds. Enabling clipping will set
 	 * {@link #setTransform(boolean)} to true. */
 	public void setClip (boolean enabled) {
@@ -729,8 +738,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return clip;
 	}
 
-	@Null
-	public Actor hit (float x, float y, boolean touchable) {
+	public @Null Actor hit (float x, float y, boolean touchable) {
 		if (clip) {
 			if (touchable && getTouchable() == Touchable.disabled) return null;
 			if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -49,19 +48,19 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 
 	private FloatBuffer toFloatBuffer (float v[], int offset, int count) {
 		ensureBufferCapacity(count << 2);
-		floatBuffer.clear();
-		floatBuffer.limit(count);
-		floatBuffer.put(v,  offset, count);
-		floatBuffer.position(0);
+		((Buffer)floatBuffer).clear();
+		((Buffer)floatBuffer).limit(count);
+		floatBuffer.put(v, offset, count);
+		((Buffer)floatBuffer).position(0);
 		return floatBuffer;
 	}
 
 	private IntBuffer toIntBuffer (int v[], int offset, int count) {
 		ensureBufferCapacity(count << 2);
-		intBuffer.clear();
-		intBuffer.limit(count);
+		((Buffer)intBuffer).clear();
+		((Buffer)intBuffer).limit(count);
 		intBuffer.put(v, offset, count);
-		intBuffer.position(0);
+		((Buffer)intBuffer).position(0);
 		return intBuffer;
 	}
 
@@ -277,13 +276,28 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
-		if (indices instanceof ShortBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT)
-			GL11.glDrawElements(mode, (ShortBuffer)indices);
-		else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT)
-			GL11.glDrawElements(mode, ((ByteBuffer)indices).asShortBuffer());
-		else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_BYTE)
-			GL11.glDrawElements(mode, (ByteBuffer)indices);
-		else
+		if (indices instanceof ShortBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT) {
+			ShortBuffer sb = (ShortBuffer)indices;
+			int position = sb.position();
+			int oldLimit = sb.limit();
+			sb.limit(position + count);
+			GL11.glDrawElements(mode, sb);
+			sb.limit(oldLimit);
+		} else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT) {
+			ShortBuffer sb = ((ByteBuffer)indices).asShortBuffer();
+			int position = sb.position();
+			int oldLimit = sb.limit();
+			sb.limit(position + count);
+			GL11.glDrawElements(mode, sb);
+			sb.limit(oldLimit);
+		} else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_BYTE) {
+			ByteBuffer bb = (ByteBuffer)indices;
+			int position = bb.position();
+			int oldLimit = bb.limit();
+			bb.limit(position + count);
+			GL11.glDrawElements(mode, bb);
+			bb.limit(oldLimit);
+		} else
 			throw new GdxRuntimeException("Can't use " + indices.getClass().getName()
 				+ " with this method. Use ShortBuffer or ByteBuffer instead. Blame LWJGL");
 	}
@@ -352,20 +366,12 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 		EXTFramebufferObject.glGenerateMipmapEXT(target);
 	}
 
-	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
-		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);
-		String name = GL20.glGetActiveAttrib(program, index, 256, size, typeTmp);
-		size.put(typeTmp.get(0));
-		if (type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(1));
-		return name;
+	public String glGetActiveAttrib (int program, int index, IntBuffer size, IntBuffer type) {
+		return GL20.glGetActiveAttrib(program, index, 256, size, type);
 	}
 
-	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
-		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);
-		String name = GL20.glGetActiveUniform(program, index, 256, size, typeTmp);
-		size.put(typeTmp.get(0));
-		if (type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(1));
-		return name;
+	public String glGetActiveUniform (int program, int index, IntBuffer size, IntBuffer type) {
+		return GL20.glGetActiveUniform(program, index, 256, size, type);
 	}
 
 	public void glGetAttachedShaders (int program, int maxcount, Buffer count, IntBuffer shaders) {
@@ -805,7 +811,7 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 
 	public void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer buffer) {
 		if (buffer instanceof ByteBuffer) {
-			if (type == GL_BYTE)				
+			if (type == GL_BYTE)
 				GL20.glVertexAttribPointer(indx, size, type, normalized, stride, (ByteBuffer)buffer);
 			else if (type == GL_UNSIGNED_BYTE)
 				GL20.glVertexAttribPointer(indx, size, type, normalized, stride, (ByteBuffer)buffer);
@@ -816,21 +822,17 @@ class Lwjgl3GL20 implements com.badlogic.gdx.graphics.GL20 {
 			else if (type == GL_FLOAT)
 				GL20.glVertexAttribPointer(indx, size, type, normalized, stride, ((ByteBuffer)buffer).asFloatBuffer());
 			else
-				throw new GdxRuntimeException(
-					"Can't use "
-						+ buffer.getClass().getName()
-						+ " with type "
-						+ type
-						+ " with this method. Use ByteBuffer and one of GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT or GL_FLOAT for type. Blame LWJGL");
+				throw new GdxRuntimeException("Can't use " + buffer.getClass().getName() + " with type " + type
+					+ " with this method. Use ByteBuffer and one of GL_BYTE, GL_UNSIGNED_BYTE, GL_SHORT, GL_UNSIGNED_SHORT or GL_FLOAT for type. Blame LWJGL");
 		} else if (buffer instanceof FloatBuffer) {
 			if (type == GL_FLOAT)
 				GL20.glVertexAttribPointer(indx, size, type, normalized, stride, (FloatBuffer)buffer);
 			else
-				throw new GdxRuntimeException("Can't use " + buffer.getClass().getName() + " with type " + type
-					+ " with this method.");
+				throw new GdxRuntimeException(
+					"Can't use " + buffer.getClass().getName() + " with type " + type + " with this method.");
 		} else
-			throw new GdxRuntimeException("Can't use " + buffer.getClass().getName()
-				+ " with this method. Use ByteBuffer instead. Blame LWJGL");
+			throw new GdxRuntimeException(
+				"Can't use " + buffer.getClass().getName() + " with this method. Use ByteBuffer instead. Blame LWJGL");
 	}
 
 	public void glViewport (int x, int y, int width, int height) {

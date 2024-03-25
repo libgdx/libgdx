@@ -18,8 +18,10 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
 import java.awt.Toolkit;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
+import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import org.lwjgl.LWJGLException;
@@ -31,10 +33,11 @@ import org.lwjgl.opengl.PixelFormat;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
+import com.badlogic.gdx.graphics.GL32;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -44,7 +47,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
-public class LwjglGraphics implements Graphics {
+public class LwjglGraphics extends AbstractGraphics {
 
 	/** The suppored OpenGL extensions */
 	static Array<String> extensions;
@@ -53,9 +56,10 @@ public class LwjglGraphics implements Graphics {
 	GL20 gl20;
 	GL30 gl30;
 	long frameId = -1;
-	float deltaTime = 0;
-	long frameStart = 0;
-	int frames = 0;
+	float deltaTime;
+	boolean resetDeltaTime;
+	long frameStart;
+	int frames;
 	int fps;
 	long lastTime = System.nanoTime();
 	Canvas canvas;
@@ -65,6 +69,7 @@ public class LwjglGraphics implements Graphics {
 	BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 8, 16, 8, 0, false);
 	volatile boolean isContinuous = true;
 	volatile boolean requestRendering = false;
+	volatile boolean forceDisplayModeChange = false;
 	boolean softwareMode;
 	boolean usingGL30;
 
@@ -80,7 +85,7 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	LwjglGraphics (Canvas canvas, LwjglApplicationConfiguration config) {
-		this.config = config;
+		this(config);
 		this.canvas = canvas;
 	}
 
@@ -116,8 +121,10 @@ public class LwjglGraphics implements Graphics {
 		return deltaTime;
 	}
 
-	public float getRawDeltaTime () {
-		return deltaTime;
+	/** The delta time for the next frame will be 0. This can be useful if the render thread was blocked for some time to prevent
+	 * game state or animations from advancing. */
+	public void resetDeltaTime () {
+		resetDeltaTime = true;
 	}
 
 	public GraphicsType getType () {
@@ -151,8 +158,28 @@ public class LwjglGraphics implements Graphics {
 	}
 
 	@Override
+	public boolean isGL31Available () {
+		return false;
+	}
+
+	@Override
+	public boolean isGL32Available () {
+		return false;
+	}
+
+	@Override
 	public GL30 getGL30 () {
 		return gl30;
+	}
+
+	@Override
+	public GL31 getGL31 () {
+		return null;
+	}
+
+	@Override
+	public GL32 getGL32 () {
+		return null;
 	}
 
 	@Override
@@ -167,12 +194,25 @@ public class LwjglGraphics implements Graphics {
 		}
 	}
 
+	@Override
+	public void setGL31 (GL31 gl31) {
+	}
+
+	@Override
+	public void setGL32 (GL32 gl32) {
+	}
+
 	public int getFramesPerSecond () {
 		return fps;
 	}
 
 	void updateTime () {
-		long time = System.nanoTime();
+		long time;
+		if (resetDeltaTime) {
+			resetDeltaTime = false;
+			time = lastTime;
+		} else
+			time = System.nanoTime();
 		deltaTime = (time - lastTime) / 1000000000.0f;
 		lastTime = time;
 
@@ -189,6 +229,8 @@ public class LwjglGraphics implements Graphics {
 			System.setProperty("org.lwjgl.opengl.Display.enableHighDPI", "true");
 		}
 
+		setUndecorated(config.undecorated);
+
 		if (canvas != null) {
 			Display.setParent(canvas);
 		} else {
@@ -200,7 +242,7 @@ public class LwjglGraphics implements Graphics {
 				DisplayMode bestMode = null;
 				for (DisplayMode mode : getDisplayModes()) {
 					if (mode.width == config.width && mode.height == config.height) {
-						if (bestMode == null || bestMode.refreshRate < this.getDisplayMode().refreshRate) {
+						if (bestMode == null || bestMode.refreshRate < mode.refreshRate) {
 							bestMode = mode;
 						}
 					}
@@ -234,7 +276,7 @@ public class LwjglGraphics implements Graphics {
 						pixmap = rgba;
 					}
 					icons[i] = ByteBuffer.allocateDirect(pixmap.getPixels().limit());
-					icons[i].put(pixmap.getPixels()).flip();
+					((Buffer)icons[i].put(pixmap.getPixels())).flip();
 					pixmap.dispose();
 				}
 				Display.setIcon(icons);
@@ -292,6 +334,22 @@ public class LwjglGraphics implements Graphics {
 		// FBO is in core since OpenGL 3.0, see https://www.opengl.org/wiki/Framebuffer_Object
 		return glVersion.isVersionEqualToOrHigher(3, 0) || extensions.contains("GL_EXT_framebuffer_object", false)
 			|| extensions.contains("GL_ARB_framebuffer_object", false);
+	}
+
+	/** @return whether cubemap seamless feature is supported. */
+	public static boolean supportsCubeMapSeamless () {
+		return glVersion.isVersionEqualToOrHigher(3, 2) || extensions.contains("GL_ARB_seamless_cube_map", false);
+	}
+
+	/** Enable or disable cubemap seamless feature. Default is true if supported. Should only be called if this feature is
+	 * supported. (see {@link #supportsCubeMapSeamless()})
+	 * @param enable */
+	public void enableCubeMapSeamless (boolean enable) {
+		if (enable) {
+			gl20.glEnable(org.lwjgl.opengl.GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		} else {
+			gl20.glDisable(org.lwjgl.opengl.GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		}
 	}
 
 	private void createDisplayPixelFormat (boolean useGL30, int gles30ContextMajor, int gles30ContextMinor) {
@@ -387,6 +445,10 @@ public class LwjglGraphics implements Graphics {
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 		Gdx.gl30 = gl30;
+
+		if (supportsCubeMapSeamless()) {
+			enableCubeMapSeamless(true);
+		}
 	}
 
 	@Override
@@ -401,18 +463,18 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public float getPpcX () {
-		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
+		return getPpiX() / 2.54f;
 	}
 
 	@Override
 	public float getPpcY () {
-		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
+		return getPpiY() / 2.54f;
 	}
 
 	@Override
 	public float getDensity () {
 		if (config.overrideDensity != -1) return config.overrideDensity / 160f;
-		return (Toolkit.getDefaultToolkit().getScreenResolution() / 160f);
+		return super.getDensity();
 	}
 
 	@Override
@@ -488,9 +550,12 @@ public class LwjglGraphics implements Graphics {
 	/** Kindly stolen from http://lwjgl.org/wiki/index.php?title=LWJGL_Basics_5_(Fullscreen), not perfect but will do. */
 	@Override
 	public boolean setWindowedMode (int width, int height) {
-		if (getWidth() == width && getHeight() == height && !Display.isFullscreen()) {
+		boolean displaySizeUnchanged = getWidth() == width && getHeight() == height && !Display.isFullscreen();
+		if (displaySizeUnchanged && !forceDisplayModeChange) {
 			return true;
 		}
+
+		this.forceDisplayModeChange = false;
 
 		try {
 			org.lwjgl.opengl.DisplayMode targetDisplayMode = null;
@@ -585,6 +650,8 @@ public class LwjglGraphics implements Graphics {
 	@Override
 	public void setUndecorated (boolean undecorated) {
 		System.setProperty("org.lwjgl.opengl.Window.undecorated", undecorated ? "true" : "false");
+		this.config.undecorated = undecorated;
+		this.forceDisplayModeChange = true;
 	}
 
 	/** Display must be reconfigured via {@link #setWindowedMode(int, int)} for the changes to take effect. */
@@ -603,6 +670,15 @@ public class LwjglGraphics implements Graphics {
 	public void setVSync (boolean vsync) {
 		this.vsync = vsync;
 		Display.setVSyncEnabled(vsync);
+	}
+
+	/** Sets the target framerate for the application, when using continuous rendering. Must be positive. The cpu sleeps as needed.
+	 * Use 0 to never sleep. Default is 60.
+	 *
+	 * @param fps fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		this.config.foregroundFPS = fps;
 	}
 
 	@Override

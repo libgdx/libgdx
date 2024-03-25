@@ -25,14 +25,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Null;
 
-/** A listener that shows a tooltip actor when another actor is hovered over with the mouse.
+/** A listener that shows a tooltip actor when the mouse is over another actor.
  * @author Nathan Sweet */
 public class Tooltip<T extends Actor> extends InputListener {
 	static Vector2 tmp = new Vector2();
 
 	private final TooltipManager manager;
 	final Container<T> container;
-	boolean instant, always;
+	boolean instant, always, touchIndependent;
 	Actor targetActor;
 
 	/** @param contents May be null. */
@@ -65,8 +65,7 @@ public class Tooltip<T extends Actor> extends InputListener {
 		container.setActor(contents);
 	}
 
-	@Null
-	public T getActor () {
+	public @Null T getActor () {
 		return container.getActor();
 	}
 
@@ -78,6 +77,11 @@ public class Tooltip<T extends Actor> extends InputListener {
 	/** If true, this tooltip is shown even when tooltips are not {@link TooltipManager#enabled}. */
 	public void setAlways (boolean always) {
 		this.always = always;
+	}
+
+	/** If true, this tooltip will be shown even when screen is touched simultaneously with entering tooltip's targetActor */
+	public void setTouchIndependent (boolean touchIndependent) {
+		this.touchIndependent = touchIndependent;
 	}
 
 	public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -100,7 +104,11 @@ public class Tooltip<T extends Actor> extends InputListener {
 		Stage stage = actor.getStage();
 		if (stage == null) return;
 
+		container.setSize(manager.maxWidth, Integer.MAX_VALUE);
+		container.validate();
+		container.width(container.getActor().getWidth());
 		container.pack();
+
 		float offsetX = manager.offsetX, offsetY = manager.offsetY, dist = manager.edgeDistance;
 		Vector2 point = actor.localToStageCoordinates(tmp.set(x + offsetX, y - offsetY - container.getHeight()));
 		if (point.y < dist) point = actor.localToStageCoordinates(tmp.set(x + offsetX, y + offsetY));
@@ -116,7 +124,7 @@ public class Tooltip<T extends Actor> extends InputListener {
 
 	public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
 		if (pointer != -1) return;
-		if (Gdx.input.isTouched()) return;
+		if (touchIndependent && Gdx.input.isTouched()) return;
 		Actor actor = event.getListenerActor();
 		if (fromActor != null && fromActor.isDescendantOf(actor)) return;
 		setContainerPosition(actor, x, y);

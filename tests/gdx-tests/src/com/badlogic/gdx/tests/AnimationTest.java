@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class AnimationTest extends GdxTest {
 
@@ -68,15 +68,16 @@ public class AnimationTest extends GdxTest {
 		}
 		leftWalk = new Animation<TextureRegion>(0.25f, leftWalkFrames);
 		rightWalk = new Animation<TextureRegion>(0.25f, rightWalkFrames);
-		
+
 		TextureRegion[] rightRegions = rightWalk.getKeyFrames(); // testing backing array type
 		TextureRegion firstRightRegion = rightRegions[0];
-		Gdx.app.log("AnimationTest", "First right walk region is " + firstRightRegion.getRegionWidth() + "x" + firstRightRegion.getRegionHeight());
+		Gdx.app.log("AnimationTest",
+			"First right walk region is " + firstRightRegion.getRegionWidth() + "x" + firstRightRegion.getRegionHeight());
 
 		cavemen = new Caveman[100];
 		for (int i = 0; i < 100; i++) {
-			cavemen[i] = new Caveman((float)Math.random() * Gdx.graphics.getWidth(),
-				(float)Math.random() * Gdx.graphics.getHeight(), Math.random() > 0.5 ? true : false);
+			cavemen[i] = new Caveman((float)Math.random() * Gdx.graphics.getWidth(), (float)Math.random() * Gdx.graphics.getHeight(),
+				Math.random() > 0.5 ? true : false);
 		}
 		batch = new SpriteBatch();
 		fpsLog = new FPSLogger();
@@ -84,13 +85,12 @@ public class AnimationTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.1f, 0f, 0.25f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ScreenUtils.clear(0.1f, 0f, 0.25f, 1f);
 		batch.begin();
 		for (int i = 0; i < cavemen.length; i++) {
 			Caveman caveman = cavemen[i];
-			TextureRegion frame = caveman.headsLeft ? leftWalk.getKeyFrame(caveman.stateTime, true) : rightWalk.getKeyFrame(
-				caveman.stateTime, true);
+			TextureRegion frame = caveman.headsLeft ? leftWalk.getKeyFrame(caveman.stateTime, true)
+				: rightWalk.getKeyFrame(caveman.stateTime, true);
 			batch.draw(frame, caveman.pos.x, caveman.pos.y);
 		}
 		batch.end();

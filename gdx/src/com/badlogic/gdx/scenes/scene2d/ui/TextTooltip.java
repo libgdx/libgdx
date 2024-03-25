@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
@@ -47,33 +46,34 @@ public class TextTooltip extends Tooltip<Label> {
 	public TextTooltip (@Null String text, final TooltipManager manager, TextTooltipStyle style) {
 		super(null, manager);
 
-		final Label label = new Label(text, style.label);
-		label.setWrap(true);
-
-		container.setActor(label);
-		container.width(new Value() {
-			public float get (@Null Actor context) {
-				return Math.min(manager.maxWidth, label.getGlyphLayout().width);
-			}
-		});
+		container.setActor(newLabel(text, style.label));
 
 		setStyle(style);
 	}
 
+	protected Label newLabel (String text, LabelStyle style) {
+		return new Label(text, style);
+	}
+
 	public void setStyle (TextTooltipStyle style) {
 		if (style == null) throw new NullPointerException("style cannot be null");
-		container.getActor().setStyle(style.label);
 		container.setBackground(style.background);
 		container.maxWidth(style.wrapWidth);
+
+		boolean wrap = style.wrapWidth != 0;
+		container.fill(wrap);
+
+		Label label = container.getActor();
+		label.setStyle(style.label);
+		label.setWrap(wrap);
 	}
 
 	/** The style for a text tooltip, see {@link TextTooltip}.
 	 * @author Nathan Sweet */
 	static public class TextTooltipStyle {
 		public LabelStyle label;
-		/** Optional. */
-		@Null public Drawable background;
-		/** Optional, 0 means don't wrap. */
+		public @Null Drawable background;
+		/** 0 means don't wrap. */
 		public float wrapWidth;
 
 		public TextTooltipStyle () {
@@ -85,7 +85,7 @@ public class TextTooltip extends Tooltip<Label> {
 		}
 
 		public TextTooltipStyle (TextTooltipStyle style) {
-			this.label = new LabelStyle(style.label);
+			label = new LabelStyle(style.label);
 			background = style.background;
 			wrapWidth = style.wrapWidth;
 		}

@@ -50,4 +50,10 @@ public interface AudioDevice extends Disposable {
 
 	/** Sets the volume in the range [0,1]. */
 	public void setVolume (float volume);
+
+	/** Pauses the audio device if supported */
+	public void pause ();
+
+	/** Unpauses the audio device if supported */
+	public void resume ();
 }

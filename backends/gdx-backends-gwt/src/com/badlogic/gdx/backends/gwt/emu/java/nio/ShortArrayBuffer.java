@@ -24,7 +24,8 @@ package java.nio;
  * </p>
  * <p>
  * All methods are marked final for runtime performance.
- * </p> */
+ * </p>
+ */
 abstract class ShortArrayBuffer extends ShortBuffer {
 
 	protected final short[] backingArray;

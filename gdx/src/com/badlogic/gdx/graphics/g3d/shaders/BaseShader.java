@@ -37,8 +37,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
-/** @author Xoppa A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute locations. It does
- *         not manage the ShaderPogram, you are still responsible for disposing the ShaderProgram. */
+/** @author Xoppa A BaseShader is a wrapper around a ShaderProgram that keeps track of the uniform and attribute locations. It
+ *         does not manage the ShaderPogram, you are still responsible for disposing the ShaderProgram. */
 public abstract class BaseShader implements Shader {
 	public interface Validator {
 		/** @return True if the input is valid for the renderable, false otherwise. */
@@ -46,7 +46,8 @@ public abstract class BaseShader implements Shader {
 	}
 
 	public interface Setter {
-		/** @return True if the uniform only has to be set once per render call, false if the uniform must be set for each renderable. */
+		/** @return True if the uniform only has to be set once per render call, false if the uniform must be set for each
+		 *         renderable. */
 		boolean isGlobal (final BaseShader shader, final int inputID);
 
 		void set (final BaseShader shader, final int inputID, final Renderable renderable, final Attributes combinedAttributes);
@@ -106,6 +107,7 @@ public abstract class BaseShader implements Shader {
 	private final IntArray globalUniforms = new IntArray();
 	private final IntArray localUniforms = new IntArray();
 	private final IntIntMap attributes = new IntIntMap();
+	private final IntIntMap instancedAttributes = new IntIntMap();
 
 	public ShaderProgram program;
 	public RenderContext context;
@@ -197,6 +199,15 @@ public abstract class BaseShader implements Shader {
 				final int location = program.getAttributeLocation(attr.alias);
 				if (location >= 0) attributes.put(attr.getKey(), location);
 			}
+			final VertexAttributes iattrs = renderable.meshPart.mesh.getInstancedAttributes();
+			if (iattrs != null) {
+				final int ic = iattrs.size();
+				for (int i = 0; i < ic; i++) {
+					final VertexAttribute attr = iattrs.get(i);
+					final int location = program.getAttributeLocation(attr.alias);
+					if (location >= 0) instancedAttributes.put(attr.getKey(), location);
+				}
+			}
 		}
 	}
 
@@ -211,6 +222,7 @@ public abstract class BaseShader implements Shader {
 	}
 
 	private final IntArray tempArray = new IntArray();
+	private final IntArray tempArray2 = new IntArray();
 
 	private final int[] getAttributeLocations (final VertexAttributes attrs) {
 		tempArray.clear();
@@ -220,6 +232,18 @@ public abstract class BaseShader implements Shader {
 		}
 		tempArray.shrink();
 		return tempArray.items;
+	}
+
+	private final int[] getInstancedAttributeLocations (final VertexAttributes attrs) {
+		// Instanced attributes may be null
+		if (attrs == null) return null;
+		tempArray2.clear();
+		final int n = attrs.size();
+		for (int i = 0; i < n; i++) {
+			tempArray2.add(instancedAttributes.get(attrs.get(i).getKey(), -1));
+		}
+		tempArray2.shrink();
+		return tempArray2.items;
 	}
 
 	private Attributes combinedAttributes = new Attributes();
@@ -237,9 +261,10 @@ public abstract class BaseShader implements Shader {
 		for (int u, i = 0; i < localUniforms.size; ++i)
 			if (setters.get(u = localUniforms.get(i)) != null) setters.get(u).set(this, u, renderable, combinedAttributes);
 		if (currentMesh != renderable.meshPart.mesh) {
-			if (currentMesh != null) currentMesh.unbind(program, tempArray.items);
+			if (currentMesh != null) currentMesh.unbind(program, tempArray.items, tempArray2.items);
 			currentMesh = renderable.meshPart.mesh;
-			currentMesh.bind(program, getAttributeLocations(renderable.meshPart.mesh.getVertexAttributes()));
+			currentMesh.bind(program, getAttributeLocations(renderable.meshPart.mesh.getVertexAttributes()),
+				getInstancedAttributeLocations(renderable.meshPart.mesh.getInstancedAttributes()));
 		}
 		renderable.meshPart.render(program, false);
 	}
@@ -247,7 +272,7 @@ public abstract class BaseShader implements Shader {
 	@Override
 	public void end () {
 		if (currentMesh != null) {
-			currentMesh.unbind(program, tempArray.items);
+			currentMesh.unbind(program, tempArray.items, tempArray2.items);
 			currentMesh = null;
 		}
 	}

@@ -56,7 +56,7 @@ public class Utf8Decoder {
 	// This table maps bytes to character classes to reduce
 	// the size of the transition table and create bitmasks.
 	private static final byte[] BYTE_TABLE = {
-		// @off - disable libgdx formatter
+		// @off - disable libGDX formatter
 		 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -65,19 +65,19 @@ public class Utf8Decoder {
 		 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
 		 8,8,2,2,2,2,2,2,2,2,2,2,2,2,2,2,  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 		10,3,3,3,3,3,3,3,3,3,3,3,3,4,3,3, 11,6,6,6,5,8,8,8,8,8,8,8,8,8,8,8
-		// @on - enable libgdx formatter
+		// @on - enable libGDX formatter
 	};
 
 	// This is a transition table that maps a combination of a
 	// state of the automaton and a character class to a state.
 	private static final byte[] TRANSITION_TABLE = {
-		// @off - disable libgdx formatter
+		// @off - disable libGDX formatter
 		 0,12,24,36,60,96,84,12,12,12,48,72, 12,12,12,12,12,12,12,12,12,12,12,12,
 		12, 0,12,12,12,12,12, 0,12, 0,12,12, 12,24,12,12,12,12,12,24,12,24,12,12,
 		12,12,12,12,12,12,12,24,12,12,12,12, 12,24,12,12,12,12,12,12,12,24,12,12,
 		12,12,12,12,12,12,12,36,12,36,12,12, 12,36,12,12,12,12,12,36,12,36,12,12,
 		12,36,12,12,12,12,12,12,12,12,12,12
-		// @on - enable libgdx formatter
+		// @on - enable libGDX formatter
 	};
 
 	private int codePoint;

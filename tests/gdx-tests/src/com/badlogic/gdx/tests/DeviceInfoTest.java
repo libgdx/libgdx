@@ -16,10 +16,7 @@
 
 package com.badlogic.gdx.tests;
 
-//import com.badlogic.gdx.DeviceInfo;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.IntMap;
 
 public class DeviceInfoTest extends GdxTest {
 

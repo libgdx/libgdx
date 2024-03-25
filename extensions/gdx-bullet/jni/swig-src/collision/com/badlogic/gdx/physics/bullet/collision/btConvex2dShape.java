@@ -8,46 +8,40 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btConvex2dShape extends btConvexShape {
 	private long swigCPtr;
-	
-	protected btConvex2dShape(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btConvex2dShape (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btConvex2dShape_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
+
 	/** Construct a new btConvex2dShape, normally you should not need this constructor it's intended for low-level usage. */
-	public btConvex2dShape(long cPtr, boolean cMemoryOwn) {
+	public btConvex2dShape (long cPtr, boolean cMemoryOwn) {
 		this("btConvex2dShape", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btConvex2dShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btConvex2dShape obj) {
+
+	public static long getCPtr (btConvex2dShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,50 +52,50 @@ public class btConvex2dShape extends btConvexShape {
 		super.delete();
 	}
 
-  public long operatorNew(long sizeInBytes) {
-    return CollisionJNI.btConvex2dShape_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNew (long sizeInBytes) {
+		return CollisionJNI.btConvex2dShape_operatorNew__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDelete(long ptr) {
-    CollisionJNI.btConvex2dShape_operatorDelete__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDelete (long ptr) {
+		CollisionJNI.btConvex2dShape_operatorDelete__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNew(long arg0, long ptr) {
-    return CollisionJNI.btConvex2dShape_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNew (long arg0, long ptr) {
+		return CollisionJNI.btConvex2dShape_operatorNew__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDelete(long arg0, long arg1) {
-    CollisionJNI.btConvex2dShape_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDelete (long arg0, long arg1) {
+		CollisionJNI.btConvex2dShape_operatorDelete__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public long operatorNewArray(long sizeInBytes) {
-    return CollisionJNI.btConvex2dShape_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
-  }
+	public long operatorNewArray (long sizeInBytes) {
+		return CollisionJNI.btConvex2dShape_operatorNewArray__SWIG_0(swigCPtr, this, sizeInBytes);
+	}
 
-  public void operatorDeleteArray(long ptr) {
-    CollisionJNI.btConvex2dShape_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
-  }
+	public void operatorDeleteArray (long ptr) {
+		CollisionJNI.btConvex2dShape_operatorDeleteArray__SWIG_0(swigCPtr, this, ptr);
+	}
 
-  public long operatorNewArray(long arg0, long ptr) {
-    return CollisionJNI.btConvex2dShape_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
-  }
+	public long operatorNewArray (long arg0, long ptr) {
+		return CollisionJNI.btConvex2dShape_operatorNewArray__SWIG_1(swigCPtr, this, arg0, ptr);
+	}
 
-  public void operatorDeleteArray(long arg0, long arg1) {
-    CollisionJNI.btConvex2dShape_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
-  }
+	public void operatorDeleteArray (long arg0, long arg1) {
+		CollisionJNI.btConvex2dShape_operatorDeleteArray__SWIG_1(swigCPtr, this, arg0, arg1);
+	}
 
-  public btConvex2dShape(btConvexShape convexChildShape) {
-    this(CollisionJNI.new_btConvex2dShape(btConvexShape.getCPtr(convexChildShape), convexChildShape), true);
-  }
+	public btConvex2dShape (btConvexShape convexChildShape) {
+		this(CollisionJNI.new_btConvex2dShape(btConvexShape.getCPtr(convexChildShape), convexChildShape), true);
+	}
 
-  public btConvexShape getChildShape() {
-    long cPtr = CollisionJNI.btConvex2dShape_getChildShape(swigCPtr, this);
-    return (cPtr == 0) ? null : new btConvexShape(cPtr, false);
-  }
+	public btConvexShape getChildShape () {
+		long cPtr = CollisionJNI.btConvex2dShape_getChildShape(swigCPtr, this);
+		return (cPtr == 0) ? null : new btConvexShape(cPtr, false);
+	}
 
-  public btConvexShape getChildShapeConst() {
-    long cPtr = CollisionJNI.btConvex2dShape_getChildShapeConst(swigCPtr, this);
-    return (cPtr == 0) ? null : new btConvexShape(cPtr, false);
-  }
+	public btConvexShape getChildShapeConst () {
+		long cPtr = CollisionJNI.btConvex2dShape_getChildShapeConst(swigCPtr, this);
+		return (cPtr == 0) ? null : new btConvexShape(cPtr, false);
+	}
 
 }

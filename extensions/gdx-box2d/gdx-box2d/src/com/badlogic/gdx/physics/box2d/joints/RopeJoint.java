@@ -77,7 +77,7 @@ public class RopeJoint extends Joint {
 		jniSetMaxLength(addr, length);
 	}
 
-	private native float jniSetMaxLength (long addr, float length); /*
+	private native void jniSetMaxLength (long addr, float length); /*
 		b2RopeJoint* rope = (b2RopeJoint*)addr;
 		rope->SetMaxLength(length);
 	*/

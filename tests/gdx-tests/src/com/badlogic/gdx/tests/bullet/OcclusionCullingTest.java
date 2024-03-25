@@ -91,7 +91,7 @@ public class OcclusionCullingTest extends BaseBulletTest {
 	// Occludee models and textures used in test
 	private final static String DEFAULT_TEX_PATH = "data/g3d/checkboard.png";
 	private final static String[] OCCLUDEE_PATHS_DYNAMIC = new String[] {"data/car.obj", "data/wheel.obj", "data/cube.obj",
-			"data/g3d/ship.obj", "data/g3d/shapes/sphere.g3dj", "data/g3d/shapes/torus.g3dj",};
+		"data/g3d/ship.obj", "data/g3d/shapes/sphere.g3dj", "data/g3d/shapes/torus.g3dj",};
 	private final static String[] OCCLUDEE_PATHS_STATIC = new String[OCCLUDEE_PATHS_DYNAMIC.length];
 	private final static float OCCLUDEE_MAX_EXTENT = 1.5f;
 	private final static Vector3 OCCLUDER_DIM = new Vector3(1f, 6f, 20f);
@@ -236,8 +236,8 @@ public class OcclusionCullingTest extends BaseBulletTest {
 
 		// Add occluder walls
 		final Model occluderModel = modelBuilder.createBox(OCCLUDER_DIM.x, OCCLUDER_DIM.y, OCCLUDER_DIM.z,
-				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
-				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+			new Material(ColorAttribute.createDiffuse(Color.WHITE)),
+			VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 		disposables.add(occluderModel);
 		world.addConstructor("wall", new BulletConstructor(occluderModel, 0, new btBoxShape(tmpV1.set(OCCLUDER_DIM).scl(0.5f))));
 		float y = OCCLUDER_DIM.y * 0.5f;
@@ -250,8 +250,8 @@ public class OcclusionCullingTest extends BaseBulletTest {
 
 		// Add ground
 		final Model groundModel = modelBuilder.createBox(GROUND_DIM.x, GROUND_DIM.y, GROUND_DIM.z,
-				new Material(ColorAttribute.createDiffuse(Color.WHITE)),
-				VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+			new Material(ColorAttribute.createDiffuse(Color.WHITE)),
+			VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 		btCollisionShape groundShape = new btBoxShape(tmpV1.set(GROUND_DIM).scl(0.5f));
 		world.addConstructor("big_ground", new BulletConstructor(groundModel, 0, groundShape));
 		BulletEntity e = world.add("big_ground", 0, -GROUND_DIM.y * 0.5f, 0f);
@@ -262,7 +262,7 @@ public class OcclusionCullingTest extends BaseBulletTest {
 		BoundingBox bb = new BoundingBox();
 		assets.finishLoadingAsset(DEFAULT_TEX_PATH);
 		TextureAttribute defaultTexture = new TextureAttribute(TextureAttribute.Diffuse,
-				assets.get(DEFAULT_TEX_PATH, Texture.class));
+			assets.get(DEFAULT_TEX_PATH, Texture.class));
 		for (int i = 0; i < OCCLUDEE_PATHS_DYNAMIC.length; i++) {
 			String modelPath = OCCLUDEE_PATHS_DYNAMIC[i];
 			OCCLUDEE_PATHS_STATIC[i] = "static" + modelPath;
@@ -326,35 +326,35 @@ public class OcclusionCullingTest extends BaseBulletTest {
 	public boolean keyTyped (char character) {
 		oclBuffer.clear();
 		switch (character) {
-			case '0':
-				for (int i = 0; i < KEY_SPAWN_OCCLUDEE_AMOUNT; i++)
-					addRandomOccludee(false);
-				break;
-			case '1':
-				cullingPolicy = cullingPolicy.next();
-				break;
-			case '2':
-				state ^= USE_FRUSTUM_CAM;
-				camera = ((state & USE_FRUSTUM_CAM) == USE_FRUSTUM_CAM) ? frustumCam : overviewCam;
-				break;
-			case '3':
-				state ^= PAUSE_FRUSTUM_CAM;
-				break;
-			case '4':
-				oclBuffer.dispose();
-				bufferExtentIndex = (bufferExtentIndex + 1) % OCL_BUFFER_EXTENTS.length;
-				int extent = OCL_BUFFER_EXTENTS[bufferExtentIndex];
-				oclBuffer = new OcclusionBuffer(extent, extent);
-				break;
-			case '5':
-				state ^= SHOW_DEBUG_IMAGE;
-				break;
-			case '6':
-				shadows = !shadows;
-				// Clear the old shadows
-				visibleEntities.clear();
-				renderShadows();
-				break;
+		case '0':
+			for (int i = 0; i < KEY_SPAWN_OCCLUDEE_AMOUNT; i++)
+				addRandomOccludee(false);
+			break;
+		case '1':
+			cullingPolicy = cullingPolicy.next();
+			break;
+		case '2':
+			state ^= USE_FRUSTUM_CAM;
+			camera = ((state & USE_FRUSTUM_CAM) == USE_FRUSTUM_CAM) ? frustumCam : overviewCam;
+			break;
+		case '3':
+			state ^= PAUSE_FRUSTUM_CAM;
+			break;
+		case '4':
+			oclBuffer.dispose();
+			bufferExtentIndex = (bufferExtentIndex + 1) % OCL_BUFFER_EXTENTS.length;
+			int extent = OCL_BUFFER_EXTENTS[bufferExtentIndex];
+			oclBuffer = new OcclusionBuffer(extent, extent);
+			break;
+		case '5':
+			state ^= SHOW_DEBUG_IMAGE;
+			break;
+		case '6':
+			shadows = !shadows;
+			// Clear the old shadows
+			visibleEntities.clear();
+			renderShadows();
+			break;
 		}
 		return true;
 	}
@@ -434,7 +434,7 @@ public class OcclusionCullingTest extends BaseBulletTest {
 		frustumCam.rotate(frustumInstance.transform);
 		float frustumCamPosY = frustumCamPos.y;
 		frustumCamPos.add(tmpV1.set(Vector3.Y).crs(tmpV2.set(frustumCamPos).nor()).scl(dt * FRUSTUM_LIN_SPEED)).nor()
-				.scl(FRUSTUM_MOVE_RADIUS);
+			.scl(FRUSTUM_MOVE_RADIUS);
 		frustumCamPos.y = frustumCamPosY;
 		frustumCam.position.set(frustumCamPos);
 		frustumInstance.transform.setTranslation(frustumCamPos);

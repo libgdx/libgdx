@@ -33,6 +33,9 @@ import com.badlogic.gdx.setup.Executor.CharCallback;
  * @author badlogic
  * @author Tomski */
 public class GdxSetup {
+
+	static final String DEFAULT_ASSET_PATH = "assets";
+
 	public static boolean isSdkLocationValid (String sdkLocation) {
 		return new File(sdkLocation, "platforms").exists();
 	}
@@ -48,15 +51,15 @@ public class GdxSetup {
 	public static boolean isSdkUpToDate (String sdkLocation) {
 		File buildTools = new File(sdkLocation, "build-tools");
 		if (!buildTools.exists()) {
-			JOptionPane.showMessageDialog(null, "You have no build tools!\nUpdate your Android SDK with build tools version: "
-				+ DependencyBank.buildToolsVersion);
+			JOptionPane.showMessageDialog(null,
+				"You have no build tools!\nUpdate your Android SDK with build tools version: " + DependencyBank.buildToolsVersion);
 			return false;
 		}
 
 		File apis = new File(sdkLocation, "platforms");
 		if (!apis.exists()) {
-			JOptionPane.showMessageDialog(null, "You have no Android APIs!\nUpdate your Android SDK with API level: "
-				+ DependencyBank.androidAPILevel);
+			JOptionPane.showMessageDialog(null,
+				"You have no Android APIs!\nUpdate your Android SDK with API level: " + DependencyBank.androidAPILevel);
 			return false;
 		}
 		String newestLocalTool = getLatestTools(buildTools);
@@ -70,12 +73,6 @@ public class GdxSetup {
 				JOptionPane.showMessageDialog(null, "Using build tools: " + DependencyBank.buildToolsVersion);
 			} else {
 				DependencyBank.buildToolsVersion = newestLocalTool;
-			}
-		} else {
-			if (!versionsEqual(localToolVersion, targetToolVersion)) {
-				JOptionPane.showMessageDialog(null, "Please update your Android SDK, you need build tools: "
-					+ DependencyBank.buildToolsVersion);
-				return false;
 			}
 		}
 
@@ -91,8 +88,8 @@ public class GdxSetup {
 			}
 		} else {
 			if (newestLocalApi != Integer.parseInt(DependencyBank.androidAPILevel)) {
-				JOptionPane.showMessageDialog(null, "Please update your Android SDK, you need the Android API: "
-					+ DependencyBank.androidAPILevel);
+				JOptionPane.showMessageDialog(null,
+					"Please update your Android SDK, you need the Android API: " + DependencyBank.androidAPILevel);
 				return false;
 			}
 		}
@@ -192,14 +189,15 @@ public class GdxSetup {
 		}
 	}
 
-	private static boolean versionsEqual(int[] testVersion, int[] targetVersion) {
+	private static boolean versionsEqual (int[] testVersion, int[] targetVersion) {
 		for (int i = 0; i < 3; i++) {
 			if (testVersion[i] != targetVersion[i]) return false;
 		}
 		return true;
 	}
 
-	private static boolean compareVersions(int[] version, int[] testVersion) {
+	/** @return true if testVersion greater than version */
+	private static boolean compareVersions (int[] version, int[] testVersion) {
 		if (testVersion[0] > version[0]) {
 			return true;
 		} else if (testVersion[0] == version[0]) {
@@ -230,7 +228,7 @@ public class GdxSetup {
 	}
 
 	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass,
-			Language language, String sdkLocation, CharCallback callback, List<String> gradleArgs) {
+		Language language, String assetPath, String sdkLocation, CharCallback callback, List<String> gradleArgs) {
 		Project project = new Project();
 
 		String packageDir = packageName.replace('.', '/');
@@ -257,21 +255,29 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + mainClass + ".gwt.xml", true));
 		}
 
-		// desktop project
-		if (builder.modules.contains(ProjectType.DESKTOP)) {
-			project.files.add(new ProjectFile("desktop/build.gradle"));
-			project.files.add(new ProjectFile("desktop/src/DesktopLauncher", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.java", true));
+		// lwjgl2 project
+		if (builder.modules.contains(ProjectType.LWJGL2)) {
+			project.files.add(new ProjectFile("lwjgl2/build.gradle", "legacy_desktop/build.gradle", true));
+			project.files.add(
+				new ProjectFile("lwjgl2/src/DesktopLauncher", "legacy_desktop/src/" + packageDir + "/DesktopLauncher.java", true));
+		}
+
+		// lwjgl3 project
+		if (builder.modules.contains(ProjectType.LWJGL3)) {
+			project.files.add(new ProjectFile("lwjgl3/build.gradle", "desktop/build.gradle", true));
+			project.files
+				.add(new ProjectFile("lwjgl3/src/DesktopLauncher", "desktop/src/" + packageDir + "/DesktopLauncher.java", true));
 		}
 
 		// Assets
-		String assetPath = builder.modules.contains(ProjectType.ANDROID) ? "android/assets" : "core/assets";
-		project.files.add(new ProjectFile("android/assets/badlogic.jpg", assetPath + "/badlogic.jpg", false));
+		project.files.add(new ProjectFile("assets/badlogic.jpg", assetPath + "/badlogic.jpg", false));
 
 		// android project
 		if (builder.modules.contains(ProjectType.ANDROID)) {
-			project.files.add(new ProjectFile("android/res/values/color.xml"));
-			project.files.add(new ProjectFile("android/res/values/strings.xml"));
+			project.files.add(new ProjectFile("android/res/values/color.xml", false));
+			project.files.add(new ProjectFile("android/res/values/strings.xml", true));
 			project.files.add(new ProjectFile("android/res/values/styles.xml", false));
+			project.files.add(new ProjectFile("android/res/values-v21/styles.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-anydpi-v26/ic_launcher.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-anydpi-v26/ic_launcher_foreground.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-hdpi/ic_launcher.png", false));
@@ -279,7 +285,8 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("android/res/drawable-xhdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
 			project.files.add(new ProjectFile("android/res/drawable-xxxhdpi/ic_launcher.png", false));
-			project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/AndroidLauncher.java", true));
+			project.files
+				.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/AndroidLauncher.java", true));
 			project.files.add(new ProjectFile("android/AndroidManifest.xml"));
 			project.files.add(new ProjectFile("android/build.gradle", true));
 			project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
@@ -291,14 +298,13 @@ public class GdxSetup {
 		// html project
 		if (builder.modules.contains(ProjectType.HTML)) {
 			project.files.add(new ProjectFile("html/build.gradle"));
-			project.files.add(new ProjectFile("html/src/HtmlLauncher", "html/src/" + packageDir + "/client/HtmlLauncher.java", true));
+			project.files
+				.add(new ProjectFile("html/src/HtmlLauncher", "html/src/" + packageDir + "/client/HtmlLauncher.java", true));
 			project.files.add(new ProjectFile("html/GdxDefinition", "html/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
-			project.files.add(new ProjectFile("html/GdxDefinitionSuperdev", "html/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
+			project.files.add(
+				new ProjectFile("html/GdxDefinitionSuperdev", "html/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
 			project.files.add(new ProjectFile("html/war/index", "html/webapp/index.html", true));
 			project.files.add(new ProjectFile("html/war/styles.css", "html/webapp/styles.css", false));
-			project.files.add(new ProjectFile("html/war/refresh.png", "html/webapp/refresh.png", false));
-			project.files.add(new ProjectFile("html/war/soundmanager2-jsmin.js", "html/webapp/soundmanager2-jsmin.js", false));
-			project.files.add(new ProjectFile("html/war/soundmanager2-setup.js", "html/webapp/soundmanager2-setup.js", false));
 			project.files.add(new ProjectFile("html/war/WEB-INF/web.xml", "html/webapp/WEB-INF/web.xml", true));
 		}
 
@@ -310,8 +316,10 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/Contents.json", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@1x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@2x.png", false));
-			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@1x.png", false));
-			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@2x.png", false));
+			project.files
+				.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@1x.png", false));
+			project.files
+				.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-pro-app-icon-83.5@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@1x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@2x.png", false));
@@ -319,12 +327,16 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@3x.png", false));
-			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@2x.png", false));
-			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@3x.png", false));
+			project.files
+				.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@2x.png", false));
+			project.files
+				.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@3x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@2x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@3x.png", false));
-			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
-			project.files.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
+			project.files
+				.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
+			project.files
+				.add(new ProjectFile("ios/data/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/Logo.imageset/Contents.json", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/Logo.imageset/libgdx@1x.png", false));
 			project.files.add(new ProjectFile("ios/data/Media.xcassets/Logo.imageset/libgdx@2x.png", false));
@@ -335,47 +347,6 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 			project.files.add(new ProjectFile("ios/robovm.properties"));
 			project.files.add(new ProjectFile("ios/robovm.xml", true));
-		}
-
-		if(builder.modules.contains(ProjectType.IOSMOE)) {
-			project.files.add(new ProjectFile("ios-moe/src/IOSMoeLauncher", "ios-moe/src/" + packageDir + "/IOSMoeLauncher.java", true));			
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-1024w-1366h@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-375w-667h@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-414w-736h@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default-568h@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default@2x~ipad.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Default~ipad.png", false));
-
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/Contents.json", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/app-store-icon-1024@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/Contents.json", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-app-icon-76@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-notifications-icon-20@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-pro-app-icon-83.5@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-settings-icon-29@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@1x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/ipad-spotlight-icon-40@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-app-icon-60@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-notification-icon-20@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-icon-40@3x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@2x.png", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Media.xcassets/AppIcon.appiconset/iphone-spotlight-settings-icon-29@3x.png", false));
-
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/Info.plist", true));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/custom.xcconfig", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe/main.cpp", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/Info.plist", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe-Test/main.cpp", false));
-			project.files.add(new ProjectFile("ios-moe/xcode/ios-moe.xcodeproj/project.pbxproj", true));
-			project.files.add(new ProjectFile("ios-moe/build.gradle", true));
 		}
 
 		Map<String, String> values = new HashMap<String, String>();
@@ -389,6 +360,7 @@ public class GdxSetup {
 		values.put("%ASSET_PATH%", assetPath);
 		values.put("%BUILD_TOOLS_VERSION%", DependencyBank.buildToolsVersion);
 		values.put("%API_LEVEL%", DependencyBank.androidAPILevel);
+		values.put("%MIN_API_LEVEL%", DependencyBank.androidMinAPILevel);
 		values.put("%GWT_VERSION%", DependencyBank.gwtVersion);
 		if (builder.modules.contains(ProjectType.HTML)) {
 			values.put("%GWT_INHERITS%", parseGwtInherits(builder));
@@ -401,7 +373,8 @@ public class GdxSetup {
 		// HACK executable flag isn't preserved for whatever reason...
 		new File(outputDir, "gradlew").setExecutable(true);
 
-		Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "clean" + parseGradleArgs(builder.modules, gradleArgs), callback);
+		Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "clean" + parseGradleArgs(builder.modules, gradleArgs),
+			callback);
 	}
 
 	private void copyAndReplace (String outputDir, Project project, Map<String, String> values) {
@@ -534,13 +507,16 @@ public class GdxSetup {
 	}
 
 	private static void printHelp () {
-		System.out
-			.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation> [--excludeModules <modules>] [--extensions <extensions>]");
+		System.out.println(
+			"Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation> "
+				+ "[--assetPath <assetPath>] [--excludeModules <modules>] [--extensions <extensions>]");
 		System.out.println("dir ... the directory to write the project files to");
 		System.out.println("name ... the name of the application");
 		System.out.println("package ... the Java package name of the application");
 		System.out.println("mainClass ... the name of your main ApplicationListener");
-		System.out.println("sdkLocation ... the location of your android SDK. Uses ANDROID_HOME if not specified. Ignored if android module is excluded");
+		System.out.println(
+			"sdkLocation ... the location of your android SDK. Uses ANDROID_HOME if not specified. Ignored if android module is excluded");
+		System.out.println("assetPath ... the location assets are stored, relative to project root. Default \"assets\". Optional");
 		System.out.println("excludeModules ... the modules to exclude on the project generation separated by ';'. Optional");
 		System.out.println("extensions ... the extensions to include in the project separated by ';'. Optional");
 	}
@@ -560,43 +536,43 @@ public class GdxSetup {
 		return params;
 	}
 
-	 private static List<String> parseExcludedModules (String excludedModules) {
-		  List<String> excludedModulesList = new ArrayList<String>();
+	private static List<String> parseExcludedModules (String excludedModules) {
+		List<String> excludedModulesList = new ArrayList<String>();
 
-		  while (excludedModules.contains(";")) {
-				excludedModulesList.add(excludedModules.substring(0, excludedModules.indexOf(";")).toLowerCase());
-				excludedModules = excludedModules.substring(excludedModules.indexOf(";") + 1);
-		  }
-		  excludedModulesList.add(excludedModules.toLowerCase());
+		while (excludedModules.contains(";")) {
+			excludedModulesList.add(excludedModules.substring(0, excludedModules.indexOf(";")).toLowerCase());
+			excludedModules = excludedModules.substring(excludedModules.indexOf(";") + 1);
+		}
+		excludedModulesList.add(excludedModules.toLowerCase());
 
-		  return excludedModulesList;
-	 }
+		return excludedModulesList;
+	}
 
-	 private static List<Dependency> parseDependencies (String dependencies, DependencyBank bank) {
-		  List<String> dependencyNames = new ArrayList<String>();
-		  while (dependencies.contains(";")) {
-				dependencyNames.add(dependencies.substring(0, dependencies.indexOf(";")).toLowerCase());
-				dependencies = dependencies.substring(dependencies.indexOf(";") + 1);
-		  }
-		  dependencyNames.add(dependencies.toLowerCase());
+	private static List<Dependency> parseDependencies (String dependencies, DependencyBank bank) {
+		List<String> dependencyNames = new ArrayList<String>();
+		while (dependencies.contains(";")) {
+			dependencyNames.add(dependencies.substring(0, dependencies.indexOf(";")).toLowerCase());
+			dependencies = dependencies.substring(dependencies.indexOf(";") + 1);
+		}
+		dependencyNames.add(dependencies.toLowerCase());
 
-		  Map<String, Dependency> dependencyMap = new HashMap<String, Dependency>();
-		  for (ProjectDependency pd : ProjectDependency.values()) {
-				dependencyMap.put(pd.name().toLowerCase(), bank.getDependency(pd));
-		  }
+		Map<String, Dependency> dependencyMap = new HashMap<String, Dependency>();
+		for (ProjectDependency pd : ProjectDependency.values()) {
+			dependencyMap.put(pd.name().toLowerCase(), bank.getDependency(pd));
+		}
 
-		  List<Dependency> dependencyList = new ArrayList<Dependency>();
-		  dependencyList.add(bank.getDependency(ProjectDependency.GDX));
-		  for (String name : dependencyNames) {
-				if (dependencyMap.containsKey(name)) {
-					 System.out.println("Extension " + name + " found");
-					 dependencyList.add(dependencyMap.get(name));
-				} else
-					 System.out.println("Extension " + name + " not found");
-		  }
+		List<Dependency> dependencyList = new ArrayList<Dependency>();
+		dependencyList.add(bank.getDependency(ProjectDependency.GDX));
+		for (String name : dependencyNames) {
+			if (dependencyMap.containsKey(name)) {
+				System.out.println("Extension " + name + " found");
+				dependencyList.add(dependencyMap.get(name));
+			} else
+				System.out.println("Extension " + name + " not found");
+		}
 
-		  return dependencyList;
-	 }
+		return dependencyList;
+	}
 
 	private String parseGwtInherits (ProjectBuilder builder) {
 		String parsed = "";
@@ -633,69 +609,67 @@ public class GdxSetup {
 	public static void main (String[] args) throws IOException {
 		Map<String, String> params = parseArgs(args);
 		List<String> excludedModules = null;
-		if (params.containsKey("excludeModules"))
-			excludedModules = parseExcludedModules(params.get("excludeModules"));
+		if (params.containsKey("excludeModules")) excludedModules = parseExcludedModules(params.get("excludeModules"));
 
-		if (!params.containsKey("dir") ||
-			!params.containsKey("name") ||
-			!params.containsKey("package") ||
-			!params.containsKey("mainClass") ||
-			(!params.containsKey("sdkLocation") && System.getenv("ANDROID_HOME") == null &&
-				(excludedModules == null || !excludedModules.contains("android")))) {
+		if (!params.containsKey("dir") || !params.containsKey("name") || !params.containsKey("package")
+			|| !params.containsKey("mainClass") || (!params.containsKey("sdkLocation") && System.getenv("ANDROID_HOME") == null
+				&& (excludedModules == null || !excludedModules.contains("android")))) {
 			new GdxSetupUI();
 			printHelp();
 		} else {
 			String sdkLocation = "";
-			 if (excludedModules == null || !excludedModules.contains("android")) {
-				  if (System.getenv("ANDROID_HOME") != null && !params.containsKey("sdkLocation")) {
-						sdkLocation = System.getenv("ANDROID_HOME");
-				  } else {
-						sdkLocation = params.get("sdkLocation");
-				  }
-			 }
+			if (excludedModules == null || !excludedModules.contains("android")) {
+				if (System.getenv("ANDROID_HOME") != null && !params.containsKey("sdkLocation")) {
+					sdkLocation = System.getenv("ANDROID_HOME");
+				} else {
+					sdkLocation = params.get("sdkLocation");
+				}
+			}
 
 			DependencyBank bank = new DependencyBank();
 			ProjectBuilder builder = new ProjectBuilder(bank);
 			List<ProjectType> projects = new ArrayList<ProjectType>();
 
 			projects.add(ProjectType.CORE);
-			 if (excludedModules == null) {
-				  projects.add(ProjectType.DESKTOP);
-				  projects.add(ProjectType.ANDROID);
-				  projects.add(ProjectType.IOS);
-				  projects.add(ProjectType.IOSMOE);
-				  projects.add(ProjectType.HTML);
-			 } else {
-				  if (!excludedModules.contains("desktop"))
-						projects.add(ProjectType.DESKTOP);
-				  if (!excludedModules.contains("android"))
-						projects.add(ProjectType.ANDROID);
-				  if (!excludedModules.contains("ios"))
-						projects.add(ProjectType.IOS);
-				  if (!excludedModules.contains("iosmoe"))
-					  	projects.add(ProjectType.IOSMOE);
-				  if (!excludedModules.contains("html"))
-						projects.add(ProjectType.HTML);
-			 }
+			if (excludedModules == null) {
+				projects.add(ProjectType.LWJGL2);
+				projects.add(ProjectType.LWJGL3);
+				projects.add(ProjectType.ANDROID);
+				projects.add(ProjectType.IOS);
+				projects.add(ProjectType.HTML);
+			} else {
+				if (!excludedModules.contains("lwjgl2")) projects.add(ProjectType.LWJGL2);
+				if (!excludedModules.contains("lwjgl3")) projects.add(ProjectType.LWJGL3);
+				if (!excludedModules.contains("android")) projects.add(ProjectType.ANDROID);
+				if (!excludedModules.contains("ios")) projects.add(ProjectType.IOS);
+				if (!excludedModules.contains("html")) projects.add(ProjectType.HTML);
+			}
 
 			List<Dependency> dependencies = new ArrayList<Dependency>();
 			if (params.containsKey("extensions")) {
-				 dependencies.addAll(parseDependencies(params.get("extensions"), bank));
+				dependencies.addAll(parseDependencies(params.get("extensions"), bank));
 			} else {
-				 dependencies.add(bank.getDependency(ProjectDependency.GDX));
+				dependencies.add(bank.getDependency(ProjectDependency.GDX));
 			}
 
 			String language = params.containsKey("language") ? params.get("language") : "java";
 			Language languageEnum = Language.JAVA;
-			for(Language l: Language.values()) {
-				if(l.name.equals(language)) {
+			for (Language l : Language.values()) {
+				if (l.name.equals(language)) {
 					languageEnum = l;
 				}
 			}
+
+			String assetPath;
+			if (params.containsKey("assetPath"))
+				assetPath = params.get("assetPath");
+			else
+				assetPath = DEFAULT_ASSET_PATH;
+
 			builder.buildProject(projects, dependencies);
 			builder.build(languageEnum);
-			new GdxSetup().build(builder, params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), languageEnum,
-				sdkLocation, new CharCallback() {
+			new GdxSetup().build(builder, params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"),
+				languageEnum, assetPath, sdkLocation, new CharCallback() {
 					@Override
 					public void character (char c) {
 						System.out.print(c);

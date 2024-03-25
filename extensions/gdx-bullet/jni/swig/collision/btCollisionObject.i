@@ -122,7 +122,9 @@
 		if (collisionShape != null)
 			collisionShape.release();
 		collisionShape = shape;
-		collisionShape.obtain();
+		if(collisionShape != null) {
+			collisionShape.obtain();
+		}
 	}
 	
 	public btCollisionShape getCollisionShape() {

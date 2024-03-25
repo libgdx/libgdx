@@ -146,7 +146,7 @@ public class DataInputStream extends FilterInputStream implements DataInput {
 		// note: This is actually a valid implementation of this method, rendering it quite useless...
 		return 0;
 	}
-	
+
 	@Override
 	public void close () throws IOException {
 		is.close();

@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.utils;
 
-import static com.badlogic.gdx.utils.ObjectSet.*;
-
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+
+import static com.badlogic.gdx.utils.ObjectSet.tableSize;
 
 /** An unordered set where the items are unboxed ints. No allocation is done except when growing the table size.
  * <p>
@@ -60,7 +60,7 @@ public class IntSet {
 	 * hash. */
 	protected int mask;
 
-	private IntSetIterator iterator1, iterator2;
+	private transient IntSetIterator iterator1, iterator2;
 
 	/** Creates a new set with an initial capacity of 51 and a load factor of 0.8. */
 	public IntSet () {
@@ -68,14 +68,14 @@ public class IntSet {
 	}
 
 	/** Creates a new set with a load factor of 0.8.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public IntSet (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
 	/** Creates a new set with the specified initial capacity and load factor. This set will hold initialCapacity items before
 	 * growing the backing table.
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two. */
+	 * @param initialCapacity The backing array size is initialCapacity / loadFactor, increased to the next power of two. */
 	public IntSet (int initialCapacity, float loadFactor) {
 		if (loadFactor <= 0f || loadFactor >= 1f)
 			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
@@ -126,7 +126,7 @@ public class IntSet {
 		}
 	}
 
-	/** Returns true if the key was not already in the set. */
+	/** Returns true if the key was added to the set or false if it was already in the set. */
 	public boolean add (int key) {
 		if (key == 0) {
 			if (hasZeroValue) return false;

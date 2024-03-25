@@ -8,46 +8,40 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.linearmath.*;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
 
 public class btPointCollector extends btDiscreteCollisionDetectorInterface.Result {
 	private long swigCPtr;
-	
-	protected btPointCollector(final String className, long cPtr, boolean cMemoryOwn) {
+
+	protected btPointCollector (final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, CollisionJNI.btPointCollector_SWIGUpcast(cPtr), cMemoryOwn);
 		swigCPtr = cPtr;
 	}
-	
+
 	/** Construct a new btPointCollector, normally you should not need this constructor it's intended for low-level usage. */
-	public btPointCollector(long cPtr, boolean cMemoryOwn) {
+	public btPointCollector (long cPtr, boolean cMemoryOwn) {
 		this("btPointCollector", cPtr, cMemoryOwn);
 		construct();
 	}
-	
+
 	@Override
-	protected void reset(long cPtr, boolean cMemoryOwn) {
-		if (!destroyed)
-			destroy();
+	protected void reset (long cPtr, boolean cMemoryOwn) {
+		if (!destroyed) destroy();
 		super.reset(CollisionJNI.btPointCollector_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
-	
-	public static long getCPtr(btPointCollector obj) {
+
+	public static long getCPtr (btPointCollector obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		if (!destroyed)
-			destroy();
+	protected void finalize () throws Throwable {
+		if (!destroyed) destroy();
 		super.finalize();
 	}
 
-  @Override protected synchronized void delete() {
+	@Override
+	protected synchronized void delete () {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
@@ -58,42 +52,42 @@ public class btPointCollector extends btDiscreteCollisionDetectorInterface.Resul
 		super.delete();
 	}
 
-  public void setNormalOnBInWorld(btVector3 value) {
-    CollisionJNI.btPointCollector_normalOnBInWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
+	public void setNormalOnBInWorld (btVector3 value) {
+		CollisionJNI.btPointCollector_normalOnBInWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
+	}
 
-  public btVector3 getNormalOnBInWorld() {
-    long cPtr = CollisionJNI.btPointCollector_normalOnBInWorld_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
+	public btVector3 getNormalOnBInWorld () {
+		long cPtr = CollisionJNI.btPointCollector_normalOnBInWorld_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3(cPtr, false);
+	}
 
-  public void setPointInWorld(btVector3 value) {
-    CollisionJNI.btPointCollector_pointInWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
+	public void setPointInWorld (btVector3 value) {
+		CollisionJNI.btPointCollector_pointInWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
+	}
 
-  public btVector3 getPointInWorld() {
-    long cPtr = CollisionJNI.btPointCollector_pointInWorld_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
+	public btVector3 getPointInWorld () {
+		long cPtr = CollisionJNI.btPointCollector_pointInWorld_get(swigCPtr, this);
+		return (cPtr == 0) ? null : new btVector3(cPtr, false);
+	}
 
-  public void setDistance(float value) {
-    CollisionJNI.btPointCollector_distance_set(swigCPtr, this, value);
-  }
+	public void setDistance (float value) {
+		CollisionJNI.btPointCollector_distance_set(swigCPtr, this, value);
+	}
 
-  public float getDistance() {
-    return CollisionJNI.btPointCollector_distance_get(swigCPtr, this);
-  }
+	public float getDistance () {
+		return CollisionJNI.btPointCollector_distance_get(swigCPtr, this);
+	}
 
-  public void setHasResult(boolean value) {
-    CollisionJNI.btPointCollector_hasResult_set(swigCPtr, this, value);
-  }
+	public void setHasResult (boolean value) {
+		CollisionJNI.btPointCollector_hasResult_set(swigCPtr, this, value);
+	}
 
-  public boolean getHasResult() {
-    return CollisionJNI.btPointCollector_hasResult_get(swigCPtr, this);
-  }
+	public boolean getHasResult () {
+		return CollisionJNI.btPointCollector_hasResult_get(swigCPtr, this);
+	}
 
-  public btPointCollector() {
-    this(CollisionJNI.new_btPointCollector(), true);
-  }
+	public btPointCollector () {
+		this(CollisionJNI.new_btPointCollector(), true);
+	}
 
 }

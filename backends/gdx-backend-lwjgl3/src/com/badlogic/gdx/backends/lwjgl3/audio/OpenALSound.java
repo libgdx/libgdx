@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,36 +16,44 @@
 
 package com.badlogic.gdx.backends.lwjgl3.audio;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.utils.BufferUtils;
+
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.ShortBuffer;
 
 import static org.lwjgl.openal.AL10.*;
 
 /** @author Nathan Sweet */
 public class OpenALSound implements Sound {
 	private int bufferID = -1;
-	private final OpenALAudio audio;
+	private final OpenALLwjgl3Audio audio;
 	private float duration;
+	private int sampleRate, channels;
 
-	public OpenALSound (OpenALAudio audio) {
+	public OpenALSound (OpenALLwjgl3Audio audio) {
 		this.audio = audio;
 	}
 
 	void setup (byte[] pcm, int channels, int sampleRate) {
-		int bytes = pcm.length - (pcm.length % (channels > 1 ? 4 : 2));
-		int samples = bytes / (2 * channels);
-		duration = samples / (float)sampleRate;
+		int validBytes = pcm.length - (pcm.length % (channels > 1 ? 4 : 2));
+		ByteBuffer buffer = BufferUtils.newByteBuffer(validBytes);
+		buffer.put(pcm, 0, validBytes);
+		((Buffer)buffer).flip();
 
-		ByteBuffer buffer = ByteBuffer.allocateDirect(bytes);
-		buffer.order(ByteOrder.nativeOrder());
-		buffer.put(pcm, 0, bytes);
-		buffer.flip();
+		setup(buffer.asShortBuffer(), channels, sampleRate);
+	}
+
+	void setup (ShortBuffer pcm, int channels, int sampleRate) {
+		this.channels = channels;
+		this.sampleRate = sampleRate;
+		int sampleFrames = pcm.limit() / channels;
+		duration = sampleFrames / (float)sampleRate;
 
 		if (bufferID == -1) {
 			bufferID = alGenBuffers();
-			alBufferData(bufferID, channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, buffer.asShortBuffer(), sampleRate);
+			alBufferData(bufferID, channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pcm, sampleRate);
 		}
 	}
 
@@ -60,7 +68,8 @@ public class OpenALSound implements Sound {
 			// Attempt to recover by stopping the least recently played sound
 			audio.retain(this, true);
 			sourceID = audio.obtainSource(false);
-		} else audio.retain(this, false);
+		} else
+			audio.retain(this, false);
 		// In case it still didn't work
 		if (sourceID == -1) return -1;
 		long soundId = audio.getSoundId(sourceID);
@@ -175,5 +184,15 @@ public class OpenALSound implements Sound {
 	/** Returns the length of the sound in seconds. */
 	public float duration () {
 		return duration;
+	}
+
+	/** returns the original sample rate of the sound in Hz. */
+	public int getRate () {
+		return sampleRate;
+	}
+
+	/** returns the number of channels of the sound (1 for mono, 2 for stereo). */
+	public int getChannels () {
+		return channels;
 	}
 }

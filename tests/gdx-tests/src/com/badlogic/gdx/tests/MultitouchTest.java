@@ -38,6 +38,7 @@ public class MultitouchTest extends GdxTest {
 		Color.CYAN, Color.LIGHT_GRAY, Color.GRAY, Color.DARK_GRAY};
 
 	Vector2 tp = new Vector2();
+
 	@Override
 	public void render () {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
@@ -66,7 +67,8 @@ public class MultitouchTest extends GdxTest {
 		Gdx.input.setInputProcessor(this);
 	}
 
-	@Override public void resize (int width, int height) {
+	@Override
+	public void resize (int width, int height) {
 		viewport.update(width, height);
 	}
 

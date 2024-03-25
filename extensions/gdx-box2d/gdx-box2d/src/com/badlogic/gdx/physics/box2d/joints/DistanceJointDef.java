@@ -20,9 +20,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
-/** Distance joint definition. This requires defining an anchor point on both bodies and the non-zero length of the distance joint.
- * The definition uses local anchor points so that the initial configuration can violate the constraint slightly. This helps when
- * saving and loading a game.
+/** Distance joint definition. This requires defining an anchor point on both bodies and the non-zero length of the distance
+ * joint. The definition uses local anchor points so that the initial configuration can violate the constraint slightly. This
+ * helps when saving and loading a game.
  * @warning Do not use a zero or short length. */
 public class DistanceJointDef extends JointDef {
 	public DistanceJointDef () {

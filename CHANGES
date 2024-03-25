@@ -1,3 +1,279 @@
+[1.12.2-SNAPSHOT]
+- [BREAKING CHANGE] GWT: Updated to 2.10.0. `com.google.jsinterop:jsinterop-annotations:2.0.2:sources` must be added as a dependency to your html project dependencies.
+- [BREAKING CHANGE] Android: Minimum API level is now level 19 (Android 4.4)
+- Fixed GlyphLayout for fixed width glyph offsets at the start and end of lines.
+- Fixed scene2d.ui layout for fractional positions and sizes.
+- libGDX is now built using Java 17 due to Gradle 8 requirements.
+- New GDX Setup projects now use Gradle 8.4 and AGP Plugin 8.1.2 which require at least Java 17.
+- Fixed Timer#stop, remember time spent stopped and delay tasks when started again. #7281
+- Android: Add configuration option to render under the cutout if available on the device.
+- Fix: Keep SelectBox popup from extending past right edge of stage.
+- Added Framebuffer multisample support (see GL31FrameBufferMultisampleTest.java for basic usage)
+
+[1.12.1]
+- LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
+- Tiled Fix: TiledLayer parallax default values fix
+- API Addition: TiledDrawable: Align can be set to manipulate the alignment of the rendering (TiledDrawable#setAlign, TiledDrawable#getAlign)
+- API Addition: TiledDrawable#draw: Also available as a static function (with align) if you don't want to create an extra instance per texture region
+- Android: Removed mouse catching added on 1.12.0 due to unintended effects (see #7187).
+- Android: Fixed touch state inconsistency when touching screen with 3 fingers on some devices (see #7256)
+- iOS: Update to MobiVM 2.3.20
+- API Addition: Using "object" property in Tiled object now fetches MapObject being pointed to, and BaseTmxMapLoader includes method for fetching map where key is id and value is MapObject instance.
+- Update to LWJGL 3.3.3
+- API Addition: Vector4 is just like Vector2 or Vector3, but with x, y, z, and w float components; a Vector4 can be passed as a shader uniform.
+- Fix: Fix crash with ANGLE GLES renderer
+- API Change: Use STBVorbis to decode ogg data for Sound
+- API Change: Remove usage of deprecated tag on GL30
+- Lower GLIBC requirements to 2.17 in order to support older Linux systems
+- Fix: Fix setCursor releasing the caught cursor on the LWJGL 3 backend.
+- Fix crash in ParticleEditor and Flame 
+- Fix bitwise precedence in ModelBatch#addMesh (float[] vertices, short[] indices)
+- Improve the default font's compatibility with GL30
+- Fix potential IndexOutOfBoundsException on AsynchronousAndroidSound
+- API Addition: GwtGL20 & GwtGL30#glGetFramebufferAttachmentParameteriv 
+- Fix Tiled classes not being registered in the reflection cache
+- Fix: Change androidx.fragment dependency to compileOnly
+- Fix borderless fullscreen when taskbar is on the left/top
+
+[1.12.0]
+- [BREAKING CHANGE] Added #touchCancelled to InputProcessor interface, see #6871.
+- [BREAKING CHANGE] Android: Immersive mode is now true by default. Set `useImmersiveMode` config to `false` to disable it.
+- [BREAKING CHANGE] iOS: Increased min supported iOS version to 11.0. Update your Info.plist file if necessary.
+- [BREAKING CHANGE] iOS: `hideHomeIndicator` set to `false` by default (was `true`).
+- [BREAKING CHANGE] iOS: `screenEdgesDeferringSystemGestures` set to `UIRectEdge.All` by default (was `UIRectEdge.None`).
+- [BREAKING CHANGE] iOS: preferred FPS is now uncapped by default, see #6717
+- [BREAKING CHANGE] iOS: `ApplicationListener.create` and first `resize` are now called within `UIApplicationDelegate.didFinishLaunching`. Allows for earlier rendering and prevents black screen frames after launch screen. NOTE: App will get terminated if this method is blocked for more than 10-20 sec. 
+- [BREAKING CHANGE] Actor#localToAscendantCoordinates throws an exception if the specified actor is not an ascendant.
+- [BREAKING CHANGE] WidgetGroup#hit first validates the layout.
+- [BREAKING CHANGE] Cell getters return object wrapper instead of primitives.
+- [BREAKING CHANGE] MeshPartBuilder#lastIndex now returns int instead of short.
+- [BREAKING CHANGE] 3D API - max bone weights is now configurable and limited to 4 by default. Change this value if you need less or more. See #6522.
+- [BREAKING CHANGE] Mesh#getVerticesBuffer, Mesh#getIndicesBuffer, VertexData#getBuffer, and IndexData#getBuffer are deprecated in favor to new methods with boolean parameter. If you subclassed some of these classes, you need to implement the new methods.
+- [BREAKING CHANGE] Desktop: The return value of AudioDevice#getLatency() is now in samples, and not milliseconds
+- [BREAKING CHANGE] iOS: 32 bit (armv7) builds are no longer supported. Builds must be 64 bit (arm64) only.
+- [BREAKING CHANGE] iOS: Use dynamic frameworks instead of static libs
+- [BREAKING CHANGE] optimized Mesh#bind and Mesh#unbind have a new parameter for instanced attribute locations. If you use these methods without instancing, you can pass a null value.
+- [BREAKING CHANGE] Dropped support for older libc versions since libGDX is now built on Ubuntu 20.04  (#7005)
+- [KNOWN ISSUE] Android drag behaviour. Gdx.input.getDeltaX() and Gdx.input.getDeltaY always return 0 for pointer 0. Fixed on next version.
+- Update to jnigen 2.4.1
+- LWJGL Fix: setPosision() for MP3 files.
+- iOS: Add new MobiVM MetalANGLE backend
+- iOS: Update to MobiVM 2.3.19
+- Update to LWJGL 3.3.2
+- API Addition: Added Audio#switchOutputDevice and Audio#getAvailableOutputDevices to specify output devices. Only works for LWJGL3
+- Fix LWJGL3: Audio doesn't die anymore, if a device gets disconnected
+- API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
+- API Addition: Vector2: Added static methods for angleDeg and angleRad
+- Fix: Fixed Android and iOS touch cancelled related issues, see #6871.
+- Javadoc: Add "-use" flag to javadoc generation
+- Android: gdx-setup now uses AGP 7.2.2 and SDK 32, requiring Android Studio Chipmunk or IntelliJ IDEA 2022.2 and JDK 11.
+- libGDX is now built using Java 11 due to new Android requirements. The rest of libGDX can still be built with JDK 8 and runtime compatibility of libGDX projects should be unaffected.
+- Fixed glViewport when using HdpiMode.Logical with the LWJGL3 backend.
+- Added Stage#actorRemoved to fire exit events just before an actor is removed.
+- ScrollPane#setScrollingDisabled avoids invalidate() if nothing changed.
+- Fixed incorrect ScrollPane#scrollTo.
+- API Addition: Added Texture3D support
+- Fix: Throw an exception when maximum Attribute count is reached to prevent silent failure.
+- API Fix: The cursor can now be catched on Android.
+- LWJGL3 Fix: Stereo audio can now be played on mono output devices. This may also improve downmixing to stereo and upmixing to surround.
+- API Addition: Added CheckBox#getImageDrawable.
+- FIX: HexagonalTiledMapRenderer now displays maps with the correct stagger index.
+- API Addition: Added I18NBundle#keys() method.
+- TOOLS Features: Save mode can be changed in Flame particle 3D editor.
+- API Addition: added WebGL 2.0 implementation to Gwt backend : you can enable it by GwtApplicationConfiguration#useGL30
+- Added GLES31 and GLES32 support with Lwjgl3 backend implementation
+- API Addition: JsonReader#stop() to stop parsing.
+- API Change: TextureAtlas now uses FileHandle#reader so outside code can control the charset
+- API Fix: Intersector#isPointInTriangle
+- API Addition: The Skin serializer now supports useIntegerPositions
+- API Change: The skin serializer now treats scaledSize as a float
+- API Change: DataInput throws an EOF-Exception
+- API Fix: RenderBuffer leak in GLFrameBuffer class
+- API Change: Pixmap#setPixels will now verify it has been given a direct ByteBuffer
+- API Addition: glTexImage2D and glTexSubImage2D with offset parameter
+- API Addition: OrientedBoundingBox
+- API Addition: Tiled parallax factor support
+- API Fix: LWJGL 3’s borderless fullscreen works with negative monitor coords
+- API Fix: Update mouse x and y values immediately after calling #setCursorPosition
+- API Change: Never stall with AssetManager on GWT
+- API Change: Allow packed depth stencil buffer creation when not using GL30
+- API Fix: Fixed DataInput#readString for non-ASCII
+- API Fix: LwjglGraphics.setupDisplay() is no longer choosing the wrong display mode
+- API Fix: MathUtils.lerpAngle() fixed for extreme inputs
+- MathUtils trigonometry improvements
+- Various Scene2D fixes and improvements
+- Fix: JsonValue#addChild now clears leftover list pointers, preventing inconsistent or looping JSON objects.
+
+[1.11.0]
+- [BREAKING CHANGE] iOS: Increased min supported iOS version to 9.0. Update your Info.plist file if necessary.
+- [BREAKING CHANGE] Removed Maven and Ant build systems. libGDX is now solely built with Gradle. See https://libgdx.com/dev/from-source/ for updated build instructions.
+- [BREAKING CHANGE] Android Moved natives loading out of static init block, see #5795
+- [BREAKING CHANGE] Linux: Shared libraries are now built on Ubuntu 18.04 (up from Ubuntu 16.04)
+- [BREAKING CHANGE] The built-in font files arial-15.fnt and arial-15.png have been replaced with lsans-15.fnt and lsans-15.png; this may change some text layout that uses the built-in font, and code that expects arial-15 assets to be present must change to lsans-15.
+- [BREAKING CHANGE] Legacy LWJGL3 projects must update the sourceCompatibility to 1.8 or higher.
+- [BREAKING CHANGE] Android Removed hideStatusBar configuration, see #6683
+- [BREAKING CHANGE] Lwjgl3ApplicationConfiguration#useOpenGL3 was replaced by #setOpenGLEmulation
+- Gradle build now takes -PjavaVersion=7|8|9... to specify the Java version against which to compile libGDX. Default is Java 7 for everything, except the LWJGL3 backend, which is compiled for Java 8.
+- LWJGL3 extension: Added gdx-lwjgl3-glfw-awt-macos extension. Fixes GLFW in such a way, that the LWJGL3/libGDX must no longer run on the main thread in macOS, which allows AWT to work in parallel, i.e. file dialogs, JFrames, ImageIO, etc. You no longer need to pass `-XstartOnFirstThread` when starting an LWJGL3 app on macOS. See `AwtTestLWJGL` in gdx-tests-lwjgl3. For more information, see https://github.com/libgdx/libgdx/pull/6772
+- API Addition: Added LWJGL3 ANGLE support for x86_64 Windows, Linux, and macOS. Emulates OpenGL ES 2.0 through DirectX (Windows), desktop OpenGL (Linux), and Metal (macOS). May become the preferred method of rendering on macOS if Apple removes OpenGL support entirely. May fix some OpenGL driver issues. More information here: https://github.com/libgdx/libgdx/pull/6672
+- iOS: Update to MobiVM 2.3.16
+- Update to LWJGL 3.3.1
+- API Addition: ObjLoader now supports ambientColor, ambientTexture, transparencyTexture, specularTexture and shininessTexture
+- API Addition: PointSpriteParticleBatch blending is now configurable.
+- TOOLS Features: Blending mode and sort mode can be changed in Flame particle 3D editor.
+- API Addition: Polygon methods setVertex, getVertex, getVertexCount, getCentroid.
+- API Addition: TMX built-in tile property "type" is now supported.
+- API Addition: Octree structure.
+- API Addition: Added StringBuilder#toStringAndClear() method.
+- FirstPersonCameraController keys mapping is now configurable
+- Fix: GlyphLayout: Several fixes for color markup runs with multi-line or wrapping texts
+- API change: GlyphLayout#GlyphRun is now one GlyphRun per line. "color" was removed from GlyphRun and is now handled by GlyphLayout.
+- Gdx Setup Tool: Target Android API 30 and update AGP plugin to 4.1.3
+- API Fix: Sound IDs are now properly removed; this prevents changes to music instances with the same ID
+- API Fix: LWJGL3Net#openURI does now work on macOS & JDK >= 16
+- API Fix: Fixed a possible deadlock with AssetManager#dispose() and #clear()
+- API Change: Enable the AL_DIRECT_CHANNELS_SOFT option for Sounds and AudioDevices as well to fix stereo sound
+- API Addition: CameraInputController#setInvertedControls(boolean)
+- API Removal: AnimatedTiledMapTile#frameCount
+- LWJGL 3 is now the default desktop backend. If you want to port your existing applications, take a look here: https://gist.github.com/crykn/eb37cb4f7a03d006b3a0ecad27292a2d
+- Brought the official and third-party extensions in gdx-setup up to date. Removed some unmaintained ones and added gdx-websockets & jbump.
+- API Fix: Escaped characters in XML attributes are now properly un-escaped
+- Bug Fix: AssetManager backslash conversion removed - fixes use of filenames containing backslashes
+- gdx-setup now places the assets directory in project root instead of android or core. See advanced settings (UI) or arguments (command line) if you don't want it in root.
+- API Fix: Resolved issues with LWJGL 3 and borderless fullscreen
+- API Addition: GeometryUtils,polygons isCCW, ensureClockwise, reverseVertices
+- API Addition: Added FreeTypeFontGenerator#hasCharGlyph method.
+- API Fix: Pool discard method now resets object by default. This fixes the known issue about Pool in libGDX 1.10.0.
+- API Addition: Split GWT reflection cache into two generated classes
+- API Fix: Fix Box2D memory leak with ropes on GWT
+- API Fix: Fix NPE in Type#getDeclaredAnnotation
+- API Addition: Add pause/resume methods to AudioDevice
+- API Fix: Protection against NullPointerException in World#destroyBody()
+- API Fix: Prevent repeated mipmap generation in FileTextureArrayData
+- API Fix: Fix issue with camera reference in CameraGroupStrategy’s default sorter
+- API Fix: Move vertex array index buffer limit to backends to fix issue with numIndices parameter
+- API Fix: TexturePacker: Fix wrong Y value when using padding
+- API Fix: Lwjgl3Net: Add fallback to xdg-open on Linux if Desktop.BROWSE is unavailable
+- API Addition: Add NWSEResize, NESWResize, AllResize, NotAllowed and None SystemCursors
+- API Addition: GWTApplication#getJavaHeap and getNativeHeap are now supported
+- API Addition: Box2D Shape now implements Disposable
+- API Addition: Added ChainShape#clear method
+- API Addition: Added Tooltip#setTouchIndependent; see #6758
+- API Addition: Emulate Timer#isEmpty on GWT
+- API Addition: Bits add copy constructor public Bits (Bits bitsToCpy)
+- API Addition: Added List#drawSelection().
+- API Addition: GwtApplicationConfiguration#xrCompatible 
+- API Fix: setSystemCursor() now works on Android
+- API Fix: getDisplayMode() is now more accurate on Android and GWT.
+- API Addition: JsonValue#iterator(String) to more easily iterate a child that may not exist.
+- API Addition: Added ExtendViewport#setScaling, eg for use with Scaling.contain.
+- API Addition: Added application lifecycle methods to IOSAudio for custom audio implementations.
+- API Addition: Added getBoundingRectangle() to Polyline
+- API Addition: ShapeRenderer#check() has now protected visibility
+- API Addition: Add ability to host GWT module on a different domain than the site, see #6851
+- API Addition: Addes Tooltip#setTouchIndependent; see #6758
+- API ADDITION: Emulate Timer#isEmpty on GWT
+- API Addition: OrientedBoundingBox.
+
+[1.10.0]
+- [BREAKING CHANGE] Android armeabi support has been removed. To migrate your projects: remove any dependency with natives-armeabi qualifier from your gradle build file, this apply to gdx-platform, gdx-bullet-platform, gdx-freetype-platform and gdx-box2d-platform.
+- [BREAKING CHANGE] tvOS libraries have been removed. No migration steps required.
+- [BREAKING CHANGE] Linux x86 (32-bit) support has been removed. No migration steps required.
+- [BREAKING CHANGE] Requires Java 7 or above.
+- [BREAKING CHANGE] API Change: Scaling is now an object instead of an enum. This may change behavior when used with serialization.
+- [BREAKING CHANGE] Group#clear() and #clearChildren() now unfocus the children. Added clear(boolean) and clearChildren(boolean) for when this isn't wanted. Code that overrides clear()/clearChildren() probably should change to override the (boolean) method. #6423
+- [BREAKING CHANGE] Lwjgl3WindowConfiguration#autoIconify is enabled by default.
+- [KNOWN ISSUE] Pool no longer reset freed objects when pool size is above its retention limit. Pool will discard objects instead. If you want to keep the old behavior, you should override Pool#discard method to reset discarded objects.
+- Scene2d.ui: Added new ParticleEffectActor to use particle effects on Stage
+- API addition: iOS: Added HdpiMode option to IOSApplicationConfiguration to allow users to set whether they want to work in logical or raw pixels (default logical).
+- Fix for #6377 Gdx.net.openURI not working with targetSdk 30
+- Api Addition: Added a Pool#discard(T) method.
+- Architecture support: Linux ARM and AARCH64 support has been added. The gdx-xxx-natives.jar files now contain native libraries of these architectures as well.
+- API Addition: Desktop Sound now returns number of channels and sample rate.
+
+[1.9.14]
+- [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 
+- [BREAKING CHANGE] API Change: G3D AnimationDesc#update now returns -1 (instead of 0) if animation not finished.
+- [BREAKING CHANGE] InputEventQueue no longer implements InputProcessor, pass InputProcessor to #drain.
+- [BREAKING CHANGE] HeadlessApplicationConfiguration#renderInterval was changed to #updatesPerSecond
+- API addition: Added Pixmap#setPixels(ByteBuffer).
+- API change: ScreenUtils#getFrameBufferPixmap is deprecated in favor to new method Pixmap#createFromFrameBuffer.
+- API Addition: Added overridable createFiles() methods to backend application classes to allow initializing custom module implementations.
+- API Addition: Add a Graphics#setForegroundFPS() method.
+
+[1.9.13]
+- [BREAKING CHANGE] Fixed keycode representations for ESCAPE, END, INSERT and F1 to F12. These keys are working on Android now, but if you hardcoded or saved the values you might need to migrate.
+- [BREAKING CHANGE] TextureAtlas.AtlasRegion and Region splits and pads fields have been removed and moved to name/value pairs, use #findValue("split") and #findValue("pad") instead.
+- iOS: Update to MobiVM 2.3.12
+- GWT: Key codes set with Gdx.input.setCatchKey prevent default browser behaviour
+- Added Scaling.contain mode: Scales the source to fit the target while keeping the same aspect ratio, but the source is not scaled at all if smaller in both directions.
+- API Addition: Added hasContents() to Clipboard interface, to reduce clipboard notifications on iOS 14
+- TOOLS Features: Blending mode can be changed in Flame particle 3D editor.
+- Input Keycodes added: CAPS_LOCK, PAUSE (aka Break), PRINT_SCREEN, SCROLL_LOCK, F13 to F24, NUMPAD_DIVIDE, NUMPAD_MULTIPLY, NUMPAD_SUBTRACT, NUMPAD_ADD, NUMPAD_DOT, NUMPAD_COMMA, NUMPAD_ENTER, NUMPAD_EQUALS, NUMPAD_LEFT_PAREN, NUMPAD_RIGHT_PAREN, NUM_LOCK.
+  Following changes might be done depending on platform: Keys.STAR to Keys.NUMPAD_MULTIPLY, Keys.SLASH to Keys.NUMPAD_DIVIDE, Keys.NUM to Keys.NUM_LOCK, Keys.COMMA to Keys.NUMPAD_COMMA, Keys.PERIOD to Keys.NUMPAD_DOT, Keys.COMMA to Keys.NUMPAD_COMMA, Keys.ENTER to Keys.NUMPAD_ENTER, Keys.PLUS to Keys.NUMPAD_ADD, Keys.MINUS to Keys.NUMPAD_SUBTRACT
+- Added a QuadFloatTree class.
+- Desktop: Cubemap Seamless feature is now enabled by default when supported, can be changed via backend specific methods, see supportsCubeMapSeamless and enableCubeMapSeamless in both LwjglGraphics and Lwjgl3Graphics.
+- API Addition: TextureAtlas reads arbitrary name/value pairs for each region. See #6316.
+- TexturePacker writes using a new format when legacyOutput is false (default is true). TextureAtlas can read both old and new formats. See #6316.
+
+[1.9.12]
+- [BREAKING CHANGE] iOS: Changed how Retina/hdpi handled on iOS. See #3709.
+- [BREAKING CHANGE] API Change: InputProcessor scrolled method now receives scroll amount for X and Y. Changed type to float to support devices which report fractional scroll amounts. Updated InputEvent in scene2d accordingly: added scrollAmountX, scrollAmountY attributes and corresponding setters and getters. See #6154.
+- [BREAKING CHANGE] API Change: Vector2 angleRad(Vector2) now correctly returns counter-clockwise angles. See #5428
+- [BREAKING CHANGE] Android: getDeltaTime() now returns the raw delta time instead of a smoothed one. See #6228.
+- Fixed vertices returned by Decal.getVertices() not being updated
+- Fixes Issue #5048. The function Intersector.overlapConvexPolygons now should return the right minimum translation vector values.
+- Update to MobiVM 2.3.11
+- API Change: Removed Pool constructor with preFill parameter in favor of using Pool#fill() method. See #6117
+- API Addition: Slider can now be configured to only trigger on certain mouse button clicks (Slider#setButton(int)).
+- Fixed GlyphLayout not laying out correctly with color markup.
+- Fixed TileDrawable not applying its scale correctly.
+- API Addition: Added epsilon methods to maps with float values.
+- API Addition: Added an insertRange method to array collections.
+- Fixed GestureDetector maxFlingDelay.
+- API Change: Changed default GestureDetector maxFlingDelay to Integer.MAX_VALUE (didn't work before, this matches that).
+- Gdx.files.external on Android now uses app external storage - see wiki article File handling for more information
+- Improved text, cursor and selection rendering in TextArea.
+- API Addition: Added setProgrammaticChangeEvents, updateVisualValue, round methods to ProgressBar/Slider.
+- iOS: Keyboard events working on RoboVM on iOS 13.5 and up, uses same API as on other platforms
+- API Addition: Added AndroidLiveWallpaper.notifyColorsChanged() to communicate visually significant colors back to the wallpaper engine.
+- API Change: AssetManager invokes the loaded callback when an asset is unloaded from the load queue if the asset is already loaded.
+- GWT: changed audio backend to WebAudio API. Now working on mobiles, pitch implemented. Configuration change: preferFlash removed. When updating existing projects, you can remove the soundmanager js files from your webapp folder and the references to it from index.html
+- GWT: added possibility to lazy load assets via AssetManager instead of preload them before game start. See GWT specifics wiki article for more information.
+- GWT: New configuration setting usePhysicalPixels to use native resolution on mobile / Retina / HDPI screens. When using this option, make sure to update your code in index.html and HTMLLauncher from setup template.
+- GWT: GwtApplicationConfiguration and GWT backend now support an application to be resizable or fixed size. You can remove your own resizing code from your HTMLLaunchers.
+- GWT: Assets in distribute build are renamed with md5 hash suffix to bypass browser cache on changes
+- GWT: Fixed GwtFileHandle that was only returning text assets when listing a directory, now returns all children
+- API Addition: Pixmap.downloadFromUrl() downloads an image from http(s) URLs and passes it back as a Pixmap on all platforms
+- Added support for Linux ARM builds.
+	- 32-bit: ARMv7/armhf
+	- 64-bit: ARMv8/AArch64
+- API Change: Removed arm abi from SharedLibraryLoader
+- API Addition: Added a Lwjgl3ApplicationConfiguration#foregroundFPS option.
+- API Change: Utility classes are now final and have a private constructor to prevent instantiation.
+- API Change: ScrollPane now supports all combinations of scrollBarsOnTop and fadeScrollBars.
+- API Addition: Added new methods with a "deg" suffix in the method's name for all Vector2 degrees-based methods and deprecated the old ones.
+- API Addition: Added Slider#setVisualPercent.
+- API Change: Enabling fullscreen mode on the lwjgl3 backend now automatically sets the vsync setting again.
+- API Addition: Added put(key, value, defaultValue) for maps with primitive keys, so the old value can be returned.
+- API Addition: Added ObjectLongMap.
+- Added Intersector#intersectRayOrientedBoundsFast to detect if a ray intersects an oriented bounding box, see https://github.com/libgdx/libgdx/pull/6139
+- API Addition: Added Table#clip() and Container#clip() methods.
+- API Addition: Added getBackgroundDrawable() to Button.
+- API Addition: Added imageCheckedDown and getImageDrawable() to ImageButton and ImageTextButton.
+- API Addition: Added focusedFontColor, checkedFocusedFontColor, and getFontColor() to TextButton and ImageTextButton.
+- API Addition: Added wrapReverse setting to HorizontalGroup.
+- API Addition: Added Slider style drawables for over and down: background, knobBefore, and knobAfter.
+- Fixed LwjglFrame not hiding the canvas in some situations.
+- API Change: Table#round uses ceil/floor and is applied during layout, rather than afterward.
+- Fixed blurry NinePatch rendering when using a single center region.
+- API Change: Upon changing the window size with the lwjgl3 backend, the window is centered on the monitor.
+- Fixed DepthShaderProvider no longer creates one DepthShader per bones count. Now it creates only one skinned variant and one non-skinned variant based on DepthShader/Config numBones.
+- API Addition: Added Intersector#intersectPlanes to calculate the point intersected by three planes, see https://github.com/libgdx/libgdx/pull/6217
+- API Addition: Added alternative Android Audio implementation for performant sound. See https://github.com/libgdx/libgdx/pull/6243.
+- API Addition: Expose SpriteBatch and PolygonSpriteBatch setupMatrices() as protected.
+- API Addition: New parameter OnscreenKeyboardType for Input.setOnscreenKeyboardVisible and Input.getTextInput 
+
 [1.9.11]
 - Update to MobiVM 2.3.8
 - Update to LWJGL 3.2.3
@@ -25,6 +301,23 @@
 - API Change: DragAndDrop only removes actors that were not already in the stage. This is to better support using a source actor as the drag actor, see #5675 and #5403.
 - API Change: Changed TiledMapTileLayer#tileWidth & #tileHeight from float to int
 - Added ArrayTextureSpriteBatch that batches drawing operations with different textures into one draw call.
+- API Addition: convenient Matrix4 rotate methods: rotateTowardDirection and rotateTowardTarget
+- API Addition: Convenience method Actions#targeting(Actor, Action) to set an action's target.
+- API Change: Correction of TextField#ENTER_ANDROID renamed to NEWLINE and TextField#ENTER_DESKTOP renamed to CARRIAGE_RETURN.
+- API Change: Changed the visibility of TextField#BULLET, TextField#DELETE, TextField#TAB and TextField#BACKSPACE to protected.
+- API Addition: TextField and TextArea are providing the protected method TextField#checkFocusTraverse(char) to handle the focus traversal.
+- API Addition: UIUtils provides the constants UIUtils#isAndroid and UIUtils#isIos now.
+- Fixed: The behaving of TextFields and TextAreas new line and focus traversal works like intended on all platforms now.
+- API Change: Changed Base64Coder#encodeString() to use UTF-8 instead of the platform default encoding. See #6061
+- Fixed: SphereShapeBuilder poles are now merged which removes lighting artifacts, see #6068 for more information.
+- API Change: Matrix3#setToRotation(Vector3, float float) now rotates counter-clockwise about the axis provided. This also changes Matrix3:setToRotation(Vector3, float) and the 3d particles will rotate counter-clockwise as well. 
+- API Change: TexturePacker uses a dash when naming atlas page image files if the name ends with a digit or a digit + 'x'.
+- API Addition: Added Skin#setScale to control the size of drawables from the skin. This enables scaling a UI and using different sized images to match, without affecting layout.
+- API Change: Moved adding touch focus from Actor#notify to InputListener#handle (see #6082). Code that overrides InputListener#handle or otherwise handles InputEvent.Type.touchDown events must now call Stage#addTouchFocus to get touchDragged and touchUp events.
+- API Addition: Added AsynchronousAssetLoader#unloadAsync to fix memory leaks when an asset is unloaded during loading.
+- Fixed Label text wrapping when it shouldn't (#6098).
+- Fixed ShapeRenderer not being able to render alpha 0xff (was max 0xfe).
+- API Change: glGetActiveUniform and glGetActiveAttrib parameter changed from Buffer to IntBuffer.
 
 [1.9.10]
 - API Addition: Allow target display for maximization LWJGL3 backend

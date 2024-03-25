@@ -35,7 +35,6 @@ import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btManifoldPoint;
 import com.badlogic.gdx.physics.bullet.collision.btShapeHull;
-import com.badlogic.gdx.physics.bullet.linearmath.btVector3;
 
 /** @author xoppa, didum */
 public class ConvexHullDistanceTest extends BaseBulletTest {
@@ -98,7 +97,8 @@ public class ConvexHullDistanceTest extends BaseBulletTest {
 
 	public static btConvexHullShape createConvexHullShape (final Model model, boolean optimize) {
 		final Mesh mesh = model.meshes.get(0);
-		final btConvexHullShape shape = new btConvexHullShape(mesh.getVerticesBuffer(), mesh.getNumVertices(), mesh.getVertexSize());
+		final btConvexHullShape shape = new btConvexHullShape(mesh.getVerticesBuffer(false), mesh.getNumVertices(),
+			mesh.getVertexSize());
 		if (!optimize) return shape;
 		// now optimize the shape
 		final btShapeHull hull = new btShapeHull(shape);
@@ -115,7 +115,7 @@ public class ConvexHullDistanceTest extends BaseBulletTest {
 		private btCollisionDispatcher dispatcher;
 		private btDbvtBroadphase pairCache;
 		private btCollisionWorld collisionWorld;
-		Vector3[] vectors = new Vector3[]{new Vector3(), new Vector3()};
+		Vector3[] vectors = new Vector3[] {new Vector3(), new Vector3()};
 
 		public ConvexHullDistance () {
 			collisionConfiguration = new btDefaultCollisionConfiguration();

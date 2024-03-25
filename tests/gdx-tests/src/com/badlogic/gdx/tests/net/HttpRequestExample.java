@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.net;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
@@ -30,7 +29,7 @@ public class HttpRequestExample extends GdxTest {
 	@Override
 	public void create () {
 		HttpRequest request = new HttpRequest(HttpMethods.GET);
-		request.setUrl("http://libgdx.badlogicgames.com/nightlies/dist/AUTHORS");
+		request.setUrl("https://raw.githubusercontent.com/libgdx/libgdx/master/AUTHORS");
 		Gdx.net.sendHttpRequest(request, new HttpResponseListener() {
 			@Override
 			public void handleHttpResponse (HttpResponse httpResponse) {

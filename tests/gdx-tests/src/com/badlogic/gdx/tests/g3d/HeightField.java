@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.tests.g3d;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.graphics.Color;
@@ -21,8 +22,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * a fully supported and implemented height field class.
  * <p />
  * Represents a HeightField, which is an evenly spaced grid of values, where each value defines the height on that position of the
- * grid, so forming a 3D shape. Typically used for (relatively simple) terrains and such. See <a
- * href="http://en.wikipedia.org/wiki/Heightmap">wikipedia</a> for more information.
+ * grid, so forming a 3D shape. Typically used for (relatively simple) terrains and such. See
+ * <a href="http://en.wikipedia.org/wiki/Heightmap">wikipedia</a> for more information.
  * <p />
  * A height field has a width and height, specifying the width and height of the grid. Points on this grid are specified using
  * integer values, named "x" and "y". Do not confuse these with the x, y and z floating point values representing coordinates in
@@ -339,7 +340,7 @@ public class HeightField implements Disposable {
 		System.arraycopy(data, offset, this.data, 0, this.data.length);
 		update();
 	}
-	
+
 	@Override
 	public void dispose () {
 		mesh.dispose();
@@ -360,7 +361,7 @@ public class HeightField implements Disposable {
 		} else {
 			source = new byte[width * height * bytesPerColor];
 			data.get(source);
-			data.position(startPos);
+			((Buffer)data).position(startPos);
 		}
 
 		float[] dest = new float[width * height];

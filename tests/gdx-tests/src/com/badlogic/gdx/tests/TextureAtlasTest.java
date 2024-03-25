@@ -45,7 +45,7 @@ public class TextureAtlasTest extends GdxTest {
 		batch = new SpriteBatch();
 		renderer = new ShapeRenderer();
 
-		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
+		atlas = new TextureAtlas(Gdx.files.internal("data/pack.atlas"));
 		jumpAtlas = new TextureAtlas(Gdx.files.internal("data/jump.txt"));
 
 		jumpAnimation = new Animation<TextureRegion>(0.25f, jumpAtlas.findRegions("ALIEN_JUMP_"));
