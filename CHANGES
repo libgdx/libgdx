@@ -9,6 +9,7 @@
 - Android: Add configuration option to render under the cutout if available on the device.
 - Fix: Keep SelectBox popup from extending past right edge of stage.
 - Added Framebuffer multisample support (see GL31FrameBufferMultisampleTest.java for basic usage)
+- API Addition: Added ArrayTextureSpriteBatch that batches drawing operations with different textures into one draw call.
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
@@ -300,7 +301,6 @@
 - Allows up to 64k (65536) vertices in a Mesh instead of 32k before. Indices can use unsigned short range, so index above 32767 should be converted to int using bitwise mask, eg. int unsigneShortIndex = (shortIndex & 0xFFFF).
 - API Change: DragAndDrop only removes actors that were not already in the stage. This is to better support using a source actor as the drag actor, see #5675 and #5403.
 - API Change: Changed TiledMapTileLayer#tileWidth & #tileHeight from float to int
-- Added ArrayTextureSpriteBatch that batches drawing operations with different textures into one draw call.
 - API Addition: convenient Matrix4 rotate methods: rotateTowardDirection and rotateTowardTarget
 - API Addition: Convenience method Actions#targeting(Actor, Action) to set an action's target.
 - API Change: Correction of TextField#ENTER_ANDROID renamed to NEWLINE and TextField#ENTER_DESKTOP renamed to CARRIAGE_RETURN.
