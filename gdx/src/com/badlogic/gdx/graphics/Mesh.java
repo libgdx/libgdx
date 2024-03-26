@@ -44,6 +44,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.DisposalHelper;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -660,9 +661,7 @@ public class Mesh implements Disposable {
 	/** Frees all resources associated with this Mesh */
 	public void dispose () {
 		if (meshes.get(Gdx.app) != null) meshes.get(Gdx.app).removeValue(this, true);
-		vertices.dispose();
-		if (instances != null) instances.dispose();
-		indices.dispose();
+		DisposalHelper.disposeAll(vertices, instances, indices);
 	}
 
 	/** Returns the first {@link VertexAttribute} having the given {@link Usage}.
