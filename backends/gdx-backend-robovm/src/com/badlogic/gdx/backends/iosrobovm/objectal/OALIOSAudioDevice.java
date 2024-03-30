@@ -15,12 +15,12 @@ class OALIOSAudioDevice implements AudioDevice {
 	private ALSource alSource;
 	private ArrayList<ALBuffer> alBuffers = new ArrayList<>();
 	private ArrayList<ALBuffer> alBuffersFree = new ArrayList<>();
-	private int samplingRate;
-	private boolean isMono;
-	private int format;
-	private ShortBuffer tmpBuffer;
-	private int minSize;
-	private int latency;
+	private final int samplingRate;
+	private final boolean isMono;
+	private final int format;
+	private final ShortBuffer tmpBuffer;
+	private final int minSize;
+	private final int latency;
 
 	OALIOSAudioDevice (int samplingRate, boolean isMono, int minSize, int bufferCount) {
 		this.samplingRate = samplingRate;
@@ -32,7 +32,7 @@ class OALIOSAudioDevice implements AudioDevice {
 		latency = minSize / (isMono ? 1 : 2) / bufferCount;
 		alSource = new ALSource();
 		for (int i = 0; i < bufferCount; i++) {
-			ALBuffer buffer = new ALBuffer().initWithNameDataSizeFormatFrequency("test", Struct.allocate(VoidPtr.class, 2), 2,
+			ALBuffer buffer = new ALBuffer().initWithNameDataSizeFormatFrequency("test", Struct.allocate(VoidPtr.class, 1), 2,
 				format, samplingRate);
 			alBuffersFree.add(buffer);
 		}

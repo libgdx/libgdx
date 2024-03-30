@@ -16,6 +16,6 @@ public class ALWrapper extends NSObject {
 		ObjCRuntime.bind(ALWrapper.class);
 	}
 
-	@Method(selector = "bufferData:bufferId:format:data:size:frequency:")
+	@Method(selector = "bufferData:format:data:size:frequency:")
 	public static native boolean bufferData (int bufferId, int format, VoidPtr data, int size, int frequency);
 }
