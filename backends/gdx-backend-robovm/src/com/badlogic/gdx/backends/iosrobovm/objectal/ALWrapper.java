@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.iosrobovm.objectal;
 
 import org.robovm.apple.foundation.NSObject;
@@ -11,10 +12,10 @@ import org.robovm.rt.bro.ptr.VoidPtr;
 @Library(Library.INTERNAL)
 @NativeClass
 public class ALWrapper extends NSObject {
-    static {
-        ObjCRuntime.bind(ALWrapper.class);
-    }
+	static {
+		ObjCRuntime.bind(ALWrapper.class);
+	}
 
-    @Method
-    public static native boolean bufferData(int bufferId, int format, VoidPtr data, int size, int frequency);
+	@Method
+	public static native boolean bufferData (int bufferId, int format, VoidPtr data, int size, int frequency);
 }

@@ -72,5 +72,5 @@ public class ALSource extends NSObject {
 	public native boolean playing ();
 
 	@Method(selector = "play")
-	public native ALSoundSource play();
+	public native ALSoundSource play ();
 }

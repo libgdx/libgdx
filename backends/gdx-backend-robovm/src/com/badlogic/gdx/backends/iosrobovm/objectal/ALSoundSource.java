@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.iosrobovm.objectal;
 
 import org.robovm.apple.foundation.NSObject;
@@ -9,7 +10,7 @@ import org.robovm.rt.bro.annotation.Library;
 @Library(Library.INTERNAL)
 @NativeClass
 public class ALSoundSource extends NSObject {
-    static {
-        ObjCRuntime.bind(ALSoundSource.class);
-    }
+	static {
+		ObjCRuntime.bind(ALSoundSource.class);
+	}
 }
