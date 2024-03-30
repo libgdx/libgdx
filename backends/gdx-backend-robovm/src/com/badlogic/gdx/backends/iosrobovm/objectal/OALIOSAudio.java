@@ -44,8 +44,7 @@ public class OALIOSAudio implements IOSAudio {
 
 	@Override
 	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
-		// TODO Auto-generated method stub
-		return null;
+		return new OALIOSAudioDevice(samplingRate, isMono, config.audioDeviceBufferSize, config.audioDeviceBufferCount);
 	}
 
 	@Override
