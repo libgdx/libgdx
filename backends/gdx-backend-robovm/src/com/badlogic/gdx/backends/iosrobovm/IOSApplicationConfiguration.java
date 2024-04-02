@@ -95,7 +95,7 @@ public class IOSApplicationConfiguration {
 	public int audioDeviceBufferSize = 512;
 
 	/** How many buffers to use for audio device */
-	public int audioDeviceBufferCount = 4;
+	public int audioDeviceBufferCount = 9;
 
 	/** whether to use audio or not. Default is <code>true</code> **/
 	public boolean useAudio = true;

@@ -25,7 +25,7 @@ class OALIOSAudioDevice implements AudioDevice {
 	OALIOSAudioDevice (int samplingRate, boolean isMono, int minSize, int bufferCount) {
 		this.samplingRate = samplingRate;
 		this.isMono = isMono;
-		this.format = isMono ? 0x1101 : 0x1103;
+		this.format = isMono ? 0x1101 : 0x1103; // AL_FORMAT_MONO16 : AL_FORMAT_STEREO16
 		this.minSize = minSize;
 
 		tmpBuffer = ShortBuffer.allocate(minSize);
@@ -51,7 +51,7 @@ class OALIOSAudioDevice implements AudioDevice {
 			shortPtr = Struct.allocate(ShortPtr.class, numSamples + tmpBuffer.position());
 
 			shortPtr.set(tmpBuffer.array(), 0, tmpBuffer.position());
-			shortPtr.set(samples, offset + tmpBuffer.position(), numSamples);
+			shortPtr.next(tmpBuffer.position()).set(samples, offset, numSamples);
 			numSamples += tmpBuffer.position();
 			tmpBuffer.position(0);
 		} else {
@@ -61,20 +61,40 @@ class OALIOSAudioDevice implements AudioDevice {
 
 		if (alBuffersFree.isEmpty()) {
 			while (true) {
-				int i = alSource.buffersProcessed();
-				for (int j = 0; j < i; j++) {
-					ALBuffer alBuffer = alBuffers.remove(0);
-					alSource.unqueueBuffer(alBuffer);
-					alBuffersFree.add(alBuffer);
+				if (OALAudioSession.sharedInstance().interrupted()) {
+					try {
+						Thread.sleep(2);
+					} catch (InterruptedException ignored) {
+					}
+					return;
 				}
-				if (i != 0) {
-					break;
+				boolean freedBuffer = false;
+				int toFree = Math.min(alSource.buffersProcessed(), alBuffers.size());
+				for (int j = 0; j < toFree; j++) {
+					ALBuffer alBuffer = alBuffers.get(0);
+					if (alSource.unqueueBuffer(alBuffer)) {
+						alBuffersFree.add(alBuffer);
+						alBuffers.remove(alBuffer);
+						freedBuffer = true;
+					} else {
+						break;
+					}
+					if (freedBuffer) {
+						break;
+					} else {
+						try {
+							Thread.sleep(2);
+						} catch (InterruptedException ignored) {
+						}
+					}
 				}
 			}
 		}
 		ALBuffer buffer = alBuffersFree.remove(0);
 		ALWrapper.bufferData(buffer.bufferId(), format, shortPtr.as(VoidPtr.class), numSamples * 2, samplingRate);
-		alSource.queueBuffer(buffer);
+		if (alSource.queueBuffer(buffer)) {
+			alBuffers.add(buffer);
+		}
 		alBuffers.add(buffer);
 		if (!alSource.playing()) {
 			alSource.play();
