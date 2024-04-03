@@ -95,7 +95,6 @@ class OALIOSAudioDevice implements AudioDevice {
 		if (alSource.queueBuffer(buffer)) {
 			alBuffers.add(buffer);
 		}
-		alBuffers.add(buffer);
 		if (!alSource.playing()) {
 			alSource.play();
 		}
