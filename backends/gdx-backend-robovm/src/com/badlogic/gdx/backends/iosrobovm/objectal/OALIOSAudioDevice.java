@@ -64,19 +64,28 @@ class OALIOSAudioDevice implements AudioDevice {
 		}
 
 		while (alBuffersFree.isEmpty()) {
+			if (OALAudioSession.sharedInstance().interrupted()) {
+				try {
+					Thread.sleep(2);
+				} catch (InterruptedException ignored) {
+				}
+				return;
+			}
 			int toFree = Math.min(alSource.buffersProcessed(), alBuffers.size());
 			for (int j = 0; j < toFree; j++) {
-				ALBuffer alBuffer = alBuffers.get(j);
+				ALBuffer alBuffer = alBuffers.get(0);
 				if (alSource.unqueueBuffer(alBuffer)) {
 					alBuffersFree.add(alBuffer);
 					alBuffers.remove(alBuffer);
-					j--;
-					toFree--;
+				} else {
+					break;
 				}
 			}
-			try {
-				Thread.sleep(2);
-			} catch (InterruptedException ignored) {
+			if (alBuffersFree.isEmpty()) {
+				try {
+					Thread.sleep(2);
+				} catch (InterruptedException ignored) {
+				}
 			}
 		}
 
