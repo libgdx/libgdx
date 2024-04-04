@@ -33,7 +33,7 @@ class OALIOSAudioDevice implements AudioDevice {
 		alSource = new ALSource();
 		for (int i = 0; i < bufferCount; i++) {
 			ALBuffer buffer = new ALBuffer().initWithNameDataSizeFormatFrequency("test", Struct.allocate(VoidPtr.class, 1), 2,
-				format, samplingRate);
+					format, samplingRate);
 			alBuffersFree.add(buffer);
 		}
 	}
@@ -60,28 +60,26 @@ class OALIOSAudioDevice implements AudioDevice {
 		}
 
 		if (alBuffersFree.isEmpty()) {
-			while (true) {
-				if (OALAudioSession.sharedInstance().interrupted()) {
-					try {
-						Thread.sleep(2);
-					} catch (InterruptedException ignored) {
-					}
-					return;
+			if (OALAudioSession.sharedInstance().interrupted()) {
+				try {
+					Thread.sleep(2);
+				} catch (InterruptedException ignored) {
 				}
-				boolean freedBuffer = false;
-				int toFree = Math.min(alSource.buffersProcessed(), alBuffers.size());
-				for (int j = 0; j < toFree; j++) {
-					ALBuffer alBuffer = alBuffers.get(0);
-					if (alSource.unqueueBuffer(alBuffer)) {
-						alBuffersFree.add(alBuffer);
-						alBuffers.remove(alBuffer);
-						freedBuffer = true;
-					} else {
-						break;
-					}
-					if (freedBuffer) {
-						break;
-					} else {
+				return;
+			}
+			boolean freedBuffer = false;
+			int toFree = Math.min(alSource.buffersProcessed(), alBuffers.size());
+			int j = 0;
+			while (!freedBuffer) {
+				ALBuffer alBuffer = alBuffers.get(0);
+				if (alSource.unqueueBuffer(alBuffer)) {
+					alBuffersFree.add(alBuffer);
+					alBuffers.remove(alBuffer);
+					freedBuffer = true;
+				} else {
+					j += 1;
+					if (j >= toFree) {
+						j = 0;
 						try {
 							Thread.sleep(2);
 						} catch (InterruptedException ignored) {

@@ -39,7 +39,7 @@ public class OALIOSAudio implements IOSAudio {
 			audio.setAllowIpod(config.allowIpod);
 			audio.setHonorSilentSwitch(!config.overrideRingerSwitch);
 		} else
-			Gdx.app.error("IOSAudio", "No OALSimpleAudio instance available, audio will not be availabe");
+			Gdx.app.error("IOSAudio", "No OALSimpleAudio instance available, audio will not be available");
 	}
 
 	@Override
