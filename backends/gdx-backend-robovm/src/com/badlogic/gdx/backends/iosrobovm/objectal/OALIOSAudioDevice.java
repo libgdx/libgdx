@@ -10,6 +10,9 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.badlogic.gdx.backends.iosrobovm.objectal.ALConsts.AL_FORMAT_MONO16;
+import static com.badlogic.gdx.backends.iosrobovm.objectal.ALConsts.AL_FORMAT_STEREO16;
+
 /** @author Jile Gao
  * @author Bernstanio */
 class OALIOSAudioDevice implements AudioDevice {
@@ -26,7 +29,7 @@ class OALIOSAudioDevice implements AudioDevice {
 	OALIOSAudioDevice (int samplingRate, boolean isMono, int minSize, int bufferCount) {
 		this.samplingRate = samplingRate;
 		this.isMono = isMono;
-		this.format = isMono ? 0x1101 : 0x1103; // AL_FORMAT_MONO16 : AL_FORMAT_STEREO16
+		this.format = isMono ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
 		this.minSize = minSize;
 
 		tmpBuffer = ShortBuffer.allocate(minSize);
