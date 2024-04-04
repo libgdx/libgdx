@@ -76,6 +76,8 @@ class OALIOSAudioDevice implements AudioDevice {
 					alBuffersFree.add(alBuffer);
 					alBuffers.remove(alBuffer);
 					freedBuffer = true;
+					j -= 1;
+					toFree -= 1;
 				} else {
 					j += 1;
 					if (j >= toFree) {
