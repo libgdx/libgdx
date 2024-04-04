@@ -33,7 +33,7 @@ class OALIOSAudioDevice implements AudioDevice {
 		alSource = new ALSource();
 		for (int i = 0; i < bufferCount; i++) {
 			ALBuffer buffer = new ALBuffer().initWithNameDataSizeFormatFrequency("test", Struct.allocate(VoidPtr.class, 1), 2,
-					format, samplingRate);
+				format, samplingRate);
 			alBuffersFree.add(buffer);
 		}
 	}
