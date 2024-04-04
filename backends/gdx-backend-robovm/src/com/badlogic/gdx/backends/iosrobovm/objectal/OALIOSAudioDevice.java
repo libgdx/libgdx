@@ -71,12 +71,11 @@ class OALIOSAudioDevice implements AudioDevice {
 			int toFree = Math.min(alSource.buffersProcessed(), alBuffers.size());
 			int j = 0;
 			while (!freedBuffer) {
-				ALBuffer alBuffer = alBuffers.get(0);
+				ALBuffer alBuffer = alBuffers.get(j);
 				if (alSource.unqueueBuffer(alBuffer)) {
 					alBuffersFree.add(alBuffer);
 					alBuffers.remove(alBuffer);
 					freedBuffer = true;
-					toFree -= 1;
 				} else {
 					j += 1;
 					if (j >= toFree) {
