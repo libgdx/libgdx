@@ -14,7 +14,7 @@ import static com.badlogic.gdx.backends.iosrobovm.objectal.ALConsts.AL_FORMAT_MO
 import static com.badlogic.gdx.backends.iosrobovm.objectal.ALConsts.AL_FORMAT_STEREO16;
 
 /** @author Jile Gao
- * @author Bernstanio */
+ * @author Berstanio */
 class OALIOSAudioDevice implements AudioDevice {
 	private ALSource alSource;
 	private List<ALBuffer> alBuffers = new ArrayList<>();
