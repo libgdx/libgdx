@@ -8,13 +8,14 @@ import org.robovm.rt.bro.ptr.VoidPtr;
 
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 /** @author Jile Gao
  * @author Bernstanio */
 class OALIOSAudioDevice implements AudioDevice {
 	private ALSource alSource;
-	private ArrayList<ALBuffer> alBuffers = new ArrayList<>();
-	private ArrayList<ALBuffer> alBuffersFree = new ArrayList<>();
+	private List<ALBuffer> alBuffers = new ArrayList<>();
+	private List<ALBuffer> alBuffersFree = new ArrayList<>();
 	private final int samplingRate;
 	private final boolean isMono;
 	private final int format;
@@ -46,10 +47,10 @@ class OALIOSAudioDevice implements AudioDevice {
 	@Override
 	public void writeSamples (short[] samples, int offset, int numSamples) {
 		if (numSamples < 0) throw new IllegalArgumentException("numSamples cannot be < 0.");
+
 		ShortPtr shortPtr;
 		if (numSamples + tmpBuffer.position() >= minSize) {
 			shortPtr = Struct.allocate(ShortPtr.class, numSamples + tmpBuffer.position());
-
 			shortPtr.set(tmpBuffer.array(), 0, tmpBuffer.position());
 			shortPtr.next(tmpBuffer.position()).set(samples, offset, numSamples);
 			numSamples += tmpBuffer.position();
@@ -59,35 +60,23 @@ class OALIOSAudioDevice implements AudioDevice {
 			return;
 		}
 
-		if (alBuffersFree.isEmpty()) {
-			if (OALAudioSession.sharedInstance().interrupted()) {
-				try {
-					Thread.sleep(2);
-				} catch (InterruptedException ignored) {
-				}
-				return;
-			}
-			boolean freedBuffer = false;
+		while (alBuffersFree.isEmpty()) {
 			int toFree = Math.min(alSource.buffersProcessed(), alBuffers.size());
-			int j = 0;
-			while (!freedBuffer) {
+			for (int j = 0; j < toFree; j++) {
 				ALBuffer alBuffer = alBuffers.get(j);
 				if (alSource.unqueueBuffer(alBuffer)) {
 					alBuffersFree.add(alBuffer);
 					alBuffers.remove(alBuffer);
-					freedBuffer = true;
-				} else {
-					j += 1;
-					if (j >= toFree) {
-						j = 0;
-						try {
-							Thread.sleep(2);
-						} catch (InterruptedException ignored) {
-						}
-					}
+					j--;
+					toFree--;
 				}
 			}
+			try {
+				Thread.sleep(2);
+			} catch (InterruptedException ignored) {
+			}
 		}
+
 		ALBuffer buffer = alBuffersFree.remove(0);
 		ALWrapper.bufferData(buffer.bufferId(), format, shortPtr.as(VoidPtr.class), numSamples * 2, samplingRate);
 		if (alSource.queueBuffer(buffer)) {
