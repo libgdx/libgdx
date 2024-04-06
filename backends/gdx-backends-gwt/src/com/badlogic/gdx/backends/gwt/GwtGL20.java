@@ -979,6 +979,8 @@ public class GwtGL20 implements GL20 {
 				int byteOffset = webGLArray.byteOffset() + pixels.position();
 				ArrayBufferView buffer = Uint8ArrayNative.create(webGLArray.buffer(), byteOffset, remainingBytes);
 				gl.texImage2D(target, level, internalformat, width, height, border, format, type, buffer);
+			} else {
+				throw new GdxRuntimeException("Unsupported Buffer type");
 			}
 		}
 	}
