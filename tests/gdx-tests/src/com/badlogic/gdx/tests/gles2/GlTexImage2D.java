@@ -26,12 +26,12 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 
-/** Added during glTexImage2D corrections. 
+/** Added during glTexImage2D corrections.
  * @author Ret-Mode */
 public class GlTexImage2D extends GdxTest {
-	
+
 	ShaderProgram shader;
-	
+
 	int texture = 0;
 	int pixmapTexture = 0;
 
@@ -41,24 +41,15 @@ public class GlTexImage2D extends GdxTest {
 
 	Pixmap pixmapCheck;
 
-	String vertexShader = 
-		  "attribute vec2 vPosition;                    \n" 
-		+ "attribute vec2 vTexCoords;                   \n"
-		+ "varying   vec2 fTexCoords;                   \n"
-		+ "void main()                                  \n"
-		+ "{                                            \n" 
-		+ "   gl_Position = vec4(vPosition, 0.0, 1.0);  \n" 
-		+ "   fTexCoords  = vTexCoords;                 \n"
-		+ "}";
-	String fragmentShader = 
-	      "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n"
-		+ "varying vec2 fTexCoords;                       \n"
-		+ "uniform sampler2D uTex2d;                      \n" 
-		+ "void main()                                    \n" 
-		+ "{                                              \n"
-		+ "  gl_FragColor = texture2D(uTex2d, fTexCoords);\n" 
-		+ "}";
-		
+	String vertexShader = "attribute vec2 vPosition;                    \n" + "attribute vec2 vTexCoords;                   \n"
+		+ "varying   vec2 fTexCoords;                   \n" + "void main()                                  \n"
+		+ "{                                            \n" + "   gl_Position = vec4(vPosition, 0.0, 1.0);  \n"
+		+ "   fTexCoords  = vTexCoords;                 \n" + "}";
+	String fragmentShader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n"
+		+ "varying vec2 fTexCoords;                       \n" + "uniform sampler2D uTex2d;                      \n"
+		+ "void main()                                    \n" + "{                                              \n"
+		+ "  gl_FragColor = texture2D(uTex2d, fTexCoords);\n" + "}";
+
 	FloatBuffer verticesData = BufferUtils.newFloatBuffer(8);
 	FloatBuffer pixmapVerticesData = BufferUtils.newFloatBuffer(8);
 	FloatBuffer uvData = BufferUtils.newFloatBuffer(8);
@@ -66,14 +57,14 @@ public class GlTexImage2D extends GdxTest {
 
 	@Override
 	public void create () {
-		
+
 		float[] vertices = {-1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, -1.0f, 1.0f};
 		float[] pixmapVertices = {1.0f, 0.0f, -1.0f, 0.0f, -1.0f, -1.0f, 1.0f, -1.0f};
 		float[] uv = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f};
-		byte[] data = {0x7F,  0x00,  0x00,  /* r */
-			           0x00,  0x7F,  0x00,  /* g */
-			           0x00,  0x00,  0x7F,  /* b */
-			           0x00,  0x7F,  0x7F}; /* rg */
+		byte[] data = {0x7F, 0x00, 0x00, /* r */
+			0x00, 0x7F, 0x00, /* g */
+			0x00, 0x00, 0x7F, /* b */
+			0x00, 0x7F, 0x7F}; /* rg */
 
 		verticesData.put(vertices);
 		verticesData.rewind();
@@ -87,21 +78,21 @@ public class GlTexImage2D extends GdxTest {
 
 	@Override
 	public void render () {
-		/* check if OpenGL context needs to be reloaded;
-		 * 	checking only texture should be sufficient; but i guess this check is redundant
+		/*
+		 * check if OpenGL context needs to be reloaded; checking only texture should be sufficient; but i guess this check is
+		 * redundant
 		 */
 		if (!Gdx.gl20.glIsTexture(texture)) {
 			reload();
 		}
 
 		/* bump bytes and upload to gpu */
-		for(int colorComponent = 0; colorComponent < textureColorData.capacity(); ++colorComponent) {
+		for (int colorComponent = 0; colorComponent < textureColorData.capacity(); ++colorComponent) {
 			textureColorData.put(colorComponent, (byte)(textureColorData.get(colorComponent) + 1));
 		}
 		textureColorData.rewind();
 		Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE1);
-		Gdx.gl20.glTexImage2D(GL20.GL_TEXTURE_2D, 0, GL20.GL_RGB, 2, 2, 0, 
-			GL20.GL_RGB, GL20.GL_UNSIGNED_BYTE, textureColorData);
+		Gdx.gl20.glTexImage2D(GL20.GL_TEXTURE_2D, 0, GL20.GL_RGB, 2, 2, 0, GL20.GL_RGB, GL20.GL_UNSIGNED_BYTE, textureColorData);
 		Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE0);
 
 		/* init drawing */
@@ -113,7 +104,7 @@ public class GlTexImage2D extends GdxTest {
 		Gdx.gl20.glVertexAttribPointer(shader.getAttributeLocation("vPosition"), 2, GL20.GL_FLOAT, false, 0, 0);
 		shader.setUniformi("uTex2d", 1);
 		Gdx.gl20.glDrawArrays(GL20.GL_TRIANGLE_FAN, 0, 4);
-			
+
 		/* draw pixmap */
 		Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, pixmapBuffer);
 		Gdx.gl20.glVertexAttribPointer(shader.getAttributeLocation("vPosition"), 2, GL20.GL_FLOAT, false, 0, 0);
@@ -122,7 +113,7 @@ public class GlTexImage2D extends GdxTest {
 
 	}
 
-	private void reload() {
+	private void reload () {
 
 		/* common */
 		Gdx.gl20.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
@@ -131,12 +122,11 @@ public class GlTexImage2D extends GdxTest {
 		texture = Gdx.gl20.glGenTexture();
 		Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE1);
 		Gdx.gl20.glBindTexture(GL20.GL_TEXTURE_2D, texture);
-		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_S , GL20.GL_CLAMP_TO_EDGE);
-		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_T , GL20.GL_CLAMP_TO_EDGE);
+		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_S, GL20.GL_CLAMP_TO_EDGE);
+		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_T, GL20.GL_CLAMP_TO_EDGE);
 		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_LINEAR);
 		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, GL20.GL_LINEAR);
-		Gdx.gl20.glTexImage2D(GL20.GL_TEXTURE_2D, 0, GL20.GL_RGB, 2, 2, 0, 
-			GL20.GL_RGB, GL20.GL_UNSIGNED_BYTE, textureColorData);
+		Gdx.gl20.glTexImage2D(GL20.GL_TEXTURE_2D, 0, GL20.GL_RGB, 2, 2, 0, GL20.GL_RGB, GL20.GL_UNSIGNED_BYTE, textureColorData);
 
 		/* load pixmap to verify that pixmap was not broken */
 		pixmapCheck = new Pixmap(Gdx.files.internal("data/walkanim.png"));
@@ -145,12 +135,12 @@ public class GlTexImage2D extends GdxTest {
 		pixmapTexture = Gdx.gl20.glGenTexture();
 		Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE2);
 		Gdx.gl20.glBindTexture(GL20.GL_TEXTURE_2D, pixmapTexture);
-		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_S , GL20.GL_CLAMP_TO_EDGE);
-		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_T , GL20.GL_CLAMP_TO_EDGE);
+		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_S, GL20.GL_CLAMP_TO_EDGE);
+		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_WRAP_T, GL20.GL_CLAMP_TO_EDGE);
 		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_LINEAR);
 		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, GL20.GL_LINEAR);
-		Gdx.gl20.glTexImage2D(GL20.GL_TEXTURE_2D, 0, GL20.GL_RGBA, pixmapCheck.getWidth(), pixmapCheck.getHeight(), 0, 
-			GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixmapCheck.getPixels());
+		Gdx.gl20.glTexImage2D(GL20.GL_TEXTURE_2D, 0, GL20.GL_RGBA, pixmapCheck.getWidth(), pixmapCheck.getHeight(), 0, GL20.GL_RGBA,
+			GL20.GL_UNSIGNED_BYTE, pixmapCheck.getPixels());
 
 		/* set shader */
 		shader = new ShaderProgram(vertexShader, fragmentShader);
@@ -171,11 +161,11 @@ public class GlTexImage2D extends GdxTest {
 		Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, uvBuffer);
 		Gdx.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, 8 * 4, uvData, GL20.GL_STATIC_DRAW);
 		Gdx.gl20.glVertexAttribPointer(shader.getAttributeLocation("vTexCoords"), 2, GL20.GL_FLOAT, false, 0, 0);
-		
+
 		/* finalize setup */
 		Gdx.gl20.glEnableVertexAttribArray(shader.getAttributeLocation("vPosition"));
 		Gdx.gl20.glEnableVertexAttribArray(shader.getAttributeLocation("vTexCoords"));
-		
+
 		Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE0);
 		Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
 	}
@@ -194,11 +184,11 @@ public class GlTexImage2D extends GdxTest {
 	public void dispose () {
 		Gdx.gl20.glDisableVertexAttribArray(shader.getAttributeLocation("vPosition"));
 		Gdx.gl20.glDisableVertexAttribArray(shader.getAttributeLocation("vTexCoords"));
-		
+
 		Gdx.gl20.glDeleteBuffer(vertsBuffer);
 		Gdx.gl20.glDeleteBuffer(pixmapBuffer);
 		Gdx.gl20.glDeleteBuffer(uvBuffer);
-		
+
 		Gdx.gl20.glDeleteTexture(texture);
 		Gdx.gl20.glDeleteTexture(pixmapTexture);
 
