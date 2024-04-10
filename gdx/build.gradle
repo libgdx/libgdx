@@ -24,7 +24,10 @@ if (JavaVersion.current().isJava9Compatible()) {
 sourceCompatibility = versions.java
 targetCompatibility = versions.java
 
-sourceSets.main.java.srcDirs = ["src", layout.buildDirectory.dir("jnigen")]
+sourceSets.main.java.srcDirs = [
+	"src",
+	layout.buildDirectory.dir("jnigen")
+]
 sourceSets.main.resources.srcDirs = ["res"]
 sourceSets.test.java.srcDirs = ["test"]
 
