@@ -24,13 +24,27 @@ if (JavaVersion.current().isJava9Compatible()) {
 sourceCompatibility = versions.java
 targetCompatibility = versions.java
 
-sourceSets.main.java.srcDirs = ["src"]
+sourceSets.main.java.srcDirs = ["src", layout.buildDirectory.dir("jnigen")]
 sourceSets.main.resources.srcDirs = ["res"]
 sourceSets.test.java.srcDirs = ["test"]
+
+configurations {
+	jnigenLoader
+}
+
+tasks.register('unpackJnigenLoader', Copy) {
+	from {
+		configurations["jnigenLoader"].collect {
+			it.isDirectory() ? it : zipTree(it)
+		}
+	}
+	into layout.buildDirectory.dir("jnigen")
+}
 
 compileJava {
 	options.fork = true
 	options.incremental = true
+	dependsOn unpackJnigenLoader
 }
 
 jar {
@@ -39,7 +53,11 @@ jar {
 
 dependencies {
 	testImplementation libraries.junit
-	api "com.badlogicgames.gdx:gdx-jnigen-loader:2.3.1"
+	jnigenLoader "com.badlogicgames.gdx:gdx-jnigen-loader:2.3.1:sources"
+}
+
+sourcesJar {
+	dependsOn unpackJnigenLoader
 }
 
 test {
