@@ -26,10 +26,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
@@ -50,6 +47,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
     protected TiledMap map;
     protected IntMap<MapObject> idToObject;
     protected Array<Runnable> runOnEndOfLoadTiled;
+
     public BaseTmjMapLoader(FileHandleResolver resolver) {
         super(resolver);
     }
@@ -59,14 +57,14 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
         String encoding = element.getString("encoding", null);
 
         int[] ids;
-        if (encoding == null || encoding.equals("csv")) {
+        if (encoding == null || encoding.isEmpty() || encoding.equals("csv")) {
             ids = data.asIntArray();
         } else if (encoding.equals("base64")) {
             InputStream is = null;
             try {
                 String compression = element.getString("compression", null);
                 byte[] bytes = Base64Coder.decode(data.asString());
-                if (compression == null)
+                if (compression == null || compression.isEmpty())
                     is = new ByteArrayInputStream(bytes);
                 else if (compression.equals("gzip"))
                     is = new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length));
@@ -86,21 +84,22 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
                             read += curr;
                         }
                         if (read != temp.length)
-                            throw new GdxRuntimeException("Error Reading TMX Layer Data: Premature end of tile data");
+                            throw new GdxRuntimeException("Error Reading TMJ Layer Data: Premature end of tile data");
                         ids[y * width + x] = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
                                 | unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
                     }
                 }
             } catch (IOException e) {
-                throw new GdxRuntimeException("Error Reading TMX Layer Data - IOException: " + e.getMessage());
+                throw new GdxRuntimeException("Error Reading TMJ Layer Data - IOException: " + e.getMessage());
             } finally {
                 StreamUtils.closeQuietly(is);
             }
         } else {
             // any other value of 'encoding' is one we're not aware of, probably a feature of a future version of Tiled
             // or another editor
-            throw new GdxRuntimeException("Unrecognised encoding (" + encoding + ") for TMX Layer Data");
+            throw new GdxRuntimeException("Unrecognised encoding (" + encoding + ") for TMJ Layer Data");
         }
+        System.out.println(Arrays.toString(ids));
         return ids;
     }
 
@@ -117,7 +116,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
         return ret;
     }
 
-    private static FileHandle getRelativeFileHandle(FileHandle file, String path) {
+    protected static FileHandle getRelativeFileHandle(FileHandle file, String path) {
         StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
         FileHandle result = file.parent();
         while (tokenizer.hasMoreElements()) {
@@ -156,13 +155,13 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
         return idToObject;
     }
 
-    protected abstract Array<AssetDescriptor> getDependencyAssetDescriptors(FileHandle tmxFile,
+    protected abstract Array<AssetDescriptor> getDependencyAssetDescriptors(FileHandle tmjFile,
                                                                             TextureLoader.TextureParameter textureParameter);
 
     /**
      * Loads the map data, given the JSON root element
      *
-     * @param tmjFile       the Filehandle of the tmx file
+     * @param tmjFile       the Filehandle of the tmj file
      * @param parameter
      * @param imageResolver
      * @return the {@link TiledMap}
@@ -226,7 +225,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
             loadProperties(map.getProperties(), properties);
         }
 
-        JsonValue tilesets = root.getChild("tileset");
+        JsonValue tilesets = root.get("tilesets");
         for (JsonValue element : tilesets) {
             loadTileSet(element, tmjFile, imageResolver);
 
@@ -283,7 +282,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
         }
     }
 
-    protected void loadLayerGroup(TiledMap map, MapLayers parentLayers, JsonValue element, FileHandle tmxFile,
+    protected void loadLayerGroup(TiledMap map, MapLayers parentLayers, JsonValue element, FileHandle tmjFile,
                                   ImageResolver imageResolver) {
         if (element.getString("type", "").equals("group")) {
             MapGroupLayer groupLayer = new MapGroupLayer();
@@ -294,7 +293,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
                 loadProperties(groupLayer.getProperties(), properties);
             }
             for (JsonValue child : element) {
-                loadLayer(map, groupLayer.getLayers(), child, tmxFile, imageResolver);
+                loadLayer(map, groupLayer.getLayers(), child, tmjFile, imageResolver);
             }
 
             for (MapLayer layer : groupLayer.getLayers()) {
@@ -307,7 +306,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
 
     protected void loadTileLayer(TiledMap map, MapLayers parentLayers, JsonValue element) {
 
-        if (element.getString("type", "").equals("layer")) {
+        if (element.getString("type", "").equals("tilelayer")) {
             int width = element.getInt("width", 0);
             int height = element.getInt("height", 0);
             int tileWidth = map.getProperties().get("tilewidth", Integer.class);
@@ -598,23 +597,21 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
             if (source != null) {
                 FileHandle tsx = getRelativeFileHandle(tmjFile, source);
                 try {
-                    element = reader.parse(tsx);
-                    JsonValue imageElement = element.get("image");
-                    if (imageElement != null) {
-                        imageSource = imageElement.getString("source");
-                        imageWidth = imageElement.getInt("width", 0);
-                        imageHeight = imageElement.getInt("height", 0);
+                    JsonValue imageElement = reader.parse(tsx);
+                    if (element.has("image")) {
+                        imageSource = imageElement.getString("image");
+                        imageWidth = imageElement.getInt("imagewidth", 0);
+                        imageHeight = imageElement.getInt("imageheight", 0);
                         image = getRelativeFileHandle(tsx, imageSource);
                     }
                 } catch (SerializationException e) {
                     throw new GdxRuntimeException("Error parsing external tileset.");
                 }
             } else {
-                JsonValue imageElement = element.get("image");
-                if (imageElement != null) {
-                    imageSource = imageElement.getString("source");
-                    imageWidth = imageElement.getInt("width", 0);
-                    imageHeight = imageElement.getInt("height", 0);
+                if (element.has("image")) {
+                    imageSource = element.getString("image");
+                    imageWidth = element.getInt("imagewidth", 0);
+                    imageHeight = element.getInt("imageheight", 0);
                     image = getRelativeFileHandle(tmjFile, imageSource);
                 }
             }
@@ -645,6 +642,10 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
             // Tiles
             JsonValue tiles = element.get("tiles");
 
+            if (tiles == null) {
+                tiles = new JsonValue(JsonValue.ValueType.array);
+            }
+
             addStaticTiles(tmjFile, imageResolver, tileSet, element, tiles, name, firstgid, tilewidth, tileheight, spacing,
                     margin, source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
 
@@ -664,16 +665,18 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
                 }
             }
 
+
             // replace original static tiles by animated tiles
             for (AnimatedTiledMapTile animatedTile : animatedTiles) {
                 tileSet.putTile(animatedTile.getId(), animatedTile);
             }
 
+
             map.getTileSets().addTileSet(tileSet);
         }
     }
 
-    protected abstract void addStaticTiles(FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileset,
+    protected abstract void addStaticTiles(FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileset,
                                            JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing,
                                            int margin, String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
 
@@ -724,8 +727,8 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
         return null;
     }
 
-    private void addStaticTiledMapTile(TiledMapTileSet tileSet, TextureRegion textureRegion, int tileId,
-                                       float offsetX, float offsetY) {
+    protected void addStaticTiledMapTile(TiledMapTileSet tileSet, TextureRegion textureRegion, int tileId,
+                                         float offsetX, float offsetY) {
         TiledMapTile tile = new StaticTiledMapTile(textureRegion);
         tile.setId(tileId);
         tile.setOffsetX(offsetX);
@@ -752,7 +755,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
         public boolean convertObjectToTileSpace = false;
         /**
          * Whether to flip all Y coordinates so that Y positive is up. All libGDX renderers require flipped Y coordinates, and thus
-         * flipY set to true. This parameter is included for non-rendering related purposes of TMX files, or custom renderers.
+         * flipY set to true. This parameter is included for non-rendering related purposes of tmj files, or custom renderers.
          */
         public boolean flipY = true;
     }
