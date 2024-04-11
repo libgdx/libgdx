@@ -1556,14 +1556,14 @@ public class ArrayTextureSpriteBatch implements Batch {
 	 * "texture_index". See {@link ShaderProgram#POSITION_ATTRIBUTE}, {@link ShaderProgram#COLOR_ATTRIBUTE} and
 	 * {@link ShaderProgram#TEXCOORD_ATTRIBUTE} which gets "0" appended to indicate the use of the first texture unit. The combined
 	 * transform and projection matrix is uploaded via a mat4 uniform called "u_projTrans". See
-	 * {@link ArrayTextureSpriteBatch#createDefaultShader(int)} for reference.
+	 * {@link ArrayTextureSpriteBatch#createDefaultShader()} for reference.
 	 * <p>
 	 * Call this method with a null argument to use the default shader.
 	 * <p>
 	 * This method will flush the batch before setting the new shader, you can call it in between {@link #begin()} and
 	 * {@link #end()}.
 	 * @param shader the {@link ShaderProgram} or null to use the default shader.
-	 * @See {@link#createDefaultShader()} */
+	 * @see #createDefaultShader() */
 	@Override
 	public void setShader (ShaderProgram shader) {
 
