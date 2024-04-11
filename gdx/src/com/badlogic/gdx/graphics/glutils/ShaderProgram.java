@@ -176,6 +176,14 @@ public class ShaderProgram implements Disposable {
 		this(vertexShader.readString(), fragmentShader.readString());
 	}
 
+	public ShaderProgram(int program, int vertexShaderHandle, int fragmentShaderHandle) {
+		this.program = program;
+		this.vertexShaderHandle = vertexShaderHandle;
+		this.fragmentShaderHandle = fragmentShaderHandle;
+	}
+
+	public ShaderProgram(){}
+
 	/** Loads and compiles the shaders, creates a new program and links the shaders.
 	 *
 	 * @param vertexShader
