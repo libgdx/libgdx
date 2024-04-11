@@ -203,7 +203,7 @@ public class ArrayTextureSpriteBatch implements Batch {
 			ownsShader = false;
 		}
 
-		FBO_READ_INTBUFF = ByteBuffer.allocateDirect(16 * Integer.BYTES).order(ByteOrder.nativeOrder()).asIntBuffer();
+		FBO_READ_INTBUFF = ByteBuffer.allocateDirect(16 * 4).order(ByteOrder.nativeOrder()).asIntBuffer();
 
 		usedTextures = new Texture[maxTextureSlots];
 
