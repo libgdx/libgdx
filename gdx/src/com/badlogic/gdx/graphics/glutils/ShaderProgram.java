@@ -177,10 +177,9 @@ public class ShaderProgram implements Disposable, OpenGLObject {
 		this(vertexShader.readString(), fragmentShader.readString());
 	}
 
-	public ShaderProgram(OpenGLObject OGO, String vertexShaderSource, String fragmentShaderSource) {
-		 /**
-		 * OpenGLObject type checking may be needed to prevent someone from shooting themselves in the foot.
-		 * However, since there are a LOT of different program types, I'm not gonna add it, but feel free to in the future. **/
+	public ShaderProgram (OpenGLObject OGO, String vertexShaderSource, String fragmentShaderSource) {
+		/** OpenGLObject type checking may be needed to prevent someone from shooting themselves in the foot. However, since there
+		 * are a LOT of different program types, I'm not gonna add it, but feel free to in the future. **/
 		this.program = OGO.getHandles()[0];
 		this.vertexShaderHandle = OGO.getHandles()[1];
 		this.fragmentShaderHandle = OGO.getHandles()[2];
@@ -189,15 +188,14 @@ public class ShaderProgram implements Disposable, OpenGLObject {
 		this.matrix = BufferUtils.newFloatBuffer(16);
 	}
 
-	public void setAttributes(ObjectIntMap<String> attributes, ObjectIntMap<String> attributeTypes,
-							  ObjectIntMap<String> attributeSizes) {
+	public void setAttributes (ObjectIntMap<String> attributes, ObjectIntMap<String> attributeTypes,
+		ObjectIntMap<String> attributeSizes) {
 		this.attributes.putAll(attributes);
 		this.attributeTypes.putAll(attributeTypes);
 		this.attributeSizes.putAll(attributeSizes);
 	}
 
-	public void setUniforms(ObjectIntMap<String> uniforms, ObjectIntMap<String> uniformTypes,
-							  ObjectIntMap<String> uniformSizes) {
+	public void setUniforms (ObjectIntMap<String> uniforms, ObjectIntMap<String> uniformTypes, ObjectIntMap<String> uniformSizes) {
 		this.uniforms.putAll(uniforms);
 		this.uniformTypes.putAll(uniformTypes);
 		this.uniformSizes.putAll(uniformSizes);
@@ -960,12 +958,12 @@ public class ShaderProgram implements Disposable, OpenGLObject {
 	}
 
 	@Override
-	public int[] getHandles() {
+	public int[] getHandles () {
 		return new int[] {program, vertexShaderHandle, fragmentShaderHandle};
 	}
 
 	@Override
-	public int getType() {
+	public int getType () {
 		return 0;
 	}
 }
