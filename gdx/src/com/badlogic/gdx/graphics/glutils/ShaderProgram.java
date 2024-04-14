@@ -24,6 +24,7 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.OpenGLObjects.OpenGLObject;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -64,7 +65,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * </p>
  *
  * @author mzechner */
-public class ShaderProgram implements Disposable {
+public class ShaderProgram implements Disposable, OpenGLObject {
 	/** default name for position attributes **/
 	public static final String POSITION_ATTRIBUTE = "a_position";
 	/** default name for normal attributes **/
@@ -176,13 +177,31 @@ public class ShaderProgram implements Disposable {
 		this(vertexShader.readString(), fragmentShader.readString());
 	}
 
-	public ShaderProgram(int program, int vertexShaderHandle, int fragmentShaderHandle) {
-		this.program = program;
-		this.vertexShaderHandle = vertexShaderHandle;
-		this.fragmentShaderHandle = fragmentShaderHandle;
+	public ShaderProgram(OpenGLObject OGO, String vertexShaderSource, String fragmentShaderSource) {
+		 /**
+		 * OpenGLObject type checking may be needed to prevent someone from shooting themselves in the foot.
+		 * However, since there are a LOT of different program types, I'm not gonna add it, but feel free to in the future. **/
+		this.program = OGO.getHandles()[0];
+		this.vertexShaderHandle = OGO.getHandles()[1];
+		this.fragmentShaderHandle = OGO.getHandles()[2];
+		this.vertexShaderSource = vertexShaderSource;
+		this.fragmentShaderSource = fragmentShaderSource;
+		this.matrix = BufferUtils.newFloatBuffer(16);
 	}
 
-	public ShaderProgram(){}
+	public void setAttributes(ObjectIntMap<String> attributes, ObjectIntMap<String> attributeTypes,
+							  ObjectIntMap<String> attributeSizes) {
+		this.attributes.putAll(attributes);
+		this.attributeTypes.putAll(attributeTypes);
+		this.attributeSizes.putAll(attributeSizes);
+	}
+
+	public void setUniforms(ObjectIntMap<String> uniforms, ObjectIntMap<String> uniformTypes,
+							  ObjectIntMap<String> uniformSizes) {
+		this.uniforms.putAll(uniforms);
+		this.uniformTypes.putAll(uniformTypes);
+		this.uniformSizes.putAll(uniformSizes);
+	}
 
 	/** Loads and compiles the shaders, creates a new program and links the shaders.
 	 *
@@ -938,5 +957,15 @@ public class ShaderProgram implements Disposable {
 	/** @return the handle of the shader program */
 	public int getHandle () {
 		return program;
+	}
+
+	@Override
+	public int[] getHandles() {
+		return new int[] {program, vertexShaderHandle, fragmentShaderHandle};
+	}
+
+	@Override
+	public int getType() {
+		return 0;
 	}
 }
