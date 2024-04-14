@@ -24,6 +24,7 @@ import java.nio.ByteBuffer;
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.utils.Os;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextAttribs;
@@ -736,7 +737,7 @@ public class LwjglGraphics extends AbstractGraphics {
 
 	@Override
 	public void setCursor (com.badlogic.gdx.graphics.Cursor cursor) {
-		if (canvas != null && SharedLibraryLoader.isMac) {
+		if (canvas != null && SharedLibraryLoader.os == Os.MacOsX) {
 			return;
 		}
 		try {
@@ -748,7 +749,7 @@ public class LwjglGraphics extends AbstractGraphics {
 
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
-		if (canvas != null && SharedLibraryLoader.isMac) {
+		if (canvas != null && SharedLibraryLoader.os == Os.MacOsX) {
 			return;
 		}
 		try {
