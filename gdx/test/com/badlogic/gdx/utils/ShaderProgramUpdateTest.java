@@ -1,8 +1,9 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.OpenGLObjects.OpenGLObject;
+
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.OpenGLObject;
 import org.junit.Test;
 
 public class ShaderProgramUpdateTest {

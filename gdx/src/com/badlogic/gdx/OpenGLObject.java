@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.OpenGLObjects;
+package com.badlogic.gdx;
 
 public interface OpenGLObject {
 	// Interface used to broadly categorize objects made with OpenGL.
