@@ -55,7 +55,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 import org.lwjgl.system.Configuration;
 
 public class Lwjgl3Application implements Lwjgl3ApplicationBase {

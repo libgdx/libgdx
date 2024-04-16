@@ -35,7 +35,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 
 public class Lwjgl3Window implements Disposable {
 	private long windowHandle;

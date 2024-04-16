@@ -45,7 +45,7 @@ import com.badlogic.gdx.tests.utils.CommandLineOptions;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTests;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 
 public class LwjglTestStarter extends JFrame {
 	static CommandLineOptions options;

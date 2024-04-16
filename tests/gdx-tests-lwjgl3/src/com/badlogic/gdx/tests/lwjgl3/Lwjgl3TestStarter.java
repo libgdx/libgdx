@@ -37,7 +37,7 @@ import com.badlogic.gdx.tests.utils.CommandLineOptions;
 import com.badlogic.gdx.tests.utils.GdxTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTests;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Lwjgl3TestStarter {

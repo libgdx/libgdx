@@ -4,7 +4,7 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 
 public final class UIUtils {
 	private UIUtils () {

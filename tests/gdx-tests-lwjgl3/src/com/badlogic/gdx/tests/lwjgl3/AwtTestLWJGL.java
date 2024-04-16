@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import com.badlogic.gdx.backends.lwjgl3.awt.GlfwAWTLoader;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;

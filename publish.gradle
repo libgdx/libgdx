@@ -34,6 +34,13 @@ configure([
 							from components.release
 						}
 
+						//If the version already contains snapshot, remove it and replace with EXPERIMENTAL-SNAPSHOT
+						if (version.endsWith('SNAPSHOT')) {
+							version = version.replace("-SNAPSHOT", "-EXPERIMENTAL-SNAPSHOT")
+						} else {
+							version = version + "-EXPERIMENTAL"
+						}
+
 
 						pom {
 							name = POM_NAME

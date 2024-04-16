@@ -28,7 +28,7 @@ import java.util.UUID;
 import java.util.zip.CRC32;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 
 public class GlfwAWTLoader {
 	static public boolean isMac = System.getProperty("os.name").contains("Mac");

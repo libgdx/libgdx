@@ -39,7 +39,7 @@ import com.badlogic.gdx.backends.lwjgl.audio.OpenALLwjglAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 
 import java.awt.Canvas;
 import java.awt.Container;
