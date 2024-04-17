@@ -52,7 +52,7 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
     public TiledMap load(String fileName, TmjMapLoader.Parameters parameter) {
         FileHandle tmjFile = resolve(fileName);
 
-        this.root = reader.parse(tmjFile);
+        this.root = json.parse(tmjFile);
 
         ObjectMap<String, Texture> textures = new ObjectMap<>();
 
@@ -95,29 +95,29 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
         Array<FileHandle> fileHandles = new Array<>();
 
         // TileSet descriptors
-        for (JsonValue tileset : root.get("tilesets")) {
-            String source = tileset.getString("source", null);
+        for (JsonValue tileSet : root.get("tileSets")) {
+            String source = tileSet.getString("source", null);
             if (source != null) {
                 FileHandle tsxFile = getRelativeFileHandle(tmjFile, source);
-                tileset = reader.parse(tsxFile);
-                if (tileset.has("image")) {
-                    String imageSource = tileset.getString("image");
+                tileSet = json.parse(tsxFile);
+                if (tileSet.has("image")) {
+                    String imageSource = tileSet.getString("image");
                     FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
                     fileHandles.add(image);
                 } else {
-                    for (JsonValue tile : tileset.get("tile")) {
+                    for (JsonValue tile : tileSet.get("tile")) {
                         String imageSource = tile.getString("image");
                         FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
                         fileHandles.add(image);
                     }
                 }
             } else {
-                if (tileset.has("image")) {
-                    String imageSource = tileset.getString("image");
+                if (tileSet.has("image")) {
+                    String imageSource = tileSet.getString("image");
                     FileHandle image = getRelativeFileHandle(tmjFile, imageSource);
                     fileHandles.add(image);
                 } else {
-                    for (JsonValue tile : tileset.get("tile")) {
+                    for (JsonValue tile : tileSet.get("tile")) {
                         String imageSource = tile.getString("image");
                         FileHandle image = getRelativeFileHandle(tmjFile, imageSource);
                         fileHandles.add(image);
@@ -142,9 +142,9 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
     }
 
     @Override
-    protected void addStaticTiles(FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileset, JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
+    protected void addStaticTiles(FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet, JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
 
-        MapProperties props = tileset.getProperties();
+        MapProperties props = tileSet.getProperties();
         if (image != null) {
             // One image for the whole tileSet
             TextureRegion texture = imageResolver.getImage(image.path());
@@ -166,7 +166,7 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
                 for (int x = margin; x <= stopWidth; x += tilewidth + spacing) {
                     TextureRegion tileRegion = new TextureRegion(texture, x, y, tilewidth, tileheight);
                     int tileId = id++;
-                    addStaticTiledMapTile(tileset, tileRegion, tileId, offsetX, offsetY);
+                    addStaticTiledMapTile(tileSet, tileRegion, tileId, offsetX, offsetY);
                 }
             }
         } else {
@@ -183,7 +183,7 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
                 }
                 TextureRegion texture = imageResolver.getImage(image.path());
                 int tileId = firstgid + tile.getInt("id");
-                addStaticTiledMapTile(tileset, texture, tileId, offsetX, offsetY);
+                addStaticTiledMapTile(tileSet, texture, tileId, offsetX, offsetY);
             }
         }
     }

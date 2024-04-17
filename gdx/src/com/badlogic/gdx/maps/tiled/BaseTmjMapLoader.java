@@ -36,7 +36,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
     protected static final int FLAG_FLIP_VERTICALLY = 0x40000000;
     protected static final int FLAG_FLIP_DIAGONALLY = 0x20000000;
     protected static final int MASK_CLEAR = 0xE0000000;
-    protected JsonReader reader = new JsonReader();
+    protected JsonReader json = new JsonReader();
     protected JsonValue root;
     protected boolean convertObjectToTileSpace;
     protected boolean flipY = true;
@@ -132,7 +132,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
 
     @Override
     public Array<AssetDescriptor> getDependencies(String fileName, FileHandle tmjFile, P parameter) {
-        this.root = reader.parse(tmjFile);
+        this.root = json.parse(tmjFile);
 
         TextureLoader.TextureParameter textureParameter = new TextureLoader.TextureParameter();
         if (parameter != null) {
@@ -225,8 +225,8 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
             loadProperties(map.getProperties(), properties);
         }
 
-        JsonValue tilesets = root.get("tilesets");
-        for (JsonValue element : tilesets) {
+        JsonValue tileSets = root.get("tilesets");
+        for (JsonValue element : tileSets) {
             loadTileSet(element, tmjFile, imageResolver);
 
         }
@@ -316,7 +316,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
             loadBasicLayerInfo(layer, element);
 
             int[] ids = getTileIds(element, width, height);
-            TiledMapTileSets tilesets = map.getTileSets();
+            TiledMapTileSets tileSets = map.getTileSets();
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     int id = ids[y * width + x];
@@ -324,7 +324,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
                     boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
                     boolean flipDiagonally = ((id & FLAG_FLIP_DIAGONALLY) != 0);
 
-                    TiledMapTile tile = tilesets.getTile(id & ~MASK_CLEAR);
+                    TiledMapTile tile = tileSets.getTile(id & ~MASK_CLEAR);
                     if (tile != null) {
                         Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
                         cell.setTile(tile);
@@ -586,7 +586,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
     }
 
     private void loadTileSet(JsonValue element, FileHandle tmjFile, ImageResolver imageResolver) {
-        if (element.getString("tilecount") != null) { //Specific tileset attribute
+        if (element.getString("tilecount") != null) { //Specific tileSet attribute
             int firstgid = element.getInt("firstgid", 1);
             String imageSource = "";
             int imageWidth = 0;
@@ -597,7 +597,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
             if (source != null) {
                 FileHandle tsx = getRelativeFileHandle(tmjFile, source);
                 try {
-                    JsonValue imageElement = reader.parse(tsx);
+                    JsonValue imageElement = json.parse(tsx);
                     if (element.has("image")) {
                         imageSource = imageElement.getString("image");
                         imageWidth = imageElement.getInt("imagewidth", 0);
@@ -605,7 +605,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
                         image = getRelativeFileHandle(tsx, imageSource);
                     }
                 } catch (SerializationException e) {
-                    throw new GdxRuntimeException("Error parsing external tileset.");
+                    throw new GdxRuntimeException("Error parsing external tileSet.");
                 }
             } else {
                 if (element.has("image")) {
@@ -676,7 +676,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
         }
     }
 
-    protected abstract void addStaticTiles(FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileset,
+    protected abstract void addStaticTiles(FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet,
                                            JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing,
                                            int margin, String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
 
