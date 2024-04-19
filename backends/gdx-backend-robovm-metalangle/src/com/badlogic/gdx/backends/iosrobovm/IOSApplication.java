@@ -394,11 +394,7 @@ public class IOSApplication implements Application {
 			runnables.clear();
 		}
 		for (int i = 0; i < executedRunnables.size; i++) {
-			try {
-				executedRunnables.get(i).run();
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
+			executedRunnables.get(i).run();
 		}
 	}
 
