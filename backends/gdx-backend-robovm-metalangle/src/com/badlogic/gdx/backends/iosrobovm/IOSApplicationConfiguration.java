@@ -36,8 +36,8 @@ public class IOSApplicationConfiguration {
 	/** the multisample format, None is default * */
 	public MGLDrawableMultisample multisample = MGLDrawableMultisample.None;
 
-	/** preferred/max number of frames per second. Set to "0" to indicate max supported by screen (on standard OpenGL backend (non
-	 * MetalANGLE) Apple has a 60fps cap on most devices). * */
+	/** preferred/max number of frames per second. Set to "0" to indicate max supported by screen. Important: On standard OpenGL
+	 * backend FPS is capped to 60. Make sure to use MetalANGLE to support higher FPS. * */
 	public int preferredFramesPerSecond = 0;
 
 	/** whether to use the accelerometer, default true * */

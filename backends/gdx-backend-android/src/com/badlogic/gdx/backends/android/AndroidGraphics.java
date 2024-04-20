@@ -494,11 +494,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 			}
 
 			for (int i = 0; i < app.getExecutedRunnables().size; i++) {
-				try {
-					app.getExecutedRunnables().get(i).run();
-				} catch (Throwable t) {
-					t.printStackTrace();
-				}
+				app.getExecutedRunnables().get(i).run();
 			}
 			app.getInput().processEvents();
 			frameId++;
