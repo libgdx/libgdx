@@ -32,208 +32,204 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonValue;
 
-/**
- * A TiledMap Loader which loads tiles from a TextureAtlas instead of separate images.
+/** A TiledMap Loader which loads tiles from a TextureAtlas instead of separate images.
  * <p>
  * It requires a map-level property called 'atlas' with its value being the relative path to the TextureAtlas. The atlas must have
  * in it indexed regions named after the tileSets used in the map. The indexes shall be local to the tileSet (not the global id).
  * Strip whitespace and rotation should not be used when creating the atlas.
  *
  * @author Justin Shapcott
- * @author Manuel Bua
- */
+ * @author Manuel Bua */
 public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasTiledMapLoaderParameters> {
 
-    protected Array<Texture> trackedTextures = new Array<Texture>();
-    protected AtlasResolver atlasResolver;
+	protected Array<Texture> trackedTextures = new Array<Texture>();
+	protected AtlasResolver atlasResolver;
 
-    public AtlasTmjMapLoader() {
-        super(new InternalFileHandleResolver());
-    }
+	public AtlasTmjMapLoader () {
+		super(new InternalFileHandleResolver());
+	}
 
-    public AtlasTmjMapLoader(FileHandleResolver resolver) {
-        super(resolver);
-    }
+	public AtlasTmjMapLoader (FileHandleResolver resolver) {
+		super(resolver);
+	}
 
-    public TiledMap load(String fileName) {
-        return load(fileName, new AtlasTiledMapLoaderParameters());
-    }
+	public TiledMap load (String fileName) {
+		return load(fileName, new AtlasTiledMapLoaderParameters());
+	}
 
-    public TiledMap load(String fileName, AtlasTiledMapLoaderParameters parameter) {
-        FileHandle tmjFile = resolve(fileName);
+	public TiledMap load (String fileName, AtlasTiledMapLoaderParameters parameter) {
+		FileHandle tmjFile = resolve(fileName);
 
-        this.root = json.parse(tmjFile);
+		this.root = json.parse(tmjFile);
 
-        final FileHandle atlasFileHandle = getAtlasFileHandle(tmjFile);
-        TextureAtlas atlas = new TextureAtlas(atlasFileHandle);
-        this.atlasResolver = new AtlasResolver.DirectAtlasResolver(atlas);
+		final FileHandle atlasFileHandle = getAtlasFileHandle(tmjFile);
+		TextureAtlas atlas = new TextureAtlas(atlasFileHandle);
+		this.atlasResolver = new AtlasResolver.DirectAtlasResolver(atlas);
 
-        TiledMap map = loadTiledMap(tmjFile, parameter, atlasResolver);
-        map.setOwnedResources(new Array<>(new TextureAtlas[]{atlas}));
-        setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
-        return map;
-    }
+		TiledMap map = loadTiledMap(tmjFile, parameter, atlasResolver);
+		map.setOwnedResources(new Array<>(new TextureAtlas[] {atlas}));
+		setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
+		return map;
+	}
 
-    @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle tmjFile, AtlasTiledMapLoaderParameters parameter) {
-        FileHandle atlasHandle = getAtlasFileHandle(tmjFile);
-        this.atlasResolver = new AtlasResolver.AssetManagerAtlasResolver(manager, atlasHandle.path());
+	@Override
+	public void loadAsync (AssetManager manager, String fileName, FileHandle tmjFile, AtlasTiledMapLoaderParameters parameter) {
+		FileHandle atlasHandle = getAtlasFileHandle(tmjFile);
+		this.atlasResolver = new AtlasResolver.AssetManagerAtlasResolver(manager, atlasHandle.path());
 
-        this.map = loadTiledMap(tmjFile, parameter, atlasResolver);
-    }
+		this.map = loadTiledMap(tmjFile, parameter, atlasResolver);
+	}
 
-    @Override
-    public TiledMap loadSync(AssetManager manager, String fileName, FileHandle file, AtlasTiledMapLoaderParameters parameter) {
-        if (parameter != null) {
-            setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
-        }
+	@Override
+	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, AtlasTiledMapLoaderParameters parameter) {
+		if (parameter != null) {
+			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
+		}
 
-        return map;
-    }
+		return map;
+	}
 
-    @Override
-    protected Array<AssetDescriptor> getDependencyAssetDescriptors(FileHandle tmjFile, TextureLoader.TextureParameter textureParameter) {
-        Array<AssetDescriptor> descriptors = new Array<AssetDescriptor>();
+	@Override
+	protected Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmjFile,
+		TextureLoader.TextureParameter textureParameter) {
+		Array<AssetDescriptor> descriptors = new Array<AssetDescriptor>();
 
-        // Atlas dependencies
-        final FileHandle atlasFileHandle = getAtlasFileHandle(tmjFile);
-        if (atlasFileHandle != null) {
-            descriptors.add(new AssetDescriptor(atlasFileHandle, TextureAtlas.class));
-        }
+		// Atlas dependencies
+		final FileHandle atlasFileHandle = getAtlasFileHandle(tmjFile);
+		if (atlasFileHandle != null) {
+			descriptors.add(new AssetDescriptor(atlasFileHandle, TextureAtlas.class));
+		}
 
-        return descriptors;
-    }
+		return descriptors;
+	}
 
-    @Override
-    protected void addStaticTiles(FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet,
-                                  JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth,
-                                  int tileheight, int spacing, int margin, String source, int offsetX, int offsetY,
-                                  String imageSource, int imageWidth, int imageHeight, FileHandle image) {
+	@Override
+	protected void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet, JsonValue element,
+		JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, String source,
+		int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
 
-        TextureAtlas atlas = atlasResolver.getAtlas();
-        String regionsName = name;
+		TextureAtlas atlas = atlasResolver.getAtlas();
+		String regionsName = name;
 
-        for (Texture texture : atlas.getTextures()) {
-            trackedTextures.add(texture);
-        }
+		for (Texture texture : atlas.getTextures()) {
+			trackedTextures.add(texture);
+		}
 
-        MapProperties props = tileSet.getProperties();
-        props.put("imagesource", imageSource);
-        props.put("imagewidth", imageWidth);
-        props.put("imageheight", imageHeight);
-        props.put("tilewidth", tilewidth);
-        props.put("tileheight", tileheight);
-        props.put("margin", margin);
-        props.put("spacing", spacing);
+		MapProperties props = tileSet.getProperties();
+		props.put("imagesource", imageSource);
+		props.put("imagewidth", imageWidth);
+		props.put("imageheight", imageHeight);
+		props.put("tilewidth", tilewidth);
+		props.put("tileheight", tileheight);
+		props.put("margin", margin);
+		props.put("spacing", spacing);
 
-        if (imageSource != null && !imageSource.isEmpty()) {
-            int lastgid = firstgid + ((imageWidth / tilewidth) * (imageHeight / tileheight)) - 1;
-            for (AtlasRegion region : atlas.findRegions(regionsName)) {
-                // Handle unused tileIds
-                if (region != null) {
-                    int tileId = firstgid + region.index;
-                    if (tileId >= firstgid && tileId <= lastgid) {
-                        addStaticTiledMapTile(tileSet, region, tileId, offsetX, offsetY);
-                    }
-                }
-            }
-        }
+		if (imageSource != null && !imageSource.isEmpty()) {
+			int lastgid = firstgid + ((imageWidth / tilewidth) * (imageHeight / tileheight)) - 1;
+			for (AtlasRegion region : atlas.findRegions(regionsName)) {
+				// Handle unused tileIds
+				if (region != null) {
+					int tileId = firstgid + region.index;
+					if (tileId >= firstgid && tileId <= lastgid) {
+						addStaticTiledMapTile(tileSet, region, tileId, offsetX, offsetY);
+					}
+				}
+			}
+		}
 
-        // Add tiles with individual image sources
-        for (JsonValue tileElement : tiles) {
-            int tileId = firstgid + tileElement.getInt("id", 0);
-            TiledMapTile tile = tileSet.getTile(tileId);
-            if (tile == null) {
-                if (tileElement.has("image")) {
-                    String regionName = tileElement.getString("image");
-                    regionName = regionName.substring(0, regionName.lastIndexOf('.'));
-                    AtlasRegion region = atlas.findRegion(regionName);
-                    if (region == null) throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionName);
-                    addStaticTiledMapTile(tileSet, region, tileId, offsetX, offsetY);
-                }
-            }
+		// Add tiles with individual image sources
+		for (JsonValue tileElement : tiles) {
+			int tileId = firstgid + tileElement.getInt("id", 0);
+			TiledMapTile tile = tileSet.getTile(tileId);
+			if (tile == null) {
+				if (tileElement.has("image")) {
+					String regionName = tileElement.getString("image");
+					regionName = regionName.substring(0, regionName.lastIndexOf('.'));
+					AtlasRegion region = atlas.findRegion(regionName);
+					if (region == null) throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionName);
+					addStaticTiledMapTile(tileSet, region, tileId, offsetX, offsetY);
+				}
+			}
 
-        }
-    }
+		}
+	}
 
-    protected FileHandle getAtlasFileHandle(FileHandle tmjFile) {
-        JsonValue properties = root.get("properties");
+	protected FileHandle getAtlasFileHandle (FileHandle tmjFile) {
+		JsonValue properties = root.get("properties");
 
-        String atlasFilePath = null;
-        if (properties != null) {
-            for (JsonValue property : properties) {
-                String name = property.getString("name");
-                if (name.startsWith("atlas")) {
-                    atlasFilePath = property.getString("value");
-                    break;
-                }
-            }
-        }
-        if (atlasFilePath == null) {
-            throw new GdxRuntimeException("The map is missing the 'atlas' property");
-        } else {
-            final FileHandle fileHandle = getRelativeFileHandle(tmjFile, atlasFilePath);
-            if (!fileHandle.exists()) {
-                throw new GdxRuntimeException("The 'atlas' file could not be found: '" + atlasFilePath + "'");
-            }
-            return fileHandle;
-        }
-    }
+		String atlasFilePath = null;
+		if (properties != null) {
+			for (JsonValue property : properties) {
+				String name = property.getString("name");
+				if (name.startsWith("atlas")) {
+					atlasFilePath = property.getString("value");
+					break;
+				}
+			}
+		}
+		if (atlasFilePath == null) {
+			throw new GdxRuntimeException("The map is missing the 'atlas' property");
+		} else {
+			final FileHandle fileHandle = getRelativeFileHandle(tmjFile, atlasFilePath);
+			if (!fileHandle.exists()) {
+				throw new GdxRuntimeException("The 'atlas' file could not be found: '" + atlasFilePath + "'");
+			}
+			return fileHandle;
+		}
+	}
 
-    protected void setTextureFilters(Texture.TextureFilter min, Texture.TextureFilter mag) {
-        for (Texture texture : trackedTextures) {
-            texture.setFilter(min, mag);
-        }
-        trackedTextures.clear();
-    }
+	protected void setTextureFilters (Texture.TextureFilter min, Texture.TextureFilter mag) {
+		for (Texture texture : trackedTextures) {
+			texture.setFilter(min, mag);
+		}
+		trackedTextures.clear();
+	}
 
-    protected interface AtlasResolver extends ImageResolver {
+	protected interface AtlasResolver extends ImageResolver {
 
-        TextureAtlas getAtlas();
+		TextureAtlas getAtlas ();
 
-        class DirectAtlasResolver implements AtlasTmjMapLoader.AtlasResolver {
-            private final TextureAtlas atlas;
+		class DirectAtlasResolver implements AtlasTmjMapLoader.AtlasResolver {
+			private final TextureAtlas atlas;
 
-            public DirectAtlasResolver(TextureAtlas atlas) {
-                this.atlas = atlas;
-            }
+			public DirectAtlasResolver (TextureAtlas atlas) {
+				this.atlas = atlas;
+			}
 
-            @Override
-            public TextureAtlas getAtlas() {
-                return atlas;
-            }
+			@Override
+			public TextureAtlas getAtlas () {
+				return atlas;
+			}
 
-            @Override
-            public TextureRegion getImage(String name) {
-                return atlas.findRegion(name);
-            }
-        }
+			@Override
+			public TextureRegion getImage (String name) {
+				return atlas.findRegion(name);
+			}
+		}
 
-        class AssetManagerAtlasResolver implements AtlasTmjMapLoader.AtlasResolver {
-            private final AssetManager assetManager;
-            private final String atlasName;
+		class AssetManagerAtlasResolver implements AtlasTmjMapLoader.AtlasResolver {
+			private final AssetManager assetManager;
+			private final String atlasName;
 
-            public AssetManagerAtlasResolver(AssetManager assetManager, String atlasName) {
-                this.assetManager = assetManager;
-                this.atlasName = atlasName;
-            }
+			public AssetManagerAtlasResolver (AssetManager assetManager, String atlasName) {
+				this.assetManager = assetManager;
+				this.atlasName = atlasName;
+			}
 
-            @Override
-            public TextureAtlas getAtlas() {
-                return assetManager.get(atlasName, TextureAtlas.class);
-            }
+			@Override
+			public TextureAtlas getAtlas () {
+				return assetManager.get(atlasName, TextureAtlas.class);
+			}
 
-            @Override
-            public TextureRegion getImage(String name) {
-                return getAtlas().findRegion(name);
-            }
-        }
-    }
+			@Override
+			public TextureRegion getImage (String name) {
+				return getAtlas().findRegion(name);
+			}
+		}
+	}
 
-    public static class AtlasTiledMapLoaderParameters extends BaseTmjMapLoader.Parameters {
-        /**
-         * force texture filters?
-         **/
-        public boolean forceTextureFilters = false;
-    }
+	public static class AtlasTiledMapLoaderParameters extends BaseTmjMapLoader.Parameters {
+		/** force texture filters? **/
+		public boolean forceTextureFilters = false;
+	}
 }
