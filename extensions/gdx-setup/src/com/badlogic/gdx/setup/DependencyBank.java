@@ -27,7 +27,7 @@ public class DependencyBank {
 	static String roboVMVersion = "2.3.20";
 	static String buildToolsVersion = "33.0.2";
 	static String androidAPILevel = "33";
-	static String androidMinAPILevel = "14";
+	static String androidMinAPILevel = "19";
 	static String gwtVersion = "2.10.0";
 
 	// Repositories
@@ -41,8 +41,8 @@ public class DependencyBank {
 
 	// Project plugins
 	static String gwtPluginImport = "org.docstr:gwt-gradle-plugin:1.1.29";
-	static String grettyPluginImport = "org.gretty:gretty:3.0.7";
-	static String androidPluginImport = "com.android.tools.build:gradle:7.3.1";
+	static String grettyPluginImport = "org.gretty:gretty:3.1.0";
+	static String androidPluginImport = "com.android.tools.build:gradle:8.1.2";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 
 	// Extension versions
@@ -119,7 +119,7 @@ public class DependencyBank {
 						new String[] {"com.badlogicgames.gdx:gdx-tools:$gdxVersion"}, new String[] {}, new String[] {}, new String[] {},
 						new String[] {}, new String[] {},
 
-						"Collection of tools, including 2D/3D particle editors, texture packers, and file processors"), CONTROLLERS(
+						"Collection of tools, including 3D particle editor, texture packers, and file processors"), CONTROLLERS(
 							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"},
 							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},
 							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},

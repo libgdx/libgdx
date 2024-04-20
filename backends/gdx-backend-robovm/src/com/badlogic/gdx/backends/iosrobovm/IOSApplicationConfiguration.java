@@ -47,8 +47,8 @@ public class IOSApplicationConfiguration {
 	/** the multisample format, None is default **/
 	public GLKViewDrawableMultisample multisample = GLKViewDrawableMultisample.None;
 
-	/** preferred/max number of frames per second. Set to "0" to indicate max supported by screen (on standard OpenGL backend (non
-	 * MetalANGLE) Apple has a 60fps cap on most devices). **/
+	/** preferred/max number of frames per second. Set to "0" to indicate max supported by screen. Important: On standard OpenGL
+	 * backend FPS is capped to 60. Make sure to use MetalANGLE to support higher FPS. **/
 	public int preferredFramesPerSecond = 0;
 
 	/** whether to use the accelerometer, default true **/
@@ -90,6 +90,12 @@ public class IOSApplicationConfiguration {
 
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
 	public int maxNetThreads = Integer.MAX_VALUE;
+
+	/** The minimal buffer size of the audio device. Below 2048 can lead to buggy behavior. */
+	public int audioDeviceBufferSize = 512;
+
+	/** How many buffers to use for audio device */
+	public int audioDeviceBufferCount = 9;
 
 	/** whether to use audio or not. Default is <code>true</code> **/
 	public boolean useAudio = true;

@@ -33,6 +33,7 @@ public class Color {
 	public static final float WHITE_FLOAT_BITS = WHITE.toFloatBits();
 
 	public static final Color CLEAR = new Color(0, 0, 0, 0);
+	public static final Color CLEAR_WHITE = new Color(1, 1, 1, 0);
 
 	public static final Color BLUE = new Color(0, 0, 1, 1);
 	public static final Color NAVY = new Color(0, 0, 0.5f, 1);

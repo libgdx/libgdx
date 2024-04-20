@@ -24,30 +24,11 @@ dependencies {
 sourceSets.main.resources.srcDirs = ["assets"]
 
 ext {
-	particles2DMainClass = "com.badlogic.gdx.tools.particleeditor.ParticleEditor"
 	particles3DMainClass = "com.badlogic.gdx.tools.flame.FlameMain"
 	hieroMainClass = "com.badlogic.gdx.tools.hiero.Hiero"
 	texturePackerMainClass = "com.badlogic.gdx.tools.texturepacker.TexturePacker"
 
 	toolsAssetsDir = ["assets"]
-}
-
-tasks.register('dist2DParticles', Jar) {
-	dependsOn("build")
-
-	dependsOn configurations.runtimeClasspath
-	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
-
-	from files(sourceSets.main.java.classesDirectory)
-	from files(sourceSets.main.output.resourcesDir)
-	from {configurations.runtimeClasspath.collect {zipTree(it)}}
-	from files(toolsAssetsDir)
-
-	archiveFileName = "runnable-2D-particles.jar"
-
-	manifest {
-		attributes 'Main-Class': particles2DMainClass
-	}
 }
 
 tasks.register('dist3DParticles', Jar) {
@@ -106,7 +87,7 @@ tasks.register('distTexturePacker', Jar) {
 
 tasks.register('buildRunnables') {
 	dependsOn("build")
-	dependsOn dist2DParticles, dist3DParticles, distHiero, distTexturePacker
+	dependsOn dist3DParticles, distHiero, distTexturePacker
 	doLast {
 		println "Building ye runnables"
 	}
