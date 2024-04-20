@@ -352,8 +352,12 @@ public class TextField extends Widget implements Disableable {
 				drawMessageText(batch, messageFont, x + bgLeftWidth, y + textY + yOffset, width - bgLeftWidth - bgRightWidth);
 			}
 		} else {
+			BitmapFontData data = font.getData();
+			boolean markupEnabled = data.markupEnabled;
+			data.markupEnabled = false;
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * color.a * parentAlpha);
 			drawText(batch, font, x + bgLeftWidth, y + textY + yOffset);
+			data.markupEnabled = markupEnabled;
 		}
 		if (!disabled && cursorOn && cursorPatch != null) {
 			drawCursor(cursorPatch, batch, font, x + bgLeftWidth, y + textY);
@@ -418,7 +422,11 @@ public class TextField extends Widget implements Disableable {
 		} else
 			displayText = newDisplayText;
 
+		boolean markupEnabled = data.markupEnabled;
+		data.markupEnabled = false;
 		layout.setText(font, displayText.toString().replace('\r', ' ').replace('\n', ' '));
+		data.markupEnabled = markupEnabled;
+
 		glyphPositions.clear();
 		float x = 0;
 		if (layout.runs.size > 0) {
