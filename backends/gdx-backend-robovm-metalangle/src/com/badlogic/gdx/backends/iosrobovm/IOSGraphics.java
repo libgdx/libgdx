@@ -150,10 +150,11 @@ public class IOSGraphics extends AbstractGraphics {
 		viewController.setView(view);
 		viewController.setDelegate(viewDelegate);
 		int preferredFps;
+		int maxSupportedFPS = (int)(UIScreen.getMainScreen().getMaximumFramesPerSecond());
 		if (config.preferredFramesPerSecond == 0) {
-			preferredFps = (int)(UIScreen.getMainScreen().getMaximumFramesPerSecond());
+			preferredFps = maxSupportedFPS;
 		} else {
-			preferredFps = config.preferredFramesPerSecond;
+			preferredFps = Math.min(config.preferredFramesPerSecond, maxSupportedFPS);
 		}
 		viewController.setPreferredFramesPerSecond(preferredFps);
 		this.app = app;
