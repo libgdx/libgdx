@@ -1,7 +1,7 @@
 /**
  * This class creates a box and allows you to ignore any side.
  * To ignore the RIGHT and TOP sides, use:
- * BoxSideShapeBuilder.build(position, scale, IGNORE_RIGHT | IGNORE_TOP);
+ * BoxSideShapeBuilder.build(builder, position, scale, IGNORE_RIGHT | IGNORE_TOP);
  *
  * @author if_desu
  */
