@@ -527,7 +527,8 @@ public class FreeTypeFontGenerator implements Disposable {
 				int mainW = mainPixmap.getWidth(), mainH = mainPixmap.getHeight();
 				int shadowOffsetX = Math.max(parameter.shadowOffsetX, 0), shadowOffsetY = Math.max(parameter.shadowOffsetY, 0);
 				int shadowW = mainW + Math.abs(parameter.shadowOffsetX), shadowH = mainH + Math.abs(parameter.shadowOffsetY);
-				Pixmap shadowPixmap = new Pixmap(shadowW, shadowH, mainPixmap.getFormat());
+				// use the Gdx2DPixmap constructor to avoid filling the pixmap twice
+				Pixmap shadowPixmap = new Pixmap(new Gdx2DPixmap(shadowW, shadowH, mainPixmap.getFormat()));
 				shadowPixmap.setColor(packer.getTransparentColor());
 				shadowPixmap.fill();
 
