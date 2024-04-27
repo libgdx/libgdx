@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.GuillotineStrategy;
@@ -527,7 +528,11 @@ public class FreeTypeFontGenerator implements Disposable {
 				int mainW = mainPixmap.getWidth(), mainH = mainPixmap.getHeight();
 				int shadowOffsetX = Math.max(parameter.shadowOffsetX, 0), shadowOffsetY = Math.max(parameter.shadowOffsetY, 0);
 				int shadowW = mainW + Math.abs(parameter.shadowOffsetX), shadowH = mainH + Math.abs(parameter.shadowOffsetY);
-				Pixmap shadowPixmap = new Pixmap(shadowW, shadowH, mainPixmap.getFormat());
+				// use the Gdx2DPixmap constructor to avoid filling the pixmap twice
+				Pixmap shadowPixmap = new Pixmap(
+					new Gdx2DPixmap(shadowW, shadowH, Pixmap.Format.toGdx2DPixmapFormat(mainPixmap.getFormat())));
+				shadowPixmap.setColor(packer.getTransparentColor());
+				shadowPixmap.fill();
 
 				Color shadowColor = parameter.shadowColor;
 				float a = shadowColor.a;
