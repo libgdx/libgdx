@@ -32,6 +32,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.GuillotineStrategy;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.PackStrategy;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker.PixmapPackerRectangle;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.SkylineStrategy;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Bitmap;
@@ -42,7 +43,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Library;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.SizeMetrics;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Stroker;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -598,9 +598,8 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 		}
 
-		String pixmapName = glyph.hashCode() + "_" + glyph.id;
-		Rectangle rect = packer.pack(pixmapName, mainPixmap);
-		glyph.page = packer.getPageIndex(pixmapName);
+		PixmapPackerRectangle rect = packer.pack(mainPixmap);
+		glyph.page = packer.getPages().indexOf(rect.page, true);
 		glyph.srcX = (int)rect.x;
 		glyph.srcY = (int)rect.y;
 
