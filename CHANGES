@@ -13,6 +13,7 @@
 - Fix: Keep SelectBox popup from extending past right edge of stage.
 - Added Framebuffer multisample support (see GL31FrameBufferMultisampleTest.java for basic usage)
 - Fix: Fonts generated with gdx-freetype no longer bleed when drawn with a shadow
+- Fixed Timer tasks being run after cancellation.
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
