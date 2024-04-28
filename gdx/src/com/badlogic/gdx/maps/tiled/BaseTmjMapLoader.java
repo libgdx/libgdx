@@ -582,7 +582,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
 		return cell;
 	}
 
-	private void loadTileSet (JsonValue element, FileHandle tmjFile, ImageResolver imageResolver) {
+	protected void loadTileSet (JsonValue element, FileHandle tmjFile, ImageResolver imageResolver) {
 		if (element.getString("tilecount") != null) { // Specific tileSet attribute
 			int firstgid = element.getInt("firstgid", 1);
 			String imageSource = "";
