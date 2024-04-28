@@ -118,6 +118,8 @@ public class ActorGestureListener implements EventListener {
 		case touchUp:
 			if (event.isTouchFocusCancel()) {
 				detector.reset();
+				actor = null;
+				touchDownTarget = null;
 				return false;
 			}
 			this.event = event;
@@ -125,6 +127,8 @@ public class ActorGestureListener implements EventListener {
 			detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
 			actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
 			touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
+			actor = null;
+			touchDownTarget = null;
 			return true;
 		case touchDragged:
 			this.event = event;
@@ -170,6 +174,7 @@ public class ActorGestureListener implements EventListener {
 		return detector;
 	}
 
+	/** Returns null if there is no current touch down. */
 	public @Null Actor getTouchDownTarget () {
 		return touchDownTarget;
 	}
