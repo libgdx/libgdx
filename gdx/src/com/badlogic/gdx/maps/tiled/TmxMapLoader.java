@@ -90,7 +90,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	 * @param map the TiledMap to which the tile set will be added
 	 * @return the TiledMap with the loaded tile set */
 	public TiledMap loadCustomTileSet (String fileName, TiledMap map) {
-		return loadCustomTileSet(fileName, map, new TmjMapLoader.Parameters());
+		return loadCustomTileSet(fileName, map, new TmxMapLoader.Parameters());
 	}
 
 	/** Loads a tile set from the given file. The file is resolved via the {@link FileHandleResolver} set in the constructor of
@@ -100,7 +100,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	 * @return the TiledMap with the loaded tile set */
 	public TiledMap loadCustomTileSet (String fileName) {
 		TiledMap map = new TiledMap();
-		return loadCustomTileSet(fileName, new TiledMap(), new TmjMapLoader.Parameters());
+		return loadCustomTileSet(fileName, new TiledMap(), new TmxMapLoader.Parameters());
 	}
 
 	/** Loads a tile set from the given file. The file is resolved via the {@link FileHandleResolver} set in the constructor of
@@ -110,7 +110,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	 * @param map the TiledMap to which the tile set will be added
 	 * @param parameter specifies whether to use y-up, generate mip maps etc.
 	 * @return the TiledMap with the loaded tile set */
-	public TiledMap loadCustomTileSet (String fileName, TiledMap map, TmjMapLoader.Parameters parameter) {
+	public TiledMap loadCustomTileSet (String fileName, TiledMap map, TmxMapLoader.Parameters parameter) {
 		FileHandle tmjFile = resolve(fileName);
 		Element tileSet = xml.parse(tmjFile);
 		ObjectMap<String, Texture> textures = new ObjectMap<>();
