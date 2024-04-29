@@ -103,11 +103,11 @@ attribute vec2 a_boneWeight7;
 #endif
 #endif
 
-#ifdef u_worldTrans_instancedFlag
-attribute mat4 u_worldTrans;
-#else
 uniform mat4 u_worldTrans;
-#endif //u_worldTrans_instancedFlag
+
+#ifdef a_worldTrans_instancedFlag
+attribute mat4 a_worldTrans;
+#endif //a_worldTrans_instancedFlag
 
 #if defined(numBones)
 #if numBones > 0
@@ -245,10 +245,17 @@ void main() {
 		#endif //boneWeight7Flag
 	#endif //skinningFlag
 
-	#ifdef skinningFlag
-		vec4 pos = u_worldTrans * skinning * vec4(a_position, 1.0);
+	#ifdef a_worldTrans_instancedFlag
+		mat4 var_worldTrans = a_worldTrans * u_worldTrans;
+		#define worldTrans var_worldTrans
 	#else
-		vec4 pos = u_worldTrans * vec4(a_position, 1.0);
+		#define worldTrans u_worldTrans
+	#endif //a_worldTrans_instancedFlag
+
+	#ifdef skinningFlag
+		vec4 pos = worldTrans * skinning * vec4(a_position, 1.0);
+	#else
+		vec4 pos = worldTrans * vec4(a_position, 1.0);
 	#endif
 		
 	gl_Position = u_projViewTrans * pos;
@@ -261,7 +268,7 @@ void main() {
 	
 	#if defined(normalFlag)
 		#if defined(skinningFlag)
-			vec3 normal = normalize((u_worldTrans * skinning * vec4(a_normal, 0.0)).xyz);
+			vec3 normal = normalize((worldTrans * skinning * vec4(a_normal, 0.0)).xyz);
 		#else
 			vec3 normal = normalize(u_normalMatrix * a_normal);
 		#endif
