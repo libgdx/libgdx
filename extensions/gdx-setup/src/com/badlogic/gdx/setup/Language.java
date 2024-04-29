@@ -4,7 +4,7 @@ package com.badlogic.gdx.setup;
 public enum Language {
 	JAVA("java", "", "", "",
 		"java-library;java-library;java-library;com.android.application;java-library,robovm;java-library,gwt,war,org.gretty",
-		true), KOTLIN("kotlin", "ext.kotlinVersion = '1.3.41'",
+		true), KOTLIN("kotlin", "ext.kotlinVersion = '1.9.21'",
 			"classpath \"org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion\"",
 			"api \"org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion\"",
 			"kotlin;kotlin;kotlin;android,kotlin-android;kotlin,robovm; ", false);

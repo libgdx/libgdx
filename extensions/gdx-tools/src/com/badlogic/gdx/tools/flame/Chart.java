@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tools.particleeditor;
+package com.badlogic.gdx.tools.flame;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

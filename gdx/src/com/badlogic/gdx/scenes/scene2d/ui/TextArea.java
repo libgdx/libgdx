@@ -21,7 +21,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -117,7 +116,7 @@ public class TextArea extends TextField {
 		} else {
 			// without ceil we might end up with one less row then expected
 			// due to how linesShowing is calculated in #sizeChanged and #getHeight() returning rounded value
-			float prefHeight = MathUtils.ceil(style.font.getLineHeight() * prefRows);
+			float prefHeight = (float)Math.ceil(style.font.getLineHeight() * prefRows);
 			if (style.background != null) {
 				prefHeight = Math.max(prefHeight + style.background.getBottomHeight() + style.background.getTopHeight(),
 					style.background.getMinHeight());
