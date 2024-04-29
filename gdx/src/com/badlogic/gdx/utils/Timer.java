@@ -266,6 +266,7 @@ public class Timer {
 		long pauseTimeMillis;
 
 		final Array<Task> postedTasks = new Array(2);
+		final Array<Task> runTasks = new Array(2);
 		private final Runnable runPostedTasks = new Runnable() {
 			public void run () {
 				runPostedTasks();
@@ -313,11 +314,13 @@ public class Timer {
 
 		void runPostedTasks () {
 			synchronized (postedTasks) {
-				Object[] items = postedTasks.items;
-				for (int i = 0, n = postedTasks.size; i < n; i++)
-					((Task)items[i]).run();
+				runTasks.addAll(postedTasks);
 				postedTasks.clear();
 			}
+			Object[] items = runTasks.items;
+			for (int i = 0, n = runTasks.size; i < n; i++)
+				((Task)items[i]).run();
+			runTasks.clear();
 		}
 
 		void addPostedTask (Task task) {
