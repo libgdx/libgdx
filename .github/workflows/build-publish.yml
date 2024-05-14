@@ -211,7 +211,7 @@ jobs:
       - name: Download NDK
         run: |
           wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -O android-ndk.zip
-          echo "53af80a1cce9144025b81c78c8cd556bff42bd0e  android-ndk.zip" | sha256sum --check
+          echo "769ee342ea75f80619d985c2da990c48b3d8eaf45f48783a2d48870d04b46108  android-ndk.zip" | sha256sum --check
           unzip android-ndk.zip
           echo "NDK_HOME=$(pwd)/android-ndk-r25c" >> $GITHUB_ENV
 
