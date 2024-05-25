@@ -426,6 +426,20 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 			running = false;
 			destroy = true;
 
+			view.queueEvent(new Runnable() {
+				@Override
+				public void run () {
+					if (!destroy) {
+						// destroy event already picked up by onDrawFrame
+						return;
+					}
+
+					// it's ok to call ApplicationListener's events
+					// from onDrawFrame because it's executing in GL thread
+					onDrawFrame(null);
+				}
+			});
+
 			while (destroy) {
 				try {
 					synch.wait();
