@@ -28,10 +28,12 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
+import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.GuillotineStrategy;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.PackStrategy;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker.PixmapPackerRectangle;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.SkylineStrategy;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Bitmap;
@@ -42,7 +44,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Library;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.SizeMetrics;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Stroker;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -527,7 +528,11 @@ public class FreeTypeFontGenerator implements Disposable {
 				int mainW = mainPixmap.getWidth(), mainH = mainPixmap.getHeight();
 				int shadowOffsetX = Math.max(parameter.shadowOffsetX, 0), shadowOffsetY = Math.max(parameter.shadowOffsetY, 0);
 				int shadowW = mainW + Math.abs(parameter.shadowOffsetX), shadowH = mainH + Math.abs(parameter.shadowOffsetY);
-				Pixmap shadowPixmap = new Pixmap(shadowW, shadowH, mainPixmap.getFormat());
+				// use the Gdx2DPixmap constructor to avoid filling the pixmap twice
+				Pixmap shadowPixmap = new Pixmap(
+					new Gdx2DPixmap(shadowW, shadowH, Pixmap.Format.toGdx2DPixmapFormat(mainPixmap.getFormat())));
+				shadowPixmap.setColor(packer.getTransparentColor());
+				shadowPixmap.fill();
 
 				Color shadowColor = parameter.shadowColor;
 				float a = shadowColor.a;
@@ -598,8 +603,8 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 		}
 
-		Rectangle rect = packer.pack(mainPixmap);
-		glyph.page = packer.getPages().size - 1; // Glyph is always packed into the last page for now.
+		PixmapPackerRectangle rect = packer.pack(mainPixmap);
+		glyph.page = packer.getPages().indexOf(rect.page, true);
 		glyph.srcX = (int)rect.x;
 		glyph.srcY = (int)rect.y;
 

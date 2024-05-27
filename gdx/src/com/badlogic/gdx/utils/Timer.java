@@ -27,6 +27,7 @@ public class Timer {
 	// TimerThread access is synchronized using threadLock.
 	// Timer access is synchronized using the Timer instance.
 	// Task access is synchronized using the Task instance.
+	// Posted tasks are synchronized using TimerThread#postedTasks.
 
 	static final Object threadLock = new Object();
 	static TimerThread thread;
@@ -118,15 +119,20 @@ public class Timer {
 	}
 
 	/** Cancels all tasks. */
-	public synchronized void clear () {
-		for (int i = 0, n = tasks.size; i < n; i++) {
-			Task task = tasks.get(i);
-			synchronized (task) {
-				task.executeTimeMillis = 0;
-				task.timer = null;
+	public void clear () {
+		synchronized (threadLock) {
+			TimerThread thread = thread();
+			synchronized (this) {
+				synchronized (thread.postedTasks) {
+					for (int i = 0, n = tasks.size; i < n; i++) {
+						Task task = tasks.get(i);
+						thread.removePostedTask(task);
+						task.reset();
+					}
+				}
+				tasks.clear();
 			}
 		}
-		tasks.clear();
 	}
 
 	/** Returns true if the timer has no tasks in the queue. Note that this can change at any time. Synchronize on the timer
@@ -135,7 +141,7 @@ public class Timer {
 		return tasks.size == 0;
 	}
 
-	synchronized long update (long timeMillis, long waitMillis) {
+	synchronized long update (TimerThread thread, long timeMillis, long waitMillis) {
 		for (int i = 0, n = tasks.size; i < n; i++) {
 			Task task = tasks.get(i);
 			synchronized (task) {
@@ -153,7 +159,7 @@ public class Timer {
 					waitMillis = Math.min(waitMillis, task.intervalMillis);
 					if (task.repeatCount > 0) task.repeatCount--;
 				}
-				task.app.postRunnable(task);
+				thread.addPostedTask(task);
 			}
 		}
 		return waitMillis;
@@ -212,21 +218,22 @@ public class Timer {
 
 		/** Cancels the task. It will not be executed until it is scheduled again. This method can be called at any time. */
 		public void cancel () {
-			Timer timer = this.timer;
-			if (timer != null) {
-				synchronized (timer) {
-					synchronized (this) {
-						executeTimeMillis = 0;
-						this.timer = null;
+			synchronized (threadLock) {
+				thread().removePostedTask(this);
+				Timer timer = this.timer;
+				if (timer != null) {
+					synchronized (timer) {
 						timer.tasks.removeValue(this, true);
+						reset();
 					}
-				}
-			} else {
-				synchronized (this) {
-					executeTimeMillis = 0;
-					this.timer = null;
-				}
+				} else
+					reset();
 			}
+		}
+
+		synchronized void reset () {
+			executeTimeMillis = 0;
+			this.timer = null;
 		}
 
 		/** Returns true if this task is scheduled to be executed in the future by a timer. The execution time may be reached at any
@@ -258,6 +265,14 @@ public class Timer {
 		Timer instance;
 		long pauseTimeMillis;
 
+		final Array<Task> postedTasks = new Array(2);
+		final Array<Task> runTasks = new Array(2);
+		private final Runnable runPostedTasks = new Runnable() {
+			public void run () {
+				runPostedTasks();
+			}
+		};
+
 		public TimerThread () {
 			files = Gdx.files;
 			app = Gdx.app;
@@ -279,7 +294,7 @@ public class Timer {
 						long timeMillis = System.nanoTime() / 1000000;
 						for (int i = 0, n = instances.size; i < n; i++) {
 							try {
-								waitMillis = instances.get(i).update(timeMillis, waitMillis);
+								waitMillis = instances.get(i).update(this, timeMillis, waitMillis);
 							} catch (Throwable ex) {
 								throw new GdxRuntimeException("Task failed: " + instances.get(i).getClass().getName(), ex);
 							}
@@ -295,6 +310,32 @@ public class Timer {
 				}
 			}
 			dispose();
+		}
+
+		void runPostedTasks () {
+			synchronized (postedTasks) {
+				runTasks.addAll(postedTasks);
+				postedTasks.clear();
+			}
+			Object[] items = runTasks.items;
+			for (int i = 0, n = runTasks.size; i < n; i++)
+				((Task)items[i]).run();
+			runTasks.clear();
+		}
+
+		void addPostedTask (Task task) {
+			synchronized (postedTasks) {
+				if (postedTasks.isEmpty()) task.app.postRunnable(runPostedTasks);
+				postedTasks.add(task);
+			}
+		}
+
+		void removePostedTask (Task task) {
+			synchronized (postedTasks) {
+				Object[] items = postedTasks.items;
+				for (int i = postedTasks.size - 1; i >= 0; i--)
+					if (items[i] == task) postedTasks.removeIndex(i);
+			}
 		}
 
 		public void resume () {
@@ -316,6 +357,9 @@ public class Timer {
 
 		public void dispose () { // OK to call multiple times.
 			synchronized (threadLock) {
+				synchronized (postedTasks) {
+					postedTasks.clear();
+				}
 				if (thread == this) thread = null;
 				instances.clear();
 				threadLock.notifyAll();
