@@ -25,6 +25,7 @@ import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.ApplicationListener;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GraphicsConfiguration;
@@ -109,6 +110,10 @@ public class LwjglFrame extends JFrame {
 
 			public LwjglInput createInput (LwjglApplicationConfiguration config) {
 				return LwjglFrame.this.createInput(config);
+			}
+
+			protected void applyCursor (Cursor cursor) {
+				LwjglFrame.this.applyCursor(cursor);
 			}
 		};
 
@@ -223,6 +228,16 @@ public class LwjglFrame extends JFrame {
 
 	/** Called when the canvas size changes. */
 	public void updateSize (int width, int height) {
+	}
+
+	/** Called to set the cursor. */
+	protected void applyCursor (Cursor cursor) {
+		if (cursor != null || !LwjglCanvas.isWindows) {
+			try {
+				lwjglCanvas.canvas.setCursor(cursor);
+			} catch (Throwable ignored) { // Seems to fail on Linux sometimes.
+			}
+		}
 	}
 
 	/** Called after dispose is complete. */

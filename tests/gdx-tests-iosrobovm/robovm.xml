@@ -34,19 +34,20 @@
     <pattern>org.apache.harmony.security.provider.crypto.CryptoProvider</pattern>
   </forceLinkClasses>
   <libs>
-    <lib variant="device">../../gdx/libs/ios32/gdx.xcframework/ios-arm64_armv7/libgdx.a</lib>
-    <lib variant="device">../../gdx/libs/ios32/ObjectAL.xcframework/ios-arm64_armv7/libObjectAL.a</lib>
-    <lib variant="device">../../extensions/gdx-freetype/libs/ios32/gdx-freetype.xcframework/ios-arm64_armv7/libgdx-freetype.a</lib>
-    <lib variant="device">../../extensions/gdx-bullet/libs/ios32/gdx-bullet.xcframework/ios-arm64_armv7/libgdx-bullet.a</lib>
-    <lib variant="device">../../extensions/gdx-box2d/gdx-box2d/libs/ios32/gdx-box2d.xcframework/ios-arm64_armv7/libgdx-box2d.a</lib>
-
-    <lib variant="simulator">../../gdx/libs/ios32/gdx.xcframework/ios-arm64_x86_64-simulator/libgdx.a</lib>
-    <lib variant="simulator">../../gdx/libs/ios32/ObjectAL.xcframework/ios-arm64_x86_64-simulator/libObjectAL.a</lib>
-    <lib variant="simulator">../../extensions/gdx-freetype/libs/ios32/gdx-freetype.xcframework/ios-arm64_x86_64-simulator/libgdx-freetype.a</lib>
-    <lib variant="simulator">../../extensions/gdx-bullet/libs/ios32/gdx-bullet.xcframework/ios-arm64_x86_64-simulator/libgdx-bullet.a</lib>
-    <lib variant="simulator">../../extensions/gdx-box2d/gdx-box2d/libs/ios32/gdx-box2d.xcframework/ios-arm64_x86_64-simulator/libgdx-box2d.a</lib>
   </libs>
+  <frameworkPaths>
+    <path>../../gdx/libs/ios32</path>
+    <path>../../extensions/gdx-freetype/libs/ios32</path>
+    <path>../../extensions/gdx-bullet/libs/ios32</path>
+    <path>../../extensions/gdx-box2d/gdx-box2d/libs/ios32</path>
+  </frameworkPaths>
   <frameworks>
+    <framework>gdx</framework>
+    <framework>ObjectAL</framework>
+    <framework>gdx-freetype</framework>
+    <framework>gdx-bullet</framework>
+    <framework>gdx-box2d</framework>
+    <!-- System Frameworks -->
     <framework>UIKit</framework>
     <framework>OpenGLES</framework>
     <framework>QuartzCore</framework>

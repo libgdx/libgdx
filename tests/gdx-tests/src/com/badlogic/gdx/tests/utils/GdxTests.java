@@ -86,6 +86,7 @@ import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.ModelInstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
+import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleMRTTest;
 import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleTest;
 import com.badlogic.gdx.tests.gles31.GL31IndirectDrawingIndexedTest;
 import com.badlogic.gdx.tests.gles31.GL31IndirectDrawingNonIndexedTest;
@@ -174,6 +175,7 @@ public class GdxTests {
 		GLES30Test.class,
 		GL31IndirectDrawingIndexedTest.class,
 		GL31IndirectDrawingNonIndexedTest.class,
+		GL31FrameBufferMultisampleMRTTest.class,
 		GL31FrameBufferMultisampleTest.class,
 		GL31ProgramIntrospectionTest.class,
 		GL32AdvancedBlendingTest.class,
