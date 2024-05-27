@@ -680,17 +680,15 @@ public class FreeTypeFontGenerator implements Disposable {
 	}
 
 	/** Retrieves the array of variable axes associated with the font.
-	 * @return An array of VariableAxis objects representing the variable axes of the font.
-	 */
-	public VariableAxis[] getVariableAxis() {
+	 * @return An array of VariableAxis objects representing the variable axes of the font. */
+	public VariableAxis[] getVariableAxis () {
 		return varAxis;
 	}
 
 	/** Retrieves the variable axis associated with the specified index.
 	 * @param index The index of the variable axis to retrieve.
-	 * @return The VariableAxis object representing the variable axis at the specified index.
-	 */
-	public VariableAxis getVariableAxis(int index) {
+	 * @return The VariableAxis object representing the variable axis at the specified index. */
+	public VariableAxis getVariableAxis (int index) {
 		return varAxis[index];
 	}
 
@@ -838,11 +836,9 @@ public class FreeTypeFontGenerator implements Disposable {
 		 * modified after creating a font. If a PixmapPacker is not specified, the font glyph page textures will use
 		 * {@link FreeTypeFontGenerator#getMaxTextureSize()}. */
 		public boolean incremental;
-		/** Variable design coordinates.
-		 * If the length exceeds the number of variable axes in the font, it will be ignored.
-		 * If the length is less than the number of variable axes in the font,
-		 * the remaining coordinates will be set to their default values.
-		 */
+		/** Variable design coordinates. If the length exceeds the number of variable axes in the font, it will be ignored. If the
+		 * length is less than the number of variable axes in the font, the remaining coordinates will be set to their default
+		 * values. */
 		public int[] variableDesignCoordinates = new int[0];
 	}
 
@@ -851,21 +847,21 @@ public class FreeTypeFontGenerator implements Disposable {
 		private int maximum;
 		private int def;
 
-		public VariableAxis(FreeType.VarAxis varAxis) {
-			this.minimum = (int) varAxis.getMinimum() / 65536;
-			this.maximum = (int) varAxis.getMaximum() / 65536;
-			this.def = (int) varAxis.getDef() / 65536;
+		public VariableAxis (FreeType.VarAxis varAxis) {
+			this.minimum = (int)varAxis.getMinimum() / 65536;
+			this.maximum = (int)varAxis.getMaximum() / 65536;
+			this.def = (int)varAxis.getDef() / 65536;
 		}
 
-		public int getMinimum() {
+		public int getMinimum () {
 			return minimum;
 		}
 
-		public int getMaximum() {
+		public int getMaximum () {
 			return maximum;
 		}
 
-		public int getDefault() {
+		public int getDefault () {
 			return def;
 		}
 
