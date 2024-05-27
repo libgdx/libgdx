@@ -37,6 +37,7 @@ public class FreeType {
 	// @off
 	/*JNI
 	#include <ft2build.h>
+	#include <freetype/ftmm.h>
 	#include FT_FREETYPE_H
 	#include FT_STROKER_H
 	
@@ -340,6 +341,186 @@ public class FreeType {
 		private static native int getCharIndex(long face, int charCode); /*
 			return FT_Get_Char_Index((FT_Face)face, charCode);
 		*/
+
+		private static native long getMMVar(long face); /*
+			FT_MM_Var* mmVar = NULL;
+			FT_Error error = FT_Get_MM_Var((FT_Face) face, &mmVar);
+			if (error) return 0;
+			return (jlong)mmVar;
+		 */
+
+		public MMVar getMMVar() {
+			return new MMVar(getMMVar(address), this.library);
+		}
+
+		private static native long setVarDesignCoordinates(long face, int numCoords, long[] coords); /*
+			FT_Error error = FT_Set_Var_Design_Coordinates((FT_Face) face, numCoords, (FT_Fixed*)coords);
+			if (error) return 0;
+			return face;
+		*/
+
+		public void setVarDesignCoordinates(int numCoords, long[] coords) {
+			address = setVarDesignCoordinates(address, numCoords, coords);
+		}
+
+	}
+
+	public static class MMVar extends Pointer implements Disposable {
+		Library library;
+
+		public MMVar (long address, Library library) {
+			super(address);
+			this.library = library;
+		}
+
+		@Override
+		public void dispose() {
+			doneMMVar(library.address, address);
+		}
+
+		private static native void doneMMVar(long library, long mmVar); /*
+			FT_Done_MM_Var((FT_Library) library, (FT_MM_Var *)mmVar);
+		*/
+
+		private static native int getNumAxis(long mmVar); /*
+			return ((FT_MM_Var *) mmVar)->num_axis;
+		*/
+
+		public int getNumAxis() {
+			return getNumAxis(address);
+		}
+
+		private static native int getNumDeisgns(long mmVar); /*
+			return ((FT_MM_Var *) mmVar)->num_designs;
+		*/
+
+		public int getNumDesigns() {
+			return getNumDeisgns(address);
+		}
+
+		private static native int getNumNamedStyles(long mmVar); /*
+			return ((FT_MM_Var *) mmVar)->num_namedstyles;
+		*/
+
+		public int getNumNamedStyles() {
+			return getNumNamedStyles(address);
+		}
+
+		private static native long[] getAxis(long mmVar); /*
+			FT_MM_Var* v = ((FT_MM_Var *) mmVar);
+			FT_Var_Axis* axis = v->axis;
+			jlongArray arr = env->NewLongArray(v->num_axis);
+			jlong* ptr = env->GetLongArrayElements(arr, NULL);
+			for (int i = 0; i < v->num_axis; i++) {
+				ptr[i] = (jlong) &axis[i];
+			}
+			env->ReleaseLongArrayElements(arr, ptr, 0);
+			return arr;
+		*/
+
+		public VarAxis[] getAxis() {
+			long[] axisPtrs = getAxis(address);
+			VarAxis[] axis = new VarAxis[axisPtrs.length];
+			for (int i = 0; i < axisPtrs.length; i++) {
+				axis[i] = new VarAxis(axisPtrs[i]);
+			}
+			return axis;
+		}
+
+		private static native long[] getNamedStyle(long mmVar); /*
+			FT_MM_Var* v = ((FT_MM_Var *) mmVar);
+			FT_Var_Named_Style* namedStyle = v->namedstyle;
+			jlongArray arr = env->NewLongArray(v->num_namedstyles);
+			jlong* ptr = env->GetLongArrayElements(arr, NULL);
+			for (int i = 0; i < v->num_namedstyles; i++) {
+				ptr[i] = (jlong) &namedStyle[i];
+			}
+			env->ReleaseLongArrayElements(arr, ptr, 0);
+			return arr;
+		*/
+
+		public VarNamedStyle[] getNamedStyle() {
+			long[] namedStylePtrs = getNamedStyle(address);
+			VarNamedStyle[] namedStyle = new VarNamedStyle[namedStylePtrs.length];
+			for (int i = 0; i < namedStylePtrs.length; i++) {
+				namedStyle[i] = new VarNamedStyle(namedStylePtrs[i]);
+			}
+			return namedStyle;
+		}
+
+	}
+
+	public static class VarAxis extends Pointer {
+
+		public VarAxis(long address) {
+			super(address);
+		}
+
+		private static native long getMinimum(long varAxis); /*
+			return (jlong) (((FT_Var_Axis *) varAxis)->minimum);
+		*/
+
+		public long getMinimum() {
+			return getMinimum(address);
+		}
+
+		private static native long getDef(long varAxis); /*
+			return (jlong) (((FT_Var_Axis *) varAxis)->def);
+		*/
+
+		public long getDef() {
+			return getDef(address);
+		}
+
+		private static native long getMaximum(long varAxis); /*
+			return (jlong) (((FT_Var_Axis *) varAxis)->maximum);
+		*/
+
+		public long getMaximum() {
+			return getMaximum(address);
+		}
+
+		private static native long getTag(long varAxis); /*
+			return (jlong) (((FT_Var_Axis *) varAxis)->tag);
+		*/
+
+		public long getTag() {
+			return getTag(address);
+		}
+
+		private static native int getStrid(long varAxis); /*
+			return (jint) (((FT_Var_Axis *) varAxis)->strid);
+		*/
+
+		public int getStrid() {
+			return getStrid(address);
+		}
+
+	}
+
+	public static class VarNamedStyle extends Pointer {
+
+		public VarNamedStyle(long address) {
+			super(address);
+		}
+
+		// No getCoords
+
+		private static native int getStrid(long varNamedStyle); /*
+			return (jint) (((FT_Var_Named_Style *) varNamedStyle)->strid);
+		*/
+
+		public int getStrid() {
+			return getStrid(address);
+		}
+
+		private static native int getPsid(long varNamedStyle); /*
+			return (jint) (((FT_Var_Named_Style *) varNamedStyle)->psid);
+		*/
+
+		public long getPsid() {
+			return getPsid(address);
+		}
 
 	}
 	
