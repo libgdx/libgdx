@@ -73,8 +73,14 @@ public class SpriteBatchPerformanceTest extends GdxTest {
 
 		spriteBatch.begin();
 		stringBuilder.setLength(0);
-		stringBuilder.append("Mean Time ms: ");
-		stringBuilder.append(counter.getMean() / 1e6);
+
+		if (counter.hasEnoughData()) {
+			stringBuilder.append("Mean Time ms: ");
+			stringBuilder.append(counter.getMean() / 1e6);
+		} else {
+			stringBuilder.append("Please wait, collecting data...");
+		}
+
 		bitmapFont.draw(spriteBatch, stringBuilder, 0, 200);
 		spriteBatch.end();
 	}
