@@ -855,9 +855,9 @@ public class FreeTypeFontGenerator implements Disposable {
 		private int def;
 
 		public VariableAxis (FreeType.VarAxis varAxis) {
-			this.minimum = (int) varAxis.getMinimum() >>> 16;
-			this.maximum = (int) varAxis.getMaximum() >>> 16;
-			this.def = (int) varAxis.getDef() >>> 16;
+			this.minimum = (int)varAxis.getMinimum() >>> 16;
+			this.maximum = (int)varAxis.getMaximum() >>> 16;
+			this.def = (int)varAxis.getDef() >>> 16;
 		}
 
 		public int getMinimum () {
