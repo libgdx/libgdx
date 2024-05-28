@@ -342,6 +342,10 @@ public class FreeType {
 			return FT_Get_Char_Index((FT_Face)face, charCode);
 		*/
 
+		public boolean hasMultipleMasters() {
+			return (getFaceFlags() & FT_FACE_FLAG_MULTIPLE_MASTERS) != 0;
+		}
+
 		private static native long getMMVar(long face); /*
 			FT_MM_Var* mmVar = NULL;
 			FT_Error error = FT_Get_MM_Var((FT_Face) face, &mmVar);
@@ -365,6 +369,10 @@ public class FreeType {
 
 	}
 
+	/**
+	 * For more information, see the
+	 * {@link <a href="https://freetype.org/freetype2/docs/reference/ft2-multiple_masters.html#ft_mm_var">Freetype Documentation</a>}.
+	 */
 	public static class MMVar extends Pointer implements Disposable {
 		Library library;
 
@@ -450,6 +458,10 @@ public class FreeType {
 
 	}
 
+	/**
+	 * For more information, see the
+	 * {@link <a href="https://freetype.org/freetype2/docs/reference/ft2-multiple_masters.html#ft_var_axis">Freetype Documentation</a>}.
+	 */
 	public static class VarAxis extends Pointer {
 
 		public VarAxis(long address) {
@@ -498,6 +510,10 @@ public class FreeType {
 
 	}
 
+	/**
+	 * For more information, see the
+	 * {@link <a href="https://freetype.org/freetype2/docs/reference/ft2-multiple_masters.html#ft_var_named_style">Freetype Documentation</a>}.
+	 */
 	public static class VarNamedStyle extends Pointer {
 
 		public VarNamedStyle(long address) {
