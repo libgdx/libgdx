@@ -16,6 +16,7 @@
 - Added Framebuffer multisample support (see GL31FrameBufferMultisampleTest.java for basic usage)
 - Fix: Fonts generated with gdx-freetype no longer bleed when drawn with a shadow
 - Fixed Timer tasks being run after cancellation.
+- Optimization of SpriteBatch in GL30 default modes, as indices do not need to be updated
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
