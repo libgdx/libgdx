@@ -98,13 +98,18 @@ public class FreeTypeFontGenerator implements Disposable {
 		name = fontFile.nameWithoutExtension();
 		library = FreeType.initFreeType();
 		face = library.newFace(fontFile, faceIndex);
-		mmVar = face.getMMVar();
+		if (face.hasMultipleMasters()) {
+			mmVar = face.getMMVar();
 
-		this.varAxis = new VariableAxis[this.mmVar.getNumAxis()];
-		FreeType.VarAxis[] ftVarAxis = this.mmVar.getAxis();
+			varAxis = new VariableAxis[mmVar.getNumAxis()];
+			FreeType.VarAxis[] ftVarAxis = mmVar.getAxis();
 
-		for (int i = 0; i < ftVarAxis.length; i++) {
-			this.varAxis[i] = new VariableAxis(ftVarAxis[i]);
+			for (int i = 0; i < ftVarAxis.length; i++) {
+				varAxis[i] = new VariableAxis(ftVarAxis[i]);
+			}
+		} else {
+			mmVar = null;
+			varAxis = null;
 		}
 
 		if (checkForBitmapFont()) return;
@@ -317,14 +322,16 @@ public class FreeTypeFontGenerator implements Disposable {
 		data.lineHeight = FreeType.toInt(fontMetrics.getHeight());
 		float baseLine = data.ascent;
 
-		long[] variableDesignCoordinates = new long[varAxis.length];
-		for (int i = 0; i < variableDesignCoordinates.length; i++) {
-			if (parameter.variableDesignCoordinates.length > i)
-				variableDesignCoordinates[i] = parameter.variableDesignCoordinates[i] * 65536L;
-			else
-				variableDesignCoordinates[i] = varAxis[i].def;
+		if (mmVar != null) {
+			long[] variableDesignCoordinates = new long[varAxis.length];
+			for (int i = 0; i < variableDesignCoordinates.length; i++) {
+				if (parameter.variableDesignCoordinates.length > i)
+					variableDesignCoordinates[i] = parameter.variableDesignCoordinates[i] * 65536L;
+				else
+					variableDesignCoordinates[i] = varAxis[i].def;
+			}
+			face.setVarDesignCoordinates(parameter.variableDesignCoordinates.length, variableDesignCoordinates);
 		}
-		face.setVarDesignCoordinates(parameter.variableDesignCoordinates.length, variableDesignCoordinates);
 
 		// if bitmapped
 		if (bitmapped && (data.lineHeight == 0)) {
@@ -652,7 +659,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Cleans up all resources of the generator. Call this if you no longer use the generator. */
 	@Override
 	public void dispose () {
-		this.mmVar.dispose();
+		if (mmVar != null) mmVar.dispose();
 		face.dispose();
 		library.dispose();
 	}
@@ -848,9 +855,9 @@ public class FreeTypeFontGenerator implements Disposable {
 		private int def;
 
 		public VariableAxis (FreeType.VarAxis varAxis) {
-			this.minimum = (int)varAxis.getMinimum() / 65536;
-			this.maximum = (int)varAxis.getMaximum() / 65536;
-			this.def = (int)varAxis.getDef() / 65536;
+			this.minimum = (int) varAxis.getMinimum() >>> 16;
+			this.maximum = (int) varAxis.getMaximum() >>> 16;
+			this.def = (int) varAxis.getDef() >>> 16;
 		}
 
 		public int getMinimum () {
