@@ -235,7 +235,7 @@ public class IntersectorTest {
 	}
 
 	@Test
-	public void testIntersectSphereBounds( ) {
+	public void testIntersectSphereBounds () {
 		// Sphere inside box
 		Sphere sphere = new Sphere(new Vector3(5, 5, 5), 1);
 		BoundingBox bounds = new BoundingBox(new Vector3(0, 0, 0), new Vector3(10, 10, 10));
