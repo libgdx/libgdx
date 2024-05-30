@@ -3,6 +3,8 @@ package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.math.Intersector.SplitTriangle;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Sphere;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -230,5 +232,29 @@ public class IntersectorTest {
 			Intersector.intersectPolygons(new Polygon(new float[] {3200.1453f, 88.00839f, 3233.9087f, 190.34174f, 3266.2905f, 0.0f}),
 				new Polygon(new float[] {3213.0f, 131.0f, 3214.0f, 131.0f, 3214.0f, 130.0f, 3213.0f, 130.0f}), intersectionPolygon));
 		assertEquals(0, intersectionPolygon.getVertexCount());
+	}
+
+	@Test
+	public void testIntersectSphereBounds( ) {
+		// Sphere inside box
+		Sphere sphere = new Sphere(new Vector3(5, 5, 5), 1);
+		BoundingBox bounds = new BoundingBox(new Vector3(0, 0, 0), new Vector3(10, 10, 10));
+
+		assertTrue(Intersector.intersectSphereBounds(sphere, bounds));
+
+		// Sphere outside box
+		sphere = new Sphere(new Vector3(20, 20, 20), 1);
+
+		assertFalse(Intersector.intersectSphereBounds(sphere, bounds));
+
+		// Sphere touches box's edge
+		sphere = new Sphere(new Vector3(10, 5, 5), 5);
+
+		assertTrue(Intersector.intersectSphereBounds(sphere, bounds));
+
+		// Sphere's center on box's edge
+		sphere = new Sphere(new Vector3(0, 5, 5), 1);
+
+		assertTrue(Intersector.intersectSphereBounds(sphere, bounds));
 	}
 }
