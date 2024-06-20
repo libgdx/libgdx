@@ -122,12 +122,10 @@ public class DepthShader extends DefaultShader {
 			if (renderable.meshPart.mesh.getVertexAttributes().getBoneWeights() > config.numBoneWeights) return false;
 		}
 		final Attributes attributes = combineAttributes(renderable);
-		if (attributes.has(BlendingAttribute.Type)) {
-			if ((attributesMask & BlendingAttribute.Type) != BlendingAttribute.Type) return false;
-			if (attributes
-				.has(TextureAttribute.Diffuse) != ((attributesMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse))
-				return false;
-		}
+		if (attributes.has(BlendingAttribute.Type) && ((attributesMask & BlendingAttribute.Type) != BlendingAttribute.Type))
+			return false;
+		if (attributes.has(TextureAttribute.Diffuse) != ((attributesMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse))
+			return false;
 		return (renderable.bones != null) == (numBones > 0);
 	}
 
