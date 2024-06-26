@@ -697,6 +697,7 @@ public class JsonReader implements BaseJsonReader {
 			root = current;
 	}
 
+	/** Called when an object is encountered in the JSON. */
 	protected void startObject (@Null String name) {
 		JsonValue value = new JsonValue(ValueType.object);
 		if (current != null) addChild(name, value);
@@ -704,6 +705,7 @@ public class JsonReader implements BaseJsonReader {
 		current = value;
 	}
 
+	/** Called when an array is encountered in the JSON. */
 	protected void startArray (@Null String name) {
 		JsonValue value = new JsonValue(ValueType.array);
 		if (current != null) addChild(name, value);
@@ -711,29 +713,35 @@ public class JsonReader implements BaseJsonReader {
 		current = value;
 	}
 
+	/** Called when the end of an object or array is encountered in the JSON. */
 	protected void pop () {
 		root = elements.pop();
 		if (current.size > 0) lastChild.pop();
 		current = elements.size > 0 ? elements.peek() : null;
 	}
 
+	/** Called when a string value is encountered in the JSON. */
 	protected void string (@Null String name, String value) {
 		addChild(name, new JsonValue(value));
 	}
 
+	/** Called when a double value is encountered in the JSON. */
 	protected void number (@Null String name, double value, String stringValue) {
 		addChild(name, new JsonValue(value, stringValue));
 	}
 
+	/** Called when a long value is encountered in the JSON. */
 	protected void number (@Null String name, long value, String stringValue) {
 		addChild(name, new JsonValue(value, stringValue));
 	}
 
+	/** Called when a boolean value is encountered in the JSON. */
 	protected void bool (@Null String name, boolean value) {
 		addChild(name, new JsonValue(value));
 	}
 
-	private String unescape (String value) {
+	/** Called to unescape string values. The default implementation does standard JSON unescaping. */
+	protected String unescape (String value) {
 		int length = value.length();
 		StringBuilder buffer = new StringBuilder(length + 16);
 		for (int i = 0; i < length;) {

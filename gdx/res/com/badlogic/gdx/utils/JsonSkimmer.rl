@@ -122,7 +122,7 @@ public class JsonSkimmer {
 			}
 			action startObject {
 				if (debug) System.out.println("startObject: " + name);
-				startObject(name);
+				push(name, true);
 				if (stop) return;
 				name = null;
 				fcall object;
@@ -135,7 +135,7 @@ public class JsonSkimmer {
 			}
 			action startArray {
 				if (debug) System.out.println("startArray: " + name);
-				startArray(name);
+				push(name, false);
 				if (stop) return;
 				name = null;
 				fcall array;
@@ -278,7 +278,8 @@ public class JsonSkimmer {
 		return stop;
 	}
 
-	private String unescape (String value) {
+	/** Called to unescape string values. The default implementation does standard JSON unescaping. */
+	protected String unescape (String value) {
 		int length = value.length();
 		StringBuilder buffer = new StringBuilder(length + 16);
 		for (int i = 0; i < length;) {
@@ -322,15 +323,16 @@ public class JsonSkimmer {
 		return buffer.toString();
 	}
 
-	protected void startObject (@Null String name) {
+	/** Called when an object or array is encountered in the JSON.
+	 * @param object True when an object was encountered, else it was an array. */
+	protected void push (@Null String name, boolean object) {
 	}
 
-	protected void startArray (@Null String name) {
-	}
-
+	/** Called when the end of an object or array is encountered in the JSON. */
 	protected void pop () {
 	}
 
+	/** Called when a value is encountered in the JSON. */
 	protected void value (@Null String name, String value, boolean unquoted) {
 	}
 }
