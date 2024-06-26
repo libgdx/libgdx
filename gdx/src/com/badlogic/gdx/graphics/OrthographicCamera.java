@@ -45,7 +45,6 @@ public class OrthographicCamera extends Camera {
 	}
 
 	private final Vector3 tmp = new Vector3();
-	private final Matrix4 tmpMat = new Matrix4();
 
 	@Override
 	public void update () {
@@ -57,7 +56,7 @@ public class OrthographicCamera extends Camera {
 		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * (viewportWidth / 2), zoom * -(viewportHeight / 2),
 			zoom * viewportHeight / 2, near, far);
 		view.setToLookAt(direction, up);
-		view.mul(tmpMat.setToTranslation(-position.x, -position.y, -position.z));
+		view.translate(-position.x, -position.y, -position.z);
 		combined.set(projection);
 		Matrix4.mul(combined.val, view.val);
 
