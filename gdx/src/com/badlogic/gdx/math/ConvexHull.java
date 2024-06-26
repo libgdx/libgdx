@@ -55,6 +55,7 @@ public class ConvexHull {
 			System.arraycopy(points, offset, sortedPoints, 0, count);
 			points = sortedPoints;
 			offset = 0;
+			end = count;
 			sort(points, count);
 		}
 
@@ -105,6 +106,7 @@ public class ConvexHull {
 			System.arraycopy(points, offset, sortedPoints, 0, count);
 			points = sortedPoints;
 			offset = 0;
+			end = count;
 			sortWithIndices(points, count, yDown);
 		}
 
