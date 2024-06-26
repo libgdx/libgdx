@@ -90,7 +90,7 @@ public class JsonReader implements BaseJsonReader {
 		int[] stack = new int[4];
 
 		int s = 0;
-		Array<String> names = new Array(8);
+		String name = null;
 		boolean needsUnescape = false, stringIsName = false, stringIsUnquoted = false;
 		RuntimeException parseRuntimeEx = null;
 
@@ -115,20 +115,21 @@ public class JsonReader implements BaseJsonReader {
 				if (stringIsName) {
 					stringIsName = false;
 					if (debug) System.out.println("name: " + value);
-					names.add(value);
+					name = value;
 				} else {
-					String name = names.size > 0 ? names.pop() : null;
+					String valueName = name;
+					name = null;
 					if (stringIsUnquoted) {
 						if (value.equals("true")) {
-							if (debug) System.out.println("boolean: " + name + "=true");
-							bool(name, true);
+							if (debug) System.out.println("boolean: " + valueName + "=true");
+							bool(valueName, true);
 							break outer;
 						} else if (value.equals("false")) {
-							if (debug) System.out.println("boolean: " + name + "=false");
-							bool(name, false);
+							if (debug) System.out.println("boolean: " + valueName + "=false");
+							bool(valueName, false);
 							break outer;
 						} else if (value.equals("null")) {
-							string(name, null);
+							string(valueName, null);
 							break outer;
 						}
 						boolean couldBeDouble = false, couldBeLong = true;
@@ -162,32 +163,32 @@ public class JsonReader implements BaseJsonReader {
 						}
 						if (couldBeDouble) {
 							try {
-								if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-								number(name, Double.parseDouble(value), value);
+								if (debug) System.out.println("double: " + valueName + "=" + Double.parseDouble(value));
+								number(valueName, Double.parseDouble(value), value);
 								break outer;
 							} catch (NumberFormatException ignored) {
 							}
 						} else if (couldBeLong) {
-							if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
+							if (debug) System.out.println("double: " + valueName + "=" + Double.parseDouble(value));
 							try {
-								number(name, Long.parseLong(value), value);
+								number(valueName, Long.parseLong(value), value);
 								break outer;
 							} catch (NumberFormatException ignored) {
 							}
 						}
 					}
-					if (debug) System.out.println("string: " + name + "=" + value);
-					string(name, value);
+					if (debug) System.out.println("string: " + valueName + "=" + value);
+					string(valueName, value);
 				}
 				if (stop) break _goto;
 				stringIsUnquoted = false;
 				s = p;
 			}
 			action startObject {
-				String name = names.size > 0 ? names.pop() : null;
 				if (debug) System.out.println("startObject: " + name);
 				startObject(name);
 				if (stop) break _goto;
+				name = null;
 				fcall object;
 			}
 			action endObject {
@@ -197,10 +198,10 @@ public class JsonReader implements BaseJsonReader {
 				fret;
 			}
 			action startArray {
-				String name = names.size > 0 ? names.pop() : null;
 				if (debug) System.out.println("startArray: " + name);
 				startArray(name);
 				if (stop) break _goto;
+				name = null;
 				fcall array;
 			}
 			action endArray {

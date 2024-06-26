@@ -92,7 +92,7 @@ public class JsonReader implements BaseJsonReader {
 		int[] stack = new int[4];
 
 		int s = 0;
-		Array<String> names = new Array(8);
+		String name = null;
 		boolean needsUnescape = false, stringIsName = false, stringIsUnquoted = false;
 		RuntimeException parseRuntimeEx = null;
 
@@ -200,20 +200,21 @@ public class JsonReader implements BaseJsonReader {
 									if (stringIsName) {
 										stringIsName = false;
 										if (debug) System.out.println("name: " + value);
-										names.add(value);
+										name = value;
 									} else {
-										String name = names.size > 0 ? names.pop() : null;
+										String valueName = name;
+										name = null;
 										if (stringIsUnquoted) {
 											if (value.equals("true")) {
-												if (debug) System.out.println("boolean: " + name + "=true");
-												bool(name, true);
+												if (debug) System.out.println("boolean: " + valueName + "=true");
+												bool(valueName, true);
 												break outer;
 											} else if (value.equals("false")) {
-												if (debug) System.out.println("boolean: " + name + "=false");
-												bool(name, false);
+												if (debug) System.out.println("boolean: " + valueName + "=false");
+												bool(valueName, false);
 												break outer;
 											} else if (value.equals("null")) {
-												string(name, null);
+												string(valueName, null);
 												break outer;
 											}
 											boolean couldBeDouble = false, couldBeLong = true;
@@ -247,22 +248,22 @@ public class JsonReader implements BaseJsonReader {
 											}
 											if (couldBeDouble) {
 												try {
-													if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-													number(name, Double.parseDouble(value), value);
+													if (debug) System.out.println("double: " + valueName + "=" + Double.parseDouble(value));
+													number(valueName, Double.parseDouble(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
 											} else if (couldBeLong) {
-												if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
+												if (debug) System.out.println("double: " + valueName + "=" + Double.parseDouble(value));
 												try {
-													number(name, Long.parseLong(value), value);
+													number(valueName, Long.parseLong(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
 											}
 										}
-										if (debug) System.out.println("string: " + name + "=" + value);
-										string(name, value);
+										if (debug) System.out.println("string: " + valueName + "=" + value);
+										string(valueName, value);
 									}
 									if (stop) break _goto;
 									stringIsUnquoted = false;
@@ -270,12 +271,12 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 2:
-								// line 186 "JsonReader.rl"
+								// line 187 "JsonReader.rl"
 								{
-									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("startObject: " + name);
 									startObject(name);
 									if (stop) break _goto;
+									name = null;
 									{
 										if (top == stack.length) stack = Arrays.copyOf(stack, stack.length * 2);
 										{
@@ -288,7 +289,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 3:
-								// line 193 "JsonReader.rl"
+								// line 194 "JsonReader.rl"
 								{
 									if (debug) System.out.println("endObject");
 									pop();
@@ -301,12 +302,12 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 4:
-								// line 199 "JsonReader.rl"
+								// line 200 "JsonReader.rl"
 								{
-									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("startArray: " + name);
 									startArray(name);
 									if (stop) break _goto;
+									name = null;
 									{
 										if (top == stack.length) stack = Arrays.copyOf(stack, stack.length * 2);
 										{
@@ -319,7 +320,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 5:
-								// line 206 "JsonReader.rl"
+								// line 207 "JsonReader.rl"
 								{
 									if (debug) System.out.println("endArray");
 									pop();
@@ -332,7 +333,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 6:
-								// line 212 "JsonReader.rl"
+								// line 213 "JsonReader.rl"
 								{
 									int start = p - 1;
 									if (data[p++] == '/') {
@@ -340,7 +341,7 @@ public class JsonReader implements BaseJsonReader {
 											p++;
 										p--;
 									} else {
-										while (p + 1 < eof && data[p] != '*' || data[p + 1] != '/')
+										while (p + 1 < eof && (data[p] != '*' || data[p + 1] != '/'))
 											p++;
 										p++;
 									}
@@ -348,7 +349,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 7:
-								// line 225 "JsonReader.rl"
+								// line 226 "JsonReader.rl"
 								{
 									if (debug) System.out.println("unquotedChars");
 									s = p;
@@ -405,7 +406,7 @@ public class JsonReader implements BaseJsonReader {
 								}
 									break;
 								case 8:
-								// line 279 "JsonReader.rl"
+								// line 280 "JsonReader.rl"
 								{
 									if (debug) System.out.println("quotedChars");
 									s = ++p;
@@ -427,7 +428,7 @@ public class JsonReader implements BaseJsonReader {
 									p--;
 								}
 									break;
-								// line 410 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
+								// line 411 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
 								}
 							}
 						}
@@ -456,20 +457,21 @@ public class JsonReader implements BaseJsonReader {
 									if (stringIsName) {
 										stringIsName = false;
 										if (debug) System.out.println("name: " + value);
-										names.add(value);
+										name = value;
 									} else {
-										String name = names.size > 0 ? names.pop() : null;
+										String valueName = name;
+										name = null;
 										if (stringIsUnquoted) {
 											if (value.equals("true")) {
-												if (debug) System.out.println("boolean: " + name + "=true");
-												bool(name, true);
+												if (debug) System.out.println("boolean: " + valueName + "=true");
+												bool(valueName, true);
 												break outer;
 											} else if (value.equals("false")) {
-												if (debug) System.out.println("boolean: " + name + "=false");
-												bool(name, false);
+												if (debug) System.out.println("boolean: " + valueName + "=false");
+												bool(valueName, false);
 												break outer;
 											} else if (value.equals("null")) {
-												string(name, null);
+												string(valueName, null);
 												break outer;
 											}
 											boolean couldBeDouble = false, couldBeLong = true;
@@ -503,29 +505,29 @@ public class JsonReader implements BaseJsonReader {
 											}
 											if (couldBeDouble) {
 												try {
-													if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
-													number(name, Double.parseDouble(value), value);
+													if (debug) System.out.println("double: " + valueName + "=" + Double.parseDouble(value));
+													number(valueName, Double.parseDouble(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
 											} else if (couldBeLong) {
-												if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
+												if (debug) System.out.println("double: " + valueName + "=" + Double.parseDouble(value));
 												try {
-													number(name, Long.parseLong(value), value);
+													number(valueName, Long.parseLong(value), value);
 													break outer;
 												} catch (NumberFormatException ignored) {
 												}
 											}
 										}
-										if (debug) System.out.println("string: " + name + "=" + value);
-										string(name, value);
+										if (debug) System.out.println("string: " + valueName + "=" + value);
+										string(valueName, value);
 									}
 									if (stop) break _goto;
 									stringIsUnquoted = false;
 									s = p;
 								}
 									break;
-								// line 509 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
+								// line 511 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
 								}
 							}
 						}
@@ -536,7 +538,7 @@ public class JsonReader implements BaseJsonReader {
 				}
 			}
 
-			// line 315 "JsonReader.rl"
+			// line 316 "JsonReader.rl"
 
 		} catch (RuntimeException ex) {
 			parseRuntimeEx = ex;
@@ -569,7 +571,7 @@ public class JsonReader implements BaseJsonReader {
 		return root;
 	}
 
-	// line 551 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
+	// line 553 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
 	private static byte[] init__json_actions_0 () {
 		return new byte[] {0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 2, 0, 7, 2, 0, 8, 2, 1, 3, 2, 1, 5};
 	}
@@ -659,7 +661,7 @@ public class JsonReader implements BaseJsonReader {
 	static final int json_en_array = 23;
 	static final int json_en_main = 1;
 
-	// line 348 "JsonReader.rl"
+	// line 349 "JsonReader.rl"
 
 	private final Array<JsonValue> elements = new Array(8);
 	private final Array<JsonValue> lastChild = new Array(8);
