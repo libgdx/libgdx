@@ -168,6 +168,43 @@ public class JsonTest extends GdxTest {
 		equals(json.toJson(Array.with(" 1", "2 ", " 3 "), null, String.class), "[\" 1\",\"2 \",\" 3 \"]");
 		equals(json.toJson(Array.with("1", "", "3"), null, String.class), "[1,\"\",3]");
 
+		String text = "{outer:{name1:{},z:{a:true,name2:[value,{\"ok\":v},0 ,1]}}}";
+		System.out.println(text);
+		new JsonSkimmer() {
+			int indent;
+			boolean object;
+
+			void indent () {
+				for (int i = 0; i < indent; i++)
+					System.out.print("   ");
+			}
+
+			protected void startObject (@Null String name) {
+				indent();
+				System.out.println(name != null ? name + ": {" : "{");
+				object = true;
+				indent++;
+			}
+
+			protected void startArray (@Null String name) {
+				indent();
+				System.out.println(name != null ? name + ": [" : "[");
+				object = false;
+				indent++;
+			}
+
+			protected void pop () {
+				indent--;
+				indent();
+				System.out.println(object ? '}' : ']');
+			}
+
+			protected void value (String name, String value, boolean unquoted) {
+				indent();
+				System.out.println(name != null ? name + ": " + value : value);
+			}
+		}.parse(text);
+
 		System.out.println();
 		System.out.println("Success!");
 	}
