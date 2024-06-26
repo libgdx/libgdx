@@ -216,7 +216,7 @@ public class JsonReader implements BaseJsonReader {
 						p++;
 					p--;
 				} else {
-					while (p + 1 < eof && data[p] != '*' || data[p + 1] != '/')
+					while (p + 1 < eof && (data[p] != '*' || data[p + 1] != '/'))
 						p++;
 					p++;
 				}
