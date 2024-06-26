@@ -356,7 +356,10 @@ public class JsonReader implements BaseJsonReader {
 		stop = true;
 	}
 
-	/** @param name May be null. */
+	public boolean isStopped () {
+		return stop;
+	}
+
 	private void addChild (@Null String name, JsonValue child) {
 		child.setName(name);
 		if (current == null) {
@@ -377,7 +380,6 @@ public class JsonReader implements BaseJsonReader {
 			root = current;
 	}
 
-	/** @param name May be null. */
 	protected void startObject (@Null String name) {
 		JsonValue value = new JsonValue(ValueType.object);
 		if (current != null) addChild(name, value);
@@ -385,7 +387,6 @@ public class JsonReader implements BaseJsonReader {
 		current = value;
 	}
 
-	/** @param name May be null. */
 	protected void startArray (@Null String name) {
 		JsonValue value = new JsonValue(ValueType.array);
 		if (current != null) addChild(name, value);
@@ -399,19 +400,19 @@ public class JsonReader implements BaseJsonReader {
 		current = elements.size > 0 ? elements.peek() : null;
 	}
 
-	protected void string (String name, String value) {
+	protected void string (@Null String name, String value) {
 		addChild(name, new JsonValue(value));
 	}
 
-	protected void number (String name, double value, String stringValue) {
+	protected void number (@Null String name, double value, String stringValue) {
 		addChild(name, new JsonValue(value, stringValue));
 	}
 
-	protected void number (String name, long value, String stringValue) {
+	protected void number (@Null String name, long value, String stringValue) {
 		addChild(name, new JsonValue(value, stringValue));
 	}
 
-	protected void bool (String name, boolean value) {
+	protected void bool (@Null String name, boolean value) {
 		addChild(name, new JsonValue(value));
 	}
 

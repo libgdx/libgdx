@@ -101,13 +101,13 @@ public class JsonReader implements BaseJsonReader {
 
 		try {
 
-			// line 3 "JsonReader.java"
+			// line 103 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
 			{
 				cs = json_start;
 				top = 0;
 			}
 
-			// line 8 "JsonReader.java"
+			// line 108 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
 			{
 				int _klen;
 				int _trans = 0;
@@ -427,7 +427,7 @@ public class JsonReader implements BaseJsonReader {
 									p--;
 								}
 									break;
-								// line 310 "JsonReader.java"
+								// line 410 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
 								}
 							}
 						}
@@ -525,7 +525,7 @@ public class JsonReader implements BaseJsonReader {
 									s = p;
 								}
 									break;
-								// line 409 "JsonReader.java"
+								// line 509 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
 								}
 							}
 						}
@@ -569,7 +569,7 @@ public class JsonReader implements BaseJsonReader {
 		return root;
 	}
 
-	// line 419 "JsonReader.java"
+	// line 551 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
 	private static byte[] init__json_actions_0 () {
 		return new byte[] {0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 2, 0, 7, 2, 0, 8, 2, 1, 3, 2, 1, 5};
 	}
@@ -675,7 +675,6 @@ public class JsonReader implements BaseJsonReader {
 		return stop;
 	}
 
-	/** @param name May be null. */
 	private void addChild (@Null String name, JsonValue child) {
 		child.setName(name);
 		if (current == null) {
@@ -696,7 +695,6 @@ public class JsonReader implements BaseJsonReader {
 			root = current;
 	}
 
-	/** @param name May be null. */
 	protected void startObject (@Null String name) {
 		JsonValue value = new JsonValue(ValueType.object);
 		if (current != null) addChild(name, value);
@@ -704,7 +702,6 @@ public class JsonReader implements BaseJsonReader {
 		current = value;
 	}
 
-	/** @param name May be null. */
 	protected void startArray (@Null String name) {
 		JsonValue value = new JsonValue(ValueType.array);
 		if (current != null) addChild(name, value);
@@ -718,19 +715,19 @@ public class JsonReader implements BaseJsonReader {
 		current = elements.size > 0 ? elements.peek() : null;
 	}
 
-	protected void string (String name, String value) {
+	protected void string (@Null String name, String value) {
 		addChild(name, new JsonValue(value));
 	}
 
-	protected void number (String name, double value, String stringValue) {
+	protected void number (@Null String name, double value, String stringValue) {
 		addChild(name, new JsonValue(value, stringValue));
 	}
 
-	protected void number (String name, long value, String stringValue) {
+	protected void number (@Null String name, long value, String stringValue) {
 		addChild(name, new JsonValue(value, stringValue));
 	}
 
-	protected void bool (String name, boolean value) {
+	protected void bool (@Null String name, boolean value) {
 		addChild(name, new JsonValue(value));
 	}
 
