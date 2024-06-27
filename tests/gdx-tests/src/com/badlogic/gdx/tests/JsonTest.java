@@ -206,7 +206,7 @@ public class JsonTest extends GdxTest {
 		}.parse(text);
 
 		// JsonSkimmer usage example/test:
-		Array values = new Array();
+		final Array values = new Array();
 		new JsonSkimmer() {
 			int level;
 			String id;
