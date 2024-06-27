@@ -35,6 +35,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.DisposalHelper;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 
@@ -942,8 +943,7 @@ public class SpriteCache implements Disposable {
 
 	/** Releases all resources held by this SpriteCache. */
 	public void dispose () {
-		mesh.dispose();
-		if (shader != null) shader.dispose();
+		DisposalHelper.disposeAll(mesh, shader);
 	}
 
 	public Matrix4 getProjectionMatrix () {

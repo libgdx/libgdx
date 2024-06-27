@@ -37,6 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.DisposalHelper;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
@@ -449,11 +450,12 @@ public class Skin implements Disposable {
 
 	/** Disposes the {@link TextureAtlas} and all {@link Disposable} resources in the skin. */
 	public void dispose () {
-		if (atlas != null) atlas.dispose();
+		DisposalHelper disposalHelper = new DisposalHelper(atlas);
 		for (ObjectMap<String, Object> entry : resources.values()) {
 			for (Object resource : entry.values())
-				if (resource instanceof Disposable) ((Disposable)resource).dispose();
+				if (resource instanceof Disposable) disposalHelper.add((Disposable)resource);
 		}
+		disposalHelper.dispose();
 	}
 
 	protected Json getJsonLoader (final FileHandle skinFile) {
