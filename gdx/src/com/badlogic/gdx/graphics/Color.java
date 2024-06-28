@@ -104,13 +104,27 @@ public class Color {
 
 	/** Sets this color to the given color.
 	 * 
-	 * @param color the Color */
+	 * @param color the Color
+   * @return this color. */
 	public Color set (Color color) {
 		this.r = color.r;
 		this.g = color.g;
 		this.b = color.b;
 		this.a = color.a;
 		return this;
+	}
+
+	/** Sets this color using the red, green and blue components of the provided Color and a deviating alpha value.
+	 * 
+	 * @param rgb the desired red, green and blue values (alpha of that Color is ignored)
+	 * @param float the desired alpha value
+	 * @return this color. */
+	public Color set (Color rgb, float alpha) {
+	  this.r = rgb.r;
+	  this.g = rgb.g;
+	  this.b = rgb.b;
+	  this.a = alpha;
+	  return this;
 	}
 
 	/** Multiplies the this color and the given color
