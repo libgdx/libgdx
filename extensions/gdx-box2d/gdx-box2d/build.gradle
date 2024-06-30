@@ -24,7 +24,9 @@ jnigen {
 	add(Linux, x64, ARM)
 	add(MacOsX, x64)
 	add(MacOsX, x64, ARM)
-	add(Android)
+	add(Android) {
+		linkerFlags += " -Wl,-z,max-page-size=0x4000"
+	}
 	add(IOS)
 
 	robovm {
