@@ -439,6 +439,8 @@
 		<include name="utils/JsonReader.java"/>
 		<include name="utils/JsonValue.java"/>
 		<include name="utils/JsonWriter.java"/>
+		<include name="utils/JsonSkimmer.java"/>
+		<include name="utils/JsonString.java"/>
 		<include name="utils/LittleEndianInputStream.java"/>
 		<include name="utils/Logger.java"/>
 		<include name="utils/LongArray.java"/>
