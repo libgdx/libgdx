@@ -18,12 +18,14 @@ package com.badlogic.gdx.physics.box2d;
 
 import com.badlogic.gdx.math.Vector2;
 
+import static com.badlogic.gdx.physics.box2d.JniUtil.arrayOfVec2IntoFloat;
+
 public class PolygonShape extends Shape {
 	// @off
 	/*JNI
-     #include <Box2D/Box2D.h>
-	 */
-	
+     #include <box2d/box2d.h>
+	 */ // @on
+
 	/** Constructs a new polygon */
 	public PolygonShape () {
 		addr = newPolygonShape();
@@ -34,9 +36,10 @@ public class PolygonShape extends Shape {
 	}
 
 	private native long newPolygonShape (); /*
+		// @off
 		b2PolygonShape* poly = new b2PolygonShape();
 		return (jlong)poly;
-	*/
+	*/ // @on
 
 	/** {@inheritDoc} */
 	@Override
@@ -47,11 +50,7 @@ public class PolygonShape extends Shape {
 	/** Copy vertices. This assumes the vertices define a convex polygon. It is assumed that the exterior is the the right of each
 	 * edge. */
 	public void set (Vector2[] vertices) {
-		float[] verts = new float[vertices.length * 2];
-		for (int i = 0, j = 0; i < vertices.length * 2; i += 2, j++) {
-			verts[i] = vertices[j].x;
-			verts[i + 1] = vertices[j].y;
-		}
+		float[] verts = arrayOfVec2IntoFloat(vertices);
 		jniSet(addr, verts, 0, verts.length);
 	}
 
@@ -61,13 +60,14 @@ public class PolygonShape extends Shape {
 		jniSet(addr, vertices, 0, vertices.length);
 	}
 
-	/** Copy vertices from the given float array, taking into account the offset and length. It is assumed the vertices are in
-	 * x,y order and define a convex polygon. It is assumed that the exterior is the the right of each edge. */
+	/** Copy vertices from the given float array, taking into account the offset and length. It is assumed the vertices are in x,y
+	 * order and define a convex polygon. It is assumed that the exterior is the the right of each edge. */
 	public void set (float[] vertices, int offset, int len) {
 		jniSet(addr, vertices, offset, len);
 	}
 
 	private native void jniSet (long addr, float[] verts, int offset, int len); /*
+		// @off
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		int numVertices = len / 2;
 		b2Vec2* verticesOut = new b2Vec2[numVertices];
@@ -77,18 +77,19 @@ public class PolygonShape extends Shape {
 		poly->Set(verticesOut, numVertices);
 		delete[] verticesOut;
 	 */
-	
+
 	/** Build vertices to represent an axis-aligned box.
-	 * @param hx the half-width.
+   * @param hx the half-width.
 	 * @param hy the half-height. */
 	public void setAsBox (float hx, float hy) {
-		jniSetAsBox(addr, hx, hy);
-	}
+    jniSetAsBox(addr, hx, hy);
+  }
 
-	private native void jniSetAsBox (long addr, float hx, float hy); /*
+  private native void jniSetAsBox(long addr, float hx, float hy); /*
+		// @off
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		poly->SetAsBox(hx, hy);
-	*/
+	*/ // @on
 
 	/** Build vertices to represent an oriented box.
 	 * @param hx the half-width.
@@ -100,9 +101,10 @@ public class PolygonShape extends Shape {
 	}
 
 	private native void jniSetAsBox (long addr, float hx, float hy, float centerX, float centerY, float angle); /*
+		// @off
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		poly->SetAsBox( hx, hy, b2Vec2( centerX, centerY ), angle );
-	*/
+	*/ // @on
 
 	/** @return the number of vertices */
 	public int getVertexCount () {
@@ -110,9 +112,10 @@ public class PolygonShape extends Shape {
 	}
 
 	private native int jniGetVertexCount (long addr); /*
+		// @off
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
-		return poly->GetVertexCount();
-	*/
+		return poly->m_count;
+	*/ // @on
 
 	private static float[] verts = new float[2];
 
@@ -126,9 +129,10 @@ public class PolygonShape extends Shape {
 	}
 
 	private native void jniGetVertex (long addr, int index, float[] verts); /*
+		// @off
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
-		const b2Vec2 v = poly->GetVertex( index );
+		const b2Vec2 v = poly->m_vertices[index];
 		verts[0] = v.x;
 		verts[1] = v.y;
-	*/
+	*/ // @on
 }

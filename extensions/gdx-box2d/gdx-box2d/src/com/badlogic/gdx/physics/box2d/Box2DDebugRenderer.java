@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-import java.util.Iterator;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -27,8 +25,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
+import com.badlogic.gdx.physics.box2d.rope.Rope;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+
+import java.util.Iterator;
 
 public class Box2DDebugRenderer implements Disposable {
 
@@ -78,6 +79,19 @@ public class Box2DDebugRenderer implements Disposable {
 		renderBodies(world);
 	}
 
+	public void render (Rope.DrawData data) {
+		renderer.begin(ShapeType.Line);
+		for (int i = 0; i < data.count - 1; i++) {
+			Vector2 fst = data.pointAt(i).cpy();
+			drawSegment(fst, data.pointAt(i + 1), ROPE_C);
+			Color pc = data.invMasses.get(i) > 0.0f ? ROPE_PD : ROPE_PG;
+			drawSolidCircle(fst, .05f, Vector2.Zero, pc);
+		}
+		Color pc = data.invMasses.get(data.count - 1) > 0.0f ? ROPE_PD : ROPE_PG;
+		drawSolidCircle(data.pointAt(data.count - 1), .05f, Vector2.Zero, pc);
+		renderer.end();
+	}
+
 	public final Color SHAPE_NOT_ACTIVE = new Color(0.5f, 0.5f, 0.3f, 1);
 	public final Color SHAPE_STATIC = new Color(0.5f, 0.9f, 0.5f, 1);
 	public final Color SHAPE_KINEMATIC = new Color(0.5f, 0.5f, 0.9f, 1);
@@ -87,6 +101,10 @@ public class Box2DDebugRenderer implements Disposable {
 	public final Color AABB_COLOR = new Color(1.0f, 0, 1.0f, 1f);
 	public final Color VELOCITY_COLOR = new Color(1.0f, 0, 0f, 1f);
 
+	public final Color ROPE_C = new Color(0.4f, 0.5f, 0.7f, 1);
+	public final Color ROPE_PG = new Color(0.1f, 0.8f, 0.1f, 1);
+	public final Color ROPE_PD = new Color(0.7f, 0.2f, 0.4f, 1);
+
 	private void renderBodies (World world) {
 		renderer.begin(ShapeType.Line);
 
@@ -94,7 +112,7 @@ public class Box2DDebugRenderer implements Disposable {
 			world.getBodies(bodies);
 			for (Iterator<Body> iter = bodies.iterator(); iter.hasNext();) {
 				Body body = iter.next();
-				if (body.isActive() || drawInactiveBodies) renderBody(body);
+				if (body.isEnabled() || drawInactiveBodies) renderBody(body);
 			}
 		}
 
@@ -132,7 +150,7 @@ public class Box2DDebugRenderer implements Disposable {
 	}
 
 	private Color getColorByBody (Body body) {
-		if (body.isActive() == false)
+		if (body.isEnabled() == false)
 			return SHAPE_NOT_ACTIVE;
 		else if (body.getType() == BodyType.StaticBody)
 			return SHAPE_STATIC;

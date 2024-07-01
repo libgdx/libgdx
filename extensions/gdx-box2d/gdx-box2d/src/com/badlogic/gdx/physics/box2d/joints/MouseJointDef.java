@@ -32,9 +32,9 @@ public class MouseJointDef extends JointDef {
 	 * the weight (multiplier * mass * gravity). */
 	public float maxForce = 0;
 
-	/** The response speed. */
-	public float frequencyHz = 5.0f;
+	/** The linear stiffness in N/m. */
+	public float stiffness = 0f;
 
-	/** The damping ratio. 0 = no damping, 1 = critical damping. */
-	public float dampingRatio = 0.7f;
+	/** The linear damping in N*s/m. */
+	public float damping = 0;
 }
