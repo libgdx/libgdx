@@ -49,6 +49,12 @@ public class TiledMapTileLayer extends MapLayer {
 		return tileHeight;
 	}
 
+	/** Creates TiledMap layer by deserialisation
+	 */
+	public TiledMapTileLayer () {
+		super();
+	}
+
 	/** Creates TiledMap layer
 	 * 
 	 * @param width layer width in tiles
