@@ -76,7 +76,7 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
-			if (Configuration.GLFW_CHECK_THREAD0.get(true)) {
+			if (!Configuration.GLFW_LIBRARY_NAME.get().equals("glfw_async")) {
 				renderWindow(windowHandle, width, height);
 			} else {
 				if (posted) return;
