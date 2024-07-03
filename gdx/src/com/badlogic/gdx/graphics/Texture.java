@@ -106,6 +106,10 @@ public class Texture extends GLTexture {
 
 	TextureData data;
 
+	protected Texture() {
+		super(0, 0);
+	}
+
 	public Texture (String internalPath) {
 		this(Gdx.files.internal(internalPath));
 	}
