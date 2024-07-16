@@ -19,6 +19,10 @@ package com.badlogic.gdx.backends.gwt.preloader;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.URLConnection;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -28,7 +32,6 @@ import java.util.Map.Entry;
 
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.Generator;
@@ -37,6 +40,8 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /** Copies assets from the path specified in the modules gdx.assetpath configuration property to the war/ folder and generates the
  * assets.txt file. The type of a file is determined by an {@link AssetFilter}, which is either created by instantiating the class
@@ -90,14 +95,11 @@ public class PreloaderBundleGenerator extends Generator {
 		List<String> classpathFiles = getClasspathFiles(context);
 		for (String classpathFile : classpathFiles) {
 			if (assetFilter.accept(classpathFile, false)) {
+				FileWrapper orig = target.child(classpathFile);
+				FileWrapper dest = target.child(orig.name());
 				try {
-					InputStream is = context.getClass().getClassLoader().getResourceAsStream(classpathFile);
-					byte[] bytes = StreamUtils.copyStreamToByteArray(is);
-					is.close();
-					FileWrapper origFile = target.child(classpathFile);
-					FileWrapper destFile = target.child(fileNameWithMd5(origFile, bytes));
-					destFile.writeBytes(bytes, false);
-					assets.add(new Asset(origFile.path(), destFile, assetFilter.getType(destFile.path())));
+					InputStream resourceStream = context.getClass().getClassLoader().getResourceAsStream(classpathFile);
+					copy(resourceStream, dest.path(), dest, assetFilter, assets);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -149,11 +151,9 @@ public class PreloaderBundleGenerator extends Generator {
 		ArrayList<Asset> assets) {
 		if (!filter.accept(filePathOrig, false)) return;
 		try {
-			assets.add(new Asset(filePathOrig, dest, filter.getType(dest.path())));
-			dest.write(source.read(), false);
-		} catch (Exception ex) {
-			throw new GdxRuntimeException("Error copying source file: " + source + "\n" //
-				+ "To destination: " + dest, ex);
+			copy(source.read(), filePathOrig, dest, filter, assets);
+		} catch (IOException e) {
+			throw new GdxRuntimeException("Error copying source file: " + source + "\n" + "To destination: " + dest, e);
 		}
 	}
 
@@ -167,8 +167,30 @@ public class PreloaderBundleGenerator extends Generator {
 				FileWrapper destFile = destDir.child(srcFile.name());
 				copyDirectory(srcFile, destFile, filter, assets);
 			} else {
-				FileWrapper destFile = destDir.child(fileNameWithMd5(srcFile, srcFile.readBytes()));
+				FileWrapper destFile = destDir.child(srcFile.name());
 				copyFile(srcFile, destDir.child(srcFile.name()).path(), destFile, filter, assets);
+			}
+		}
+	}
+
+	private void copy (InputStream source, String filePathOrig, FileWrapper dest, AssetFilter filter, ArrayList<Asset> assets)
+		throws IOException {
+		try (InputStream in = source) {
+			try {
+				// Calculate an MD5 hash while we copy the file
+				MessageDigest digest = MessageDigest.getInstance("MD5");
+				DigestInputStream digestInputStream = new DigestInputStream(in, digest);
+				dest.write(digestInputStream, false);
+
+				// Add the hash to the file name, then move the file to the new path
+				FileWrapper newDest = dest.parent().child(fileNameWithHash(dest, digest));
+				Files.move(toPath(dest.file()), toPath(newDest.file()), REPLACE_EXISTING);
+				assets.add(new Asset(filePathOrig, newDest, filter.getType(dest.path())));
+			} catch (NoSuchAlgorithmException e) {
+				// Fallback to a build timestamp if we can't calculate an MD5 hash
+				FileWrapper newDest = dest.parent().child(fileNameWithTimestamp(dest));
+				newDest.write(in, false);
+				assets.add(new Asset(filePathOrig, newDest, filter.getType(dest.path())));
 			}
 		}
 	}
@@ -275,23 +297,27 @@ public class PreloaderBundleGenerator extends Generator {
 		return packageName + "." + className;
 	}
 
-	private static String fileNameWithMd5 (FileWrapper fw, byte[] bytes) {
-		String md5;
-		try {
-			MessageDigest digest = MessageDigest.getInstance("MD5");
-			digest.update(bytes);
-			md5 = String.format("%032x", new BigInteger(1, digest.digest()));
-		} catch (NoSuchAlgorithmException e) {
-			// Fallback
-			md5 = String.valueOf(System.currentTimeMillis());
-		}
-
-		String nameWithMd5 = fw.nameWithoutExtension() + "-" + md5;
+	private static String fileNameWithHash (FileWrapper fw, MessageDigest digest) {
+		String hash = String.format("%032x", new BigInteger(1, digest.digest()));
+		String nameWithHash = fw.nameWithoutExtension() + "-" + hash;
 		String extension = fw.extension();
 		if (!extension.isEmpty() || fw.name().endsWith(".")) {
-			nameWithMd5 = nameWithMd5 + "." + extension;
+			nameWithHash = nameWithHash + "." + extension;
 		}
-		return nameWithMd5;
+		return nameWithHash;
 	}
 
+	private static String fileNameWithTimestamp (FileWrapper fw) {
+		String timestamp = String.valueOf(System.currentTimeMillis());
+		String nameWithTimestamp = fw.nameWithoutExtension() + "-" + timestamp;
+		String extension = fw.extension();
+		if (!extension.isEmpty() || fw.name().endsWith(".")) {
+			nameWithTimestamp = nameWithTimestamp + "." + extension;
+		}
+		return nameWithTimestamp;
+	}
+
+	private static Path toPath (File file) {
+		return FileSystems.getDefault().getPath(file.getPath());
+	}
 }
