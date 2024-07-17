@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.utils.ObjectIntMap;
 
 /**
@@ -785,6 +786,29 @@ public interface Input {
 	 * @param visible visible or not
 	 * @param type which type of keyboard we wish to display. Can be null when hiding */
 	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type);
+
+	static interface InputStringValidator {
+		/** @param toCheck The string that should be validated
+		 * @return true, if the string is acceptable, false if not. */
+		boolean validate (String toCheck);
+	}
+
+	/** Sets the on-screen keyboard visible if available.
+	 *
+	 * @param configuration The configuration for the native input field */
+	public void openTextInputField (NativeInputConfiguration configuration);
+
+	/** Closes the native input field and applies the result to the input wrapper.
+	 * @param sendReturn Whether a "return" key should be send after processing */
+	public void closeTextInputField (boolean sendReturn);
+
+	static interface KeyboardHeightObserver {
+		void onKeyboardHeightChanged (int height);
+	}
+
+	/** This will set a keyboard height callback. This will get called, whenever the keyboard height changes. Note: When using
+	 * openTextInputField, it will report the height of the native input field too. */
+	public void setKeyboardHeightObserver (KeyboardHeightObserver observer);
 
 	public enum OnscreenKeyboardType {
 		Default, NumberPad, PhonePad, Email, Password, URI

@@ -1,5 +1,22 @@
 [1.12.2-SNAPSHOT]
+- [BREAKING CHANGE] GWT: Updated to 2.10.0. `com.google.jsinterop:jsinterop-annotations:2.0.2:sources` must be added as a dependency to your html project dependencies.
+- [BREAKING CHANGE] Android: Minimum API level is now level 19 (Android 4.4)
+- [BREAKING CHANGE] iOS: Increased min supported iOS version to 12.0. Update your Info.plist file if necessary.
+- [BREAKING CHANGE] Android, iOS: Exceptions occurring in Runnable tasks scheduled through Gdx.app.postRunnable() are no longer swallowed and will crash the app (add a protection if required).
+- iOS: Update to MobiVM 2.3.21
+- iOS: The iOS backend now implements AudioDevice. It can be configured through IOSApplicationConfiguration with audioDeviceBufferSize/audioDeviceBufferCount
 - Fixed GlyphLayout for fixed width glyph offsets at the start and end of lines.
+- Fixed scene2d.ui layout for fractional positions and sizes.
+- LWJGL3: Added pauseWhenMinimized and pauseWhenLostFocus flags to Lwjgl3ApplicationConfiguration.
+- libGDX is now built using Java 17 due to Gradle 8 requirements.
+- New GDX Setup projects now use Gradle 8.4 and AGP Plugin 8.1.2 which require at least Java 17.
+- Fixed Timer#stop, remember time spent stopped and delay tasks when started again. #7281
+- Android: Add configuration option to render under the cutout if available on the device.
+- Fix: Keep SelectBox popup from extending past right edge of stage.
+- Added Framebuffer multisample support (see GL31FrameBufferMultisampleTest.java for basic usage)
+- Fix: Fonts generated with gdx-freetype no longer bleed when drawn with a shadow
+- Fixed Timer tasks being run after cancellation.
+- Optimization of SpriteBatch in GL30 default modes, as indices do not need to be updated
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
@@ -54,6 +71,7 @@
 - API Addition: Added Audio#switchOutputDevice and Audio#getAvailableOutputDevices to specify output devices. Only works for LWJGL3
 - Fix LWJGL3: Audio doesn't die anymore, if a device gets disconnected
 - API Addition: Added Haptics API with 4 different Input#vibrate() methods with complete Android and iOS implementations.
+- API Addition: Vector2: Added static methods for angleDeg and angleRad
 - Fix: Fixed Android and iOS touch cancelled related issues, see #6871.
 - Javadoc: Add "-use" flag to javadoc generation
 - Android: gdx-setup now uses AGP 7.2.2 and SDK 32, requiring Android Studio Chipmunk or IntelliJ IDEA 2022.2 and JDK 11.

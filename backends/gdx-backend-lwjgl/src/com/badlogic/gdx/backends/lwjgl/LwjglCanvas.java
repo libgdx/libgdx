@@ -237,12 +237,7 @@ public class LwjglCanvas implements LwjglApplicationBase {
 				}
 				try {
 					Display.processMessages();
-					if (cursor != null || !isWindows) {
-						try {
-							canvas.setCursor(cursor);
-						} catch (Throwable ignored) { // Seems to fail on Linux sometimes.
-						}
-					}
+					applyCursor(cursor);
 
 					boolean shouldRender = checkResize();
 
@@ -290,6 +285,15 @@ public class LwjglCanvas implements LwjglApplicationBase {
 				return true;
 			}
 		});
+	}
+
+	protected void applyCursor (Cursor cursor) {
+		if (cursor != null || !isWindows) {
+			try {
+				canvas.setCursor(cursor);
+			} catch (Throwable ignored) { // Seems to fail on Linux sometimes.
+			}
+		}
 	}
 
 	public boolean executeRunnables () {

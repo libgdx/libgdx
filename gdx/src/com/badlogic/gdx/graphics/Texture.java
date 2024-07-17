@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -106,6 +106,10 @@ public class Texture extends GLTexture {
 
 	TextureData data;
 
+	protected Texture () {
+		super(0, 0);
+	}
+
 	public Texture (String internalPath) {
 		this(Gdx.files.internal(internalPath));
 	}
@@ -175,7 +179,7 @@ public class Texture extends GLTexture {
 
 	/** Draws the given {@link Pixmap} to the texture at position x, y. No clipping is performed so you have to make sure that you
 	 * draw only inside the texture region. Note that this will only draw to mipmap level 0!
-	 * 
+	 *
 	 * @param pixmap The Pixmap
 	 * @param x The x coordinate in pixels
 	 * @param y The y coordinate in pixels */

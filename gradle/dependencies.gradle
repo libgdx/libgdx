@@ -23,21 +23,22 @@ ext {
 
 versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 7
 versions.javaLwjgl3 = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
-versions.robovm = "2.3.20"
-versions.gwt = "2.8.2"
-versions.gwtPlugin = "1.1.16"
-versions.gretty = "3.0.7"
+versions.robovm = "2.3.21"
+versions.gwt = "2.10.0"
+versions.gwtPlugin = "1.1.29"
+versions.jsinteropAnnotations = "2.0.2"
+versions.gretty = "3.1.0"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.3"
 versions.lwjgl3 = "3.3.4-SNAPSHOT"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.13.2"
-versions.androidPlugin = "7.3.1"
+versions.androidPlugin = "8.1.2"
 versions.multiDex = "2.0.1"
 versions.androidCompileSdk = 33
 versions.androidTargetSdk = 33
-versions.androidMinSdk = 14
+versions.androidMinSdk = 19
 versions.androidBuildTools = "33.0.2"
 versions.androidFragment = "1.5.7"
 versions.javaparser = "2.3.0"
@@ -134,7 +135,8 @@ libraries.compileOnly.android = [
 ]
 
 libraries.gwt = [
-        "com.google.gwt:gwt-user:${versions.gwt}"
+        "com.google.gwt:gwt-user:${versions.gwt}",
+        "com.google.jsinterop:jsinterop-annotations:${versions.jsinteropAnnotations}:sources"
 ]
 
 libraries.compileOnly.gwt = [

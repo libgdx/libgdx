@@ -79,6 +79,7 @@ import com.badlogic.gdx.tests.g3d.TangentialAccelerationTest;
 import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.g3d.TextureRegion3DTest;
 import com.badlogic.gdx.tests.g3d.utils.DefaultTextureBinderTest;
+import com.badlogic.gdx.tests.gles2.GlTexImage2D;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
@@ -86,6 +87,7 @@ import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.ModelInstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
+import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleMRTTest;
 import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleTest;
 import com.badlogic.gdx.tests.gles31.GL31IndirectDrawingIndexedTest;
 import com.badlogic.gdx.tests.gles31.GL31IndirectDrawingNonIndexedTest;
@@ -174,12 +176,14 @@ public class GdxTests {
 		GLES30Test.class,
 		GL31IndirectDrawingIndexedTest.class,
 		GL31IndirectDrawingNonIndexedTest.class,
+		GL31FrameBufferMultisampleMRTTest.class,
 		GL31FrameBufferMultisampleTest.class,
 		GL31ProgramIntrospectionTest.class,
 		GL32AdvancedBlendingTest.class,
 		GL32DebugControlTest.class,
 		GL32MultipleRenderTargetsBlendingTest.class,
 		GL32OffsetElementsTest.class,
+		GlTexImage2D.class,
 		GLProfilerErrorTest.class,
 		GroupCullingTest.class,
 		GroupFadeTest.class,
@@ -226,6 +230,7 @@ public class GdxTests {
 		NonPowerOfTwoTest.class,
 		OctreeTest.class,
 		OnscreenKeyboardTest.class,
+		NativeInputTest.class,
 		OrientedBoundingBoxTest.class,
 		PathTest.class,
 		ParallaxTest.class,
@@ -273,6 +278,7 @@ public class GdxTests {
 		SortedSpriteTest.class,
 		SoundTest.class,
 		SpriteBatchRotationTest.class,
+		SpriteBatchPerformanceTest.class,
 		SpriteBatchShaderTest.class,
 		SpriteBatchTest.class,
 		SpriteCacheOffsetTest.class,
