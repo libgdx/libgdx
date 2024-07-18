@@ -110,7 +110,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		Array<FileHandle> fileHandles = new Array<FileHandle>();
 
 		// TileSet descriptors
-		for (Element tileset : root.getChildrenByName("tileset")) {
+		for (Element tileset : root.getChildrenByNameRecursively("tileset")) {
 			String source = tileset.getAttribute("source", null);
 			if (source != null) {
 				FileHandle tsxFile = getRelativeFileHandle(tmxFile, source);
@@ -144,7 +144,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		}
 
 		// ImageLayer descriptors
-		for (Element imageLayer : root.getChildrenByName("imagelayer")) {
+		for (Element imageLayer : root.getChildrenByNameRecursively("imagelayer")) {
 			Element image = imageLayer.getChildByName("image");
 			String source = image.getAttribute("source", null);
 
