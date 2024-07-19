@@ -54,7 +54,7 @@ public class OpenALSound implements Sound {
 	void setup (ShortBuffer pcm, int channels, int bitDepth, int sampleRate) {
 		this.channels = channels;
 		this.sampleRate = sampleRate;
-		int sampleFrames = (pcm.limit() << 1) / ((bitDepth >> 3)) / channels;
+		int sampleFrames = (pcm.limit() << 1) / (bitDepth >> 3) / channels;
 		duration = sampleFrames / (float)sampleRate;
 
 		if (bufferID == -1) {
