@@ -22,11 +22,11 @@ import java.lang.reflect.Method;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration.GLEmulation;
 import com.badlogic.gdx.backends.lwjgl3.audio.Lwjgl3Audio;
 import com.badlogic.gdx.backends.lwjgl3.audio.OpenALLwjgl3Audio;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.AMDDebugOutput;
@@ -50,6 +50,7 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl3.audio.mock.MockAudio;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -185,8 +186,10 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			closedWindows.clear();
 			int targetFramerate = -2;
 			for (Lwjgl3Window window : windows) {
-				window.makeCurrent();
-				currentWindow = window;
+				if (currentWindow != window) {
+					window.makeCurrent();
+					currentWindow = window;
+				}
 				if (targetFramerate == -2) targetFramerate = window.getConfig().foregroundFPS;
 				synchronized (lifecycleListeners) {
 					haveWindowsRendered |= window.update();
@@ -442,7 +445,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 	private Lwjgl3Window createWindow (final Lwjgl3ApplicationConfiguration config, ApplicationListener listener,
 		final long sharedContext) {
-		final Lwjgl3Window window = new Lwjgl3Window(listener, config, this);
+		final Lwjgl3Window window = new Lwjgl3Window(listener, lifecycleListeners, config, this);
 		if (sharedContext == 0) {
 			// the main window is created immediately
 			createWindow(window, config, sharedContext);
@@ -464,10 +467,16 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		window.setVisible(config.initialVisible);
 
 		for (int i = 0; i < 2; i++) {
-			GL11.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g, config.initialBackgroundColor.b,
-				config.initialBackgroundColor.a);
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			window.getGraphics().gl20.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
+				config.initialBackgroundColor.b, config.initialBackgroundColor.a);
+			window.getGraphics().gl20.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			GLFW.glfwSwapBuffers(windowHandle);
+		}
+
+		if (currentWindow != null) {
+			// the call above to createGlfwWindow switches the OpenGL context to the newly created window,
+			// ensure that the invariant "currentWindow is the window with the current active OpenGL context" holds
+			currentWindow.makeCurrent();
 		}
 	}
 
@@ -486,7 +495,9 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		GLFW.glfwWindowHint(GLFW.GLFW_DEPTH_BITS, config.depth);
 		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, config.samples);
 
-		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL30) {
+		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL30
+			|| config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL31
+			|| config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL32) {
 			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, config.gles30ContextMajorVersion);
 			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, config.gles30ContextMinorVersion);
 			if (SharedLibraryLoader.isMac) {
@@ -529,7 +540,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		Lwjgl3Window.setSizeLimits(windowHandle, config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth,
 			config.windowMaxHeight);
 		if (config.fullscreenMode == null) {
-			if (config.windowX == -1 && config.windowY == -1) {
+			if (config.windowX == -1 && config.windowY == -1) { // i.e., center the window
 				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
 				int windowHeight = Math.max(config.windowHeight, config.windowMinHeight);
 				if (config.windowMaxWidth > -1) windowWidth = Math.min(windowWidth, config.windowMaxWidth);
@@ -540,14 +551,9 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 					monitorHandle = config.maximizedMonitor.monitorHandle;
 				}
 
-				IntBuffer areaXPos = BufferUtils.createIntBuffer(1);
-				IntBuffer areaYPos = BufferUtils.createIntBuffer(1);
-				IntBuffer areaWidth = BufferUtils.createIntBuffer(1);
-				IntBuffer areaHeight = BufferUtils.createIntBuffer(1);
-				GLFW.glfwGetMonitorWorkarea(monitorHandle, areaXPos, areaYPos, areaWidth, areaHeight);
-
-				GLFW.glfwSetWindowPos(windowHandle, Math.max(0, areaXPos.get(0) + areaWidth.get(0) / 2 - windowWidth / 2),
-					Math.max(0, areaYPos.get(0) + areaHeight.get(0) / 2 - windowHeight / 2));
+				GridPoint2 newPos = Lwjgl3ApplicationConfiguration.calculateCenteredWindowPosition(
+					Lwjgl3ApplicationConfiguration.toLwjgl3Monitor(monitorHandle), windowWidth, windowHeight);
+				GLFW.glfwSetWindowPos(windowHandle, newPos.x, newPos.y);
 			} else {
 				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
@@ -575,14 +581,18 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		initiateGL(config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20);
 		if (!glVersion.isVersionEqualToOrHigher(2, 0))
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-				+ GL11.glGetString(GL11.GL_VERSION) + "\n" + glVersion.getDebugVersionString());
+				+ glVersion.getVersionString() + "\n" + glVersion.getDebugVersionString());
 
 		if (config.glEmulation != Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20 && !supportsFBO()) {
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: "
-				+ GL11.glGetString(GL11.GL_VERSION) + ", FBO extension: false\n" + glVersion.getDebugVersionString());
+				+ glVersion.getVersionString() + ", FBO extension: false\n" + glVersion.getDebugVersionString());
 		}
 
 		if (config.debug) {
+			if (config.glEmulation == GLEmulation.ANGLE_GLES20) {
+				throw new IllegalStateException(
+					"ANGLE currently can't be used with with Lwjgl3ApplicationConfiguration#enableGLDebugOutput");
+			}
 			glDebugCallback = GLUtil.setupDebugMessageCallback(config.debugStream);
 			setGLDebugMessageControl(GLDebugMessageSeverity.NOTIFICATION, false);
 		}

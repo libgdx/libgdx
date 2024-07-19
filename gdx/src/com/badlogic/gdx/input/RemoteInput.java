@@ -466,6 +466,21 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
+	public void openTextInputField (NativeInputConfiguration configuration) {
+
+	}
+
+	@Override
+	public void closeTextInputField (boolean sendReturn) {
+
+	}
+
+	@Override
+	public void setKeyboardHeightObserver (KeyboardHeightObserver observer) {
+
+	}
+
+	@Override
 	public void vibrate (int milliseconds) {
 	}
 

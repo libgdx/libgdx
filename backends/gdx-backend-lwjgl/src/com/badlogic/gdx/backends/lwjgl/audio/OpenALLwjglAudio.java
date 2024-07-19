@@ -48,7 +48,7 @@ public class OpenALLwjglAudio implements LwjglAudio {
 	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap();
 	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap();
 	private OpenALSound[] recentSounds;
-	private int mostRecetSound = -1;
+	private int mostRecentSound = -1;
 
 	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
 	boolean noDevice = false;
@@ -142,6 +142,16 @@ public class OpenALLwjglAudio implements LwjglAudio {
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error creating music " + musicClass.getName() + " for file: " + file, ex);
 		}
+	}
+
+	@Override
+	public boolean switchOutputDevice (String deviceIdentifier) {
+		return true;
+	}
+
+	@Override
+	public String[] getAvailableOutputDevices () {
+		return new String[0];
 	}
 
 	int obtainSource (boolean isMusic) {
@@ -361,15 +371,15 @@ public class OpenALLwjglAudio implements LwjglAudio {
 	 * play */
 	protected void retain (OpenALSound sound, boolean stop) {
 		// Move the pointer ahead and wrap
-		mostRecetSound++;
-		mostRecetSound %= recentSounds.length;
+		mostRecentSound++;
+		mostRecentSound %= recentSounds.length;
 
 		if (stop) {
 			// Stop the least recent sound (the one we are about to bump off the buffer)
-			if (recentSounds[mostRecetSound] != null) recentSounds[mostRecetSound].stop();
+			if (recentSounds[mostRecentSound] != null) recentSounds[mostRecentSound].stop();
 		}
 
-		recentSounds[mostRecetSound] = sound;
+		recentSounds[mostRecentSound] = sound;
 	}
 
 	/** Removes the disposed sound from the least recently played list */

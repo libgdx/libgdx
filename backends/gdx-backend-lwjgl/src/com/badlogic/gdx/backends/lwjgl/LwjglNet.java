@@ -48,6 +48,11 @@ public class LwjglNet implements Net {
 	}
 
 	@Override
+	public boolean isHttpRequestPending (HttpRequest httpRequest) {
+		return netJavaImpl.isHttpRequestPending(httpRequest);
+	}
+
+	@Override
 	public ServerSocket newServerSocket (Protocol protocol, String ipAddress, int port, ServerSocketHints hints) {
 		return new NetJavaServerSocketImpl(protocol, ipAddress, port, hints);
 	}

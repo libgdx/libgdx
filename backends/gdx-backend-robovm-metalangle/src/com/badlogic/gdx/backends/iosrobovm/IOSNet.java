@@ -36,6 +36,11 @@ public class IOSNet implements Net {
 	}
 
 	@Override
+	public boolean isHttpRequestPending (HttpRequest httpRequest) {
+		return netJavaImpl.isHttpRequestPending(httpRequest);
+	}
+
+	@Override
 	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
 		return new NetJavaServerSocketImpl(protocol, hostname, port, hints);
 	}

@@ -16,12 +16,10 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
-import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
@@ -43,7 +41,6 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * for the {@link GLSurfaceView}.
  * 
  * @author mzechner */
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class AndroidDaydream extends DreamService implements AndroidApplicationBase {
 
 	protected AndroidGraphics graphics;
@@ -395,7 +392,10 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 	@Override
 	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
-		return new DefaultAndroidAudio(context, config);
+		if (!config.disableAudio)
+			return new DefaultAndroidAudio(context, config);
+		else
+			return new DisabledAndroidAudio();
 	}
 
 	@Override

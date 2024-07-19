@@ -56,6 +56,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import java.nio.Buffer;
+import java.nio.ShortBuffer;
 
 /** A model represents a 3D assets. It stores a hierarchy of nodes. A node has a transform and optionally a graphical part in form
  * of a {@link MeshPart} and {@link Material}. Mesh parts reference subsets of vertices in one of the meshes of the model.
@@ -247,9 +248,10 @@ public class Model implements Disposable {
 		meshes.add(mesh);
 		disposables.add(mesh);
 
-		BufferUtils.copy(modelMesh.vertices, mesh.getVerticesBuffer(), modelMesh.vertices.length, 0);
+		BufferUtils.copy(modelMesh.vertices, mesh.getVerticesBuffer(true), modelMesh.vertices.length, 0);
 		int offset = 0;
-		((Buffer)mesh.getIndicesBuffer()).clear();
+		ShortBuffer indicesBuffer = mesh.getIndicesBuffer(true);
+		((Buffer)indicesBuffer).clear();
 		for (ModelMeshPart part : modelMesh.parts) {
 			MeshPart meshPart = new MeshPart();
 			meshPart.id = part.id;
@@ -258,12 +260,12 @@ public class Model implements Disposable {
 			meshPart.size = hasIndices ? part.indices.length : numVertices;
 			meshPart.mesh = mesh;
 			if (hasIndices) {
-				mesh.getIndicesBuffer().put(part.indices);
+				indicesBuffer.put(part.indices);
 			}
 			offset += meshPart.size;
 			meshParts.add(meshPart);
 		}
-		((Buffer)mesh.getIndicesBuffer()).position(0);
+		((Buffer)indicesBuffer).position(0);
 		for (MeshPart part : meshParts)
 			part.update();
 	}

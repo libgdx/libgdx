@@ -125,7 +125,7 @@ public class PixmapPacker implements Disposable {
 		this(pageWidth, pageHeight, pageFormat, padding, duplicateBorder, false, false, packStrategy);
 	}
 
-	/** Creates a new ImagePacker which will insert all supplied pixmaps into one or more <code>pageWidth</code> by
+	/** Creates a new PixmapPacker which will insert all supplied pixmaps into one or more <code>pageWidth</code> by
 	 * <code>pageHeight</code> pixmaps using the specified strategy.
 	 * @param padding the number of blank pixels to insert between pixmaps.
 	 * @param duplicateBorder duplicate the border pixels of the inserted images to avoid seams when rendering with bi-linear
@@ -152,7 +152,7 @@ public class PixmapPacker implements Disposable {
 
 	/** Inserts the pixmap without a name. It cannot be looked up by name.
 	 * @see #pack(String, Pixmap) */
-	public synchronized Rectangle pack (Pixmap image) {
+	public synchronized PixmapPackerRectangle pack (Pixmap image) {
 		return pack(null, image);
 	}
 
@@ -162,7 +162,7 @@ public class PixmapPacker implements Disposable {
 	 * @return Rectangle describing the area the pixmap was rendered to.
 	 * @throws GdxRuntimeException in case the image did not fit due to the page size being too small or providing a duplicate
 	 *            name. */
-	public synchronized Rectangle pack (String name, Pixmap image) {
+	public synchronized PixmapPackerRectangle pack (String name, Pixmap image) {
 		if (disposed) return null;
 		if (name != null && getRect(name) != null)
 			throw new GdxRuntimeException("Pixmap has already been packed with name: " + name);
@@ -282,6 +282,7 @@ public class PixmapPacker implements Disposable {
 			pixmapToDispose.dispose();
 		}
 
+		rect.page = page;
 		return rect;
 	}
 
@@ -849,10 +850,11 @@ public class PixmapPacker implements Disposable {
 	}
 
 	public static class PixmapPackerRectangle extends Rectangle {
-		int[] splits;
-		int[] pads;
-		int offsetX, offsetY;
-		int originalWidth, originalHeight;
+		public Page page;
+		public int[] splits;
+		public int[] pads;
+		public int offsetX, offsetY;
+		public int originalWidth, originalHeight;
 
 		PixmapPackerRectangle (int x, int y, int width, int height) {
 			super(x, y, width, height);

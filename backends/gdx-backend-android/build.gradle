@@ -14,6 +14,43 @@
  * limitations under the License.
  ******************************************************************************/
 
+buildscript {
+	dependencies {
+		classpath "com.android.tools.build:gradle:${versions.androidPlugin}"
+	}
+}
+
+apply plugin: 'com.android.library'
+
+android {
+	namespace "com.badlogic.gdx.backends.android"
+	compileSdkVersion versions.androidCompileSdk
+	buildToolsVersion versions.androidBuildTools
+
+	defaultConfig {
+		minSdkVersion versions.androidMinSdk
+	}
+
+	sourceSets {
+		main {
+			manifest.srcFile 'AndroidManifest.xml'
+			java.srcDirs = ["src"]
+		}
+	}
+
+	compileOptions {
+		sourceCompatibility = versions.java
+		targetCompatibility = versions.java
+	}
+	publishing {
+		singleVariant("release") {
+			withSourcesJar()
+			withJavadocJar()
+		}
+	}
+}
+
 dependencies {
-	compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+	implementation project(":gdx")
+	compileOnly libraries.compileOnly.android
 }

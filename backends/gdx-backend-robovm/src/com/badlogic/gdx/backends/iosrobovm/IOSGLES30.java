@@ -22,13 +22,49 @@ public class IOSGLES30 extends IOSGLES20 implements GL30 {
 
 	public native void glDrawRangeElements (int mode, int start, int end, int count, int type, int offset);
 
-	public native void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border,
+	public native void glTexImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
+		int offset);
+
+	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format,
+		int type, Buffer pixels) {
+		if (!shouldConvert16bit) {
+			glTexImage3DJNI(target, level, internalformat, width, height, depth, border, format, type, pixels);
+			return;
+		}
+		if (type != GL_UNSIGNED_SHORT_5_6_5 && type != GL_UNSIGNED_SHORT_5_5_5_1 && type != GL_UNSIGNED_SHORT_4_4_4_4) {
+			glTexImage3DJNI(target, level, internalformat, width, height, depth, border, format, type, pixels);
+			return;
+		}
+		Buffer converted = convert16bitBufferToRGBA8888(pixels, type);
+		glTexImage3DJNI(target, level, GL_RGBA, width, height, border, depth, GL_RGBA, GL_UNSIGNED_BYTE, converted);
+
+	}
+
+	public native void glTexImage3DJNI (int target, int level, int internalformat, int width, int height, int depth, int border,
 		int format, int type, Buffer pixels);
 
 	public native void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border,
 		int format, int type, int offset);
 
-	public native void glTexSubImage3D (int target, int level, int xoffset, int yoffset, int zoffset, int width, int height,
+	public native void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
+		int type, int offset);
+
+	public void glTexSubImage3D (int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth,
+		int format, int type, Buffer pixels) {
+		if (!shouldConvert16bit) {
+			glTexSubImage3DJNI(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+			return;
+		}
+		if (type != GL_UNSIGNED_SHORT_5_6_5 && type != GL_UNSIGNED_SHORT_5_5_5_1 && type != GL_UNSIGNED_SHORT_4_4_4_4) {
+			glTexSubImage3DJNI(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+			return;
+		}
+		Buffer converted = convert16bitBufferToRGBA8888(pixels, type);
+		glTexSubImage3DJNI(target, level, xoffset, yoffset, zoffset, width, height, depth, GL_RGBA, GL_UNSIGNED_BYTE, converted);
+
+	}
+
+	public native void glTexSubImage3DJNI (int target, int level, int xoffset, int yoffset, int zoffset, int width, int height,
 		int depth, int format, int type, Buffer pixels);
 
 	public native void glTexSubImage3D (int target, int level, int xoffset, int yoffset, int zoffset, int width, int height,

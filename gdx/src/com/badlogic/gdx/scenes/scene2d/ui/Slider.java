@@ -178,7 +178,8 @@ public class Slider extends ProgressBar {
 		return valueSet;
 	}
 
-	/** Returns a snapped value. */
+	/** Returns a snapped value from a value calculated from the mouse position. The default implementation uses
+	 * {@link #setSnapToValues(float, float...)}. */
 	protected float snap (float value) {
 		if (snapValues == null || snapValues.length == 0) return value;
 		float bestDiff = -1, bestValue = 0;
@@ -195,11 +196,28 @@ public class Slider extends ProgressBar {
 		return bestDiff == -1 ? value : bestValue;
 	}
 
-	/** Will make this progress bar snap to the specified values, if the knob is within the threshold.
-	 * @param values May be null. */
-	public void setSnapToValues (@Null float[] values, float threshold) {
+	/** Makes this slider snap to the specified values when the knob is within the threshold.
+	 * @param values May be null to disable snapping. */
+	public void setSnapToValues (float threshold, @Null float... values) {
+		if (values != null && values.length == 0) throw new IllegalArgumentException("values cannot be empty.");
 		this.snapValues = values;
 		this.threshold = threshold;
+	}
+
+	/** Makes this progress bar snap to the specified values, if the knob is within the threshold.
+	 * @param values May be null to disable snapping.
+	 * @deprecated Use {@link #setSnapToValues(float, float...)}. */
+	@Deprecated
+	public void setSnapToValues (@Null float[] values, float threshold) {
+		setSnapToValues(threshold, values);
+	}
+
+	public @Null float[] getSnapToValues () {
+		return snapValues;
+	}
+
+	public float getSnapToValuesThreshold () {
+		return threshold;
 	}
 
 	/** Returns true if the slider is being dragged. */

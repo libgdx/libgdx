@@ -128,6 +128,12 @@ public class SpriteBatch implements Batch {
 			ownsShader = true;
 		} else
 			shader = defaultShader;
+
+		// Pre bind the mesh to force the upload of indices data.
+		if (vertexDataType != VertexDataType.VertexArray) {
+			mesh.bind(shader);
+			mesh.unbind(shader);
+		}
 	}
 
 	/** Returns a new instance of the default shader used by SpriteBatch for GL2 when no shader is specified. */
@@ -956,8 +962,9 @@ public class SpriteBatch implements Batch {
 		lastTexture.bind();
 		Mesh mesh = this.mesh;
 		mesh.setVertices(vertices, 0, idx);
-		((Buffer)mesh.getIndicesBuffer()).position(0);
-		((Buffer)mesh.getIndicesBuffer()).limit(count);
+		Buffer indicesBuffer = (Buffer)mesh.getIndicesBuffer(false);
+		indicesBuffer.position(0);
+		indicesBuffer.limit(count);
 
 		if (blendingDisabled) {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -1071,6 +1078,8 @@ public class SpriteBatch implements Batch {
 
 	@Override
 	public void setShader (ShaderProgram shader) {
+		if (shader == customShader) // avoid unnecessary flushing in case we are drawing
+			return;
 		if (drawing) {
 			flush();
 		}

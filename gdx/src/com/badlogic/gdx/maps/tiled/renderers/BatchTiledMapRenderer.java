@@ -197,8 +197,8 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 		final float x = layer.getX();
 		final float y = layer.getY();
-		final float x1 = x * unitScale;
-		final float y1 = y * unitScale;
+		final float x1 = x * unitScale - viewBounds.x * (layer.getParallaxX() - 1);
+		final float y1 = y * unitScale - viewBounds.y * (layer.getParallaxY() - 1);
 		final float x2 = x1 + region.getRegionWidth() * unitScale;
 		final float y2 = y1 + region.getRegionHeight() * unitScale;
 

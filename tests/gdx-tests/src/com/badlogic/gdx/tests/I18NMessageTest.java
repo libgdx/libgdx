@@ -48,6 +48,8 @@ public class I18NMessageTest extends GdxTest {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
+		I18NBundle.setSimpleFormatter(false);
+
 		try {
 			FileHandle bfh = Gdx.files.internal("data/i18n/message1");
 			rb_root = I18NBundle.createBundle(bfh, new Locale("", "", "")); // Locale.ROOT doesn't exist in Android API level 8

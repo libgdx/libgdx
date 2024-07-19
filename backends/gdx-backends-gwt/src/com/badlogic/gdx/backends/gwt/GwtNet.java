@@ -199,6 +199,11 @@ public class GwtNet implements Net {
 	}
 
 	@Override
+	public boolean isHttpRequestPending (HttpRequest httpRequest) {
+		return listeners.get(httpRequest) != null && requests.get(httpRequest) != null;
+	}
+
+	@Override
 	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
 		throw new UnsupportedOperationException("Not implemented");
 	}

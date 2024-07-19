@@ -46,4 +46,14 @@ public class MockAudio implements Audio {
 	public Music newMusic (FileHandle file) {
 		return new MockMusic();
 	}
+
+	@Override
+	public boolean switchOutputDevice (String deviceIdentifier) {
+		return true;
+	}
+
+	@Override
+	public String[] getAvailableOutputDevices () {
+		return new String[0];
+	}
 }

@@ -6,7 +6,6 @@ import java.io.File;
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALIOSAudio;
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSProcessInfo;
@@ -72,6 +71,8 @@ public class IOSApplication implements Application {
 			app.willTerminate(application);
 		}
 	}
+
+	static final boolean IS_METALANGLE = true;
 
 	UIApplication uiApp;
 
@@ -142,7 +143,12 @@ public class IOSApplication implements Application {
 		Gdx.net = this.net;
 		this.input.setupPeripherals();
 		this.uiWindow.setRootViewController(this.graphics.viewController);
+		this.graphics.updateSafeInsets();
 		Gdx.app.debug("IOSApplication", "created");
+		listener.create();
+		listener.resize(this.graphics.getWidth(), this.graphics.getHeight());
+		// make sure the OpenGL view has contents before displaying it
+		this.graphics.view.display();
 		return true;
 	}
 
@@ -151,7 +157,10 @@ public class IOSApplication implements Application {
 	}
 
 	protected IOSAudio createAudio (IOSApplicationConfiguration config) {
-		return new OALIOSAudio(config);
+		if (config.useAudio)
+			return new OALIOSAudio(config);
+		else
+			return new DisabledIOSAudio();
 	}
 
 	protected IOSGraphics createGraphics () {
@@ -385,11 +394,7 @@ public class IOSApplication implements Application {
 			runnables.clear();
 		}
 		for (int i = 0; i < executedRunnables.size; i++) {
-			try {
-				executedRunnables.get(i).run();
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
+			executedRunnables.get(i).run();
 		}
 	}
 
@@ -409,11 +414,7 @@ public class IOSApplication implements Application {
 
 			@Override
 			public boolean hasContents () {
-				if (Foundation.getMajorSystemVersion() >= 10) {
-					return UIPasteboard.getGeneralPasteboard().hasStrings();
-				}
-				String contents = getContents();
-				return contents != null && !contents.isEmpty();
+				return UIPasteboard.getGeneralPasteboard().hasStrings();
 			}
 
 			@Override

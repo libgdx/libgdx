@@ -158,9 +158,9 @@ public class Wav {
 		}
 
 		/** List is a combination of Audacity's export formats and Windows ACM. For a more thorough list, see
-		 * https://wiki.multimedia.cx/index.php/TwoCC
-		 * @param type 16-bit value from the fmt chunk.
-		 * @return A human-readable name for the codec. */
+     * <a href="https://wiki.multimedia.cx/index.php/TwoCC">...</a>
+     * @param type 16-bit value from the fmt chunk.
+     * @return A human-readable name for the codec. */
 		private String getCodecName (int type) {
 			switch (type) { // @off
 				case 0x0002: return "Microsoft ADPCM";

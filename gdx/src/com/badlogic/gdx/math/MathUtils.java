@@ -92,6 +92,58 @@ public final class MathUtils {
 		return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
 	}
 
+	/** Returns the tangent given an input in radians, using a Padé approximant. <br>
+	 * Padé approximants tend to be most accurate when they aren't producing results of extreme magnitude; in the tan() function,
+	 * those results occur on and near odd multiples of {@code PI/2}, and this method is least accurate when given inputs near
+	 * those multiples. <br>
+	 * For inputs between -1.57 to 1.57 (just inside half-pi), separated by 0x1p-20f, absolute error is 0.00890192, relative error
+	 * is 0.00000090, and the maximum error is 17.98901367 when given 1.56999838. The maximum error might seem concerning, but it's
+	 * the difference between the correct 1253.22167969 and the 1235.23266602 this returns, so for many purposes the difference
+	 * won't be noticeable. <br>
+	 * For inputs between -1.55 to 1.55 (getting less close to half-pi), separated by 0x1p-20f, absolute error is 0.00023368,
+	 * relative error is -0.00000009, and the maximum error is 0.02355957 when given -1.54996467. The maximum error is the
+	 * difference between the correct -47.99691010 and the -47.97335052 this returns. <br>
+	 * While you don't have to use a dedicated method for tan(), and you can use {@code sin(x)/cos(x)}, approximating tan() in that
+	 * way is very susceptible to error building up from any of sin(), cos() or the division. Where this tan() has a maximum error
+	 * in the -1.55 to 1.55 range of 0.02355957, that simpler division technique on the same range has a maximum error of
+	 * 1.25724030 (about 50 times worse), as well as larger absolute and relative errors. Casting the double result of
+	 * {@link Math#tan(double)} to float will get the highest precision, but can be anywhere from 2.5x to nearly 4x slower than
+	 * this, depending on JVM. <br>
+	 * Based on <a href="https://math.stackexchange.com/a/4453027">this Stack Exchange answer by Soonts</a>.
+	 *
+	 * @param radians a float angle in radians, where 0 to {@link #PI2} is one rotation
+	 * @return a float approximation of tan() */
+	public static float tan (float radians) {
+		radians /= PI;
+		radians += 0.5f;
+		radians -= Math.floor(radians);
+		radians -= 0.5f;
+		radians *= PI;
+		final float x2 = radians * radians, x4 = x2 * x2;
+		return radians * ((0.0010582010582010583f) * x4 - (0.1111111111111111f) * x2 + 1f)
+			/ ((0.015873015873015872f) * x4 - (0.4444444444444444f) * x2 + 1f);
+		// How we calculated those long constants above (from Stack Exchange, by Soonts):
+// return x * ((1.0/945.0) * x4 - (1.0/9.0) * x2 + 1.0) / ((1.0/63.0) * x4 - (4.0/9.0) * x2 + 1.0);
+// Normally, it would be best to show the division steps, but if GWT isn't computing mathematical constants at
+// compile-time, which I don't know if it does, that would make the shown-division way slower by 4 divisions.
+	}
+
+	/** Returns the tangent given an input in degrees, using a Padé approximant. Based on
+	 * <a href="https://math.stackexchange.com/a/4453027">this Stack Exchange answer</a>.
+	 *
+	 * @param degrees an angle in degrees, where 0 to 360 is one rotation
+	 * @return a float approximation of tan() */
+	public static float tanDeg (float degrees) {
+		degrees *= (1f / 180f);
+		degrees += 0.5f;
+		degrees -= Math.floor(degrees);
+		degrees -= 0.5f;
+		degrees *= PI;
+		final float x2 = degrees * degrees, x4 = x2 * x2;
+		return degrees * ((0.0010582010582010583f) * x4 - (0.1111111111111111f) * x2 + 1f)
+			/ ((0.015873015873015872f) * x4 - (0.4444444444444444f) * x2 + 1f);
+	}
+
 	// ---
 
 	/** A variant on {@link #atan(float)} that does not tolerate infinite inputs for speed reasons. This can be given a double
@@ -112,14 +164,14 @@ public final class MathUtils {
 		double c7 = c5 * c2;
 		double c9 = c7 * c2;
 		double c11 = c9 * c2;
-		return (float)Math.copySign((Math.PI * 0.25)
-			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11), i);
+		return (float)(Math.signum(i) * ((Math.PI * 0.25)
+			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11)));
 	}
 
-	/** Close approximation of the frequently-used trigonometric method atan2, with higher precision than libGDX's atan2
-	 * approximation. Average error is 1.057E-6 radians; maximum error is 1.922E-6. Takes y and x (in that unusual order) as
-	 * floats, and returns the angle from the origin to that point in radians. It is about 4 times faster than
-	 * {@link Math#atan2(double, double)} (roughly 15 ns instead of roughly 60 ns for Math, on Java 8 HotSpot). <br>
+	/** Close approximation of the frequently-used trigonometric method atan2. Average error is 1.057E-6 radians; maximum error is
+	 * 1.922E-6. Takes y and x (in that unusual order) as floats, and returns the angle from the origin to that point in radians.
+	 * It is about 4 times faster than {@link Math#atan2(double, double)} (roughly 15 ns instead of roughly 60 ns for Math, on Java
+	 * 8 HotSpot). <br>
 	 * Credit for this goes to the 1955 research study "Approximations for Digital Computers," by RAND Corporation. This is sheet
 	 * 11's algorithm, which is the fourth-fastest and fourth-least precise. The algorithms on sheets 8-10 are faster, but only by
 	 * a very small degree, and are considerably less precise. That study provides an {@link #atan(float)} method, and that cleanly
@@ -140,6 +192,83 @@ public final class MathUtils {
 		} else if (y > 0)
 			return x + HALF_PI;
 		else if (y < 0) return x - HALF_PI;
+		return x + y; // returns 0 for 0,0 or NaN if either y or x is NaN
+	}
+
+	/** A variant on {@link #atanDeg(float)} that does not tolerate infinite inputs for speed reasons. This can be given a double
+	 * parameter, but is otherwise the same as atanDeg(float), and returns a float like that method. It uses the same
+	 * approximation, from sheet 11 of "Approximations for Digital Computers." This is mostly meant to be used inside
+	 * {@link #atan2(float, float)}, but it may be a tiny bit faster than atanDeg(float) in other code.
+	 * @param i any finite double or float, but more commonly a float
+	 * @return an output from the inverse tangent function in degrees, from {@code -90} to {@code 90} inclusive */
+	public static double atanUncheckedDeg (double i) {
+		// We use double precision internally, because some constants need double precision.
+		double n = Math.abs(i);
+		// c uses the "equally-good" formulation that permits n to be from 0 to almost infinity.
+		double c = (n - 1.0) / (n + 1.0);
+		// The approximation needs 6 odd powers of c.
+		double c2 = c * c;
+		double c3 = c * c2;
+		double c5 = c3 * c2;
+		double c7 = c5 * c2;
+		double c9 = c7 * c2;
+		double c11 = c9 * c2;
+		return (Math.signum(i) * (45.0 + (57.2944766070562 * c - 19.05792099799635 * c3 + 11.089223410359068 * c5
+			- 6.6711120475953765 * c7 + 3.016813013351768 * c9 - 0.6715752908287405 * c11)));
+	}
+
+	/** Close approximation of the frequently-used trigonometric method atan2, using positive or negative degrees. Average absolute
+	 * error is 0.00006037 degrees; relative error is 0 degrees, maximum error is 0.00010396 degrees. Takes y and x (in that
+	 * unusual order) as floats, and returns the angle from the origin to that point in degrees. <br>
+	 * Credit for this goes to the 1955 research study "Approximations for Digital Computers," by RAND Corporation. This is sheet
+	 * 11's algorithm, which is the fourth-fastest and fourth-least precise. The algorithms on sheets 8-10 are faster, but only by
+	 * a very small degree, and are considerably less precise. That study provides an {@link #atan(float)} method, and that cleanly
+	 * translates to atan2().
+	 * @param y y-component of the point to find the angle towards; note the parameter order is unusual by convention
+	 * @param x x-component of the point to find the angle towards; note the parameter order is unusual by convention
+	 * @return the angle to the given point, in degrees as a float; ranges from {@code -180} to {@code 180} */
+	public static float atan2Deg (final float y, float x) {
+		float n = y / x;
+		if (n != n)
+			n = (y == x ? 1f : -1.0f); // if both y and x are infinite, n would be NaN
+		else if (n - n != n - n) x = 0f; // if n is infinite, y is infinitely larger than x.
+		if (x > 0)
+			return (float)atanUncheckedDeg(n);
+		else if (x < 0) {
+			if (y >= 0) return (float)(atanUncheckedDeg(n) + 180.0);
+			return (float)(atanUncheckedDeg(n) - 180.0);
+		} else if (y > 0)
+			return x + 90f;
+		else if (y < 0) return x - 90f;
+		return x + y; // returns 0 for 0,0 or NaN if either y or x is NaN
+	}
+
+	/** Close approximation of the frequently-used trigonometric method atan2, using non-negative degrees only. Average absolute
+	 * error is 0.00006045 degrees; relative error is 0 degrees; maximum error is 0.00011178 degrees. Takes y and x (in that
+	 * unusual order) as floats, and returns the angle from the origin to that point in degrees. <br>
+	 * This can be useful when a negative result from atan() would require extra work to handle. <br>
+	 * Credit for this goes to the 1955 research study "Approximations for Digital Computers," by RAND Corporation. This is sheet
+	 * 11's algorithm, which is the fourth-fastest and fourth-least precise. The algorithms on sheets 8-10 are faster, but only by
+	 * a very small degree, and are considerably less precise. That study provides an {@link #atan(float)} method, and that cleanly
+	 * translates to atan2Deg360().
+	 * @param y y-component of the point to find the angle towards; note the parameter order is unusual by convention
+	 * @param x x-component of the point to find the angle towards; note the parameter order is unusual by convention
+	 * @return the angle to the given point, in degrees as a float; ranges from {@code 0} to {@code 360} */
+	public static float atan2Deg360 (final float y, float x) {
+		float n = y / x;
+		if (n != n)
+			n = (y == x ? 1f : -1.0f); // if both y and x are infinite, n would be NaN
+		else if (n - n != n - n) x = 0f; // if n is infinite, y is infinitely larger than x.
+		if (x > 0) {
+			if (y >= 0)
+				return (float)atanUncheckedDeg(n);
+			else
+				return (float)(atanUncheckedDeg(n) + 360.0);
+		} else if (x < 0) {
+			return (float)(atanUncheckedDeg(n) + 180.0);
+		} else if (y > 0)
+			return x + 90f;
+		else if (y < 0) return x + 270f;
 		return x + y; // returns 0 for 0,0 or NaN if either y or x is NaN
 	}
 
@@ -195,8 +324,64 @@ public final class MathUtils {
 		double c7 = c5 * c2;
 		double c9 = c7 * c2;
 		double c11 = c9 * c2;
-		return (float)Math.copySign((Math.PI * 0.25)
-			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11), i);
+		return Math.signum(i) * (float)((Math.PI * 0.25)
+			+ (0.99997726 * c - 0.33262347 * c3 + 0.19354346 * c5 - 0.11643287 * c7 + 0.05265332 * c9 - 0.0117212 * c11));
+	}
+
+	/** Returns arcsine in degrees. This implementation does not return NaN if given an out-of-range input (Math.asin does return
+	 * NaN), unless the input is NaN.
+	 * @param a asin is defined only when a is between -1f and 1f, inclusive
+	 * @return between {@code -90} and {@code 90} when a is in the defined range */
+	public static float asinDeg (float a) {
+		float a2 = a * a; // a squared
+		float a3 = a * a2; // a cubed
+		if (a >= 0f) {
+			return 90f - (float)Math.sqrt(1f - a)
+				* (89.99613099964837f - 12.153259893949748f * a + 4.2548418824210055f * a2 - 1.0731098432343729f * a3);
+		}
+		return (float)Math.sqrt(1f + a)
+			* (89.99613099964837f + 12.153259893949748f * a + 4.2548418824210055f * a2 + 1.0731098432343729f * a3) - 90f;
+	}
+
+	/** Returns arccosine in degrees. This implementation does not return NaN if given an out-of-range input (Math.acos does return
+	 * NaN), unless the input is NaN.
+	 * @param a acos is defined only when a is between -1f and 1f, inclusive
+	 * @return between {@code 0} and {@code 180} when a is in the defined range */
+	public static float acosDeg (float a) {
+		float a2 = a * a; // a squared
+		float a3 = a * a2; // a cubed
+		if (a >= 0f) {
+			return (float)Math.sqrt(1f - a)
+				* (89.99613099964837f - 12.153259533621753f * a + 4.254842010910525f * a2 - 1.0731098035209208f * a3);
+		}
+		return 180f - (float)Math.sqrt(1f + a)
+			* (89.99613099964837f + 12.153259533621753f * a + 4.254842010910525f * a2 + 1.0731098035209208f * a3);
+	}
+
+	/** Arc tangent approximation returning a value measured in positive or negative degrees, using an algorithm from the 1955
+	 * research study "Approximations for Digital Computers," by RAND Corporation (this is sheet 11's algorithm, which is the
+	 * fourth-fastest and fourth-least precise). For finite inputs only, you may get a tiny speedup by using
+	 * {@link #atanUncheckedDeg(double)}, but this method will be correct enough for infinite inputs, and atanUnchecked() will not
+	 * be.
+	 * @param i an input to the inverse tangent function; any float is accepted
+	 * @return an output from the inverse tangent function in degrees, from {@code -90} to {@code 90} inclusive
+	 * @see #atanUncheckedDeg(double) If you know the input will be finite, you can use atanUncheckedDeg() instead. */
+	public static float atanDeg (float i) {
+		// We use double precision internally, because some constants need double precision.
+		// This clips infinite inputs at Double.MAX_VALUE, which still probably becomes infinite
+		// again when converted back to float.
+		double n = Math.min(Math.abs(i), Double.MAX_VALUE);
+		// c uses the "equally-good" formulation that permits n to be from 0 to almost infinity.
+		double c = (n - 1.0) / (n + 1.0);
+		// The approximation needs 6 odd powers of c.
+		double c2 = c * c;
+		double c3 = c * c2;
+		double c5 = c3 * c2;
+		double c7 = c5 * c2;
+		double c9 = c7 * c2;
+		double c11 = c9 * c2;
+		return (float)(Math.signum(i) * (45.0 + (57.2944766070562 * c - 19.05792099799635 * c3 + 11.089223410359068 * c5
+			- 6.6711120475953765 * c7 + 3.016813013351768 * c9 - 0.6715752908287405 * c11)));
 	}
 
 	// ---
@@ -394,8 +579,8 @@ public final class MathUtils {
 	 * @param progress interpolation value in the range [0, 1]
 	 * @return the interpolated angle in the range [0, PI2[ */
 	public static float lerpAngle (float fromRadians, float toRadians, float progress) {
-		float delta = ((toRadians - fromRadians + PI2 + PI) % PI2) - PI;
-		return (fromRadians + delta * progress + PI2) % PI2;
+		float delta = (((toRadians - fromRadians) % PI2 + PI2 + PI) % PI2) - PI;
+		return ((fromRadians + delta * progress) % PI2 + PI2) % PI2;
 	}
 
 	/** Linearly interpolates between two angles in degrees. Takes into account that angles wrap at 360 degrees and always takes
@@ -406,8 +591,8 @@ public final class MathUtils {
 	 * @param progress interpolation value in the range [0, 1]
 	 * @return the interpolated angle in the range [0, 360[ */
 	public static float lerpAngleDeg (float fromDegrees, float toDegrees, float progress) {
-		float delta = ((toDegrees - fromDegrees + 360 + 180) % 360) - 180;
-		return (fromDegrees + delta * progress + 360) % 360;
+		float delta = (((toDegrees - fromDegrees) % 360f + 360f + 180f) % 360f) - 180f;
+		return ((fromDegrees + delta * progress) % 360f + 360f) % 360f;
 	}
 
 	// ---

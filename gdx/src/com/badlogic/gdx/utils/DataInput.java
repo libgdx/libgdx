@@ -31,19 +31,19 @@ public class DataInput extends DataInputStream {
 
 	/** Reads a 1-5 byte int. */
 	public int readInt (boolean optimizePositive) throws IOException {
-		int b = read();
+		int b = readByte();
 		int result = b & 0x7F;
 		if ((b & 0x80) != 0) {
-			b = read();
+			b = readByte();
 			result |= (b & 0x7F) << 7;
 			if ((b & 0x80) != 0) {
-				b = read();
+				b = readByte();
 				result |= (b & 0x7F) << 14;
 				if ((b & 0x80) != 0) {
-					b = read();
+					b = readByte();
 					result |= (b & 0x7F) << 21;
 					if ((b & 0x80) != 0) {
-						b = read();
+						b = readByte();
 						result |= (b & 0x7F) << 28;
 					}
 				}
@@ -69,12 +69,12 @@ public class DataInput extends DataInputStream {
 		int charIndex = 0;
 		int b = 0;
 		while (charIndex < charCount) {
-			b = read();
-			if (b > 127) break;
+			b = readByte();
+			if (b < 0) break;
 			chars[charIndex++] = (char)b;
 		}
 		// If a char was not ASCII, finish with slow path.
-		if (charIndex < charCount) readUtf8_slow(charCount, charIndex, b);
+		if (charIndex < charCount) readUtf8_slow(charCount, charIndex, b & 0xFF);
 		return new String(chars, 0, charCount);
 	}
 
@@ -94,14 +94,14 @@ public class DataInput extends DataInputStream {
 				break;
 			case 12:
 			case 13:
-				chars[charIndex] = (char)((b & 0x1F) << 6 | read() & 0x3F);
+				chars[charIndex] = (char)((b & 0x1F) << 6 | readByte() & 0x3F);
 				break;
 			case 14:
-				chars[charIndex] = (char)((b & 0x0F) << 12 | (read() & 0x3F) << 6 | read() & 0x3F);
+				chars[charIndex] = (char)((b & 0x0F) << 12 | (readByte() & 0x3F) << 6 | readByte() & 0x3F);
 				break;
 			}
 			if (++charIndex >= charCount) break;
-			b = read() & 0xFF;
+			b = readByte() & 0xFF;
 		}
 	}
 }

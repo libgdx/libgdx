@@ -352,8 +352,12 @@ public class TextField extends Widget implements Disableable {
 				drawMessageText(batch, messageFont, x + bgLeftWidth, y + textY + yOffset, width - bgLeftWidth - bgRightWidth);
 			}
 		} else {
+			BitmapFontData data = font.getData();
+			boolean markupEnabled = data.markupEnabled;
+			data.markupEnabled = false;
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * color.a * parentAlpha);
 			drawText(batch, font, x + bgLeftWidth, y + textY + yOffset);
+			data.markupEnabled = markupEnabled;
 		}
 		if (!disabled && cursorOn && cursorPatch != null) {
 			drawCursor(cursorPatch, batch, font, x + bgLeftWidth, y + textY);
@@ -418,7 +422,11 @@ public class TextField extends Widget implements Disableable {
 		} else
 			displayText = newDisplayText;
 
+		boolean markupEnabled = data.markupEnabled;
+		data.markupEnabled = false;
 		layout.setText(font, displayText.toString().replace('\r', ' ').replace('\n', ' '));
+		data.markupEnabled = markupEnabled;
+
 		glyphPositions.clear();
 		float x = 0;
 		if (layout.runs.size > 0) {
@@ -584,6 +592,10 @@ public class TextField extends Widget implements Disableable {
 	/** If true (the default), tab/shift+tab will move to the next text field. */
 	public void setFocusTraversal (boolean focusTraversal) {
 		this.focusTraversal = focusTraversal;
+	}
+
+	public boolean getFocusTraversal () {
+		return focusTraversal;
 	}
 
 	/** @return May be null. */
@@ -1074,7 +1086,7 @@ public class TextField extends Widget implements Disableable {
 						if (time - 750 > lastChangeTime) undoText = oldText;
 						lastChangeTime = time;
 						updateDisplayText();
-					} else
+					} else if (!text.equals(oldText)) // Keep cursor movement if the text is the same.
 						cursor = oldCursor;
 				}
 			}

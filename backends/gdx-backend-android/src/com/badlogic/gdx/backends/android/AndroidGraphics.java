@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.hardware.display.DisplayManager;
 import android.opengl.GLSurfaceView;
@@ -215,6 +216,36 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 			Gdx.gl20 = gl20;
 			Gdx.gl30 = gl30;
 		}
+	}
+
+	@Override
+	public boolean isGL31Available () {
+		return false;
+	}
+
+	@Override
+	public GL31 getGL31 () {
+		return null;
+	}
+
+	@Override
+	public void setGL31 (GL31 gl31) {
+
+	}
+
+	@Override
+	public boolean isGL32Available () {
+		return false;
+	}
+
+	@Override
+	public GL32 getGL32 () {
+		return null;
+	}
+
+	@Override
+	public void setGL32 (GL32 gl32) {
+
 	}
 
 	/** {@inheritDoc} */
@@ -463,11 +494,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 			}
 
 			for (int i = 0; i < app.getExecutedRunnables().size; i++) {
-				try {
-					app.getExecutedRunnables().get(i).run();
-				} catch (Throwable t) {
-					t.printStackTrace();
-				}
+				app.getExecutedRunnables().get(i).run();
 			}
 			app.getInput().processEvents();
 			frameId++;
@@ -623,6 +650,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		return new DisplayMode[] {getDisplayMode()};
 	}
 
+	@TargetApi(Build.VERSION_CODES.P)
 	protected void updateSafeAreaInsets () {
 		safeInsetLeft = 0;
 		safeInsetTop = 0;
@@ -691,14 +719,9 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		Display display;
 		DisplayMetrics metrics = new DisplayMetrics();
 
-		if (Build.VERSION.SDK_INT >= 17) {
-			DisplayManager displayManager = (DisplayManager)app.getContext().getSystemService(Context.DISPLAY_SERVICE);
-			display = displayManager.getDisplay(Display.DEFAULT_DISPLAY);
-			display.getRealMetrics(metrics); // Deprecated but no direct equivalent
-		} else {
-			display = app.getWindowManager().getDefaultDisplay();
-			display.getMetrics(metrics); // Excludes system UI!
-		}
+		DisplayManager displayManager = (DisplayManager)app.getContext().getSystemService(Context.DISPLAY_SERVICE);
+		display = displayManager.getDisplay(Display.DEFAULT_DISPLAY);
+		display.getRealMetrics(metrics); // Deprecated but no direct equivalent
 
 		int width = metrics.widthPixels;
 		int height = metrics.heightPixels;

@@ -21,19 +21,17 @@ public class OALIOSAudio implements IOSAudio {
 
 	public OALIOSAudio (IOSApplicationConfiguration config) {
 		this.config = config;
-		if (!config.useAudio) return;
 		OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
 		if (audio != null) {
 			audio.setAllowIpod(config.allowIpod);
 			audio.setHonorSilentSwitch(!config.overrideRingerSwitch);
 		} else
-			Gdx.app.error("IOSAudio", "No OALSimpleAudio instance available, audio will not be availabe");
+			Gdx.app.error("IOSAudio", "No OALSimpleAudio instance available, audio will not be available");
 	}
 
 	@Override
 	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
-		// TODO Auto-generated method stub
-		return null;
+		return new OALIOSAudioDevice(samplingRate, isMono, config.audioDeviceBufferSize, config.audioDeviceBufferCount);
 	}
 
 	@Override
@@ -55,6 +53,16 @@ public class OALIOSAudio implements IOSAudio {
 			return new IOSMusic(track, path);
 		}
 		throw new GdxRuntimeException("Error creating music audio track");
+	}
+
+	@Override
+	public boolean switchOutputDevice (String deviceIdentifier) {
+		return true;
+	}
+
+	@Override
+	public String[] getAvailableOutputDevices () {
+		return new String[0];
 	}
 
 	@Override

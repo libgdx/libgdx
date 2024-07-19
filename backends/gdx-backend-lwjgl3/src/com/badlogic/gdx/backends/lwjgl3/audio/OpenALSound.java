@@ -16,11 +16,12 @@
 
 package com.badlogic.gdx.backends.lwjgl3.audio;
 
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.utils.BufferUtils;
+
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
-import com.badlogic.gdx.audio.Sound;
+import java.nio.ShortBuffer;
 
 import static org.lwjgl.openal.AL10.*;
 
@@ -42,20 +43,24 @@ public class OpenALSound implements Sound {
 	 * @param bitDepth The number of bits in each sample. Normally 16. Can also be 8, 32 or sometimes 64.
 	 * @param sampleRate The number of samples to be played each second. Commonly 44100; can be anything within reason. */
 	void setup (byte[] pcm, int channels, int bitDepth, int sampleRate) {
+		int validBytes = pcm.length - (pcm.length % (channels > 1 ? 4 : 2));
+		ByteBuffer buffer = BufferUtils.newByteBuffer(validBytes);
+		buffer.put(pcm, 0, validBytes);
+		((Buffer)buffer).flip();
+
+		setup(buffer.asShortBuffer(), channels, bitDepth, sampleRate);
+	}
+
+	void setup (ShortBuffer pcm, int channels, int bitDepth, int sampleRate) {
 		this.channels = channels;
 		this.sampleRate = sampleRate;
-		int samples = pcm.length / (bitDepth / 8 * channels);
-		duration = samples / (float)sampleRate;
-
-		ByteBuffer buffer = ByteBuffer.allocateDirect(pcm.length);
-		buffer.order(ByteOrder.nativeOrder());
-		buffer.put(pcm);
-		((Buffer)buffer).flip();
+		int sampleFrames = (pcm.limit() << 1) / ((bitDepth >> 3)) / channels;
+		duration = sampleFrames / (float)sampleRate;
 
 		if (bufferID == -1) {
 			bufferID = alGenBuffers();
 			int format = OpenALUtils.determineFormat(channels, bitDepth);
-			alBufferData(bufferID, format, buffer.asShortBuffer(), sampleRate);
+			alBufferData(bufferID, format, pcm, sampleRate);
 		}
 	}
 
