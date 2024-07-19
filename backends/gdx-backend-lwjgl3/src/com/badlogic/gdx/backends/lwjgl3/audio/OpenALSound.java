@@ -43,7 +43,7 @@ public class OpenALSound implements Sound {
 	 * @param bitDepth The number of bits in each sample. Normally 16. Can also be 8, 32, 64.
 	 * @param sampleRate The number of samples to be played each second. Commonly 44100; can be anything within reason. */
 	void setup (byte[] pcm, int channels, int bitDepth, int sampleRate) {
-		int validBytes = pcm.length - (pcm.length % (channels > 1 ? 4 : 2));
+		int validBytes = pcm.length - (pcm.length % (channels * (bitDepth >> 3)));
 		ByteBuffer buffer = BufferUtils.newByteBuffer(validBytes);
 		buffer.put(pcm, 0, validBytes);
 		((Buffer)buffer).flip();
