@@ -11,7 +11,7 @@ import static org.lwjgl.openal.EXTMCFormats.*;
 public class OpenALUtils {
 
 	/** @param channels The number of channels for the sound. Most commonly 1 (for mono) or 2 (for stereo).
-	 * @param bitDepth The number of bits in each sound sample. Normally 16. Can also be 8, 32, 64.
+	 * @param bitDepth The number of bits in each sample. Normally 16. Can also be 8, 32, 64.
 	 * @return An OpenAL enum for use with {@link OpenALSound} and {@link OpenALMusic} */
 	static int determineFormat (int channels, int bitDepth) { // @off
 		int format;
