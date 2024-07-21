@@ -54,7 +54,11 @@ apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 jnigen {
 	sharedLibName = "gdx"
 	all {
-		headerDirs = ["jni", "jni/etc1", "jni/gdx2d"]
+		headerDirs = [
+			"jni",
+			"jni/etc1",
+			"jni/gdx2d"
+		]
 		cIncludes = ["jni/gdx2d/*.c"]
 		cppIncludes = ["jni/etc1/*.cpp"]
 	}
