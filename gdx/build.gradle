@@ -39,7 +39,7 @@ jar {
 
 dependencies {
 	testImplementation libraries.junit
-	api "com.badlogicgames.gdx:gdx-jnigen-loader:2.3.1"
+	api "com.badlogicgames.gdx:gdx-jnigen-loader:3.0.0-ANTKILLER-SNAPSHOT"
 }
 
 test {
@@ -53,23 +53,24 @@ processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 jnigen {
 	sharedLibName = "gdx"
-	temporaryDir = "../target/native"
 	all {
-		cppExcludes = ["iosgl/**"]
+		headerDirs = ["jni", "jni/etc1", "jni/gdx2d"]
+		cIncludes = ["jni/gdx2d/*.c"]
+		cppIncludes = ["jni/etc1/*.cpp"]
 	}
-	add(Windows, x32)
-	add(Windows, x64)
-	add(Linux, x64)
-	add(Linux, x32, ARM)
-	add(Linux, x64, ARM)
-	add(Android) {
+	addWindows(x32, x86)
+	addWindows(x64, x86)
+	addLinux(x64, x86)
+	addLinux(x32, ARM)
+	addLinux(x64, ARM)
+	addAndroid() {
 		linkerFlags += " -llog"
 	}
-	add(MacOsX, x64)
-	add(MacOsX, x64, ARM)
-	add(IOS) {
-		headerDirs = ["iosgl"]
-		cppExcludes = []
+	addMac(x64, x86)
+	addMac(x64, ARM)
+	addIOS() {
+		headerDirs += ["jni/iosgl"]
+		cppIncludes = ["jni/iosgl/*.cpp"]
 		linkerFlags += " -undefined dynamic_lookup "
 	}
 	robovm {
