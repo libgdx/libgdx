@@ -37,13 +37,13 @@ public class Ogg {
 			super(audio, file);
 			if (audio.noDevice) return;
 			input = new OggInputStream(file.read());
-			setup(input.getChannels(), input.getSampleRate());
+			setup(input.getChannels(), 16, input.getSampleRate());
 		}
 
 		public int read (byte[] buffer) {
 			if (input == null) {
 				input = new OggInputStream(file.read(), previousInput);
-				setup(input.getChannels(), input.getSampleRate());
+				setup(input.getChannels(), 16, input.getSampleRate());
 				previousInput = null; // release this reference
 			}
 			return input.read(buffer);
@@ -84,11 +84,9 @@ public class Ogg {
 				int sampleRate = sampleRateBuffer.get(0);
 				if (decodedData == null) {
 					throw new GdxRuntimeException("Error decoding OGG file: " + file);
-				} else if (channels < 1 || channels > 2) {
-					throw new GdxRuntimeException("Error decoding OGG file, unsupported number of channels: " + file);
 				}
 
-				setup(decodedData, channels, sampleRate);
+				setup(decodedData, channels, 16, sampleRate);
 			}
 		}
 	}
