@@ -186,8 +186,10 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			closedWindows.clear();
 			int targetFramerate = -2;
 			for (Lwjgl3Window window : windows) {
-				window.makeCurrent();
-				currentWindow = window;
+				if (currentWindow != window) {
+					window.makeCurrent();
+					currentWindow = window;
+				}
 				if (targetFramerate == -2) targetFramerate = window.getConfig().foregroundFPS;
 				synchronized (lifecycleListeners) {
 					haveWindowsRendered |= window.update();
@@ -469,6 +471,12 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 				config.initialBackgroundColor.b, config.initialBackgroundColor.a);
 			window.getGraphics().gl20.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			GLFW.glfwSwapBuffers(windowHandle);
+		}
+
+		if (currentWindow != null) {
+			// the call above to createGlfwWindow switches the OpenGL context to the newly created window,
+			// ensure that the invariant "currentWindow is the window with the current active OpenGL context" holds
+			currentWindow.makeCurrent();
 		}
 	}
 

@@ -47,9 +47,9 @@ public class Mp3 {
 				int channels = header.mode() == Header.SINGLE_CHANNEL ? 1 : 2;
 				outputBuffer = new OutputBuffer(channels, false);
 				decoder.setOutputBuffer(outputBuffer);
-				setup(channels, header.getSampleRate());
+				setup(channels, 16, header.getSampleRate());
 			} catch (BitstreamException e) {
-				throw new GdxRuntimeException("error while preloading mp3", e);
+				throw new GdxRuntimeException("Error while preloading MP3", e);
 			}
 		}
 
@@ -70,7 +70,7 @@ public class Mp3 {
 						int channels = header.mode() == Header.SINGLE_CHANNEL ? 1 : 2;
 						outputBuffer = new OutputBuffer(channels, false);
 						decoder.setOutputBuffer(outputBuffer);
-						setup(channels, header.getSampleRate());
+						setup(channels, 16, header.getSampleRate());
 						setup = false;
 					}
 					try {
@@ -133,7 +133,7 @@ public class Mp3 {
 					output.write(outputBuffer.getBuffer(), 0, outputBuffer.reset());
 				}
 				bitstream.close();
-				setup(output.toByteArray(), channels, sampleRate);
+				setup(output.toByteArray(), channels, 16, sampleRate);
 			} catch (Throwable ex) {
 				throw new GdxRuntimeException("Error reading audio data.", ex);
 			}

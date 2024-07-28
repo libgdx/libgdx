@@ -25,6 +25,12 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
+      - name: Check MetalANGLE generation
+        run: |
+          ./gradlew :backends:gdx-backend-robovm-metalangle:generate
+          ./gradlew :backends:gdx-backend-robovm-metalangle:spotlessApply
+          if [[ `git status --porcelain` ]]; then echo "::error The MetalANGLE backend is missing changes, please run \`./gradlew :backends:gdx-backend-robovm-metalangle:generate\`"; exit 1; fi
+
       - name: Build & test Java code
         run: |
           ./gradlew fetchNatives

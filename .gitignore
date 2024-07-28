@@ -47,6 +47,7 @@ Thumbs.db
 
 libgdx-*.zip
 libgdx-*.zip.MD5
+/android-ndk-*
 
 *.iml
 /.idea/

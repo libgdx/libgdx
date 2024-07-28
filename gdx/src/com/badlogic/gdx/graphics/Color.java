@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** A color class, holding the r, g, b and alpha component as floats in the range [0,1]. All methods perform clamping on the
@@ -104,12 +105,26 @@ public class Color {
 
 	/** Sets this color to the given color.
 	 * 
-	 * @param color the Color */
+	 * @param color the Color
+	 * @return this color. */
 	public Color set (Color color) {
 		this.r = color.r;
 		this.g = color.g;
 		this.b = color.b;
 		this.a = color.a;
+		return this;
+	}
+
+	/** Sets this color to the red, green and blue components of the provided Color and a deviating alpha value.
+	 * 
+	 * @param rgb the desired red, green and blue values (alpha of that Color is ignored)
+	 * @param alpha the desired alpha value (will be clamped to the range [0, 1])
+	 * @return this color. */
+	public Color set (Color rgb, float alpha) {
+		this.r = rgb.r;
+		this.g = rgb.g;
+		this.b = rgb.b;
+		this.a = MathUtils.clamp(alpha, 0f, 1f);
 		return this;
 	}
 

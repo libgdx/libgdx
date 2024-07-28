@@ -55,7 +55,8 @@ public class OrthographicCamera extends Camera {
 	public void update (boolean updateFrustum) {
 		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * (viewportWidth / 2), zoom * -(viewportHeight / 2),
 			zoom * viewportHeight / 2, near, far);
-		view.setToLookAt(position, tmp.set(position).add(direction), up);
+		view.setToLookAt(direction, up);
+		view.translate(-position.x, -position.y, -position.z);
 		combined.set(projection);
 		Matrix4.mul(combined.val, view.val);
 
