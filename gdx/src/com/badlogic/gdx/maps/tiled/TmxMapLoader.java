@@ -111,18 +111,18 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	 * @param parameter specifies whether to use y-up, generate mip maps etc.
 	 * @return the TiledMap with the loaded tile set */
 	public TiledMap loadCustomTileSet (String fileName, TiledMap map, TmxMapLoader.Parameters parameter) {
-		FileHandle tmjFile = resolve(fileName);
-		Element tileSet = xml.parse(tmjFile);
+		FileHandle tmxFile = resolve(fileName);
+		Element tileSet = xml.parse(tmxFile);
 		ObjectMap<String, Texture> textures = new ObjectMap<>();
 		this.map = map;
 
-		final Array<FileHandle> textureFiles = getTileSetDependencyFileHandle(tmjFile, tileSet);
+		final Array<FileHandle> textureFiles = getTileSetDependencyFileHandle(tmxFile, tileSet);
 		for (FileHandle textureFile : textureFiles) {
 			Texture texture = new Texture(textureFile, parameter.generateMipMaps);
 			texture.setFilter(parameter.textureMinFilter, parameter.textureMagFilter);
 			textures.put(textureFile.path(), texture);
 		}
-		loadTileSet(tileSet, tmjFile, new ImageResolver.DirectImageResolver(textures));
+		loadTileSet(tileSet, tmxFile, new ImageResolver.DirectImageResolver(textures));
 		map.setOwnedResources(textures.values().toArray());
 
 		return map;
