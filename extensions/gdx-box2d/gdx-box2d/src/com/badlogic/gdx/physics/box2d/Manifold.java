@@ -21,9 +21,9 @@ import com.badlogic.gdx.math.Vector2;
 public class Manifold {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
-	 */
-	
+#include <box2d/box2d.h>
+	 */ // @on
+
 	long addr;
 	final ManifoldPoint[] points = new ManifoldPoint[] {new ManifoldPoint(), new ManifoldPoint()};
 	final Vector2 localNormal = new Vector2();
@@ -45,18 +45,20 @@ public class Manifold {
 	}
 
 	private native int jniGetType (long addr); /*
+		// @off
 		b2Manifold* manifold = (b2Manifold*)addr;
 		return manifold->type;
-	*/
+	*/ // @on
 
 	public int getPointCount () {
 		return jniGetPointCount(addr);
 	}
 
 	private native int jniGetPointCount (long addr); /*
+		// @off
 	  	b2Manifold* manifold = (b2Manifold*)addr;
 		return manifold->pointCount;
-	*/
+	*/ // @on
 
 	public Vector2 getLocalNormal () {
 		jniGetLocalNormal(addr, tmpFloat);
@@ -65,10 +67,11 @@ public class Manifold {
 	}
 
 	private native void jniGetLocalNormal (long addr, float[] values); /*
+		// @off
 		b2Manifold* manifold = (b2Manifold*)addr;
 		values[0] = manifold->localNormal.x;
 		values[1] = manifold->localNormal.y;
-	*/
+	*/ // @on
 
 	public Vector2 getLocalPoint () {
 		jniGetLocalPoint(addr, tmpFloat);
@@ -77,10 +80,11 @@ public class Manifold {
 	}
 
 	private native void jniGetLocalPoint (long addr, float[] values); /*
+		// @off
 		b2Manifold* manifold = (b2Manifold*)addr;
 		values[0] = manifold->localPoint.x;
 		values[1] = manifold->localPoint.y;
-	*/
+	*/ // @on
 
 	public ManifoldPoint[] getPoints () {
 		int count = jniGetPointCount(addr);
@@ -98,6 +102,7 @@ public class Manifold {
 	}
 
 	private native int jniGetPoint (long addr, float[] values, int idx); /*
+		// @off
 		b2Manifold* manifold = (b2Manifold*)addr;
 		  
 		values[0] = manifold->points[idx].localPoint.x;
@@ -106,7 +111,7 @@ public class Manifold {
 		values[3] = manifold->points[idx].tangentImpulse;  
 		  
 		return (jint)manifold->points[idx].id.key;
-	*/
+	*/ // @on
 
 	public class ManifoldPoint {
 		public final Vector2 localPoint = new Vector2();
