@@ -86,6 +86,8 @@ public class IOSGraphics extends AbstractGraphics {
 
 	private boolean isFrameRequested = true;
 
+	private boolean firstFrame = true;
+
 	IOSApplicationConfiguration config;
 
 	MGLContext context;
@@ -236,6 +238,12 @@ public class IOSGraphics extends AbstractGraphics {
 		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
 		// stores the last known viewport and we reset it here...
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
+		// For default framebuffer, we render a dummy frame during initialization before create
+		// Return early so listener does not process
+		if (firstFrame) {
+			firstFrame = false;
+			return;
+		}
 		if (appPaused) {
 			return;
 		}
