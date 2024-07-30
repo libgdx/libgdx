@@ -243,8 +243,8 @@ public class IOSGraphics extends AbstractGraphics {
 		// stores the last known viewport and we reset it here...
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 
-		//For default framebuffer, we render a dummy frame during initialization before create
-		//Return early so listener does not process
+		// For default framebuffer, we render a dummy frame during initialization before create
+		// Return early so listener does not process
 		if (firstFrame) {
 			firstFrame = false;
 			return;

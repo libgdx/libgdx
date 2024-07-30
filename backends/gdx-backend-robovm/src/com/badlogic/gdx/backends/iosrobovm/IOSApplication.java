@@ -154,7 +154,7 @@ public class IOSApplication implements Application {
 
 		Gdx.app.debug("IOSApplication", "created");
 
-		//Trigger first render, special case that is caught and returned
+		// Trigger first render, special case that is caught and returned
 		this.graphics.view.display();
 
 		listener.create();
