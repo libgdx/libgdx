@@ -33,7 +33,8 @@ public class FPSLogger {
 
 	/** @param bound only logs when they frames per second are less than the bound */
 	public FPSLogger (int bound) {
-		setBound(bound);
+		this.bound = bound;
+		startTime = TimeUtils.nanoTime();
 	}
 
 	public void setBound (int bound) {
