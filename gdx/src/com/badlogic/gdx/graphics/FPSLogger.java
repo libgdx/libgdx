@@ -37,6 +37,11 @@ public class FPSLogger {
 		startTime = TimeUtils.nanoTime();
 	}
 
+	public void setBound (int bound) {
+		this.bound = bound;
+		startTime = TimeUtils.nanoTime();
+	}
+
 	/** Logs the current frames per second to the console. */
 	public void log () {
 		final long nanoTime = TimeUtils.nanoTime();
