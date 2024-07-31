@@ -76,6 +76,7 @@ jnigen {
 	add(MacOsX, x64, ARM)
 	add(Android) {
 		cppFlags += " -fexceptions"
+		linkerFlags += " -Wl,-z,max-page-size=0x4000"
 		androidApplicationMk += "APP_STL := c++_static";
 	}
 	add(IOS) {

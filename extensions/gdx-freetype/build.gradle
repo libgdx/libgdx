@@ -94,6 +94,8 @@ jnigen {
 	add(MacOsX, x64, ARM) {
 		linkerFlags += " -framework CoreServices -framework Carbon"
 	}
-	add(Android)
+	add(Android) {
+		linkerFlags += " -Wl,-z,max-page-size=0x4000"
+	}
 	add(IOS)
 }
