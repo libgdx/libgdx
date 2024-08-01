@@ -38,26 +38,6 @@ public abstract class AbstractInput implements Input {
 	}
 
 	@Override
-	public boolean isCatchBackKey () {
-		return keysToCatch.contains(Keys.BACK);
-	}
-
-	@Override
-	public void setCatchBackKey (boolean catchBack) {
-		setCatchKey(Keys.BACK, catchBack);
-	}
-
-	@Override
-	public boolean isCatchMenuKey () {
-		return keysToCatch.contains(Keys.MENU);
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
-		setCatchKey(Keys.MENU, catchMenu);
-	}
-
-	@Override
 	public void setCatchKey (int keycode, boolean catchKey) {
 		if (!catchKey) {
 			keysToCatch.remove(keycode);

@@ -1423,6 +1423,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		unregisterSensorListeners();
 	}
 
+	@Override
+	public void setCatchKey(int keycode, boolean catchKey) {
+		super.setCatchKey(keycode, catchKey);
+	}
+
 	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a
 	 * single SensorEventListener, we add one of these for each Sensor. Could use an anonymous class, but I don't see any harm in
 	 * explicitly defining it here. Correct me if I am wrong. */
