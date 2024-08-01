@@ -452,7 +452,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 
 	@Override
 	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
-		return new DefaultAndroidInput(this, getActivity(), graphics.view, config);
+		return new DefaultAndroidInput(this, getActivity(), getActivity(), graphics.view, config);
 	}
 
 	protected AndroidFiles createFiles () {

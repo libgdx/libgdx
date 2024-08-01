@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.android;
 
 import android.animation.Animator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -27,6 +28,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Handler;
 import android.text.*;
 import android.text.InputFilter.LengthFilter;
@@ -41,6 +43,11 @@ import android.view.inputmethod.InputConnectionWrapper;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import android.widget.TextView.OnEditorActionListener;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
+
+import androidx.annotation.Nullable;
+
 import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -127,6 +134,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	protected final float[] gyroscopeValues = new float[3];
 	private Handler handle;
 	final Application app;
+	final Activity activity;
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
@@ -144,6 +152,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private final AndroidApplicationConfiguration config;
 	protected final Orientation nativeOrientation;
 	private long currentEventTimeStamp = 0;
+	private BackHelper backHelper;
 
 	private SensorEventListener accelerometerListener;
 	private SensorEventListener gyroscopeListener;
@@ -153,7 +162,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private final ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
 	private final AndroidMouseHandler mouseHandler;
 
-	public DefaultAndroidInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
+	public DefaultAndroidInput (Application application, Context context, @Nullable Activity activity, Object view, AndroidApplicationConfiguration config) {
+
 		// we hook into View, for LWPs we call onTouch below directly from
 		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
 		if (view instanceof View) {
@@ -171,13 +181,17 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		for (int i = 0; i < realId.length; i++)
 			realId[i] = -1;
 		handle = new Handler();
-		this.app = activity;
+		this.app = application;
+		this.activity = activity;
 		this.context = context;
 		this.sleepTime = config.touchSleepTime;
 		touchHandler = new AndroidTouchHandler();
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
 		haptics = new AndroidHaptics(context);
+
+		if (Build.VERSION.SDK_INT >= 33 && activity != null)
+			this.backHelper = new BackHelper(this, activity);
 
 		int rotation = getRotation();
 		DisplayMode mode = app.getGraphics().getDisplayMode();
@@ -1426,6 +1440,40 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	@Override
 	public void setCatchKey(int keycode, boolean catchKey) {
 		super.setCatchKey(keycode, catchKey);
+		if (keycode == Keys.BACK) {
+			if (backHelper != null) {
+				if (catchKey) backHelper.register();
+				else backHelper.unregister();
+			}
+		}
+	}
+
+	@TargetApi(33)
+	private static class BackHelper {
+
+		protected final OnBackInvokedDispatcher dispatcher;
+		final OnBackInvokedCallback callback;
+
+		public BackHelper(final DefaultAndroidInput input, Activity activity) {
+			dispatcher = activity.getOnBackInvokedDispatcher();
+			callback = new OnBackInvokedCallback() {
+				@Override
+				public void onBackInvoked() {
+					if (input.processor != null) {
+						input.processor.keyDown(Keys.BACK);
+					}
+				}
+			};
+		}
+
+		private void register() {
+			dispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, callback);
+		}
+
+		private void unregister() {
+			dispatcher.unregisterOnBackInvokedCallback(callback);
+		}
+
 	}
 
 	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a
