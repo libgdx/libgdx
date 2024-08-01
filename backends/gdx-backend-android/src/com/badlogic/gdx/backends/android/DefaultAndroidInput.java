@@ -162,7 +162,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private final ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
 	private final AndroidMouseHandler mouseHandler;
 
-	public DefaultAndroidInput (Application application, Context context, @Nullable Activity activity, Object view, AndroidApplicationConfiguration config) {
+	public DefaultAndroidInput (Application application, Context context, @Nullable Activity activity, Object view,
+		AndroidApplicationConfiguration config) {
 
 		// we hook into View, for LWPs we call onTouch below directly from
 		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
@@ -190,8 +191,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 		haptics = new AndroidHaptics(context);
 
-		if (Build.VERSION.SDK_INT >= 33 && activity != null)
-			this.backHelper = new BackHelper(this, activity);
+		if (Build.VERSION.SDK_INT >= 33 && activity != null) this.backHelper = new BackHelper(this, activity);
 
 		int rotation = getRotation();
 		DisplayMode mode = app.getGraphics().getDisplayMode();
@@ -1438,12 +1438,14 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	@Override
-	public void setCatchKey(int keycode, boolean catchKey) {
+	public void setCatchKey (int keycode, boolean catchKey) {
 		super.setCatchKey(keycode, catchKey);
 		if (keycode == Keys.BACK) {
 			if (backHelper != null) {
-				if (catchKey) backHelper.register();
-				else backHelper.unregister();
+				if (catchKey)
+					backHelper.register();
+				else
+					backHelper.unregister();
 			}
 		}
 	}
@@ -1454,11 +1456,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		protected final OnBackInvokedDispatcher dispatcher;
 		final OnBackInvokedCallback callback;
 
-		public BackHelper(final DefaultAndroidInput input, Activity activity) {
+		public BackHelper (final DefaultAndroidInput input, Activity activity) {
 			dispatcher = activity.getOnBackInvokedDispatcher();
 			callback = new OnBackInvokedCallback() {
 				@Override
-				public void onBackInvoked() {
+				public void onBackInvoked () {
 					if (input.processor != null) {
 						input.processor.keyDown(Keys.BACK);
 					}
@@ -1466,11 +1468,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 			};
 		}
 
-		private void register() {
+		private void register () {
 			dispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, callback);
 		}
 
-		private void unregister() {
+		private void unregister () {
 			dispatcher.unregisterOnBackInvokedCallback(callback);
 		}
 
