@@ -46,7 +46,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
 
-import androidx.annotation.Nullable;
+import com.badlogic.gdx.utils.Null;
 
 import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Application;
@@ -162,7 +162,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private final ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
 	private final AndroidMouseHandler mouseHandler;
 
-	public DefaultAndroidInput (Application application, Context context, @Nullable Activity activity, Object view,
+	public DefaultAndroidInput (Application application, Context context, @Null Activity activity, Object view,
 		AndroidApplicationConfiguration config) {
 
 		// we hook into View, for LWPs we call onTouch below directly from
