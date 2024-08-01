@@ -134,7 +134,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	protected final float[] gyroscopeValues = new float[3];
 	private Handler handle;
 	final Application app;
-	final Activity activity;
+	protected final Activity activity;
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
@@ -191,7 +191,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 		haptics = new AndroidHaptics(context);
 
-		if (Build.VERSION.SDK_INT >= 33 && activity != null) this.backHelper = new BackHelper(this, activity);
+		if (Build.VERSION.SDK_INT >= 33 && activity != null) {
+			this.backHelper = new BackHelper();
+		}
 
 		int rotation = getRotation();
 		DisplayMode mode = app.getGraphics().getDisplayMode();
@@ -1451,22 +1453,17 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	@TargetApi(33)
-	private static class BackHelper {
+	private class BackHelper {
 
-		protected final OnBackInvokedDispatcher dispatcher;
-		final OnBackInvokedCallback callback;
-
-		public BackHelper (final DefaultAndroidInput input, Activity activity) {
-			dispatcher = activity.getOnBackInvokedDispatcher();
-			callback = new OnBackInvokedCallback() {
-				@Override
-				public void onBackInvoked () {
-					if (input.processor != null) {
-						input.processor.keyDown(Keys.BACK);
-					}
+		private final OnBackInvokedDispatcher dispatcher = activity.getOnBackInvokedDispatcher();
+		private final OnBackInvokedCallback callback = new OnBackInvokedCallback() {
+			@Override
+			public void onBackInvoked () {
+				if (processor != null) {
+					processor.keyDown(Keys.BACK);
 				}
-			};
-		}
+			}
+		};
 
 		private void register () {
 			dispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, callback);
