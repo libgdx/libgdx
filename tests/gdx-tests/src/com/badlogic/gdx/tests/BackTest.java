@@ -12,15 +12,15 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-/** A test for mainly for checking if predictive back gesture is working on Android. Tap the screen to increment the counter. Go
- * back to decrement the counter. If the counter is 0, the test will be exited. */
+/** A test mainly for checking if predictive back gesture is working on Android, loosely modeled upon Android's back stack.
+ * Tap the screen to increment the counter. Go back to decrement the counter. If the counter is 0, the test will be exited. */
 public class BackTest extends GdxTest {
 
 	private SpriteBatch batch;
 	private BitmapFont font;
 	private final Viewport viewport = new FitViewport(160, 90);
 
-	private int backs;
+	private int stackDepth;
 
 	@Override
 	public void create () {
@@ -33,8 +33,8 @@ public class BackTest extends GdxTest {
 				int screenWidth = Gdx.graphics.getBackBufferWidth();
 				float safeZone = screenWidth * .1f;
 				if (screenX >= safeZone && screenX < screenWidth - safeZone) {
-					backs++;
-					Gdx.input.setCatchKey(Input.Keys.BACK, backs > 0);
+					stackDepth++;
+					Gdx.input.setCatchKey(Input.Keys.BACK, stackDepth > 0);
 					return true;
 				}
 				return false;
@@ -42,9 +42,12 @@ public class BackTest extends GdxTest {
 
 			@Override
 			public boolean keyDown (int keycode) {
-				if (keycode == Input.Keys.BACK) backs--;
-				Gdx.input.setCatchKey(Input.Keys.BACK, backs > 0);
-				return true;
+				if (keycode == Input.Keys.BACK) {
+					stackDepth--;
+					Gdx.input.setCatchKey(Input.Keys.BACK, stackDepth > 0);
+					return true;
+				}
+				return false;
 			}
 		});
 	}
@@ -53,7 +56,7 @@ public class BackTest extends GdxTest {
 	public void render () {
 		ScreenUtils.clear(Color.BLACK);
 		batch.begin();
-		font.draw(batch, "Back depth: " + backs, 20, 50);
+		font.draw(batch, "Stack depth: " + stackDepth, 20, 50);
 		batch.end();
 	}
 
