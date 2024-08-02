@@ -50,6 +50,7 @@ import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightObserver;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightProvider;
@@ -65,8 +66,8 @@ import java.util.List;
 
 /** An implementation of the {@link Input} interface for Android.
  *
- * @author mzechner */
-/** @author jshapcot */
+ * @author mzechner
+ * @author jshapcot */
 public class DefaultAndroidInput extends AbstractInput implements AndroidInput, KeyboardHeightObserver {
 
 	static class KeyEvent {
