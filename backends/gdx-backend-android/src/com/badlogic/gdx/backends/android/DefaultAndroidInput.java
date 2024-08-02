@@ -1451,7 +1451,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	@TargetApi(33)
 	private class BackHelper {
 
-		private final OnBackInvokedDispatcher dispatcher = ((Activity) app).getOnBackInvokedDispatcher();
+		private final OnBackInvokedDispatcher dispatcher = ((Activity)app).getOnBackInvokedDispatcher();
 		private final OnBackInvokedCallback callback = new OnBackInvokedCallback() {
 			@Override
 			public void onBackInvoked () {
