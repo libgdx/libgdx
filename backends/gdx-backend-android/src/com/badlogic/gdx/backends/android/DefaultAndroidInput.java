@@ -160,8 +160,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private final ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
 	private final AndroidMouseHandler mouseHandler;
 
-	public DefaultAndroidInput (Application application, Context context, Object view, AndroidApplicationConfiguration config) {
-
+	public DefaultAndroidInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
 		// we hook into View, for LWPs we call onTouch below directly from
 		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
 		if (view instanceof View) {
@@ -179,7 +178,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		for (int i = 0; i < realId.length; i++)
 			realId[i] = -1;
 		handle = new Handler();
-		this.app = application;
+		this.app = activity;
 		this.context = context;
 		this.sleepTime = config.touchSleepTime;
 		touchHandler = new AndroidTouchHandler();
