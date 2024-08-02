@@ -20,7 +20,7 @@
 - Desktop: Added support for 8/32/64-bit PCM and MP3 WAVs
 - Desktop: Improved support for surround sound audio files (#6792)
 - Android: Added support for predictive back gesture (requires android:enableOnBackInvokedCallback="true" in manifest)
-- Android: Removed deprecated back and menu key methods. Use `setCatchKey` and `isCatchKey` instead.
+- API Removal: Removed deprecated back and menu key methods. Use `setCatchKey` and `isCatchKey` instead.
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
