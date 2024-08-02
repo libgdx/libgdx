@@ -14,7 +14,8 @@
 				 android:label="@string/app_name"
 				 android:theme="@style/AppTheme"
 				 android:allowBackup="false"
-		tools:ignore="GoogleAppIndexingWarning">
+		android:enableOnBackInvokedCallback="true"
+		tools:ignore="UnusedAttribute, GoogleAppIndexingWarning">
 		<activity android:name=".AndroidTestStarter" android:label="@string/app_name"
 			android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
 			android:exported="true">

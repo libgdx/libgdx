@@ -512,26 +512,6 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public void setCatchBackKey (boolean catchBack) {
-
-	}
-
-	@Override
-	public boolean isCatchBackKey () {
-		return false;
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
-
-	}
-
-	@Override
-	public boolean isCatchMenuKey () {
-		return false;
-	}
-
-	@Override
 	public void setCatchKey (int keycode, boolean catchKey) {
 
 	}

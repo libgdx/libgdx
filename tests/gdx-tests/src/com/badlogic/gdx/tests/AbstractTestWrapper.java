@@ -361,26 +361,6 @@ public abstract class AbstractTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void setCatchBackKey (boolean catchBack) {
-			input.setCatchBackKey(catchBack);
-		}
-
-		@Override
-		public boolean isCatchBackKey () {
-			return input.isCatchBackKey();
-		}
-
-		@Override
-		public void setCatchMenuKey (boolean catchMenu) {
-			input.setCatchMenuKey(catchMenu);
-		}
-
-		@Override
-		public boolean isCatchMenuKey () {
-			return input.isCatchMenuKey();
-		}
-
-		@Override
 		public void setCatchKey (int keycode, boolean catchKey) {
 			input.setCatchKey(keycode, catchKey);
 		}
