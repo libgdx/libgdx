@@ -46,8 +46,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
 
-import com.badlogic.gdx.utils.Null;
-
 import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -134,7 +132,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	protected final float[] gyroscopeValues = new float[3];
 	private Handler handle;
 	final Application app;
-	protected final Activity activity;
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
@@ -162,8 +159,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private final ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
 	private final AndroidMouseHandler mouseHandler;
 
-	public DefaultAndroidInput (Application application, Context context, @Null Activity activity, Object view,
-		AndroidApplicationConfiguration config) {
+	public DefaultAndroidInput (Application application, Context context, Object view, AndroidApplicationConfiguration config) {
 
 		// we hook into View, for LWPs we call onTouch below directly from
 		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
@@ -183,7 +179,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 			realId[i] = -1;
 		handle = new Handler();
 		this.app = application;
-		this.activity = activity;
 		this.context = context;
 		this.sleepTime = config.touchSleepTime;
 		touchHandler = new AndroidTouchHandler();
@@ -191,7 +186,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 		haptics = new AndroidHaptics(context);
 
-		if (Build.VERSION.SDK_INT >= 33 && activity != null) {
+		if (Build.VERSION.SDK_INT >= 33) {
 			this.backHelper = new BackHelper();
 		}
 
@@ -1455,7 +1450,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	@TargetApi(33)
 	private class BackHelper {
 
-		private final OnBackInvokedDispatcher dispatcher = activity.getOnBackInvokedDispatcher();
+		private final OnBackInvokedDispatcher dispatcher = ((Activity) app).getOnBackInvokedDispatcher();
 		private final OnBackInvokedCallback callback = new OnBackInvokedCallback() {
 			@Override
 			public void onBackInvoked () {

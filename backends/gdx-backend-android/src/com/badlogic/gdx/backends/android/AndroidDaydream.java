@@ -400,7 +400,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 	@Override
 	public AndroidInput createInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
-		return new DefaultAndroidInput(this, this, null, graphics.view, config);
+		return new DefaultAndroidInput(this, this, graphics.view, config);
 	}
 
 	protected AndroidFiles createFiles () {
