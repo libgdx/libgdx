@@ -34,13 +34,13 @@ public class LwjglApplicationLogger implements ApplicationLogger {
 
 	@Override
 	public void error (String tag, String message) {
-		System.err.println("[" + tag + "] " + message);
+		System.out.println("[" + tag + "] " + message);
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		System.err.println("[" + tag + "] " + message);
-		exception.printStackTrace(System.err);
+		System.out.println("[" + tag + "] " + message);
+		exception.printStackTrace(System.out);
 	}
 
 	@Override
