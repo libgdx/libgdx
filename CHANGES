@@ -19,6 +19,7 @@
 - Optimization of SpriteBatch in GL30 default modes, as indices do not need to be updated
 - Desktop: Added support for 8/32/64-bit PCM and MP3 WAVs
 - Desktop: Improved support for surround sound audio files (#6792)
+- Fix: Order of error logs for: Lwjgl3ApplicationLogger, LwjglApplicationLogger and HeadlessApplicationLogger
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
