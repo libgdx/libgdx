@@ -94,9 +94,9 @@ public interface Audio {
 	public boolean switchOutputDevice (@Null String deviceIdentifier);
 
 	/** This function returns a list of fully qualified Output device names. This function is only implemented on desktop and web.
-	 * Note that on gwt the {@link GwtApplicationConfiguration#fetchAvailableOutputDevices fetchAvailableOutputDevices} attribute
-	 * needs to be set to true for asking the user for permission! On all other platforms it will return an empty array. It will
-	 * also return an empty array on error. The names returned need os dependent preprocessing before exposing to a user.
+	 * Note that on gwt the GwtApplicationConfiguration#fetchAvailableOutputDevices attribute needs to be set to true for asking
+	 * the user for permission! On all other platforms it will return an empty array. It will also return an empty array on error.
+	 * The names returned need os dependent preprocessing before exposing to a user.
 	 *
 	 * @return A array of available output devices */
 	public String[] getAvailableOutputDevices ();
