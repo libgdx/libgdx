@@ -81,7 +81,7 @@ public class Mesh implements Disposable {
 	boolean autoBind = true;
 	final boolean isVertexArray;
 
-	InstanceData instances;
+	public InstanceData instances;
 	boolean isInstanced = false;
 
 	protected Mesh (VertexData vertices, IndexData indices, boolean isVertexArray) {
@@ -512,6 +512,10 @@ public class Mesh implements Disposable {
 	 * @param locations array containing the vertex attribute locations.
 	 * @param instanceLocations array containing the instance attribute locations. */
 	public void bind (final ShaderProgram shader, final int[] locations, final int[] instanceLocations) {
+		bind(shader, locations, instanceLocations, instances);
+	}
+
+	public void bind (final ShaderProgram shader, final int[] locations, final int[] instanceLocations, InstanceData instances) {
 		vertices.bind(shader, locations);
 		if (instances != null && instances.getNumInstances() > 0) instances.bind(shader, instanceLocations);
 		if (indices.getNumIndices() > 0) indices.bind();
@@ -532,6 +536,10 @@ public class Mesh implements Disposable {
 	 * @param locations array containing the vertex attribute locations.
 	 * @param instanceLocations array containing the instance attribute locations. */
 	public void unbind (final ShaderProgram shader, final int[] locations, final int[] instanceLocations) {
+		unbind(shader, locations, instanceLocations, instances);
+	}
+
+	public void unbind (final ShaderProgram shader, final int[] locations, final int[] instanceLocations, InstanceData instances) {
 		vertices.unbind(shader, locations);
 		if (instances != null && instances.getNumInstances() > 0) instances.unbind(shader, instanceLocations);
 		if (indices.getNumIndices() > 0) indices.unbind();
@@ -615,9 +623,20 @@ public class Mesh implements Disposable {
 	 * @param count number of vertices or indices to use
 	 * @param autoBind overrides the autoBind member of this Mesh */
 	public void render (ShaderProgram shader, int primitiveType, int offset, int count, boolean autoBind) {
-		if (count == 0) return;
+		render(shader, primitiveType, offset, count, autoBind, null);
+	}
 
-		if (autoBind) bind(shader);
+	public void render (ShaderProgram shader, int primitiveType, int offset, int count, boolean autoBind, InstanceData instances) {
+		if (count == 0) return;
+		boolean isInstanced;
+		if (instances != null) {
+			isInstanced = true;
+		} else {
+			isInstanced = this.isInstanced;
+			instances = this.instances;
+		}
+
+		if (autoBind) bind(shader, null, null, instances);
 
 		if (isVertexArray) {
 			if (indices.getNumIndices() > 0) {

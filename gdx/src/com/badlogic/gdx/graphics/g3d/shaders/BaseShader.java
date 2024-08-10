@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
+import com.badlogic.gdx.graphics.glutils.InstanceData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -113,6 +114,7 @@ public abstract class BaseShader implements Shader {
 	public RenderContext context;
 	public Camera camera;
 	private Mesh currentMesh;
+	private InstanceData currentInstances;
 
 	/** Register an uniform which might be used by this shader. Only possible prior to the call to init().
 	 * @return The ID of the uniform to use in this shader. */
@@ -199,7 +201,9 @@ public abstract class BaseShader implements Shader {
 				final int location = program.getAttributeLocation(attr.alias);
 				if (location >= 0) attributes.put(attr.getKey(), location);
 			}
-			final VertexAttributes iattrs = renderable.meshPart.mesh.getInstancedAttributes();
+			final VertexAttributes iattrs = renderable.instances != null ?
+					renderable.instances.getAttributes() :
+					renderable.meshPart.mesh.getInstancedAttributes();
 			if (iattrs != null) {
 				final int ic = iattrs.size();
 				for (int i = 0; i < ic; i++) {
@@ -260,13 +264,26 @@ public abstract class BaseShader implements Shader {
 	public void render (Renderable renderable, final Attributes combinedAttributes) {
 		for (int u, i = 0; i < localUniforms.size; ++i)
 			if (setters.get(u = localUniforms.get(i)) != null) setters.get(u).set(this, u, renderable, combinedAttributes);
-		if (currentMesh != renderable.meshPart.mesh) {
-			if (currentMesh != null) currentMesh.unbind(program, tempArray.items, tempArray2.items);
+
+		final InstanceData instances = renderable.instances != null ? renderable.instances : renderable.meshPart.mesh.instances;
+		if (currentMesh != renderable.meshPart.mesh) { // || renderable.instances != null) {
+			if (currentMesh != null) currentMesh.unbind(program, tempArray.items, null, null);
 			currentMesh = renderable.meshPart.mesh;
+			// currentInstances = instances;
+			// final VertexAttributes insAttrs = instances != null ? instances.getAttributes() : null;
 			currentMesh.bind(program, getAttributeLocations(renderable.meshPart.mesh.getVertexAttributes()),
-				getInstancedAttributeLocations(renderable.meshPart.mesh.getInstancedAttributes()));
+					null, null);
 		}
-		renderable.meshPart.render(program, false);
+
+		if (currentInstances != instances) {
+			if (currentInstances != null)
+				currentInstances.unbind(program, tempArray2.items);
+			currentInstances = instances;
+			if (instances != null)
+				instances.bind(program, getInstancedAttributeLocations(instances.getAttributes()));
+		}
+
+		renderable.meshPart.render(program, false, instances);
 	}
 
 	@Override
