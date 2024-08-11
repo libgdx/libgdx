@@ -494,7 +494,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 					loadProperties(classProperty, property.getChildByName("properties"));
 					properties.put(name, classProperty);
 
-				else {
+				} else {
 					Object castValue = castProperty(name, value, type);
 					properties.put(name, castValue);
 				}
