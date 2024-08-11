@@ -28,7 +28,7 @@ public class DependencyBank {
 	static String buildToolsVersion = "33.0.2";
 	static String androidAPILevel = "33";
 	static String androidMinAPILevel = "19";
-	static String gwtVersion = "2.10.0";
+	static String gwtVersion = "2.11.0";
 
 	// Repositories
 	static String mavenLocal = "mavenLocal()";
