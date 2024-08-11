@@ -150,7 +150,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private final AndroidApplicationConfiguration config;
 	protected final Orientation nativeOrientation;
 	private long currentEventTimeStamp = 0;
-	private BackHelper backHelper;
+	private PredictiveBackHandler predictiveBackHandler;
 
 	private SensorEventListener accelerometerListener;
 	private SensorEventListener gyroscopeListener;
@@ -187,7 +187,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		haptics = new AndroidHaptics(context);
 
 		if (Build.VERSION.SDK_INT >= 33) {
-			this.backHelper = new BackHelper();
+			this.predictiveBackHandler = new PredictiveBackHandler();
 		}
 
 		int rotation = getRotation();
@@ -1438,17 +1438,21 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	public void setCatchKey (int keycode, boolean catchKey) {
 		super.setCatchKey(keycode, catchKey);
 		if (keycode == Keys.BACK) {
-			if (backHelper != null) {
+			if (predictiveBackHandler != null) {
 				if (catchKey)
-					backHelper.register();
+					predictiveBackHandler.register();
 				else
-					backHelper.unregister();
+					predictiveBackHandler.unregister();
 			}
 		}
 	}
 
+	/**
+	 * Handle predictive back gestures on Android 13 and newer, replacing the <code>BACK</code> key event for exiting the activity.
+   * @see <a href="https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture">...</a>
+   */
 	@TargetApi(33)
-	private class BackHelper {
+	private class PredictiveBackHandler {
 
 		private final OnBackInvokedDispatcher dispatcher = ((Activity)app).getOnBackInvokedDispatcher();
 		private final OnBackInvokedCallback callback = new OnBackInvokedCallback() {
