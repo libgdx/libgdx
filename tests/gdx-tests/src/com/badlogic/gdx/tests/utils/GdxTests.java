@@ -124,7 +124,6 @@ public class GdxTests {
 		AudioDeviceTest.class,
 		AudioRecorderTest.class,
 		AudioSoundAndMusicIsolationTest.class,
-		BackTest.class,
 		Basic3DSceneTest.class,
 		Basic3DTest.class,
 		Benchmark3DTest.class,
