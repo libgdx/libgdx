@@ -221,6 +221,7 @@ public abstract class BaseShader implements Shader {
 		this.context = context;
 		program.bind();
 		currentMesh = null;
+		currentInstances = null;
 		for (int u, i = 0; i < globalUniforms.size; ++i)
 			if (setters.get(u = globalUniforms.get(i)) != null) setters.get(u).set(this, u, null, null);
 	}
@@ -289,8 +290,12 @@ public abstract class BaseShader implements Shader {
 	@Override
 	public void end () {
 		if (currentMesh != null) {
-			currentMesh.unbind(program, tempArray.items, tempArray2.items);
+			currentMesh.unbind(program, tempArray.items, null, null);
 			currentMesh = null;
+		}
+		if (currentInstances != null) {
+			currentInstances.unbind(program, tempArray2.items);
+			currentInstances = null;
 		}
 	}
 
