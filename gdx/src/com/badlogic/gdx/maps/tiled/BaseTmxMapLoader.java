@@ -483,7 +483,18 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 						throw new GdxRuntimeException(
 							"Error parsing property [\" + name + \"] of type \"object\" with value: [" + value + "]", exception);
 					}
-				} else {
+				} else if (type != null && type.equals("class")) {
+					// A 'class' property is a property which is itself a set of properties
+					MapProperties classProperty = new MapProperties();
+					String className = property.getAttribute("propertytype");
+
+					classProperty.put("type", className);
+
+					// the actual properties of a 'class' property are stored as a new properties tag
+					loadProperties(classProperty, property.getChildByName("properties"));
+					properties.put(name, classProperty);
+
+				else {
 					Object castValue = castProperty(name, value, type);
 					properties.put(name, castValue);
 				}
