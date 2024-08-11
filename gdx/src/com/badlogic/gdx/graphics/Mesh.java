@@ -623,18 +623,12 @@ public class Mesh implements Disposable {
 	 * @param count number of vertices or indices to use
 	 * @param autoBind overrides the autoBind member of this Mesh */
 	public void render (ShaderProgram shader, int primitiveType, int offset, int count, boolean autoBind) {
-		render(shader, primitiveType, offset, count, autoBind, null);
+		render(shader, primitiveType, offset, count, autoBind, instances);
 	}
 
 	public void render (ShaderProgram shader, int primitiveType, int offset, int count, boolean autoBind, InstanceData instances) {
 		if (count == 0) return;
-		boolean isInstanced;
-		if (instances != null) {
-			isInstanced = true;
-		} else {
-			isInstanced = this.isInstanced;
-			instances = this.instances;
-		}
+		boolean isInstanced = instances != null && (instances != this.instances || this.isInstanced);
 
 		if (autoBind) bind(shader, null, null, instances);
 
