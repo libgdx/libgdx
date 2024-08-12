@@ -1447,10 +1447,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		}
 	}
 
-	/**
-	 * Handle predictive back gestures on Android 13 and newer, replacing the <code>BACK</code> key event for exiting the activity.
-   * @see <a href="https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture">Add support for the predictive back gesture - Android Developers</a>
-   */
+	/** Handle predictive back gestures on Android 13 and newer, replacing the <code>BACK</code> key event for exiting the
+	 * activity.
+	 * @see <a href="https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture">...</a> */
 	@TargetApi(33)
 	private class PredictiveBackHandler {
 

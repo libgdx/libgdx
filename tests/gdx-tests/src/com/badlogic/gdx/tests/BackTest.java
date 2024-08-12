@@ -12,9 +12,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-/** Check if predictive back gesture works, loosely modeled upon Android's back stack.
- * Tap the screen to increment the counter.
- * Go back to decrement the counter. If the counter is 0, the test will be exited. */
+/** Check if predictive back gesture works, loosely modeled upon Android's back stack. Tap the screen to increment the counter. Go
+ * back to decrement the counter. If the counter is 0, the test will be exited. */
 public class BackTest extends GdxTest {
 
 	private SpriteBatch batch;
