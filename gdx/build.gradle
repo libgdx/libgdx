@@ -46,7 +46,7 @@ task regenerateIOSHeader {
 				workingDir robovmProject.file("build/classes/java/")
 				commandLine "javah"
 				args "-o", file("jni/iosgl/$output"), "-cp", robovmProject.sourceSets.main.runtimeClasspath.files.collect { it.getName() }.join(File.pathSeparator),
-						"com.badlogic.gdx.backends.iosrobovm.$input"
+				"com.badlogic.gdx.backends.iosrobovm.$input"
 			}
 		}
 	}
