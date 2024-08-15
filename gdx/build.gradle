@@ -85,7 +85,7 @@ task validateIOSHeader {
 
 dependencies {
 	testImplementation libraries.junit
-	api "com.badlogicgames.gdx:gdx-jnigen-loader:2.3.1"
+	api "com.badlogicgames.gdx:gdx-jnigen-loader:2.5.2"
 }
 
 test {
