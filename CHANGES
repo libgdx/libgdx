@@ -50,6 +50,7 @@
 - Android & iOS: Use empty Audio implementations on Android and iOS when audio is disabled
 - Adds status detection for an httpRequest
 - Fix ANGLE GLES renderer on dekstop (#7274)
+- Architecture support: Support for Linux RISC-V has been added. The gdx-xxx-natives.jar files now also contain native libraries for this architecture.
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.
