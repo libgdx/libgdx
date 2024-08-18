@@ -8,6 +8,9 @@ on:
   release:
     types: [ published ]
 
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
 jobs:
 
   natives-ios:
