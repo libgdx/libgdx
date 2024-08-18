@@ -72,6 +72,10 @@ public class TextInputDialogBox extends DialogBox {
 		setWidget(vPanel);
 	}
 
+	public void setInputType (String type) {
+		textBox.setType(type);
+	}
+
 	protected void onPositive () {
 		if (listener != null) {
 			listener.onPositive(textBox.getText());
