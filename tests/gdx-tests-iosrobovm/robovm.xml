@@ -49,7 +49,6 @@
     <framework>gdx-box2d</framework>
     <!-- System Frameworks -->
     <framework>UIKit</framework>
-    <framework>OpenGLES</framework>
     <framework>QuartzCore</framework>
     <framework>CoreGraphics</framework>
     <framework>OpenAL</framework>
