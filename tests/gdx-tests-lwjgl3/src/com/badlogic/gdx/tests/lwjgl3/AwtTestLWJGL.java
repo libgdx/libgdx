@@ -10,7 +10,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import com.badlogic.gdx.backends.lwjgl3.awt.GlfwAWTLoader;
-import com.badlogic.gdx.utils.Os;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
@@ -53,7 +52,7 @@ public class AwtTestLWJGL {
 	};
 
 	public static void main (String[] args) throws Exception {
-		if (SharedLibraryLoader.os == Os.MacOsX) {
+		if (SharedLibraryLoader.isMac) {
 			Configuration.GLFW_CHECK_THREAD0.set(false);
 			Configuration.GLFW_LIBRARY_NAME.set(GlfwAWTLoader.load().getAbsolutePath());
 		}
