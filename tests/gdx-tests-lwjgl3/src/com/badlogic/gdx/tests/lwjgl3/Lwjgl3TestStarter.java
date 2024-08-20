@@ -36,7 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.CommandLineOptions;
 import com.badlogic.gdx.tests.utils.GdxTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTests;
-import com.badlogic.gdx.utils.Os;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -66,7 +65,7 @@ public class Lwjgl3TestStarter {
 		} else if (options.gl31) {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL31, 4, 5);
 		} else if (options.gl30) {
-			if (SharedLibraryLoader.os == Os.MacOsX) {
+			if (SharedLibraryLoader.isMac) {
 				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 3, 2);
 			} else {
 				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 4, 3);
@@ -75,7 +74,7 @@ public class Lwjgl3TestStarter {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 0, 0);
 			// Use CPU sync if ANGLE is enabled on macOS, otherwise the framerate gets halfed
 			// by each new open window.
-			if (SharedLibraryLoader.os == Os.MacOsX) {
+			if (SharedLibraryLoader.isMac) {
 				config.useVsync(false);
 				config.setForegroundFPS(60);
 			}

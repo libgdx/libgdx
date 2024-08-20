@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.backends.lwjgl.audio.LwjglAudio;
-import com.badlogic.gdx.utils.*;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
 
@@ -37,6 +36,10 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl.audio.OpenALLwjglAudio;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Clipboard;
+import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 import java.awt.Canvas;
 import java.awt.Container;
@@ -93,7 +96,7 @@ public class LwjglCanvas implements LwjglApplicationBase {
 				scaleX = (float)transform.getScaleX();
 				scaleY = (float)transform.getScaleY();
 
-				if (SharedLibraryLoader.os == Os.MacOsX) {
+				if (SharedLibraryLoader.isMac) {
 					EventQueue.invokeLater(new Runnable() {
 						public void run () {
 							create();
