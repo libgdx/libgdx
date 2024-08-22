@@ -611,7 +611,7 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 			return Input.Keys.UNKNOWN;
 		}
 	}
-	public class Lwjgl3KeyNameMapper extends Keys.KeyNameMapper {
+	public static class Lwjgl3KeyNameMapper extends Keys.KeyNameMapper {
 
 		@Override
 		public String getKeyName (int keycode) {
