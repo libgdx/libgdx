@@ -86,6 +86,7 @@ public interface Input {
 		public static final int B = 30;
 		public static final int BACK = 4;
 		public static final int BACKSLASH = 73;
+		public static final int INTL_BACKSLASH = 244;	// on ISO keyboard
 		public static final int C = 31;
 		public static final int CALL = 5;
 		public static final int CAMERA = 27;
@@ -437,6 +438,7 @@ public interface Input {
 			case RIGHT_BRACKET:
 				return "]";
 			case BACKSLASH:
+			case INTL_BACKSLASH:
 				return "\\";
 			case SEMICOLON:
 				return ";";
@@ -643,7 +645,7 @@ public interface Input {
 		/** lazily intialized in {@link Keys#valueOf(String)} */
 		private static void initializeKeyNames () {
 			keyNames = new ObjectIntMap<String>();
-			for (int i = 0; i < 256; i++) {
+			for (int i = 255; i >= 0; i--) {
 				String name = toString(i);
 				if (name != null) keyNames.put(name, i);
 			}

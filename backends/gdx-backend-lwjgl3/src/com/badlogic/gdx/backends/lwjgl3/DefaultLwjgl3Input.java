@@ -466,7 +466,7 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 			return Input.Keys.GRAVE;
 		case GLFW.GLFW_KEY_WORLD_1:
 		case GLFW.GLFW_KEY_WORLD_2:
-			return Input.Keys.UNKNOWN;
+			return Keys.INTL_BACKSLASH;
 		case GLFW.GLFW_KEY_ESCAPE:
 			return Input.Keys.ESCAPE;
 		case GLFW.GLFW_KEY_ENTER:
@@ -709,6 +709,8 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 					return GLFW_KEY_Z;
 				case Input.Keys.BACKSLASH:
 					return GLFW_KEY_BACKSLASH;
+				case Input.Keys.INTL_BACKSLASH:
+					return GLFW_KEY_WORLD_2;
 				case Input.Keys.COMMA:
 					return GLFW_KEY_COMMA;
 				case Input.Keys.MINUS:
