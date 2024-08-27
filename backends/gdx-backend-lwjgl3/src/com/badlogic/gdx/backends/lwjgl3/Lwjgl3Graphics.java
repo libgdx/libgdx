@@ -20,7 +20,6 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
