@@ -612,143 +612,48 @@ public class Color {
 		return new Color(this);
 	}
 
-	public Color setToWhite () {
-		return this.set(1, 1, 1, 1);
-	}
+	// @off
+	public Color setToWhite() { return this.set(1, 1, 1, 1); }
+	public Color setToLightGray() { return this.set(0xbfbfbfff); }
+	public Color setToGray() { return this.set(0x7f7f7fff); }
+	public Color setToDarkGray() { return this.set(0x3f3f3fff); }
+	public Color setToBlack() { return this.set(0, 0, 0, 1); }
 
-	public Color setToLightGray () {
-		return this.set(0xbfbfbfff);
-	}
+	public Color setToClear() { return this.set(0, 0, 0, 0); }
+	public Color setToClearWhite() { return this.set(1, 1, 1, 0); }
 
-	public Color setToGray () {
-		return this.set(0x7f7f7fff);
-	}
+	public Color setToBlue() { return this.set(0, 0, 1, 1); }
+	public Color setToNavy() { return this.set(0, 0, 0.5f, 1); }
+	public Color setToRoyal() { return this.set(0x4169e1ff); }
+	public Color setToSlate() { return this.set(0x708090ff); }
+	public Color setToSky() { return this.set(0x87ceebff); }
+	public Color setToCyan() { return this.set(0, 1, 1, 1); }
+	public Color setToTeal() { return this.set(0, 0.5f, 0.5f, 1); }
 
-	public Color setToDarkGray () {
-		return this.set(0x3f3f3fff);
-	}
+	public Color setToGreen() { return this.set(0x00ff00ff); }
+	public Color setToChartreuse() { return this.set(0x7fff00ff); }
+	public Color setToLime() { return this.set(0x32cd32ff); }
+	public Color setToForest() { return this.set(0x228b22ff); }
+	public Color setToOlive() { return this.set(0x6b8e23ff); }
 
-	public Color setToBlack () {
-		return this.set(0, 0, 0, 1);
-	}
+	public Color setToYellow() { return this.set(0xffff00ff); }
+	public Color setToGold() { return this.set(0xffd700ff); }
+	public Color setToGoldenrod() { return this.set(0xdaa520ff); }
+	public Color setToOrange() { return this.set(0xffa500ff); }
 
-	public Color setToClear () {
-		return this.set(0, 0, 0, 0);
-	}
+	public Color setToBrown() { return this.set(0x8b4513ff); }
+	public Color setToTan() { return this.set(0xd2b48cff); }
+	public Color setToFirebrick() { return this.set(0xb22222ff); }
 
-	public Color setToClearWhite () {
-		return this.set(1, 1, 1, 0);
-	}
+	public Color setToRed() { return this.set(0xff0000ff); }
+	public Color setToScarlet() { return this.set(0xff341cff); }
+	public Color setToCoral() { return this.set(0xff7f50ff); }
+	public Color setToSalmon() { return this.set(0xfa8072ff); }
+	public Color setToPink() { return this.set(0xff69b4ff); }
+	public Color setToMagenta() { return this.set(1, 0, 1, 1); }
 
-	public Color setToBlue () {
-		return this.set(0, 0, 1, 1);
-	}
-
-	public Color setToNavy () {
-		return this.set(0, 0, 0.5f, 1);
-	}
-
-	public Color setToRoyal () {
-		return this.set(0x4169e1ff);
-	}
-
-	public Color setToSlate () {
-		return this.set(0x708090ff);
-	}
-
-	public Color setToSky () {
-		return this.set(0x87ceebff);
-	}
-
-	public Color setToCyan () {
-		return this.set(0, 1, 1, 1);
-	}
-
-	public Color setToTeal () {
-		return this.set(0, 0.5f, 0.5f, 1);
-	}
-
-	public Color setToGreen () {
-		return this.set(0x00ff00ff);
-	}
-
-	public Color setToChartreuse () {
-		return this.set(0x7fff00ff);
-	}
-
-	public Color setToLime () {
-		return this.set(0x32cd32ff);
-	}
-
-	public Color setToForest () {
-		return this.set(0x228b22ff);
-	}
-
-	public Color setToOlive () {
-		return this.set(0x6b8e23ff);
-	}
-
-	public Color setToYellow () {
-		return this.set(0xffff00ff);
-	}
-
-	public Color setToGold () {
-		return this.set(0xffd700ff);
-	}
-
-	public Color setToGoldenrod () {
-		return this.set(0xdaa520ff);
-	}
-
-	public Color setToOrange () {
-		return this.set(0xffa500ff);
-	}
-
-	public Color setToBrown () {
-		return this.set(0x8b4513ff);
-	}
-
-	public Color setToTan () {
-		return this.set(0xd2b48cff);
-	}
-
-	public Color setToFirebrick () {
-		return this.set(0xb22222ff);
-	}
-
-	public Color setToRed () {
-		return this.set(0xff0000ff);
-	}
-
-	public Color setToScarlet () {
-		return this.set(0xff341cff);
-	}
-
-	public Color setToCoral () {
-		return this.set(0xff7f50ff);
-	}
-
-	public Color setToSalmon () {
-		return this.set(0xfa8072ff);
-	}
-
-	public Color setToPink () {
-		return this.set(0xff69b4ff);
-	}
-
-	public Color setToMagenta () {
-		return this.set(1, 0, 1, 1);
-	}
-
-	public Color setToPurple () {
-		return this.set(0xa020f0ff);
-	}
-
-	public Color setToViolet () {
-		return this.set(0xee82eeff);
-	}
-
-	public Color setToMaroon () {
-		return this.set(0xb03060ff);
-	}
+	public Color setToPurple() { return this.set(0xa020f0ff); }
+	public Color setToViolet() { return this.set(0xee82eeff); }
+	public Color setToMaroon() { return this.set(0xb03060ff); }
+	// @on
 }
