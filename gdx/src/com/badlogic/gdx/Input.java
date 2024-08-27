@@ -86,7 +86,7 @@ public interface Input {
 		public static final int B = 30;
 		public static final int BACK = 4;
 		public static final int BACKSLASH = 73;
-		public static final int INTL_BACKSLASH = 244;	// on ISO keyboard
+		public static final int INTL_BACKSLASH = 244;
 		public static final int C = 31;
 		public static final int CALL = 5;
 		public static final int CAMERA = 27;
