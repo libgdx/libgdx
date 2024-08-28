@@ -29,16 +29,16 @@ public class AlphaAction extends TemporalAction {
 
 	protected void begin () {
 		if (color == null) color = target.getColor();
-		start = color.a;
+		start = color.getA();
 	}
 
 	protected void update (float percent) {
 		if (percent == 0)
-			color.a = start;
+			color.setA(start);
 		else if (percent == 1)
-			color.a = end;
+			color.setA(end);
 		else
-			color.a = start + (end - start) * percent;
+			color.setA(start + (end - start) * percent);
 	}
 
 	public void reset () {

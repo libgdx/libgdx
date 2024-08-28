@@ -325,7 +325,7 @@ public class TextField extends Widget implements Disableable {
 		float width = getWidth();
 		float height = getHeight();
 
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		batch.setColor(color.getR(), color.getG(), color.getB(), color.getA() * parentAlpha);
 		float bgLeftWidth = 0, bgRightWidth = 0;
 		if (background != null) {
 			background.draw(batch, x, y, width, height);
@@ -345,17 +345,17 @@ public class TextField extends Widget implements Disableable {
 			if ((!focused || disabled) && messageText != null) {
 				BitmapFont messageFont = style.messageFont != null ? style.messageFont : font;
 				if (style.messageFontColor != null) {
-					messageFont.setColor(style.messageFontColor.r, style.messageFontColor.g, style.messageFontColor.b,
-						style.messageFontColor.a * color.a * parentAlpha);
+					messageFont.setColor(style.messageFontColor.getR(), style.messageFontColor.getG(), style.messageFontColor.getB(),
+						style.messageFontColor.getA() * color.getA() * parentAlpha);
 				} else
-					messageFont.setColor(0.7f, 0.7f, 0.7f, color.a * parentAlpha);
+					messageFont.setColor(0.7f, 0.7f, 0.7f, color.getA() * parentAlpha);
 				drawMessageText(batch, messageFont, x + bgLeftWidth, y + textY + yOffset, width - bgLeftWidth - bgRightWidth);
 			}
 		} else {
 			BitmapFontData data = font.getData();
 			boolean markupEnabled = data.markupEnabled;
 			data.markupEnabled = false;
-			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * color.a * parentAlpha);
+			font.setColor(fontColor.getR(), fontColor.getG(), fontColor.getB(), fontColor.getA() * color.getA() * parentAlpha);
 			drawText(batch, font, x + bgLeftWidth, y + textY + yOffset);
 			data.markupEnabled = markupEnabled;
 		}

@@ -1425,8 +1425,8 @@ public class Hiero extends JFrame {
 			int viewHeight = Gdx.graphics.getHeight();
 
 			if (sampleTextRadio.isSelected()) {
-				GL11.glClearColor(renderingBackgroundColor.r, renderingBackgroundColor.g, renderingBackgroundColor.b,
-					renderingBackgroundColor.a);
+				GL11.glClearColor(renderingBackgroundColor.getR(), renderingBackgroundColor.getG(), renderingBackgroundColor.getB(),
+					renderingBackgroundColor.getA());
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			} else {
 				GL11.glClearColor(1, 1, 1, 1);
@@ -1479,8 +1479,8 @@ public class Hiero extends JFrame {
 					Texture texture = ((GlyphPage)pages.get(glyphPageCombo.getSelectedIndex())).getTexture();
 
 					glDisable(GL_TEXTURE_2D);
-					glColor4f(renderingBackgroundColor.r, renderingBackgroundColor.g, renderingBackgroundColor.b,
-						renderingBackgroundColor.a);
+					glColor4f(renderingBackgroundColor.getR(), renderingBackgroundColor.getG(), renderingBackgroundColor.getB(),
+						renderingBackgroundColor.getA());
 					glBegin(GL_QUADS);
 					glVertex3f(0, 0, 0);
 					glVertex3f(0, texture.getHeight(), 0);

@@ -862,8 +862,8 @@ public class DefaultShader extends BaseShader {
 		if (dirLightsLoc >= 0) {
 			for (int i = 0; i < directionalLights.length; i++) {
 				if (dirs == null || i >= dirs.size) {
-					if (lightsSet && directionalLights[i].color.r == 0f && directionalLights[i].color.g == 0f
-						&& directionalLights[i].color.b == 0f) continue;
+					if (lightsSet && directionalLights[i].color.getR() == 0f && directionalLights[i].color.getG() == 0f
+						&& directionalLights[i].color.getB() == 0f) continue;
 					directionalLights[i].color.set(0, 0, 0, 1);
 				} else if (lightsSet && directionalLights[i].equals(dirs.get(i)))
 					continue;
@@ -871,8 +871,8 @@ public class DefaultShader extends BaseShader {
 					directionalLights[i].set(dirs.get(i));
 
 				int idx = dirLightsLoc + i * dirLightsSize;
-				program.setUniformf(idx + dirLightsColorOffset, directionalLights[i].color.r, directionalLights[i].color.g,
-					directionalLights[i].color.b);
+				program.setUniformf(idx + dirLightsColorOffset, directionalLights[i].color.getR(), directionalLights[i].color.getG(),
+					directionalLights[i].color.getB());
 				program.setUniformf(idx + dirLightsDirectionOffset, directionalLights[i].direction.x,
 					directionalLights[i].direction.y, directionalLights[i].direction.z);
 				if (dirLightsSize <= 0) break;
@@ -890,8 +890,8 @@ public class DefaultShader extends BaseShader {
 					pointLights[i].set(points.get(i));
 
 				int idx = pointLightsLoc + i * pointLightsSize;
-				program.setUniformf(idx + pointLightsColorOffset, pointLights[i].color.r * pointLights[i].intensity,
-					pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity);
+				program.setUniformf(idx + pointLightsColorOffset, pointLights[i].color.getR() * pointLights[i].intensity,
+					pointLights[i].color.getG() * pointLights[i].intensity, pointLights[i].color.getB() * pointLights[i].intensity);
 				program.setUniformf(idx + pointLightsPositionOffset, pointLights[i].position.x, pointLights[i].position.y,
 					pointLights[i].position.z);
 				if (pointLightsIntensityOffset >= 0) program.setUniformf(idx + pointLightsIntensityOffset, pointLights[i].intensity);
@@ -910,8 +910,8 @@ public class DefaultShader extends BaseShader {
 					spotLights[i].set(spots.get(i));
 
 				int idx = spotLightsLoc + i * spotLightsSize;
-				program.setUniformf(idx + spotLightsColorOffset, spotLights[i].color.r * spotLights[i].intensity,
-					spotLights[i].color.g * spotLights[i].intensity, spotLights[i].color.b * spotLights[i].intensity);
+				program.setUniformf(idx + spotLightsColorOffset, spotLights[i].color.getR() * spotLights[i].intensity,
+					spotLights[i].color.getG() * spotLights[i].intensity, spotLights[i].color.getB() * spotLights[i].intensity);
 				program.setUniformf(idx + spotLightsPositionOffset, spotLights[i].position);
 				program.setUniformf(idx + spotLightsDirectionOffset, spotLights[i].direction);
 				program.setUniformf(idx + spotLightsCutoffAngleOffset, spotLights[i].cutoffAngle);

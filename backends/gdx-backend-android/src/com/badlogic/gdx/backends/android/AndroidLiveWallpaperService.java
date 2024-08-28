@@ -601,10 +601,10 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			if (Build.VERSION.SDK_INT >= 27 && app instanceof AndroidLiveWallpaper) {
 				AndroidLiveWallpaper liveWallpaper = (AndroidLiveWallpaper)app;
 				Color[] colors = liveWallpaper.wallpaperColors;
-				if (colors != null)
-					return new WallpaperColors(android.graphics.Color.valueOf(colors[0].r, colors[0].g, colors[0].b, colors[0].a),
-						android.graphics.Color.valueOf(colors[1].r, colors[1].g, colors[1].b, colors[1].a),
-						android.graphics.Color.valueOf(colors[2].r, colors[2].g, colors[2].b, colors[2].a));
+				if (colors != null) return new WallpaperColors(
+					android.graphics.Color.valueOf(colors[0].getR(), colors[0].getG(), colors[0].getB(), colors[0].getA()),
+					android.graphics.Color.valueOf(colors[1].getR(), colors[1].getG(), colors[1].getB(), colors[1].getA()),
+					android.graphics.Color.valueOf(colors[2].getR(), colors[2].getG(), colors[2].getB(), colors[2].getA()));
 			}
 			return super.onComputeColors();
 		}

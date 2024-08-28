@@ -181,7 +181,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		shader.setUniformf("u_projectorPos", position.x, position.y, position.z);
 		shader.setUniformMatrix("u_model", model);
 		shader.setUniformMatrix("u_modelNormal", modelNormal);
-		shader.setUniformf("u_color", color.r, color.g, color.b);
+		shader.setUniformf("u_color", color.getR(), color.getG(), color.getB());
 		shader.setUniformi("u_texture", 0);
 		mesh.render(shader, GL20.GL_TRIANGLES);
 	}

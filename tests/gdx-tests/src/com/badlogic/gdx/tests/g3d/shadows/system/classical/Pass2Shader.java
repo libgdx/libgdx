@@ -83,7 +83,7 @@ public class Pass2Shader extends DefaultShader {
 				float intensity = 1;
 				if (l instanceof PointLight) intensity = ((PointLight)l).intensity;
 				if (l instanceof SpotLight) intensity = ((SpotLight)l).intensity;
-				shader.set(inputID, l.color.r * intensity, l.color.g * intensity, l.color.b * intensity);
+				shader.set(inputID, l.color.getR() * intensity, l.color.getG() * intensity, l.color.getB() * intensity);
 			}
 		};
 		public final static Setter lightDirection = new GlobalSetter() {

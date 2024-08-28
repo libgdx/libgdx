@@ -467,8 +467,8 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		window.setVisible(config.initialVisible);
 
 		for (int i = 0; i < 2; i++) {
-			window.getGraphics().gl20.glClearColor(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
-				config.initialBackgroundColor.b, config.initialBackgroundColor.a);
+			window.getGraphics().gl20.glClearColor(config.initialBackgroundColor.getR(), config.initialBackgroundColor.getG(),
+				config.initialBackgroundColor.getB(), config.initialBackgroundColor.getA());
 			window.getGraphics().gl20.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			GLFW.glfwSwapBuffers(windowHandle);
 		}
