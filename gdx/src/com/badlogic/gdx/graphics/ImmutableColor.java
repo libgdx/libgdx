@@ -3,10 +3,10 @@ package com.badlogic.gdx.graphics;
 
 /** A color class that prevents mutation to r/g/b/a values. */
 public class ImmutableColor extends Color {
-	public ImmutableColor() {
+	public ImmutableColor () {
 	}
 
-	public ImmutableColor(int rgba8888) {
+	public ImmutableColor (int rgba8888) {
 		Color temp = new Color(rgba8888);
 		this.r = temp.r;
 		this.g = temp.g;
@@ -14,7 +14,7 @@ public class ImmutableColor extends Color {
 		this.a = temp.a;
 	}
 
-	public ImmutableColor(float r, float g, float b, float a) {
+	public ImmutableColor (float r, float g, float b, float a) {
 		this.r = r;
 		this.g = g;
 		this.b = b;

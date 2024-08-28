@@ -70,11 +70,14 @@ public class Color {
 	public static final Color VIOLET = new ImmutableColor(0xee82eeff);
 	public static final Color MAROON = new ImmutableColor(0xb03060ff);
 
-	/** the red, green, blue and alpha components **/
-	protected float r;
-	protected float g;
-	protected float b;
-	protected float a;
+	/** the red component **/
+	@Deprecated public float r;
+	/** the green component **/
+	@Deprecated public float g;
+	/** the blue component **/
+	@Deprecated public float b;
+	/** the alpha component **/
+	@Deprecated public float a;
 
 	/** Constructs a new Color with all components set to 0. */
 	public Color () {
