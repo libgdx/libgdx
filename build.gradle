@@ -180,8 +180,6 @@ tasks.register('setupExternalNativesDirs') {
 	doLast {
 		file("build").mkdir();
 		file("extensions/gdx-lwjgl3-angle/res").mkdirs();
-		file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
-		file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosarm64").mkdirs();
 	}
 	doNotTrackState("Don't track state")
 }
@@ -194,24 +192,8 @@ tasks.register('fetchAngleNativesZIP', Download) {
 	useETag "all"
 }
 
-tasks.register('fetchGlfwAWT', Download) {
-	dependsOn setupExternalNativesDirs
-	src 'https://raw.githubusercontent.com/badlogic/glfw/master/libglfw.dylib'
-	dest 'extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64/libglfw.dylib'
-	onlyIfModified true
-	useETag "all"
-}
-
-tasks.register('fetchGlfwAWTARM64', Download) {
-	dependsOn setupExternalNativesDirs
-	src 'https://raw.githubusercontent.com/badlogic/glfw/master/libglfwarm64.dylib'
-	dest 'extensions/gdx-lwjgl3-glfw-awt-macos/res/macosarm64/libglfwarm64.dylib'
-	onlyIfModified true
-	useETag "all"
-}
-
 tasks.register('fetchExternalNatives', Copy) {
-	dependsOn fetchAngleNativesZIP, fetchGlfwAWT, fetchGlfwAWTARM64
+	dependsOn fetchAngleNativesZIP
 	from zipTree("build/gdx-angle-natives.zip")
 	into "./extensions/gdx-lwjgl3-angle/res"
 	doNotTrackState("Don't track state")
