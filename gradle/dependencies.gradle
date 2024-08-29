@@ -23,8 +23,8 @@ ext {
 
 versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 7
 versions.javaLwjgl3 = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
-versions.robovm = "2.3.20"
-versions.gwt = "2.10.0"
+versions.robovm = "2.3.21"
+versions.gwt = "2.11.0"
 versions.gwtPlugin = "1.1.29"
 versions.jsinteropAnnotations = "2.0.2"
 versions.gretty = "3.1.0"
@@ -128,12 +128,12 @@ libraries.compileOnly.android = [
 ]
 
 libraries.gwt = [
-        "com.google.gwt:gwt-user:${versions.gwt}",
+        "org.gwtproject:gwt-user:${versions.gwt}",
         "com.google.jsinterop:jsinterop-annotations:${versions.jsinteropAnnotations}:sources"
 ]
 
 libraries.compileOnly.gwt = [
-        "com.google.gwt:gwt-dev:${versions.gwt}"
+        "org.gwtproject:gwt-dev:${versions.gwt}"
 ]
 
 libraries.junit = [

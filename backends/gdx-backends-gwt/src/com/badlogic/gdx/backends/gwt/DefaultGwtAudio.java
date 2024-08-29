@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.gwt;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
@@ -35,22 +36,24 @@ public class DefaultGwtAudio implements GwtAudio {
 	public DefaultGwtAudio () {
 		webAudioAPIManager = new WebAudioAPIManager();
 
-		getUserMedia();
-		Timer observer = new Timer() {
-			@Override
-			public void run () {
-				fetchAvailableOutputDevices(new DeviceListener() {
-					@Override
-					public void onDevicesChanged (String[] ids, String[] labels) {
-						outputDeviceLabelsIds.clear();
-						for (int i = 0; i < ids.length; i++) {
-							outputDeviceLabelsIds.put(labels[i], ids[i]);
+		if (((GwtApplication)Gdx.app).config.fetchAvailableOutputDevices) {
+			getUserMedia();
+			Timer observer = new Timer() {
+				@Override
+				public void run () {
+					fetchAvailableOutputDevices(new DeviceListener() {
+						@Override
+						public void onDevicesChanged (String[] ids, String[] labels) {
+							outputDeviceLabelsIds.clear();
+							for (int i = 0; i < ids.length; i++) {
+								outputDeviceLabelsIds.put(labels[i], ids[i]);
+							}
 						}
-					}
-				});
-			}
-		};
-		observer.scheduleRepeating(1000);
+					});
+				}
+			};
+			observer.scheduleRepeating(1000);
+		}
 	}
 
 	@Override

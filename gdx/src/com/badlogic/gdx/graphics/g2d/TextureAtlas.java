@@ -380,6 +380,7 @@ public class TextureAtlas implements Disposable {
 						line = reader.readLine();
 					} else if (page == null) {
 						page = new Page();
+						page.name = line;
 						page.textureFile = imagesDir.child(line);
 						while (true) {
 							if (readEntry(entry, line = reader.readLine()) == 0) break;
@@ -479,6 +480,7 @@ public class TextureAtlas implements Disposable {
 		}
 
 		static public class Page {
+			public String name;
 			/** May be null if this page isn't associated with a file. In that case, {@link #texture} must be set. */
 			public @Null FileHandle textureFile;
 			/** May be null if the texture is not yet loaded. */

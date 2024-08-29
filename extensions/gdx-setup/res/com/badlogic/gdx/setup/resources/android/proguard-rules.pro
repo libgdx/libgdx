@@ -23,6 +23,11 @@
 
 -dontwarn com.badlogic.gdx.backends.android.AndroidFragmentApplication
 
+# Required if using libGDX Scene2d Skins (JSON Skin descriptors)
+-keep public class com.badlogic.gdx.scenes.scene2d.** { *; }
+-keep public class com.badlogic.gdx.graphics.g2d.BitmapFont { *; }
+-keep public class com.badlogic.gdx.graphics.Color { *; }
+
 # Required if using Gdx-Controllers extension
 -keep class com.badlogic.gdx.controllers.android.AndroidControllers
 

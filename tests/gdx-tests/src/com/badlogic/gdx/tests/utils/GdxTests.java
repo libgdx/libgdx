@@ -79,6 +79,7 @@ import com.badlogic.gdx.tests.g3d.TangentialAccelerationTest;
 import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.g3d.TextureRegion3DTest;
 import com.badlogic.gdx.tests.g3d.utils.DefaultTextureBinderTest;
+import com.badlogic.gdx.tests.gles2.GlTexImage2D;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
@@ -182,6 +183,7 @@ public class GdxTests {
 		GL32DebugControlTest.class,
 		GL32MultipleRenderTargetsBlendingTest.class,
 		GL32OffsetElementsTest.class,
+		GlTexImage2D.class,
 		GLProfilerErrorTest.class,
 		GroupCullingTest.class,
 		GroupFadeTest.class,
@@ -276,6 +278,7 @@ public class GdxTests {
 		SortedSpriteTest.class,
 		SoundTest.class,
 		SpriteBatchRotationTest.class,
+		SpriteBatchPerformanceTest.class,
 		SpriteBatchShaderTest.class,
 		SpriteBatchTest.class,
 		SpriteCacheOffsetTest.class,

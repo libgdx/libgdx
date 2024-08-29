@@ -60,6 +60,7 @@ public final class Colors {
 	public static void reset () {
 		map.clear();
 		map.put("CLEAR", Color.CLEAR);
+		map.put("CLEAR_WHITE", Color.CLEAR_WHITE);
 		map.put("BLACK", Color.BLACK);
 
 		map.put("WHITE", Color.WHITE);

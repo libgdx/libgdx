@@ -1,14 +1,56 @@
 [1.12.2-SNAPSHOT]
-- [BREAKING CHANGE] GWT: Updated to 2.10.0. `com.google.jsinterop:jsinterop-annotations:2.0.2:sources` must be added as a dependency to your html project dependencies.
+- [BREAKING CHANGE] GWT: Updated to 2.11.0. `com.google.jsinterop:jsinterop-annotations:2.0.2:sources` must be added as a dependency to your html project dependencies.
 - [BREAKING CHANGE] Android: Minimum API level is now level 19 (Android 4.4)
+- [BREAKING CHANGE] iOS: Increased min supported iOS version to 12.0. Update your Info.plist file if necessary.
+- [BREAKING CHANGE] Android, iOS: Exceptions occurring in Runnable tasks scheduled through Gdx.app.postRunnable() are no longer swallowed and will crash the app (add a protection if required).
+- Updated: Update to jnigen 2.5.2
+- iOS: Update to MobiVM 2.3.21
+- iOS: The iOS backend now implements AudioDevice. It can be configured through IOSApplicationConfiguration with audioDeviceBufferSize/audioDeviceBufferCount
 - Fixed GlyphLayout for fixed width glyph offsets at the start and end of lines.
 - Fixed scene2d.ui layout for fractional positions and sizes.
+- LWJGL3: Added pauseWhenMinimized and pauseWhenLostFocus flags to Lwjgl3ApplicationConfiguration.
 - libGDX is now built using Java 17 due to Gradle 8 requirements.
 - New GDX Setup projects now use Gradle 8.4 and AGP Plugin 8.1.2 which require at least Java 17.
 - Fixed Timer#stop, remember time spent stopped and delay tasks when started again. #7281
 - Android: Add configuration option to render under the cutout if available on the device.
 - Fix: Keep SelectBox popup from extending past right edge of stage.
 - Added Framebuffer multisample support (see GL31FrameBufferMultisampleTest.java for basic usage)
+- Fix: Fonts generated with gdx-freetype no longer bleed when drawn with a shadow
+- Fixed Timer tasks being run after cancellation.
+- Optimization of SpriteBatch in GL30 default modes, as indices do not need to be updated
+- Desktop: Added support for 8/32/64-bit PCM and MP3 WAVs
+- Desktop: Improved support for surround sound audio files (#6792)
+- Cache packed color on sprite to improve performance
+- Improve JsonReader, add JsonSkimmer, JsonString
+- Add proper glTexImage2D support on GWT
+- Expose the color variables of Box2DDebugRenderer
+- Add Color#set(Color rgb, float a)
+- Prevent loss of precision in OrthographicCamera#update
+- Fix offsets in ConvexHull while being unsorted
+- Small particle emitter improvements
+- Fix : RenderBuffer leak in GLFrameBuffer
+- LWJGL 3: Remove unnecessary window.makeCurrent() calls to improve performance (#7362)
+- Fix: DragListener only listens to the correct touch up events
+- Fix incorrect glyph page index in FreeTypeFontGenerator
+- Added TextureAtlas.TextureAtlasData.Page#name.
+- iOS: Improve preferred FPS setting logic and documentation on iOS backend
+- Fixed TextField breaking if the font has markup enabled.
+- Only allow scrolling of a scroll pane if it has scroll focus
+- iOS: Adding RoboVM AudioDevice implementation
+- Add new Color#CLEAR_WHITE
+- Fixed ScrollPane#scrollTo setting scrollX when there's a width
+- Screens now extend the Disposable interface
+- Added antialiasing flag to the ScreenUtils.
+- Fix Intersector.intersectPolygons() corner case
+- LWJGL 3: Fix the delta time not changing when resizing the window
+- GWT: Allow switching the audio device; this has to be enabled via GwtApplicationConfiguration#fetchAvailableOutputDevices
+- Add API to get user inout with native text fields (#7004)
+- Fix issue with the 'request still pending' check on NetJavaImpl
+- Added possibility to reset a particle effect without starting it
+- Android & iOS: Use empty Audio implementations on Android and iOS when audio is disabled
+- Adds status detection for an httpRequest
+- Fix ANGLE GLES renderer on dekstop (#7274)
+- Architecture support: Support for Linux RISC-V has been added. The gdx-xxx-natives-desktop.jar files now also contain native libraries for this architecture.
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.

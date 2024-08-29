@@ -86,7 +86,7 @@ import com.badlogic.gdx.utils.Clipboard;
  * <p>
  * The <code>Application</code> also has a set of methods that you can use to query specific information such as the operating
  * system the application is currently running on and so forth. This allows you to have operating system dependent code paths. It
- * is however not recommended to use this facilities.
+ * is however not recommended to use these facilities.
  * </p>
  * 
  * <p>

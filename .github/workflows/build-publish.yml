@@ -8,6 +8,9 @@ on:
   release:
     types: [ published ]
 
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
 jobs:
 
   natives-ios:
@@ -32,7 +35,7 @@ jobs:
           # See https://github.com/actions/virtual-environments/issues/2557
           sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
           sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
-          sudo mv /Applications/Xcode_13.2.app /Applications/Xcode.app
+          sudo mv /Applications/Xcode_14.3.1.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
           ./gradlew jniGen jnigenBuildIOS
@@ -71,7 +74,7 @@ jobs:
           # See https://github.com/actions/virtual-environments/issues/2557
           sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
           sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
-          sudo mv /Applications/Xcode_13.2.app /Applications/Xcode.app
+          sudo mv /Applications/Xcode_14.3.1.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
           ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64
@@ -208,9 +211,15 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
+      - name: Download NDK
+        run: |
+          wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -O android-ndk.zip
+          echo "769ee342ea75f80619d985c2da990c48b3d8eaf45f48783a2d48870d04b46108  android-ndk.zip" | sha256sum --check
+          unzip android-ndk.zip
+          echo "NDK_HOME=$(pwd)/android-ndk-r25c" >> $GITHUB_ENV
+
       - name: Build Android natives
         run: |
-          export NDK_HOME=$ANDROID_NDK_HOME
           ./gradlew jniGen jnigenBuildAndroid
 
       - name: Pack artifacts
