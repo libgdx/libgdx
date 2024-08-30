@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.utils.Os;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
@@ -308,7 +309,7 @@ public class Lwjgl3Window implements Disposable {
 	}
 
 	static void setIcon (long windowHandle, String[] imagePaths, Files.FileType imageFileType) {
-		if (SharedLibraryLoader.isMac) return;
+		if (SharedLibraryLoader.os == Os.MacOsX) return;
 
 		Pixmap[] pixmaps = new Pixmap[imagePaths.length];
 		for (int i = 0; i < imagePaths.length; i++) {
@@ -323,7 +324,7 @@ public class Lwjgl3Window implements Disposable {
 	}
 
 	static void setIcon (long windowHandle, Pixmap[] images) {
-		if (SharedLibraryLoader.isMac) return;
+		if (SharedLibraryLoader.os == Os.MacOsX) return;
 
 		GLFWImage.Buffer buffer = GLFWImage.malloc(images.length);
 		Pixmap[] tmpPixmaps = new Pixmap[images.length];

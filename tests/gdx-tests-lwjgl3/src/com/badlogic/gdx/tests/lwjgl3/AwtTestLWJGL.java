@@ -9,6 +9,7 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import com.badlogic.gdx.utils.Os;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
@@ -57,7 +58,7 @@ public class AwtTestLWJGL {
 			}
 		});
 
-		if (SharedLibraryLoader.isMac) {
+		if (SharedLibraryLoader.os == Os.MacOsX) {
 			Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
 		}
 

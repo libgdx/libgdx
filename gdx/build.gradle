@@ -109,6 +109,7 @@ jnigen {
 	add(Linux, x64)
 	add(Linux, x32, ARM)
 	add(Linux, x64, ARM)
+	add(Linux, x64, RISCV)
 	add(Android) {
 		linkerFlags += " -llog"
 	}
