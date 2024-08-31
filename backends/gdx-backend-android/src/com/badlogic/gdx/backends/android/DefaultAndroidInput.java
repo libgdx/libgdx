@@ -150,7 +150,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private final AndroidApplicationConfiguration config;
 	protected final Orientation nativeOrientation;
 	private long currentEventTimeStamp = 0;
-	private final PredictiveBackHandler predictiveBackHandler = Build.VERSION.SDK_INT >= 33 ? new PredictiveBackHandler() : null;
+	private PredictiveBackHandler predictiveBackHandler;
 
 	private SensorEventListener accelerometerListener;
 	private SensorEventListener gyroscopeListener;
@@ -185,6 +185,10 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
 		haptics = new AndroidHaptics(context);
+
+		if (Build.VERSION.SDK_INT >= 33) {
+			this.predictiveBackHandler = new PredictiveBackHandler();
+		}
 
 		int rotation = getRotation();
 		DisplayMode mode = app.getGraphics().getDisplayMode();
