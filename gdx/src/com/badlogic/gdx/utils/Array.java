@@ -35,8 +35,8 @@ public class Array<T> implements Iterable<T> {
 	public int size;
 	public boolean ordered;
 
-	private ArrayIterable iterable;
-	private Predicate.PredicateIterable<T> predicateIterable;
+	private transient ArrayIterable<T> iterable;
+	private transient Predicate.PredicateIterable<T> predicateIterable;
 
 	/** Creates an ordered array with a capacity of 16. */
 	public Array () {
@@ -484,8 +484,8 @@ public class Array<T> implements Iterable<T> {
 	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
 	 * Use the {@link ArrayIterator} constructor for nested or multithreaded iteration. */
 	public ArrayIterator<T> iterator () {
-		if (Collections.allocateIterators) return new ArrayIterator(this, true);
-		if (iterable == null) iterable = new ArrayIterable(this);
+		if (Collections.allocateIterators) return new ArrayIterator<T>(this, true);
+		if (iterable == null) iterable = new ArrayIterable<T>(this);
 		return iterable.iterator();
 	}
 
@@ -667,7 +667,7 @@ public class Array<T> implements Iterable<T> {
 	static public class ArrayIterable<T> implements Iterable<T> {
 		private final Array<T> array;
 		private final boolean allowRemove;
-		private ArrayIterator iterator1, iterator2;
+		private transient ArrayIterator<T> iterator1, iterator2;
 
 // java.io.StringWriter lastAcquire = new java.io.StringWriter();
 
@@ -682,12 +682,12 @@ public class Array<T> implements Iterable<T> {
 
 		/** @see Collections#allocateIterators */
 		public ArrayIterator<T> iterator () {
-			if (Collections.allocateIterators) return new ArrayIterator(array, allowRemove);
+			if (Collections.allocateIterators) return new ArrayIterator<T>(array, allowRemove);
 // lastAcquire.getBuffer().setLength(0);
 // new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
 			if (iterator1 == null) {
-				iterator1 = new ArrayIterator(array, allowRemove);
-				iterator2 = new ArrayIterator(array, allowRemove);
+				iterator1 = new ArrayIterator<T>(array, allowRemove);
+				iterator2 = new ArrayIterator<T>(array, allowRemove);
 // iterator1.iterable = this;
 // iterator2.iterable = this;
 			}

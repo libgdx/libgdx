@@ -50,6 +50,7 @@ public class Lwjgl3Window implements Disposable {
 	private final IntBuffer tmpBuffer2;
 	boolean iconified = false;
 	boolean focused = false;
+	boolean asyncResized = false;
 	private boolean requestRendering = false;
 
 	private final GLFWWindowFocusCallback focusCallback = new GLFWWindowFocusCallback() {
@@ -409,6 +410,18 @@ public class Lwjgl3Window implements Disposable {
 		synchronized (this) {
 			shouldRender |= requestRendering && !iconified;
 			requestRendering = false;
+		}
+
+		// In case glfw_async is used, we need to resize outside the GLFW
+		if (asyncResized) {
+			asyncResized = false;
+			graphics.updateFramebufferInfo();
+			graphics.gl20.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+			listener.resize(graphics.getWidth(), graphics.getHeight());
+			graphics.update();
+			listener.render();
+			GLFW.glfwSwapBuffers(windowHandle);
+			return true;
 		}
 
 		if (shouldRender) {

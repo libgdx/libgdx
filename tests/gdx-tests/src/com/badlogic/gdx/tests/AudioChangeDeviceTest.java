@@ -2,6 +2,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,6 +19,7 @@ public class AudioChangeDeviceTest extends GdxTest {
 
 	private Stage stage;
 	private Skin skin;
+	private Sound sound;
 
 	@Override
 	public void create () {
@@ -28,7 +30,8 @@ public class AudioChangeDeviceTest extends GdxTest {
 		List<String> tmp = new ArrayList<>(Arrays.asList(Gdx.audio.getAvailableOutputDevices()));
 		tmp.add(0, "Auto");
 		selectBox.setItems(tmp.toArray(new String[0]));
-		Gdx.audio.newSound(Gdx.files.internal("data").child("bubblepop-stereo-left-only.wav")).loop();
+		sound = Gdx.audio.newSound(Gdx.files.internal("data").child("bubblepop-stereo-left-only.wav"));
+		sound.loop();
 		selectBox.addListener(new ChangeListener() {
 
 			@Override
@@ -62,5 +65,7 @@ public class AudioChangeDeviceTest extends GdxTest {
 	public void dispose () {
 		stage.dispose();
 		skin.dispose();
+		sound.stop();
+		sound.dispose();
 	}
 }
