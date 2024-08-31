@@ -1437,13 +1437,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	@Override
 	public void setCatchKey (int keycode, boolean catchKey) {
 		super.setCatchKey(keycode, catchKey);
-		if (keycode == Keys.BACK) {
-			if (predictiveBackHandler != null) {
-				if (catchKey)
-					predictiveBackHandler.register();
-				else
-					predictiveBackHandler.unregister();
-			}
+		if (keycode == Keys.BACK && predictiveBackHandler != null) {
+			if (catchKey)
+				predictiveBackHandler.register();
+			else
+				predictiveBackHandler.unregister();
 		}
 	}
 
