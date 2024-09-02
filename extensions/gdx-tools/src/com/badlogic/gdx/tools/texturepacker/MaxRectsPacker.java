@@ -25,6 +25,7 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker.ProgressListener;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Sort;
 
 /** Packs pages of images using the maximal rectangles bin packing algorithm by Jukka Jylänki. A brute force binary search is used
@@ -298,8 +299,9 @@ public class MaxRectsPacker implements Packer {
 	 * @author Nathan Sweet */
 	class MaxRects {
 		private int binWidth, binHeight;
-		private final Array<Rect> usedRectangles = new Array();
-		private final Array<Rect> freeRectangles = new Array();
+		private final Array<Rect> usedRectangles = new Array<>();
+		private final Array<Rect> freeRectangles = new Array<>();
+		private final Array<Rect> rectanglesToCheckWhenPruning = new Array<>();
 
 		public void init (int width, int height) {
 			binWidth = width;
@@ -696,6 +698,7 @@ public class MaxRectsPacker implements Packer {
 					Rect newNode = new Rect(freeNode);
 					newNode.height = usedNode.y - newNode.y;
 					freeRectangles.add(newNode);
+					rectanglesToCheckWhenPruning.add(newNode);
 				}
 
 				// New node at the bottom side of the used node.
@@ -704,6 +707,7 @@ public class MaxRectsPacker implements Packer {
 					newNode.y = usedNode.y + usedNode.height;
 					newNode.height = freeNode.y + freeNode.height - (usedNode.y + usedNode.height);
 					freeRectangles.add(newNode);
+					rectanglesToCheckWhenPruning.add(newNode);
 				}
 			}
 
@@ -713,6 +717,7 @@ public class MaxRectsPacker implements Packer {
 					Rect newNode = new Rect(freeNode);
 					newNode.width = usedNode.x - newNode.x;
 					freeRectangles.add(newNode);
+					rectanglesToCheckWhenPruning.add(newNode);
 				}
 
 				// New node at the right side of the used node.
@@ -721,6 +726,7 @@ public class MaxRectsPacker implements Packer {
 					newNode.x = usedNode.x + usedNode.width;
 					newNode.width = freeNode.x + freeNode.width - (usedNode.x + usedNode.width);
 					freeRectangles.add(newNode);
+					rectanglesToCheckWhenPruning.add(newNode);
 				}
 			}
 
@@ -728,24 +734,34 @@ public class MaxRectsPacker implements Packer {
 		}
 
 		private void pruneFreeList () {
-			// Go through each pair and remove any rectangle that is redundant.
-			Array<Rect> freeRectangles = this.freeRectangles;
-			for (int i = 0, n = freeRectangles.size; i < n; i++)
-				for (int j = i + 1; j < n; ++j) {
-					Rect rect1 = freeRectangles.get(i);
-					Rect rect2 = freeRectangles.get(j);
-					if (isContainedIn(rect1, rect2)) {
-						freeRectangles.removeIndex(i);
-						--i;
-						--n;
-						break;
+			IntSet freeRectanglesToRemove = new IntSet();
+
+			for (Rect checkingRectangle : rectanglesToCheckWhenPruning) {
+				for (int i = 0; i < freeRectangles.size; i++) {
+					Rect rect = freeRectangles.get(i);
+					if (rect == checkingRectangle) {
+						continue;
 					}
-					if (isContainedIn(rect2, rect1)) {
-						freeRectangles.removeIndex(j);
-						--j;
-						--n;
+					if (isContainedIn(rect, checkingRectangle)) {
+						freeRectanglesToRemove.add(i);
 					}
 				}
+			}
+
+			rectanglesToCheckWhenPruning.clear();
+
+			if (freeRectanglesToRemove.isEmpty()) {
+				return;
+			}
+
+			Array<Rect> temporaryFreeRectangles = new Array<>(freeRectangles);
+
+			freeRectangles.clear();
+			for (int i = 0; i < temporaryFreeRectangles.size; i++) {
+				if (!freeRectanglesToRemove.contains(i)) {
+					freeRectangles.add(temporaryFreeRectangles.get(i));
+				}
+			}
 		}
 
 		private boolean isContainedIn (Rect a, Rect b) {
