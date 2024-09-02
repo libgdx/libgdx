@@ -130,7 +130,7 @@ public class MaxRectsPacker implements Packer {
 					throw new RuntimeException("Image does not fit within max page width " + settings.maxWidth + paddingMessage + ": "
 						+ rect.name + " " + width + "x" + height);
 				}
-				if (height > maxHeight && width > maxHeight) {
+				if (height > maxHeight) {
 					String paddingMessage = edgePadY ? (" and Y edge padding " + paddingY + "*2") : "";
 					throw new RuntimeException("Image does not fit within max page height " + settings.maxHeight + paddingMessage
 						+ ": " + rect.name + " " + width + "x" + height);
