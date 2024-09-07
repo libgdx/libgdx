@@ -1,21 +1,21 @@
 name: Fix formatting
 
 on: [push]
-permissions: 
+permissions:
   contents: write
 
 jobs:
   fix-formatting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
       - name: Generate MobiVM MetalANGLE backend
         run: |
           ./gradlew :backends:gdx-backend-robovm-metalangle:generate 
@@ -36,7 +36,7 @@ jobs:
           git commit -m "Apply formatter" -a
         continue-on-error: true
       - name: Push formatting changes
-        uses: ad-m/github-push-action@8407731efefc0d8f72af254c74276b7a90be36e1
+        uses: ad-m/github-push-action@d91a481090679876dfc4178fef17f286781251df
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
