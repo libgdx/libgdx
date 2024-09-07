@@ -20,6 +20,8 @@
 - Optimization of SpriteBatch in GL30 default modes, as indices do not need to be updated
 - Desktop: Added support for 8/32/64-bit PCM and MP3 WAVs
 - Desktop: Improved support for surround sound audio files (#6792)
+- Android: Added support for predictive back gesture (requires android:enableOnBackInvokedCallback="true" in manifest)
+- API Removal: Removed deprecated back and menu key methods. Use `setCatchKey` and `isCatchKey` instead.
 - Cache packed color on sprite to improve performance
 - Improve JsonReader, add JsonSkimmer, JsonString
 - Add proper glTexImage2D support on GWT
