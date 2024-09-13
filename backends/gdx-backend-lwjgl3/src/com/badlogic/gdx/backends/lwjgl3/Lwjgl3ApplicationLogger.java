@@ -18,11 +18,9 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import com.badlogic.gdx.ApplicationLogger;
 
-/**
- * Default implementation of {@link ApplicationLogger} for Lwjgl3. The log- and debug-methods will appear in the correct order
- * as they both use System.out. The error-method uses System.err. The error logs may not appear in the correct order in the logs
- * as System.out and System.err are flushed independently.
- */
+/** Default implementation of {@link ApplicationLogger} for Lwjgl3. The log- and debug-methods will appear in the correct order as
+ * they both use System.out. The error-method uses System.err. The error logs may not appear in the correct order in the logs as
+ * System.out and System.err are flushed independently. */
 public class Lwjgl3ApplicationLogger implements ApplicationLogger {
 
 	@Override

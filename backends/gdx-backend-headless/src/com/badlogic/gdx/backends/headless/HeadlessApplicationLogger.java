@@ -18,11 +18,9 @@ package com.badlogic.gdx.backends.headless;
 
 import com.badlogic.gdx.ApplicationLogger;
 
-/**
- * Default implementation of {@link ApplicationLogger} for headless. The log- and debug-methods will appear in the correct order
+/** Default implementation of {@link ApplicationLogger} for headless. The log- and debug-methods will appear in the correct order
  * as they both use System.out. The error-method uses System.err. The error logs may not appear in the correct order in the logs
- * as System.out and System.err are flushed independently.
- */
+ * as System.out and System.err are flushed independently. */
 public class HeadlessApplicationLogger implements ApplicationLogger {
 
 	@Override
