@@ -86,6 +86,7 @@ import com.badlogic.gdx.tests.TextAreaTest;
 import com.badlogic.gdx.tests.TextAreaTest2;
 import com.badlogic.gdx.tests.TextAreaTest3;
 import com.badlogic.gdx.tests.TextButtonTest;
+import com.badlogic.gdx.tests.TextInputDialogTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
 import com.badlogic.gdx.tests.TiledMapObjectLoadingTest;
@@ -555,6 +556,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new TextButtonTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TextInputDialogTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
