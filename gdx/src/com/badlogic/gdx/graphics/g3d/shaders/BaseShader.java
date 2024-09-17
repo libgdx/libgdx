@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,12 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.shaders;
 
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GLTexture;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.Attributes;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
@@ -117,6 +112,7 @@ public abstract class BaseShader implements Shader {
 	private InstanceData currentInstances;
 
 	/** Register an uniform which might be used by this shader. Only possible prior to the call to init().
+	 *
 	 * @return The ID of the uniform to use in this shader. */
 	public int register (final String alias, final Validator validator, final Setter setter) {
 		if (locations != null) throw new GdxRuntimeException("Cannot register an uniform after initialization");
@@ -201,9 +197,8 @@ public abstract class BaseShader implements Shader {
 				final int location = program.getAttributeLocation(attr.alias);
 				if (location >= 0) attributes.put(attr.getKey(), location);
 			}
-			final VertexAttributes iattrs = renderable.instances != null ?
-					renderable.instances.getAttributes() :
-					renderable.meshPart.mesh.getInstancedAttributes();
+			final VertexAttributes iattrs = renderable.instances != null ? renderable.instances.getAttributes()
+				: renderable.meshPart.mesh.getInstancedAttributes();
 			if (iattrs != null) {
 				final int ic = iattrs.size();
 				for (int i = 0; i < ic; i++) {
@@ -266,37 +261,45 @@ public abstract class BaseShader implements Shader {
 		for (int u, i = 0; i < localUniforms.size; ++i)
 			if (setters.get(u = localUniforms.get(i)) != null) setters.get(u).set(this, u, renderable, combinedAttributes);
 
-		final InstanceData instances = renderable.instances != null ? renderable.instances : renderable.meshPart.mesh.instances;
-		if (currentMesh != renderable.meshPart.mesh) { // || renderable.instances != null) {
-			if (currentMesh != null) currentMesh.unbind(program, tempArray.items, null, null);
-			currentMesh = renderable.meshPart.mesh;
-			// currentInstances = instances;
-			// final VertexAttributes insAttrs = instances != null ? instances.getAttributes() : null;
-			currentMesh.bind(program, getAttributeLocations(renderable.meshPart.mesh.getVertexAttributes()),
-					null, null);
-		}
-
-		if (currentInstances != instances) {
-			if (currentInstances != null)
+		if (renderable.instances == null) {
+			if (currentMesh != renderable.meshPart.mesh) {
+				if (currentMesh != null) currentMesh.unbind(program, tempArray.items, tempArray2.items);
+				currentMesh = renderable.meshPart.mesh;
+				currentMesh.bind(program, getAttributeLocations(renderable.meshPart.mesh.getVertexAttributes()),
+					getInstancedAttributeLocations(renderable.meshPart.mesh.getInstancedAttributes()));
+			}
+			if (currentInstances != null) {
 				currentInstances.unbind(program, tempArray2.items);
-			currentInstances = instances;
-			if (instances != null)
-				instances.bind(program, getInstancedAttributeLocations(instances.getAttributes()));
-		}
+				currentInstances = null;
+			}
+			renderable.meshPart.render(program, false);
+		} else {
+			if (currentMesh != renderable.meshPart.mesh) {
+				if (currentMesh != null) currentMesh.unbind(program, tempArray.items, null, null);
+				currentMesh = renderable.meshPart.mesh;
+				currentMesh.bind(program, getAttributeLocations(renderable.meshPart.mesh.getVertexAttributes()), null, null);
+			}
 
-		renderable.meshPart.render(program, false, instances);
+			if (currentInstances != renderable.instances) {
+				if (currentInstances != null) currentInstances.unbind(program, tempArray2.items);
+				currentInstances = renderable.instances;
+				renderable.instances.bind(program, getInstancedAttributeLocations(renderable.instances.getAttributes()));
+			}
+
+			renderable.meshPart.render(program, false, renderable.instances);
+		}
 	}
 
 	@Override
 	public void end () {
-		if (currentMesh != null) {
-			currentMesh.unbind(program, tempArray.items, null, null);
-			currentMesh = null;
-		}
-		if (currentInstances != null) {
+		if (currentInstances == null) {
+			if (currentMesh != null) currentMesh.unbind(program, tempArray.items, tempArray2.items);
+		} else {
+			if (currentMesh != null) currentMesh.unbind(program, tempArray.items, null, null);
 			currentInstances.unbind(program, tempArray2.items);
-			currentInstances = null;
 		}
+		currentMesh = null;
+		currentInstances = null;
 	}
 
 	@Override
