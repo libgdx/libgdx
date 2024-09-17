@@ -293,13 +293,18 @@ public abstract class BaseShader implements Shader {
 	@Override
 	public void end () {
 		if (currentInstances == null) {
-			if (currentMesh != null) currentMesh.unbind(program, tempArray.items, tempArray2.items);
+			if (currentMesh != null) {
+				currentMesh.unbind(program, tempArray.items, tempArray2.items);
+				currentMesh = null;
+			}
 		} else {
-			if (currentMesh != null) currentMesh.unbind(program, tempArray.items, null, null);
+			if (currentMesh != null) {
+				currentMesh.unbind(program, tempArray.items, null, null);
+				currentMesh = null;
+			}
 			currentInstances.unbind(program, tempArray2.items);
+			currentInstances = null;
 		}
-		currentMesh = null;
-		currentInstances = null;
 	}
 
 	@Override
