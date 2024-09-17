@@ -93,8 +93,8 @@ public class Renderable {
 	public Shader shader;
 	/** User definable value, may be null. */
 	public Object userData;
-	/** Instanced rendering data, may be null.
-	 * Used to implement instanced rendering (rendering multiple instances with one draw call). */
+	/** Instanced rendering data, may be null. Used to implement instanced rendering (rendering multiple instances with one draw
+	 * call). */
 	public InstanceData instances;
 
 	public Renderable set (Renderable renderable) {
