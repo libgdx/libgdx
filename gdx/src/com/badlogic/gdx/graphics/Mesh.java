@@ -81,7 +81,7 @@ public class Mesh implements Disposable {
 	boolean autoBind = true;
 	final boolean isVertexArray;
 
-	public InstanceData instances;
+	InstanceData instances;
 	boolean isInstanced = false;
 
 	protected Mesh (VertexData vertices, IndexData indices, boolean isVertexArray) {
