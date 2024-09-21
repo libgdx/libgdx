@@ -59,7 +59,7 @@ public class TextureLoaderPanel extends EditorPanel {
 						editor.setAtlas(atlas);
 					} else {
 						JOptionPane.showMessageDialog(editor,
-								"Error loading atlas file. Make sure you must provide an atlas file, not an image file.");
+							"Error loading atlas file. Make sure you must provide an atlas file, not an image file.");
 					}
 				}
 			}
