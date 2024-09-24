@@ -186,7 +186,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 		haptics = new AndroidHaptics(context);
 
-		if (Build.VERSION.SDK_INT >= 33) {
+		if (Build.VERSION.SDK_INT >= 33 && context instanceof Activity) {
 			this.predictiveBackHandler = new PredictiveBackHandler();
 		}
 
@@ -1452,7 +1452,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	@TargetApi(33)
 	private class PredictiveBackHandler {
 
-		private final OnBackInvokedDispatcher dispatcher = ((Activity)app).getOnBackInvokedDispatcher();
+		private final OnBackInvokedDispatcher dispatcher = ((Activity)context).getOnBackInvokedDispatcher();
 		private final OnBackInvokedCallback callback = new OnBackInvokedCallback() {
 			@Override
 			public void onBackInvoked () {
