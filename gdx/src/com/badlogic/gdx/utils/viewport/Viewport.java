@@ -66,9 +66,8 @@ public abstract class Viewport {
 		apply(centerCamera);
 	}
 
-	/** Transforms the specified touch coordinate to world coordinates.
-	 * The x- and y-coordinate of vec are assumed to be in touch coordinates (origin is the top left corner, y
-	 * 	 * pointing down, x pointing to the right)
+	/** Transforms the specified touch coordinate to world coordinates. The x- and y-coordinate of vec are assumed to be in touch
+	 * coordinates (origin is the top left corner, y * pointing down, x pointing to the right)
 	 * @return The vector that was passed in, transformed to world coordinates.
 	 * @see Camera#unproject(Vector3) */
 	public Vector2 unproject (Vector2 touchCoords) {
