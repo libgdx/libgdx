@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.android;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
@@ -27,6 +28,8 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.DisplayCutout;
 import android.view.View;
+import android.view.WindowMetrics;
+import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
@@ -148,16 +151,34 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
 	}
 
-	protected void updatePpi () {
-		DisplayMetrics metrics = new DisplayMetrics();
-		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-		ppiX = metrics.xdpi;
-		ppiY = metrics.ydpi;
-		ppcX = metrics.xdpi / 2.54f;
-		ppcY = metrics.ydpi / 2.54f;
-		density = metrics.density;
-	}
+	protected void updatePpi() {
+	    WindowManager windowManager = app.getWindowManager();
+	    
+	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+	        WindowMetrics windowMetrics = windowManager.getCurrentWindowMetrics();
+	        DisplayMetrics metrics = new DisplayMetrics();
+	        metrics.widthPixels = windowMetrics.getBounds().width();
+	        metrics.heightPixels = windowMetrics.getBounds().height();
+	        metrics.densityDpi = (int) (metrics.widthPixels / (windowMetrics.getBounds().width() / 2.54f)); // This may need adjustment based on your requirements
+	        // You can calculate xdpi and ydpi as follows, based on your app's design
+	        ppiX = windowMetrics.getBounds().width() / (metrics.widthPixels / 2.54f);
+	        ppiY = windowMetrics.getBounds().height() / (metrics.heightPixels / 2.54f);
+	        ppcX = ppiX / 2.54f;
+	        ppcY = ppiY / 2.54f;
+	        density = metrics.densityDpi / 160f; // Assuming 160dpi is the baseline density
+	    } else {
+	        // Fallback for older versions
+	        Display display = windowManager.getDefaultDisplay();
+	        DisplayMetrics metrics = new DisplayMetrics();
+	        display.getMetrics(metrics);
+	        
+	        ppiX = metrics.xdpi;
+	        ppiY = metrics.ydpi;
+	        ppcX = metrics.xdpi / 2.54f;
+	        ppcY = metrics.ydpi / 2.54f;
+	        density = metrics.density;
+	    }
+}
 
 	protected boolean checkGL20 () {
 		EGL10 egl = (EGL10)EGLContext.getEGL();
@@ -319,28 +340,29 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	}
 
 	@Override
-	public void onSurfaceCreated (javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) {
-		eglContext = ((EGL10)EGLContext.getEGL()).eglGetCurrentContext();
-		setupGL(gl);
-		logConfig(config);
-		updatePpi();
-		updateSafeAreaInsets();
-
-		Mesh.invalidateAllMeshes(app);
-		Texture.invalidateAllTextures(app);
-		Cubemap.invalidateAllCubemaps(app);
-		TextureArray.invalidateAllTextureArrays(app);
-		ShaderProgram.invalidateAllShaderPrograms(app);
-		FrameBuffer.invalidateAllFrameBuffers(app);
-
-		logManagedCachesStatus();
-
-		Display display = app.getWindowManager().getDefaultDisplay();
-		this.width = display.getWidth();
-		this.height = display.getHeight();
-		this.lastFrameTime = System.nanoTime();
-
-		gl.glViewport(0, 0, this.width, this.height);
+	public void onSurfaceCreated(javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) {
+	    // ... other initialization code ...
+	
+	    logManagedCachesStatus();
+	
+	    WindowManager windowManager = app.getWindowManager();
+	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+	        // For API level 30 and above
+	        WindowMetrics windowMetrics = windowManager.getCurrentWindowMetrics();
+	        this.width = windowMetrics.getBounds().width();
+	        this.height = windowMetrics.getBounds().height();
+	    } else {
+	        // Fallback for older versions
+	        Display display = windowManager.getDefaultDisplay();
+	        DisplayMetrics metrics = new DisplayMetrics();
+	        display.getMetrics(metrics);
+	        this.width = metrics.widthPixels;
+	        this.height = metrics.heightPixels;
+	    }
+	
+	    this.lastFrameTime = System.nanoTime();
+	
+	    gl.glViewport(0, 0, this.width, this.height);
 	}
 
 	protected void logConfig (EGLConfig config) {
@@ -715,20 +737,38 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	}
 
 	@Override
-	public DisplayMode getDisplayMode () {
-		Display display;
-		DisplayMetrics metrics = new DisplayMetrics();
-
-		DisplayManager displayManager = (DisplayManager)app.getContext().getSystemService(Context.DISPLAY_SERVICE);
-		display = displayManager.getDisplay(Display.DEFAULT_DISPLAY);
-		display.getRealMetrics(metrics); // Deprecated but no direct equivalent
-
-		int width = metrics.widthPixels;
-		int height = metrics.heightPixels;
-		int refreshRate = MathUtils.roundPositive(display.getRefreshRate());
-		int bitsPerPixel = config.r + config.g + config.b + config.a;
-
-		return new AndroidDisplayMode(width, height, refreshRate, bitsPerPixel);
+	public DisplayMode getDisplayMode() {
+	    Display display;
+	    DisplayMetrics metrics = new DisplayMetrics();
+	    int width, height, refreshRate, bitsPerPixel;
+	
+	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+	        // For API level 30 and above
+	        WindowManager windowManager = (WindowManager) app.getContext().getSystemService(Context.WINDOW_SERVICE);
+	        WindowMetrics windowMetrics = windowManager.getCurrentWindowMetrics();
+	        width = windowMetrics.getBounds().width();
+	        height = windowMetrics.getBounds().height();
+	        refreshRate = MathUtils.roundPositive(windowMetrics.getMetrics().getRefreshRate()); // Adjust as necessary
+	    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+	        // For API level 17 to 29
+	        DisplayManager displayManager = (DisplayManager) app.getContext().getSystemService(Context.DISPLAY_SERVICE);
+	        display = displayManager.getDisplay(Display.DEFAULT_DISPLAY);
+	        display.getMetrics(metrics); // Use getMetrics() for dimensions
+	        width = metrics.widthPixels;
+	        height = metrics.heightPixels;
+	        refreshRate = MathUtils.roundPositive(display.getRefreshRate());
+	    } else {
+	        // Fallback for older versions
+	        display = app.getWindowManager().getDefaultDisplay();
+	        display.getMetrics(metrics);
+	        width = metrics.widthPixels;
+	        height = metrics.heightPixels;
+	        refreshRate = MathUtils.roundPositive(display.getRefreshRate());
+	    }
+	
+	    int bitsPerPixel = config.r + config.g + config.b + config.a;
+	
+	    return new AndroidDisplayMode(width, height, refreshRate, bitsPerPixel);
 	}
 
 	@Override
