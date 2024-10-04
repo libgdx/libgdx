@@ -702,7 +702,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 			height += getSoftButtonsBarHeight();
 		}
 
-		if (relativeLayoutField == null) {
+		if (!isNativeInputOpen()) {
 			if (observer != null) observer.onKeyboardHeightChanged(height);
 			return;
 		}
