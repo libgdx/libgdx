@@ -1074,11 +1074,12 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			// Get and map the location to our drawing space
 			{
 				CGPoint loc = touch.getLocationInView(app.graphics.view);
-				locX = (int)(loc.getX() - screenBounds.x);
-				locY = (int)(loc.getY() - screenBounds.y);
 				if (config.hdpiMode == HdpiMode.Pixels) {
-					locX *= app.pixelsPerPoint;
-					locY *= app.pixelsPerPoint;
+					locX = (int)((loc.getX() - screenBounds.x) * app.pixelsPerPoint);
+					locY = (int)((loc.getY() - screenBounds.y) * app.pixelsPerPoint);
+				} else {
+					locX = (int)(loc.getX() - screenBounds.x);
+					locY = (int)(loc.getY() - screenBounds.y);
 				}
 				// app.debug("IOSInput","pos= "+loc+" bounds= "+bounds+" x= "+locX+" locY= "+locY);
 			}
