@@ -202,13 +202,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		// this is for backward compatibility: libGDX always caught the circle button, original comment:
 		// circle button on Xperia Play shouldn't need catchBack == true
 		setCatchKey(Keys.BUTTON_CIRCLE, true);
-		handle.post(new Runnable() {
-			@Override
-			public void run () {
-				// Early call to have a proper layouted EditText already on first call of openNativeInput
-				createDefaultEditText();
-			}
-		});
 	}
 
 	@Override
@@ -758,8 +751,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	private void createDefaultEditText () {
+		// TODO: 07.10.2024 This should probably just get the content/root view instead
 		View view = ((AndroidGraphics)app.getGraphics()).getView();
-		FrameLayout frameLayout = (FrameLayout)view.getParent();
+		ViewGroup frameLayout = (ViewGroup)view.getParent();
 		final RelativeLayout relativeLayout = new RelativeLayout(context);
 		relativeLayout.setGravity(Gravity.BOTTOM);
 		// Why? Why isn't it working without?
