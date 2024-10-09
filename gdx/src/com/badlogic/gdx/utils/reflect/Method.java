@@ -162,5 +162,8 @@ public final class Method {
 		return method.isBridge();
 	}
 	
+	public int getModifiers() {
+		return method.getModifiers();
+	}
 	
 }
