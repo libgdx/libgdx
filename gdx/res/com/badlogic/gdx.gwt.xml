@@ -73,6 +73,7 @@
 	<!-- graphics -->		
 		<include name="graphics/Camera.java"/>
 		<include name="graphics/Color.java"/>
+		<include name="graphics/ImmutableColor.java"/>
 		<include name="graphics/Colors.java"/>
 		<include name="graphics/Cubemap.java"/>
 		<include name="graphics/CubemapData.java"/>

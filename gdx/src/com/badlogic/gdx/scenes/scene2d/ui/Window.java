@@ -259,7 +259,7 @@ public class Window extends Table {
 
 	protected void drawStageBackground (Batch batch, float parentAlpha, float x, float y, float width, float height) {
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		batch.setColor(color.getR(), color.getG(), color.getB(), color.getA() * parentAlpha);
 		style.stageBackground.draw(batch, x, y, width, height);
 	}
 
@@ -267,7 +267,7 @@ public class Window extends Table {
 		super.drawBackground(batch, parentAlpha, x, y);
 
 		// Manually draw the title table before clipping is done.
-		titleTable.getColor().a = getColor().a;
+		titleTable.getColor().setA(getColor().getA());
 		float padTop = getPadTop(), padLeft = getPadLeft();
 		titleTable.setSize(getWidth() - padLeft - getPadRight(), padTop);
 		titleTable.setPosition(padLeft, getHeight() - padTop);

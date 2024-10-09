@@ -315,10 +315,10 @@ public class HeightField implements Disposable {
 			vertices[index + uvPos + 1] = info.uv.y;
 		}
 		if (colPos >= 0) {
-			vertices[index + colPos + 0] = info.color.r;
-			vertices[index + colPos + 1] = info.color.g;
-			vertices[index + colPos + 2] = info.color.b;
-			vertices[index + colPos + 3] = info.color.a;
+			vertices[index + colPos + 0] = info.color.getR();
+			vertices[index + colPos + 1] = info.color.getG();
+			vertices[index + colPos + 2] = info.color.getB();
+			vertices[index + colPos + 3] = info.color.getA();
 		}
 	}
 

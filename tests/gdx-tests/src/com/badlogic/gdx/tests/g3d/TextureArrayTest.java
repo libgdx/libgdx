@@ -117,11 +117,11 @@ public class TextureArrayTest extends GdxTest {
 		int pixel = heightmap.getPixel((int)(i / 100f * heightmap.getWidth()), (int)(j / 100f * heightmap.getHeight()));
 		tmpColor.set(pixel);
 		vertsOut[idx++] = i / 5f;
-		vertsOut[idx++] = tmpColor.r * 25f / 5f;
+		vertsOut[idx++] = tmpColor.getR() * 25f / 5f;
 		vertsOut[idx++] = j / 5f;
 		vertsOut[idx++] = i / 20f;
 		vertsOut[idx++] = j / 20f;
-		vertsOut[idx++] = (tmpColor.r * 3f) - 0.5f;
+		vertsOut[idx++] = (tmpColor.getR() * 3f) - 0.5f;
 		return idx;
 	}
 

@@ -253,7 +253,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		float x = getX(), y = getY();
 		float width = getWidth(), height = getHeight();
 
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		batch.setColor(color.getR(), color.getG(), color.getB(), color.getA() * parentAlpha);
 		if (background != null) background.draw(batch, x, y, width, height);
 
 		T selected = selection.first();
@@ -266,7 +266,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			} else {
 				y += (int)(height / 2 + font.getData().capHeight / 2);
 			}
-			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
+			font.setColor(fontColor.getR(), fontColor.getG(), fontColor.getB(), fontColor.getA() * parentAlpha);
 			drawItem(batch, font, selected, x, y, width);
 		}
 	}
@@ -408,12 +408,12 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	protected void onShow (Actor scrollPane, boolean below) {
-		scrollPane.getColor().a = 0;
+		scrollPane.getColor().setA(0);
 		scrollPane.addAction(fadeIn(0.3f, Interpolation.fade));
 	}
 
 	protected void onHide (Actor scrollPane) {
-		scrollPane.getColor().a = 1;
+		scrollPane.getColor().setA(1);
 		scrollPane.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
 	}
 

@@ -34,7 +34,7 @@ public abstract class BaseEntity implements Disposable {
 	}
 
 	public void setColor (Color color) {
-		setColor(color.r, color.g, color.b, color.a);
+		setColor(color.getR(), color.getG(), color.getB(), color.getA());
 	}
 
 	public void setColor (float r, float g, float b, float a) {
