@@ -11,6 +11,7 @@ import com.badlogic.gdx.tests.AnimationTest;
 import com.badlogic.gdx.tests.AnnotationTest;
 import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
+import com.badlogic.gdx.tests.AudioChangeDeviceTest;
 import com.badlogic.gdx.tests.BigMeshTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
 import com.badlogic.gdx.tests.BitmapFontFlipTest;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.BufferUtilsTest;
 import com.badlogic.gdx.tests.ClipboardTest;
+import com.badlogic.gdx.tests.TiledMapObjectPropertyTest;
 import com.badlogic.gdx.tests.ColorTest;
 import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
@@ -84,6 +86,7 @@ import com.badlogic.gdx.tests.TextAreaTest;
 import com.badlogic.gdx.tests.TextAreaTest2;
 import com.badlogic.gdx.tests.TextAreaTest3;
 import com.badlogic.gdx.tests.TextButtonTest;
+import com.badlogic.gdx.tests.TextInputDialogTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
 import com.badlogic.gdx.tests.TiledMapObjectLoadingTest;
@@ -96,6 +99,7 @@ import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.MultipleRenderTargetTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.g3d.TextureArrayTest;
+import com.badlogic.gdx.tests.gles2.GlTexImage2D;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
 import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
@@ -155,6 +159,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new AtlasIssueTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new AudioChangeDeviceTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
@@ -286,6 +295,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new GLProfilerErrorTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new GlTexImage2D();
 			}
 		});
 		tests.add(new GwtInstancer() {
@@ -546,12 +560,23 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		});
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
+				return new TextInputDialogTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
 				return new TextureAtlasTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new TiledMapObjectLoadingTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			@Override
+			public GdxTest instance () {
+				return new TiledMapObjectPropertyTest();
 			}
 		});
 		tests.add(new GwtInstancer() {

@@ -22,7 +22,7 @@ buildscript {
 	}
 	dependencies {
 		classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
-		classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.4.1"
+		classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.5.2"
 	}
 }
 
@@ -109,7 +109,7 @@ allprojects {
 		lineEndings 'UNIX'
 
 		java {
-			target '**/*.java'
+			target 'src/**/*.java', 'test/**/*.java', 'generator/**/*.java'
 			removeUnusedImports()
 			eclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
 		}
@@ -176,58 +176,42 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
 	}
 }
 
-task setupExternalNativesDirs() {
+tasks.register('setupExternalNativesDirs') {
 	doLast {
 		file("build").mkdir();
 		file("extensions/gdx-lwjgl3-angle/res").mkdirs();
-		file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64").mkdirs();
-		file("extensions/gdx-lwjgl3-glfw-awt-macos/res/macosarm64").mkdirs();
 	}
-	outputs.upToDateWhen { false }
+	doNotTrackState("Don't track state")
 }
 
-task fetchAngleNativesZIP(dependsOn: setupExternalNativesDirs, type: Download) {
+tasks.register('fetchAngleNativesZIP', Download) {
+	dependsOn setupExternalNativesDirs
 	src 'https://raw.githubusercontent.com/libgdx/gdx-angle-natives/master/gdx-angle-natives.zip'
 	dest 'build/gdx-angle-natives.zip'
 	onlyIfModified true
 	useETag "all"
 }
 
-task fetchGlfwAWT(dependsOn: setupExternalNativesDirs, type: Download) {
-	src 'https://raw.githubusercontent.com/badlogic/glfw/master/libglfw.dylib'
-	dest 'extensions/gdx-lwjgl3-glfw-awt-macos/res/macosx64/libglfw.dylib'
-	onlyIfModified true
-	useETag "all"
-}
-
-task fetchGlfwAWTARM64(dependsOn: setupExternalNativesDirs, type: Download) {
-	src 'https://raw.githubusercontent.com/badlogic/glfw/master/libglfwarm64.dylib'
-	dest 'extensions/gdx-lwjgl3-glfw-awt-macos/res/macosarm64/libglfwarm64.dylib'
-	onlyIfModified true
-	useETag "all"
-}
-
-task fetchExternalNatives(dependsOn: [
-	fetchAngleNativesZIP,
-	fetchGlfwAWT,
-	fetchGlfwAWTARM64
-] , type: Copy) {
+tasks.register('fetchExternalNatives', Copy) {
+	dependsOn fetchAngleNativesZIP
 	from zipTree("build/gdx-angle-natives.zip")
 	into "./extensions/gdx-lwjgl3-angle/res"
-	outputs.upToDateWhen { false }
+	doNotTrackState("Don't track state")
 }
 
-task fetchGdxNativesZIP(dependsOn: fetchExternalNatives, type: Download) {
+tasks.register('fetchGdxNativesZIP', Download) {
+	dependsOn fetchExternalNatives
 	src "https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip"
 	dest "build/natives.zip"
 	onlyIfModified true
 	useETag "all"
 }
 
-task fetchNatives(dependsOn: fetchGdxNativesZIP, type: Copy) {
+tasks.register('fetchNatives', Copy) {
+	dependsOn fetchGdxNativesZIP
 	from zipTree("build/natives.zip")
 	into "."
-	outputs.upToDateWhen { false }
+	doNotTrackState("Don't track state")
 }
 
 apply from: rootProject.file('publish.gradle')

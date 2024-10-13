@@ -55,7 +55,7 @@ public class MusicTest extends GdxTest {
 	TextButton btLoop;
 
 	enum Song {
-		MP3, OGG, WAV, MP3_CLOCK
+		MP3, OGG, WAV, PCM8, MP3_CLOCK
 	}
 
 	float time;
@@ -165,6 +165,10 @@ public class MusicTest extends GdxTest {
 			break;
 		case WAV:
 			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.loop.wav"));
+			songDuration = 4;
+			break;
+		case PCM8:
+			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.loop-8bit.wav"));
 			songDuration = 4;
 			break;
 		}

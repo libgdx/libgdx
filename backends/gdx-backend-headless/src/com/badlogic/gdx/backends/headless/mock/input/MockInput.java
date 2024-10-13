@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.headless.mock.input;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.input.NativeInputConfiguration;
 
 /** The headless backend does its best to mock elements. This is intended to make code-sharing between server and client as simple
  * as possible. */
@@ -165,6 +166,21 @@ public class MockInput implements Input {
 	}
 
 	@Override
+	public void openTextInputField (NativeInputConfiguration configuration) {
+
+	}
+
+	@Override
+	public void closeTextInputField (boolean sendReturn) {
+
+	}
+
+	@Override
+	public void setKeyboardHeightObserver (KeyboardHeightObserver observer) {
+
+	}
+
+	@Override
 	public void vibrate (int milliseconds) {
 
 	}
@@ -204,26 +220,6 @@ public class MockInput implements Input {
 	@Override
 	public long getCurrentEventTime () {
 		return 0;
-	}
-
-	@Override
-	public void setCatchBackKey (boolean catchBack) {
-
-	}
-
-	@Override
-	public boolean isCatchBackKey () {
-		return false;
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
-
-	}
-
-	@Override
-	public boolean isCatchMenuKey () {
-		return false;
 	}
 
 	@Override

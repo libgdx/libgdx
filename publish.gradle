@@ -13,7 +13,6 @@ configure([
 	project(":extensions:gdx-bullet"),
 	project(":extensions:gdx-freetype"),
 	project(":extensions:gdx-lwjgl3-angle"),
-	project(":extensions:gdx-lwjgl3-glfw-awt-macos"),
 	project(":extensions:gdx-tools")
 ]) {
 	apply plugin: 'maven-publish'
@@ -34,14 +33,7 @@ configure([
 							from components.release
 						}
 
-						versionMapping {
-							usage('java-api') {
-								fromResolutionOf('runtimeClasspath')
-							}
-							usage('java-runtime') {
-								fromResolutionResult()
-							}
-						}
+
 						pom {
 							name = POM_NAME
 							if(!POM_DESCRIPTION.isEmpty())

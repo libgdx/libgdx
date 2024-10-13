@@ -18,5 +18,8 @@ public final class OALAudioSession extends NSObject {
 	public native static OALAudioSession sharedInstance ();
 
 	@Method
+	public native boolean interrupted ();
+
+	@Method
 	public native void forceEndInterruption ();
 }

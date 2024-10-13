@@ -236,6 +236,12 @@ public class GestureDetector extends InputAdapter {
 		return handled;
 	}
 
+	@Override
+	public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {
+		cancel();
+		return super.touchCancelled(screenX, screenY, pointer, button);
+	}
+
 	/** No further gesture events will be triggered for the current touch, if any. */
 	public void cancel () {
 		longPressTask.cancel();
@@ -259,6 +265,7 @@ public class GestureDetector extends InputAdapter {
 	}
 
 	public void reset () {
+		longPressTask.cancel();
 		touchDownTime = 0;
 		panning = false;
 		inTapRectangle = false;

@@ -348,6 +348,8 @@ public interface Net {
 
 	public void cancelHttpRequest (HttpRequest httpRequest);
 
+	public boolean isHttpRequestPending (HttpRequest httpRequest);
+
 	/** Protocol used by {@link Net#newServerSocket(Protocol, int, ServerSocketHints)} and
 	 * {@link Net#newClientSocket(Protocol, String, int, SocketHints)}.
 	 * @author mzechner */

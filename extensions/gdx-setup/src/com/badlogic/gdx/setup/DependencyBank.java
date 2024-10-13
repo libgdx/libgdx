@@ -21,14 +21,14 @@ import java.util.HashMap;
 public class DependencyBank {
 
 	// Versions
-	static String libgdxVersion = "1.12.0";
+	static String libgdxVersion = "1.12.1";
 	// Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.12.1-SNAPSHOT";
-	static String roboVMVersion = "2.3.19";
+	static String libgdxNightlyVersion = "1.12.2-SNAPSHOT";
+	static String roboVMVersion = "2.3.21";
 	static String buildToolsVersion = "33.0.2";
-	static String androidAPILevel = "32";
-	static String androidMinAPILevel = "14";
-	static String gwtVersion = "2.8.2";
+	static String androidAPILevel = "33";
+	static String androidMinAPILevel = "19";
+	static String gwtVersion = "2.11.0";
 
 	// Repositories
 	static String mavenLocal = "mavenLocal()";
@@ -40,9 +40,9 @@ public class DependencyBank {
 	static String jitpackUrl = "https://jitpack.io";
 
 	// Project plugins
-	static String gwtPluginImport = "org.wisepersist:gwt-gradle-plugin:1.1.16";
-	static String grettyPluginImport = "org.gretty:gretty:3.0.7";
-	static String androidPluginImport = "com.android.tools.build:gradle:7.2.2";
+	static String gwtPluginImport = "org.docstr:gwt-gradle-plugin:1.1.29";
+	static String grettyPluginImport = "org.gretty:gretty:3.1.0";
+	static String androidPluginImport = "com.android.tools.build:gradle:8.1.2";
 	static String roboVMPluginImport = "com.mobidevelop.robovm:robovm-gradle-plugin:" + roboVMVersion;
 
 	// Extension versions
@@ -90,7 +90,8 @@ public class DependencyBank {
 				"com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion",
 				"com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
 			new String[] {"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources",
-				"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"},
+				"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources",
+				"com.google.jsinterop:jsinterop-annotations:2.0.2:sources"},
 			new String[] {"com.badlogic.gdx.backends.gdx_backends_gwt"},
 
 			"Core Library for libGDX"), BULLET(new String[] {"com.badlogicgames.gdx:gdx-bullet:$gdxVersion"},
@@ -118,7 +119,7 @@ public class DependencyBank {
 						new String[] {"com.badlogicgames.gdx:gdx-tools:$gdxVersion"}, new String[] {}, new String[] {}, new String[] {},
 						new String[] {}, new String[] {},
 
-						"Collection of tools, including 2D/3D particle editors, texture packers, and file processors"), CONTROLLERS(
+						"Collection of tools, including 3D particle editor, texture packers, and file processors"), CONTROLLERS(
 							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"},
 							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},
 							new String[] {"com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"},

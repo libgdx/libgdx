@@ -20,7 +20,6 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -72,37 +71,24 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	IntBuffer tmpBuffer2 = BufferUtils.createIntBuffer(1);
 
 	GLFWFramebufferSizeCallback resizeCallback = new GLFWFramebufferSizeCallback() {
-		volatile boolean posted;
-
 		@Override
 		public void invoke (long windowHandle, final int width, final int height) {
-			if (Configuration.GLFW_CHECK_THREAD0.get(true)) {
-				renderWindow(windowHandle, width, height);
+			if (!"glfw_async".equals(Configuration.GLFW_LIBRARY_NAME.get())) {
+				updateFramebufferInfo();
+				if (!window.isListenerInitialized()) {
+					return;
+				}
+				window.makeCurrent();
+				gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
+				window.getListener().resize(getWidth(), getHeight());
+				update();
+				window.getListener().render();
+				GLFW.glfwSwapBuffers(windowHandle);
 			} else {
-				if (posted) return;
-				posted = true;
-				Gdx.app.postRunnable(new Runnable() {
-					@Override
-					public void run () {
-						posted = false;
-						renderWindow(windowHandle, width, height);
-					}
-				});
+				window.asyncResized = true;
 			}
 		}
 	};
-
-	private void renderWindow (long windowHandle, final int width, final int height) {
-		updateFramebufferInfo();
-		if (!window.isListenerInitialized()) {
-			return;
-		}
-		window.makeCurrent();
-		gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
-		window.getListener().resize(getWidth(), getHeight());
-		window.getListener().render();
-		GLFW.glfwSwapBuffers(windowHandle);
-	}
 
 	public Lwjgl3Graphics (Lwjgl3Window window) {
 		this.window = window;

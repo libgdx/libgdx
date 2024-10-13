@@ -286,6 +286,8 @@
 						
 	<!-- input -->
 		<include name="input/GestureDetector.java"/>
+		<include name="input/TextInputWrapper.java"/>
+		<include name="input/NativeInputConfiguration.java"/>
 		<exclude name="input/RemoteInput.java"/> <!-- Reason: Networking -->
 		<exclude name="input/RemoteSender.java"/> <!-- Reason: Networking -->
 		
@@ -371,6 +373,7 @@
 		<include name="math/Vector.java"/>
 		<include name="math/Vector2.java"/>
 		<include name="math/Vector3.java"/>		
+		<include name="math/Vector4.java"/>
 		<include name="math/WindowedMean.java"/>
 				
 	<!-- math/collision -->								
@@ -436,6 +439,8 @@
 		<include name="utils/JsonReader.java"/>
 		<include name="utils/JsonValue.java"/>
 		<include name="utils/JsonWriter.java"/>
+		<include name="utils/JsonSkimmer.java"/>
+		<include name="utils/JsonString.java"/>
 		<include name="utils/LittleEndianInputStream.java"/>
 		<include name="utils/Logger.java"/>
 		<include name="utils/LongArray.java"/>

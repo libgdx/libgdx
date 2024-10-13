@@ -31,11 +31,11 @@ dependencies {
 	implementation project(":tests:gdx-tests")
 	implementation project(":backends:gdx-backend-lwjgl3")
 	implementation project(":extensions:gdx-lwjgl3-angle")
-	implementation project(":extensions:gdx-lwjgl3-glfw-awt-macos")
 	implementation testnatives.desktop
 }
 
-task launchTestsLwjgl3 (dependsOn: classes, type: JavaExec) {
+tasks.register('launchTestsLwjgl3', JavaExec) {
+	dependsOn classes
 	mainClass = mainTestClass
 	classpath = sourceSets.main.runtimeClasspath
 	standardInput = System.in
@@ -46,7 +46,8 @@ configure (launchTestsLwjgl3) {
 	group "LibGDX"
 	description = "Run the Lwjgl3 tests"
 }
-task dist(type: Jar, dependsOn: classes) {
+tasks.register('dist', Jar) {
+	dependsOn classes
 	manifest {
 		attributes 'Main-Class': project.mainTestClass
 	}

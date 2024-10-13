@@ -16,7 +16,7 @@
 
 buildscript {
 	dependencies {
-		classpath "org.wisepersist:gwt-gradle-plugin:${versions.gwtPlugin}"
+		classpath "org.docstr:gwt-gradle-plugin:${versions.gwtPlugin}"
 		classpath "org.gretty:gretty:${versions.gretty}"
 	}
 }
@@ -30,7 +30,7 @@ apply plugin: 'gwt'
 apply plugin: 'war'
 apply plugin: 'org.gretty'
 
-import org.wisepersist.gradle.plugins.gwt.GwtSuperDev
+import org.docstr.gradle.plugins.gwt.GwtSuperDev
 import org.akhikhl.gretty.AppBeforeIntegrationTestTask
 
 gretty.httpPort = 8080
@@ -42,11 +42,11 @@ dependencies {
 	implementation project(":tests:gdx-tests")
 	implementation project(":backends:gdx-backend-gwt")
 	implementation project(":extensions:gdx-box2d-parent:gdx-box2d-gwt")
-	compileOnly "com.google.gwt:gwt-dev:${versions.gwt}"
+	compileOnly "org.gwtproject:gwt-dev:${versions.gwt}"
 }
 
 gwt {
-	gwtVersion='2.8.2' // Should match the gwt version used for building the gwt backend
+	gwtVersion='2.11.0' // Should match the gwt version used for building the gwt backend
 	maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
 	minHeapSize="1G"
 
@@ -58,7 +58,7 @@ gwt {
 	compiler.disableCastChecking = true
 }
 
-task startHttpServer () {
+tasks.register('startHttpServer') {
 	dependsOn draftCompileGwt
 
 	doFirst {
@@ -86,14 +86,15 @@ task beforeRun(type: AppBeforeIntegrationTestTask, dependsOn: startHttpServer) {
 	interactive false
 }
 
-task superDev (type: GwtSuperDev) {
+tasks.register('superDev', GwtSuperDev) {
 	dependsOn startHttpServer
 	doFirst {
 		gwt.modules = gwt.devModules
 	}
 }
 
-task dist(dependsOn: [clean, compileGwt]) {
+tasks.register('dist') {
+	dependsOn clean, compileGwt
 	doLast {
 		file("build/dist").mkdirs()
 		copy {
@@ -112,7 +113,7 @@ task dist(dependsOn: [clean, compileGwt]) {
 }
 
 
-task addSource {
+tasks.register('addSource') {
 	doLast {
 		sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.allJava.srcDirs)
 		sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.resources.srcDirs)

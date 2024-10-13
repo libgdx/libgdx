@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Files.FileType;
@@ -359,8 +358,9 @@ public class TextureAtlas implements Disposable {
 			});
 
 			BufferedReader reader = packFile.reader(1024);
+			String line = null;
 			try {
-				String line = reader.readLine();
+				line = reader.readLine();
 				// Ignore empty lines before first entry.
 				while (line != null && line.trim().length() == 0)
 					line = reader.readLine();
@@ -380,6 +380,7 @@ public class TextureAtlas implements Disposable {
 						line = reader.readLine();
 					} else if (page == null) {
 						page = new Page();
+						page.name = line;
 						page.textureFile = imagesDir.child(line);
 						while (true) {
 							if (readEntry(entry, line = reader.readLine()) == 0) break;
@@ -428,7 +429,8 @@ public class TextureAtlas implements Disposable {
 					}
 				}
 			} catch (Exception ex) {
-				throw new GdxRuntimeException("Error reading texture atlas file: " + packFile, ex);
+				throw new GdxRuntimeException(
+					"Error reading texture atlas file: " + packFile + (line == null ? "" : "\nLine: " + line), ex);
 			} finally {
 				StreamUtils.closeQuietly(reader);
 			}
@@ -454,7 +456,7 @@ public class TextureAtlas implements Disposable {
 			return regions;
 		}
 
-		static private int readEntry (String[] entry, @Null String line) throws IOException {
+		static private int readEntry (String[] entry, @Null String line) {
 			if (line == null) return 0;
 			line = line.trim();
 			if (line.length() == 0) return 0;
@@ -478,6 +480,7 @@ public class TextureAtlas implements Disposable {
 		}
 
 		static public class Page {
+			public String name;
 			/** May be null if this page isn't associated with a file. In that case, {@link #texture} must be set. */
 			public @Null FileHandle textureFile;
 			/** May be null if the texture is not yet loaded. */

@@ -53,10 +53,9 @@ public class GwtApplicationConfiguration {
 	public TextArea log;
 	/** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown. */
 	public boolean useDebugGL = false;
-	/** Experimental, whether to enable OpenGL ES 30 (aka WebGL2) if supported. If not supported it will fall-back to OpenGL ES
-	 * 2.0. When GL ES 30 is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality.
-	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
-	@Deprecated public boolean useGL30 = false;
+	/** Whether to enable OpenGL ES 3.0 (aka WebGL2) if supported. If not supported it will fall-back to OpenGL ES 2.0. When GL ES
+	 * 3.0 is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. */
+	public boolean useGL30 = false;
 	/** preserve the back buffer, needed if you fetch a screenshot via canvas#toDataUrl, may have performance impact **/
 	public boolean preserveDrawingBuffer = false;
 	/** whether to include an alpha channel in the color buffer to combine the color buffer with the rest of the webpage
@@ -76,6 +75,9 @@ public class GwtApplicationConfiguration {
 	public boolean useGyroscope = false;
 	/** whether to make the webgl context compatible with WebXR, may have positive performance impact **/
 	public boolean xrCompatible = false;
+
+	/** Whether to fetch available output devices. It asks the user automatically for permission */
+	public boolean fetchAvailableOutputDevices = false;
 
 	/** Creates configuration for a resizable application, using available browser window space minus padding (see
 	 * {@link #padVertical}, {@link #padHorizontal}). */

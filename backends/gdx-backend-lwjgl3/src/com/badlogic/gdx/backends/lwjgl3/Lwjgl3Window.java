@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,8 @@ package com.badlogic.gdx.backends.lwjgl3;
 
 import java.nio.IntBuffer;
 
+import com.badlogic.gdx.*;
+import com.badlogic.gdx.utils.Os;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
@@ -28,10 +30,6 @@ import org.lwjgl.glfw.GLFWWindowIconifyCallback;
 import org.lwjgl.glfw.GLFWWindowMaximizeCallback;
 import org.lwjgl.glfw.GLFWWindowRefreshCallback;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -40,6 +38,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 public class Lwjgl3Window implements Disposable {
 	private long windowHandle;
 	final ApplicationListener listener;
+	private final Array<LifecycleListener> lifecycleListeners;
 	final Lwjgl3ApplicationBase application;
 	private boolean listenerInitialized = false;
 	Lwjgl3WindowListener windowListener;
@@ -52,6 +51,7 @@ public class Lwjgl3Window implements Disposable {
 	private final IntBuffer tmpBuffer2;
 	boolean iconified = false;
 	boolean focused = false;
+	boolean asyncResized = false;
 	private boolean requestRendering = false;
 
 	private final GLFWWindowFocusCallback focusCallback = new GLFWWindowFocusCallback() {
@@ -62,9 +62,24 @@ public class Lwjgl3Window implements Disposable {
 				public void run () {
 					if (windowListener != null) {
 						if (focused) {
+							if (config.pauseWhenLostFocus) {
+								synchronized (lifecycleListeners) {
+									for (LifecycleListener lifecycleListener : lifecycleListeners) {
+										lifecycleListener.resume();
+									}
+								}
+							}
 							windowListener.focusGained();
 						} else {
 							windowListener.focusLost();
+							if (config.pauseWhenLostFocus) {
+								synchronized (lifecycleListeners) {
+									for (LifecycleListener lifecycleListener : lifecycleListeners) {
+										lifecycleListener.pause();
+									}
+								}
+								listener.pause();
+							}
 						}
 						Lwjgl3Window.this.focused = focused;
 					}
@@ -84,9 +99,23 @@ public class Lwjgl3Window implements Disposable {
 					}
 					Lwjgl3Window.this.iconified = iconified;
 					if (iconified) {
-						listener.pause();
+						if (config.pauseWhenMinimized) {
+							synchronized (lifecycleListeners) {
+								for (LifecycleListener lifecycleListener : lifecycleListeners) {
+									lifecycleListener.pause();
+								}
+							}
+							listener.pause();
+						}
 					} else {
-						listener.resume();
+						if (config.pauseWhenMinimized) {
+							synchronized (lifecycleListeners) {
+								for (LifecycleListener lifecycleListener : lifecycleListeners) {
+									lifecycleListener.resume();
+								}
+							}
+							listener.resume();
+						}
 					}
 				}
 			});
@@ -156,8 +185,10 @@ public class Lwjgl3Window implements Disposable {
 		}
 	};
 
-	Lwjgl3Window (ApplicationListener listener, Lwjgl3ApplicationConfiguration config, Lwjgl3ApplicationBase application) {
+	Lwjgl3Window (ApplicationListener listener, Array<LifecycleListener> lifecycleListeners, Lwjgl3ApplicationConfiguration config,
+		Lwjgl3ApplicationBase application) {
 		this.listener = listener;
+		this.lifecycleListeners = lifecycleListeners;
 		this.windowListener = config.windowListener;
 		this.config = config;
 		this.application = application;
@@ -278,7 +309,7 @@ public class Lwjgl3Window implements Disposable {
 	}
 
 	static void setIcon (long windowHandle, String[] imagePaths, Files.FileType imageFileType) {
-		if (SharedLibraryLoader.isMac) return;
+		if (SharedLibraryLoader.os == Os.MacOsX) return;
 
 		Pixmap[] pixmaps = new Pixmap[imagePaths.length];
 		for (int i = 0; i < imagePaths.length; i++) {
@@ -293,7 +324,7 @@ public class Lwjgl3Window implements Disposable {
 	}
 
 	static void setIcon (long windowHandle, Pixmap[] images) {
-		if (SharedLibraryLoader.isMac) return;
+		if (SharedLibraryLoader.os == Os.MacOsX) return;
 
 		GLFWImage.Buffer buffer = GLFWImage.malloc(images.length);
 		Pixmap[] tmpPixmaps = new Pixmap[images.length];
@@ -380,6 +411,18 @@ public class Lwjgl3Window implements Disposable {
 		synchronized (this) {
 			shouldRender |= requestRendering && !iconified;
 			requestRendering = false;
+		}
+
+		// In case glfw_async is used, we need to resize outside the GLFW
+		if (asyncResized) {
+			asyncResized = false;
+			graphics.updateFramebufferInfo();
+			graphics.gl20.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+			listener.resize(graphics.getWidth(), graphics.getHeight());
+			graphics.update();
+			listener.render();
+			GLFW.glfwSwapBuffers(windowHandle);
+			return true;
 		}
 
 		if (shouldRender) {
