@@ -58,11 +58,11 @@ jobs:
           echo "NDK_HOME=$HOME/android-ndk/android-ndk-r25c" >> $GITHUB_ENV
 
       - uses: actions/checkout@v3
-      - name: Set up JDK
-        uses: actions/setup-java@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
-          distribution: 'adopt'
-          java-version: '11'
+          distribution: 'zulu'
+          java-version: '17'
 
 
       - name: Initialize jnigen
@@ -94,11 +94,12 @@ jobs:
           /usr/bin/xcodebuild -version
 
       - uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
-          distribution: 'adopt'
-          java-version: '11'
+          distribution: 'zulu'
+          java-version: '17'
 
 
       - name: Initialize jnigen
