@@ -73,9 +73,9 @@ allprojects {
 			maven { url "https://oss.sonatype.org/content/repositories/releases/" }
 		}
 		dependencies {
-            classpath "com.badlogicgames.jnigen:jnigen-gradle:3.0.0-SNAPSHOT"
-        }
-    }
+			classpath "com.badlogicgames.jnigen:jnigen-gradle:3.0.0-SNAPSHOT"
+		}
+	}
 
 	repositories {
 		google()
