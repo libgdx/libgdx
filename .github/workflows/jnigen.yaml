@@ -1,0 +1,146 @@
+name: Build Workflow
+
+on:
+  push:
+    branches: [ jnigen-3.0. ]
+
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-20.04
+    container:
+      image: ubuntu:18.04
+    steps:
+      - name: Install dependencies into minimal dockerfile
+        run: |
+          # ubuntu dockerfile is very minimal (only 122 packages are installed)
+          # need to install updated git (from official git ppa)
+          apt update
+          apt install -y software-properties-common
+          add-apt-repository ppa:git-core/ppa -y
+          # install dependencies expected by other steps
+          apt update
+          apt install -y git \
+          curl \
+          ca-certificates \
+          wget \
+          bzip2 \
+          zip \
+          unzip \
+          xz-utils \
+          maven \
+          ant sudo locales
+
+          # set Locale to en_US.UTF-8 (avoids hang during compilation)
+          locale-gen en_US.UTF-8
+          echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
+          echo "LANGUAGE=en_US.UTF-8" >> $GITHUB_ENV
+          echo "LC_ALL=en_US.UTF-8" >> $GITHUB_ENV
+
+      - name: Install cross-compilation toolchains
+        run: |
+          sudo apt update
+          sudo apt install -y --force-yes gcc g++
+          sudo apt install -y --force-yes gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-dev-arm64-cross
+          sudo apt install -y --force-yes gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc6-dev-armhf-cross
+          sudo apt install -y --force-yes gcc-riscv64-linux-gnu g++-riscv64-linux-gnu libc6-dev-riscv64-cross
+          sudo apt install -y --force-yes mingw-w64 lib32z1
+
+      - name: Download Android NDK
+        run: |
+          mkdir -p $HOME/android-ndk
+          cd $HOME/android-ndk
+          wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -O android-ndk.zip
+          echo "769ee342ea75f80619d985c2da990c48b3d8eaf45f48783a2d48870d04b46108  android-ndk.zip" | sha256sum --check
+          unzip android-ndk.zip
+          echo "NDK_HOME=$HOME/android-ndk/android-ndk-r25c" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+
+      - name: Initialize jnigen
+        run: ./gradlew jnigen
+      - name: Build natives 
+        run: ./gradlew jnigenBuildAllWindows jnigenBuildAllLinux jnigenBuildAllAndroid
+
+
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-linux -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: natives-linux.zip
+          path: natives-linux.zip
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Setup Xcode SDK
+        run: |
+          # See https://github.com/actions/virtual-environments/issues/2557
+          sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
+          sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
+          sudo mv /Applications/Xcode_14.3.1.app /Applications/Xcode.app
+          sudo xcode-select -switch /Applications/Xcode.app
+          /usr/bin/xcodebuild -version
+
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+
+      - name: Initialize jnigen
+        run: ./gradlew jnigen
+      - name: Build natives 
+        run: ./gradlew jnigenBuildAllMacOsX jnigenBuildAllIOS
+
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*.xcframework" | grep "libs" > native-files-list
+          zip natives-mac -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: natives-mac.zip
+          path: natives-mac.zip
+
+
+  package:
+    runs-on: ubuntu-latest
+    needs: [build-linux, build-mac]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Artifacts from linux
+        if: success() && needs.build-linux.result == 'success'
+        uses: actions/download-artifact@v3
+        with:
+          name: natives-linux.zip
+
+      - name: Unzip artifacts
+        run: unzip -o natives-linux.zip
+      - name: Download Artifacts from mac
+        if: success() && needs.build-mac.result == 'success'
+        uses: actions/download-artifact@v3
+        with:
+          name: natives-mac.zip
+
+      - name: Unzip artifacts
+        run: unzip -o natives-mac.zip
+
+
+      - name: Package All
+        run: ./gradlew jnigenPackageAll

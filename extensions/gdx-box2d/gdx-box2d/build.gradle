@@ -17,6 +17,7 @@
 apply plugin: "com.badlogicgames.jnigen.jnigen-gradle"
 jnigen {
 	sharedLibName = "gdx-box2d"
+	multiThreadedCompile = true
 
 	all {
 		cppIncludes = ["jni/Box2D/**/*.cpp"]

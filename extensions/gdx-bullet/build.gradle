@@ -1,3 +1,6 @@
+import com.badlogic.gdx.jnigen.commons.HostDetection
+import com.badlogic.gdx.jnigen.commons.Os
+
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  *
@@ -40,7 +43,7 @@ jnigen {
 
 
 	nativeCodeGenerator {
-		sourceDir = "src"
+		sourceDirs = ["src"]
 	}
 	all {
 		cppIncludes = [
@@ -86,7 +89,11 @@ jnigen {
 	addMac(x64, ARM)
 	addAndroid() {
 		cppFlags += " -fexceptions"
-		androidApplicationMk += "APP_STL := c++_static";
+		androidApplicationMk += ["APP_STL := c++_static"]
+		if (HostDetection.os == Os.Windows) {
+			androidAndroidMk += ["LOCAL_SHORT_COMMANDS := true"]
+			androidApplicationMk += ["APP_SHORT_COMMANDS := true"]
+		}
 	}
 	addIOS() {
 		cppFlags += " -stdlib=libc++";
