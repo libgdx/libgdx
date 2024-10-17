@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+apply plugin: "com.badlogicgames.jnigen.jnigen-gradle"
 jnigen {
 	sharedLibName = "gdx-box2d"
 

@@ -85,7 +85,7 @@ task validateIOSHeader {
 
 dependencies {
 	testImplementation libraries.junit
-	api "com.badlogicgames.jnigen:gdx-jnigen-loader:3.0.0-SNAPSHOT"
+	api "com.badlogicgames.jnigen:jnigen-loader:3.0.0-SNAPSHOT"
 }
 
 test {
@@ -97,7 +97,7 @@ test {
 
 processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+apply plugin: "com.badlogicgames.jnigen.jnigen-gradle"
 jnigen {
 	sharedLibName = "gdx"
 	all {

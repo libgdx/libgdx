@@ -25,7 +25,7 @@ buildscript {
 	}
 	dependencies {
 		classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
-		classpath "com.badlogicgames.jnigen:gdx-jnigen-gradle:3.0.0"
+		classpath "com.badlogicgames.jnigen:jnigen-gradle:3.0.0-SNAPSHOT"
 	}
 }
 
@@ -73,7 +73,7 @@ allprojects {
 			maven { url "https://oss.sonatype.org/content/repositories/releases/" }
 		}
 		dependencies {
-            classpath "com.badlogicgames.jngen:gdx-jnigen-gradle:3.0.0"
+            classpath "com.badlogicgames.jnigen:jnigen-gradle:3.0.0-SNAPSHOT"
         }
     }
 
