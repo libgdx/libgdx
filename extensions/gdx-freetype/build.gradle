@@ -21,7 +21,7 @@ dependencies {
 apply plugin: "com.badlogicgames.jnigen.jnigen-gradle"
 jnigen {
 	sharedLibName = "gdx-freetype"
-		multiThreadedCompile = true
+	multiThreadedCompile = true
 
 	all {
 		headerDirs = ["jni/freetype/include/"]
