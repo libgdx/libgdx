@@ -68,7 +68,7 @@ jobs:
       - name: Initialize jnigen
         run: ./gradlew jnigen
       - name: Build natives 
-        run: ./gradlew jnigenBuildAllWindows jnigenBuildAllLinux jnigenBuildAllAndroid
+        run: ./gradlew jnigenBuildAllWindows jnigenBuildAllLinux jnigenBuildAllAndroid --info
 
 
       - name: Pack artifacts
@@ -105,7 +105,7 @@ jobs:
       - name: Initialize jnigen
         run: ./gradlew jnigen
       - name: Build natives 
-        run: ./gradlew jnigenBuildAllMacOsX jnigenBuildAllIOS
+        run: ./gradlew jnigenBuildAllMacOsX jnigenBuildAllIOS --info
 
       - name: Pack artifacts
         run: |
