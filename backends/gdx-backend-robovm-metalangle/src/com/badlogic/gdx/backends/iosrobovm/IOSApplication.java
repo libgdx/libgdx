@@ -145,6 +145,8 @@ public class IOSApplication implements Application {
 		this.uiWindow.setRootViewController(this.graphics.viewController);
 		this.graphics.updateSafeInsets();
 		Gdx.app.debug("IOSApplication", "created");
+		// Trigger first render, special case that is caught and returned
+		this.graphics.view.display();
 		listener.create();
 		listener.resize(this.graphics.getWidth(), this.graphics.getHeight());
 		// make sure the OpenGL view has contents before displaying it
@@ -394,11 +396,7 @@ public class IOSApplication implements Application {
 			runnables.clear();
 		}
 		for (int i = 0; i < executedRunnables.size; i++) {
-			try {
-				executedRunnables.get(i).run();
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
+			executedRunnables.get(i).run();
 		}
 	}
 

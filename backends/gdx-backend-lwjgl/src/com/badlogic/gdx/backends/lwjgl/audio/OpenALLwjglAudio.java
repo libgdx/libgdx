@@ -48,7 +48,7 @@ public class OpenALLwjglAudio implements LwjglAudio {
 	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap();
 	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap();
 	private OpenALSound[] recentSounds;
-	private int mostRecetSound = -1;
+	private int mostRecentSound = -1;
 
 	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
 	boolean noDevice = false;
@@ -84,17 +84,16 @@ public class OpenALLwjglAudio implements LwjglAudio {
 			allSources.add(sourceID);
 		}
 		idleSources = new IntArray(allSources);
-		soundIdToSource = new LongMap<Integer>();
-		sourceToSoundId = new IntMap<Long>();
+		soundIdToSource = new LongMap<>();
+		sourceToSoundId = new IntMap<>();
 
-		FloatBuffer orientation = (FloatBuffer)BufferUtils.createFloatBuffer(6)
-			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f});
+		FloatBuffer orientation = BufferUtils.createFloatBuffer(6).put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f});
 		((Buffer)orientation).flip();
 		alListener(AL_ORIENTATION, orientation);
-		FloatBuffer velocity = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
+		FloatBuffer velocity = BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
 		((Buffer)velocity).flip();
 		alListener(AL_VELOCITY, velocity);
-		FloatBuffer position = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
+		FloatBuffer position = BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f});
 		((Buffer)position).flip();
 		alListener(AL_POSITION, position);
 
@@ -114,11 +113,21 @@ public class OpenALLwjglAudio implements LwjglAudio {
 	}
 
 	public OpenALSound newSound (FileHandle file) {
+		String extension = file.extension().toLowerCase();
+		return newSound(file, extension);
+	}
+
+	public OpenALSound newSound (FileHandle file, String extension) {
 		if (file == null) throw new IllegalArgumentException("file cannot be null.");
-		Class<? extends OpenALSound> soundClass = extensionToSoundClass.get(file.extension().toLowerCase());
+		Class<? extends OpenALSound> soundClass = extensionToSoundClass.get(extension);
 		if (soundClass == null) throw new GdxRuntimeException("Unknown file extension for sound: " + file);
 		try {
-			return soundClass.getConstructor(new Class[] {OpenALLwjglAudio.class, FileHandle.class}).newInstance(this, file);
+			OpenALSound sound = soundClass.getConstructor(new Class[] {OpenALLwjglAudio.class, FileHandle.class}).newInstance(this,
+				file);
+			if (sound.getType() != null && !sound.getType().equals(extension)) {
+				return newSound(file, sound.getType());
+			}
+			return sound;
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error creating sound " + soundClass.getName() + " for file: " + file, ex);
 		}
@@ -362,15 +371,15 @@ public class OpenALLwjglAudio implements LwjglAudio {
 	 * play */
 	protected void retain (OpenALSound sound, boolean stop) {
 		// Move the pointer ahead and wrap
-		mostRecetSound++;
-		mostRecetSound %= recentSounds.length;
+		mostRecentSound++;
+		mostRecentSound %= recentSounds.length;
 
 		if (stop) {
 			// Stop the least recent sound (the one we are about to bump off the buffer)
-			if (recentSounds[mostRecetSound] != null) recentSounds[mostRecetSound].stop();
+			if (recentSounds[mostRecentSound] != null) recentSounds[mostRecentSound].stop();
 		}
 
-		recentSounds[mostRecetSound] = sound;
+		recentSounds[mostRecentSound] = sound;
 	}
 
 	/** Removes the disposed sound from the least recently played list */

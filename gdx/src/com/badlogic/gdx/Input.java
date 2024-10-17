@@ -890,34 +890,6 @@ public interface Input {
 	/** @return the time of the event currently reported to the {@link InputProcessor}. */
 	public long getCurrentEventTime ();
 
-	/** @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
-	 *
-	 *             Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have
-	 *             no effect on the desktop.
-	 *
-	 * @param catchBack whether to catch the back button */
-	@Deprecated
-	public void setCatchBackKey (boolean catchBack);
-
-	/** @deprecated use {@link Input#isCatchKey(int keycode)} instead
-	 * @return whether the back button is currently being caught */
-	@Deprecated
-	public boolean isCatchBackKey ();
-
-	/** @deprecated use {@link Input#setCatchKey(int keycode, boolean catchKey)} instead
-	 *
-	 *             Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up.
-	 *             Will have no effect on the desktop.
-	 * 
-	 * @param catchMenu whether to catch the menu button */
-	@Deprecated
-	public void setCatchMenuKey (boolean catchMenu);
-
-	/** @deprecated use {@link Input#isCatchKey(int keycode)} instead
-	 * @return whether the menu button is currently being caught */
-	@Deprecated
-	public boolean isCatchMenuKey ();
-
 	/** Sets whether the given key on Android or GWT should be caught. No effect on other platforms. All keys that are not caught
 	 * may be handled by other apps or background processes on Android, or may trigger default browser behaviour on GWT. For
 	 * example, media or volume buttons are handled by background media players if present, or Space key triggers a scroll. All

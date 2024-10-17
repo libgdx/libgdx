@@ -45,4 +45,19 @@ public class ALSource extends NSObject {
 
 	@Method(selector = "setLooping:")
 	public native void setLooping (boolean shouldLoop);
+
+	@Method(selector = "buffersProcessed")
+	public native int buffersProcessed ();
+
+	@Method(selector = "unqueueBuffer:")
+	public native boolean unqueueBuffer (ALBuffer buffer);
+
+	@Method(selector = "queueBuffer:")
+	public native boolean queueBuffer (ALBuffer buffer);
+
+	@Method(selector = "playing")
+	public native boolean playing ();
+
+	@Method(selector = "play")
+	public native int play ();
 }

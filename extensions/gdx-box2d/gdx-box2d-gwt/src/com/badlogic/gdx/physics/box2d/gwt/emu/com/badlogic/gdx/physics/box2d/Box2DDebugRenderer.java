@@ -87,14 +87,14 @@ public class Box2DDebugRenderer {
 		renderBodies(world);
 	}
 
-	private final Color SHAPE_NOT_ACTIVE = new Color(0.5f, 0.5f, 0.3f, 1);
-	private final Color SHAPE_STATIC = new Color(0.5f, 0.9f, 0.5f, 1);
-	private final Color SHAPE_KINEMATIC = new Color(0.5f, 0.5f, 0.9f, 1);
-	private final Color SHAPE_NOT_AWAKE = new Color(0.6f, 0.6f, 0.6f, 1);
-	private final Color SHAPE_AWAKE = new Color(0.9f, 0.7f, 0.7f, 1);
-	private final Color JOINT_COLOR = new Color(0.5f, 0.8f, 0.8f, 1);
-	private final Color AABB_COLOR = new Color(1.0f, 0, 1.0f, 1f);
-	private final Color VELOCITY_COLOR = new Color(1.0f, 0, 0f, 1f);
+	public final Color SHAPE_NOT_ACTIVE = new Color(0.5f, 0.5f, 0.3f, 1);
+	public final Color SHAPE_STATIC = new Color(0.5f, 0.9f, 0.5f, 1);
+	public final Color SHAPE_KINEMATIC = new Color(0.5f, 0.5f, 0.9f, 1);
+	public final Color SHAPE_NOT_AWAKE = new Color(0.6f, 0.6f, 0.6f, 1);
+	public final Color SHAPE_AWAKE = new Color(0.9f, 0.7f, 0.7f, 1);
+	public final Color JOINT_COLOR = new Color(0.5f, 0.8f, 0.8f, 1);
+	public final Color AABB_COLOR = new Color(1.0f, 0, 1.0f, 1f);
+	public final Color VELOCITY_COLOR = new Color(1.0f, 0, 0f, 1f);
 
 	private void renderBodies (World world) {
 		renderer.begin(ShapeType.Line);

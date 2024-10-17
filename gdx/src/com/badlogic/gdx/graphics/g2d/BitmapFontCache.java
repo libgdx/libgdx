@@ -38,8 +38,8 @@ public class BitmapFontCache {
 
 	private final BitmapFont font;
 	private boolean integer;
-	private final Array<GlyphLayout> layouts = new Array();
-	private final Array<GlyphLayout> pooledLayouts = new Array();
+	private final Array<GlyphLayout> layouts = new Array(1);
+	private final Array<GlyphLayout> pooledLayouts = new Array(0);
 	private int glyphCount;
 	private float x, y;
 	private final Color color = new Color(1, 1, 1, 1);

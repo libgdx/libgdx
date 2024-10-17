@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,6 +27,7 @@ import com.badlogic.gdx.backends.lwjgl3.audio.Lwjgl3Audio;
 import com.badlogic.gdx.backends.lwjgl3.audio.OpenALLwjgl3Audio;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 
+import com.badlogic.gdx.utils.*;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.AMDDebugOutput;
@@ -56,7 +57,6 @@ import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
-import org.lwjgl.system.Configuration;
 
 public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private final Lwjgl3ApplicationConfiguration config;
@@ -80,11 +80,11 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 	static void initializeGlfw () {
 		if (errorCallback == null) {
-			if (SharedLibraryLoader.isMac) loadGlfwAwtMacos();
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(Lwjgl3ApplicationConfiguration.errorStream);
 			GLFW.glfwSetErrorCallback(errorCallback);
-			if (SharedLibraryLoader.isMac) GLFW.glfwInitHint(GLFW.GLFW_ANGLE_PLATFORM_TYPE, GLFW.GLFW_ANGLE_PLATFORM_TYPE_METAL);
+			if (SharedLibraryLoader.os == Os.MacOsX)
+				GLFW.glfwInitHint(GLFW.GLFW_ANGLE_PLATFORM_TYPE, GLFW.GLFW_ANGLE_PLATFORM_TYPE_METAL);
 			GLFW.glfwInitHint(GLFW.GLFW_JOYSTICK_HAT_BUTTONS, GLFW.GLFW_FALSE);
 			if (!GLFW.glfwInit()) {
 				throw new GdxRuntimeException("Unable to initialize GLFW");
@@ -113,20 +113,6 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			return;
 		} catch (Throwable t) {
 			throw new GdxRuntimeException("Couldn't load ANGLE.", t);
-		}
-	}
-
-	static void loadGlfwAwtMacos () {
-		try {
-			Class loader = Class.forName("com.badlogic.gdx.backends.lwjgl3.awt.GlfwAWTLoader");
-			Method load = loader.getMethod("load");
-			File sharedLib = (File)load.invoke(loader);
-			Configuration.GLFW_LIBRARY_NAME.set(sharedLib.getAbsolutePath());
-			Configuration.GLFW_CHECK_THREAD0.set(false);
-		} catch (ClassNotFoundException t) {
-			return;
-		} catch (Throwable t) {
-			throw new GdxRuntimeException("Couldn't load GLFW AWT for macOS.", t);
 		}
 	}
 
@@ -186,8 +172,10 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			closedWindows.clear();
 			int targetFramerate = -2;
 			for (Lwjgl3Window window : windows) {
-				window.makeCurrent();
-				currentWindow = window;
+				if (currentWindow != window) {
+					window.makeCurrent();
+					currentWindow = window;
+				}
 				if (targetFramerate == -2) targetFramerate = window.getConfig().foregroundFPS;
 				synchronized (lifecycleListeners) {
 					haveWindowsRendered |= window.update();
@@ -443,7 +431,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 
 	private Lwjgl3Window createWindow (final Lwjgl3ApplicationConfiguration config, ApplicationListener listener,
 		final long sharedContext) {
-		final Lwjgl3Window window = new Lwjgl3Window(listener, config, this);
+		final Lwjgl3Window window = new Lwjgl3Window(listener, lifecycleListeners, config, this);
 		if (sharedContext == 0) {
 			// the main window is created immediately
 			createWindow(window, config, sharedContext);
@@ -470,6 +458,12 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			window.getGraphics().gl20.glClear(GL11.GL_COLOR_BUFFER_BIT);
 			GLFW.glfwSwapBuffers(windowHandle);
 		}
+
+		if (currentWindow != null) {
+			// the call above to createGlfwWindow switches the OpenGL context to the newly created window,
+			// ensure that the invariant "currentWindow is the window with the current active OpenGL context" holds
+			currentWindow.makeCurrent();
+		}
 	}
 
 	static long createGlfwWindow (Lwjgl3ApplicationConfiguration config, long sharedContextWindow) {
@@ -492,7 +486,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			|| config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL32) {
 			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, config.gles30ContextMajorVersion);
 			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, config.gles30ContextMinorVersion);
-			if (SharedLibraryLoader.isMac) {
+			if (SharedLibraryLoader.os == Os.MacOsX) {
 				// hints mandatory on OS X for GL 3.2+ context creation, but fail on Windows if the
 				// WGL_ARB_create_context extension is not available
 				// see: http://www.glfw.org/docs/latest/compat.html
