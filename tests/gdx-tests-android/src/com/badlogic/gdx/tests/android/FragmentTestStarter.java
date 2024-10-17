@@ -21,6 +21,7 @@ import android.widget.ListView;
 
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.badlogic.gdx.tests.BackTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
@@ -32,7 +33,8 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		GdxTests.tests.add(MatrixTest.class);
+		if (!GdxTests.tests.contains(MatrixTest.class)) GdxTests.tests.add(MatrixTest.class);
+		if (!GdxTests.tests.contains(BackTest.class)) GdxTests.tests.add(BackTest.class);
 
 		LinearLayout layout = new LinearLayout(this);
 		layout.setOrientation(LinearLayout.HORIZONTAL);

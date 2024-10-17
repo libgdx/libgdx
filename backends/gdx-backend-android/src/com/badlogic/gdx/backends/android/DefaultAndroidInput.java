@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.android;
 
 import android.animation.Animator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -27,6 +28,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Handler;
 import android.text.*;
 import android.text.InputFilter.LengthFilter;
@@ -41,10 +43,14 @@ import android.view.inputmethod.InputConnectionWrapper;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import android.widget.TextView.OnEditorActionListener;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
+
 import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightObserver;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightProvider;
@@ -60,8 +66,8 @@ import java.util.List;
 
 /** An implementation of the {@link Input} interface for Android.
  *
- * @author mzechner */
-/** @author jshapcot */
+ * @author mzechner
+ * @author jshapcot */
 public class DefaultAndroidInput extends AbstractInput implements AndroidInput, KeyboardHeightObserver {
 
 	static class KeyEvent {
@@ -144,6 +150,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private final AndroidApplicationConfiguration config;
 	protected final Orientation nativeOrientation;
 	private long currentEventTimeStamp = 0;
+	private PredictiveBackHandler predictiveBackHandler;
 
 	private SensorEventListener accelerometerListener;
 	private SensorEventListener gyroscopeListener;
@@ -179,6 +186,10 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 		haptics = new AndroidHaptics(context);
 
+		if (Build.VERSION.SDK_INT >= 33 && context instanceof Activity) {
+			this.predictiveBackHandler = new PredictiveBackHandler();
+		}
+
 		int rotation = getRotation();
 		DisplayMode mode = app.getGraphics().getDisplayMode();
 		if (((rotation == 0 || rotation == 180) && (mode.width >= mode.height))
@@ -191,13 +202,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		// this is for backward compatibility: libGDX always caught the circle button, original comment:
 		// circle button on Xperia Play shouldn't need catchBack == true
 		setCatchKey(Keys.BUTTON_CIRCLE, true);
-		handle.post(new Runnable() {
-			@Override
-			public void run () {
-				// Early call to have a proper layouted EditText already on first call of openNativeInput
-				createDefaultEditText();
-			}
-		});
 	}
 
 	@Override
@@ -691,7 +695,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 			height += getSoftButtonsBarHeight();
 		}
 
-		if (relativeLayoutField == null) {
+		if (!isNativeInputOpen()) {
 			if (observer != null) observer.onKeyboardHeightChanged(height);
 			return;
 		}
@@ -747,8 +751,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	private void createDefaultEditText () {
+		// TODO: 07.10.2024 This should probably just get the content/root view instead
 		View view = ((AndroidGraphics)app.getGraphics()).getView();
-		FrameLayout frameLayout = (FrameLayout)view.getParent();
+		ViewGroup frameLayout = (ViewGroup)view.getParent();
 		final RelativeLayout relativeLayout = new RelativeLayout(context);
 		relativeLayout.setGravity(Gravity.BOTTOM);
 		// Why? Why isn't it working without?
@@ -1421,6 +1426,44 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	@Override
 	public void onDreamingStopped () {
 		unregisterSensorListeners();
+	}
+
+	@Override
+	public void setCatchKey (int keycode, boolean catchKey) {
+		super.setCatchKey(keycode, catchKey);
+		if (keycode == Keys.BACK && predictiveBackHandler != null) {
+			if (catchKey)
+				predictiveBackHandler.register();
+			else
+				predictiveBackHandler.unregister();
+		}
+	}
+
+	/** Handle predictive back gestures on Android 13 and newer, replacing the <code>BACK</code> key event for exiting the
+	 * activity.
+	 * @see <a href="https://developer.android.com/guide/navigation/custom-back/predictive-back-gesture">Add support for the
+	 *      predictive back gesture - Android Developers</a> */
+	@TargetApi(33)
+	private class PredictiveBackHandler {
+
+		private final OnBackInvokedDispatcher dispatcher = ((Activity)context).getOnBackInvokedDispatcher();
+		private final OnBackInvokedCallback callback = new OnBackInvokedCallback() {
+			@Override
+			public void onBackInvoked () {
+				if (processor != null) {
+					processor.keyDown(Keys.BACK);
+				}
+			}
+		};
+
+		private void register () {
+			dispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, callback);
+		}
+
+		private void unregister () {
+			dispatcher.unregisterOnBackInvokedCallback(callback);
+		}
+
 	}
 
 	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a

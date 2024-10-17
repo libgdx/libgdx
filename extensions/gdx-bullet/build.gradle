@@ -81,6 +81,7 @@ jnigen {
 	addLinux(x64, x86)
 	addLinux(x32, ARM)
 	addLinux(x64, ARM)
+	addLinux(x64, RISCV)
 	addMac(x64, x86)
 	addMac(x64, ARM)
 	addAndroid() {

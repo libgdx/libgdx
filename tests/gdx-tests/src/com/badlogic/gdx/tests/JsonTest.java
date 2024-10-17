@@ -168,6 +168,80 @@ public class JsonTest extends GdxTest {
 		equals(json.toJson(Array.with(" 1", "2 ", " 3 "), null, String.class), "[\" 1\",\"2 \",\" 3 \"]");
 		equals(json.toJson(Array.with("1", "", "3"), null, String.class), "[1,\"\",3]");
 
+		// Show JsonSkimmer methods are called for all JSON parts:
+		String text = "{outer:{name1:{},z:{a:true,name2:[value,{\"ok\":v},0 ,1]}}}";
+		System.out.println(text);
+		new JsonSkimmer() {
+			int indent;
+			boolean object;
+
+			void indent () {
+				for (int i = 0; i < indent; i++)
+					System.out.print("   ");
+			}
+
+			@Override
+			protected void push (@Null String name, boolean object) {
+				indent();
+				if (object)
+					System.out.println(name != null ? name + ": {" : "{");
+				else
+					System.out.println(name != null ? name + ": [" : "[");
+				this.object = object;
+				indent++;
+			}
+
+			@Override
+			protected void pop () {
+				indent--;
+				indent();
+				System.out.println(object ? '}' : ']');
+			}
+
+			@Override
+			protected void value (String name, String value, boolean unquoted) {
+				indent();
+				System.out.println(name != null ? name + ": " + value : value);
+			}
+		}.parse(text);
+
+		// JsonSkimmer usage example/test:
+		final Array values = new Array();
+		new JsonSkimmer() {
+			int level;
+			String id;
+			float watts;
+
+			@Override
+			protected void push (String name, boolean object) {
+				level++;
+			}
+
+			@Override
+			protected void pop () {
+				if (level == 2) {
+					values.add(id);
+					values.add(watts);
+					id = null;
+					watts = 0;
+				}
+				level--;
+			}
+
+			@Override
+			protected void value (String name, String value, boolean unquoted) {
+				if (level == 2) {
+					if (name.equals("eid"))
+						id = value;
+					else if (name.equals("activePower")) //
+						watts = Float.parseFloat(value);
+				}
+			}
+		}.parse(
+			"[{\"eid\": 704643328, \"timestamp\": 1686961582, \"actEnergyDlvd\": 2485013.736, \"actEnergyRcvd\": 11887.499, \"apparentEnergy\": 3054495.271, \"reactEnergyLagg\": 795783.451, \"reactEnergyLead\": 0.398, \"instantaneousDemand\": 0.543, \"activePower\": 0.543, \"apparentPower\": 254.202, \"reactivePower\": 248.806, \"pwrFactor\": 0.0, \"voltage\": 244.004, \"current\": 1.043, \"freq\": 50.125, \"channels\": [{\"eid\": 1778385169, \"timestamp\": 1686961582, \"actEnergyDlvd\": 2485013.736, \"actEnergyRcvd\": 11887.499, \"apparentEnergy\": 3054495.271, \"reactEnergyLagg\": 795783.451, \"reactEnergyLead\": 0.398, \"instantaneousDemand\": 0.543, \"activePower\": 0.543, \"apparentPower\": 254.202, \"reactivePower\": 248.806, \"pwrFactor\": 0.0, \"voltage\": 244.004, \"current\": 1.043, \"freq\": 50.125}, {\"eid\": 1778385170, \"timestamp\": 1686961582, \"actEnergyDlvd\": 9.464, \"actEnergyRcvd\": 1998.651, \"apparentEnergy\": 3232.019, \"reactEnergyLagg\": 301.011, \"reactEnergyLead\": 2.645, \"instantaneousDemand\": -0.1, \"activePower\": -0.1, \"apparentPower\": 0.75, \"reactivePower\": -0.0, \"pwrFactor\": 0.0, \"voltage\": 5.478, \"current\": 0.137, \"freq\": 50.125}, {\"eid\": 1778385171, \"timestamp\": 1686961582, \"actEnergyDlvd\": 0.002, \"actEnergyRcvd\": 4766.67, \"apparentEnergy\": 306.341, \"reactEnergyLagg\": 286.551, \"reactEnergyLead\": 0.293, \"instantaneousDemand\": -0.0, \"activePower\": -0.0, \"apparentPower\": -0.0, \"reactivePower\": 0.0, \"pwrFactor\": 0.0, \"voltage\": 9.968, \"current\": 0.0, \"freq\": 50.125}]}, {\"eid\": 704643584, \"timestamp\": 1686961582, \"actEnergyDlvd\": 1749556.395, \"actEnergyRcvd\": 1601637.637, \"apparentEnergy\": 5069079.041, \"reactEnergyLagg\": 17.665, \"reactEnergyLead\": 2831887.274, \"instantaneousDemand\": 432.435, \"activePower\": 432.435, \"apparentPower\": 971.846, \"reactivePower\": -793.38, \"pwrFactor\": 0.444, \"voltage\": 244.187, \"current\": 3.981, \"freq\": 50.125, \"channels\": [{\"eid\": 1778385425, \"timestamp\": 1686961582, \"actEnergyDlvd\": 1749556.395, \"actEnergyRcvd\": 1601637.637, \"apparentEnergy\": 5069079.041, \"reactEnergyLagg\": 17.665, \"reactEnergyLead\": 2831887.274, \"instantaneousDemand\": 432.435, \"activePower\": 432.435, \"apparentPower\": 971.846, \"reactivePower\": -793.38, \"pwrFactor\": 0.444, \"voltage\": 244.187, \"current\": 3.981, \"freq\": 50.125}, {\"eid\": 1778385426, \"timestamp\": 1686961582, \"actEnergyDlvd\": 0.002, \"actEnergyRcvd\": 6887.628, \"apparentEnergy\": 2848.524, \"reactEnergyLagg\": 273.934, \"reactEnergyLead\": 0.183, \"instantaneousDemand\": -0.285, \"activePower\": -0.285, \"apparentPower\": 0.773, \"reactivePower\": 0.0, \"pwrFactor\": -1.0, \"voltage\": 6.849, \"current\": 0.112, \"freq\": 50.125}, {\"eid\": 1778385427, \"timestamp\": 1686961582, \"actEnergyDlvd\": 0.005, \"actEnergyRcvd\": 10679.623, \"apparentEnergy\": 2662.289, \"reactEnergyLagg\": 274.727, \"reactEnergyLead\": 0.57, \"instantaneousDemand\": -0.332, \"activePower\": -0.332, \"apparentPower\": 0.711, \"reactivePower\": 0.074, \"pwrFactor\": 0.0, \"voltage\": 6.283, \"current\": 0.113, \"freq\": 50.125}]}]");
+		System.out.println(values);
+		if (!values.equals(Array.with("704643328", 0.543f, "704643584", 432.435f))) throw new RuntimeException();
+
 		System.out.println();
 		System.out.println("Success!");
 	}

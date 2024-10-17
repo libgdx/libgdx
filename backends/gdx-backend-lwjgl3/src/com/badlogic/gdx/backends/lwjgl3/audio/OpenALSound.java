@@ -31,29 +31,36 @@ public class OpenALSound implements Sound {
 	private final OpenALLwjgl3Audio audio;
 	private float duration;
 	private int sampleRate, channels;
+	private String type;
 
 	public OpenALSound (OpenALLwjgl3Audio audio) {
 		this.audio = audio;
 	}
 
-	void setup (byte[] pcm, int channels, int sampleRate) {
-		int validBytes = pcm.length - (pcm.length % (channels > 1 ? 4 : 2));
+	/** Prepare our sound for playback!
+	 * @param pcm Byte array of raw PCM data to be played.
+	 * @param channels The number of channels for the sound. Most commonly 1 (for mono) or 2 (for stereo).
+	 * @param bitDepth The number of bits in each sample. Normally 16. Can also be 8, 32, 64.
+	 * @param sampleRate The number of samples to be played each second. Commonly 44100; can be anything within reason. */
+	void setup (byte[] pcm, int channels, int bitDepth, int sampleRate) {
+		int validBytes = pcm.length - (pcm.length % (channels * (bitDepth >> 3)));
 		ByteBuffer buffer = BufferUtils.newByteBuffer(validBytes);
 		buffer.put(pcm, 0, validBytes);
 		((Buffer)buffer).flip();
 
-		setup(buffer.asShortBuffer(), channels, sampleRate);
+		setup(buffer.asShortBuffer(), channels, bitDepth, sampleRate);
 	}
 
-	void setup (ShortBuffer pcm, int channels, int sampleRate) {
+	void setup (ShortBuffer pcm, int channels, int bitDepth, int sampleRate) {
 		this.channels = channels;
 		this.sampleRate = sampleRate;
-		int sampleFrames = pcm.limit() / channels;
+		int sampleFrames = (pcm.limit() << 1) / (bitDepth >> 3) / channels;
 		duration = sampleFrames / (float)sampleRate;
 
 		if (bufferID == -1) {
 			bufferID = alGenBuffers();
-			alBufferData(bufferID, channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, pcm, sampleRate);
+			int format = OpenALUtils.determineFormat(channels, bitDepth);
+			alBufferData(bufferID, format, pcm, sampleRate);
 		}
 	}
 
@@ -186,13 +193,22 @@ public class OpenALSound implements Sound {
 		return duration;
 	}
 
-	/** returns the original sample rate of the sound in Hz. */
+	/** Returns the original sample rate of the sound in Hz. */
 	public int getRate () {
 		return sampleRate;
 	}
 
-	/** returns the number of channels of the sound (1 for mono, 2 for stereo). */
+	/** Returns the number of channels of the sound. Usually 1 for mono; 2 for stereo. */
 	public int getChannels () {
 		return channels;
+	}
+
+	/** @param type The type of audio, such as mp3, ogg or wav. */
+	public void setType (String type) {
+		this.type = type;
+	}
+
+	public String getType () {
+		return type;
 	}
 }
