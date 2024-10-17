@@ -91,7 +91,9 @@ jnigen {
 		cppFlags += " -fexceptions"
 		androidApplicationMk += ["APP_STL := c++_static"]
 		if (HostDetection.os == Os.Windows) {
-			androidAndroidMk += ["LOCAL_SHORT_COMMANDS := true"]
+			androidAndroidMk += [
+				"LOCAL_SHORT_COMMANDS := true"
+			]
 			androidApplicationMk += ["APP_SHORT_COMMANDS := true"]
 		}
 	}
