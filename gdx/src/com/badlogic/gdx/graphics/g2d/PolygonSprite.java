@@ -262,11 +262,11 @@ public class PolygonSprite {
 
 	public void draw (PolygonSpriteBatch spriteBatch, float alphaModulation) {
 		Color color = getColor();
-		float oldAlpha = color.a;
-		color.a *= alphaModulation;
+		float oldAlpha = color.getA();
+		color.setA(color.getA() * alphaModulation);
 		setColor(color);
 		draw(spriteBatch);
-		color.a = oldAlpha;
+		color.setA(oldAlpha);
 		setColor(color);
 	}
 

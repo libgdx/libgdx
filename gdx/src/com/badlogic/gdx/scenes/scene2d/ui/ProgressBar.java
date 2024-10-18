@@ -118,7 +118,7 @@ public class ProgressBar extends Widget implements Disableable {
 		float knobWidth = knob == null ? 0 : knob.getMinWidth();
 		float percent = getVisualPercent();
 
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		batch.setColor(color.getR(), color.getG(), color.getB(), color.getA() * parentAlpha);
 
 		if (vertical) {
 			float bgTopHeight = 0, bgBottomHeight = 0;

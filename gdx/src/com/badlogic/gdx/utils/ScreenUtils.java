@@ -38,7 +38,7 @@ public final class ScreenUtils {
 	/** Clears the color buffers with the specified Color.
 	 * @param color Color to clear the color buffers with. */
 	public static void clear (Color color) {
-		clear(color.r, color.g, color.b, color.a, false);
+		clear(color.getR(), color.getG(), color.getB(), color.getA(), false);
 	}
 
 	/** Clears the color buffers with the specified color. */
@@ -50,7 +50,7 @@ public final class ScreenUtils {
 	 * @param color Color to clear the color buffers with.
 	 * @param clearDepth Clears the depth buffer if true. */
 	public static void clear (Color color, boolean clearDepth) {
-		clear(color.r, color.g, color.b, color.a, clearDepth);
+		clear(color.getR(), color.getG(), color.getB(), color.getA(), clearDepth);
 	}
 
 	/** Clears the color buffers and optionally the depth buffer.

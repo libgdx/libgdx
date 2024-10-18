@@ -522,10 +522,10 @@ public class MeshBuilder implements MeshPartBuilder {
 
 		if (hasColor) {
 			if (colOffset >= 0) {
-				vertices.items[o + colOffset] *= color.r;
-				vertices.items[o + colOffset + 1] *= color.g;
-				vertices.items[o + colOffset + 2] *= color.b;
-				if (colSize > 3) vertices.items[o + colOffset + 3] *= color.a;
+				vertices.items[o + colOffset] *= color.getR();
+				vertices.items[o + colOffset + 1] *= color.getG();
+				vertices.items[o + colOffset + 2] *= color.getB();
+				if (colSize > 3) vertices.items[o + colOffset + 3] *= color.getA();
 			} else if (cpOffset >= 0) {
 				Color.abgr8888ToColor(tempC1, vertices.items[o + cpOffset]);
 				vertices.items[o + cpOffset] = tempC1.mul(color).toFloatBits();
@@ -557,10 +557,10 @@ public class MeshBuilder implements MeshPartBuilder {
 
 		if (colOffset >= 0) {
 			if (col == null) col = Color.WHITE;
-			vertex[colOffset] = col.r;
-			vertex[colOffset + 1] = col.g;
-			vertex[colOffset + 2] = col.b;
-			if (colSize > 3) vertex[colOffset + 3] = col.a;
+			vertex[colOffset] = col.getR();
+			vertex[colOffset + 1] = col.getG();
+			vertex[colOffset + 2] = col.getB();
+			if (colSize > 3) vertex[colOffset + 3] = col.getA();
 		} else if (cpOffset > 0) {
 			if (col == null) col = Color.WHITE;
 			vertex[cpOffset] = col.toFloatBits(); // FIXME cache packed color?

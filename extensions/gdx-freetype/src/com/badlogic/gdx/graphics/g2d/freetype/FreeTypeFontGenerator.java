@@ -366,10 +366,10 @@ public class FreeTypeFontGenerator implements Disposable {
 			ownsAtlas = true;
 			packer = new PixmapPacker(size, size, Format.RGBA8888, 1, false, packStrategy);
 			packer.setTransparentColor(parameter.color);
-			packer.getTransparentColor().a = 0;
+			packer.getTransparentColor().setA(0);
 			if (parameter.borderWidth > 0) {
 				packer.setTransparentColor(parameter.borderColor);
-				packer.getTransparentColor().a = 0;
+				packer.getTransparentColor().setA(0);
 			}
 		}
 
@@ -535,9 +535,10 @@ public class FreeTypeFontGenerator implements Disposable {
 				shadowPixmap.fill();
 
 				Color shadowColor = parameter.shadowColor;
-				float a = shadowColor.a;
+				float a = shadowColor.getA();
 				if (a != 0) {
-					byte r = (byte)(shadowColor.r * 255), g = (byte)(shadowColor.g * 255), b = (byte)(shadowColor.b * 255);
+					byte r = (byte)(shadowColor.getR() * 255), g = (byte)(shadowColor.getG() * 255),
+						b = (byte)(shadowColor.getB() * 255);
 					ByteBuffer mainPixels = mainPixmap.getPixels();
 					ByteBuffer shadowPixels = shadowPixmap.getPixels();
 					for (int y = 0; y < mainH; y++) {

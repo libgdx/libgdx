@@ -531,9 +531,9 @@ public class ScrollPane extends WidgetGroup {
 
 		// Draw the background ninepatch.
 		Color color = getColor();
-		float alpha = color.a * parentAlpha;
+		float alpha = color.getA() * parentAlpha;
 		if (style.background != null) {
-			batch.setColor(color.r, color.g, color.b, alpha);
+			batch.setColor(color.getR(), color.getG(), color.getB(), alpha);
 			style.background.draw(batch, 0, 0, getWidth(), getHeight());
 		}
 
@@ -545,9 +545,9 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		// Render scrollbars and knobs on top if they will be visible.
-		batch.setColor(color.r, color.g, color.b, alpha);
+		batch.setColor(color.getR(), color.getG(), color.getB(), alpha);
 		if (fadeScrollBars) alpha *= Interpolation.fade.apply(fadeAlpha / fadeAlphaSeconds);
-		drawScrollBars(batch, color.r, color.g, color.b, alpha);
+		drawScrollBars(batch, color.getR(), color.getG(), color.getB(), alpha);
 
 		resetTransform(batch);
 	}

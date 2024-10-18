@@ -668,7 +668,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 
 			backgroundColor = new GradientColorValue();
 			Color color = Color.valueOf("878787");
-			backgroundColor.setColors(new float[] {color.r, color.g, color.b});
+			backgroundColor.setColors(new float[] {color.getR(), color.getG(), color.getB()});
 
 			models = new Array<Model>();
 			ModelBuilder builder = new ModelBuilder();

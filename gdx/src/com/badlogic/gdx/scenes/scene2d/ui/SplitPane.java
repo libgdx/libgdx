@@ -246,7 +246,7 @@ public class SplitPane extends WidgetGroup {
 		validate();
 
 		Color color = getColor();
-		float alpha = color.a * parentAlpha;
+		float alpha = color.getA() * parentAlpha;
 
 		applyTransform(batch, computeTransform());
 		if (firstWidget != null && firstWidget.isVisible()) {
@@ -267,7 +267,7 @@ public class SplitPane extends WidgetGroup {
 				ScissorStack.popScissors();
 			}
 		}
-		batch.setColor(color.r, color.g, color.b, alpha);
+		batch.setColor(color.getR(), color.getG(), color.getB(), alpha);
 		style.handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
 		resetTransform(batch);
 	}

@@ -78,9 +78,9 @@ public class ModelInstanceRenderer
 				int colorOffset = i * renderData.colorChannel.strideSize;
 				ColorAttribute colorAttribute = (ColorAttribute)instance.materials.get(0).get(ColorAttribute.Diffuse);
 				BlendingAttribute blendingAttribute = (BlendingAttribute)instance.materials.get(0).get(BlendingAttribute.Type);
-				colorAttribute.color.r = renderData.colorChannel.data[colorOffset + ParticleChannels.RedOffset];
-				colorAttribute.color.g = renderData.colorChannel.data[colorOffset + ParticleChannels.GreenOffset];
-				colorAttribute.color.b = renderData.colorChannel.data[colorOffset + ParticleChannels.BlueOffset];
+				colorAttribute.color.setR(renderData.colorChannel.data[colorOffset + ParticleChannels.RedOffset]);
+				colorAttribute.color.setG(renderData.colorChannel.data[colorOffset + ParticleChannels.GreenOffset]);
+				colorAttribute.color.setB(renderData.colorChannel.data[colorOffset + ParticleChannels.BlueOffset]);
 				if (blendingAttribute != null)
 					blendingAttribute.opacity = renderData.colorChannel.data[colorOffset + ParticleChannels.AlphaOffset];
 			}

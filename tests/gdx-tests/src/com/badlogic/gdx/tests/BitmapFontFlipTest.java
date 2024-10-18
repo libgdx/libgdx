@@ -97,7 +97,7 @@ public class BitmapFontFlipTest extends GdxTest {
 
 	@Override
 	public void render () {
-		red.a = (red.a + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
+		red.setA((red.getA() + Gdx.graphics.getDeltaTime() * 0.1f) % 1);
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
@@ -112,7 +112,7 @@ public class BitmapFontFlipTest extends GdxTest {
 			renderCached();
 			break;
 		case 2:
-			font.getData().setScale(red.a + 0.5f);
+			font.getData().setScale(red.getA() + 0.5f);
 			renderNormal("normal scaled");
 			break;
 		case 3:
@@ -131,7 +131,7 @@ public class BitmapFontFlipTest extends GdxTest {
 		font.setColor(Color.WHITE);
 		font.draw(spriteBatch, "(" + type + ")", 10, 320 - 66);
 
-		if (red.a > 0.6f) return;
+		if (red.getA() > 0.6f) return;
 
 		text = "Sphinx of black quartz,\njudge my vow.";
 		font.setColor(Color.RED);
@@ -152,7 +152,7 @@ public class BitmapFontFlipTest extends GdxTest {
 
 		cache1.draw(spriteBatch);
 
-		if (red.a > 0.6f) return;
+		if (red.getA() > 0.6f) return;
 
 		cache2.draw(spriteBatch);
 		cache3.draw(spriteBatch);
@@ -165,7 +165,7 @@ public class BitmapFontFlipTest extends GdxTest {
 
 		cacheScaled1.draw(spriteBatch);
 
-		if (red.a > 0.6f) return;
+		if (red.getA() > 0.6f) return;
 
 		cacheScaled2.draw(spriteBatch);
 		cacheScaled3.draw(spriteBatch);

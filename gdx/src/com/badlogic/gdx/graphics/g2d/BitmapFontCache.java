@@ -291,11 +291,11 @@ public class BitmapFontCache {
 			return;
 		}
 		Color color = getColor();
-		float oldAlpha = color.a;
-		color.a *= alphaModulation;
+		float oldAlpha = color.getA();
+		color.setA(color.getA() * alphaModulation);
 		setColors(color);
 		draw(spriteBatch);
-		color.a = oldAlpha;
+		color.setA(oldAlpha);
 		setColors(color);
 	}
 

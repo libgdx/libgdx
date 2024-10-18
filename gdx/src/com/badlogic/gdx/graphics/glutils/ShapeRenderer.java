@@ -270,9 +270,9 @@ public class ShapeRenderer implements Disposable {
 			return;
 		}
 		check(ShapeType.Line, null, 2);
-		renderer.color(c1.r, c1.g, c1.b, c1.a);
+		renderer.color(c1.getR(), c1.getG(), c1.getB(), c1.getA());
 		renderer.vertex(x, y, z);
-		renderer.color(c2.r, c2.g, c2.b, c2.a);
+		renderer.color(c2.getR(), c2.getG(), c2.getB(), c2.getA());
 		renderer.vertex(x2, y2, z2);
 	}
 
@@ -360,26 +360,26 @@ public class ShapeRenderer implements Disposable {
 	public void triangle (float x1, float y1, float x2, float y2, float x3, float y3, Color col1, Color col2, Color col3) {
 		check(ShapeType.Line, ShapeType.Filled, 6);
 		if (shapeType == ShapeType.Line) {
-			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.color(col1.getR(), col1.getG(), col1.getB(), col1.getA());
 			renderer.vertex(x1, y1, 0);
-			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.color(col2.getR(), col2.getG(), col2.getB(), col2.getA());
 			renderer.vertex(x2, y2, 0);
 
-			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.color(col2.getR(), col2.getG(), col2.getB(), col2.getA());
 			renderer.vertex(x2, y2, 0);
-			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.color(col3.getR(), col3.getG(), col3.getB(), col3.getA());
 			renderer.vertex(x3, y3, 0);
 
-			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.color(col3.getR(), col3.getG(), col3.getB(), col3.getA());
 			renderer.vertex(x3, y3, 0);
-			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.color(col1.getR(), col1.getG(), col1.getB(), col1.getA());
 			renderer.vertex(x1, y1, 0);
 		} else {
-			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.color(col1.getR(), col1.getG(), col1.getB(), col1.getA());
 			renderer.vertex(x1, y1, 0);
-			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.color(col2.getR(), col2.getG(), col2.getB(), col2.getA());
 			renderer.vertex(x2, y2, 0);
-			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.color(col3.getR(), col3.getG(), col3.getB(), col3.getA());
 			renderer.vertex(x3, y3, 0);
 		}
 	}
@@ -435,38 +435,38 @@ public class ShapeRenderer implements Disposable {
 		check(ShapeType.Line, ShapeType.Filled, 8);
 
 		if (shapeType == ShapeType.Line) {
-			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.color(col1.getR(), col1.getG(), col1.getB(), col1.getA());
 			renderer.vertex(x, y, 0);
-			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.color(col2.getR(), col2.getG(), col2.getB(), col2.getA());
 			renderer.vertex(x + width, y, 0);
 
-			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.color(col2.getR(), col2.getG(), col2.getB(), col2.getA());
 			renderer.vertex(x + width, y, 0);
-			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.color(col3.getR(), col3.getG(), col3.getB(), col3.getA());
 			renderer.vertex(x + width, y + height, 0);
 
-			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.color(col3.getR(), col3.getG(), col3.getB(), col3.getA());
 			renderer.vertex(x + width, y + height, 0);
-			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.color(col4.getR(), col4.getG(), col4.getB(), col4.getA());
 			renderer.vertex(x, y + height, 0);
 
-			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.color(col4.getR(), col4.getG(), col4.getB(), col4.getA());
 			renderer.vertex(x, y + height, 0);
-			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.color(col1.getR(), col1.getG(), col1.getB(), col1.getA());
 			renderer.vertex(x, y, 0);
 		} else {
-			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.color(col1.getR(), col1.getG(), col1.getB(), col1.getA());
 			renderer.vertex(x, y, 0);
-			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.color(col2.getR(), col2.getG(), col2.getB(), col2.getA());
 			renderer.vertex(x + width, y, 0);
-			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.color(col3.getR(), col3.getG(), col3.getB(), col3.getA());
 			renderer.vertex(x + width, y + height, 0);
 
-			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.color(col3.getR(), col3.getG(), col3.getB(), col3.getA());
 			renderer.vertex(x + width, y + height, 0);
-			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.color(col4.getR(), col4.getG(), col4.getB(), col4.getA());
 			renderer.vertex(x, y + height, 0);
-			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.color(col1.getR(), col1.getG(), col1.getB(), col1.getA());
 			renderer.vertex(x, y, 0);
 		}
 	}
@@ -518,38 +518,38 @@ public class ShapeRenderer implements Disposable {
 		float y4 = y3 - (y2 - y1);
 
 		if (shapeType == ShapeType.Line) {
-			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.color(col1.getR(), col1.getG(), col1.getB(), col1.getA());
 			renderer.vertex(x1, y1, 0);
-			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.color(col2.getR(), col2.getG(), col2.getB(), col2.getA());
 			renderer.vertex(x2, y2, 0);
 
-			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.color(col2.getR(), col2.getG(), col2.getB(), col2.getA());
 			renderer.vertex(x2, y2, 0);
-			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.color(col3.getR(), col3.getG(), col3.getB(), col3.getA());
 			renderer.vertex(x3, y3, 0);
 
-			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.color(col3.getR(), col3.getG(), col3.getB(), col3.getA());
 			renderer.vertex(x3, y3, 0);
-			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.color(col4.getR(), col4.getG(), col4.getB(), col4.getA());
 			renderer.vertex(x4, y4, 0);
 
-			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.color(col4.getR(), col4.getG(), col4.getB(), col4.getA());
 			renderer.vertex(x4, y4, 0);
-			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.color(col1.getR(), col1.getG(), col1.getB(), col1.getA());
 			renderer.vertex(x1, y1, 0);
 		} else {
-			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.color(col1.getR(), col1.getG(), col1.getB(), col1.getA());
 			renderer.vertex(x1, y1, 0);
-			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.color(col2.getR(), col2.getG(), col2.getB(), col2.getA());
 			renderer.vertex(x2, y2, 0);
-			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.color(col3.getR(), col3.getG(), col3.getB(), col3.getA());
 			renderer.vertex(x3, y3, 0);
 
-			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.color(col3.getR(), col3.getG(), col3.getB(), col3.getA());
 			renderer.vertex(x3, y3, 0);
-			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.color(col4.getR(), col4.getG(), col4.getB(), col4.getA());
 			renderer.vertex(x4, y4, 0);
-			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.color(col1.getR(), col1.getG(), col1.getB(), col1.getA());
 			renderer.vertex(x1, y1, 0);
 		}
 

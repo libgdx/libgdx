@@ -43,7 +43,7 @@ public class GroupFadeTest extends GdxTest {
 			Image img = new Image(new TextureRegion(texture));
 			img.setX((float)Math.random() * 480);
 			img.setY((float)Math.random() * 320);
-			img.getColor().a = (float)Math.random() * 0.5f + 0.5f;
+			img.getColor().setA((float)Math.random() * 0.5f + 0.5f);
 			stage.addActor(img);
 		}
 

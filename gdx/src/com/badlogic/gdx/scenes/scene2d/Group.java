@@ -64,7 +64,7 @@ public class Group extends Actor implements Cullable {
 	 * these methods don't need to be called, children positions are temporarily offset by the group position when drawn. This
 	 * method avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawChildren (Batch batch, float parentAlpha) {
-		parentAlpha *= this.color.a;
+		parentAlpha *= this.color.getA();
 		SnapshotArray<Actor> children = this.children;
 		Actor[] actors = children.begin();
 		Rectangle cullingArea = this.cullingArea;

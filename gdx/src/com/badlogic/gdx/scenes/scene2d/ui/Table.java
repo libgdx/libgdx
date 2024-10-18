@@ -132,7 +132,7 @@ public class Table extends WidgetGroup {
 	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
 		if (background == null) return;
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		batch.setColor(color.getR(), color.getG(), color.getB(), color.getA() * parentAlpha);
 		background.draw(batch, x, y, getWidth(), getHeight());
 	}
 

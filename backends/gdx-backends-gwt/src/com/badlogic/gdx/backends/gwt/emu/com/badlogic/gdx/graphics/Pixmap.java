@@ -344,7 +344,7 @@ public class Pixmap implements Disposable {
 	/** Sets the color for the following drawing operations.
 	 * @param color The color. */
 	public void setColor (Color color) {
-		setColor(color.r, color.g, color.b, color.a);
+		setColor(color.getR(), color.getG(), color.getB(), color.getA());
 	}
 
 	/** Fills the complete bitmap with the currently set color. */
