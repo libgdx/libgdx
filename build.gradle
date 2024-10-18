@@ -233,9 +233,9 @@ project.afterEvaluate {
 		afterEvaluate { project ->
 			if (project.plugins.hasPlugin("com.badlogicgames.jnigen.jnigen-gradle")) {
 				[
-						project.tasks.jnigenPackageAllAndroid,
-						project.tasks.jnigenPackageAllIOS,
-						project.tasks.jnigenPackageAllDesktop
+					project.tasks.jnigenPackageAllAndroid,
+					project.tasks.jnigenPackageAllIOS,
+					project.tasks.jnigenPackageAllDesktop
 				].forEach { packageTask ->
 					fetchNatives.dependsOn(packageTask)
 					packageTask.mustRunAfter(unzipNatives)
