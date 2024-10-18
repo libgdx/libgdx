@@ -179,6 +179,12 @@ jobs:
         run: |
           aws s3 cp natives.zip s3://libgdx-nightlies/libgdx-nightlies/natives-jnigen-3.0.zip
 
+      - name: Fetch external natives
+        run: |
+          ./gradlew fetchExternalNatives
 
       - name: Package All
         run: ./gradlew jnigenPackageAll
+
+      - name: Publish
+        run: ./gradlew publish
