@@ -22,8 +22,8 @@ import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 public abstract class Joint {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h> 
-	 */
+#include <box2d/box2d.h>
+	 */ // @on
 	/** the address of the joint **/
 	protected long addr;
 
@@ -59,9 +59,10 @@ public abstract class Joint {
 	}
 
 	private native int jniGetType (long addr); /*
+		// @off
 		b2Joint* joint = (b2Joint*)addr;
 		return joint->GetType();
-	*/
+	*/ // @on
 
 	/** Get the first body attached to this joint. */
 	public Body getBodyA () {
@@ -69,9 +70,10 @@ public abstract class Joint {
 	}
 
 	private native long jniGetBodyA (long addr); /*
+		// @off
 		b2Joint* joint = (b2Joint*)addr;
 		return (jlong)joint->GetBodyA();
-	*/
+	*/ // @on
 
 	/** Get the second body attached to this joint. */
 	public Body getBodyB () {
@@ -79,9 +81,10 @@ public abstract class Joint {
 	}
 
 	private native long jniGetBodyB (long addr); /*
+		// @off
 		b2Joint* joint = (b2Joint*)addr;
 		return (jlong)joint->GetBodyB();
-	*/
+	*/ // @on
 
 	/** Get the anchor point on bodyA in world coordinates. */
 	private final Vector2 anchorA = new Vector2();
@@ -94,11 +97,12 @@ public abstract class Joint {
 	}
 
 	private native void jniGetAnchorA (long addr, float[] anchorA); /*
+		// @off
 		b2Joint* joint = (b2Joint*)addr;
 		b2Vec2 a = joint->GetAnchorA();
 		anchorA[0] = a.x;
 		anchorA[1] = a.y;
-	*/
+	*/ // @on
 
 	/** Get the anchor point on bodyB in world coordinates. */
 	private final Vector2 anchorB = new Vector2();
@@ -111,20 +115,22 @@ public abstract class Joint {
 	}
 
 	private native void jniGetAnchorB (long addr, float[] anchorB); /*
+		// @off
 		b2Joint* joint = (b2Joint*)addr;
 		b2Vec2 a = joint->GetAnchorB();
 		anchorB[0] = a.x;
 		anchorB[1] = a.y;
-	*/
+	*/ // @on
 
-	public boolean getCollideConnected() {
+	public boolean getCollideConnected () {
 		return jniGetCollideConnected(addr);
 	}
 
-	private native boolean jniGetCollideConnected(long addr); /*
+	private native boolean jniGetCollideConnected (long addr); /*
+		// @off
 		b2Joint* joint = (b2Joint*) addr;
 		return joint->GetCollideConnected();
-	*/
+	*/ // @on
 
 	/** Get the reaction force on body2 at the joint anchor in Newtons. */
 	private final Vector2 reactionForce = new Vector2();
@@ -137,11 +143,12 @@ public abstract class Joint {
 	}
 
 	private native void jniGetReactionForce (long addr, float inv_dt, float[] reactionForce); /*
+		// @off
 		b2Joint* joint = (b2Joint*)addr;
 		b2Vec2 f = joint->GetReactionForce(inv_dt);
 		reactionForce[0] = f.x;
 		reactionForce[1] = f.y;
-	*/
+	*/ // @on
 
 	/** Get the reaction torque on body2 in N*m. */
 	public float getReactionTorque (float inv_dt) {
@@ -149,9 +156,10 @@ public abstract class Joint {
 	}
 
 	private native float jniGetReactionTorque (long addr, float inv_dt); /*
+		// @off
 		b2Joint* joint = (b2Joint*)addr;
 		return joint->GetReactionTorque(inv_dt);
-	*/
+	*/ // @on
 
 // /// Get the next joint the world joint list.
 // b2Joint* GetNext();
@@ -167,15 +175,59 @@ public abstract class Joint {
 		this.userData = userData;
 	}
 
-	/** Short-cut function to determine if either body is inactive. */
-	public boolean isActive () {
-		return jniIsActive(addr);
+	/** Short-cut function to determine if either body is enabled. */
+	public boolean isEnabled () {
+		return jniIsEnabled(addr);
 	}
 
-	private native boolean jniIsActive (long addr); /*
+	private native boolean jniIsEnabled (long addr); /*
+		// @off
 		b2Joint* joint = (b2Joint*)addr;
-		return joint->IsActive();
-	*/
-	
+		return joint->IsEnabled();
+	*/ // @on
+
+	private static final float[] out = new float[2];
+
+	public static StiffnessAndDamping linearStiffness (float frequencyHertz, float dampingRatio, Body bodyA, Body bodyB) {
+		jniLinearStiffness(frequencyHertz, dampingRatio, bodyA.addr, bodyB.addr, out);
+		return new StiffnessAndDamping(out[0], out[1]);
+	}
+
+	private static native void jniLinearStiffness (float frequencyHertz, float dampingRatio, long addrA, long addrB, float[] out); /*
+		// @off
+		float stiffness;
+		float damping;
+		b2Body* bodyA = (b2Body*)addrA;
+		b2Body* bodyB = (b2Body*)addrB;
+		b2LinearStiffness(stiffness, damping, frequencyHertz, dampingRatio, bodyA, bodyB);
+		out[0] = stiffness;
+		out[1] = damping;
+	*/ // @on
+
+	public static StiffnessAndDamping angularStiffness (float frequencyHertz, float dampingRatio, Body bodyA, Body bodyB) {
+		jniAngularStiffness(frequencyHertz, dampingRatio, bodyA.addr, bodyB.addr, out);
+		return new StiffnessAndDamping(out[0], out[1]);
+	}
+
+	private static native void jniAngularStiffness (float frequencyHertz, float dampingRatio, long addrA, long addrB, float[] out); /*
+		// @off
+		float stiffness;
+		float damping;
+		b2Body* bodyA = (b2Body*)addrA;
+		b2Body* bodyB = (b2Body*)addrB;
+		b2AngularStiffness(stiffness, damping, frequencyHertz, dampingRatio, bodyA, bodyB);
+		out[0] = stiffness;
+		out[1] = damping;
+	*/ // @on
+
+	public static class StiffnessAndDamping {
+		public final float stiffness;
+		public final float damping;
+
+		public StiffnessAndDamping (float stiffness, float damping) {
+			this.stiffness = stiffness;
+			this.damping = damping;
+		}
+	}
 
 }

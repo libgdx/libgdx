@@ -22,9 +22,9 @@ package com.badlogic.gdx.physics.box2d;
 public class ContactImpulse {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
-	 */
-	
+#include <box2d/box2d.h>
+	 */ // @on
+
 	final World world;
 	long addr;
 	float[] tmp = new float[2];
@@ -42,10 +42,11 @@ public class ContactImpulse {
 	}
 
 	private native void jniGetNormalImpulses (long addr, float[] values); /*
+		// @off
 		b2ContactImpulse* contactImpulse = (b2ContactImpulse*)addr;	
 		values[0] = contactImpulse->normalImpulses[0];
 		values[1] = contactImpulse->normalImpulses[1];
-	*/
+	*/ // @on
 
 	public float[] getTangentImpulses () {
 		jniGetTangentImpulses(addr, tangentImpulses);
@@ -53,17 +54,19 @@ public class ContactImpulse {
 	}
 
 	private native void jniGetTangentImpulses (long addr, float[] values); /*
+		// @off
 	  	b2ContactImpulse* contactImpulse = (b2ContactImpulse*)addr;	
 		values[0] = contactImpulse->tangentImpulses[0];
 		values[1] = contactImpulse->tangentImpulses[1];
-	*/
+	*/ // @on
 
 	public int getCount () {
 		return jniGetCount(addr);
 	}
 
 	private native int jniGetCount (long addr); /*
+		// @off
 		b2ContactImpulse* contactImpulse = (b2ContactImpulse*)addr;
 		return contactImpulse->count;
-	*/
+	*/ // @on
 }
