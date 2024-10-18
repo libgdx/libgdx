@@ -100,3 +100,13 @@ jnigen {
 	addAndroid()
 	addIOS()
 }
+
+artifacts {
+    [jnigenPackageAllAndroid, jnigenPackageAllIOS, jnigenPackageAllDesktop].forEach {packageTask ->
+        packageTask.getOutputs().getFiles().each { file ->
+            archives(file) {
+                builtBy(packageTask)
+            }
+        }
+    }
+}

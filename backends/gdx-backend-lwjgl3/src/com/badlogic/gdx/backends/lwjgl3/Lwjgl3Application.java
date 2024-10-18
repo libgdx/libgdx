@@ -27,6 +27,8 @@ import com.badlogic.gdx.backends.lwjgl3.audio.Lwjgl3Audio;
 import com.badlogic.gdx.backends.lwjgl3.audio.OpenALLwjgl3Audio;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 
+import com.badlogic.gdx.jnigen.commons.HostDetection;
+import com.badlogic.gdx.jnigen.commons.Os;
 import com.badlogic.gdx.utils.*;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -56,7 +58,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private final Lwjgl3ApplicationConfiguration config;
@@ -83,7 +84,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			Lwjgl3NativesLoader.load();
 			errorCallback = GLFWErrorCallback.createPrint(Lwjgl3ApplicationConfiguration.errorStream);
 			GLFW.glfwSetErrorCallback(errorCallback);
-			if (SharedLibraryLoader.os == Os.MacOsX)
+			if (HostDetection.os == Os.MacOsX)
 				GLFW.glfwInitHint(GLFW.GLFW_ANGLE_PLATFORM_TYPE, GLFW.GLFW_ANGLE_PLATFORM_TYPE_METAL);
 			GLFW.glfwInitHint(GLFW.GLFW_JOYSTICK_HAT_BUTTONS, GLFW.GLFW_FALSE);
 			if (!GLFW.glfwInit()) {
@@ -486,7 +487,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			|| config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL32) {
 			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, config.gles30ContextMajorVersion);
 			GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, config.gles30ContextMinorVersion);
-			if (SharedLibraryLoader.os == Os.MacOsX) {
+			if (HostDetection.os == Os.MacOsX) {
 				// hints mandatory on OS X for GL 3.2+ context creation, but fail on Windows if the
 				// WGL_ARB_create_context extension is not available
 				// see: http://www.glfw.org/docs/latest/compat.html

@@ -39,3 +39,13 @@ jnigen {
 		forceLinkClasses "com.badlogic.gdx.physics.box2d.*"
 	}
 }
+
+artifacts {
+    [jnigenPackageAllAndroid, jnigenPackageAllIOS, jnigenPackageAllDesktop].forEach {packageTask ->
+        packageTask.getOutputs().getFiles().each { file ->
+            archives(file) {
+                builtBy(packageTask)
+            }
+        }
+    }
+}
