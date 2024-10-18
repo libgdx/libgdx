@@ -207,17 +207,42 @@ tasks.register('fetchExternalNatives', Copy) {
 
 tasks.register('fetchGdxNativesZIP', Download) {
 	dependsOn fetchExternalNatives
-	src "https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives.zip"
+	src "https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-nightlies/natives-jnigen-3.0.zip"
 	dest "build/natives.zip"
 	onlyIfModified true
 	useETag "all"
 }
 
-tasks.register('fetchNatives', Copy) {
+tasks.register("unzipNatives", Copy) {
 	dependsOn fetchGdxNativesZIP
 	from zipTree("build/natives.zip")
 	into "."
 	doNotTrackState("Don't track state")
+}
+
+tasks.register('fetchNatives') {
+	dependsOn unzipNatives
+}
+
+
+//Hook up jnigen tasks to fetch natives task.
+//Once natives have been unzipped, jnigen can package these up into jars
+//We then can depend on them as artifact references for test dependencies
+project.afterEvaluate {
+	subprojects {
+		afterEvaluate { project ->
+			if (project.plugins.hasPlugin("com.badlogicgames.jnigen.jnigen-gradle")) {
+				[
+						project.tasks.jnigenPackageAllAndroid,
+						project.tasks.jnigenPackageAllIOS,
+						project.tasks.jnigenPackageAllDesktop
+				].forEach { packageTask ->
+					fetchNatives.dependsOn(packageTask)
+					packageTask.mustRunAfter(unzipNatives)
+				}
+			}
+		}
+	}
 }
 
 apply from: rootProject.file('publish.gradle')

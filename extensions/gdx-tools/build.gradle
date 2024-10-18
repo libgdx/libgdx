@@ -18,7 +18,6 @@ dependencies {
 	api project(":backends:gdx-backend-lwjgl")
 	api project(":extensions:gdx-freetype")
 	api project(":backends:gdx-backend-headless")
-	api testnatives.desktop
 }
 
 sourceSets.main.resources.srcDirs = ["assets"]
