@@ -104,6 +104,11 @@ jobs:
 
       - name: Initialize jnigen
         run: ./gradlew jnigen
+      - name: debug
+        run: |
+          brew install tree
+          tree
+
       - name: Build natives 
         run: ./gradlew jnigenBuildAllMacOsX jnigenBuildAllIOS --info
 
