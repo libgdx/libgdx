@@ -16,38 +16,12 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-import java.util.Iterator;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
-import com.badlogic.gdx.physics.box2d.joints.FrictionJoint;
-import com.badlogic.gdx.physics.box2d.joints.FrictionJointDef;
-import com.badlogic.gdx.physics.box2d.joints.GearJoint;
-import com.badlogic.gdx.physics.box2d.joints.GearJointDef;
-import com.badlogic.gdx.physics.box2d.joints.MotorJoint;
-import com.badlogic.gdx.physics.box2d.joints.MotorJointDef;
-import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
-import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
-import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
-import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef;
-import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
-import com.badlogic.gdx.physics.box2d.joints.PulleyJointDef;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.badlogic.gdx.physics.box2d.joints.RopeJoint;
-import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
-import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
-import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
-import com.badlogic.gdx.physics.box2d.joints.WheelJoint;
-import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.LongMap;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.physics.box2d.joints.*;
+import com.badlogic.gdx.utils.*;
+
+import java.util.Iterator;
 
 /** The world class manages all physics entities, dynamic simulation, and asynchronous queries. The world also contains efficient
  * memory management facilities.
@@ -55,7 +29,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 public final class World implements Disposable {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
+#include <box2d/box2d.h>
 
 static jclass worldClass = 0;
 static jmethodID shouldCollideID = 0;
@@ -79,7 +53,7 @@ public:
 		this->obj = obj;
 	}
 
-	virtual float32 ReportFixture( b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
+	virtual float ReportFixture( b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction)
 	{
 		return env->CallFloatMethod(obj, reportRayFixtureID, (jlong)fixture, (jfloat)point.x, (jfloat)point.y,
 																(jfloat)normal.x, (jfloat)normal.y, (jfloat)fraction );
@@ -182,14 +156,14 @@ inline b2BodyType getBodyType( int type )
 }
 
 b2ContactFilter defaultFilter;
-	 */
+	 */ // @on
 
 	static {
 		new SharedLibraryLoader().load("gdx-box2d");
 	}
 
 	/** pool for bodies **/
-	protected final Pool<Body> freeBodies = new Pool<Body>(100, 200) {
+	private final Pool<Body> freeBodies = new Pool<Body>(100, 200) {
 		@Override
 		protected Body newObject () {
 			return new Body(World.this, 0);
@@ -197,7 +171,7 @@ b2ContactFilter defaultFilter;
 	};
 
 	/** pool for fixtures **/
-	protected final Pool<Fixture> freeFixtures = new Pool<Fixture>(100, 200) {
+	final Pool<Fixture> freeFixtures = new Pool<Fixture>(100, 200) {
 		@Override
 		protected Fixture newObject () {
 			return new Fixture(null, 0);
@@ -205,22 +179,26 @@ b2ContactFilter defaultFilter;
 	};
 
 	/** the address of the world instance **/
-	protected final long addr;
+	private final long addr;
 
 	/** all known bodies **/
-	protected final LongMap<Body> bodies = new LongMap<Body>(100);
+	final LongMap<Body> bodies = new LongMap<>(100);
 
 	/** all known fixtures **/
-	protected final LongMap<Fixture> fixtures = new LongMap<Fixture>(100);
+	final LongMap<Fixture> fixtures = new LongMap<>(100);
 
 	/** all known joints **/
-	protected final LongMap<Joint> joints = new LongMap<Joint>(100);
+	private final LongMap<Joint> joints = new LongMap<>(100);
 
 	/** Contact filter **/
-	protected ContactFilter contactFilter = null;
+	private ContactFilter contactFilter = null;
 
 	/** Contact listener **/
-	protected ContactListener contactListener = null;
+	private ContactListener contactListener = null;
+
+	public World (Vector2 gravity) {
+		this(gravity, false);
+	}
 
 	/** Construct a world object.
 	 * @param gravity the world gravity vector.
@@ -236,6 +214,7 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native long newWorld (float gravityX, float gravityY, boolean doSleep); /*
+		// @off
 		// we leak one global ref. 
 		if(!worldClass) {
 			worldClass = (jclass)env->NewGlobalRef(env->GetObjectClass(object));
@@ -251,7 +230,7 @@ b2ContactFilter defaultFilter;
 		b2World* world = new b2World( b2Vec2( gravityX, gravityY ));
 		world->SetAllowSleeping( doSleep );
 		return (jlong)world;
-	*/
+	*/ // @on
 
 	/** Register a destruction listener. The listener is owned by you and must remain in scope. */
 	public void setDestructionListener (DestructionListener listener) {
@@ -264,26 +243,25 @@ b2ContactFilter defaultFilter;
 		this.contactFilter = filter;
 		setUseDefaultContactFilter(filter == null);
 	}
-	
+
 	/** tells the native code not to call the Java world class if use is false **/
-	private native void setUseDefaultContactFilter(boolean use); /*
-		// FIXME
-	*/
+	private native void setUseDefaultContactFilter (boolean use); /*
+																						 * // FIXME
+																						 */
 
 	/** Register a contact event listener. The listener is owned by you and must remain in scope. */
 	public void setContactListener (ContactListener listener) {
 		this.contactListener = listener;
 	}
 
-	/** Create a rigid body given a definition. No reference to the definition is retained.
-	 * Bodies created by this method are pooled internally by the World object.
-	 * They will be freed upon calling {@link World#destroyBody(Body)}
+	/** Create a rigid body given a definition. No reference to the definition is retained. Bodies created by this method are
+	 * pooled internally by the World object. They will be freed upon calling {@link World#destroyBody(Body)}
 	 * @see Pool
 	 * @warning This function is locked during callbacks. */
 	public Body createBody (BodyDef def) {
-		long bodyAddr = jniCreateBody(addr, def.type.getValue(), def.position.x, def.position.y, def.angle, def.linearVelocity.x,
+		long bodyAddr = jniCreateBody(addr, def.type.value, def.position.x, def.position.y, def.angle, def.linearVelocity.x,
 			def.linearVelocity.y, def.angularVelocity, def.linearDamping, def.angularDamping, def.allowSleep, def.awake,
-			def.fixedRotation, def.bullet, def.active, def.gravityScale);
+			def.fixedRotation, def.bullet, def.enabled, def.gravityScale);
 		Body body = freeBodies.obtain();
 		body.reset(bodyAddr);
 		this.bodies.put(body.addr, body);
@@ -292,7 +270,8 @@ b2ContactFilter defaultFilter;
 
 	private native long jniCreateBody (long addr, int type, float positionX, float positionY, float angle, float linearVelocityX,
 		float linearVelocityY, float angularVelocity, float linearDamping, float angularDamping, boolean allowSleep, boolean awake,
-		boolean fixedRotation, boolean bullet, boolean active, float inertiaScale); /*
+		boolean fixedRotation, boolean bullet, boolean enabled, float inertiaScale); /*
+		// @off
 		b2BodyDef bodyDef;
 		bodyDef.type = getBodyType(type);
 		bodyDef.position.Set( positionX, positionY );
@@ -305,13 +284,13 @@ b2ContactFilter defaultFilter;
 		bodyDef.awake = awake;
 		bodyDef.fixedRotation = fixedRotation;
 		bodyDef.bullet = bullet;
-		bodyDef.active = active;
+		bodyDef.enabled = enabled;
 		bodyDef.gravityScale = inertiaScale;
 	
 		b2World* world = (b2World*)addr;
 		b2Body* body = world->CreateBody( &bodyDef );
 		return (jlong)body;
-	*/
+	*/ // @on
 
 	/** Destroy a rigid body given a definition. No reference to the definition is retained. This function is locked during
 	 * callbacks.
@@ -325,17 +304,18 @@ b2ContactFilter defaultFilter;
 		body.setUserData(null);
 		this.bodies.remove(body.addr);
 		Array<Fixture> fixtureList = body.getFixtureList();
-		while(fixtureList.size > 0) {
+		while (fixtureList.size > 0) {
 			Fixture fixtureToDelete = fixtureList.removeIndex(0);
 			fixtureToDelete.setUserData(null);
- 			this.fixtures.remove(fixtureToDelete.addr);
- 			freeFixtures.free(fixtureToDelete);
- 		}
-		
+			this.fixtures.remove(fixtureToDelete.addr);
+			freeFixtures.free(fixtureToDelete);
+		}
+
 		freeBodies.free(body);
 	}
 
 	private native void jniDestroyBody (long addr, long bodyAddr); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2Body* body = (b2Body*)bodyAddr;
 		CustomContactFilter contactFilter(env, object);
@@ -345,17 +325,17 @@ b2ContactFilter defaultFilter;
 		world->DestroyBody(body);
 		world->SetContactFilter(&defaultFilter);
 		world->SetContactListener(0);
-	*/
-	
-	/** Internal method for fixture destruction with notifying custom
-	 * contact listener
+	*/ // @on
+
+	/** Internal method for fixture destruction with notifying custom contact listener
 	 * @param body
 	 * @param fixture */
-	void destroyFixture(Body body, Fixture fixture) {
+	void destroyFixture (Body body, Fixture fixture) {
 		jniDestroyFixture(addr, body.addr, fixture.addr);
 	}
-	
-	private native void jniDestroyFixture(long addr, long bodyAddr, long fixtureAddr); /*
+
+	private native void jniDestroyFixture (long addr, long bodyAddr, long fixtureAddr); /*
+		// @off
 		b2World* world = (b2World*)(addr);
 		b2Body* body = (b2Body*)(bodyAddr);
 		b2Fixture* fixture = (b2Fixture*)(fixtureAddr);
@@ -366,45 +346,45 @@ b2ContactFilter defaultFilter;
 		body->DestroyFixture(fixture);
 		world->SetContactFilter(&defaultFilter);
 		world->SetContactListener(0);
-	*/
-	
-	/** Internal method for body deactivation with notifying custom
-	 * contact listener
+	*/ // @on
+
+	/** Internal method for body deactivation with notifying custom contact listener
 	 * @param body */
-	void deactivateBody(Body body) {
-		jniDeactivateBody(addr, body.addr);
+	void disableBody (Body body) {
+		jniDisableBody(addr, body.addr);
 	}
-	
-	private native void jniDeactivateBody(long addr, long bodyAddr); /*
+
+	private native void jniDisableBody (long addr, long bodyAddr); /*
+		// @off
 		b2World* world = (b2World*)(addr);
 		b2Body* body = (b2Body*)(bodyAddr);	
 		CustomContactFilter contactFilter(env, object);
 		CustomContactListener contactListener(env, object);
 		world->SetContactFilter(&contactFilter);
 		world->SetContactListener(&contactListener);
-		body->SetActive(false);
+		body->SetEnabled(false);
 		world->SetContactFilter(&defaultFilter);
 		world->SetContactListener(0);
-	*/
+	*/ // @on
 
-	/** Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected bodies
-	 * to cease colliding.
+	/** Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected
+	 * bodies to cease colliding.
 	 * @warning This function is locked during callbacks. */
 	public Joint createJoint (JointDef def) {
 		long jointAddr = createProperJoint(def);
 		Joint joint = null;
 		if (def.type == JointType.DistanceJoint) joint = new DistanceJoint(this, jointAddr);
 		if (def.type == JointType.FrictionJoint) joint = new FrictionJoint(this, jointAddr);
-		if (def.type == JointType.GearJoint) joint = new GearJoint(this, jointAddr, ((GearJointDef) def).joint1, ((GearJointDef) def).joint2);
+		if (def.type == JointType.GearJoint)
+			joint = new GearJoint(this, jointAddr, ((GearJointDef)def).joint1, ((GearJointDef)def).joint2);
 		if (def.type == JointType.MotorJoint) joint = new MotorJoint(this, jointAddr);
 		if (def.type == JointType.MouseJoint) joint = new MouseJoint(this, jointAddr);
 		if (def.type == JointType.PrismaticJoint) joint = new PrismaticJoint(this, jointAddr);
 		if (def.type == JointType.PulleyJoint) joint = new PulleyJoint(this, jointAddr);
 		if (def.type == JointType.RevoluteJoint) joint = new RevoluteJoint(this, jointAddr);
-		if (def.type == JointType.RopeJoint) joint = new RopeJoint(this, jointAddr);
 		if (def.type == JointType.WeldJoint) joint = new WeldJoint(this, jointAddr);
 		if (def.type == JointType.WheelJoint) joint = new WheelJoint(this, jointAddr);
-		if (joint == null) throw new GdxRuntimeException("Unknown joint type: " + def.type); 
+		if (joint == null) throw new GdxRuntimeException("Unknown joint type: " + def.type);
 		joints.put(joint.addr, joint);
 		JointEdge jointEdgeA = new JointEdge(def.bodyB, joint);
 		JointEdge jointEdgeB = new JointEdge(def.bodyA, joint);
@@ -419,7 +399,7 @@ b2ContactFilter defaultFilter;
 		if (def.type == JointType.DistanceJoint) {
 			DistanceJointDef d = (DistanceJointDef)def;
 			return jniCreateDistanceJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
-				d.localAnchorB.x, d.localAnchorB.y, d.length, d.frequencyHz, d.dampingRatio);
+				d.localAnchorB.x, d.localAnchorB.y, d.length, d.stiffness, d.damping);
 		}
 		if (def.type == JointType.FrictionJoint) {
 			FrictionJointDef d = (FrictionJointDef)def;
@@ -438,7 +418,7 @@ b2ContactFilter defaultFilter;
 		if (def.type == JointType.MouseJoint) {
 			MouseJointDef d = (MouseJointDef)def;
 			return jniCreateMouseJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.target.x, d.target.y, d.maxForce,
-				d.frequencyHz, d.dampingRatio);
+				d.stiffness, d.damping);
 		}
 		if (def.type == JointType.PrismaticJoint) {
 			PrismaticJointDef d = (PrismaticJointDef)def;
@@ -459,29 +439,26 @@ b2ContactFilter defaultFilter;
 				d.localAnchorB.x, d.localAnchorB.y, d.referenceAngle, d.enableLimit, d.lowerAngle, d.upperAngle, d.enableMotor,
 				d.motorSpeed, d.maxMotorTorque);
 		}
-		if (def.type == JointType.RopeJoint) {
-			RopeJointDef d = (RopeJointDef)def;
-			return jniCreateRopeJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
-				d.localAnchorB.x, d.localAnchorB.y, d.maxLength);
-		}
 		if (def.type == JointType.WeldJoint) {
 			WeldJointDef d = (WeldJointDef)def;
 			return jniCreateWeldJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
-				d.localAnchorB.x, d.localAnchorB.y, d.referenceAngle, d.frequencyHz, d.dampingRatio);
+				d.localAnchorB.x, d.localAnchorB.y, d.referenceAngle, d.stiffness, d.damping);
 		}
 		if (def.type == JointType.WheelJoint) {
 			WheelJointDef d = (WheelJointDef)def;
 			return jniCreateWheelJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
-				d.localAnchorB.x, d.localAnchorB.y, d.localAxisA.x, d.localAxisA.y, d.enableMotor, d.maxMotorTorque, d.motorSpeed,
-				d.frequencyHz, d.dampingRatio);
+				d.localAnchorB.x, d.localAnchorB.y, d.localAxisA.x, d.localAxisA.y, d.enableLimit, d.lowerTranslation,
+				d.upperTranslation, d.enableMotor, d.maxMotorTorque, d.motorSpeed, d.stiffness, d.damping);
 		}
 
 		return 0;
 	}
 
 	private native long jniCreateWheelJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
-		float localAnchorAY, float localAnchorBX, float localAnchorBY, float localAxisAX, float localAxisAY, boolean enableMotor,
-		float maxMotorTorque, float motorSpeed, float frequencyHz, float dampingRatio); /*
+		float localAnchorAY, float localAnchorBX, float localAnchorBY, float localAxisAX, float localAxisAY, boolean enableLimit,
+		float lowerTranslation, float upperTranslation, boolean enableMotor, float maxMotorTorque, float motorSpeed,
+		float stiffness, float damping); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2WheelJointDef def;
 		def.bodyA = (b2Body*)bodyA;
@@ -490,31 +467,21 @@ b2ContactFilter defaultFilter;
 		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
 		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
 		def.localAxisA = b2Vec2(localAxisAX, localAxisAY);
+		def.enableLimit = enableLimit;
+		def.lowerTranslation = lowerTranslation;
+		def.upperTranslation = upperTranslation;
 		def.enableMotor = enableMotor;
 		def.maxMotorTorque = maxMotorTorque;
 		def.motorSpeed = motorSpeed;
-		def.frequencyHz = frequencyHz;
-		def.dampingRatio = dampingRatio;
+		def.stiffness = stiffness;
+		def.damping = damping;
 		
 		return (jlong)world->CreateJoint(&def);
-	*/
-
-	private native long jniCreateRopeJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
-		float localAnchorAY, float localAnchorBX, float localAnchorBY, float maxLength); /*
-		b2World* world = (b2World*)addr;
-		b2RopeJointDef def;
-		def.bodyA = (b2Body*)bodyA;
-		def.bodyB = (b2Body*)bodyB;
-		def.collideConnected = collideConnected;
-		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
-		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
-		def.maxLength = maxLength;
-	
-		return (jlong)world->CreateJoint(&def);
-	*/
+	*/ // @on
 
 	private native long jniCreateDistanceJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
-		float localAnchorAY, float localAnchorBX, float localAnchorBY, float length, float frequencyHz, float dampingRatio); /*
+		float localAnchorAY, float localAnchorBX, float localAnchorBY, float length, float stiffness, float damping); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2DistanceJointDef def;
 		def.bodyA = (b2Body*)bodyA;
@@ -523,14 +490,15 @@ b2ContactFilter defaultFilter;
 		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
 		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
 		def.length = length;
-		def.frequencyHz = frequencyHz;
-		def.dampingRatio = dampingRatio;
+		def.stiffness = stiffness;
+		def.damping = damping;
 	
 		return (jlong)world->CreateJoint(&def);
-	*/
+	*/ // @on
 
 	private native long jniCreateFrictionJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
 		float localAnchorAY, float localAnchorBX, float localAnchorBY, float maxForce, float maxTorque); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2FrictionJointDef def;
 		def.bodyA = (b2Body*)bodyA;
@@ -541,10 +509,11 @@ b2ContactFilter defaultFilter;
 		def.maxForce = maxForce;
 		def.maxTorque = maxTorque;
 		return (jlong)world->CreateJoint(&def);
-	*/
+	*/ // @on
 
 	private native long jniCreateGearJoint (long addr, long bodyA, long bodyB, boolean collideConnected, long joint1, long joint2,
 		float ratio); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2GearJointDef def;
 		def.bodyA = (b2Body*)bodyA;
@@ -554,10 +523,11 @@ b2ContactFilter defaultFilter;
 		def.joint2 = (b2Joint*)joint2;
 		def.ratio = ratio;
 		return (jlong)world->CreateJoint(&def);
-	*/
+	*/ // @on
 
 	private native long jniCreateMotorJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float linearOffsetX,
 		float linearOffsetY, float angularOffset, float maxForce, float maxTorque, float correctionFactor); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2MotorJointDef def;
 		def.bodyA = (b2Body*)bodyA;
@@ -569,10 +539,11 @@ b2ContactFilter defaultFilter;
 		def.maxTorque = maxTorque;
 		def.correctionFactor = correctionFactor;
 		return (jlong)world->CreateJoint(&def);
-	*/
+	*/ // @on
 
 	private native long jniCreateMouseJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float targetX,
-		float targetY, float maxForce, float frequencyHz, float dampingRatio); /*
+		float targetY, float maxForce, float stiffness, float damping); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2MouseJointDef def;
 		def.bodyA = (b2Body*)bodyA;
@@ -580,15 +551,16 @@ b2ContactFilter defaultFilter;
 		def.collideConnected = collideConnected;
 		def.target = b2Vec2( targetX, targetY );
 		def.maxForce = maxForce;
-		def.frequencyHz = frequencyHz;
-		def.dampingRatio = dampingRatio;
+		def.stiffness = stiffness;
+		def.damping = damping;
 		return (jlong)world->CreateJoint(&def);
-	*/
+	*/ // @on
 
 	private native long jniCreatePrismaticJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
 		float localAnchorAY, float localAnchorBX, float localAnchorBY, float localAxisAX, float localAxisAY, float referenceAngle,
 		boolean enableLimit, float lowerTranslation, float upperTranslation, boolean enableMotor, float maxMotorForce,
 		float motorSpeed); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2PrismaticJointDef def;
 		def.bodyA = (b2Body*)bodyA;
@@ -605,11 +577,12 @@ b2ContactFilter defaultFilter;
 		def.maxMotorForce = maxMotorForce;
 		def.motorSpeed = motorSpeed;
 		return (jlong)world->CreateJoint(&def);
-	*/
+	*/ // @on
 
 	private native long jniCreatePulleyJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float groundAnchorAX,
 		float groundAnchorAY, float groundAnchorBX, float groundAnchorBY, float localAnchorAX, float localAnchorAY,
 		float localAnchorBX, float localAnchorBY, float lengthA, float lengthB, float ratio); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2PulleyJointDef def;
 		def.bodyA = (b2Body*)bodyA;
@@ -624,11 +597,12 @@ b2ContactFilter defaultFilter;
 		def.ratio = ratio;
 	
 		return (jlong)world->CreateJoint(&def);
-	*/
+	*/ // @on
 
 	private native long jniCreateRevoluteJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
 		float localAnchorAY, float localAnchorBX, float localAnchorBY, float referenceAngle, boolean enableLimit, float lowerAngle,
 		float upperAngle, boolean enableMotor, float motorSpeed, float maxMotorTorque); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2RevoluteJointDef def;
 		def.bodyA = (b2Body*)bodyA;
@@ -644,10 +618,11 @@ b2ContactFilter defaultFilter;
 		def.motorSpeed = motorSpeed;
 		def.maxMotorTorque = maxMotorTorque;
 		return (jlong)world->CreateJoint(&def);
-	*/
+	*/ // @on
 
 	private native long jniCreateWeldJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
-		float localAnchorAY, float localAnchorBX, float localAnchorBY, float referenceAngle, float frequencyHz, float dampingRatio); /*
+		float localAnchorAY, float localAnchorBX, float localAnchorBY, float referenceAngle, float stiffness, float damping); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2WeldJointDef def;
 		def.bodyA = (b2Body*)bodyA;
@@ -656,11 +631,11 @@ b2ContactFilter defaultFilter;
 		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
 		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
 		def.referenceAngle = referenceAngle;
-		def.frequencyHz = frequencyHz;
-		def.dampingRatio = dampingRatio;
+		def.stiffness = stiffness;
+		def.damping = damping;
 	
 		return (jlong)world->CreateJoint(&def);
-	*/
+	*/ // @on
 
 	/** Destroy a joint. This may cause the connected bodies to begin colliding.
 	 * @warning This function is locked during callbacks. */
@@ -673,6 +648,7 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native void jniDestroyJoint (long addr, long jointAddr); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2Joint* joint = (b2Joint*)jointAddr;
 		CustomContactFilter contactFilter(env, object);
@@ -682,7 +658,7 @@ b2ContactFilter defaultFilter;
 		world->DestroyJoint( joint );
 		world->SetContactFilter(&defaultFilter);
 		world->SetContactListener(0);
-	*/
+	*/ // @on
 
 	/** Take a time step. This performs collision detection, integration, and constraint solution.
 	 * @param timeStep the amount of time to simulate, this should not vary.
@@ -693,6 +669,7 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native void jniStep (long addr, float timeStep, int velocityIterations, int positionIterations); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		CustomContactFilter contactFilter(env, object);
 		CustomContactListener contactListener(env,object);
@@ -701,7 +678,7 @@ b2ContactFilter defaultFilter;
 		world->Step( timeStep, velocityIterations, positionIterations );
 		world->SetContactFilter(&defaultFilter);
 		world->SetContactListener(0);
-	*/
+	*/ // @on
 
 	/** Manually clear the force buffer on all bodies. By default, forces are cleared automatically after each call to Step. The
 	 * default behavior is modified by calling SetAutoClearForces. The purpose of this function is to support sub-stepping.
@@ -713,9 +690,10 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native void jniClearForces (long addr); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		world->ClearForces();
-	*/
+	*/ // @on
 
 	/** Enable/disable warm starting. For testing. */
 	public void setWarmStarting (boolean flag) {
@@ -723,9 +701,10 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native void jniSetWarmStarting (long addr, boolean flag); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		world->SetWarmStarting(flag);
-	*/
+	*/ // @on
 
 	/** Enable/disable continuous physics. For testing. */
 	public void setContinuousPhysics (boolean flag) {
@@ -733,9 +712,10 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native void jniSetContiousPhysics (long addr, boolean flag); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		world->SetContinuousPhysics(flag);
-	*/
+	*/ // @on
 
 	/** Get the number of broad-phase proxies. */
 	public int getProxyCount () {
@@ -743,9 +723,10 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native int jniGetProxyCount (long addr); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		return world->GetProxyCount();
-	*/
+	*/ // @on
 
 	/** Get the number of bodies. */
 	public int getBodyCount () {
@@ -753,10 +734,11 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native int jniGetBodyCount (long addr); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		return world->GetBodyCount();
-	*/
-	
+	*/ // @on
+
 	/** Get the number of fixtures. */
 	public int getFixtureCount () {
 		return fixtures.size;
@@ -768,9 +750,10 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native int jniGetJointcount (long addr); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		return world->GetJointCount();
-	*/
+	*/ // @on
 
 	/** Get the number of contacts (each may have 0 or more contact points). */
 	public int getContactCount () {
@@ -778,9 +761,10 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native int jniGetContactCount (long addr); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		return world->GetContactCount();
-	*/
+	*/ // @on
 
 	/** Change the global gravity vector. */
 	public void setGravity (Vector2 gravity) {
@@ -788,9 +772,10 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native void jniSetGravity (long addr, float gravityX, float gravityY); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		world->SetGravity( b2Vec2( gravityX, gravityY ) );
-	*/
+	*/ // @on
 
 	/** Get the global gravity vector. */
 	final float[] tmpGravity = new float[2];
@@ -804,11 +789,12 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native void jniGetGravity (long addr, float[] gravity); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2Vec2 g = world->GetGravity();
 		gravity[0] = g.x;
 		gravity[1] = g.y;
-	*/
+	*/ // @on
 
 	/** Is the world locked (in the middle of a time step). */
 	public boolean isLocked () {
@@ -816,9 +802,10 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native boolean jniIsLocked (long addr); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		return world->IsLocked();
-	*/
+	*/ // @on
 
 	/** Set flag to control automatic clearing of forces after each time step. */
 	public void setAutoClearForces (boolean flag) {
@@ -826,9 +813,10 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native void jniSetAutoClearForces (long addr, boolean flag); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		world->SetAutoClearForces(flag);
-	*/
+	*/ // @on
 
 	/** Get the flag that controls automatic clearing of forces after each time step. */
 	public boolean getAutoClearForces () {
@@ -836,9 +824,10 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native boolean jniGetAutoClearForces (long addr); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		return world->GetAutoClearForces();
-	*/
+	*/ // @on
 
 	/** Query the world for all fixtures that potentially overlap the provided AABB.
 	 * @param callback a user implemented callback class.
@@ -846,14 +835,25 @@ b2ContactFilter defaultFilter;
 	 * @param lowerY the y coordinate of the lower left corner
 	 * @param upperX the x coordinate of the upper right corner
 	 * @param upperY the y coordinate of the upper right corner */
-	public void QueryAABB (QueryCallback callback, float lowerX, float lowerY, float upperX, float upperY) {
+	public void queryAABB (QueryCallback callback, float lowerX, float lowerY, float upperX, float upperY) {
 		queryCallback = callback;
 		jniQueryAABB(addr, lowerX, lowerY, upperX, upperY);
 	}
 
-	private QueryCallback queryCallback = null;;
+	/** @deprecated use {@link #queryAABB} instead */
+	@Deprecated
+	public void QueryAABB (QueryCallback callback, float lowerX, float lowerY, float upperX, float upperY) {
+		queryAABB(callback, lowerX, lowerY, upperX, upperY);
+	}
+
+	public void queryAABB (QueryCallback callback, Vector2 lower, Vector2 upper) {
+		queryAABB(callback, lower.x, lower.y, upper.x, upper.y);
+	}
+
+	private QueryCallback queryCallback = null;
 
 	private native void jniQueryAABB (long addr, float lowX, float lowY, float upX, float upY); /*
+		// @off
 		b2World* world = (b2World*)addr;
 		b2AABB aabb;
 		aabb.lowerBound = b2Vec2( lowX, lowY );
@@ -861,7 +861,7 @@ b2ContactFilter defaultFilter;
 	
 		CustomQueryCallback callback( env, object );
 		world->QueryAABB( &callback, aabb );
-	*/
+	*/ // @on
 
 //
 // /// Ray-cast the world for all fixtures in the path of the ray. Your callback
@@ -879,8 +879,8 @@ b2ContactFilter defaultFilter;
 // b2Contact* GetContactList();
 
 	private long[] contactAddrs = new long[200];
-	private final Array<Contact> contacts = new Array<Contact>();
-	private final Array<Contact> freeContacts = new Array<Contact>();
+	private final Array<Contact> contacts = new Array<>();
+	private final Array<Contact> freeContacts = new Array<>();
 
 	/** Returns the list of {@link Contact} instances produced by the last call to {@link #step(float, int, int)}. Note that the
 	 * returned list will have O(1) access times when using indexing. contacts are created and destroyed in the middle of a time
@@ -917,7 +917,7 @@ b2ContactFilter defaultFilter;
 		bodies.ensureCapacity(this.bodies.size);
 		for (Iterator<Body> iter = this.bodies.values(); iter.hasNext();) {
 			bodies.add(iter.next());
-		}		
+		}
 	}
 
 	/** @param fixtures an Array in which to place all fixtures currently in the simulation */
@@ -926,7 +926,7 @@ b2ContactFilter defaultFilter;
 		fixtures.ensureCapacity(this.fixtures.size);
 		for (Iterator<Fixture> iter = this.fixtures.values(); iter.hasNext();) {
 			fixtures.add(iter.next());
-		}		
+		}
 	}
 
 	/** @param joints an Array in which to place all joints currently in the simulation */
@@ -939,6 +939,7 @@ b2ContactFilter defaultFilter;
 	}
 
 	private native void jniGetContactList (long addr, long[] contacts); /*
+		// @off
 		b2World* world = (b2World*)addr;
 	
 		b2Contact* contact = world->GetContactList();
@@ -948,16 +949,17 @@ b2ContactFilter defaultFilter;
 			contacts[i++] = (long long)contact;
 			contact = contact->GetNext();
 		}
-	*/
+	*/ // @on
 
 	public void dispose () {
 		jniDispose(addr);
 	}
 
 	private native void jniDispose (long addr); /*
+		// @off
 		b2World* world = (b2World*)(addr);
 		delete world;
-	*/
+	*/ // @on
 
 	/** Internal method called from JNI in case a contact happens
 	 * @param fixtureA
@@ -974,8 +976,7 @@ b2ContactFilter defaultFilter;
 				return filterA.groupIndex > 0;
 			}
 
-			boolean collide = (filterA.maskBits & filterB.categoryBits) != 0 && (filterA.categoryBits & filterB.maskBits) != 0;
-			return collide;
+			return (filterA.maskBits & filterB.categoryBits) != 0 && (filterA.categoryBits & filterB.maskBits) != 0;
 		}
 	}
 
@@ -1020,17 +1021,6 @@ b2ContactFilter defaultFilter;
 			return false;
 	}
 
-	/** Sets the box2d velocity threshold globally, for all World instances.
-	 * @param threshold the threshold, default 1.0f */
-	public static native void setVelocityThreshold (float threshold); /*
-		b2_velocityThreshold = threshold;
-	*/
-
-	/** @return the global box2d velocity threshold. */
-	public static native float getVelocityThreshold (); /*
-		return b2_velocityThreshold;
-	*/
-	
 	/** Ray-cast the world for all fixtures in the path of the ray. The ray-cast ignores shapes that contain the starting point.
 	 * @param callback a user implemented callback class.
 	 * @param point1 the ray starting point
@@ -1053,13 +1043,14 @@ b2ContactFilter defaultFilter;
 	private RayCastCallback rayCastCallback = null;
 
 	private native void jniRayCast (long addr, float aX, float aY, float bX, float bY); /*
+		// @off
 		b2World *world = (b2World*)addr;
 		CustomRayCastCallback callback( env, object );	
 		world->RayCast( &callback, b2Vec2(aX,aY), b2Vec2(bX,bY) );
-	*/
+	*/ // @on
 
-	private Vector2 rayPoint = new Vector2();
-	private Vector2 rayNormal = new Vector2();
+	private final Vector2 rayPoint = new Vector2();
+	private final Vector2 rayNormal = new Vector2();
 
 	private float reportRayFixture (long addr, float pX, float pY, float nX, float nY, float fraction) {
 		if (rayCastCallback != null) {

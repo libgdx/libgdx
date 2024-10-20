@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.physics.box2d;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
 /** A shape is used for collision detection. You can create a shape however you like. Shapes used for simulation in b2World are
@@ -26,9 +27,9 @@ import com.badlogic.gdx.utils.Disposable;
 public abstract class Shape implements Disposable {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
-	 */
-	
+#include <box2d/box2d.h>
+	 */ // @on
+
 	/** Enum describing the type of a shape
 	 * @author mzechner */
 	public enum Type {
@@ -48,9 +49,10 @@ public abstract class Shape implements Disposable {
 	}
 
 	private native float jniGetRadius (long addr); /*
+		// @off
 		b2Shape* shape = (b2Shape*)addr;
 		return shape->m_radius;
-	*/
+	*/ // @on
 
 	/** Sets the radius of this shape */
 	public void setRadius (float radius) {
@@ -58,9 +60,10 @@ public abstract class Shape implements Disposable {
 	}
 
 	private native void jniSetRadius (long addr, float radius); /*
+		// @off
 		b2Shape* shape = (b2Shape*)addr;
 		shape->m_radius = radius;
-	*/
+	*/ // @on
 
 	/** Needs to be called when the shape is no longer used, e.g. after a fixture was created based on the shape. */
 	@Override
@@ -69,11 +72,13 @@ public abstract class Shape implements Disposable {
 	}
 
 	private native void jniDispose (long addr); /*
+		// @off
 		b2Shape* shape = (b2Shape*)addr;
 		delete shape;
-	*/
+	*/ // @on
 
 	protected static native int jniGetType (long addr); /*
+		// @off
 		b2Shape* shape = (b2Shape*)addr;
 		switch(shape->m_type) {
 		case b2Shape::e_circle: return 0;
@@ -82,7 +87,7 @@ public abstract class Shape implements Disposable {
 		case b2Shape::e_chain: return 3;
 		default: return -1;
 		}
-	*/
+	*/ // @on
 
 	/** Get the number of child primitives. */
 	public int getChildCount () {
@@ -90,25 +95,59 @@ public abstract class Shape implements Disposable {
 	}
 
 	private native int jniGetChildCount (long addr); /*
+		// @off
 		b2Shape* shape = (b2Shape*)addr;
 		return shape->GetChildCount();
-	*/
+	*/ // @on
 
-// /// Test a point for containment in this shape. This only works for convex shapes.
-// /// @param xf the shape world transform.
-// /// @param p a point in world coordinates.
-// virtual bool TestPoint(const b2Transform& xf, const b2Vec2& p) const = 0;
-//
+	public boolean testPoint (Transform transform, Vector2 point) {
+		return jniTestPoint(addr, transform.vals[0], transform.vals[1], transform.vals[2], transform.vals[3], point.x, point.y);
+	}
+
+	public native boolean jniTestPoint (long addr, float transformX, float transformY, float transformC, float transformS,
+		float pX, float pY); /*
+		// @off
+		b2Shape* shape = (b2Shape*)addr;
+		b2Transform t;
+		t.p.x = transformX;
+		t.p.y = transformY;
+		t.q.c = transformC;
+		t.q.s = transformS;
+		b2Vec2 p(pX, pY);
+		return shape->TestPoint(t, p);
+	*/ // @on
+
+	private static final float[] verts = new float[4];
+
+	public void computeAABB (Vector2 lowerBound, Vector2 upperBound, Transform transform, int childIndex) {
+		jniComputeAABB(addr, verts, transform.vals[0], transform.vals[1], transform.vals[2], transform.vals[3], childIndex);
+		lowerBound.x = verts[0];
+		lowerBound.y = verts[1];
+		upperBound.x = verts[2];
+		upperBound.y = verts[3];
+	}
+
+	private native void jniComputeAABB (long addr, float[] verts, float val, float val1, float val2, float val3, int ix); /*
+		// @off
+    b2Shape* shape = (b2Shape*)addr;
+    b2Transform t;
+    t.p.x = val;
+    t.p.y = val1;
+    t.q.c = val2;
+    t.q.s = val3;
+    b2AABB aabb;
+    shape->ComputeAABB(&aabb, t, ix);
+    verts[0] = aabb.lowerBound.x;
+    verts[1] = aabb.lowerBound.y;
+    verts[2] = aabb.upperBound.x;
+    verts[3] = aabb.upperBound.y;
+  */
+
 // /// Cast a ray against this shape.
 // /// @param output the ray-cast results.
 // /// @param input the ray-cast input parameters.
 // /// @param transform the transform to be applied to the shape.
 // virtual bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input, const b2Transform& transform) const = 0;
-//
-// /// Given a transform, compute the associated axis aligned bounding box for this shape.
-// /// @param aabb returns the axis aligned box.
-// /// @param xf the world transform of the shape.
-// virtual void ComputeAABB(b2AABB* aabb, const b2Transform& xf) const = 0;
 //
 // /// Compute the mass properties of this shape using its dimensions and density.
 // /// The inertia tensor is computed about the local origin.
