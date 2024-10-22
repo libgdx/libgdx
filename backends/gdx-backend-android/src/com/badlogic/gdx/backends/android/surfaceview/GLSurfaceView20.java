@@ -79,7 +79,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		// add this line, the IME can show the selectable words when use chinese input method editor.
 		if (outAttrs != null) {
 			outAttrs.imeOptions = outAttrs.imeOptions | EditorInfo.IME_FLAG_NO_EXTRACT_UI;
-			outAttrs.inputType = DefaultAndroidInput.getAndroidInputType(onscreenKeyboardType);
+			outAttrs.inputType = DefaultAndroidInput.getAndroidInputType(onscreenKeyboardType, true);
 		}
 
 		BaseInputConnection connection = new BaseInputConnection(this, false) {
