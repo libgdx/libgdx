@@ -311,8 +311,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		case URI:
 			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
 			break;
-		default:
+		case Autocorrection:
 			inputType = InputType.TYPE_CLASS_TEXT;
+			break;
+		default:
+			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+				| InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
 			break;
 		}
 		return inputType;
