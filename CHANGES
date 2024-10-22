@@ -1,4 +1,5 @@
 [1.13.1]
+- iOS: Update to MobiVM 2.3.22
 - Change visibility of PolygonSpriteBatch.switchTexture() to protected
 
 [1.13.0]
