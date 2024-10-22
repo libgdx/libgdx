@@ -266,10 +266,22 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 	public void renderImageLayer (TiledMapImageLayer layer) {
 		final Color batchColor = batch.getColor();
 		final Color combinedTint = layer.getCombinedTintColor();
-		// For image layer rendering, multiply all by alpha except opacity
-		final float color = Color.toFloatBits(batchColor.r * (combinedTint.r * combinedTint.a),
-			batchColor.g * (combinedTint.g * combinedTint.a), batchColor.b * (combinedTint.b * combinedTint.a),
-			batchColor.a * layer.getOpacity());
+		//Check if layer supports transparency
+		boolean supportsTransparency = layer.supportsTransparency();
+
+		// If the Image Layer supports transparency we do not want to modify the combined tint during rendering
+		// and if the Image Layer does not support transparency, we want to multiply the combined tint values, by its alpha
+		float alphaMultiplier = supportsTransparency ? 1f : combinedTint.a;
+		// Only modify opacity by combinedTint.b if Image Layer supports transparency
+		float opacityMultiplier = supportsTransparency ? combinedTint.a : 1f;
+
+		// For image layer rendering multiply all by alpha
+		// except for opacity when image layer does not support transparency
+		final float color = Color.toFloatBits(
+			 batchColor.r * (combinedTint.r * alphaMultiplier),
+			 batchColor.g * (combinedTint.g * alphaMultiplier),
+			 batchColor.b * (combinedTint.b * alphaMultiplier),
+			 batchColor.a * (layer.getOpacity() * opacityMultiplier));
 
 		final float[] vertices = this.vertices;
 

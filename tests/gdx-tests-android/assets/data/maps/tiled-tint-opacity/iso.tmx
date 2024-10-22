@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="isometric" renderorder="right-down" width="25" height="25" tilewidth="64" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.0" orientation="isometric" renderorder="right-down" width="25" height="25" tilewidth="64" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="1">
  <properties>
   <property name="boolCustomProperty" type="bool" value="true"/>
   <property name="floatCustomProperty" type="float" value="1.56"/>
@@ -87,5 +87,8 @@
  </imagelayer>
  <imagelayer id="10" name="Yellow Tint Alpha 0" tintcolor="#00ffff00" offsetx="503.333" offsety="5.33333">
   <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
+ <imagelayer id="11" name="Badlogic PNG Yellow Tint Alpha (100)" tintcolor="#64ffff00" offsetx="478.667" offsety="76">
+  <image source="badlogic-with-whitespace-small.png" width="75" height="75"/>
  </imagelayer>
 </map>

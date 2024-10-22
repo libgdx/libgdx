@@ -27,6 +27,7 @@ public class TiledMapImageLayer extends MapLayer {
 	private float y;
 	private boolean repeatX;
 	private boolean repeatY;
+	private boolean supportsTransparency;
 
 	public TiledMapImageLayer (TextureRegion region, float x, float y, boolean repeatX, boolean repeatY) {
 		this.region = region;
@@ -34,6 +35,24 @@ public class TiledMapImageLayer extends MapLayer {
 		this.y = y;
 		this.repeatX = repeatX;
 		this.repeatY = repeatY;
+		this.supportsTransparency = checkTransparencySupport(region);
+	}
+
+	 /**
+	  * TiledMap ImageLayers can support transparency through tint color
+	  * if the image provided is in PNG or GIF format.
+	  * Here we check to see if the file type supports transparency
+	  *
+	  * @param region TextureRegion of the ImageLayer
+	  * @return boolean
+	  */
+	private boolean checkTransparencySupport(TextureRegion region) {
+		String texturePath = region.getTexture().toString().toLowerCase();
+		return texturePath.endsWith(".png") || texturePath.endsWith(".gif");
+	}
+
+	public boolean supportsTransparency() {
+		return supportsTransparency;
 	}
 
 	public TextureRegion getTextureRegion () {
