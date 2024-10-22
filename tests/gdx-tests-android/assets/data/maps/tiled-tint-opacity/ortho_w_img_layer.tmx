@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="15" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="25" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="15" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="37" nextobjectid="1">
  <tileset firstgid="1" source="../tiled/tiles.tsx"/>
  <imagelayer id="24" name="Tint Left Sky" tintcolor="#ff0000">
   <image source="sky.png" width="240" height="320"/>
@@ -137,7 +137,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="10" name="Tiny Platform Layer" width="15" height="10">
+ <layer id="10" name="Right Tiny Platform Layer Red Tint" width="15" height="10" tintcolor="#ff0000">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -151,4 +151,50 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <layer id="28" name="Left Tiny Platform Layer Tint 0 Alpha" width="15" height="10" tintcolor="#00ff0000" offsetx="-64" offsety="0">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,16,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <imagelayer id="26" name="Right BadlLogic Image Tint 0 Alpha" tintcolor="#00ff0000" offsetx="384" offsety="64">
+  <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
+ <imagelayer id="27" name="Left BadlLogic Image Red Tint" tintcolor="#ff0000" offsetx="320" offsety="64">
+  <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
+ <group id="29" name="Tint (0,255,255)  Alpha (225)" tintcolor="#00ffff">
+  <group id="30" name="Tint (255,255,127)  Alpha (225)" tintcolor="#ffff7f">
+   <group id="31" name="Tint (255,255,255) Alpha (125)" tintcolor="#7dffffff">
+    <layer id="33" name="2 Floating Platforms Bottom" width="15" height="10">
+     <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,16,0,16,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+    </layer>
+   </group>
+  </group>
+ </group>
+ <imagelayer id="35" name="Badlogic Logo Image Layer Tinted (Alpha 0)" tintcolor="#00ffff00" offsetx="240" offsety="-255.864">
+  <image source="../../badlogic.jpg" width="256" height="256"/>
+ </imagelayer>
+ <imagelayer id="36" name="Badlogic Logo Image Layer Tinted (Alpha 255)" tintcolor="#ffff00" offsetx="-15.6364" offsety="-256.045">
+  <image source="../../badlogic.jpg" width="256" height="256"/>
+ </imagelayer>
 </map>

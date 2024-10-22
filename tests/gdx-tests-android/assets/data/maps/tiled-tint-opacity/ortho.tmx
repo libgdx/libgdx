@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="15" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="19" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="15" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="23" nextobjectid="1">
  <tileset firstgid="1" source="../tiled/tiles.tsx"/>
  <layer id="1" name="Right Bush and Left Cloud Layer" width="15" height="10">
   <data encoding="csv">
@@ -145,4 +145,16 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <imagelayer id="19" name="Yellow Tint Alpha 225" tintcolor="#ffff00" offsetx="1.33333" offsety="2">
+  <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
+ <imagelayer id="20" name="Yellow Tint Alpha 120" tintcolor="#78ffff00" offsetx="39.3333" offsety="2">
+  <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
+ <imagelayer id="21" name="Yellow Tint Alpha 50" tintcolor="#32ffff00" offsetx="77.3333" offsety="2">
+  <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
+ <imagelayer id="22" name="Yellow Tint Alpha 0" tintcolor="#00ffff00" offsetx="115.333" offsety="1.33333">
+  <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
 </map>
