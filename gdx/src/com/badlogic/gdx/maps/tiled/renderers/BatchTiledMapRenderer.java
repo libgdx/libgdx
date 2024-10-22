@@ -187,11 +187,9 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	public void renderImageLayer (TiledMapImageLayer layer) {
 		final Color batchColor = batch.getColor();
 		final Color combinedTint = layer.getCombinedTintColor();
-		//For image layer rendering, multiply all by alpha except opacity
-		final float color = Color.toFloatBits(
-			batchColor.r * (combinedTint.r * combinedTint.a),
-			batchColor.g * (combinedTint.g * combinedTint.a),
-			batchColor.b * (combinedTint.b * combinedTint.a),
+		// For image layer rendering, multiply all by alpha except opacity
+		final float color = Color.toFloatBits(batchColor.r * (combinedTint.r * combinedTint.a),
+			batchColor.g * (combinedTint.g * combinedTint.a), batchColor.b * (combinedTint.b * combinedTint.a),
 			batchColor.a * layer.getOpacity());
 
 		final float[] vertices = this.vertices;

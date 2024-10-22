@@ -210,11 +210,8 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
 
-		final float color = Color.toFloatBits(
-			1 * layer.getCombinedTintColor().r,
-			1 * layer.getCombinedTintColor().g,
-			1 * layer.getCombinedTintColor().b,
-			layer.getOpacity() * layer.getCombinedTintColor().a);
+		final float color = Color.toFloatBits(1 * layer.getCombinedTintColor().r, 1 * layer.getCombinedTintColor().g,
+			1 * layer.getCombinedTintColor().b, layer.getOpacity() * layer.getCombinedTintColor().a);
 
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();
@@ -366,12 +363,9 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 	public void renderImageLayer (TiledMapImageLayer layer) {
 
 		final Color combinedTint = layer.getCombinedTintColor();
-		//For image layer rendering, multiply all by alpha except opacity
-		final float color = Color.toFloatBits(
-			 1 * (combinedTint.r * combinedTint.a),
-			 1 * (combinedTint.g * combinedTint.a),
-			 1 * (combinedTint.b * combinedTint.a),
-			 layer.getOpacity());
+		// For image layer rendering, multiply all by alpha except opacity
+		final float color = Color.toFloatBits(1 * (combinedTint.r * combinedTint.a), 1 * (combinedTint.g * combinedTint.a),
+			1 * (combinedTint.b * combinedTint.a), layer.getOpacity());
 
 		final float[] vertices = this.vertices;
 
