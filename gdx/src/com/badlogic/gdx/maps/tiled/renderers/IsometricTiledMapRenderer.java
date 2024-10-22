@@ -86,9 +86,8 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 	public void renderTileLayer (TiledMapTileLayer layer) {
 		final Color batchColor = batch.getColor();
 		final float color = Color.toFloatBits(batchColor.r * layer.getCombinedTintColor().r,
-			 batchColor.g * layer.getCombinedTintColor().g,
-			 batchColor.b * layer.getCombinedTintColor().b,
-			 batchColor.a * layer.getCombinedTintColor().a * layer.getOpacity());
+			batchColor.g * layer.getCombinedTintColor().g, batchColor.b * layer.getCombinedTintColor().b,
+			batchColor.a * layer.getCombinedTintColor().a * layer.getOpacity());
 
 		float tileWidth = layer.getTileWidth() * unitScale;
 		float tileHeight = layer.getTileHeight() * unitScale;
@@ -240,12 +239,10 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 	public void renderImageLayer (TiledMapImageLayer layer) {
 		final Color batchColor = batch.getColor();
 		final Color combinedTint = layer.getCombinedTintColor();
-		//For image layer rendering, multiply all by alpha except opacity
-		final float color = Color.toFloatBits(
-			 batchColor.r * (combinedTint.r * combinedTint.a),
-			 batchColor.g * (combinedTint.g * combinedTint.a),
-			 batchColor.b * (combinedTint.b * combinedTint.a),
-			 batchColor.a * layer.getOpacity());
+		// For image layer rendering, multiply all by alpha except opacity
+		final float color = Color.toFloatBits(batchColor.r * (combinedTint.r * combinedTint.a),
+			batchColor.g * (combinedTint.g * combinedTint.a), batchColor.b * (combinedTint.b * combinedTint.a),
+			batchColor.a * layer.getOpacity());
 
 		final float[] vertices = this.vertices;
 

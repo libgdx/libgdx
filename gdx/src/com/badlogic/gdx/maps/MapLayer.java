@@ -60,22 +60,20 @@ public class MapLayer {
 		this.opacity = opacity;
 	}
 
-	 /**
-	  * Returns a temporary color that is the combination of this layer's tint color and its parent's tint color.
-	  * The returned color is reused internally, so it should not be held onto or modified.
-	  * @return layer's tint color combined with the parent's tint color
-	  */
-	public Color getCombinedTintColor(){
-		 if (parent != null) {
-			  return tempColor.set(tintColor).mul(parent.getCombinedTintColor());
-		 } else {
-			  return tempColor.set(tintColor);
-		 }
+	/** Returns a temporary color that is the combination of this layer's tint color and its parent's tint color. The returned
+	 * color is reused internally, so it should not be held onto or modified.
+	 * @return layer's tint color combined with the parent's tint color */
+	public Color getCombinedTintColor () {
+		if (parent != null) {
+			return tempColor.set(tintColor).mul(parent.getCombinedTintColor());
+		} else {
+			return tempColor.set(tintColor);
+		}
 	}
 
 	/** @return layer's tint color */
 	public Color getTintColor () {
-			return tintColor;
+		return tintColor;
 	}
 
 	/** @param tintColor new tint color for the layer */

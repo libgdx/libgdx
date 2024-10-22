@@ -131,15 +131,13 @@ public class TiledMapLayerTintOpacityTest extends GdxTest {
 				map = assetManager.get(MAP_ORTHO_W_IMG);
 				renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
 			}
-		}
-		else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)) {
-			 if (mapType != 6) {
-				  if (renderer instanceof Disposable)
-						((Disposable)renderer).dispose();
-				  mapType = 6;
-				  map = assetManager.get(MAP_ORTHO_DEEP_GROUP_TINT);
-				  renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
-			 }
+		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)) {
+			if (mapType != 6) {
+				if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
+				mapType = 6;
+				map = assetManager.get(MAP_ORTHO_DEEP_GROUP_TINT);
+				renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
+			}
 		}
 
 		ScreenUtils.clear(137f / 255f, 137f / 255f, 137f / 255f, 1f);
