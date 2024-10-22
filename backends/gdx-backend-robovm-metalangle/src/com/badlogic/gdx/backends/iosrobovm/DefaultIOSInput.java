@@ -508,13 +508,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			UITextField uiTextField = (UITextField)textfield;
 			if (type == null) type = OnscreenKeyboardType.Default;
 			uiTextField.setKeyboardType(getIosInputType(type));
-			if (type == OnscreenKeyboardType.Autocorrection) {
-				uiTextField.setAutocorrectionType(UITextAutocorrectionType.Yes);
-				uiTextField.setSpellCheckingType(UITextSpellCheckingType.Yes);
-			} else {
-				uiTextField.setAutocorrectionType(UITextAutocorrectionType.No);
-				uiTextField.setSpellCheckingType(UITextSpellCheckingType.No);
-			}
+			uiTextField.setAutocorrectionType(UITextAutocorrectionType.No);
+			uiTextField.setSpellCheckingType(UITextSpellCheckingType.No);
 			textfield.reloadInputViews();
 			textfield.becomeFirstResponder();
 			uiTextField.setDelegate(textDelegateInvisible);
