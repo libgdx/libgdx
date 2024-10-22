@@ -363,7 +363,7 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 	public void renderImageLayer (TiledMapImageLayer layer) {
 
 		final Color combinedTint = layer.getCombinedTintColor();
-		//Check if layer supports transparency
+		// Check if layer supports transparency
 		boolean supportsTransparency = layer.supportsTransparency();
 
 		// If the Image Layer supports transparency we do not want to modify the combined tint during rendering
@@ -374,11 +374,8 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 
 		// For image layer rendering multiply all by alpha
 		// except for opacity when image layer does not support transparency
-		final float color = Color.toFloatBits(
-			 1 * (combinedTint.r * alphaMultiplier),
-			 1 * (combinedTint.g * alphaMultiplier),
-			 1 * (combinedTint.b * alphaMultiplier),
-			 layer.getOpacity() * opacityMultiplier);
+		final float color = Color.toFloatBits(1 * (combinedTint.r * alphaMultiplier), 1 * (combinedTint.g * alphaMultiplier),
+			1 * (combinedTint.b * alphaMultiplier), layer.getOpacity() * opacityMultiplier);
 
 		final float[] vertices = this.vertices;
 

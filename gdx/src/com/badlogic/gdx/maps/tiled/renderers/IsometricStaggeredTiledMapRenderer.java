@@ -195,7 +195,7 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 	public void renderImageLayer (TiledMapImageLayer layer) {
 		final Color batchColor = batch.getColor();
 		final Color combinedTint = layer.getCombinedTintColor();
-		//Check if layer supports transparency
+		// Check if layer supports transparency
 		boolean supportsTransparency = layer.supportsTransparency();
 
 		// If the Image Layer supports transparency we do not want to modify the combined tint during rendering
@@ -206,11 +206,9 @@ public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 
 		// For image layer rendering multiply all by alpha
 		// except for opacity when image layer does not support transparency
-		final float color = Color.toFloatBits(
-			 batchColor.r * (combinedTint.r * alphaMultiplier),
-			 batchColor.g * (combinedTint.g * alphaMultiplier),
-			 batchColor.b * (combinedTint.b * alphaMultiplier),
-			 batchColor.a * (layer.getOpacity() * opacityMultiplier));
+		final float color = Color.toFloatBits(batchColor.r * (combinedTint.r * alphaMultiplier),
+			batchColor.g * (combinedTint.g * alphaMultiplier), batchColor.b * (combinedTint.b * alphaMultiplier),
+			batchColor.a * (layer.getOpacity() * opacityMultiplier));
 
 		final float[] vertices = this.vertices;
 
