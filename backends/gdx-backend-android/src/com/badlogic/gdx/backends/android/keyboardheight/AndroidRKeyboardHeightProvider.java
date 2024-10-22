@@ -25,7 +25,7 @@ public class AndroidRKeyboardHeightProvider implements KeyboardHeightProvider {
 	/** The cached portrait height of the keyboard */
 	private static int keyboardPortraitHeight;
 
-	public AndroidRKeyboardHeightProvider(final Activity activity) {
+	public AndroidRKeyboardHeightProvider (final Activity activity) {
 		this.view = activity.findViewById(android.R.id.content);
 		this.activity = activity;
 	}
