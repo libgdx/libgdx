@@ -109,8 +109,10 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
 		final Color batchColor = batch.getColor();
-		final float color = Color.toFloatBits(batchColor.r * layer.getTintColor().r, batchColor.g * layer.getTintColor().g,
-			batchColor.b * layer.getTintColor().b, batchColor.a * layer.getTintColor().a * layer.getOpacity());
+		final float color = Color.toFloatBits(batchColor.r * layer.getCombinedTintColor().r,
+			 batchColor.g * layer.getCombinedTintColor().g,
+			 batchColor.b * layer.getCombinedTintColor().b,
+			 batchColor.a * layer.getCombinedTintColor().a * layer.getOpacity());
 
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();
@@ -264,7 +266,13 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 	@Override
 	public void renderImageLayer (TiledMapImageLayer layer) {
 		final Color batchColor = batch.getColor();
-		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
+		final Color combinedTint = layer.getCombinedTintColor();
+		//For image layer rendering, multiply all by alpha except opacity
+		final float color = Color.toFloatBits(
+			 batchColor.r * (combinedTint.r * combinedTint.a),
+			 batchColor.g * (combinedTint.g * combinedTint.a),
+			 batchColor.b * (combinedTint.b * combinedTint.a),
+			 batchColor.a * layer.getOpacity());
 
 		final float[] vertices = this.vertices;
 

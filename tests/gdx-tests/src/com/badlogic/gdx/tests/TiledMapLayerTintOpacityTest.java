@@ -42,6 +42,8 @@ public class TiledMapLayerTintOpacityTest extends GdxTest {
 	private final static String MAP_ISO_STAG = "data/maps/tiled-tint-opacity/iso_stag.tmx";
 	private final static String MAP_HEX = "data/maps/tiled-tint-opacity/hex.tmx";
 	private final static String MAP_ORTHO_W_IMG = "data/maps/tiled-tint-opacity/ortho_w_img_layer.tmx";
+	private final static String MAP_ORTHO_DEEP_GROUP_TINT = "data/maps/tiled-tint-opacity/ortho_deep_group_tints.tmx";
+
 	private TiledMap map;
 	private TiledMapRenderer renderer;
 	private OrthographicCamera camera;
@@ -77,6 +79,7 @@ public class TiledMapLayerTintOpacityTest extends GdxTest {
 		assetManager.load(MAP_ISO_STAG, TiledMap.class);
 		assetManager.load(MAP_HEX, TiledMap.class);
 		assetManager.load(MAP_ORTHO_W_IMG, TiledMap.class);
+		assetManager.load(MAP_ORTHO_DEEP_GROUP_TINT, TiledMap.class);
 		assetManager.finishLoading();
 
 		map = assetManager.get(MAP_ORTHO);
@@ -129,6 +132,15 @@ public class TiledMapLayerTintOpacityTest extends GdxTest {
 				renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
 			}
 		}
+		else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)) {
+			 if (mapType != 6) {
+				  if (renderer instanceof Disposable)
+						((Disposable)renderer).dispose();
+				  mapType = 6;
+				  map = assetManager.get(MAP_ORTHO_DEEP_GROUP_TINT);
+				  renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
+			 }
+		}
 
 		ScreenUtils.clear(137f / 255f, 137f / 255f, 137f / 255f, 1f);
 		camera.update();
@@ -153,7 +165,7 @@ public class TiledMapLayerTintOpacityTest extends GdxTest {
 
 		batch.begin();
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
-		font.draw(batch, "Switch type with 1-6", Gdx.graphics.getHeight() - 100, 50);
+		font.draw(batch, "Switch type with 1-7", Gdx.graphics.getHeight() - 100, 50);
 		font.draw(batch, renderer.getClass().getSimpleName(), Gdx.graphics.getHeight() - 100, 20);
 		batch.end();
 	}
