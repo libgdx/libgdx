@@ -4,14 +4,16 @@ package com.badlogic.gdx.backends.android.keyboardheight;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.os.Build.VERSION_CODES;
 import android.view.View;
-import androidx.core.graphics.Insets;
-import androidx.core.view.OnApplyWindowInsetsListener;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import android.view.View.OnApplyWindowInsetsListener;
+import android.view.WindowInsets;
+import android.graphics.Insets;
+import androidx.annotation.RequiresApi;
 import org.jetbrains.annotations.NotNull;
 
-public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
+@RequiresApi(api = VERSION_CODES.R)
+public class AndroidRKeyboardHeightProvider implements KeyboardHeightProvider {
 
 	private final View view;
 	private final Activity activity;
@@ -23,22 +25,22 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 	/** The cached portrait height of the keyboard */
 	private static int keyboardPortraitHeight;
 
-	public AndroidXKeyboardHeightProvider (final Activity activity) {
+	public AndroidRKeyboardHeightProvider(final Activity activity) {
 		this.view = activity.findViewById(android.R.id.content);
 		this.activity = activity;
 	}
 
 	@Override
 	public void start () {
-		ViewCompat.setOnApplyWindowInsetsListener(view, new OnApplyWindowInsetsListener() {
+		view.setOnApplyWindowInsetsListener(new OnApplyWindowInsetsListener() {
 			@NotNull
 			@Override
-			public WindowInsetsCompat onApplyWindowInsets (@NotNull View v, @NotNull WindowInsetsCompat windowInsets) {
+			public WindowInsets onApplyWindowInsets (@NotNull View v, @NotNull WindowInsets windowInsets) {
 				if (observer == null) return windowInsets;
 				int orientation = activity.getResources().getConfiguration().orientation;
-				boolean isVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime());
+				boolean isVisible = windowInsets.isVisible(WindowInsets.Type.ime());
 				if (isVisible) {
-					Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
+					Insets insets = windowInsets.getInsets(WindowInsets.Type.ime());
 					if (orientation == Configuration.ORIENTATION_PORTRAIT) {
 						keyboardPortraitHeight = insets.bottom;
 					} else {
@@ -63,7 +65,7 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 
 	@Override
 	public void close () {
-		ViewCompat.setOnApplyWindowInsetsListener(view, null);
+		view.setOnApplyWindowInsetsListener(null);
 	}
 
 	@Override
