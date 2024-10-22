@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="hexagonal" renderorder="left-down" width="20" height="16" tilewidth="112" tileheight="96" infinite="0" hexsidelength="48" staggeraxis="x" staggerindex="odd" nextlayerid="15" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.0" orientation="hexagonal" renderorder="left-down" width="20" height="16" tilewidth="112" tileheight="96" infinite="0" hexsidelength="48" staggeraxis="x" staggerindex="odd" nextlayerid="16" nextobjectid="1">
  <tileset firstgid="1" name="hexes" tilewidth="112" tileheight="96" tilecount="4" columns="2">
   <image source="../tiled/hex/hexes.png" width="256" height="256"/>
  </tileset>
@@ -39,5 +39,8 @@
  </imagelayer>
  <imagelayer id="12" name="Yellow Tint Alpha 0" tintcolor="#00ffff00" offsetx="280" offsety="82.3333">
   <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
+ <imagelayer id="15" name="Badlogic PNG Yellow Tint Alpha (100)" tintcolor="#64ffff00" offsetx="178" offsety="106">
+  <image source="badlogic-with-whitespace-small.png" width="75" height="75"/>
  </imagelayer>
 </map>
