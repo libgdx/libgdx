@@ -184,7 +184,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	public void renderImageLayer (TiledMapImageLayer layer) {
 		final Color batchColor = batch.getColor();
 
-		final float color = getImageLayerColor(layer,batchColor);
+		final float color = getImageLayerColor(layer, batchColor);
 
 		final float[] vertices = this.vertices;
 
@@ -307,16 +307,13 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		}
 	}
 
-	/**
-	 * Calculates the float color for rendering an image layer, taking into account
-	 * the layer's tint color, opacity, and whether the image format supports transparency
-	 * then multiplying is against the batchColor
+	/** Calculates the float color for rendering an image layer, taking into account the layer's tint color, opacity, and whether
+	 * the image format supports transparency then multiplying is against the batchColor
 	 *
-	 * @param layer      The layer to render.
+	 * @param layer The layer to render.
 	 * @param batchColor The current color of the batch.
-	 * @return The float color value to use for rendering.
-	 */
-	protected float getImageLayerColor(TiledMapImageLayer layer, Color batchColor) {
+	 * @return The float color value to use for rendering. */
+	protected float getImageLayerColor (TiledMapImageLayer layer, Color batchColor) {
 
 		final Color combinedTint = layer.getCombinedTintColor();
 
@@ -325,32 +322,26 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 		// If the Image Layer supports transparency we do not want to modify the combined tint during rendering
 		// and if the Image Layer does not support transparency, we want to multiply the combined tint values, by its alpha
-	   float alphaMultiplier = supportsTransparency ? 1f : combinedTint.a;
-	   // Only modify opacity by combinedTint.b if Image Layer supports transparency
+		float alphaMultiplier = supportsTransparency ? 1f : combinedTint.a;
+		// Only modify opacity by combinedTint.b if Image Layer supports transparency
 		float opacityMultiplier = supportsTransparency ? combinedTint.a : 1f;
 
-		 // For image layer rendering multiply all by alpha
-		 // except for opacity when image layer does not support transparency
-		 return Color.toFloatBits(
-			 batchColor.r * (combinedTint.r * alphaMultiplier),
-			 batchColor.g * (combinedTint.g * alphaMultiplier),
-			 batchColor.b * (combinedTint.b * alphaMultiplier),
-			 batchColor.a * (layer.getOpacity() * opacityMultiplier)
-		 );
+		// For image layer rendering multiply all by alpha
+		// except for opacity when image layer does not support transparency
+		return Color.toFloatBits(batchColor.r * (combinedTint.r * alphaMultiplier),
+			batchColor.g * (combinedTint.g * alphaMultiplier), batchColor.b * (combinedTint.b * alphaMultiplier),
+			batchColor.a * (layer.getOpacity() * opacityMultiplier));
 	}
 
-	/**
-	 * Calculates the float color for rendering a tile layer, taking into account
-	 * the layer's tint color and opacity, then multiplying is against the batchColor
+	/** Calculates the float color for rendering a tile layer, taking into account the layer's tint color and opacity, then
+	 * multiplying is against the batchColor
 	 *
 	 * @param layer
 	 * @param batchColor
-	 * @return
-	 */
-	protected float getTileLayerColor(TiledMapTileLayer layer, Color batchColor) {
-		 return Color.toFloatBits(batchColor.r * layer.getCombinedTintColor().r,
-		  batchColor.g * layer.getCombinedTintColor().g, batchColor.b * layer.getCombinedTintColor().b,
-		  batchColor.a * layer.getCombinedTintColor().a * layer.getOpacity());
+	 * @return */
+	protected float getTileLayerColor (TiledMapTileLayer layer, Color batchColor) {
+		return Color.toFloatBits(batchColor.r * layer.getCombinedTintColor().r, batchColor.g * layer.getCombinedTintColor().g,
+			batchColor.b * layer.getCombinedTintColor().b, batchColor.a * layer.getCombinedTintColor().a * layer.getOpacity());
 	}
 
 	/** Called before the rendering of all layers starts. */
