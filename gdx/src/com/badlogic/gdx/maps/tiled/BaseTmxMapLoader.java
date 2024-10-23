@@ -322,12 +322,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		layer.setParallaxX(parallaxX);
 		layer.setParallaxY(parallaxY);
 
-		// tiled uses the format #AARRGGBB
-		// if the alpha of the tintcolor is set to 255, Tiled does not include it as part of the color code.
-		// ex. Red (r:255,g:0,b:0,a:255) becomes #ff0000, Red (r:255,g:0,b:0,a:127) becomes A:157 #7fff0000
-		String alpha = tintColor.length() == 9 ? tintColor.substring(1, 3) : "ff";
-		String color = tintColor.length() == 9 ? tintColor.substring(3) : tintColor.substring(1);
-		layer.setTintColor(Color.valueOf(color + alpha));
+		//set layer tint color after converting from #AARRGGBB to #RRGGBBAA
+		layer.setTintColor(Color.valueOf(tiledColorToLibGDXColor(tintColor)));
 
 	}
 
