@@ -141,19 +141,19 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <imagelayer id="19" name="Yellow Tint Alpha 225" tintcolor="#ffff00">
+ <imagelayer id="19" name="Yellow Tint Alpha 225" tintcolor="#ffff00" offsetx="1.33" offsety="2">
   <image source="../../badlogicsmall.jpg" width="32" height="32"/>
  </imagelayer>
- <imagelayer id="20" name="Yellow Tint Alpha 120" tintcolor="#78ffff00" offsetx="34.5" offsety="0.5">
+ <imagelayer id="20" name="Yellow Tint Alpha 120" tintcolor="#78ffff00" offsetx="39.33" offsety="2">
   <image source="../../badlogicsmall.jpg" width="32" height="32"/>
  </imagelayer>
- <imagelayer id="21" name="Yellow Tint Alpha 50" tintcolor="#32ffff00" offsetx="72" offsety="0.5">
+ <imagelayer id="21" name="Yellow Tint Alpha 50" tintcolor="#32ffff00" offsetx="77.33" offsety="2">
   <image source="../../badlogicsmall.jpg" width="32" height="32"/>
  </imagelayer>
- <imagelayer id="22" name="Yellow Tint Alpha 0" tintcolor="#00ffff00" offsetx="108.5" offsety="0.5">
+ <imagelayer id="22" name="Yellow Tint Alpha 0" tintcolor="#00ffff00" offsetx="115.33" offsety="2">
   <image source="../../badlogicsmall.jpg" width="32" height="32"/>
  </imagelayer>
- <imagelayer id="25" name="Badlogic PNG Yellow Tint Alpha (100)" tintcolor="#64ffff00" offsetx="333.5" offsety="122.5">
+ <imagelayer id="25" name="Badlogic PNG Yellow Tint Alpha (100)" tintcolor="#64ffff00" offsetx="331.67" offsety="121.67">
   <image source="badlogic-with-whitespace-small.png" width="75" height="75"/>
  </imagelayer>
 </map>

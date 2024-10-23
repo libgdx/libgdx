@@ -85,9 +85,7 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
 		final Color batchColor = batch.getColor();
-		final float color = Color.toFloatBits(batchColor.r * layer.getCombinedTintColor().r,
-			batchColor.g * layer.getCombinedTintColor().g, batchColor.b * layer.getCombinedTintColor().b,
-			batchColor.a * layer.getCombinedTintColor().a * layer.getOpacity());
+		final float color = getTileLayerColor(layer,batchColor);
 
 		float tileWidth = layer.getTileWidth() * unitScale;
 		float tileHeight = layer.getTileHeight() * unitScale;
@@ -238,21 +236,8 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 	@Override
 	public void renderImageLayer (TiledMapImageLayer layer) {
 		final Color batchColor = batch.getColor();
-		final Color combinedTint = layer.getCombinedTintColor();
-		// Check if layer supports transparency
-		boolean supportsTransparency = layer.supportsTransparency();
 
-		// If the Image Layer supports transparency we do not want to modify the combined tint during rendering
-		// and if the Image Layer does not support transparency, we want to multiply the combined tint values, by its alpha
-		float alphaMultiplier = supportsTransparency ? 1f : combinedTint.a;
-		// Only modify opacity by combinedTint.b if Image Layer supports transparency
-		float opacityMultiplier = supportsTransparency ? combinedTint.a : 1f;
-
-		// For image layer rendering multiply all by alpha
-		// except for opacity when image layer does not support transparency
-		final float color = Color.toFloatBits(batchColor.r * (combinedTint.r * alphaMultiplier),
-			batchColor.g * (combinedTint.g * alphaMultiplier), batchColor.b * (combinedTint.b * alphaMultiplier),
-			batchColor.a * (layer.getOpacity() * opacityMultiplier));
+		final float color = getImageLayerColor(layer,batchColor);
 
 		final float[] vertices = this.vertices;
 

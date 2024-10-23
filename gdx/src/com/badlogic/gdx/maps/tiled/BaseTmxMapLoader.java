@@ -353,12 +353,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		layer.setParallaxX(parallaxX);
 		layer.setParallaxY(parallaxY);
 
-		// tiled uses the format #AARRGGBB
-		// if the alpha of the tintcolor is set to 255, Tiled does not include it as part of the color code.
-		// ex. Red (r:255,g:0,b:0,a:255) becomes #ff0000, Red (r:255,g:0,b:0,a:127) becomes A:157 #7fff0000
-		String alpha = tintColor.length() == 9 ? tintColor.substring(1, 3) : "ff";
-		String color = tintColor.length() == 9 ? tintColor.substring(3) : tintColor.substring(1);
-		layer.setTintColor(Color.valueOf(color + alpha));
+		//set layer tint color after converting from #AARRGGBB to #RRGGBBAA
+		layer.setTintColor(Color.valueOf(tiledColorToLibGDXColor(tintColor)));
 
 	}
 
@@ -513,10 +509,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		} else if (type.equals("bool")) {
 			return Boolean.valueOf(value);
 		} else if (type.equals("color")) {
-			// Tiled uses the format #AARRGGBB
-			String opaqueColor = value.substring(3);
-			String alpha = value.substring(1, 3);
-			return Color.valueOf(opaqueColor + alpha);
+			//return color after converting from #AARRGGBB to #RRGGBBAA
+			return Color.valueOf(tiledColorToLibGDXColor(value));
 		} else {
 			throw new GdxRuntimeException(
 				"Wrong type given for property " + name + ", given : " + type + ", supported : string, bool, int, float, color");
@@ -616,6 +610,22 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		}
 		return result;
 	}
+
+	 /**
+	  * Converts Tiled's color format #AARRGGBB to a libGDX appropriate #RRGGBBAA
+	  * The Tiled Map Editor uses the color format #AARRGGBB
+	  * But note, if the alpha of the color is set to 255,
+	  * Tiled does not include it as part of the color code in the .tmx
+	  * ex. Red (r:255,g:0,b:0,a:255) becomes #ff0000, Red (r:255,g:0,b:0,a:127) becomes #7fff0000
+	  *
+	  * @param tiledColor A String representing a color in Tiled's #AARRGGBB format
+	  * @return A String representing the color in the #RRGGBBAA format
+	  */
+	 public static String tiledColorToLibGDXColor(String tiledColor){
+		  String alpha = tiledColor.length() == 9 ? tiledColor.substring(1, 3) : "ff";
+		  String color = tiledColor.length() == 9 ? tiledColor.substring(3) : tiledColor.substring(1);
+		  return color + alpha;
+	 }
 
 	protected void loadTileSet (Element element, FileHandle tmxFile, ImageResolver imageResolver) {
 		if (element.getName().equals("tileset")) {
