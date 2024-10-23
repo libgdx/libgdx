@@ -116,7 +116,7 @@ public class Color {
 	}
 
 	/** Sets this color to the red, green and blue components of the provided Color and a deviating alpha value.
-	 * 
+	 *
 	 * @param rgb the desired red, green and blue values (alpha of that Color is ignored)
 	 * @param alpha the desired alpha value (will be clamped to the range [0, 1])
 	 * @return this color. */
@@ -128,7 +128,7 @@ public class Color {
 		return this;
 	}
 
-	/** Multiplies the this color and the given color
+	/** Multiplies this color and the given color
 	 * 
 	 * @param color the color
 	 * @return this color. */

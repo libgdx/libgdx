@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.maps.tiled;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 
@@ -27,6 +28,7 @@ public class TiledMapImageLayer extends MapLayer {
 	private float y;
 	private boolean repeatX;
 	private boolean repeatY;
+	private boolean supportsTransparency;
 
 	public TiledMapImageLayer (TextureRegion region, float x, float y, boolean repeatX, boolean repeatY) {
 		this.region = region;
@@ -34,6 +36,34 @@ public class TiledMapImageLayer extends MapLayer {
 		this.y = y;
 		this.repeatX = repeatX;
 		this.repeatY = repeatY;
+		this.supportsTransparency = checkTransparencySupport(region);
+	}
+
+	/** TiledMap ImageLayers can support transparency through tint color if the image provided supports the proper pixel format.
+	 * Here we check to see if the file supports transparency by checking the format of the TextureData.
+	 *
+	 * @param region TextureRegion of the ImageLayer
+	 * @return boolean */
+	private boolean checkTransparencySupport (TextureRegion region) {
+		Pixmap.Format format = region.getTexture().getTextureData().getFormat();
+		return format != null && formatHasAlpha(format);
+	}
+
+	// Check if pixel format supports alpha channel
+	private boolean formatHasAlpha (Pixmap.Format format) {
+		switch (format) {
+		case Alpha:
+		case LuminanceAlpha:
+		case RGBA4444:
+		case RGBA8888:
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	public boolean supportsTransparency () {
+		return supportsTransparency;
 	}
 
 	public TextureRegion getTextureRegion () {

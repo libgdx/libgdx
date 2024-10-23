@@ -209,7 +209,9 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
-		final float color = Color.toFloatBits(1, 1, 1, layer.getOpacity());
+
+		final float color = Color.toFloatBits(layer.getCombinedTintColor().r, layer.getCombinedTintColor().g,
+			layer.getCombinedTintColor().b, layer.getOpacity() * layer.getCombinedTintColor().a);
 
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();
@@ -359,7 +361,22 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 
 	@Override
 	public void renderImageLayer (TiledMapImageLayer layer) {
-		final float color = Color.toFloatBits(1.0f, 1.0f, 1.0f, layer.getOpacity());
+
+		final Color combinedTint = layer.getCombinedTintColor();
+		// Check if layer supports transparency
+		boolean supportsTransparency = layer.supportsTransparency();
+
+		// If the Image Layer supports transparency we do not want to modify the combined tint during rendering
+		// and if the Image Layer does not support transparency, we want to multiply the combined tint values, by its alpha
+		float alphaMultiplier = supportsTransparency ? 1f : combinedTint.a;
+		// Only modify opacity by combinedTint.b if Image Layer supports transparency
+		float opacityMultiplier = supportsTransparency ? combinedTint.a : 1f;
+
+		// For image layer rendering multiply all by alpha
+		// except for opacity when image layer does not support transparency
+		final float color = Color.toFloatBits(combinedTint.r * alphaMultiplier, combinedTint.g * alphaMultiplier,
+			combinedTint.b * alphaMultiplier, layer.getOpacity() * opacityMultiplier);
+
 		final float[] vertices = this.vertices;
 
 		TextureRegion region = layer.getTextureRegion();
