@@ -179,37 +179,37 @@ public abstract class Camera {
 		position.add(vec);
 	}
 
-	/** Function to translate a point given in screen coordinates to world space. It's the same as GLU gluUnProject, but does not
-	 * rely on OpenGL. The x- and y-coordinate of vec are assumed to be in screen coordinates (origin is the top left corner, y
+	/** Function to translate a point given in touch coordinates to world space. It's the same as GLU gluUnProject, but does not
+	 * rely on OpenGL. The x- and y-coordinate of vec are assumed to be in touch coordinates (origin is the top left corner, y
 	 * pointing down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0 will return a
 	 * point on the near plane, a z-coordinate of 1 will return a point on the far plane. This method allows you to specify the
 	 * viewport position and dimensions in the coordinate system expected by {@link GL20#glViewport(int, int, int, int)}, with the
 	 * origin in the bottom left corner of the screen.
-	 * @param screenCoords the point in screen coordinates (origin top left)
+	 * @param touchCoords the point in touch coordinates (origin top left)
 	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportWidth the width of the viewport in pixels
 	 * @param viewportHeight the height of the viewport in pixels
-	 * @return the mutated and unprojected screenCoords {@link Vector3} */
-	public Vector3 unproject (Vector3 screenCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
-		float x = screenCoords.x - viewportX, y = Gdx.graphics.getHeight() - screenCoords.y - viewportY;
-		screenCoords.x = (2 * x) / viewportWidth - 1;
-		screenCoords.y = (2 * y) / viewportHeight - 1;
-		screenCoords.z = 2 * screenCoords.z - 1;
-		screenCoords.prj(invProjectionView);
-		return screenCoords;
+	 * @return the mutated and unprojected touchCoords {@link Vector3} */
+	public Vector3 unproject (Vector3 touchCoords, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
+		float x = touchCoords.x - viewportX, y = Gdx.graphics.getHeight() - touchCoords.y - viewportY;
+		touchCoords.x = (2 * x) / viewportWidth - 1;
+		touchCoords.y = (2 * y) / viewportHeight - 1;
+		touchCoords.z = 2 * touchCoords.z - 1;
+		touchCoords.prj(invProjectionView);
+		return touchCoords;
 	}
 
-	/** Function to translate a point given in screen coordinates to world space. It's the same as GLU gluUnProject but does not
+	/** Function to translate a point given in touch coordinates to world space. It's the same as GLU gluUnProject but does not
 	 * rely on OpenGL. The viewport is assumed to span the whole screen and is fetched from {@link Graphics#getWidth()} and
-	 * {@link Graphics#getHeight()}. The x- and y-coordinate of vec are assumed to be in screen coordinates (origin is the top left
+	 * {@link Graphics#getHeight()}. The x- and y-coordinate of vec are assumed to be in touch coordinates (origin is the top left
 	 * corner, y pointing down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0
 	 * will return a point on the near plane, a z-coordinate of 1 will return a point on the far plane.
-	 * @param screenCoords the point in screen coordinates
-	 * @return the mutated and unprojected screenCoords {@link Vector3} */
-	public Vector3 unproject (Vector3 screenCoords) {
-		unproject(screenCoords, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		return screenCoords;
+	 * @param touchCoords the point in touch coordinates
+	 * @return the mutated and unprojected touchCoords {@link Vector3} */
+	public Vector3 unproject (Vector3 touchCoords) {
+		unproject(touchCoords, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		return touchCoords;
 	}
 
 	/** Projects the {@link Vector3} given in world space to screen coordinates. It's the same as GLU gluProject with one small
@@ -241,27 +241,27 @@ public abstract class Camera {
 		return worldCoords;
 	}
 
-	/** Creates a picking {@link Ray} from the coordinates given in screen coordinates. It is assumed that the viewport spans the
-	 * whole screen. The screen coordinates origin is assumed to be in the top left corner, its y-axis pointing down, the x-axis
+	/** Creates a picking {@link Ray} from the coordinates given in touch coordinates. It is assumed that the viewport spans the
+	 * whole screen. The touch coordinates origin is assumed to be in the top left corner, its y-axis pointing down, the x-axis
 	 * pointing to the right. The returned instance is not a new instance but an internal member only accessible via this function.
 	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportWidth the width of the viewport in pixels
 	 * @param viewportHeight the height of the viewport in pixels
 	 * @return the picking Ray. */
-	public Ray getPickRay (float screenX, float screenY, float viewportX, float viewportY, float viewportWidth,
+	public Ray getPickRay (float touchX, float touchY, float viewportX, float viewportY, float viewportWidth,
 		float viewportHeight) {
-		unproject(ray.origin.set(screenX, screenY, 0), viewportX, viewportY, viewportWidth, viewportHeight);
-		unproject(ray.direction.set(screenX, screenY, 1), viewportX, viewportY, viewportWidth, viewportHeight);
+		unproject(ray.origin.set(touchX, touchY, 0), viewportX, viewportY, viewportWidth, viewportHeight);
+		unproject(ray.direction.set(touchX, touchY, 1), viewportX, viewportY, viewportWidth, viewportHeight);
 		ray.direction.sub(ray.origin).nor();
 		return ray;
 	}
 
-	/** Creates a picking {@link Ray} from the coordinates given in screen coordinates. It is assumed that the viewport spans the
-	 * whole screen. The screen coordinates origin is assumed to be in the top left corner, its y-axis pointing down, the x-axis
+	/** Creates a picking {@link Ray} from the coordinates given in touch coordinates. It is assumed that the viewport spans the
+	 * whole screen. The touch coordinates origin is assumed to be in the top left corner, its y-axis pointing down, the x-axis
 	 * pointing to the right. The returned instance is not a new instance but an internal member only accessible via this function.
 	 * @return the picking Ray. */
-	public Ray getPickRay (float screenX, float screenY) {
-		return getPickRay(screenX, screenY, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	public Ray getPickRay (float touchX, float touchY) {
+		return getPickRay(touchX, touchY, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 }

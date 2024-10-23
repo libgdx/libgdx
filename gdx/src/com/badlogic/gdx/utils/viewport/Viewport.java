@@ -66,14 +66,15 @@ public abstract class Viewport {
 		apply(centerCamera);
 	}
 
-	/** Transforms the specified screen coordinate to world coordinates.
+	/** Transforms the specified touch coordinate to world coordinates. The x- and y-coordinate of vec are assumed to be in touch
+	 * coordinates (origin is the top left corner, y * pointing down, x pointing to the right)
 	 * @return The vector that was passed in, transformed to world coordinates.
 	 * @see Camera#unproject(Vector3) */
-	public Vector2 unproject (Vector2 screenCoords) {
-		tmp.set(screenCoords.x, screenCoords.y, 1);
+	public Vector2 unproject (Vector2 touchCoords) {
+		tmp.set(touchCoords.x, touchCoords.y, 1);
 		camera.unproject(tmp, screenX, screenY, screenWidth, screenHeight);
-		screenCoords.set(tmp.x, tmp.y);
-		return screenCoords;
+		touchCoords.set(tmp.x, tmp.y);
+		return touchCoords;
 	}
 
 	/** Transforms the specified world coordinate to screen coordinates.
@@ -103,8 +104,8 @@ public abstract class Viewport {
 	}
 
 	/** @see Camera#getPickRay(float, float, float, float, float, float) */
-	public Ray getPickRay (float screenX, float screenY) {
-		return camera.getPickRay(screenX, screenY, this.screenX, this.screenY, screenWidth, screenHeight);
+	public Ray getPickRay (float touchX, float touchY) {
+		return camera.getPickRay(touchX, touchY, this.screenX, this.screenY, screenWidth, screenHeight);
 	}
 
 	/** @see ScissorStack#calculateScissors(Camera, float, float, float, float, Matrix4, Rectangle, Rectangle) */
