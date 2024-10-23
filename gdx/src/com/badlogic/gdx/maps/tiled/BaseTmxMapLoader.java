@@ -322,7 +322,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		layer.setParallaxX(parallaxX);
 		layer.setParallaxY(parallaxY);
 
-		//set layer tint color after converting from #AARRGGBB to #RRGGBBAA
+		// set layer tint color after converting from #AARRGGBB to #RRGGBBAA
 		layer.setTintColor(Color.valueOf(tiledColorToLibGDXColor(tintColor)));
 
 	}
