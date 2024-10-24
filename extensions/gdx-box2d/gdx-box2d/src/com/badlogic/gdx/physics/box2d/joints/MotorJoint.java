@@ -25,8 +25,8 @@ import com.badlogic.gdx.physics.box2d.World;
 public class MotorJoint extends Joint {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
-	 */
+#include <box2d/box2d.h>
+	 */ // @on
 
 	private final float[] tmp = new float[2];
 	private final Vector2 linearOffset = new Vector2();
@@ -42,90 +42,100 @@ public class MotorJoint extends Joint {
 	}
 
 	private native void jniGetLinearOffset (long addr, float[] linearOffset); /*
+		// @off
 		b2MotorJoint* joint = (b2MotorJoint*)addr;
 		linearOffset[0] = joint->GetLinearOffset().x;
 		linearOffset[1] = joint->GetLinearOffset().y;
-	*/
+	*/ // @on
 
-	public void setLinearOffset(Vector2 linearOffset) {
+	public void setLinearOffset (Vector2 linearOffset) {
 		jniSetLinearOffset(addr, linearOffset.x, linearOffset.y);
 	}
 
 	private native void jniSetLinearOffset (long addr, float linearOffsetX, float linearOffsetY); /*
+		// @off
 		b2MotorJoint* joint = (b2MotorJoint*)addr;
 		joint->SetLinearOffset(b2Vec2(linearOffsetX, linearOffsetY));
-	*/
+	*/ // @on
 
 	public float getAngularOffset () {
 		return jniGetAngularOffset(addr);
 	}
 
 	private native float jniGetAngularOffset (long addr); /*
+		// @off
 		b2MotorJoint* joint = (b2MotorJoint*)addr;
 		return joint->GetAngularOffset();
-	*/
+	*/ // @on
 
 	public void setAngularOffset (float angularOffset) {
 		jniSetAngularOffset(addr, angularOffset);
 	}
 
 	private native void jniSetAngularOffset (long addr, float angularOffset); /*
+		// @off
 		b2MotorJoint* joint = (b2MotorJoint*)addr;
 		joint->SetAngularOffset(angularOffset);
-	*/
+	*/ // @on
 
 	public float getMaxForce () {
 		return jniGetMaxForce(addr);
 	}
 
 	private native float jniGetMaxForce (long addr); /*
+		// @off
 		b2MotorJoint* joint = (b2MotorJoint*)addr;
 		return joint->GetMaxForce();
-	*/
+	*/ // @on
 
 	public void setMaxForce (float maxForce) {
 		jniSetMaxForce(addr, maxForce);
 	}
 
 	private native void jniSetMaxForce (long addr, float maxForce); /*
+		// @off
 		b2MotorJoint* joint = (b2MotorJoint*)addr;
 		joint->SetMaxForce(maxForce);
-	*/
+	*/ // @on
 
 	public float getMaxTorque () {
 		return jniGetMaxTorque(addr);
 	}
 
 	private native float jniGetMaxTorque (long addr); /*
+		// @off
 		b2MotorJoint* joint = (b2MotorJoint*)addr;
 		return joint->GetMaxTorque();
-	*/
+	*/ // @on
 
 	public void setMaxTorque (float maxTorque) {
 		jniSetMaxTorque(addr, maxTorque);
 	}
 
 	private native void jniSetMaxTorque (long addr, float maxTorque); /*
+		// @off
 		b2MotorJoint* joint = (b2MotorJoint*)addr;
 		joint->SetMaxTorque(maxTorque);
-	*/
+	*/ // @on
 
 	public float getCorrectionFactor () {
 		return jniGetCorrectionFactor(addr);
 	}
 
 	private native float jniGetCorrectionFactor (long addr); /*
+		// @off
 		b2MotorJoint* joint = (b2MotorJoint*)addr;
 		return joint->GetCorrectionFactor();
-	*/
+	*/ // @on
 
 	public void setCorrectionFactor (float correctionFactor) {
 		jniSetCorrectionFactor(addr, correctionFactor);
 	}
 
 	private native void jniSetCorrectionFactor (long addr, float correctionFactor); /*
+		// @off
 		b2MotorJoint* joint = (b2MotorJoint*)addr;
 		joint->SetCorrectionFactor(correctionFactor);
-	*/
+	*/ // @on
 
 }
