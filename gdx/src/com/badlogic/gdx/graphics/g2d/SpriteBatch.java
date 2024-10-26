@@ -40,13 +40,10 @@ public class SpriteBatch implements Batch {
 	 *             used when gles 3 is not available, defaults to {@link VertexDataType#VertexArray}. */
 	@Deprecated public static VertexDataType defaultVertexDataType = VertexDataType.VertexBufferObject;
 
-	/**
-	 * Used to completely override the vertex type used by SpriteBatch. This is useful for picking a specific
-	 * vertex data type on construction of the sprite batch. Recommended to reset this back to defaultVertexDataType
-	 * Once the batch has been created with this flag
-	 */
-	@Deprecated
-	public static VertexDataType overrideVertexType = null;
+	/** Used to completely override the vertex type used by SpriteBatch. This is useful for picking a specific vertex data type on
+	 * construction of the sprite batch. Recommended to reset this back to defaultVertexDataType Once the batch has been created
+	 * with this flag */
+	@Deprecated public static VertexDataType overrideVertexType = null;
 
 	private VertexDataType currentDataType;
 
@@ -979,13 +976,12 @@ public class SpriteBatch implements Batch {
 		Mesh mesh = this.mesh;
 		mesh.setVertices(vertices, 0, idx);
 
-		//Only upload indices for the vertex array type
+		// Only upload indices for the vertex array type
 		if (currentDataType == VertexDataType.VertexArray) {
 			Buffer indicesBuffer = (Buffer)mesh.getIndicesBuffer(true);
 			indicesBuffer.position(0);
 			indicesBuffer.limit(count);
 		}
-
 
 		if (blendingDisabled) {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
