@@ -63,6 +63,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
 
+	protected ObjectMap<String, Element> templateCache;
+
 	public BaseTmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -92,6 +94,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		this.map = new TiledMap();
 		this.idToObject = new IntMap<>();
 		this.runOnEndOfLoadTiled = new Array<>();
+		this.templateCache = new ObjectMap<>();
 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
@@ -194,7 +197,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		} else if (name.equals("layer")) {
 			loadTileLayer(map, parentLayers, element);
 		} else if (name.equals("objectgroup")) {
-			loadObjectGroup(map, parentLayers, element);
+			loadObjectGroup(map, parentLayers, element, tmxFile);
 		} else if (name.equals("imagelayer")) {
 			loadImageLayer(map, parentLayers, element, tmxFile, imageResolver);
 		}
@@ -260,7 +263,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		}
 	}
 
-	protected void loadObjectGroup (TiledMap map, MapLayers parentLayers, Element element) {
+	protected void loadObjectGroup (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile) {
 		if (element.getName().equals("objectgroup")) {
 			MapLayer layer = new MapLayer();
 			loadBasicLayerInfo(layer, element);
@@ -269,9 +272,14 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 				loadProperties(layer.getProperties(), properties);
 			}
 
-			for (Element objectElement : element.getChildrenByName("object")) {
-				loadObject(map, layer, objectElement);
-			}
+			 for (Element objectElement : element.getChildrenByName("object")) {
+				  if(objectElement.hasAttribute("template")){
+						loadTemplateObject(map,layer,objectElement,tmxFile);
+				  }
+				  else{
+						loadObject(map, layer, objectElement);
+				  }
+			 }
 
 			parentLayers.add(layer);
 		}
@@ -471,6 +479,190 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			objects.add(object);
 		}
 	}
+
+	 /**
+	  * Meant to merge the attributes of the template element object and the parent element object
+	  * The parent's attribute should take precedence over the template attribute of the same name
+	  * @param element Main object element
+	  * @param templateElement Template object element
+	  * @return new ObjectMap containing the merged attributes of both elements
+	  */
+	 private ObjectMap<String, String> mergeAttributes(Element element, Element templateElement) {
+		  ObjectMap<String, String> attributes = new  ObjectMap<String, String>();
+
+		  // Add attributes from the template element
+		  for (String attributeName : templateElement.getAttributes().keys()) {
+				attributes.put(attributeName, templateElement.getAttribute(attributeName));
+		  }
+
+		  // Overwrite with attributes from the element
+		  for (String attributeName : element.getAttributes().keys()) {
+				attributes.put(attributeName, element.getAttribute(attributeName));
+		  }
+
+		  return attributes;
+	 }
+
+	 /**
+	  * Custom method specifically meant to load template objects found in objectgroups
+	  * Each template object links to a specific .ts file.
+	  * Unlike when loading every other object, we need to read the property attributes contained in the .ts file first.
+	  * These attributes are allowed to be overwritten by any matching property attributes found in its parent element.
+	  * @param map TileMap obect
+	  * @param layer MapLayer object
+	  * @param element Element which contains the single xml element we are currently parsing
+	  * @param tmxFile tmxFile
+	  */
+	 protected void loadTemplateObject (TiledMap map, MapLayer layer, Element element,FileHandle tmxFile) {
+		  if (element.getName().equals("object")) {
+				MapObjects objects = layer.getObjects();
+
+				//Get template (.ts) file name from element
+				String tsFileName = element.getAttribute("template");
+				//check for cached ts element
+				Element templateElement = templateCache.get(tsFileName);
+				if (templateElement == null) {
+					 FileHandle templateFile = getRelativeFileHandle(tmxFile, tsFileName);
+					 //parse the .tx template file
+					 try {
+						  templateElement = xml.parse(templateFile);
+					 } catch (Exception e) {
+						  throw new GdxRuntimeException("Error parsing template file: " + tsFileName, e);
+					 }
+					 templateCache.put(tsFileName, templateElement);
+				}
+
+				//Get Template element object
+				Element templateObjectElement = templateElement.getChildByName("object");
+
+				//Create a map consisting of the combined attributes of the template and parent element
+				ObjectMap<String, String> combinedAttributes = mergeAttributes(element, templateObjectElement);
+
+				MapObject object = null;
+
+				float scaleX = convertObjectToTileSpace ? 1.0f / mapTileWidth : 1.0f;
+				float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
+
+				//.ts template does not contain an x/y value in object elements attributes
+				float x = Float.parseFloat(combinedAttributes.get("x", "0")) * scaleX;
+				float y = (flipY ?
+					(mapHeightInPixels - Float.parseFloat(combinedAttributes.get("y", "0"))) :
+					Float.parseFloat(combinedAttributes.get("y", "0"))) * scaleY;
+
+				//Check if attributes exists in element(parent object of template object) before checking the template element
+				float width = Float.parseFloat(combinedAttributes.get("width", "0")) * scaleX;
+				float height = Float.parseFloat(combinedAttributes.get("height", "0")) * scaleY;
+
+				if (templateObjectElement.getChildCount() > 0) {
+					 Element child = null;
+					 if ((child = templateObjectElement.getChildByName("polygon")) != null) {
+						  String[] points = child.getAttribute("points").split(" ");
+						  float[] vertices = new float[points.length * 2];
+						  for (int i = 0; i < points.length; i++) {
+								String[] point = points[i].split(",");
+								vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
+								vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY * (flipY ? -1 : 1);
+						  }
+						  Polygon polygon = new Polygon(vertices);
+						  polygon.setPosition(x, y);
+						  object = new PolygonMapObject(polygon);
+					 } else if ((child = templateObjectElement.getChildByName("polyline")) != null) {
+						  String[] points = child.getAttribute("points").split(" ");
+						  float[] vertices = new float[points.length * 2];
+						  for (int i = 0; i < points.length; i++) {
+								String[] point = points[i].split(",");
+								vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
+								vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY * (flipY ? -1 : 1);
+						  }
+						  Polyline polyline = new Polyline(vertices);
+						  polyline.setPosition(x, y);
+						  object = new PolylineMapObject(polyline);
+					 } else if ((child = templateObjectElement.getChildByName("ellipse")) != null) {
+						  object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
+					 }
+				}
+
+				if (object == null) {
+					 String gid = combinedAttributes.get("gid", null);
+					 if (gid != null) {
+						  int id = (int) Long.parseLong(gid);
+
+						  boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
+						  boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
+
+						  TiledMapTile tile = map.getTileSets().getTile(id & ~MASK_CLEAR);
+						  TiledMapTileMapObject tiledMapTileMapObject = new TiledMapTileMapObject(tile, flipHorizontally,
+							  flipVertically);
+						  TextureRegion textureRegion = tiledMapTileMapObject.getTextureRegion();
+						  tiledMapTileMapObject.getProperties().put("gid", id);
+						  tiledMapTileMapObject.setX(x);
+						  tiledMapTileMapObject.setY(flipY ? y : y - height);
+
+						  float objectWidth = Float.parseFloat(
+							  combinedAttributes.get("width", String.valueOf(textureRegion.getRegionWidth())));
+						  float objectHeight = Float.parseFloat(
+							  combinedAttributes.get("height", String.valueOf(textureRegion.getRegionHeight())));
+
+						  tiledMapTileMapObject.setScaleX(scaleX * (objectWidth / textureRegion.getRegionWidth()));
+						  tiledMapTileMapObject.setScaleY(scaleY * (objectHeight / textureRegion.getRegionHeight()));
+
+						  float rotation = Float.parseFloat(combinedAttributes.get("rotation", "0"));
+
+						  tiledMapTileMapObject.setRotation(rotation);
+						  object = tiledMapTileMapObject;
+
+					 } else {
+						  object = new RectangleMapObject(x, flipY ? y - height : y, width, height);
+					 }
+				}
+
+				//Begin adding property attributes to the MapObject
+				object.getProperties().put("x", x);
+				if (object instanceof TiledMapTileMapObject) {
+					 object.getProperties().put("y", y);
+				} else {
+					 object.getProperties().put("y", (flipY ? y - height : y));
+				}
+
+				object.getProperties().put("width", width);
+				object.getProperties().put("height", height);
+
+				String name = combinedAttributes.get("name", null);
+				if (name != null) {
+					 object.setName(name);
+				}
+
+				String type = combinedAttributes.get("type", null);
+				if (type != null) {
+					 object.getProperties().put("type", type);
+				}
+
+				int id = Integer.parseInt(combinedAttributes.get("id", "0"));
+				if (id != 0) {
+					 object.getProperties().put("id", id);
+				}
+
+				float rotation = Float.parseFloat(combinedAttributes.get("rotation", "0"));
+				object.getProperties().put("rotation", rotation);
+
+				boolean visible = Integer.parseInt(combinedAttributes.get("visible", "1")) == 1;
+				object.setVisible(visible);
+
+				Element tsProperties = templateObjectElement.getChildByName("properties");
+				//load property attributes of object found in .ts(template) file
+				if (tsProperties != null) {
+					 loadProperties(object.getProperties(), tsProperties);
+				}
+
+				Element properties = element.getChildByName("properties");
+				//load property attributes of main element object
+				if (properties != null) {
+					 loadProperties(object.getProperties(), properties);
+				}
+				idToObject.put(id, object);
+				objects.add(object);
+		  }
+	 }
 
 	protected void loadProperties (final MapProperties properties, Element element) {
 		if (element == null) return;
