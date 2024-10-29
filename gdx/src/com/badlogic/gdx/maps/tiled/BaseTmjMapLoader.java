@@ -418,95 +418,95 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
 	 }
 
 	 protected void loadObject (TiledMap map, MapObjects objects, JsonValue element, float heightInPixels) {
-		  if (element.getString("type", "").equals("object")) {
-				MapObject object = null;
 
-				float scaleX = convertObjectToTileSpace ? 1.0f / mapTileWidth : 1.0f;
-				float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
+		  MapObject object = null;
 
-				float x = element.getFloat("x", 0) * scaleX;
-				float y = (flipY ? (heightInPixels - element.getFloat("y", 0)) : element.getFloat("y", 0)) * scaleY;
+		  float scaleX = convertObjectToTileSpace ? 1.0f / mapTileWidth : 1.0f;
+		  float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
 
-				float width = element.getFloat("width", 0) * scaleX;
-				float height = element.getFloat("height", 0) * scaleY;
+		  float x = element.getFloat("x", 0) * scaleX;
+		  float y = (flipY ? (heightInPixels - element.getFloat("y", 0)) : element.getFloat("y", 0)) * scaleY;
 
-				// if (element.getChildCount() > 0) {
-				JsonValue child;
-				if ((child = element.get("polygon")) != null) {
-					 ArrayList<Float> vertices = new ArrayList<>();
-					 for (JsonValue point : child) {
-						  vertices.add(point.getFloat("x", 0) * scaleX);
-						  vertices.add(point.getFloat("y", 0) * scaleY * (flipY ? -1 : 1));
-					 }
-					 Polygon polygon = new Polygon(convertArrayToPrimitive(vertices));
-					 polygon.setPosition(x, y);
-					 object = new PolygonMapObject(polygon);
-				} else if ((child = element.get("polyline")) != null) {
-					 ArrayList<Float> vertices = new ArrayList<>();
-					 for (JsonValue point : child) {
-						  vertices.add(point.getFloat("x", 0) * scaleX);
-						  vertices.add(point.getFloat("y", 0) * scaleY * (flipY ? -1 : 1));
-					 }
-					 Polyline polyline = new Polyline(convertArrayToPrimitive(vertices));
-					 polyline.setPosition(x, y);
-					 object = new PolylineMapObject(polyline);
-				} else if (element.get("ellipse") != null) {
-					 object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
-				}
+		  float width = element.getFloat("width", 0) * scaleX;
+		  float height = element.getFloat("height", 0) * scaleY;
 
-				if (object == null) {
-					 String gid;
-					 if ((gid = element.getString("gid", null)) != null) {
-						  int id = (int)Long.parseLong(gid);
-						  boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
-						  boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
-
-						  TiledMapTile tile = map.getTileSets().getTile(id & ~MASK_CLEAR);
-						  TiledMapTileMapObject tiledMapTileMapObject = new TiledMapTileMapObject(tile, flipHorizontally, flipVertically);
-						  TextureRegion textureRegion = tiledMapTileMapObject.getTextureRegion();
-						  tiledMapTileMapObject.getProperties().put("gid", id);
-						  tiledMapTileMapObject.setX(x);
-						  tiledMapTileMapObject.setY(flipY ? y : y - height);
-						  float objectWidth = element.getFloat("width", textureRegion.getRegionWidth());
-						  float objectHeight = element.getFloat("height", textureRegion.getRegionHeight());
-						  tiledMapTileMapObject.setScaleX(scaleX * (objectWidth / textureRegion.getRegionWidth()));
-						  tiledMapTileMapObject.setScaleY(scaleY * (objectHeight / textureRegion.getRegionHeight()));
-						  tiledMapTileMapObject.setRotation(element.getFloat("rotation", 0));
-						  object = tiledMapTileMapObject;
-					 } else {
-						  object = new RectangleMapObject(x, flipY ? y - height : y, width, height);
-					 }
+		  // if (element.getChildCount() > 0) {
+		  JsonValue child;
+		  if ((child = element.get("polygon")) != null) {
+				ArrayList<Float> vertices = new ArrayList<>();
+				for (JsonValue point : child) {
+					 vertices.add(point.getFloat("x", 0) * scaleX);
+					 vertices.add(point.getFloat("y", 0) * scaleY * (flipY ? -1 : 1));
 				}
-				object.setName(element.getString("name", null));
-				String rotation = element.getString("rotation", null);
-				if (rotation != null) {
-					 object.getProperties().put("rotation", Float.parseFloat(rotation));
+				Polygon polygon = new Polygon(convertArrayToPrimitive(vertices));
+				polygon.setPosition(x, y);
+				object = new PolygonMapObject(polygon);
+		  } else if ((child = element.get("polyline")) != null) {
+				ArrayList<Float> vertices = new ArrayList<>();
+				for (JsonValue point : child) {
+					 vertices.add(point.getFloat("x", 0) * scaleX);
+					 vertices.add(point.getFloat("y", 0) * scaleY * (flipY ? -1 : 1));
 				}
-				String type = element.getString("type", null);
-				if (type != null) {
-					 object.getProperties().put("type", type);
-				}
-				int id = element.getInt("id", 0);
-				if (id != 0) {
-					 object.getProperties().put("id", id);
-				}
-				object.getProperties().put("x", x);
-
-				if (object instanceof TiledMapTileMapObject) {
-					 object.getProperties().put("y", y);
-				} else {
-					 object.getProperties().put("y", (flipY ? y - height : y));
-				}
-				object.getProperties().put("width", width);
-				object.getProperties().put("height", height);
-				object.setVisible(element.getBoolean("visible", true));
-				JsonValue properties = element.get("properties");
-				if (properties != null) {
-					 loadProperties(object.getProperties(), properties);
-				}
-				idToObject.put(id, object);
-				objects.add(object);
+				Polyline polyline = new Polyline(convertArrayToPrimitive(vertices));
+				polyline.setPosition(x, y);
+				object = new PolylineMapObject(polyline);
+		  } else if (element.get("ellipse") != null) {
+				object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
 		  }
+
+		  if (object == null) {
+				String gid;
+				if ((gid = element.getString("gid", null)) != null) {
+					 int id = (int)Long.parseLong(gid);
+					 boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
+					 boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
+
+					 TiledMapTile tile = map.getTileSets().getTile(id & ~MASK_CLEAR);
+					 TiledMapTileMapObject tiledMapTileMapObject = new TiledMapTileMapObject(tile, flipHorizontally, flipVertically);
+					 TextureRegion textureRegion = tiledMapTileMapObject.getTextureRegion();
+					 tiledMapTileMapObject.getProperties().put("gid", id);
+					 tiledMapTileMapObject.setX(x);
+					 tiledMapTileMapObject.setY(flipY ? y : y - height);
+					 float objectWidth = element.getFloat("width", textureRegion.getRegionWidth());
+					 float objectHeight = element.getFloat("height", textureRegion.getRegionHeight());
+					 tiledMapTileMapObject.setScaleX(scaleX * (objectWidth / textureRegion.getRegionWidth()));
+					 tiledMapTileMapObject.setScaleY(scaleY * (objectHeight / textureRegion.getRegionHeight()));
+					 tiledMapTileMapObject.setRotation(element.getFloat("rotation", 0));
+					 object = tiledMapTileMapObject;
+				} else {
+					 object = new RectangleMapObject(x, flipY ? y - height : y, width, height);
+				}
+		  }
+		  object.setName(element.getString("name", null));
+		  String rotation = element.getString("rotation", null);
+		  if (rotation != null) {
+				object.getProperties().put("rotation", Float.parseFloat(rotation));
+		  }
+		  String type = element.getString("type", null);
+		  if (type != null) {
+				object.getProperties().put("type", type);
+		  }
+		  int id = element.getInt("id", 0);
+		  if (id != 0) {
+				object.getProperties().put("id", id);
+		  }
+		  object.getProperties().put("x", x);
+
+		  if (object instanceof TiledMapTileMapObject) {
+				object.getProperties().put("y", y);
+		  } else {
+				object.getProperties().put("y", (flipY ? y - height : y));
+		  }
+		  object.getProperties().put("width", width);
+		  object.getProperties().put("height", height);
+		  object.setVisible(element.getBoolean("visible", true));
+		  JsonValue properties = element.get("properties");
+		  if (properties != null) {
+				loadProperties(object.getProperties(), properties);
+		  }
+		  idToObject.put(id, object);
+		  objects.add(object);
+
 	 }
 
 	 private void loadProperties (final MapProperties properties, JsonValue element) {
@@ -548,7 +548,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
 	 }
 
 	 private Object castProperty (String name, String value, String type) {
-		  if (type == null) {
+		  if (type.equals("string")) {
 				return value;
 		  } else if (type.equals("int")) {
 				return Integer.valueOf(value);
