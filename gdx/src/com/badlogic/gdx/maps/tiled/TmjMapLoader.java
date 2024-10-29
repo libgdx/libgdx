@@ -1,18 +1,3 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
 
 package com.badlogic.gdx.maps.tiled;
 
@@ -25,60 +10,55 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
-import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
-import com.badlogic.gdx.maps.ImageResolver.DirectImageResolver;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.XmlReader.Element;
 
-/** @brief synchronous loader for TMX maps created with the Tiled tool */
-public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
+public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> {
 
-	 public static class Parameters extends BaseTmxMapLoader.Parameters {
-
-	 }
-
-	 public TmxMapLoader () {
+	 public TmjMapLoader () {
 		  super(new InternalFileHandleResolver());
 	 }
 
 	 /** Creates loader
 	  *
 	  * @param resolver */
-	 public TmxMapLoader (FileHandleResolver resolver) {
+	 public TmjMapLoader (FileHandleResolver resolver) {
 		  super(resolver);
 	 }
 
 	 /** Loads the {@link TiledMap} from the given file. The file is resolved via the {@link FileHandleResolver} set in the
 	  * constructor of this class. By default it will resolve to an internal file. The map will be loaded for a y-up coordinate
 	  * system.
+	  *
 	  * @param fileName the filename
 	  * @return the TiledMap */
 	 public TiledMap load (String fileName) {
-		  return load(fileName, new TmxMapLoader.Parameters());
+		  return load(fileName, new TmjMapLoader.Parameters());
 	 }
 
 	 /** Loads the {@link TiledMap} from the given file. The file is resolved via the {@link FileHandleResolver} set in the
 	  * constructor of this class. By default it will resolve to an internal file.
+	  *
 	  * @param fileName the filename
 	  * @param parameter specifies whether to use y-up, generate mip maps etc.
 	  * @return the TiledMap */
-	 public TiledMap load (String fileName, TmxMapLoader.Parameters parameter) {
-		  FileHandle tmxFile = resolve(fileName);
+	 public TiledMap load (String fileName, TmjMapLoader.Parameters parameter) {
+		  FileHandle tmjFile = resolve(fileName);
 
-		  this.root = xml.parse(tmxFile);
+		  this.root = json.parse(tmjFile);
 
-		  ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
+		  ObjectMap<String, Texture> textures = new ObjectMap<>();
 
-		  final Array<FileHandle> textureFiles = getDependencyFileHandles(tmxFile);
+		  final Array<FileHandle> textureFiles = getDependencyFileHandles(tmjFile);
 		  for (FileHandle textureFile : textureFiles) {
 				Texture texture = new Texture(textureFile, parameter.generateMipMaps);
 				texture.setFilter(parameter.textureMinFilter, parameter.textureMagFilter);
 				textures.put(textureFile.path(), texture);
 		  }
 
-		  TiledMap map = loadTiledMap(tmxFile, parameter, new DirectImageResolver(textures));
+		  TiledMap map = loadTiledMap(tmjFile, parameter, new ImageResolver.DirectImageResolver(textures));
 		  map.setOwnedResources(textures.values().toArray());
 		  return map;
 	 }
@@ -90,7 +70,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	  * @param map the TiledMap to which the tile set will be added
 	  * @return the TiledMap with the loaded tile set */
 	 public TiledMap loadCustomTileSet (String fileName, TiledMap map) {
-		  return loadCustomTileSet(fileName, map, new TmxMapLoader.Parameters());
+		  return loadCustomTileSet(fileName, map, new TmjMapLoader.Parameters());
 	 }
 
 	 /** Loads a tile set from the given file. The file is resolved via the {@link FileHandleResolver} set in the constructor of
@@ -100,7 +80,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	  * @return the TiledMap with the loaded tile set */
 	 public TiledMap loadCustomTileSet (String fileName) {
 		  TiledMap map = new TiledMap();
-		  return loadCustomTileSet(fileName, new TiledMap(), new TmxMapLoader.Parameters());
+		  return loadCustomTileSet(fileName, new TiledMap(), new TmjMapLoader.Parameters());
 	 }
 
 	 /** Loads a tile set from the given file. The file is resolved via the {@link FileHandleResolver} set in the constructor of
@@ -110,40 +90,40 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	  * @param map the TiledMap to which the tile set will be added
 	  * @param parameter specifies whether to use y-up, generate mip maps etc.
 	  * @return the TiledMap with the loaded tile set */
-	 public TiledMap loadCustomTileSet (String fileName, TiledMap map, TmxMapLoader.Parameters parameter) {
-		  FileHandle tmxFile = resolve(fileName);
-		  Element tileSet = xml.parse(tmxFile);
+	 public TiledMap loadCustomTileSet (String fileName, TiledMap map, TmjMapLoader.Parameters parameter) {
+		  FileHandle tmjFile = resolve(fileName);
+		  JsonValue tileSet = json.parse(tmjFile);
 		  ObjectMap<String, Texture> textures = new ObjectMap<>();
 		  this.map = map;
 
-		  final Array<FileHandle> textureFiles = getTileSetDependencyFileHandle(tmxFile, tileSet);
+		  final Array<FileHandle> textureFiles = getTileSetDependencyFileHandle(tmjFile, tileSet);
 		  for (FileHandle textureFile : textureFiles) {
 				Texture texture = new Texture(textureFile, parameter.generateMipMaps);
 				texture.setFilter(parameter.textureMinFilter, parameter.textureMagFilter);
 				textures.put(textureFile.path(), texture);
 		  }
-		  loadTileSet(tileSet, tmxFile, new ImageResolver.DirectImageResolver(textures));
+		  loadTileSet(tileSet, tmjFile, new ImageResolver.DirectImageResolver(textures));
 		  map.setOwnedResources(textures.values().toArray());
 
 		  return map;
 	 }
 
 	 @Override
-	 public void loadAsync (AssetManager manager, String fileName, FileHandle tmxFile, Parameters parameter) {
-		  this.map = loadTiledMap(tmxFile, parameter, new AssetManagerImageResolver(manager));
+	 public void loadAsync (AssetManager manager, String fileName, FileHandle tmjFile, BaseTmjMapLoader.Parameters parameter) {
+		  this.map = loadTiledMap(tmjFile, parameter, new ImageResolver.AssetManagerImageResolver(manager));
 	 }
 
 	 @Override
-	 public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, Parameters parameter) {
+	 public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, BaseTmjMapLoader.Parameters parameter) {
 		  return map;
 	 }
 
 	 @Override
-	 protected Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,
+	 protected Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmjFile,
 		 TextureLoader.TextureParameter textureParameter) {
-		  Array<AssetDescriptor> descriptors = new Array<AssetDescriptor>();
+		  Array<AssetDescriptor> descriptors = new Array<>();
 
-		  final Array<FileHandle> fileHandles = getDependencyFileHandles(tmxFile);
+		  final Array<FileHandle> fileHandles = getDependencyFileHandles(tmjFile);
 		  for (FileHandle handle : fileHandles) {
 				descriptors.add(new AssetDescriptor(handle, Texture.class, textureParameter));
 		  }
@@ -151,21 +131,21 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		  return descriptors;
 	 }
 
-	 protected Array<FileHandle> getDependencyFileHandles (FileHandle tmxFile) {
-		  Array<FileHandle> fileHandles = new Array<FileHandle>();
+	 protected Array<FileHandle> getDependencyFileHandles (FileHandle tmjFile) {
+		  Array<FileHandle> fileHandles = new Array<>();
 
 		  // TileSet descriptors
-		  for (Element tileset : root.getChildrenByNameRecursively("tileset")) {
-			   getTileSetDependencyFileHandle(fileHandles, tmxFile, tileset);
+		  for (JsonValue tileSet : root.get("tileSets")) {
+				getTileSetDependencyFileHandle(fileHandles, tmjFile, tileSet);
 		  }
 
 		  // ImageLayer descriptors
-		  for (Element imageLayer : root.getChildrenByNameRecursively("imagelayer")) {
-				Element image = imageLayer.getChildByName("image");
-				String source = image.getAttribute("source", null);
+		  for (JsonValue layer : root.get("layers")) {
+				if (!layer.getString("type").equals("imagelayer")) continue;
+				String source = layer.getString("image");
 
 				if (source != null) {
-					 FileHandle handle = getRelativeFileHandle(tmxFile, source);
+					 FileHandle handle = getRelativeFileHandle(tmjFile, source);
 					 fileHandles.add(handle);
 				}
 		  }
@@ -173,39 +153,37 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		  return fileHandles;
 	 }
 
-	 protected Array<FileHandle> getTileSetDependencyFileHandle (FileHandle tmxFile, Element tileset) {
-		  Array<FileHandle> fileHandles = new Array<FileHandle>();
-		  return getTileSetDependencyFileHandle(fileHandles, tmxFile, tileset);
+	 protected Array<FileHandle> getTileSetDependencyFileHandle (FileHandle tmjFile, JsonValue tileSet) {
+		  Array<FileHandle> fileHandles = new Array<>();
+		  return getTileSetDependencyFileHandle(fileHandles, tmjFile, tileSet);
 	 }
 
-	 protected Array<FileHandle> getTileSetDependencyFileHandle (Array<FileHandle> fileHandles, FileHandle tmxFile,
-		 Element tileset) {
-		  String source = tileset.getAttribute("source", null);
+	 protected Array<FileHandle> getTileSetDependencyFileHandle (Array<FileHandle> fileHandles, FileHandle tmjFile,
+		 JsonValue tileSet) {
+		  String source = tileSet.getString("source", null);
 		  if (source != null) {
-				FileHandle tsxFile = getRelativeFileHandle(tmxFile, source);
-				tileset = xml.parse(tsxFile);
-				Element imageElement = tileset.getChildByName("image");
-				if (imageElement != null) {
-					 String imageSource = tileset.getChildByName("image").getAttribute("source");
+				FileHandle tsxFile = getRelativeFileHandle(tmjFile, source);
+				tileSet = json.parse(tsxFile);
+				if (tileSet.has("image")) {
+					 String imageSource = tileSet.getString("image");
 					 FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
 					 fileHandles.add(image);
 				} else {
-					 for (Element tile : tileset.getChildrenByName("tile")) {
-						  String imageSource = tile.getChildByName("image").getAttribute("source");
+					 for (JsonValue tile : tileSet.get("tile")) {
+						  String imageSource = tile.getString("image");
 						  FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
 						  fileHandles.add(image);
 					 }
 				}
 		  } else {
-				Element imageElement = tileset.getChildByName("image");
-				if (imageElement != null) {
-					 String imageSource = tileset.getChildByName("image").getAttribute("source");
-					 FileHandle image = getRelativeFileHandle(tmxFile, imageSource);
+				if (tileSet.has("image")) {
+					 String imageSource = tileSet.getString("image");
+					 FileHandle image = getRelativeFileHandle(tmjFile, imageSource);
 					 fileHandles.add(image);
 				} else {
-					 for (Element tile : tileset.getChildrenByName("tile")) {
-						  String imageSource = tile.getChildByName("image").getAttribute("source");
-						  FileHandle image = getRelativeFileHandle(tmxFile, imageSource);
+					 for (JsonValue tile : tileSet.get("tile")) {
+						  String imageSource = tile.getString("image");
+						  FileHandle image = getRelativeFileHandle(tmjFile, imageSource);
 						  fileHandles.add(image);
 					 }
 				}
@@ -214,9 +192,9 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	 }
 
 	 @Override
-	 protected void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileSet, Element element,
-		 Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
-		 String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
+	 protected void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet, JsonValue element,
+		 JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, String source,
+		 int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
 
 		  MapProperties props = tileSet.getProperties();
 		  if (image != null) {
@@ -245,21 +223,25 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 				}
 		  } else {
 				// Every tile has its own image source
-				for (Element tileElement : tileElements) {
-					 Element imageElement = tileElement.getChildByName("image");
-					 if (imageElement != null) {
-						  imageSource = imageElement.getAttribute("source");
+				for (JsonValue tile : tiles) {
+					 if (tile.has("image")) {
+						  imageSource = tile.getString("image");
 
 						  if (source != null) {
-								image = getRelativeFileHandle(getRelativeFileHandle(tmxFile, source), imageSource);
+								image = getRelativeFileHandle(getRelativeFileHandle(tmjFile, source), imageSource);
 						  } else {
-								image = getRelativeFileHandle(tmxFile, imageSource);
+								image = getRelativeFileHandle(tmjFile, imageSource);
 						  }
 					 }
 					 TextureRegion texture = imageResolver.getImage(image.path());
-					 int tileId = firstgid + tileElement.getIntAttribute("id");
+					 int tileId = firstgid + tile.getInt("id");
 					 addStaticTiledMapTile(tileSet, texture, tileId, offsetX, offsetY);
 				}
 		  }
 	 }
+
+	 public static class Parameters extends BaseTmjMapLoader.Parameters {
+
+	 }
+
 }
