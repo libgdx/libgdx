@@ -289,8 +289,12 @@ public abstract class BaseTmjMapLoader<P extends BaseTmjMapLoader.Parameters> ex
 				if (properties != null) {
 					 loadProperties(groupLayer.getProperties(), properties);
 				}
-				for (JsonValue child : element) {
-					 loadLayer(map, groupLayer.getLayers(), child, tmjFile, imageResolver);
+
+				JsonValue layers = element.get("layers");
+				if (layers != null) {
+					 for (JsonValue child : layers) {
+						  loadLayer(map, groupLayer.getLayers(), child, tmjFile, imageResolver);
+					 }
 				}
 
 				for (MapLayer layer : groupLayer.getLayers()) {

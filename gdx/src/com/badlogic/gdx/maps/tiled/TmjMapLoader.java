@@ -131,6 +131,7 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 		  return descriptors;
 	 }
 
+
 	 protected Array<FileHandle> getDependencyFileHandles (FileHandle tmjFile) {
 		  Array<FileHandle> fileHandles = new Array<>();
 
@@ -140,17 +141,29 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 		  }
 
 		  // ImageLayer descriptors
-		  for (JsonValue layer : root.get("layers")) {
-				if (!layer.getString("type").equals("imagelayer")) continue;
-				String source = layer.getString("image");
-
-				if (source != null) {
-					 FileHandle handle = getRelativeFileHandle(tmjFile, source);
-					 fileHandles.add(handle);
-				}
-		  }
+		  collectImageLayerFileHandles(root.get("layers"), tmjFile, fileHandles);
 
 		  return fileHandles;
+	 }
+
+	 private void collectImageLayerFileHandles(JsonValue layers, FileHandle tmjFile, Array<FileHandle> fileHandles) {
+		  if (layers == null) return;
+
+		  for (JsonValue layer : layers) {
+				String type = layer.getString("type", "");
+				if (type.equals("imagelayer")) {
+					 String source = layer.getString("image", null);
+
+					 if (source != null) {
+						  FileHandle handle = getRelativeFileHandle(tmjFile, source);
+						  fileHandles.add(handle);
+					 }
+				} else if (type.equals("group")) {
+					 // Recursively process group layers
+					 collectImageLayerFileHandles(layer.get("layers"), tmjFile, fileHandles);
+				}
+
+		  }
 	 }
 
 	 protected Array<FileHandle> getTileSetDependencyFileHandle (FileHandle tmjFile, JsonValue tileSet) {
