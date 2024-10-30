@@ -130,12 +130,12 @@ public class TiledMapJsonFormatTest extends GdxTest {
 				renderer = new HexagonalTiledMapRenderer(map, 1f / 48f);
 			}
 		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)) {
-			 if (mapType != 6) {
-				  if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
-				  mapType = 6;
-				  map = assetManager.get(MAP_ORTHO2);
-				  renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
-			 }
+			if (mapType != 6) {
+				if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
+				mapType = 6;
+				map = assetManager.get(MAP_ORTHO2);
+				renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
+			}
 		}
 
 		ScreenUtils.clear(100f / 255f, 100f / 255f, 250f / 255f, 1f);
