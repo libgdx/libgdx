@@ -309,6 +309,7 @@ public class GdxTests {
 		TiledMapAnimationLoadingTest.class,
 		TiledMapAssetManagerTest.class,
 		TiledMapGroupLayerTest.class,
+		TiledMapGroupLayerWithImagelayerTest.class,
 		TiledMapAtlasAssetManagerTest.class,
 		TiledMapDirectLoaderTest.class,
 		TiledMapImageLayerRepeatTest.class,
