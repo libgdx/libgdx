@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <object name="Ellipse" width="130" height="87">
+  <ellipse/>
+ </object>
+</template>

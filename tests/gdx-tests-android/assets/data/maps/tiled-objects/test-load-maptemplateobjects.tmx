@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="25">
+ <tileset firstgid="1" source="templateTileset.tsx"/>
+ <objectgroup id="1" name="Objects">
+  <object id="3" template="Ellipse.tx" x="59.3333" y="335"/>
+  <object id="5" template="Polygon.tx" x="238.667" y="351.333"/>
+  <object id="9" template="Rectangle.tx" x="340" y="341.333"/>
+  <object id="17" template="Polyline.tx" x="364" y="155"/>
+  <object id="21" template="SmallBadlogic.tx" x="384" y="256"/>
+  <object id="24" template="Texture.tx" x="128" y="298.67"/>
+ </objectgroup>
+</map>
