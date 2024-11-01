@@ -37,6 +37,7 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapObjectLoadingTest extends GdxTest {
@@ -46,6 +47,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 	private OrthographicCamera camera;
 	private OrthoCamController cameraController;
 	private BitmapFont font;
+	private BitmapFont textMapObjectFont;
 	private SpriteBatch batch;
 	private String loadingStatus;
 
@@ -55,7 +57,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 512, 512);
+		camera.setToOrtho(false, (w / h) * 1024, 1024);
 		camera.zoom = .5f;
 		camera.update();
 
@@ -63,6 +65,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		Gdx.input.setInputProcessor(cameraController);
 
 		font = new BitmapFont();
+		textMapObjectFont = new BitmapFont();
 		batch = new SpriteBatch();
 		map = new TmxMapLoader().load("data/maps/tiled-objects/test-load-mapobjects.tmx");
 		MapProperties properties = map.getProperties();
@@ -85,6 +88,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		loadingStatus += "- TextureMapObject : " + mapObjects.getByType(TextureMapObject.class).size + "\n";
 		loadingStatus += "- PointMapObject : " + mapObjects.getByType(PointMapObject.class).size + "\n";
 		loadingStatus += "- TiledMapTileMapObject : " + mapObjects.getByType(TiledMapTileMapObject.class).size + "\n";
+		loadingStatus += "- TextMapObject : " + mapObjects.getByType(TextMapObject.class).size + "\n";
 	}
 
 	@Override
@@ -147,7 +151,44 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				shapeRenderer.circle(point.x, point.y, 1f);
 				shapeRenderer.end();
 			}
+			else if(mapObject instanceof TextMapObject){
+				 batch.begin();
+				 TextMapObject textMapObject = (TextMapObject)mapObject;
+
+				 int alignment;
+				 String halign = textMapObject.getHorizontalAlign();
+
+				 switch (halign.toLowerCase()) {
+				 case "center":
+					  alignment = Align.center;
+					  break;
+				 case "right":
+					  alignment = Align.right;
+					  break;
+				 default:
+					  // Default is 'left alignment, also there is no Align 'justify' like Tiled
+					  alignment = Align.left;
+					  break;
+				 }
+
+				 textMapObjectFont.setColor(textMapObject.getColor());
+				 // The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
+				 // To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to the Y position.
+				 textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(), textMapObject.getY() + textMapObject.getHeight(),
+					 textMapObject.getWidth(), alignment, textMapObject.isWrap());
+				 batch.end();
+
+				 shapeRenderer.setColor(Color.DARK_GRAY);
+				 // Draw display bounding box of TextMapObject
+				 shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+				 shapeRenderer.rect(textMapObject.getX(), textMapObject.getY(), textMapObject.getWidth(), textMapObject.getHeight());
+				 shapeRenderer.end();
+
+				 //reset back to blue
+				 shapeRenderer.setColor(Color.BLUE);
+			}
 		}
+
 		batch.begin();
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond() + "\n" + loadingStatus, 20, 500);
 		batch.end();
@@ -157,5 +198,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 	public void dispose () {
 		map.dispose();
 		shapeRenderer.dispose();
+		font.dispose();
+		textMapObjectFont.dispose();
 	}
 }
