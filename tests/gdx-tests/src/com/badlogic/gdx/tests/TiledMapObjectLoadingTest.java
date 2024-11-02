@@ -57,7 +57,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		float h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, (w / h) * 1024, 1024);
+		camera.setToOrtho(false, (w / h) * 512, 512);
 		camera.zoom = .5f;
 		camera.update();
 
@@ -155,27 +155,11 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				 batch.begin();
 				 TextMapObject textMapObject = (TextMapObject)mapObject;
 
-				 int alignment;
-				 String halign = textMapObject.getHorizontalAlign();
-
-				 switch (halign.toLowerCase()) {
-				 case "center":
-					  alignment = Align.center;
-					  break;
-				 case "right":
-					  alignment = Align.right;
-					  break;
-				 default:
-					  // Default is 'left alignment, also there is no Align 'justify' like Tiled
-					  alignment = Align.left;
-					  break;
-				 }
-
 				 textMapObjectFont.setColor(textMapObject.getColor());
 				 // The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
 				 // To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to the Y position.
 				 textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(), textMapObject.getY() + textMapObject.getHeight(),
-					 textMapObject.getWidth(), alignment, textMapObject.isWrap());
+					 textMapObject.getWidth(), textMapObject.getHorizontalAlign(), textMapObject.isWrap());
 				 batch.end();
 
 				 shapeRenderer.setColor(Color.DARK_GRAY);
