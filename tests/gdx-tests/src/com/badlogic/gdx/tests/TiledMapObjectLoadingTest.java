@@ -1,13 +1,13 @@
 /**
  * *****************************************************************************
  * Copyright 2011 See AUTHORS file.
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -34,10 +34,14 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Ellipse;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Polyline;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapObjectLoadingTest extends GdxTest {
@@ -107,7 +111,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				batch.begin();
 				TiledMapTileMapObject tmtObject = (TiledMapTileMapObject)mapObject;
 				TextureRegion textureRegion = tmtObject.getTile().getTextureRegion();
-				// TilEd rotation is clockwise, we need counter-clockwise.
+				// Tiled rotation is clockwise, we need counter-clockwise.
 				float rotation = -tmtObject.getRotation();
 				float scaleX = tmtObject.getScaleX();
 				float scaleY = tmtObject.getScaleY();
@@ -150,26 +154,27 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				// drawing circle, because shapeRenderer.point is barely visible, if visible at all
 				shapeRenderer.circle(point.x, point.y, 1f);
 				shapeRenderer.end();
-			}
-			else if(mapObject instanceof TextMapObject){
+			} else if(mapObject instanceof TextMapObject){
 				 batch.begin();
 				 TextMapObject textMapObject = (TextMapObject)mapObject;
 
-				 textMapObjectFont.setColor(textMapObject.getColor());
-				 // The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
-				 // To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to the Y position.
-				 textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(), textMapObject.getY() + textMapObject.getHeight(),
-					 textMapObject.getWidth(), textMapObject.getHorizontalAlign(), textMapObject.isWrap());
-				 batch.end();
+				textMapObjectFont.setColor(textMapObject.getColor());
+				// The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
+				// To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to
+				// the Y position.
+				textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(),
+					textMapObject.getY() + textMapObject.getHeight(), textMapObject.getWidth(), textMapObject.getHorizontalAlign(),
+					textMapObject.isWrap());
+				batch.end();
 
-				 shapeRenderer.setColor(Color.DARK_GRAY);
-				 // Draw display bounding box of TextMapObject
-				 shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-				 shapeRenderer.rect(textMapObject.getX(), textMapObject.getY(), textMapObject.getWidth(), textMapObject.getHeight());
-				 shapeRenderer.end();
+				shapeRenderer.setColor(Color.DARK_GRAY);
+				// Draw display bounding box of TextMapObject
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+				shapeRenderer.rect(textMapObject.getX(), textMapObject.getY(), textMapObject.getWidth(), textMapObject.getHeight());
+				shapeRenderer.end();
 
-				 //reset back to blue
-				 shapeRenderer.setColor(Color.BLUE);
+				// reset back to blue
+				shapeRenderer.setColor(Color.BLUE);
 			}
 		}
 
