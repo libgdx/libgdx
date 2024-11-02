@@ -41,7 +41,6 @@ import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapObjectLoadingTest extends GdxTest {
@@ -147,26 +146,27 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				Polyline polyline = ((PolylineMapObject)mapObject).getPolyline();
 				shapeRenderer.polyline(polyline.getTransformedVertices());
 				shapeRenderer.end();
-			}
-			else if(mapObject instanceof TextMapObject){
-				 batch.begin();
-				 TextMapObject textMapObject = (TextMapObject)mapObject;
+			} else if (mapObject instanceof TextMapObject) {
+				batch.begin();
+				TextMapObject textMapObject = (TextMapObject)mapObject;
 
-				 textMapObjectFont.setColor(textMapObject.getColor());
-				 // The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
-				 // To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to the Y position.
-				 textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(), textMapObject.getY() + textMapObject.getHeight(),
-					 textMapObject.getWidth(), textMapObject.getHorizontalAlign(), textMapObject.isWrap());
-				 batch.end();
+				textMapObjectFont.setColor(textMapObject.getColor());
+				// The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
+				// To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to
+				// the Y position.
+				textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(),
+					textMapObject.getY() + textMapObject.getHeight(), textMapObject.getWidth(), textMapObject.getHorizontalAlign(),
+					textMapObject.isWrap());
+				batch.end();
 
-				 shapeRenderer.setColor(Color.DARK_GRAY);
-				 // Draw display bounding box of TextMapObject
-				 shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-				 shapeRenderer.rect(textMapObject.getX(), textMapObject.getY(), textMapObject.getWidth(), textMapObject.getHeight());
-				 shapeRenderer.end();
+				shapeRenderer.setColor(Color.DARK_GRAY);
+				// Draw display bounding box of TextMapObject
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+				shapeRenderer.rect(textMapObject.getX(), textMapObject.getY(), textMapObject.getWidth(), textMapObject.getHeight());
+				shapeRenderer.end();
 
-				 //reset back to blue
-				 shapeRenderer.setColor(Color.BLUE);
+				// reset back to blue
+				shapeRenderer.setColor(Color.BLUE);
 			}
 		}
 
