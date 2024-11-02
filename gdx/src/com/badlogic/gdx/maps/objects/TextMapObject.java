@@ -17,6 +17,7 @@
 package com.badlogic.gdx.maps.objects;
 
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.utils.Align;
 
 /** @brief Represents a text map object */
 public class TextMapObject extends MapObject {
@@ -27,8 +28,12 @@ public class TextMapObject extends MapObject {
 	 private float height = 0.0f;
 	 private float rotation = 0.0f;
 	 private String text;
-	 private String horizontalAlign;
-	 private String verticalAlign;
+	 //Alignment values as represented via libGDX Align
+	 private int horizontalAlign = Align.left;
+	 private int verticalAlign = Align.top;
+	 //String alignment values
+	 private String tiledHorizontalAlign;
+	 private String tiledVerticalAlign;
 	 private int pixelSize;
 	 private String fontFamily;
 	 private boolean bold;
@@ -37,6 +42,7 @@ public class TextMapObject extends MapObject {
 	 private boolean strikeout;
 	 private boolean kerning;
 	 private boolean wrap;
+
 
 	 /**
 	  * Creates a TextMapObject, represents a Text map object
@@ -54,6 +60,39 @@ public class TextMapObject extends MapObject {
 		  this.width = width;
 		  this.height = height;
 		  this.text = text;
+	 }
+
+
+	 private int parseHorizontalAlign(String horizontalAlign) {
+		  if (horizontalAlign == null) return Align.left;
+		  switch (horizontalAlign.toLowerCase()) {
+		  case "left":
+				return Align.left;
+		  case "center":
+				return Align.center;
+		  case "right":
+				return Align.right;
+		  case "justify":
+				// Since libGDX doesn't have 'justify'
+				// For now, we can default to 'left'.
+				return Align.left;
+		  default:
+				return Align.left;
+		  }
+	 }
+
+	 private int parseVerticalAlign(String verticalAlign) {
+		  if (verticalAlign == null) return Align.top;
+		  switch (verticalAlign.toLowerCase()) {
+		  case "top":
+				return Align.top;
+		  case "center":
+				return Align.center;
+		  case "bottom":
+				return Align.bottom;
+		  default:
+				return Align.top;
+		  }
 	 }
 
 	 /** @return object's X coordinate */
@@ -116,24 +155,46 @@ public class TextMapObject extends MapObject {
 		  this.text = text;
 	 }
 
-	 /** @return object's horizontal alignment */
-	 public String getHorizontalAlign() {
+	 /** @return A String describing object's horizontal alignment */
+	 public String getTiledHorizontalAlign () {
+		  return tiledHorizontalAlign;
+	 }
+
+	 /** @return int The Horizontal Align constant */
+	 public int getHorizontalAlign () {
 		  return horizontalAlign;
 	 }
 
-	 /** @param horizontalAlign new horizontal alignment */
+	 /**
+	  * Sets the horizontal alignment of the text.
+	  * Valid values are "left", "center", "right", or "justify" as specified in Tiled.
+	  *
+	  * @param horizontalAlign the horizontal alignment string from Tiled
+	  */
 	 public void setHorizontalAlign(String horizontalAlign) {
-		  this.horizontalAlign = horizontalAlign;
+		  this.tiledHorizontalAlign = horizontalAlign;
+		  this.horizontalAlign = parseHorizontalAlign(horizontalAlign);
 	 }
 
-	 /** @return object's vertical alignment */
-	 public String getVerticalAlign() {
+	 /** @return String describing object's vertical alignment */
+	 public String getTiledVerticalAlign () {
+		  return tiledVerticalAlign;
+	 }
+
+	 /** @return int The Vertical Align constant */
+	 public int getVerticalAlign () {
 		  return verticalAlign;
 	 }
 
-	 /** @param verticalAlign new vertical alignment */
-	 public void setVerticalAlign(String verticalAlign) {
-		  this.verticalAlign = verticalAlign;
+	 /**
+	  * Sets the vertical alignment of the text.
+	  * Valid values are "top", "center" or "bottom" as specified in Tiled.
+	  *
+	  * @param verticalAlign the vertical alignment string from Tiled
+	  */
+	 public void setVerticalAlign (String verticalAlign) {
+		  this.tiledVerticalAlign = verticalAlign;
+		  this.verticalAlign = parseVerticalAlign(verticalAlign);
 	 }
 
 	 /** @return font pixel size */
@@ -141,7 +202,7 @@ public class TextMapObject extends MapObject {
 		  return pixelSize;
 	 }
 
-	 /** @param pixelSize new pixel size for the font */
+	 /** @param pixelSize the pixel size for the font */
 	 public void setPixelSize(int pixelSize) {
 		  this.pixelSize = pixelSize;
 	 }
