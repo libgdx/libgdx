@@ -548,7 +548,7 @@ public class XmlReader {
 			if (index == -1) throw new GdxRuntimeException("Element does not contain child: " + child);
 			children.set(index, replacement);
 		}
-		
+
 		public Element getParent () {
 			return parent;
 		}
