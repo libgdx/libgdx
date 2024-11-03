@@ -538,18 +538,17 @@ public class XmlReader {
 			if (children != null) children.removeValue(child, true);
 		}
 
-		public void replaceChild (Element child, Element replacement) {
-			if (children == null) throw new GdxRuntimeException("Element has no children: " + name);
-			final int index = children.indexOf(child, true);
-			if (index == -1) throw new GdxRuntimeException("Element does not contain child: " + child);
-			children.removeIndex(index);
-			children.insert(index, replacement);
-		}
-
 		public void remove () {
 			parent.removeChild(this);
 		}
 
+		public void replaceChild (Element child, Element replacement) {
+			if (children == null) throw new GdxRuntimeException("Element has no children: " + name);
+			final int index = children.indexOf(child, true);
+			if (index == -1) throw new GdxRuntimeException("Element does not contain child: " + child);
+			children.set(index, replacement);
+		}
+		
 		public Element getParent () {
 			return parent;
 		}
