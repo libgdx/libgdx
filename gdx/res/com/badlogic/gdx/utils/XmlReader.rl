@@ -296,8 +296,8 @@ public class XmlReader {
 		}
 		
 		public Array<Element> getChildren () {
-        	return children;
-       	}
+        		return children;
+       		}
 
 		/** @throws GdxRuntimeException if the element has no children. */
 		public Element getChild (int index) {
