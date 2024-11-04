@@ -22,11 +22,11 @@ import com.badlogic.gdx.math.Rectangle;
 /** @brief Represents a text map object */
 public class TextMapObject extends MapObject {
 
-	//defaults set based on tiled docs
+	// defaults set based on tiled docs
 	private float rotation = 0.0f;
 	private String text = "";
 	private int pixelSize = 16;
-	private String fontFamily ="";
+	private String fontFamily = "";
 	private boolean bold = false;
 	private boolean italic = false;
 	private boolean underline = false;
@@ -44,8 +44,8 @@ public class TextMapObject extends MapObject {
 
 	/** Creates an empty text object with bounds starting in the lower left corner at (0, 0) with width=1 and height=1 */
 	public TextMapObject () {
-		  this(0.0f, 0.0f, 1.0f, 1.0f,"");
-	 }
+		this(0.0f, 0.0f, 1.0f, 1.0f, "");
+	}
 
 	/** Creates a TextMapObject, represents a text map object
 	 *
@@ -60,10 +60,10 @@ public class TextMapObject extends MapObject {
 		this.text = text;
 	}
 
-	 /** @return rectangle representing object bounds */
-	 public Rectangle getRectangle () {
-		  return rectangle;
-	 }
+	/** @return rectangle representing object bounds */
+	public Rectangle getRectangle () {
+		return rectangle;
+	}
 
 	/** @return object's X coordinate */
 	public float getX () {
