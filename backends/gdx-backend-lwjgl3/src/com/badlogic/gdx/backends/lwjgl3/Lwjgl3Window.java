@@ -60,7 +60,7 @@ public class Lwjgl3Window implements Disposable {
 			postRunnable(new Runnable() {
 				@Override
 				public void run () {
-					if (windowListener != null) {
+					if (config.pauseWhenLostFocus || windowListener != null) {
 						if (focused) {
 							if (config.pauseWhenLostFocus) {
 								synchronized (lifecycleListeners) {
@@ -68,6 +68,7 @@ public class Lwjgl3Window implements Disposable {
 										lifecycleListener.resume();
 									}
 								}
+								listener.resume();
 							}
 							windowListener.focusGained();
 						} else {
