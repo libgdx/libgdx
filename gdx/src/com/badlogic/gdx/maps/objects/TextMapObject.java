@@ -17,33 +17,37 @@
 package com.badlogic.gdx.maps.objects;
 
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.math.Rectangle;
 
 /** @brief Represents a text map object */
 public class TextMapObject extends MapObject {
 
-	private float x = 0.0f;
-	private float y = 0.0f;
-	private float width = 0.0f;
-	private float height = 0.0f;
+	//defaults set based on tiled docs
 	private float rotation = 0.0f;
-	private String text;
-	// Alignment values as represented via libGDX Align
-	private int horizontalAlign = Align.left;
-	private int verticalAlign = Align.top;
-	// String alignment values
-	private String tiledHorizontalAlign;
-	private String tiledVerticalAlign;
-	private int pixelSize;
-	private String fontFamily;
-	private boolean bold;
-	private boolean italic;
-	private boolean underline;
-	private boolean strikeout;
-	private boolean kerning;
-	private boolean wrap;
+	private String text = "";
+	private int pixelSize = 16;
+	private String fontFamily ="";
+	private boolean bold = false;
+	private boolean italic = false;
+	private boolean underline = false;
+	private boolean strikeout = false;
+	private boolean kerning = true;
+	private boolean wrap = true;
 
-	/** Creates a TextMapObject, represents a Text map object
+	// possible values: "left", "center", "right", "justify" (default: "left")
+	private String horizontalAlign = "left";
+	// possible values: "top", "center", "bottom" (default: "top")
+	private String verticalAlign = "top";
+
+	// Rectangle shape representing the object's bounds
+	private Rectangle rectangle;
+
+	/** Creates an empty text object with bounds starting in the lower left corner at (0, 0) with width=1 and height=1 */
+	public TextMapObject () {
+		  this(0.0f, 0.0f, 1.0f, 1.0f,"");
+	 }
+
+	/** Creates a TextMapObject, represents a text map object
 	 *
 	 * @param x X coordinate
 	 * @param y Y coordinate
@@ -52,83 +56,33 @@ public class TextMapObject extends MapObject {
 	 * @param text a String representing the text for display */
 	public TextMapObject (float x, float y, float width, float height, String text) {
 		super();
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+		rectangle = new Rectangle(x, y, width, height);
 		this.text = text;
 	}
 
-	private int parseHorizontalAlign (String horizontalAlign) {
-		if (horizontalAlign == null) return Align.left;
-		switch (horizontalAlign.toLowerCase()) {
-		case "left":
-			return Align.left;
-		case "center":
-			return Align.center;
-		case "right":
-			return Align.right;
-		case "justify":
-			// Since libGDX doesn't have 'justify'
-			// For now, we can default to 'left'.
-			return Align.left;
-		default:
-			return Align.left;
-		}
-	}
-
-	private int parseVerticalAlign (String verticalAlign) {
-		if (verticalAlign == null) return Align.top;
-		switch (verticalAlign.toLowerCase()) {
-		case "top":
-			return Align.top;
-		case "center":
-			return Align.center;
-		case "bottom":
-			return Align.bottom;
-		default:
-			return Align.top;
-		}
-	}
+	 /** @return rectangle representing object bounds */
+	 public Rectangle getRectangle () {
+		  return rectangle;
+	 }
 
 	/** @return object's X coordinate */
 	public float getX () {
-		return x;
-	}
-
-	/** @param x new X coordinate for the object */
-	public void setX (float x) {
-		this.x = x;
+		return rectangle.getX();
 	}
 
 	/** @return object's Y coordinate */
 	public float getY () {
-		return y;
+		return rectangle.getY();
 	}
 
-	/** @param y new Y coordinate for the object */
-	public void setY (float y) {
-		this.y = y;
-	}
-
-	/** @return object's width */
+	/** @return object's bounds height */
 	public float getWidth () {
-		return width;
+		return rectangle.getWidth();
 	}
 
-	/** @param width new width of the object */
-	public void setWidth (float width) {
-		this.width = width;
-	}
-
-	/** @return object's height */
+	/** @return object's bounds height */
 	public float getHeight () {
-		return height;
-	}
-
-	/** @param height new height of the object */
-	public void setHeight (float height) {
-		this.height = height;
+		return rectangle.getHeight();
 	}
 
 	/** @return object's rotation */
@@ -152,39 +106,23 @@ public class TextMapObject extends MapObject {
 	}
 
 	/** @return A String describing object's horizontal alignment */
-	public String getTiledHorizontalAlign () {
-		return tiledHorizontalAlign;
-	}
-
-	/** @return int The Horizontal Align constant */
-	public int getHorizontalAlign () {
+	public String getHorizontalAlign () {
 		return horizontalAlign;
 	}
 
-	/** Sets the horizontal alignment of the text. Valid values are "left", "center", "right", or "justify" as specified in Tiled.
-	 *
-	 * @param horizontalAlign the horizontal alignment string from Tiled */
+	/** @param horizontalAlign the horizontal alignment string from Tiled */
 	public void setHorizontalAlign (String horizontalAlign) {
-		this.tiledHorizontalAlign = horizontalAlign;
-		this.horizontalAlign = parseHorizontalAlign(horizontalAlign);
+		this.horizontalAlign = horizontalAlign;
 	}
 
 	/** @return String describing object's vertical alignment */
-	public String getTiledVerticalAlign () {
-		return tiledVerticalAlign;
-	}
-
-	/** @return int The Vertical Align constant */
-	public int getVerticalAlign () {
+	public String getVerticalAlign () {
 		return verticalAlign;
 	}
 
-	/** Sets the vertical alignment of the text. Valid values are "top", "center" or "bottom" as specified in Tiled.
-	 *
-	 * @param verticalAlign the vertical alignment string from Tiled */
+	/** @param verticalAlign the vertical alignment string from Tiled */
 	public void setVerticalAlign (String verticalAlign) {
-		this.tiledVerticalAlign = verticalAlign;
-		this.verticalAlign = parseVerticalAlign(verticalAlign);
+		this.verticalAlign = verticalAlign;
 	}
 
 	/** @return font pixel size */
