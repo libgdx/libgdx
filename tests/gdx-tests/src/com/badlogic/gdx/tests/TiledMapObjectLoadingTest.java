@@ -42,6 +42,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapObjectLoadingTest extends GdxTest {
@@ -158,12 +159,29 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				 batch.begin();
 				 TextMapObject textMapObject = (TextMapObject)mapObject;
 
+				 int alignment;
+				 String hAlign = textMapObject.getHorizontalAlign();
+
+				 switch (hAlign.toLowerCase()) {
+				 case "center":
+					  alignment = Align.center;
+					  break;
+				 case "right":
+					  alignment = Align.right;
+					  break;
+				 case "left":
+				 default:
+					  // Default is 'left alignment, also there is no Align 'justify' like equivalent
+					  alignment = Align.left;
+					  break;
+				 }
+
 				textMapObjectFont.setColor(textMapObject.getColor());
 				// The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
 				// To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to
 				// the Y position.
 				textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(),
-					textMapObject.getY() + textMapObject.getHeight(), textMapObject.getWidth(), textMapObject.getHorizontalAlign(),
+					textMapObject.getY() + textMapObject.getHeight(), textMapObject.getWidth(), alignment,
 					textMapObject.isWrap());
 				batch.end();
 
