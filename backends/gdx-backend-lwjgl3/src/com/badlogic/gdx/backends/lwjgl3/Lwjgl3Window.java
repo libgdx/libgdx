@@ -60,30 +60,30 @@ public class Lwjgl3Window implements Disposable {
 			postRunnable(new Runnable() {
 				@Override
 				public void run () {
-						if (focused) {
-							if (config.pauseWhenLostFocus) {
-								synchronized (lifecycleListeners) {
-									for (LifecycleListener lifecycleListener : lifecycleListeners) {
-										lifecycleListener.resume();
-									}
+					if (focused) {
+						if (config.pauseWhenLostFocus) {
+							synchronized (lifecycleListeners) {
+								for (LifecycleListener lifecycleListener : lifecycleListeners) {
+									lifecycleListener.resume();
 								}
-								listener.resume();
 							}
-							if (windowListener != null) {
-								windowListener.focusGained();
-							}
-						} else {
-							if (windowListener != null) {
-								windowListener.focusLost();
-							}
-							if (config.pauseWhenLostFocus) {
-								synchronized (lifecycleListeners) {
-									for (LifecycleListener lifecycleListener : lifecycleListeners) {
-										lifecycleListener.pause();
-									}
+							listener.resume();
+						}
+						if (windowListener != null) {
+							windowListener.focusGained();
+						}
+					} else {
+						if (windowListener != null) {
+							windowListener.focusLost();
+						}
+						if (config.pauseWhenLostFocus) {
+							synchronized (lifecycleListeners) {
+								for (LifecycleListener lifecycleListener : lifecycleListeners) {
+									lifecycleListener.pause();
 								}
-								listener.pause();
 							}
+							listener.pause();
+						}
 						Lwjgl3Window.this.focused = false;
 					}
 				}
