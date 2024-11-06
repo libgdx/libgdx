@@ -23,35 +23,31 @@ import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
-/**
- * A test for creating and managing multiple windows with unique settings and behaviors.
- * Each child window can have a different type and renders with shared textures and resources.
- */
+
+/** A test for creating and managing multiple windows with unique settings and behaviors. Each child window can have a different
+ * type and renders with shared textures and resources. */
 public class MultiWindowTest {
 	static Texture sharedTexture;
 	static SpriteBatch sharedSpriteBatch;
-/**
- * The main application window for the multi-window test. This window spawns additional
- * windows on user interaction, each with a unique rendering setup.
- */
+
+	/** The main application window for the multi-window test. This window spawns additional windows on user interaction, each with
+	 * a unique rendering setup. */
 	public static class MainWindow extends ApplicationAdapter {
 		Class[] childWindowClasses = {NoncontinuousRenderingTest.class, ShaderCollectionTest.class, Basic3DSceneTest.class,
 			UITest.class};
 		Lwjgl3Window latestWindow;
 		int index;
-/**
-     * Initializes shared resources like textures and the sprite batch.
-     */
+
+		/** Initializes shared resources like textures and the sprite batch. */
 		@Override
 		public void create () {
 			System.out.println(Gdx.graphics.getGLVersion().getRendererString());
 			sharedSpriteBatch = new SpriteBatch();
 			sharedTexture = new Texture("data/badlogic.jpg");
 		}
-/**
-     * Main render loop that handles clearing the screen, drawing textures, 
-     * and creating new child windows based on user input.
-     */
+
+		/** Main render loop that handles clearing the screen, drawing textures, and creating new child windows based on user
+		 * input. */
 		@Override
 		public void render () {
 			ScreenUtils.clear(1, 0, 0, 1);
@@ -93,13 +89,12 @@ public class MultiWindowTest {
 				icon.dispose();
 			}
 		}
-/**
-     * Creates a new child window instance based on the provided class type.
-     *
-     * @param clazz the class of the child window to instantiate
-     * @return a new ApplicationListener for the specified class
-     * @throws GdxRuntimeException if the instantiation fails
-     */
+
+		/** Creates a new child window instance based on the provided class type.
+		 *
+		 * @param clazz the class of the child window to instantiate
+		 * @return a new ApplicationListener for the specified class
+		 * @throws GdxRuntimeException if the instantiation fails */
 		public ApplicationListener createChildWindowClass (Class clazz) {
 			try {
 				return (ApplicationListener)clazz.newInstance();
@@ -108,11 +103,10 @@ public class MultiWindowTest {
 			}
 		}
 	}
-/**
- * Entry point to configure and start the multi-window test application.
- *
- * @param argv command-line arguments (unused)
- */
+
+	/** Entry point to configure and start the multi-window test application.
+	 *
+	 * @param argv command-line arguments (unused) */
 	public static void main (String[] argv) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("Multi-window test");
