@@ -60,7 +60,6 @@ public class Lwjgl3Window implements Disposable {
 			postRunnable(new Runnable() {
 				@Override
 				public void run () {
-					if (config.pauseWhenLostFocus || windowListener != null) {
 						if (focused) {
 							if (config.pauseWhenLostFocus) {
 								synchronized (lifecycleListeners) {
@@ -70,9 +69,13 @@ public class Lwjgl3Window implements Disposable {
 								}
 								listener.resume();
 							}
-							windowListener.focusGained();
+							if (windowListener != null) {
+								windowListener.focusGained();
+							}
 						} else {
-							windowListener.focusLost();
+							if (windowListener != null) {
+								windowListener.focusLost();
+							}
 							if (config.pauseWhenLostFocus) {
 								synchronized (lifecycleListeners) {
 									for (LifecycleListener lifecycleListener : lifecycleListeners) {
@@ -81,8 +84,7 @@ public class Lwjgl3Window implements Disposable {
 								}
 								listener.pause();
 							}
-						}
-						Lwjgl3Window.this.focused = focused;
+						Lwjgl3Window.this.focused = false;
 					}
 				}
 			});
