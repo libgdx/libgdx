@@ -35,7 +35,6 @@ import static org.lwjgl.openal.AL10.*;
 public abstract class OpenALMusic implements Music {
 	static private final int bufferSize = 4096 * 10;
 	static private final int bufferCount = 3;
-	static private final int bytesPerSample = 2;
 	static private final byte[] tempBytes = new byte[bufferSize];
 	static private final ByteBuffer tempBuffer = BufferUtils.createByteBuffer(bufferSize);
 
@@ -60,10 +59,14 @@ public abstract class OpenALMusic implements Music {
 		this.onCompletionListener = null;
 	}
 
-	protected void setup (int channels, int sampleRate) {
-		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
+	/** Prepare our music for playback!
+	 * @param channels The number of channels for the music. Most commonly 1 (for mono) or 2 (for stereo).
+	 * @param bitDepth The number of bits in each sample. Normally 16. Can also be 8, 32, 64.
+	 * @param sampleRate The number of samples to be played each second. Commonly 44100; can be anything within reason. */
+	protected void setup (int channels, int bitDepth, int sampleRate) {
+		this.format = OpenALUtils.determineFormat(channels, bitDepth);
 		this.sampleRate = sampleRate;
-		maxSecondsPerBuffer = (float)bufferSize / (bytesPerSample * channels * sampleRate);
+		this.maxSecondsPerBuffer = (float)bufferSize / ((bitDepth >> 3) * channels * sampleRate);
 	}
 
 	public void play () {

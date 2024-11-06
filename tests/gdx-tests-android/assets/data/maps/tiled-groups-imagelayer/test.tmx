@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="22" nextobjectid="1">
+ <tileset firstgid="1" source="Lonesome_Forest_Summer_Tileset.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="10" height="10">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+1,0,0,0,0,0,0,0,0,1,
+0,0,0,0,0,0,0,0,0,0,
+1,0,0,0,0,0,0,0,0,1
+</data>
+ </layer>
+ <group id="4" name="Group 2">
+  <imagelayer id="5" name="Image Layer 2" offsetx="111.654" offsety="-0.8052">
+   <image source="tileset/test_image2.png" width="112" height="112"/>
+  </imagelayer>
+ </group>
+ <group id="7" name="Group 4">
+  <group id="8" name="Group 5">
+   <group id="9" name="Group 6">
+    <group id="6" name="Group 3"/>
+    <group id="11" name="Group 7">
+     <group id="17" name="Group 10">
+      <group id="19" name="Group 12">
+       <group id="18" name="Group 11">
+        <group id="14" name="Group 9">
+         <imagelayer id="16" name="Image Layer 6" offsetx="230.019" offsety="117.559">
+          <image source="tileset/test_image6.png" width="112" height="112"/>
+         </imagelayer>
+        </group>
+       </group>
+      </group>
+      <group id="20" name="Group 13"/>
+      <imagelayer id="21" name="Image Layer 7" offsetx="103.871" offsety="230.556">
+       <image source="tileset/test_image7.png" width="112" height="112"/>
+      </imagelayer>
+     </group>
+     <group id="13" name="Group 8">
+      <imagelayer id="15" name="Image Layer 5" offsetx="114.607" offsety="118.633">
+       <image source="tileset/test_image5.png" width="112" height="112"/>
+      </imagelayer>
+     </group>
+    </group>
+    <imagelayer id="12" name="Image Layer 4" offsetx="0" offsety="118.096">
+     <image source="tileset/test_image4.png" width="112" height="112"/>
+    </imagelayer>
+   </group>
+   <imagelayer id="10" name="Image Layer 3" offsetx="223.846" offsety="-0.5368">
+    <image source="tileset/test_image3.png" width="112" height="112"/>
+   </imagelayer>
+  </group>
+ </group>
+ <group id="2" name="Group 1">
+  <imagelayer id="3" name="Image Layer 1">
+   <image source="tileset/test_image.png" width="112" height="112"/>
+  </imagelayer>
+ </group>
+</map>

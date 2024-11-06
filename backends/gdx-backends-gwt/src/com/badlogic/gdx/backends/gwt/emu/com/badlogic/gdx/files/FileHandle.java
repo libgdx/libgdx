@@ -75,6 +75,10 @@ public class FileHandle {
 		throw new GdxRuntimeException("Stub");
 	}
 
+	public File file () {
+		throw new GdxRuntimeException("Stub");
+	}
+
 	/** Returns a stream for reading this file as bytes.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public InputStream read () {
