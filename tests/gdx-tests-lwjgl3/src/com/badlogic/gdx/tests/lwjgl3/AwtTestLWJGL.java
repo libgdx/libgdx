@@ -17,15 +17,13 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.Configuration;
 
 import static org.lwjgl.glfw.GLFW.*;
-/**
- * A test class that integrates AWT and LWJGL for rendering OpenGL content in a window and displaying a GUI on mouse press.
- * It demonstrates the usage of GLFW for window creation and handling mouse events in combination with AWT for GUI components.
- */
+
+/** A test class that integrates AWT and LWJGL for rendering OpenGL content in a window and displaying a GUI on mouse press. It
+ * demonstrates the usage of GLFW for window creation and handling mouse events in combination with AWT for GUI components. */
 public class AwtTestLWJGL {
-	 
-    /**
-     * A callback that listens for mouse button events. When a mouse button is pressed, it opens a JFrame with an image loading functionality.
-     */
+
+	/** A callback that listens for mouse button events. When a mouse button is pressed, it opens a JFrame with an image loading
+	 * functionality. */
 	static GLFWMouseButtonCallback callback = new GLFWMouseButtonCallback() {
 		@Override
 		public void invoke (long window, int button, int action, int mods) {
@@ -60,13 +58,12 @@ public class AwtTestLWJGL {
 			}
 		}
 	};
-/**
-     * The main method that initializes the GLFW window, sets up the OpenGL context, and starts the rendering loop.
-     * It also listens for mouse button events and handles the rendering of a rotating triangle.
-     * 
-     * @param args Command line arguments.
-     * @throws Exception If there is an error during initialization or rendering.
-     */
+
+	/** The main method that initializes the GLFW window, sets up the OpenGL context, and starts the rendering loop. It also
+	 * listens for mouse button events and handles the rendering of a rotating triangle.
+	 * 
+	 * @param args Command line arguments.
+	 * @throws Exception If there is an error during initialization or rendering. */
 	public static void main (String[] args) throws Exception {
 		// Initialize the AWT toolkit for the current thread
 		java.awt.EventQueue.invokeAndWait(new Runnable() {
@@ -74,7 +71,7 @@ public class AwtTestLWJGL {
 				java.awt.Toolkit.getDefaultToolkit();
 			}
 		});
-		 // Set the GLFW library name for MacOS X, if applicable
+		// Set the GLFW library name for MacOS X, if applicable
 		if (SharedLibraryLoader.os == Os.MacOsX) {
 			Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
 		}
@@ -109,7 +106,7 @@ public class AwtTestLWJGL {
 			glfwPollEvents();
 			glfwSwapBuffers(window);
 		}
-		 // Clean up and terminate GLFW
+		// Clean up and terminate GLFW
 		glfwDestroyWindow(window);
 		glfwTerminate();
 	}
