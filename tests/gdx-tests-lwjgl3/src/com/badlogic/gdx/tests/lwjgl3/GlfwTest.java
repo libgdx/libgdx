@@ -13,9 +13,28 @@ import org.lwjgl.glfw.GLFWVidMode.Buffer;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * A simple GLFW test that demonstrates window creation, OpenGL context setup, 
+ * and rendering a triangle. The window is created in fullscreen mode using 
+ * the primary monitor's video mode.
+ * 
+ * The program also prints the available video modes for the primary monitor,
+ * selects one, and uses it to set the window size. It also prints the framebuffer
+ * size if it changes during the window's lifecycle.
+ * 
+ * It uses the GLFW library for window and input management and OpenGL for rendering.
+ */
 public class GlfwTest {
+	// Handle to the window created by GLFW
 	private static long windowHandle;
+	// Error callback to log GLFW errors to the standard error stream
 	private static GLFWErrorCallback errorCallback = GLFWErrorCallback.createPrint(System.err);
+/**
+     * The main entry point of the application. Initializes GLFW, creates a fullscreen window
+     * using the primary monitor's video mode, sets up the OpenGL context, and enters the rendering loop.
+     * 
+     * @param argv Command-line arguments (not used in this test).
+     */
 
 	public static void main (String[] argv) {
 		GLFW.glfwSetErrorCallback(errorCallback);
