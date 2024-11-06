@@ -37,8 +37,35 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
-
+/**
+ * A LibGDX application that demonstrates how to interact with the window system
+ * using the LWJGL3 backend. It showcases lifecycle events, handling keyboard input,
+ * window management (fullscreen, windowed, visibility, maximize, etc.), and basic
+ * rendering with sprite batch and fonts.
+ * <p>
+ * Users can test various window functionalities using specific key presses, such as:
+ * - 'f' for fullscreen mode.
+ * - 'w' for random window size.
+ * - 'e' to throw an exception.
+ * - 'c' to toggle cursor capture.
+ * - 'v' to hide the window, 's' to show it.
+ * - 'q' to close the window.
+ * - 'i' to iconify the window.
+ * - 'm' to maximize the window.
+ * - 'r' to restore the window.
+ * - 'u' to open a URL in the browser.
+ */
 public class Lwjgl3DebugStarter {
+	/**
+     * Main method to start the application.
+     * This sets up the LibGDX application configuration, initializes the test,
+     * and starts the rendering loop.
+     * 
+     * @param argv Command-line arguments (unused in this test).
+     * @throws NoSuchFieldException If a specified field does not exist.
+     * @throws SecurityException If there is a security violation.
+     * @throws ClassNotFoundException If a specified class cannot be found.
+     */
 	public static void main (String[] argv) throws NoSuchFieldException, SecurityException, ClassNotFoundException {
 		GdxTest test = new GdxTest() {
 			float r = 0;
@@ -46,7 +73,10 @@ public class Lwjgl3DebugStarter {
 			BitmapFont font;
 			FPSLogger fps = new FPSLogger();
 			Texture texture;
-
+  		/**
+             * Creates the test environment, including setting up the input listener,
+             * texture, font, and lifecycle listeners.
+             */
 			@Override
 			public void create () {
 				Gdx.app.addLifecycleListener(new LifecycleListener() {
@@ -70,7 +100,9 @@ public class Lwjgl3DebugStarter {
 				batch = new SpriteBatch();
 				font = new BitmapFont();
 				Gdx.input.setInputProcessor(new InputAdapter() {
-
+ /**
+                     * Handles key press events to toggle window behavior.
+                     */
 					@Override
 					public boolean keyDown (int keycode) {
 						System.out.println("Key down: " + Keys.toString(keycode));
@@ -134,7 +166,10 @@ public class Lwjgl3DebugStarter {
 			}
 
 			long start = System.nanoTime();
-
+ /**
+             * Renders the frame by clearing the screen, drawing FPS data,
+             * handling window resizing, and displaying the texture.
+             */
 			@Override
 			public void render () {
 				ScreenUtils.clear(1, 0, 0, 1);
