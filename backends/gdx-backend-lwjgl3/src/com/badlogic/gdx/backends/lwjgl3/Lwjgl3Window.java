@@ -238,6 +238,7 @@ public class Lwjgl3Window implements Disposable {
 	/** Sets the position of the window in logical coordinates. All monitors span a virtual surface together. The coordinates are
 	 * relative to the first monitor in the virtual surface. **/
 	public void setPosition (int x, int y) {
+		if (GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) return;
 		GLFW.glfwSetWindowPos(windowHandle, x, y);
 	}
 
@@ -325,6 +326,7 @@ public class Lwjgl3Window implements Disposable {
 
 	static void setIcon (long windowHandle, Pixmap[] images) {
 		if (SharedLibraryLoader.os == Os.MacOsX) return;
+		if (GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) return;
 
 		GLFWImage.Buffer buffer = GLFWImage.malloc(images.length);
 		Pixmap[] tmpPixmaps = new Pixmap[images.length];
