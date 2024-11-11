@@ -2,6 +2,7 @@
 package com.badlogic.gdx.backends.android.keyboardheight;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Build.VERSION_CODES;
@@ -9,10 +10,9 @@ import android.view.View;
 import android.view.View.OnApplyWindowInsetsListener;
 import android.view.WindowInsets;
 import android.graphics.Insets;
-import androidx.annotation.RequiresApi;
 import org.jetbrains.annotations.NotNull;
 
-@RequiresApi(api = VERSION_CODES.R)
+@TargetApi(VERSION_CODES.R)
 public class AndroidRKeyboardHeightProvider implements KeyboardHeightProvider {
 
 	private final View view;
