@@ -1,5 +1,6 @@
 [1.13.1]
 - iOS: Update to MobiVM 2.3.22
+- iOS: Fixes Gdx.openURI() not working on iOS 18.1 Simulator.
 - Change visibility of PolygonSpriteBatch.switchTexture() to protected
 - Added XmlReader.getChildren() and XmlReader.replaceChild()
 
