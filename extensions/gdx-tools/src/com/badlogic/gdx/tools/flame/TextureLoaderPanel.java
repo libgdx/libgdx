@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Texture;
@@ -56,6 +57,9 @@ public class TextureLoaderPanel extends EditorPanel {
 					TextureAtlas atlas = editor.load(file.getAbsolutePath(), TextureAtlas.class, null, null);
 					if (atlas != null) {
 						editor.setAtlas(atlas);
+					} else {
+						JOptionPane.showMessageDialog(editor,
+							"Error loading atlas file. Make sure you must provide an atlas file, not an image file.");
 					}
 				}
 			}
@@ -73,6 +77,8 @@ public class TextureLoaderPanel extends EditorPanel {
 					Texture texture = editor.load(file.getAbsolutePath(), Texture.class, null, params);
 					if (texture != null) {
 						editor.setTexture(texture);
+					} else {
+						JOptionPane.showMessageDialog(editor, "Error loading texture file.");
 					}
 				}
 			}

@@ -40,4 +40,8 @@ public class PlaceholderTextBox extends TextBox {
 		placeholder = (text != null ? text : "");
 		getElement().setPropertyString("placeholder", placeholder);
 	}
+
+	public void setType (String type) {
+		getElement().setPropertyString("type", type);
+	}
 }

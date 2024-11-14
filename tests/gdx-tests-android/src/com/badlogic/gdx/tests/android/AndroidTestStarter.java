@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.badlogic.gdx.tests.BackTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
 public class AndroidTestStarter extends ListActivity {
@@ -36,8 +37,9 @@ public class AndroidTestStarter extends ListActivity {
 	@Override
 	public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		GdxTests.tests.add(MatrixTest.class);
+		if (!GdxTests.tests.contains(MatrixTest.class)) GdxTests.tests.add(MatrixTest.class);
 		if (!GdxTests.tests.contains(APKExpansionTest.class)) GdxTests.tests.add(APKExpansionTest.class);
+		if (!GdxTests.tests.contains(BackTest.class)) GdxTests.tests.add(BackTest.class);
 		List<String> testNames = GdxTests.getNames();
 		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testNames));
 
