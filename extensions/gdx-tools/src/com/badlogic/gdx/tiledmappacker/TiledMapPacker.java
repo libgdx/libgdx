@@ -20,7 +20,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,6 +33,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
+import com.badlogic.gdx.graphics.g2d.PixmapPackerIO;
+import com.badlogic.gdx.utils.Array;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -84,6 +90,9 @@ public class TiledMapPacker {
 
 	private HashMap<String, IntArray> tilesetUsedIds = new HashMap<String, IntArray>();
 	private ObjectMap<String, TiledMapTileSet> tilesetsToPack;
+
+	private ObjectMap<String, Array<String>> imagesLayersToPack;
+	private ObjectMap<String, String> imageLayerSourceFiles;
 
 	static File inputDir;
 	static File outputDir;
@@ -144,6 +153,8 @@ public class TiledMapPacker {
 		FileHandle inputDirHandle = new FileHandle(inputDir.getCanonicalPath());
 		File[] mapFilesInCurrentDir = inputDir.listFiles(new TmxFilter());
 		tilesetsToPack = new ObjectMap<String, TiledMapTileSet>();
+		imagesLayersToPack = new ObjectMap<String, Array<String>>();
+		imageLayerSourceFiles = new ObjectMap<String, String>();
 
 		// Processes the maps inside inputDir
 		for (File mapFile : mapFilesInCurrentDir) {
@@ -155,6 +166,8 @@ public class TiledMapPacker {
 		boolean combineTilesets = this.settings.combineTilesets;
 		if (combineTilesets == true) {
 			packTilesets(inputDirHandle, texturePackerSettings);
+			packImageLayerImages(inputDirHandle);
+			savePacker();
 		}
 	}
 
@@ -182,6 +195,8 @@ public class TiledMapPacker {
 		if (combineTilesets == false) {
 			tilesetUsedIds = new HashMap<String, IntArray>();
 			tilesetsToPack = new ObjectMap<String, TiledMapTileSet>();
+			imagesLayersToPack = new ObjectMap<String, Array<String>>();
+			imageLayerSourceFiles = new ObjectMap<String, String>();
 		}
 
 		map = mapLoader.load(mapFile.getCanonicalPath());
@@ -206,9 +221,26 @@ public class TiledMapPacker {
 			packTilesets(dirHandle, texturePackerSettings);
 		}
 
-		FileHandle tmxFile = new FileHandle(mapFile.getCanonicalPath());
-		writeUpdatedTMX(map, tmxFile);
+		 FileHandle tmxFile = new FileHandle(mapFile.getCanonicalPath());
+		 //Modify and update TMX file with Atlas Property and new ImageLayer image sources
+		 writeUpdatedTMX(tmxFile);
+
+		 if (combineTilesets == false) {
+			  //pack images from the image layers into the packer
+			  packImageLayerImages(dirHandle);
+			  //save new texture atlas
+			  savePacker();
+		 }
 	}
+
+	 private void savePacker() throws IOException {
+		  String tilesetOutputDir = outputDir.toString() + "/" + this.settings.tilesetOutputDirectory;
+		  File relativeTilesetOutputDir = new File(tilesetOutputDir);
+		  File outputDirTilesets = new File(relativeTilesetOutputDir.getCanonicalPath());
+
+		  outputDirTilesets.mkdirs();
+		  packer.pack(outputDirTilesets, this.settings.atlasOutputName + ".atlas");
+	 }
 
 	private void stripUnusedTiles () {
 		int mapWidth = map.getProperties().get("width", Integer.class);
@@ -293,6 +325,39 @@ public class TiledMapPacker {
 		return bucket;
 	}
 
+	 /** Traverse the map of generated image names created from generateImageLayerImageNames() in imagesLayersToPack,
+	  * get image source path and pass image to the {@link PixmapPacker} */
+	 private void packImageLayerImages(FileHandle inputDirHandle) throws IOException {
+		  BufferedImage image;
+		  for (String imageLayerName : imagesLayersToPack.keys()) {
+				Array<String> uniqueImageNames = imagesLayersToPack.get(imageLayerName);
+
+				for (String uniqueImageName : uniqueImageNames) {
+					 boolean verbose = this.settings.verbose;
+					 System.out.println("Processing image in layer " + imageLayerName + " with unique name " + uniqueImageName);
+
+					 // Get the original image source path
+					 String imageSourcePath = imageLayerSourceFiles.get(uniqueImageName);
+
+					 // Images will be relative to the input directory since that is where our .tmx map file is
+					 FileHandle imageFileHandle = inputDirHandle.child(imageSourcePath);
+
+					 // Load the image from the original source
+					 image = ImageIO.read(imageFileHandle.file());
+
+					 if (verbose) {
+						  System.out.println("Adding image " + imageSourcePath + " from imagelayer '" + imageLayerName + "' to atlas as region '" + uniqueImageName + "'.");
+					 }
+
+					 // Pack the image using the unique name
+					 packer.addImage(image,uniqueImageName);
+
+				}
+		  }
+
+	 }
+
+
 	/** Traverse the specified tilesets, optionally lookup the used ids and pass every tile image to the {@link TexturePacker},
 	 * optionally ignoring unused tile ids */
 	private void packTilesets (FileHandle inputDirHandle, Settings texturePackerSettings) throws IOException {
@@ -345,15 +410,71 @@ public class TiledMapPacker {
 				packer.addImage(tile, regionName);
 			}
 		}
-		String tilesetOutputDir = outputDir.toString() + "/" + this.settings.tilesetOutputDirectory;
-		File relativeTilesetOutputDir = new File(tilesetOutputDir);
-		File outputDirTilesets = new File(relativeTilesetOutputDir.getCanonicalPath());
-
-		outputDirTilesets.mkdirs();
-		packer.pack(outputDirTilesets, this.settings.atlasOutputName + ".atlas");
 	}
 
-	private void writeUpdatedTMX (TiledMap tiledMap, FileHandle tmxFileHandle) throws IOException {
+	 // Method to generate a unique image name
+	 private String generateUniqueImageName(String imageSource) {
+		  String baseName = new FileHandle(imageSource).nameWithoutExtension();
+		  String uniqueId = UUID.randomUUID().toString().replaceAll("-", "");
+		  return "imagelayer_atlas_image_" + baseName + "_" + uniqueId;
+	 }
+
+	 /**
+	  * We needed a way to handle images across nested folders as well as matching names relative to the .tmx file
+	  * As well as keeping the changes to the AtlasTmxMapLoader minimal.
+	  * With that goal in mind we get each image's source attribute, generate a unique name for it, appended that name to
+	  * this string 'imagelayer_atlas_image_' and later use it as the atlas id.
+	  * The AtlasTmxMapLoader's AtlasResolver .getImage() method will check for 'imagelayer_atlas_image_'
+	  * to use imagelayer specific logic.
+	  * @param map
+	  */
+	 private void processImageLayerNames(Node map) {
+		  boolean verbose = this.settings.verbose;
+		  for (int i = 0; i < map.getChildNodes().getLength(); i++) {
+				Node currentLayer = map.getChildNodes().item(i);
+				if (currentLayer.getNodeType() == Node.ELEMENT_NODE && currentLayer.getNodeName().equals("imagelayer")) {
+					 Node nameAttr = currentLayer.getAttributes().getNamedItem("name");
+					 String imageLayerName = (nameAttr != null) ? nameAttr.getNodeValue() : "";
+
+					 // Find the "image" node within this imagelayer node
+					 Node imageNode = currentLayer.getFirstChild();
+					 while (imageNode != null && (imageNode.getNodeType() != Node.ELEMENT_NODE || !imageNode.getNodeName().equals("image"))) {
+						  imageNode = imageNode.getNextSibling();
+					 }
+
+					 if (imageNode != null) {
+						  Node sourceAttr = imageNode.getAttributes().getNamedItem("source");
+						  String originalImageSource = (sourceAttr != null) ? sourceAttr.getNodeValue() : "";
+
+						  // Generate and set a unique image name
+						  String uniqueImageName = generateUniqueImageName(originalImageSource);
+						  sourceAttr.setNodeValue(uniqueImageName);
+
+						  // Using ObjectMaps to Store the unique image name in an Array based on layernames
+						  // We are storing them as Array<String> because layers can have matching names
+						  // Doing this so we don't worry about overwriting an image source if layers share names
+
+						  if (!imagesLayersToPack.containsKey(imageLayerName)) {
+								imagesLayersToPack.put(imageLayerName,  new Array<String>());
+						  }
+						  imagesLayersToPack.get(imageLayerName).add(uniqueImageName);
+
+						  // Store the original image source in an Array based on uniqueImageName
+						  // Directly put the unique image source into imageLayerSourceFiles
+						  imageLayerSourceFiles.put(uniqueImageName, originalImageSource);
+
+						  if(verbose) {
+								System.out.println("Updated image layer '" + imageLayerName + "' source to '" + uniqueImageName + "'.");
+						  }
+
+					 } else {
+						  System.out.println("No image node found in image layer: " + imageLayerName);
+					 }
+				}
+		  }
+	 }
+
+	private void writeUpdatedTMX (FileHandle tmxFileHandle) throws IOException {
 		Document doc;
 		DocumentBuilder docBuilder;
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -370,6 +491,9 @@ public class TiledMapPacker {
 			}
 
 			setProperty(doc, map, "atlas", settings.tilesetOutputDirectory + "/" + settings.atlasOutputName + ".atlas");
+
+			 //process image's from imagelayers
+			 processImageLayerNames(map);
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
