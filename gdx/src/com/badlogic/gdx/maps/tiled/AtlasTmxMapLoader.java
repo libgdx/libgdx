@@ -65,7 +65,15 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 			@Override
 			public TextureRegion getImage (String name) {
-				return atlas.findRegion(name);
+				 //check to see if we are retrieving a packed image
+				 if (name.contains("imagelayer_atlas_image_")) {
+					  // Extract the name of region from path
+					  String regionName = new FileHandle(name).name();
+					  return atlas.findRegion(regionName);
+				 }
+				 else{
+					  return atlas.findRegion(name);
+				 }
 			}
 		}
 
@@ -85,7 +93,15 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 			@Override
 			public TextureRegion getImage (String name) {
-				return getAtlas().findRegion(name);
+				 //check to see if we are retrieving a packed image
+				 if (name.contains("imagelayer_atlas_image_")) {
+					  // Extract the name of region from path
+					  String regionName = new FileHandle(name).name();
+					  return getAtlas().findRegion(regionName);
+				 }
+				 else{
+					  return getAtlas().findRegion(name);
+				 }
 			}
 		}
 	}
