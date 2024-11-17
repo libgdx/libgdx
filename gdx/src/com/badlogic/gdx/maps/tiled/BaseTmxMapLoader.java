@@ -655,6 +655,4 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return null;
 	}
 
-
-
 }
