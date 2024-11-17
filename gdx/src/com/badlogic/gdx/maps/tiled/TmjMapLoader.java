@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.maps.tiled;
 
@@ -15,7 +30,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
+/** @brief synchronous loader for TMJ maps created with the Tiled tool */
 public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> {
+
+	 public static class Parameters extends BaseTmjMapLoader.Parameters {
+
+	 }
 
 	 public TmjMapLoader () {
 		  super(new InternalFileHandleResolver());
@@ -60,51 +80,6 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 
 		  TiledMap map = loadTiledMap(tmjFile, parameter, new ImageResolver.DirectImageResolver(textures));
 		  map.setOwnedResources(textures.values().toArray());
-		  return map;
-	 }
-
-	 /** Loads a tile set from the given file. The file is resolved via the {@link FileHandleResolver} set in the constructor of
-	  * this class. By default it will resolve to an internal file.
-	  *
-	  * @param fileName the filename of the tile set
-	  * @param map the TiledMap to which the tile set will be added
-	  * @return the TiledMap with the loaded tile set */
-	 public TiledMap loadCustomTileSet (String fileName, TiledMap map) {
-		  return loadCustomTileSet(fileName, map, new TmjMapLoader.Parameters());
-	 }
-
-	 /** Loads a tile set from the given file. The file is resolved via the {@link FileHandleResolver} set in the constructor of
-	  * this class. By default it will resolve to an internal file.
-	  *
-	  * @param fileName the filename of the tile set
-	  * @return the TiledMap with the loaded tile set */
-	 public TiledMap loadCustomTileSet (String fileName) {
-		  TiledMap map = new TiledMap();
-		  return loadCustomTileSet(fileName, new TiledMap(), new TmjMapLoader.Parameters());
-	 }
-
-	 /** Loads a tile set from the given file. The file is resolved via the {@link FileHandleResolver} set in the constructor of
-	  * this class. By default it will resolve to an internal file.
-	  *
-	  * @param fileName the filename of the tile set
-	  * @param map the TiledMap to which the tile set will be added
-	  * @param parameter specifies whether to use y-up, generate mip maps etc.
-	  * @return the TiledMap with the loaded tile set */
-	 public TiledMap loadCustomTileSet (String fileName, TiledMap map, TmjMapLoader.Parameters parameter) {
-		  FileHandle tmjFile = resolve(fileName);
-		  JsonValue tileSet = json.parse(tmjFile);
-		  ObjectMap<String, Texture> textures = new ObjectMap<>();
-		  this.map = map;
-
-		  final Array<FileHandle> textureFiles = getTileSetDependencyFileHandle(tmjFile, tileSet);
-		  for (FileHandle textureFile : textureFiles) {
-				Texture texture = new Texture(textureFile, parameter.generateMipMaps);
-				texture.setFilter(parameter.textureMinFilter, parameter.textureMagFilter);
-				textures.put(textureFile.path(), texture);
-		  }
-		  loadTileSet(tileSet, tmjFile, new ImageResolver.DirectImageResolver(textures));
-		  map.setOwnedResources(textures.values().toArray());
-
 		  return map;
 	 }
 
@@ -255,9 +230,4 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 				}
 		  }
 	 }
-
-	 public static class Parameters extends BaseTmjMapLoader.Parameters {
-
-	 }
-
 }
