@@ -14,7 +14,6 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 package com.badlogic.gdx.utils;
 
 import static org.junit.Assert.*;
