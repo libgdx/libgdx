@@ -205,7 +205,7 @@ public class LongArray {
 		return -1;
 	}
 
-	public int lastIndexOf (char value) {
+	public int lastIndexOf (long value) {
 		long[] items = this.items;
 		for (int i = size - 1; i >= 0; i--)
 			if (items[i] == value) return i;
@@ -272,11 +272,13 @@ public class LongArray {
 
 	/** Removes and returns the last item. */
 	public long pop () {
+		if (size == 0) throw new IllegalStateException("Array is empty.");
 		return items[--size];
 	}
 
 	/** Returns the last item. */
 	public long peek () {
+		if (size == 0) throw new IllegalStateException("Array is empty.");
 		return items[size - 1];
 	}
 
