@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +29,8 @@ public class Align {
 	static public final int topRight = top | right;
 	static public final int bottomLeft = bottom | left;
 	static public final int bottomRight = bottom | right;
+
+    private static String separator = ",";
 
 	static public final boolean isLeft (int align) {
 		return (align & left) != 0;
@@ -54,14 +56,16 @@ public class Align {
 		return (align & left) == 0 && (align & right) == 0;
 	}
 
+    static public void setSeparator(String newSeparator) { separator = newSeparator; }
+
 	static public String toString (int align) {
 		StringBuilder buffer = new StringBuilder(13);
 		if ((align & top) != 0)
-			buffer.append("top,");
+			buffer.append("top").append(separator);
 		else if ((align & bottom) != 0)
-			buffer.append("bottom,");
+			buffer.append("bottom").append(separator);
 		else
-			buffer.append("center,");
+			buffer.append("center").append(separator);
 		if ((align & left) != 0)
 			buffer.append("left");
 		else if ((align & right) != 0)

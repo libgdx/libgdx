@@ -71,13 +71,24 @@ public class AlignTest {
 
     @Test
     public void testToString() {
-    /*This method tests if the toString function correctly converts the alignment constants
-    to their string representations, such as "top,left", "bottom,right", and "center,center"*/
+        /*This method tests if the toString function correctly converts the alignment constants
+        to their string representations, such as "top,left", "bottom,right", and "center,center"*/
         assertEquals("top,left", Align.toString(Align.topLeft).trim().replace(", ", ","));
         assertEquals("top,right", Align.toString(Align.topRight).trim().replace(", ", ","));
         assertEquals("center,center", Align.toString(Align.center).trim().replace(", ", ","));
         assertEquals("bottom,left", Align.toString(Align.bottomLeft).trim().replace(", ", ","));
         assertEquals("bottom,right", Align.toString(Align.bottomRight).trim().replace(", ", ","));
+
+        /* Change separator to "; " */
+        Align.setSeparator(";  ");
+
+        /* Test with new separator */
+        assertEquals("top; left", Align.toString(Align.topLeft).trim().replace("; ", ";"));
+        assertEquals("top; right", Align.toString(Align.topRight).trim().replace("; ", ";"));
+        assertEquals("center; center", Align.toString(Align.center).trim().replace("; ", ";"));
+        assertEquals("bottom; left", Align.toString(Align.bottomLeft).trim().replace("; ", ";"));
+        assertEquals("bottom; right", Align.toString(Align.bottomRight).trim().replace("; ", ";"));
     }
 }
+
 
