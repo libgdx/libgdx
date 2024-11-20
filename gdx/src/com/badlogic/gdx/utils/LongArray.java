@@ -272,13 +272,13 @@ public class LongArray {
 
 	/** Removes and returns the last item. */
 	public long pop () {
-		if (size == 0) throw new IllegalStateException("Array is empty.");
+		if (size <= 0) throw new IllegalStateException("Array is empty.");
 		return items[--size];
 	}
 
 	/** Returns the last item. */
 	public long peek () {
-		if (size == 0) throw new IllegalStateException("Array is empty.");
+		if (size <= 0) throw new IllegalStateException("Array is empty.");
 		return items[size - 1];
 	}
 
