@@ -230,10 +230,10 @@ public class LongArrayTest {
      */
 	@Test
 	public void indexOfTest () {
-		LongArray longArray1 = new LongArray(new long[] {1, 3, 4, 5, 6, 6, 3, 9});
+		LongArray longArray1 = new LongArray(new long[] {1, 3, 4, 5, 6, 6, 3, 9,68000,68000});
 		Assert.assertEquals(-1, longArray1.indexOf(100));
 		Assert.assertEquals(1, longArray1.indexOf(3));
-		Assert.assertEquals(6, longArray1.lastIndexOf(3));
+		Assert.assertEquals(9, longArray1.lastIndexOf(68000));
 		Assert.assertEquals(-1, longArray1.lastIndexOf(100));
 	}
 
