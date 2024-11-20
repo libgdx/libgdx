@@ -1,4 +1,3 @@
-@@ -0,0 +1,120 @@
 /*******************************************************************************
  * Copyright 2024 See AUTHORS file.
  *
@@ -48,16 +47,15 @@ public class PolygonTest {
 	@Test
 	public void testSetOrigin () {
 		polygon.setOrigin(1, 2);
-		assertEquals("L'origine X du polygone est incorrecte.", 1, polygon.getOriginX(), 0.001f);
-		assertEquals("L'origine Y du polygone est incorrecte.", 2, polygon.getOriginY(), 0.001f);
+		assertEquals("The X position of the polygon is incorrect.", 1, polygon.getOriginX(), 0.001f);
+		assertEquals("The Y position of the polygon is incorrect.", 2, polygon.getOriginY(), 0.001f);
 	}
 
 	@Test
 	public void testSetVertices () {
 		float[] newVertices = {1, 1, 4, 1, 4, 5};
 		polygon.setVertices(newVertices);
-		assertArrayEquals("Les nouveaux sommets du polygone ne sont pas correctement définis.", newVertices, polygon.getVertices(),
-			0.001f);
+		assertArrayEquals("The new vertices are not correctly defined.", newVertices, polygon.getVertices(), 0.001f);
 	}
 
 	@Test
@@ -66,7 +64,7 @@ public class PolygonTest {
 		polygon.setRotation(90);
 		polygon.setScale(2, 2);
 		float[] transformedVertices = polygon.getTransformedVertices();
-		assertNotNull("Transformed vertices sshouldn't be null.", transformedVertices);
+		assertNotNull("Transformed vertices shouldn't be null.", transformedVertices);
 		assertTrue("Transformed vertices should contain values.", transformedVertices.length > 0);
 	}
 
