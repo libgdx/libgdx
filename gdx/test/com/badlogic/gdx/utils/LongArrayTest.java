@@ -20,10 +20,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class LongArrayTest {
-    /**
-     * Test of the different adding methods
-     */
-    @Test
+	/** Test of the different adding methods */
+	@Test
 	public void addTest () {
 		/*
 		 * Test of the classic add(long value) method, it should be adding a number at the first available place.
@@ -61,9 +59,7 @@ public class LongArrayTest {
 		Assert.assertArrayEquals(new long[] {2, 21, 45}, longArray4.toArray());
 	}
 
-    /**
-     * Test of the get() method
-     */
+	/** Test of the get() method */
 	@Test
 	public void getTest () {
 		LongArray longArray = new LongArray();
@@ -77,9 +73,7 @@ public class LongArrayTest {
 		}
 	}
 
-    /**
-     * Test of the set() method
-     */
+	/** Test of the set() method */
 	@Test
 	public void setTest () {
 		LongArray longArray = new LongArray(new long[] {3, 4, 5, 7});
@@ -93,9 +87,7 @@ public class LongArrayTest {
 		}
 	}
 
-    /**
-     * Test of the incr() method
-     */
+	/** Test of the incr() method */
 	@Test
 	public void incrTest () {
 		LongArray longArray = new LongArray(new long[] {3, 4, 5, 1, 56, 32});
@@ -111,9 +103,7 @@ public class LongArrayTest {
 		}
 	}
 
-    /**
-     * Test of the mul() method
-     */
+	/** Test of the mul() method */
 	@Test
 	public void mulTest () {
 		LongArray longArray = new LongArray(new long[] {3, 4, 5, 1, 56, 32});
@@ -129,9 +119,7 @@ public class LongArrayTest {
 		}
 	}
 
-    /**
-     * Test of the insert() method
-     */
+	/** Test of the insert() method */
 	@Test
 	public void insertTest () {
 		// With an ordered array
@@ -161,9 +149,7 @@ public class LongArrayTest {
 		}
 	}
 
-    /**
-     * Test of the swap() method
-     */
+	/** Test of the swap() method */
 	@Test
 	public void swapTest () {
 		LongArray longArray1 = new LongArray(new long[] {1, 3, 4, 5, 6});
@@ -190,9 +176,7 @@ public class LongArrayTest {
 		Assert.assertFalse(longArray1.contains(100));
 	}
 
-    /**
-     * Test of the hashCode() method
-     */
+	/** Test of the hashCode() method */
 	@Test
 	public void hashCodeTest () {
 		/*
@@ -225,9 +209,7 @@ public class LongArrayTest {
 		Assert.assertEquals(expectedHash, longArrayOrdered.hashCode());
 	}
 
-    /**
-     * Test of the indexOf() method
-     */
+	/** Test of the indexOf() method */
 	@Test
 	public void indexOfTest () {
 		LongArray longArray1 = new LongArray(new long[] {1, 3, 4, 5, 6, 6, 3, 9,68000,68000});
@@ -287,9 +269,7 @@ public class LongArrayTest {
 		Assert.assertArrayEquals(new long[] {50, 40}, longArray3.toArray());
 	}
 
-    /**
-     * Test of the pop(), peek() and first() methods
-     */
+	/** Test of the pop(), peek() and first() methods */
 	@Test
 	public void popPeekFirstTest () {
 		LongArray longArray = new LongArray(new long[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
@@ -318,9 +298,7 @@ public class LongArrayTest {
 		}
 	}
 
-    /**
-     * test of the isEmpty() and notEmpty() methods
-     */
+	/** test of the isEmpty() and notEmpty() methods */
 	@Test
 	public void emptyTest () {
 		Assert.assertTrue((new LongArray()).isEmpty());
@@ -329,9 +307,7 @@ public class LongArrayTest {
 		Assert.assertTrue((new LongArray(new long[] {1})).notEmpty());
 	}
 
-    /**
-     * Test of the clear() method
-     */
+	/** Test of the clear() method */
 	@Test
 	public void clearTest () {
 		LongArray longArray = new LongArray(new long[] {1});
@@ -339,9 +315,7 @@ public class LongArrayTest {
 		Assert.assertTrue(longArray.isEmpty());
 	}
 
-    /**
-     * Test of the shrink() method
-     */
+	/** Test of the shrink() method */
 	@Test
 	public void shrinkTest () {
 		LongArray longArray = new LongArray(); // This LongArray will have an "items" attribute of length 16 by default
@@ -350,9 +324,7 @@ public class LongArrayTest {
 		Assert.assertEquals(3, longArray.items.length);
 	}
 
-    /**
-     * Test of the ensureCapacity method
-     */
+	/** Test of the ensureCapacity method */
 	@Test
 	public void ensureCapacityTest () {
 		LongArray longArray1 = new LongArray(
@@ -369,9 +341,7 @@ public class LongArrayTest {
 		}
 	}
 
-    /**
-     * Test of the setSize() method
-     */
+	/** Test of the setSize() method */
 	@Test
 	public void setSizeTest () {
 		LongArray longArray1 = new LongArray(
@@ -390,9 +360,7 @@ public class LongArrayTest {
 		}
 	}
 
-    /**
-     * Test of resize() method
-     */
+	/** Test of resize() method */
 	@Test
 	public void resizeTest () {
 		LongArray longArray1 = new LongArray(
@@ -402,9 +370,7 @@ public class LongArrayTest {
 			longArray1.resize(23));
 	}
 
-    /**
-     * Test of sort() and reverse() methods
-      */
+	/** Test of sort() and reverse() methods */
 	@Test
 	public void sortAndReverseTest () {
 		LongArray longArray1 = new LongArray(
@@ -417,9 +383,7 @@ public class LongArrayTest {
 			longArray1.toArray());
 	}
 
-    /**
-     * Test of equals() method
-     */
+	/** Test of equals() method */
 	@Test
 	public void equalsTest () {
 		LongArray longArray1 = new LongArray();
@@ -429,28 +393,26 @@ public class LongArrayTest {
 
 		Assert.assertTrue(longArray1.equals(longArray2));
 
-        // Verifying that an object of instance =/= LongArray cannot be equal
+		// Verifying that an object of instance =/= LongArray cannot be equal
 		ArrayMap<Integer, Integer> o = new ArrayMap<Integer, Integer>(); // Random object of a different class
 		Assert.assertFalse(longArray1.equals(o));
 
-        // An unordered array, even if the content is the same, cannot be equal to an ordered array
+		// An unordered array, even if the content is the same, cannot be equal to an ordered array
 		LongArray longArray3 = new LongArray(false, 16);
 		longArray3.add(1, 2);
 		Assert.assertFalse(longArray1.equals(longArray3));
 
-        // The capacity isn't something that makes two arrays not equal
+		// The capacity isn't something that makes two arrays not equal
 		LongArray longArray4 = new LongArray(true, 12);
 		longArray4.add(1, 2);
 		Assert.assertTrue(longArray1.equals(longArray4));
 
-        // Standard verification that two arrays with different content are not equal
+		// Standard verification that two arrays with different content are not equal
 		longArray1.add(3);
 		Assert.assertFalse(longArray1.equals(longArray2));
 	}
 
-    /**
-     * Test of the toString() methods
-     */
+	/** Test of the toString() methods */
 	@Test
 	public void toStringTest () {
 		LongArray emptyLongArray = new LongArray();
