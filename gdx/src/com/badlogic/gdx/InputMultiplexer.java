@@ -24,28 +24,57 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * @author Nathan Sweet */
 public class InputMultiplexer implements InputProcessor {
 	private SnapshotArray<InputProcessor> processors = new SnapshotArray(4);
-
+	
+	/**
+	 * Constructor of an InputMultiplexer
+	 */
 	public InputMultiplexer () {
 	}
 
+	/**
+	 * Constructor of an InputMultiplexer with processors
+	 * 
+	 * @param processors
+	 */
 	public InputMultiplexer (InputProcessor... processors) {
 		this.processors.addAll(processors);
 	}
 
+	/**
+	 * Add a processor to the list of processors with a given index
+	 * 
+	 * @param index
+	 * @param processor
+	 */
 	public void addProcessor (int index, InputProcessor processor) {
 		if (processor == null) throw new NullPointerException("processor cannot be null");
 		processors.insert(index, processor);
 	}
 
+	/**
+	 * Remove a processor with a given index from the list of processors
+	 * 
+	 * @param index
+	 */
 	public void removeProcessor (int index) {
 		processors.removeIndex(index);
 	}
 
+	/**
+	 * Add a processor to the list of processors at the end of the list
+	 * 
+	 * @param processor
+	 */
 	public void addProcessor (InputProcessor processor) {
 		if (processor == null) throw new NullPointerException("processor cannot be null");
 		processors.add(processor);
 	}
 
+	/**
+	 * Remove a processor from the list of processors
+	 * 
+	 * @param processor
+	 */
 	public void removeProcessor (InputProcessor processor) {
 		processors.removeValue(processor, true);
 	}
@@ -55,24 +84,42 @@ public class InputMultiplexer implements InputProcessor {
 		return processors.size;
 	}
 
+	/**
+	 * Empty the list of processors
+	 */
 	public void clear () {
 		processors.clear();
 	}
 
+	/**
+	 * Empty the list of processors and implement a new list of processors
+	 * 
+	 * @param processors
+	 */
 	public void setProcessors (InputProcessor... processors) {
 		this.processors.clear();
 		this.processors.addAll(processors);
 	}
 
+	/**
+	 * Empty the list of processors and implement a new list of processors
+	 * 
+	 * @param processors
+	 */
 	public void setProcessors (Array<InputProcessor> processors) {
 		this.processors.clear();
 		this.processors.addAll(processors);
 	}
 
+	/**
+	 * 
+	 * @return the list of processors
+	 */
 	public SnapshotArray<InputProcessor> getProcessors () {
 		return processors;
 	}
 
+	@Override
 	public boolean keyDown (int keycode) {
 		Object[] items = processors.begin();
 		try {
@@ -84,6 +131,7 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
+	@Override
 	public boolean keyUp (int keycode) {
 		Object[] items = processors.begin();
 		try {
@@ -95,6 +143,7 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
+	@Override
 	public boolean keyTyped (char character) {
 		Object[] items = processors.begin();
 		try {
@@ -106,6 +155,7 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
+	@Override
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		Object[] items = processors.begin();
 		try {
@@ -117,6 +167,7 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
+	@Override
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		Object[] items = processors.begin();
 		try {
@@ -128,6 +179,7 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
+	@Override
 	public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {
 		Object[] items = processors.begin();
 		try {
@@ -139,6 +191,7 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
+	@Override
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
 		Object[] items = processors.begin();
 		try {
@@ -150,6 +203,7 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
+	@Override
 	public boolean mouseMoved (int screenX, int screenY) {
 		Object[] items = processors.begin();
 		try {
@@ -161,6 +215,7 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
+	@Override
 	public boolean scrolled (float amountX, float amountY) {
 		Object[] items = processors.begin();
 		try {
