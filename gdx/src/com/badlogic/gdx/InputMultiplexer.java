@@ -24,57 +24,45 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * @author Nathan Sweet */
 public class InputMultiplexer implements InputProcessor {
 	private SnapshotArray<InputProcessor> processors = new SnapshotArray(4);
-	
-	/**
-	 * Constructor of an InputMultiplexer
-	 */
+
+	/** Constructor of an InputMultiplexer */
 	public InputMultiplexer () {
 	}
 
-	/**
-	 * Constructor of an InputMultiplexer with processors
+	/** Constructor of an InputMultiplexer with processors
 	 * 
-	 * @param processors
-	 */
+	 * @param processors */
 	public InputMultiplexer (InputProcessor... processors) {
 		this.processors.addAll(processors);
 	}
 
-	/**
-	 * Add a processor to the list of processors with a given index
+	/** Add a processor to the list of processors with a given index
 	 * 
 	 * @param index
-	 * @param processor
-	 */
+	 * @param processor */
 	public void addProcessor (int index, InputProcessor processor) {
 		if (processor == null) throw new NullPointerException("processor cannot be null");
 		processors.insert(index, processor);
 	}
 
-	/**
-	 * Remove a processor with a given index from the list of processors
+	/** Remove a processor with a given index from the list of processors
 	 * 
-	 * @param index
-	 */
+	 * @param index */
 	public void removeProcessor (int index) {
 		processors.removeIndex(index);
 	}
 
-	/**
-	 * Add a processor to the list of processors at the end of the list
+	/** Add a processor to the list of processors at the end of the list
 	 * 
-	 * @param processor
-	 */
+	 * @param processor */
 	public void addProcessor (InputProcessor processor) {
 		if (processor == null) throw new NullPointerException("processor cannot be null");
 		processors.add(processor);
 	}
 
-	/**
-	 * Remove a processor from the list of processors
+	/** Remove a processor from the list of processors
 	 * 
-	 * @param processor
-	 */
+	 * @param processor */
 	public void removeProcessor (InputProcessor processor) {
 		processors.removeValue(processor, true);
 	}
@@ -84,37 +72,28 @@ public class InputMultiplexer implements InputProcessor {
 		return processors.size;
 	}
 
-	/**
-	 * Empty the list of processors
-	 */
+	/** Empty the list of processors */
 	public void clear () {
 		processors.clear();
 	}
 
-	/**
-	 * Empty the list of processors and implement a new list of processors
+	/** Empty the list of processors and implement a new list of processors
 	 * 
-	 * @param processors
-	 */
+	 * @param processors */
 	public void setProcessors (InputProcessor... processors) {
 		this.processors.clear();
 		this.processors.addAll(processors);
 	}
 
-	/**
-	 * Empty the list of processors and implement a new list of processors
+	/** Empty the list of processors and implement a new list of processors
 	 * 
-	 * @param processors
-	 */
+	 * @param processors */
 	public void setProcessors (Array<InputProcessor> processors) {
 		this.processors.clear();
 		this.processors.addAll(processors);
 	}
 
-	/**
-	 * 
-	 * @return the list of processors
-	 */
+	/** @return the list of processors */
 	public SnapshotArray<InputProcessor> getProcessors () {
 		return processors;
 	}
