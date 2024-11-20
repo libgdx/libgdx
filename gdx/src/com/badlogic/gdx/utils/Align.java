@@ -30,7 +30,7 @@ public class Align {
 	static public final int bottomLeft = bottom | left;
 	static public final int bottomRight = bottom | right;
 
-    private static String separator = ",";
+	private static String separator = ",";
 
 	static public final boolean isLeft (int align) {
 		return (align & left) != 0;
@@ -56,7 +56,9 @@ public class Align {
 		return (align & left) == 0 && (align & right) == 0;
 	}
 
-    static public void setSeparator(String newSeparator) { separator = newSeparator; }
+	static public void setSeparator (String newSeparator) {
+		separator = newSeparator;
+	}
 
 	static public String toString (int align) {
 		StringBuilder buffer = new StringBuilder(13);
