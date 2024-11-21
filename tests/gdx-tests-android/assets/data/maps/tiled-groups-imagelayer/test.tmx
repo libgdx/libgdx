@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="22" nextobjectid="1">
- <tileset firstgid="1" source="Lonesome_Forest_Summer_Tileset.tsx"/>
+ <tileset firstgid="1" source="groups_test_tileset.tsx"/>
  <layer id="1" name="Tile Layer 1" width="10" height="10">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,
