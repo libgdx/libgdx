@@ -285,7 +285,6 @@ public class Polygon implements Shape2D, Poolable {
 	@Override
 	public void reset () {
 		localVertices = new float[0];
-		worldVertices = new float[0];
 		x = 0;
 		y = 0;
 		originX = 0;
@@ -293,7 +292,6 @@ public class Polygon implements Shape2D, Poolable {
 		rotation = 0;
 		scaleX = 1;
 		scaleY = 1;
-		bounds = null;
 		dirty = true;
 	}
 
