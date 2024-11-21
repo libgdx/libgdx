@@ -197,9 +197,10 @@ public final class Intersector {
 			floatArray2.addAll(floatArray);
 			floatArray.clear();
 		}
-		// Check for 3 or more vertices needed due to floating point precision errors
+		// Ensure first and last point are different
 		if (floatArray2.size >= 6 && floatArray2.get(0) == floatArray2.get(floatArray2.size - 2)
 			&& floatArray2.get(1) == floatArray2.get(floatArray2.size - 1)) floatArray2.setSize(floatArray2.size - 2);
+		// Check for 3 or more vertices needed due to floating point precision errors
 		if (floatArray2.size >= 6) {
 			if (overlap != null) {
 				if (overlap.getVertices().length == floatArray2.size)
