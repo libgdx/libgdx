@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,8 +16,10 @@
 
 package com.badlogic.gdx.math;
 
+import com.badlogic.gdx.utils.Pool.Poolable;
+
 /** Encapsulates a 2D polygon defined by it's vertices relative to an origin point (default of 0, 0). */
-public class Polygon implements Shape2D {
+public class Polygon implements Shape2D, Poolable {
 	private float[] localVertices;
 	private float[] worldVertices;
 	private float x, y;
@@ -33,10 +35,10 @@ public class Polygon implements Shape2D {
 	}
 
 	/** Constructs a new polygon from a float array of parts of vertex points.
-	 * 
+	 *
 	 * @param vertices an array where every even element represents the horizontal part of a point, and the following element
 	 *           representing the vertical part
-	 * 
+	 *
 	 * @throws IllegalArgumentException if less than 6 elements, representing 3 points, are provided */
 	public Polygon (float[] vertices) {
 		if (vertices.length < 6) throw new IllegalArgumentException("polygons must contain at least 3 points.");
@@ -50,7 +52,7 @@ public class Polygon implements Shape2D {
 
 	/** Calculates and returns the vertices of the polygon after scaling, rotation, and positional translations have been applied,
 	 * as they are position within the world.
-	 * 
+	 *
 	 * @return vertices scaled, rotated, and offset by the polygon position. */
 	public float[] getTransformedVertices () {
 		if (!dirty) return worldVertices;
@@ -110,7 +112,7 @@ public class Polygon implements Shape2D {
 
 	/** Sets the polygon's local vertices relative to the origin point, without any scaling, rotating or translations being
 	 * applied.
-	 * 
+	 *
 	 * @param vertices float array where every even element represents the x-coordinate of a vertex, and the proceeding element
 	 *           representing the y-coordinate.
 	 * @throws IllegalArgumentException if less than 6 elements, representing 3 points, are provided */
@@ -194,9 +196,9 @@ public class Polygon implements Shape2D {
 	}
 
 	/** Returns an axis-aligned bounding box of this polygon.
-	 * 
+	 *
 	 * Note the returned Rectangle is cached in this polygon, and will be reused if this Polygon is changed.
-	 * 
+	 *
 	 * @return this polygon's bounding box {@link Rectangle} */
 	public Rectangle getBoundingRectangle () {
 		float[] vertices = getTransformedVertices();
@@ -278,5 +280,24 @@ public class Polygon implements Shape2D {
 	/** Returns the total vertical scaling applied to the polygon. */
 	public float getScaleY () {
 		return scaleY;
+	}
+
+	@Override
+	public void reset () {
+		localVertices = new float[0];
+		worldVertices = new float[0];
+		x = 0;
+		y = 0;
+		originX = 0;
+		originY = 0;
+		rotation = 0;
+		scaleX = 1;
+		scaleY = 1;
+		bounds = null;
+		dirty = true;
+	}
+
+	public boolean hasTransformations () {
+		return x != 0 || y != 0 || originX != 0 || originY != 0 || rotation != 0 || scaleX != 1 || scaleY != 1;
 	}
 }
