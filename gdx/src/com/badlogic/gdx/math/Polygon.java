@@ -279,4 +279,15 @@ public class Polygon implements Shape2D {
 	public float getScaleY () {
 		return scaleY;
 	}
+
+	public void resetTransformations () {
+		scaleX = 1;
+		scaleY = 1;
+		originX = 0;
+		originY = 0;
+		x = 0;
+		y = 0;
+		rotation = 0;
+		dirty = true;
+	}
 }
