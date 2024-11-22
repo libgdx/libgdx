@@ -272,14 +272,14 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 				loadProperties(layer.getProperties(), properties);
 			}
 
-			 for (Element objectElement : element.getChildrenByName("object")) {
-				  if(objectElement.hasAttribute("template")){
-						loadTemplateObject(map,layer,objectElement,tmxFile);
-				  }
-				  else{
-						loadObject(map, layer, objectElement);
-				  }
-			 }
+			for (Element objectElement : element.getChildrenByName("object")) {
+			  if(objectElement.hasAttribute("template")){
+					loadTemplateObject(map,layer,objectElement,tmxFile);
+			  }
+			  else{
+					loadObject(map, layer, objectElement);
+			  }
+			}
 
 			parentLayers.add(layer);
 		}
@@ -505,21 +505,21 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 
 	 /**
 	  * Custom method specifically meant to load template objects found in objectgroups
-	  * Each template object links to a specific .ts file.
-	  * Unlike when loading every other object, we need to read the property attributes contained in the .ts file first.
+	  * Each template object links to a specific .tx file.
+	  * Unlike when loading every other object, we need to read the property attributes contained in the .tx file first.
 	  * These attributes are allowed to be overwritten by any matching property attributes found in its parent element.
 	  * @param map TileMap obect
 	  * @param layer MapLayer object
 	  * @param element Element which contains the single xml element we are currently parsing
 	  * @param tmxFile tmxFile
 	  */
-	 protected void loadTemplateObject (TiledMap map, MapLayer layer, Element element,FileHandle tmxFile) {
+	 protected void loadTemplateObject (TiledMap map, MapLayer layer, Element element, FileHandle tmxFile) {
 		  if (element.getName().equals("object")) {
 				MapObjects objects = layer.getObjects();
 
-				//Get template (.ts) file name from element
+				//Get template (.tx) file name from element
 				String tsFileName = element.getAttribute("template");
-				//check for cached ts element
+				//check for cached tx element
 				Element templateElement = templateCache.get(tsFileName);
 				if (templateElement == null) {
 					 FileHandle templateFile = getRelativeFileHandle(tmxFile, tsFileName);
@@ -543,7 +543,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 				float scaleX = convertObjectToTileSpace ? 1.0f / mapTileWidth : 1.0f;
 				float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
 
-				//.ts template does not contain an x/y value in object elements attributes
+				//.tx template does not contain an x/y value in object elements attributes
 				float x = Float.parseFloat(combinedAttributes.get("x", "0")) * scaleX;
 				float y = (flipY ?
 					(mapHeightInPixels - Float.parseFloat(combinedAttributes.get("y", "0"))) :
