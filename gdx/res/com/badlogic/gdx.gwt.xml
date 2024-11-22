@@ -312,7 +312,9 @@
 	
 	<!-- maps/tiled -->
 		<include name="maps/tiled/AtlasTmxMapLoader.java"/>
+		<include name="maps/tiled/BaseTiledMapLoader.java"/>
 		<include name="maps/tiled/BaseTmxMapLoader.java"/>
+		<include name="maps/tiled/BaseTmjMapLoader.java"/>
 		<include name="maps/tiled/TideMapLoader.java"/>
 		<include name="maps/tiled/TiledMap.java"/>
 		<include name="maps/tiled/TiledMapRenderer.java"/>
@@ -323,6 +325,7 @@
 		<include name="maps/tiled/TiledMapImageLayer.java"/>
 		<include name="maps/tiled/TmxMapHelper.java"/>
 		<include name="maps/tiled/TmxMapLoader.java"/>
+		<include name="maps/tiled/TmjMapLoader.java"/>
 		
 	<!-- maps/tiled/renderers -->
 		<include name="maps/tiled/renderers/BatchTiledMapRenderer.java"/>

@@ -231,4 +231,20 @@ public class IntersectorTest {
 				new Polygon(new float[] {3213.0f, 131.0f, 3214.0f, 131.0f, 3214.0f, 130.0f, 3213.0f, 130.0f}), intersectionPolygon));
 		assertEquals(0, intersectionPolygon.getVertexCount());
 	}
+
+	@Test
+	public void testIntersectPolygonsWithVertexLyingOnEdge () {
+		Polygon p1 = new Polygon(new float[] {1, -1, 2, -1, 2, -2, 1, -2});
+		Polygon p2 = new Polygon(new float[] {0.5f, -1.5f, 1.5f, -1.5f, 1.5f, -2.5f});
+
+		Polygon intersectionPolygon = new Polygon();
+		boolean checkResult = Intersector.intersectPolygons(p1, p2, intersectionPolygon);
+
+		assertTrue(checkResult);
+		assertEquals(4, intersectionPolygon.getVertexCount());
+		assertEquals(new Vector2(1.0f, -2.0f), intersectionPolygon.getVertex(0, new Vector2()));
+		assertEquals(new Vector2(1.0f, -1.5f), intersectionPolygon.getVertex(1, new Vector2()));
+		assertEquals(new Vector2(1.5f, -1.5f), intersectionPolygon.getVertex(2, new Vector2()));
+		assertEquals(new Vector2(1.5f, -2.0f), intersectionPolygon.getVertex(3, new Vector2()));
+	}
 }
