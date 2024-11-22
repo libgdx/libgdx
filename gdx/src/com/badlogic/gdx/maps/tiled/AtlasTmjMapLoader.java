@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,19 +30,19 @@ import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.XmlReader.Element;
+import com.badlogic.gdx.utils.JsonValue;
 
 /** A TiledMap Loader which loads tiles from a TextureAtlas instead of separate images.
- * 
+ *
  * It requires a map-level property called 'atlas' with its value being the relative path to the TextureAtlas. The atlas must have
  * in it indexed regions named after the tilesets used in the map. The indexes shall be local to the tileset (not the global id).
  * Strip whitespace and rotation should not be used when creating the atlas.
- * 
+ *
  * @author Justin Shapcott
  * @author Manuel Bua */
-public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasTiledMapLoaderParameters> {
-
-	public static class AtlasTiledMapLoaderParameters extends BaseTmxMapLoader.Parameters {
+public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasTiledMapLoaderParameters> {
+	//TODO: too much duplicate functionality between atlas loaders, any options without making breaking changes?
+	public static class AtlasTiledMapLoaderParameters extends BaseTmjMapLoader.Parameters {
 		/** force texture filters? **/
 		public boolean forceTextureFilters = false;
 	}
@@ -51,7 +51,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 		public TextureAtlas getAtlas ();
 
-		public static class DirectAtlasResolver implements AtlasTmxMapLoader.AtlasResolver {
+		public static class DirectAtlasResolver implements AtlasTmjMapLoader.AtlasResolver {
 			private final TextureAtlas atlas;
 
 			public DirectAtlasResolver (TextureAtlas atlas) {
@@ -65,13 +65,13 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 			@Override
 			public TextureRegion getImage (String name) {
-				 //check for imagelayer and strip if needed
-				 String regionName = parseRegionName(name);
-				 return atlas.findRegion(regionName);
+				//check for imagelayer and strip if needed
+				String regionName = parseRegionName(name);
+				return atlas.findRegion(regionName);
 			}
 		}
 
-		public static class AssetManagerAtlasResolver implements AtlasTmxMapLoader.AtlasResolver {
+		public static class AssetManagerAtlasResolver implements AtlasTmjMapLoader.AtlasResolver {
 			private final AssetManager assetManager;
 			private final String atlasName;
 
@@ -98,39 +98,39 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 	protected AtlasResolver atlasResolver;
 
-	public AtlasTmxMapLoader () {
+	public AtlasTmjMapLoader () {
 		super(new InternalFileHandleResolver());
 	}
 
-	public AtlasTmxMapLoader (FileHandleResolver resolver) {
+	public AtlasTmjMapLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
 
-	public TiledMap load (String fileName) {
+	 public TiledMap load (String fileName) {
 		return load(fileName, new AtlasTiledMapLoaderParameters());
 	}
 
 	public TiledMap load (String fileName, AtlasTiledMapLoaderParameters parameter) {
-		FileHandle tmxFile = resolve(fileName);
+		FileHandle tmjFile = resolve(fileName);
 
-		this.root = xml.parse(tmxFile);
+		this.root = json.parse(tmjFile);
 
-		final FileHandle atlasFileHandle = getAtlasFileHandle(tmxFile);
+		final FileHandle atlasFileHandle = getAtlasFileHandle(tmjFile);
 		TextureAtlas atlas = new TextureAtlas(atlasFileHandle);
 		this.atlasResolver = new AtlasResolver.DirectAtlasResolver(atlas);
 
-		TiledMap map = loadTiledMap(tmxFile, parameter, atlasResolver);
+		TiledMap map = loadTiledMap(tmjFile, parameter, atlasResolver);
 		map.setOwnedResources(new Array<TextureAtlas>(new TextureAtlas[] {atlas}));
 		setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 		return map;
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, FileHandle tmxFile, AtlasTiledMapLoaderParameters parameter) {
-		FileHandle atlasHandle = getAtlasFileHandle(tmxFile);
+	public void loadAsync (AssetManager manager, String fileName, FileHandle tmjFile, AtlasTiledMapLoaderParameters parameter) {
+		FileHandle atlasHandle = getAtlasFileHandle(tmjFile);
 		this.atlasResolver = new AtlasResolver.AssetManagerAtlasResolver(manager, atlasHandle.path());
 
-		this.map = loadTiledMap(tmxFile, parameter, atlasResolver);
+		this.map = loadTiledMap(tmjFile, parameter, atlasResolver);
 	}
 
 	@Override
@@ -156,9 +156,10 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		return descriptors;
 	}
 
+
 	@Override
-	protected void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileSet, Element element,
-		Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
+	protected void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet,
+		JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
 		String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
 
 		TextureAtlas atlas = atlasResolver.getAtlas();
@@ -191,13 +192,13 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		}
 
 		// Add tiles with individual image sources
-		for (Element tileElement : tileElements) {
-			int tileId = firstgid + tileElement.getIntAttribute("id", 0);
+		for (JsonValue tileElement : tiles) {
+			int tileId = firstgid + tileElement.getInt("id", 0);
 			TiledMapTile tile = tileSet.getTile(tileId);
 			if (tile == null) {
-				Element imageElement = tileElement.getChildByName("image");
+				 JsonValue imageElement = tileElement.get("image");
 				if (imageElement != null) {
-					String regionName = imageElement.getAttribute("source");
+					String regionName = imageElement.asString();
 					regionName = regionName.substring(0, regionName.lastIndexOf('.'));
 					AtlasRegion region = atlas.findRegion(regionName);
 					if (region == null) throw new GdxRuntimeException("Tileset atlasRegion not found: " + regionName);
@@ -207,23 +208,24 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		}
 	}
 
-	protected FileHandle getAtlasFileHandle (FileHandle tmxFile) {
-		Element properties = root.getChildByName("properties");
+	protected FileHandle getAtlasFileHandle (FileHandle tmjFile) {
+		JsonValue properties = root.get("properties");
 
 		String atlasFilePath = null;
 		if (properties != null) {
-			for (Element property : properties.getChildrenByName("property")) {
-				String name = property.getAttribute("name");
+			for (JsonValue property : properties) {
+				String name = property.getString("name","");
 				if (name.startsWith("atlas")) {
-					atlasFilePath = property.getAttribute("value");
+					atlasFilePath = property.getString("value","");
 					break;
 				}
 			}
 		}
-		if (atlasFilePath == null) {
+
+		if (atlasFilePath == null || atlasFilePath.isEmpty()) {
 			throw new GdxRuntimeException("The map is missing the 'atlas' property");
 		} else {
-			final FileHandle fileHandle = getRelativeFileHandle(tmxFile, atlasFilePath);
+			final FileHandle fileHandle = getRelativeFileHandle(tmjFile, atlasFilePath);
 			if (!fileHandle.exists()) {
 				throw new GdxRuntimeException("The 'atlas' file could not be found: '" + atlasFilePath + "'");
 			}
@@ -245,13 +247,13 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 	  * @param name Name to check
 	  * @return The name of the region to pass into an atlas
 	  */
-	 private static String parseRegionName(String name){
-		  if (name.contains("atlas_imagelayer")) {
-				// Extract the name of region from path
-				return new FileHandle(name).name();
-		  }
-		  else{
-				return name;
-		  }
-	 }
+	private static String parseRegionName(String name){
+		 if (name.contains("atlas_imagelayer")) {
+			  // Extract the name of region from path
+			  return new FileHandle(name).name();
+		 }
+		 else{
+			  return name;
+		 }
+	}
 }
