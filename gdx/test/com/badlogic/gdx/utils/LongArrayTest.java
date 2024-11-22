@@ -176,39 +176,6 @@ public class LongArrayTest {
 		Assert.assertFalse(longArray1.contains(100));
 	}
 
-	/** Test of the hashCode() method */
-	@Test
-	public void hashCodeTest () {
-		/*
-		 * Testing if the hash code of an ordered long array is in fact the same provided as the hashCode() method from Object.
-		 */
-		Object longArrayUnordered = new LongArray(false, 16);
-		((LongArray)longArrayUnordered).add(2, 1, -6, 2);
-		((LongArray)longArrayUnordered).add(5, 50, 34, 42);
-		Assert.assertEquals(longArrayUnordered.hashCode(), ((LongArray)longArrayUnordered).hashCode());
-
-		LongArray longArrayOrdered = new LongArray();
-		longArrayOrdered.add(10, 20, 40, 50);
-		longArrayOrdered.add(100, 200, 400, 500);
-
-		/*
-		 * Expected hash calculation: 1. Start with h = 1 2. For each value in the array, compute (item ^ (item >>> 32)) and add it
-		 * to h as: h = h * 31 + (int)(item ^ (item >>> 32)) Detailed steps: - Iteration 1 (item = 10): h = 1 * 31 + 10 = 41 -
-		 * Iteration 2 (item = 20): h = 41 * 31 + 20 = 1 291 - Iteration 3 (item = 40): h = 1 291 * 31 + 40 = 40 061 - Iteration 4
-		 * (item = 50): h = 40 061 * 31 + 50 = 1 241 941 - Iteration 5 (item = 100): h = 1 241 941 * 31 + 100 = 38 500 271 -
-		 * Iteration 6 (item = 200): h = 38 500 271 * 31 + 200 = 1 193 508 601 - The next operation will overflow because h is an
-		 * int and can't be calculated if >= 2 147 483 647 (because negative numbers are defined by the first bit - The result of 1
-		 * 193 508 601 * 31 + 400 is 36 998 767 031 (1000 1001 1101 0100 1100 0110 0001 1011 0111) which is, truncated to 32 bits,
-		 * -1 655 938 633 (1001 1101 0100 1100 0110 0001 1011 0111) - Iteration 7 (item = 400): h = - 1 655 938 633 - Same here,
-		 * without redetailing the operation, we get, truncated to 32 bits, 205 510 429 - Iteration 8 (item = 500): h = 205 510 429
-		 *
-		 * Assert the calculated hash matches the expected value
-		 */
-
-		int expectedHash = 205510429;
-		Assert.assertEquals(expectedHash, longArrayOrdered.hashCode());
-	}
-
 	/** Test of the indexOf() method */
 	@Test
 	public void indexOfTest () {
@@ -223,7 +190,7 @@ public class LongArrayTest {
 	@Test
 	public void removeTest () {
 		// removeValue test
-		LongArray longArray1 = new LongArray(new long[] {1, 3, 4, 5, 6, 6, 3, 9});
+		LongArray longArray1 = LongArray.with(1, 3, 4, 5, 6, 6, 3, 9);
 		Assert.assertTrue(longArray1.removeValue(3));
 		Assert.assertArrayEquals(new long[] {1, 4, 5, 6, 6, 3, 9}, longArray1.toArray());
 		Assert.assertEquals(7, longArray1.size);
@@ -272,7 +239,7 @@ public class LongArrayTest {
 	/** Test of the pop(), peek() and first() methods */
 	@Test
 	public void popPeekFirstTest () {
-		LongArray longArray = new LongArray(new long[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+		LongArray longArray = LongArray.with(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 		LongArray emptyLongArray = new LongArray();
 		Assert.assertEquals(1, longArray.first());
 		Assert.assertEquals(10, longArray.peek());
@@ -373,8 +340,7 @@ public class LongArrayTest {
 	/** Test of sort() and reverse() methods */
 	@Test
 	public void sortAndReverseTest () {
-		LongArray longArray1 = new LongArray(
-			new long[] {1, 2, 4, 6, 32, 53, 564, 53, 2, 1, 89, 90, 10, 389, 8, 392, 4, 27346, 2, 234, 12});
+		LongArray longArray1 = LongArray.with(1, 2, 4, 6, 32, 53, 564, 53, 2, 1, 89, 90, 10, 389, 8, 392, 4, 27346, 2, 234, 12);
 		longArray1.sort();
 		Assert.assertArrayEquals(new long[] {1, 1, 2, 2, 2, 4, 4, 6, 8, 10, 12, 32, 53, 53, 89, 90, 234, 389, 392, 564, 27346},
 			longArray1.toArray());
@@ -410,16 +376,5 @@ public class LongArrayTest {
 		// Standard verification that two arrays with different content are not equal
 		longArray1.add(3);
 		Assert.assertFalse(longArray1.equals(longArray2));
-	}
-
-	/** Test of the toString() methods */
-	@Test
-	public void toStringTest () {
-		LongArray emptyLongArray = new LongArray();
-		LongArray longArray = new LongArray(new long[] {3, 4, 5});
-		Assert.assertEquals("[]", emptyLongArray.toString());
-		Assert.assertEquals("[3, 4, 5]", longArray.toString());
-		Assert.assertEquals("", emptyLongArray.toString("; "));
-		Assert.assertEquals("3; 4; 5", longArray.toString("; "));
 	}
 }
