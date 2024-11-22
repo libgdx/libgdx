@@ -365,7 +365,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		} else if (element.get("ellipse") != null) {
 			object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
 		} else if ((child = element.get("point")) != null) {
-			 object = new PointMapObject(x, flipY ? y - height : y);
+			object = new PointMapObject(x, flipY ? y - height : y);
 		}
 
 		if (object == null) {

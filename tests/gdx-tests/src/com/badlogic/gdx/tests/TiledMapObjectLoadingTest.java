@@ -49,7 +49,8 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 	private SpriteBatch batch;
 	private String loadingStatus;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
@@ -86,7 +87,8 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		loadingStatus += "- TiledMapTileMapObject : " + mapObjects.getByType(TiledMapTileMapObject.class).size + "\n";
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		ScreenUtils.clear(0.55f, 0.55f, 0.55f, 1f);
 		camera.update();
 		shapeRenderer.setProjectionMatrix(camera.combined);
@@ -96,8 +98,7 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		MapLayer layer = map.getLayers().get("Objects");
 		AnimatedTiledMapTile.updateAnimationBaseTime();
 		for (MapObject mapObject : layer.getObjects()) {
-			if (!mapObject.isVisible())
-				continue;
+			if (!mapObject.isVisible()) continue;
 			if (mapObject instanceof TiledMapTileMapObject) {
 				batch.begin();
 				TiledMapTileMapObject tmtObject = (TiledMapTileMapObject)mapObject;
@@ -109,7 +110,8 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				float xPos = tmtObject.getX();
 				float yPos = tmtObject.getY();
 				textureRegion.flip(tmtObject.isFlipHorizontally(), tmtObject.isFlipVertically());
-				batch.draw(textureRegion, xPos, yPos, tmtObject.getOriginX() * scaleX, tmtObject.getOriginY() * scaleY, textureRegion.getRegionWidth() * scaleX, textureRegion.getRegionHeight() * scaleY, 1f, 1f, rotation);
+				batch.draw(textureRegion, xPos, yPos, tmtObject.getOriginX() * scaleX, tmtObject.getOriginY() * scaleY,
+					textureRegion.getRegionWidth() * scaleX, textureRegion.getRegionHeight() * scaleY, 1f, 1f, rotation);
 				// We flip back to the original state.
 				textureRegion.flip(tmtObject.isFlipHorizontally(), tmtObject.isFlipVertically());
 				batch.end();
@@ -151,7 +153,8 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 		batch.end();
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		map.dispose();
 		shapeRenderer.dispose();
 	}
