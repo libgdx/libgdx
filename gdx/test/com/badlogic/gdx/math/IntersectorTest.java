@@ -251,18 +251,18 @@ public class IntersectorTest {
 	public void testIntersectPolygonsWithTransformationsOnProvidedResultPolygon () {
 		Polygon p1 = new Polygon(new float[] {1, -1, 2, -1, 2, -2, 1, -2});
 		Polygon p2 = new Polygon(new float[] {0.5f, -1.5f, 1.5f, -1.5f, 1.5f, -2.5f});
-		Polygon intersectionPolygon = new Polygon(new float[] {0, 0, 0, 0, 0, 0, 0, 0});
+		Polygon intersectionPolygon = new Polygon(new float[8]);
 		intersectionPolygon.setScale(5, 5);
 		intersectionPolygon.setOrigin(10, 20);
 		intersectionPolygon.setPosition(-33, -33);
 		intersectionPolygon.setRotation(48);
-		intersectionPolygon.getTransformedVertices();
 
 		boolean checkResult = Intersector.intersectPolygons(p1, p2, intersectionPolygon);
 
 		assertTrue(checkResult);
 		assertArrayEquals(new float[] {1, -2, 1, -1.5f, 1.5f, -1.5f, 1.5f, -2}, intersectionPolygon.getVertices(), 0);
 		assertArrayEquals(new float[] {1, -2, 1, -1.5f, 1.5f, -1.5f, 1.5f, -2}, intersectionPolygon.getTransformedVertices(), 0);
+		// verify that the origin has also been reset
 		intersectionPolygon.setScale(2, 2);
 		assertArrayEquals(new float[] {2 * 1, 2 * -2, 2 * 1, 2 * -1.5f, 2 * 1.5f, 2 * -1.5f, 2 * 1.5f, 2 * -2},
 			intersectionPolygon.getTransformedVertices(), 0);
