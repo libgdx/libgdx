@@ -1,7 +1,9 @@
 [1.13.1]
 - iOS: Update to MobiVM 2.3.22
+- iOS: Fixes Gdx.openURI() not working on iOS 18.1 Simulator.
 - Change visibility of PolygonSpriteBatch.switchTexture() to protected
 - Added XmlReader.getChildren() and XmlReader.replaceChild()
+- API Addition: Added FPSLogger#setBound
 
 [1.13.0]
 - [BREAKING CHANGE] GWT: Updated to 2.11.0. `com.google.jsinterop:jsinterop-annotations:2.0.2:sources` must be added as a dependency to your html project dependencies.
