@@ -107,9 +107,11 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 			String opaqueColor = value.substring(3);
 			String alpha = value.substring(1, 3);
 			return Color.valueOf(opaqueColor + alpha);
+		} else if (type.equals("file")) {
+			 return value;
 		} else {
 			throw new GdxRuntimeException(
-				"Wrong type given for property " + name + ", given : " + type + ", supported : string, bool, int, float, color");
+				"Wrong type given for property " + name + ", given : " + type + ", supported : string, bool, int, float, color, file");
 		}
 	}
 
