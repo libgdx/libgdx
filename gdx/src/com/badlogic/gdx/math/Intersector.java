@@ -203,6 +203,7 @@ public final class Intersector {
 		// Check for 3 or more vertices needed due to floating point precision errors
 		if (floatArray2.size >= 6) {
 			if (overlap != null) {
+				overlap.resetTransformations();
 				if (overlap.getVertices().length == floatArray2.size)
 					System.arraycopy(floatArray2.items, 0, overlap.getVertices(), 0, floatArray2.size);
 				else
