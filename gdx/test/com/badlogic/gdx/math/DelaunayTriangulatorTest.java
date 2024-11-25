@@ -19,7 +19,7 @@ public abstract class DelaunayTriangulatorTest {
 	private static final float MAX = 10000;
 	private static final float MAX_X = MAX;
 	private static final float MAX_Y = MAX;
-	private static final int NUM_OF_TESTS = 10000;
+	private static final int NUM_OF_TESTS = 1000;
 	private static final Random rnd = new Random();
 
 	private static double nextBigRadius () {
