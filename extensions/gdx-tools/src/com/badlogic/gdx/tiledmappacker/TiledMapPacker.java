@@ -33,9 +33,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
-import com.badlogic.gdx.graphics.g2d.PixmapPackerIO;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.utils.*;
 import org.w3c.dom.Attr;
@@ -59,15 +57,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 
-/** Given one or more TMX tilemaps, packs all tileset resources used across the maps, or the resources used per map, into a
- * single, or multiple (one per map), {@link TextureAtlas} and produces a new TMX file to be loaded with an AtlasTiledMapLoader
+/** Given one or more TMX or TMJ tilemaps, packs all tileset and imagelayer resources used across the maps, or the resources used per map, into a
+ * single, or multiple (one per map), {@link TextureAtlas} and produces a new TMX/TMJ file to be loaded with an AtlasTiledMapLoader
  * loader. Optionally, it can keep track of unused tiles and omit them from the generated atlas, reducing the resource size.
  * 
- * The original TMX map file will be parsed by using the {@link TmxMapLoader} loader, thus access to a valid OpenGL context is
+ * The original TMX or TMJ map file will be parsed by using the {@link TmxMapLoader} or {@link TmjMapLoader} loader, thus access to a valid OpenGL context is
  * <b>required</b>, that's why an LwjglApplication is created by this preprocessor.
  * 
- * The new TMX map file will contains a new property, namely "atlas", whose value will enable the AtlasTiledMapLoader to correctly
+ * The new TMX/TMJ map file will contain a new property, named "atlas", whose value will enable the AtlasTiledMapLoader to correctly
  * read the associated TextureAtlas representing the tileset.
+ * The map file will also overwrite the sources of any imagelayer images to a new unique region name prepending 'atlas_imagelayer_'
+ * to a newly generated one which represents it's region in the atlas
  * 
  * @author David Fraska and others (initial implementation, tell me who you are!)
  * @author Manuel Bua */
@@ -92,13 +92,13 @@ public class TiledMapPacker {
 	static File outputDir;
 	private FileHandle currentDir;
 
-	private static class TmxFilter implements FilenameFilter {
-		public TmxFilter () {
+	private static class MapFileFilter implements FilenameFilter {
+		public MapFileFilter () {
 		}
 
 		@Override
 		public boolean accept (File dir, String name) {
-			return (name.endsWith(".tmx"));
+			return (name.endsWith(".tmx") || name.endsWith(".tmj"));
 		}
 	}
 
@@ -140,12 +140,12 @@ public class TiledMapPacker {
 	 * Keep in mind that this preprocessor will need to load the maps by using the {@link TmxMapLoader} loader and this in turn
 	 * will need a valid OpenGL context to work.
 	 * 
-	 * Process a directory containing TMX map files representing Tiled maps and produce multiple, or a single, TextureAtlas as well
-	 * as new processed TMX map files, correctly referencing the generated {@link TextureAtlas} by using the "atlas" custom map
-	 * property. */
+	 * Process a directory containing TMX or TMJ map files representing Tiled maps and produce multiple, or a single, TextureAtlas as well
+	 * as new processed TMX/TMJ map files, correctly referencing the generated {@link TextureAtlas} by using the "atlas" custom map
+	 * property and newly generated image source region names if using imagelayers in your map */
 	public void processInputDir (Settings texturePackerSettings) throws IOException {
 		FileHandle inputDirHandle = new FileHandle(inputDir.getCanonicalPath());
-		File[] mapFilesInCurrentDir = inputDir.listFiles(new TmxFilter());
+		File[] mapFilesInCurrentDir = inputDir.listFiles(new MapFileFilter());
 		tilesetsToPack = new ObjectMap<String, TiledMapTileSet>();
 		imagesLayersToPack = new ObjectMap<String, Array<String>>();
 		imageLayerSourceFiles = new ObjectMap<String, String>();
@@ -174,7 +174,7 @@ public class TiledMapPacker {
 
 		for (File directory : directories) {
 			currentDir = new FileHandle(directory.getCanonicalPath());
-			File[] mapFilesInCurrentDir = directory.listFiles(new TmxFilter());
+			File[] mapFilesInCurrentDir = directory.listFiles(new MapFileFilter());
 
 			for (File mapFile : mapFilesInCurrentDir) {
 				processSingleMap(mapFile, currentDir, texturePackerSettings);
@@ -243,7 +243,7 @@ public class TiledMapPacker {
 				}
 			}
 
-			if (!combineTilesets) {
+			if (combineTilesets == false) {
 				FileHandle tmpHandle = new FileHandle(mapFile.getName());
 				this.settings.atlasOutputName = tmpHandle.nameWithoutExtension();
 				packTilesets(dirHandle, texturePackerSettings);
@@ -253,7 +253,7 @@ public class TiledMapPacker {
 			//Modify and update TMJ file with Atlas Property and new ImageLayer image sources
 			writeUpdatedTMJ(tmjFile);
 
-			if (!combineTilesets) {
+			if (combineTilesets == false) {
 				//pack images from the image layers into the packer
 				packImageLayerImages(dirHandle);
 				//save new texture atlas
@@ -452,8 +452,8 @@ public class TiledMapPacker {
 	  * We needed a way to handle images across nested folders as well as matching names relative to the .tmx file
 	  * As well as keeping the changes to the AtlasTmxMapLoader minimal.
 	  * With that goal in mind we get each image's source attribute, generate a unique name for it, appended that name to
-	  * this string 'imagelayer_atlas_image_' and later use it as the atlas id.
-	  * The AtlasTmxMapLoader's AtlasResolver .getImage() method will check for 'imagelayer_atlas_image_'
+	  * this string 'atlas_imagelayer_' and later use it as the atlas id.
+	  * The AtlasTmxMapLoader's AtlasResolver .getImage() method will check for 'atlas_imagelayer_'
 	  * to use imagelayer specific logic.
 	  * @param map
 	  */
@@ -685,8 +685,8 @@ public class TiledMapPacker {
 
 	/** Processes a directory of Tile Maps, compressing each tile set contained in any map once.
 	 * 
-	 * @param args args[0]: the input directory containing the tmx files (and tile sets, relative to the path listed in the tmx
-	 *           file). args[1]: The output directory for the tmx files, should be empty before running. args[2-4] options */
+	 * @param args args[0]: the input directory containing the tmx/tmj files (and tile sets, and imagelayer imaged relative to the path listed in the tmx
+	 *           file). args[1]: The output directory for the tmx/tmj files, should be empty before running. args[2-4] options */
 	public static void main (String[] args) {
 		final Settings texturePackerSettings = new Settings();
 		texturePackerSettings.paddingX = 2;
@@ -791,7 +791,7 @@ public class TiledMapPacker {
 
 	private static void printUsage () {
 		System.out.println("Usage: INPUTDIR [OUTPUTDIR] [--strip-unused] [--combine-tilesets] [-v]");
-		System.out.println("Processes a directory of Tiled .tmx maps. Unable to process maps with XML");
+		System.out.println("Processes a directory of Tiled .tmx or .tmj maps. Unable to process maps with XML");
 		System.out.println("tile layer format.");
 		System.out.println("  --strip-unused             omits all tiles that are not used. Speeds up");
 		System.out.println("                             the processing. Smaller tilesets.");
