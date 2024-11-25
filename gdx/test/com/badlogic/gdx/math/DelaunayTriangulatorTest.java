@@ -16,38 +16,47 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public abstract class DelaunayTriangulatorTest {
-    private static final float MIN_RADIUS = 0.00001f;
-    private static final float MAX_RADIUS = 10000;
-    private static final float MAX_X = 10000;
-    private static final float MAX_Y = 10000;
-    private static final int NUM_OF_TESTS = 1000;
+    private static final float MAX = 10000;
+    private static final float MAX_X = MAX;
+    private static final float MAX_Y = MAX;
+    private static final int NUM_OF_TESTS = 10000;
     private static final Random rnd = new Random();
 
-    private static float[] nextPolygon(int numPoints) {
+    private static double nextBigRadius() {
+        final float min = MAX / 100;
+        final float max = MAX;
+        return min + nextPositiveDouble(max - min);
+    }
+
+    private static double nextSmallRadius() {
+        final float min = (float) (30 * ((double) Math.nextUp(MAX) - (double) MAX));
+        final float max = 10 * min;
+        return min + nextPositiveDouble(max - min);
+    }
+
+    private static float[] nextPolygon(int numPoints, double radius) {
         float[] points = new float[2 * numPoints];
         float x = nextFloat(MAX_X);
         float y = nextFloat(MAX_Y);
-        double size = MIN_RADIUS + nextPositiveDouble(MAX_RADIUS - MIN_RADIUS);
         double stepAngle = 2 * PI / numPoints;
         double angle = 2 * PI * rnd.nextFloat();
         for (int i = 0; i < numPoints; i++) {
-            points[2 * i] = (float) (x + size * cos(angle + i * stepAngle));
-            points[2 * i + 1] = (float) (y + size * sin(angle + i * stepAngle));
+            points[2 * i] = (float) (x + radius * cos(angle + i * stepAngle));
+            points[2 * i + 1] = (float) (y + radius * sin(angle + i * stepAngle));
         }
         Collections.shuffle(Arrays.asList(points));
         return points;
     }
 
-    private static float[] nextPolygonWithCenter(int numTips) {
+    private static float[] nextPolygonWithCenter(int numTips, double radius) {
         float[] points = new float[2 * (numTips + 1)];
         float x = nextFloat(MAX_X);
         float y = nextFloat(MAX_Y);
-        double size = MIN_RADIUS + nextPositiveDouble(MAX_RADIUS - MIN_RADIUS);
         double stepAngle = 2 * PI / numTips;
         double angle = 2 * PI * rnd.nextFloat();
         for (int i = 0; i < numTips; i++) {
-            points[2 * i] = (float) (x + size * cos(angle + i * stepAngle));
-            points[2 * i + 1] = (float) (y + size * sin(angle + i * stepAngle));
+            points[2 * i] = (float) (x + radius * cos(angle + i * stepAngle));
+            points[2 * i + 1] = (float) (y + radius * sin(angle + i * stepAngle));
         }
         points[2 * numTips] = x;
         points[2 * numTips + 1] = y;
@@ -72,7 +81,7 @@ public abstract class DelaunayTriangulatorTest {
     }
 
     private static float nextPositiveFloat(float max) {
-        return rnd.nextFloat() * max;
+        return (float) rnd.nextDouble(max);
     }
 
     @Parameter // first data value (0) is default
@@ -127,12 +136,13 @@ public abstract class DelaunayTriangulatorTest {
         return "(" + x + ", " + y + ")";
     }
 
-    public static class SquaresTest extends DelaunayTriangulatorTest {
+
+    public static class SmallSquaresTest extends DelaunayTriangulatorTest {
         @Parameters
         public static Object[] squares() {
             Object[] hs = new Object[NUM_OF_TESTS];
             for (int i = 0; i < NUM_OF_TESTS; i++)
-                hs[i] = nextPolygon(4);
+                hs[i] = nextPolygon(4, nextSmallRadius());
             return hs;
         }
 
@@ -142,12 +152,12 @@ public abstract class DelaunayTriangulatorTest {
         }
     }
 
-    public static class PentagonsTest extends DelaunayTriangulatorTest {
+    public static class SmallPentagonsTest extends DelaunayTriangulatorTest {
         @Parameters
         public static Object[] squares() {
             Object[] hs = new Object[NUM_OF_TESTS];
             for (int i = 0; i < NUM_OF_TESTS; i++)
-                hs[i] = nextPolygon(5);
+                hs[i] = nextPolygon(5, nextSmallRadius());
             return hs;
         }
 
@@ -157,12 +167,12 @@ public abstract class DelaunayTriangulatorTest {
         }
     }
 
-    public static class HexagonsTest extends DelaunayTriangulatorTest {
+    public static class SmallHexagonsTest extends DelaunayTriangulatorTest {
         @Parameters
         public static Object[] hexagons() {
             Object[] hs = new Object[NUM_OF_TESTS];
             for (int i = 0; i < NUM_OF_TESTS; i++)
-                hs[i] = nextPolygon(6);
+                hs[i] = nextPolygon(6, nextSmallRadius());
             return hs;
         }
 
@@ -172,12 +182,12 @@ public abstract class DelaunayTriangulatorTest {
         }
     }
 
-    public static class SquaresWithCenterTest extends DelaunayTriangulatorTest {
+    public static class SmallSquaresWithCenterTest extends DelaunayTriangulatorTest {
         @Parameters
         public static Object[] squares() {
             Object[] hs = new Object[NUM_OF_TESTS];
             for (int i = 0; i < NUM_OF_TESTS; i++)
-                hs[i] = nextPolygonWithCenter(4);
+                hs[i] = nextPolygonWithCenter(4, nextSmallRadius());
             return hs;
         }
 
@@ -187,12 +197,12 @@ public abstract class DelaunayTriangulatorTest {
         }
     }
 
-    public static class PentagonsWithCenterTest extends DelaunayTriangulatorTest {
+    public static class SmallPentagonsWithCenterTest extends DelaunayTriangulatorTest {
         @Parameters
         public static Object[] squares() {
             Object[] hs = new Object[NUM_OF_TESTS];
             for (int i = 0; i < NUM_OF_TESTS; i++)
-                hs[i] = nextPolygonWithCenter(5);
+                hs[i] = nextPolygonWithCenter(5, nextSmallRadius());
             return hs;
         }
 
@@ -202,12 +212,102 @@ public abstract class DelaunayTriangulatorTest {
         }
     }
 
-    public static class HexagonsWithCenterTest extends DelaunayTriangulatorTest {
+    public static class SmallHexagonsWithCenterTest extends DelaunayTriangulatorTest {
         @Parameters
         public static Object[] hexagons() {
             Object[] hs = new Object[NUM_OF_TESTS];
             for (int i = 0; i < NUM_OF_TESTS; i++)
-                hs[i] = nextPolygonWithCenter(6);
+                hs[i] = nextPolygonWithCenter(6, nextSmallRadius());
+            return hs;
+        }
+
+        @Override
+        protected int expectedTrianglesCount() {
+            return 6;
+        }
+    }
+
+    public static class BigSquaresTest extends DelaunayTriangulatorTest {
+        @Parameters
+        public static Object[] squares() {
+            Object[] hs = new Object[NUM_OF_TESTS];
+            for (int i = 0; i < NUM_OF_TESTS; i++)
+                hs[i] = nextPolygon(4, nextBigRadius());
+            return hs;
+        }
+
+        @Override
+        protected int expectedTrianglesCount() {
+            return 2;
+        }
+    }
+
+    public static class BigPentagonsTest extends DelaunayTriangulatorTest {
+        @Parameters
+        public static Object[] squares() {
+            Object[] hs = new Object[NUM_OF_TESTS];
+            for (int i = 0; i < NUM_OF_TESTS; i++)
+                hs[i] = nextPolygon(5, nextBigRadius());
+            return hs;
+        }
+
+        @Override
+        protected int expectedTrianglesCount() {
+            return 3;
+        }
+    }
+
+    public static class BigHexagonsTest extends DelaunayTriangulatorTest {
+        @Parameters
+        public static Object[] hexagons() {
+            Object[] hs = new Object[NUM_OF_TESTS];
+            for (int i = 0; i < NUM_OF_TESTS; i++)
+                hs[i] = nextPolygon(6, nextBigRadius());
+            return hs;
+        }
+
+        @Override
+        protected int expectedTrianglesCount() {
+            return 4;
+        }
+    }
+
+    public static class BigSquaresWithCenterTest extends DelaunayTriangulatorTest {
+        @Parameters
+        public static Object[] squares() {
+            Object[] hs = new Object[NUM_OF_TESTS];
+            for (int i = 0; i < NUM_OF_TESTS; i++)
+                hs[i] = nextPolygonWithCenter(4, nextBigRadius());
+            return hs;
+        }
+
+        @Override
+        protected int expectedTrianglesCount() {
+            return 4;
+        }
+    }
+
+    public static class BigPentagonsWithCenterTest extends DelaunayTriangulatorTest {
+        @Parameters
+        public static Object[] squares() {
+            Object[] hs = new Object[NUM_OF_TESTS];
+            for (int i = 0; i < NUM_OF_TESTS; i++)
+                hs[i] = nextPolygonWithCenter(5, nextBigRadius());
+            return hs;
+        }
+
+        @Override
+        protected int expectedTrianglesCount() {
+            return 5;
+        }
+    }
+
+    public static class BigHexagonsWithCenterTest extends DelaunayTriangulatorTest {
+        @Parameters
+        public static Object[] hexagons() {
+            Object[] hs = new Object[NUM_OF_TESTS];
+            for (int i = 0; i < NUM_OF_TESTS; i++)
+                hs[i] = nextPolygonWithCenter(6, nextBigRadius());
             return hs;
         }
 
