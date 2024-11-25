@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,15 +16,11 @@
 
 package com.badlogic.gdx.math;
 
-import com.badlogic.gdx.utils.BooleanArray;
-import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.ShortArray;
+import com.badlogic.gdx.utils.*;
 
 /** Delaunay triangulation. Adapted from Paul Bourke's triangulate: http://paulbourke.net/papers/triangulate/
  * @author Nathan Sweet */
 public class DelaunayTriangulator {
-	static private final float EPSILON = 0.000001f;
 	static private final int INSIDE = 0;
 	static private final int COMPLETE = 1;
 	static private final int INCOMPLETE = 2;
@@ -35,8 +31,8 @@ public class DelaunayTriangulator {
 	private final ShortArray originalIndices = new ShortArray(false, 0);
 	private final IntArray edges = new IntArray();
 	private final BooleanArray complete = new BooleanArray(false, 16);
-	private final float[] superTriangle = new float[6];
 	private final Vector2 centroid = new Vector2();
+	private final ShewchukExactPredicates predicates = new ShewchukExactPredicates();
 
 	/** @see #computeTriangles(float[], int, int, boolean) */
 	public ShortArray computeTriangles (FloatArray points, boolean sorted) {
@@ -72,31 +68,6 @@ public class DelaunayTriangulator {
 
 		int end = offset + count;
 
-		// Determine bounds for super triangle.
-		float xmin = points[0], ymin = points[1];
-		float xmax = xmin, ymax = ymin;
-		for (int i = offset + 2; i < end; i++) {
-			float value = points[i];
-			if (value < xmin) xmin = value;
-			if (value > xmax) xmax = value;
-			i++;
-			value = points[i];
-			if (value < ymin) ymin = value;
-			if (value > ymax) ymax = value;
-		}
-		float dx = xmax - xmin, dy = ymax - ymin;
-		float dmax = (dx > dy ? dx : dy) * 20f;
-		float xmid = (xmax + xmin) / 2f, ymid = (ymax + ymin) / 2f;
-
-		// Setup the super triangle, which contains all points.
-		float[] superTriangle = this.superTriangle;
-		superTriangle[0] = xmid - dmax;
-		superTriangle[1] = ymid - dmax;
-		superTriangle[2] = xmid;
-		superTriangle[3] = ymid + dmax;
-		superTriangle[4] = xmid + dmax;
-		superTriangle[5] = ymid - dmax;
-
 		IntArray edges = this.edges;
 		edges.ensureCapacity(count / 2);
 
@@ -104,7 +75,8 @@ public class DelaunayTriangulator {
 		complete.clear();
 		complete.ensureCapacity(count);
 
-		// Add super triangle.
+		// Add the super triangle. Vertices are encoded by index only, their coordinates are conceptually at infinity:
+		// end + 0 -> v_L (x = -inf), end + 2 -> v_R (x = +inf), end + 4 -> v_T (y = +inf).
 		triangles.add(end);
 		triangles.add(end + 2);
 		triangles.add(end + 4);
@@ -123,32 +95,7 @@ public class DelaunayTriangulator {
 				int p1 = trianglesArray[triangleIndex - 2];
 				int p2 = trianglesArray[triangleIndex - 1];
 				int p3 = trianglesArray[triangleIndex];
-				float x1, y1, x2, y2, x3, y3;
-				if (p1 >= end) {
-					int i = p1 - end;
-					x1 = superTriangle[i];
-					y1 = superTriangle[i + 1];
-				} else {
-					x1 = points[p1];
-					y1 = points[p1 + 1];
-				}
-				if (p2 >= end) {
-					int i = p2 - end;
-					x2 = superTriangle[i];
-					y2 = superTriangle[i + 1];
-				} else {
-					x2 = points[p2];
-					y2 = points[p2 + 1];
-				}
-				if (p3 >= end) {
-					int i = p3 - end;
-					x3 = superTriangle[i];
-					y3 = superTriangle[i + 1];
-				} else {
-					x3 = points[p3];
-					y3 = points[p3 + 1];
-				}
-				switch (circumCircle(x, y, x1, y1, x2, y2, x3, y3)) {
+				switch (circumCircle(points, end, x, y, p1, p2, p3)) {
 				case COMPLETE:
 					completeArray[completeIndex] = true;
 					break;
@@ -215,45 +162,148 @@ public class DelaunayTriangulator {
 		return triangles;
 	}
 
-	/** Returns INSIDE if point xp,yp is inside the circumcircle made up of the points x1,y1, x2,y2, x3,y3. Returns COMPLETE if xp
-	 * is to the right of the entire circumcircle. Otherwise returns INCOMPLETE. Note: a point on the circumcircle edge is
-	 * considered inside. */
-	private int circumCircle (float xp, float yp, float x1, float y1, float x2, float y2, float x3, float y3) {
-		float xc, yc;
-		float y1y2 = Math.abs(y1 - y2);
-		float y2y3 = Math.abs(y2 - y3);
-		if (y1y2 < EPSILON) {
-			if (y2y3 < EPSILON) return INCOMPLETE;
-			float m2 = -(x3 - x2) / (y3 - y2);
-			float mx2 = (x2 + x3) / 2f;
-			float my2 = (y2 + y3) / 2f;
-			xc = (x2 + x1) / 2f;
-			yc = m2 * (xc - mx2) + my2;
-		} else {
-			float m1 = -(x2 - x1) / (y2 - y1);
-			float mx1 = (x1 + x2) / 2f;
-			float my1 = (y1 + y2) / 2f;
-			if (y2y3 < EPSILON) {
-				xc = (x3 + x2) / 2f;
-				yc = m1 * (xc - mx1) + my1;
-			} else {
-				float m2 = -(x3 - x2) / (y3 - y2);
-				float mx2 = (x2 + x3) / 2f;
-				float my2 = (y2 + y3) / 2f;
-				xc = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
-				yc = m1 * (xc - mx1) + my1;
-			}
+	/** Returns INSIDE if point xp,yp is inside the circumcircle of the triangle (p1,p2,p3). Returns COMPLETE if xp is to the right
+	 * of the entire circumcircle. Otherwise returns INCOMPLETE. Note: a point on the circumcircle edge is considered outside.
+	 * <p>
+	 * Indices >= end refer to ghost super-triangle vertices at infinity. The number of ghost vertices in the triple selects the
+	 * test:
+	 * <ul>
+	 * <li>0 ghosts: standard in-circle test.
+	 * <li>1 ghost: half-plane test on the line through the two real vertices, inside when p is on the ghost's side.
+	 * <li>2 ghosts: half-plane test on a line through the real vertex, inside when p is on the ghosts' side.
+	 * <li>3 ghosts: always INSIDE (the root super-triangle).
+	 * </ul>
+	 */
+	private int circumCircle (float[] points, int end, double xp, double yp, int p1, int p2, int p3) {
+		boolean s1 = p1 >= end, s2 = p2 >= end, s3 = p3 >= end;
+		int superCount = (s1 ? 1 : 0) + (s2 ? 1 : 0) + (s3 ? 1 : 0);
+
+		// No ghost-verticies -> normal circumcircle calc
+		if (superCount == 0) {
+			return circumCircleReal(xp, yp, points[p1], points[p1 + 1], points[p2], points[p2 + 1], points[p3], points[p3 + 1]);
 		}
 
-		float dx = x2 - xc;
-		float dy = y2 - yc;
-		float rsqr = dx * dx + dy * dy;
+		// All ghost-verticies -> trivially inside
+		if (superCount == 3) return INSIDE;
 
-		dx = xp - xc;
-		dx *= dx;
-		dy = yp - yc;
-		if (dx + dy * dy - rsqr <= EPSILON) return INSIDE;
-		return xp > xc && dx > rsqr ? COMPLETE : INCOMPLETE;
+		// One ghost-verticies -> form half-space of both real verticies and check, if p is on the same side as ghost verticie
+		if (superCount == 1) {
+			int superIdx, realA, realB;
+			if (s1) {
+				superIdx = p1;
+				realA = p2;
+				realB = p3;
+			} else if (s2) {
+				superIdx = p2;
+				realA = p1;
+				realB = p3;
+			} else {
+				superIdx = p3;
+				realA = p1;
+				realB = p2;
+			}
+
+			double ax = points[realA], ay = points[realA + 1];
+			double bx = points[realB], by = points[realB + 1];
+
+			// Exact-sign orientation of p against the line (a, b): sign(orient) == sign(cross(b - a, p - a)).
+			double orient = predicates.orient2d(ax, ay, bx, by, xp, yp);
+
+			// Get direction vector of ghost verticie
+			double dx, dy;
+			int kind = superIdx - end; // 0 = v_L, 2 = v_R, 4 = v_T
+			if (kind == 0) { // v_L
+				dx = -1;
+				dy = 0;
+			} else if (kind == 2) { // v_R
+				dx = +1;
+				dy = 0;
+			} else { // v_T
+				dx = 0;
+				dy = 1;
+			}
+
+			// cross(b - a, ghost dir): sign tells whether the ghost vertex is to the left or right of a->b.
+			// Exactly representable: bx-ax and by-ay are exact in double and dx,dy are 0/+-1.
+			double factor = (bx - ax) * dy - (by - ay) * dx;
+
+			// p is collinear with edge a->b. As the ghost vertex moves to infinity the circumcircle flattens
+			// onto the segment a-b, so p is inside only if it lies strictly between a and b. The ghost
+			// direction doesn't matter here.
+			if (orient == 0) {
+				boolean between = Math.abs(bx - ax) >= Math.abs(by - ay) ? (ax < bx ? xp > ax && xp < bx : xp > bx && xp < ax)
+					: (ay < by ? yp > ay && yp < by : yp > by && yp < ay);
+				return between ? INSIDE : INCOMPLETE;
+			}
+
+			// Ghost direction is parallel to edge a-b, so a, b, and the ghost are collinear and the triangle
+			// is degenerate. The half-plane test breaks down here, so fall back on which ghost this is:
+			// v_L and v_R lie below the points on a horizontal edge, so inside means below the edge.
+			// v_T on a vertical edge has no consistent side. Safe to skip since v_L or v_R on the same edge
+			// will catch p.
+			if (factor == 0) {
+				if (kind == 4) return INCOMPLETE; // v_T: vertical edge, no consistent half-plane
+				return yp < ay ? INSIDE : INCOMPLETE; // v_L / v_R: inside if strictly below the horizontal edge
+			}
+
+			// p is inside if it is on the same side of a->b as the ghost direction
+			return (orient < 0) == (factor < 0) ? INSIDE : INCOMPLETE;
+		}
+
+		// Two ghost verticies -> form half-space of both ghost verticies and check, if p is between real vert. and the half-space
+		// Could also be written as a same-side-as-ghost half-plane test like the 1-ghost case (constructing a line through q with
+		// direction from the ghost-pair limit),
+		// but the direct limit forms below are simpler and avoid a cross product.
+		int qIdx, kindA, kindB;
+		if (!s1) {
+			qIdx = p1;
+			kindA = p2 - end;
+			kindB = p3 - end;
+		} else if (!s2) {
+			qIdx = p2;
+			kindA = p1 - end;
+			kindB = p3 - end;
+		} else {
+			qIdx = p3;
+			kindA = p1 - end;
+			kindB = p2 - end;
+		}
+
+		double qx = points[qIdx], qy = points[qIdx + 1];
+		// kindA/kindB with 0 = v_L, 2 = v_R, 4 = v_T. Unordered, so encode as sum
+		// kindA + kindB with 2 = {v_L, v_R}, 4 = {v_L, v_T}, 6 = {v_R, v_T}
+		int kindSum = kindA + kindB;
+		if (kindSum == 2) { // {v_L, v_R}
+			// {v_L, v_R} is a straight horizontal line through q and p needs to be below the line, so if p.y < q.y, it lives inside
+			// the circumcircle
+			return yp < qy ? INSIDE : INCOMPLETE;
+		}
+		if (kindSum == 4) {
+			// {v_L, v_T} is a line y = x through q and p needs to be above the line, so if p.y - q.y > p.x - q.x, it lives inside
+			// the circumcircle
+			return (yp - qy) > (xp - qx) ? INSIDE : INCOMPLETE;
+		}
+		// {v_R, v_T} is a line y = -x through q and p needs to be above the line, so if p.y - q.y > q.x - p.x, it lives inside the
+		// circumcircle
+		return (yp - qy) > (qx - xp) ? INSIDE : INCOMPLETE;
+	}
+
+	/** In-circle test for a triangle of three real vertices. */
+	private int circumCircleReal (double xp, double yp, double x1, double y1, double x2, double y2, double x3, double y3) {
+		if (predicates.incircle(x1, y1, x2, y2, x3, y3, xp, yp) > 0) return INSIDE;
+
+		// Not inside. Sweep-line shortcut: the triangle is done once the sweep x passes the rightmost
+		// point of its circumcircle. Only need the circumcentre x and squared radius for that, computed
+		// relative to vertex 3 for numerical stability. Performance only, a missed COMPLETE just costs
+		// speed. Collinear triples have det == 0 and never complete.
+		double acx = x1 - x3, acy = y1 - y3, bcx = x2 - x3, bcy = y2 - y3;
+		double det = acx * bcy - bcx * acy;
+		if (det == 0) return INCOMPLETE;
+		double a = acx * acx + acy * acy, b = bcx * bcx + bcy * bcy;
+		double ux = (bcy * a - acy * b) / (2 * det);
+		double uy = (acx * b - bcx * a) / (2 * det);
+		double dxp = xp - (x3 + ux);
+		return dxp > 0 && dxp * dxp > ux * ux + uy * uy ? COMPLETE : INCOMPLETE;
 	}
 
 	/** Sorts x,y pairs of values by the x value.
