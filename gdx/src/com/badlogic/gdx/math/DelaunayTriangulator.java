@@ -16,10 +16,7 @@
 
 package com.badlogic.gdx.math;
 
-import com.badlogic.gdx.utils.BooleanArray;
-import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.ShortArray;
+import com.badlogic.gdx.utils.*;
 
 /** Delaunay triangulation. Adapted from Paul Bourke's triangulate: http://paulbourke.net/papers/triangulate/
  * @author Nathan Sweet */
@@ -346,7 +343,7 @@ public class DelaunayTriangulator {
 	}
 
 	private static float nextUp (float f) {
-		final int intBits = Float.floatToRawIntBits(f + 0.0f);
+		final int intBits = NumberUtils.floatToRawIntBits(f + 0.0f);
 		final int sign = intBits >= 0 ? 1 : -1;
 		return Float.intBitsToFloat(intBits + sign);
 	}
