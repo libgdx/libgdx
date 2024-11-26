@@ -85,8 +85,8 @@ public class DelaunayTriangulator {
 			if (value > ymax) ymax = value;
 		}
 		// Setup the super triangle, which contains all points.
-		float deltax = 100 * Math.nextUp(Math.max(Math.abs(xmin), Math.abs(xmax)));
-		float deltay = 100 * Math.nextUp(Math.max(Math.abs(ymin), Math.abs(ymax)));
+		float deltax = 100 * nextUp(Math.max(Math.abs(xmin), Math.abs(xmax)));
+		float deltay = 100 * nextUp(Math.max(Math.abs(ymin), Math.abs(ymax)));
 		float[] superTriangle = this.superTriangle;
 		superTriangle[0] = xmin - deltax;
 		superTriangle[1] = ymin - deltay;
@@ -343,5 +343,11 @@ public class DelaunayTriangulator {
 				triangles.removeIndex(i - 2);
 			}
 		}
+	}
+
+	private static float nextUp (float f) {
+		final int intBits = Float.floatToRawIntBits(f + 0.0f);
+		final int sign = intBits >= 0 ? 1 : -1;
+		return Float.intBitsToFloat(intBits + sign);
 	}
 }
