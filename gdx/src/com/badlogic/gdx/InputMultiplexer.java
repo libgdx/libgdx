@@ -60,8 +60,7 @@ public class InputMultiplexer implements InputProcessor {
 		processors.add(processor);
 	}
 
-	/** Remove a processor from the list of processors
- 	 * It is removed by identity not value
+	/** Remove a processor from the list of processors It is removed by identity not value
 	 * 
 	 * @param processor */
 	public void removeProcessor (InputProcessor processor) {
@@ -78,14 +77,11 @@ public class InputMultiplexer implements InputProcessor {
 		processors.clear();
 	}
 
-	/**
-	 * Replaces the current processors with a new set of {@link InputProcessor} instances.
-	 * This method clears the existing processors and adds all provided processors.
+	/** Replaces the current processors with a new set of {@link InputProcessor} instances. This method clears the existing
+	 * processors and adds all provided processors.
 	 * 
-	 * @param processors one or more {@link InputProcessor} instances to set, or none
-	 *                   to clear the current processors.
-	 *                   Accepts varargs or an array.
- 	*/
+	 * @param processors one or more {@link InputProcessor} instances to set, or none to clear the current processors. Accepts
+	 *           varargs or an array. */
 	public void setProcessors (InputProcessor... processors) {
 		this.processors.clear();
 		this.processors.addAll(processors);
@@ -99,7 +95,6 @@ public class InputMultiplexer implements InputProcessor {
 		this.processors.addAll(processors);
 	}
 
-	
 	@Override
 	public SnapshotArray<InputProcessor> getProcessors () {
 		return processors;
