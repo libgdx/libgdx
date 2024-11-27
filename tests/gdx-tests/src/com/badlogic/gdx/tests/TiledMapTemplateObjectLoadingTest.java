@@ -35,13 +35,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmjMapLoader;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
-import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.StringBuilder;
 
@@ -119,7 +116,12 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 		camera.update();
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		batch.setProjectionMatrix(camera.combined);
-		shapeRenderer.setColor(Color.BLUE);
+		if(mapType==0) {
+			 shapeRenderer.setColor(Color.BLUE);
+		} else {
+			 shapeRenderer.setColor(Color.RED);
+		}
+
 		Gdx.gl20.glLineWidth(2);
 		MapLayer layer = map.getLayers().get("Objects");
 		AnimatedTiledMapTile.updateAnimationBaseTime();
@@ -171,11 +173,14 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 			 "StringProp: Template Default";
 
 		 batch.begin();
-		// font.draw(batch,defaultTemplateInfo, 220, 1155);
 		 if(mapType==0){
+			  font.setColor(Color.BLUE);
 			  font.draw(batch,"Current Loader: TMX\n Press KEY 2\n to switch to TMJ LOADER", 20, 1155);
+			  font.setColor(Color.WHITE);
 		 } else if(mapType==1){
+			  font.setColor(Color.RED);
 			  font.draw(batch,"Current Loader: TMJ:\n Press KEY 1\n to switch to TMX LOADER\"", 20, 1155);
+			  font.setColor(Color.WHITE);
 		 }
 
 		 font.draw(batch,defaultTemplateInfo, 220, 1155);
@@ -263,7 +268,6 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 					}
 			  }
 		 }
-
 
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond() + "\n" + loadingStatus, 20, 1310);
 		batch.end();
