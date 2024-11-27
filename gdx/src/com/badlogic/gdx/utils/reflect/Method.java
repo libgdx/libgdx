@@ -146,18 +146,4 @@ public final class Method {
 		return null;
 	}
 
-	/** @return true if the method is synthetic */
-	public boolean isSynthetic () {
-		return method.isSynthetic();
-	}
-
-	/** @return true if the method is a bridge method */
-	public boolean isBridge () {
-		return method.isBridge();
-	}
-
-	public int getModifiers () {
-		return method.getModifiers();
-	}
-
 }
