@@ -9,13 +9,10 @@ import com.badlogic.gdx.utils.IntSet;
 
 public abstract class AbstractInput implements Input {
 
-	
 	protected final boolean[] pressedKeys;
 
-	
 	protected final boolean[] justPressedKeys;
 
-	
 	private final IntSet keysToCatch = new IntSet();
 
 	protected int pressedKeyCount;
@@ -27,7 +24,6 @@ public abstract class AbstractInput implements Input {
 		justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 	}
 
-	
 	@Override
 	public boolean isKeyPressed (int key) {
 		if (key == Input.Keys.ANY_KEY) {
@@ -50,7 +46,6 @@ public abstract class AbstractInput implements Input {
 		return justPressedKeys[key];
 	}
 
-
 	@Override
 	public void setCatchKey (int keycode, boolean catchKey) {
 		if (!catchKey) {
@@ -60,7 +55,6 @@ public abstract class AbstractInput implements Input {
 		}
 	}
 
-	
 	@Override
 	public boolean isCatchKey (int keycode) {
 		return keysToCatch.contains(keycode);
