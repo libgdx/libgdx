@@ -3,9 +3,6 @@ package com.badlogic.gdx;
 
 import com.badlogic.gdx.utils.IntSet;
 
-/** Abstract implementation of the Input interface, providing functionalities for handling key presses, including checking if keys
- * are currently pressed or have just been pressed. This class is intended to be extended by platform-specific input
- * implementations. */
 
 public abstract class AbstractInput implements Input {
 
