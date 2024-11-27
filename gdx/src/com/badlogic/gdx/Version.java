@@ -46,29 +46,24 @@ public class Version {
 		}
 	}
 
-	/**
-	 * @return true if the libGDX version is strictly higher than the current one, false else 
-*/
+	/** @return true if the libGDX version is strictly higher than the current one, false else */
 	public static boolean isHigher (int major, int minor, int revision) {
 		return isHigherEqual(major, minor, revision + 1);
 	}
 
-	/** 
-	 * @return true if the libGDX version is higher or the same than the current one, false else */
+	/** @return true if the libGDX version is higher or the same than the current one, false else */
 	public static boolean isHigherEqual (int major, int minor, int revision) {
 		if (MAJOR != major) return MAJOR > major;
 		if (MINOR != minor) return MINOR > minor;
 		return REVISION >= revision;
 	}
 
-	/** 
-	 * @return true if the libGDX version is strictly lower than the current one, false else */
+	/** @return true if the libGDX version is strictly lower than the current one, false else */
 	public static boolean isLower (int major, int minor, int revision) {
 		return isLowerEqual(major, minor, revision - 1);
 	}
 
-	/** 
-	 * @return true if the libGDX version is lower or the same than the current one, false else */
+	/** @return true if the libGDX version is lower or the same than the current one, false else */
 	public static boolean isLowerEqual (int major, int minor, int revision) {
 		if (MAJOR != major) return MAJOR < major;
 		if (MINOR != minor) return MINOR < minor;
