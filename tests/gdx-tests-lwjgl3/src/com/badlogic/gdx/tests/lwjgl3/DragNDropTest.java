@@ -32,18 +32,18 @@ public class DragNDropTest extends GdxTest {
 	 * dropped files. */
 	@Override
 	public void create () {
-		// Create a simple image (not used but initialized for testing)
+		
 		BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_4BYTE_ABGR);
-		// Set up the stage for UI components
+	
 		stage = new Stage();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		// Set the input processor to the stage for handling input events
+		
 		Gdx.input.setInputProcessor(stage);
-		// Initialize the root Table to hold file labels
+	
 		root = new Table();
-		root.setFillParent(true); // Make the table fill the entire stage
-		root.align(Align.left | Align.top); // Align the table's contents to the top-left
-		stage.addActor(root); // Add the root table to the stage
+		root.setFillParent(true); 
+		root.align(Align.left | Align.top); 
+		stage.addActor(root); 
 	}
 
 	/** Renders the UI and updates the stage. This method is called every frame.
