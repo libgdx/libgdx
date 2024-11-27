@@ -21,7 +21,13 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.*;
+import com.badlogic.gdx.maps.ImageResolver;
+import com.badlogic.gdx.maps.MapGroupLayer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
@@ -32,7 +38,14 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Base64Coder;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.SerializationException;
+import com.badlogic.gdx.utils.StreamUtils;
+import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 import java.io.BufferedInputStream;
@@ -170,7 +183,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected void loadLayer (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile,
-		ImageResolver imageResolver) {
+							  ImageResolver imageResolver) {
 		String name = element.getName();
 		if (name.equals("group")) {
 			loadLayerGroup(map, parentLayers, element, tmxFile, imageResolver);
@@ -184,7 +197,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected void loadLayerGroup (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile,
-		ImageResolver imageResolver) {
+								   ImageResolver imageResolver) {
 		if (element.getName().equals("group")) {
 			MapGroupLayer groupLayer = new MapGroupLayer();
 			loadBasicLayerInfo(groupLayer, element);
@@ -261,7 +274,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected void loadImageLayer (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile,
-		ImageResolver imageResolver) {
+								   ImageResolver imageResolver) {
 		if (element.getName().equals("imagelayer")) {
 			float x = 0;
 			float y = 0;
@@ -436,28 +449,18 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 				if (value == null) {
 					value = property.getText();
 				}
-				if (type != null && type.equals("object")) {
-					// Wait until the end of [loadTiledMap] to fetch the object
-					try {
-						// Value should be the id of the object being pointed to
-						final int id = Integer.parseInt(value);
-						// Create [Runnable] to fetch object and add it to props
-						Runnable fetch = new Runnable() {
-							@Override
-							public void run () {
-								MapObject object = idToObject.get(id);
-								properties.put(name, object);
-							}
-						};
-						// [Runnable] should not run until the end of [loadTiledMap]
-						runOnEndOfLoadTiled.add(fetch);
-					} catch (Exception exception) {
-						throw new GdxRuntimeException(
-							"Error parsing property [\" + name + \"] of type \"object\" with value: [" + value + "]", exception);
-					}
+				if ("object".equals(type)) {
+					loadObjectProperty(properties, name, value);
+				} else if ("class".equals(type)) {
+					// A 'class' property is a property which is itself a set of properties
+					MapProperties classProperties = new MapProperties();
+					String className = property.getAttribute("propertytype");
+					classProperties.put("type", className);
+					// the actual properties of a 'class' property are stored as a new properties tag
+					properties.put(name, classProperties);
+					loadProperties(classProperties, property.getChildByName("properties"));
 				} else {
-					Object castValue = castProperty(name, value, type);
-					properties.put(name, castValue);
+					loadBasicProperty(properties, name, value, type);
 				}
 			}
 		}
@@ -501,7 +504,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 							if (read != temp.length)
 								throw new GdxRuntimeException("Error Reading TMX Layer Data: Premature end of tile data");
 							ids[y * width + x] = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
-								| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
+									| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
 						}
 					}
 				} catch (IOException e) {
@@ -578,7 +581,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			Array<Element> tileElements = element.getChildrenByName("tile");
 
 			addStaticTiles(tmxFile, imageResolver, tileSet, element, tileElements, name, firstgid, tilewidth, tileheight, spacing,
-				margin, source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
+					margin, source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
 
 			Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
 
@@ -606,8 +609,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected abstract void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileset,
-		Element element, Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing,
-		int margin, String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
+											Element element, Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing,
+											int margin, String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
 
 	protected void addTileProperties (TiledMapTile tile, Element tileElement) {
 		String terrain = tileElement.getAttribute("terrain", null);
@@ -638,7 +641,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected AnimatedTiledMapTile createAnimatedTile (TiledMapTileSet tileSet, TiledMapTile tile, Element tileElement,
-		int firstgid) {
+													   int firstgid) {
 		Element animationElement = tileElement.getChildByName("animation");
 		if (animationElement != null) {
 			Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();

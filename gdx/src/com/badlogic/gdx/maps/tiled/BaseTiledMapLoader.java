@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -74,7 +75,7 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 
 	/** Meant to be called within getDependencies() of a child class */
 	protected abstract Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle mapFile,
-		TextureLoader.TextureParameter textureParameter);
+																			 TextureLoader.TextureParameter textureParameter);
 
 	/** Loads the map data, given the root element
 	 *
@@ -94,7 +95,7 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 	}
 
 	protected Object castProperty (String name, String value, String type) {
-		if (type == null || "string".equals(type)) {
+		if (type == null || "string".equals(type) || "file".equals(type)) {
 			return value;
 		} else if (type.equals("int")) {
 			return Integer.valueOf(value);
@@ -109,12 +110,12 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 			return Color.valueOf(opaqueColor + alpha);
 		} else {
 			throw new GdxRuntimeException(
-				"Wrong type given for property " + name + ", given : " + type + ", supported : string, bool, int, float, color");
+					"Wrong type given for property " + name + ", given : " + type + ", supported : string, file, bool, int, float, color");
 		}
 	}
 
 	protected TiledMapTileLayer.Cell createTileLayerCell (boolean flipHorizontally, boolean flipVertically,
-		boolean flipDiagonally) {
+														  boolean flipDiagonally) {
 		TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
 		if (flipDiagonally) {
 			if (flipHorizontally && flipVertically) {
@@ -154,12 +155,38 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 	}
 
 	protected void addStaticTiledMapTile (TiledMapTileSet tileSet, TextureRegion textureRegion, int tileId, float offsetX,
-		float offsetY) {
+										  float offsetY) {
 		TiledMapTile tile = new StaticTiledMapTile(textureRegion);
 		tile.setId(tileId);
 		tile.setOffsetX(offsetX);
 		tile.setOffsetY(flipY ? -offsetY : offsetY);
 		tileSet.putTile(tileId, tile);
+	}
+
+	protected void loadObjectProperty(final MapProperties properties, final String name, String value) {
+		// Wait until the end of [loadTiledMap] to fetch the object
+		try {
+			// Value should be the id of the object being pointed to
+			final int id = Integer.parseInt(value);
+			// Create [Runnable] to fetch object and add it to props
+			Runnable fetch = new Runnable() {
+				@Override
+				public void run() {
+					MapObject object = idToObject.get(id);
+					properties.put(name, object);
+				}
+			};
+			// [Runnable] should not run until the end of [loadTiledMap]
+			runOnEndOfLoadTiled.add(fetch);
+		} catch (Exception exception) {
+			throw new GdxRuntimeException(
+					"Error parsing property [\" + name + \"] of type \"object\" with value: [" + value + "]", exception);
+		}
+	}
+
+	protected void loadBasicProperty(MapProperties properties, String name, String value, String type) {
+		Object castValue = castProperty(name, value, type);
+		properties.put(name, castValue);
 	}
 
 }

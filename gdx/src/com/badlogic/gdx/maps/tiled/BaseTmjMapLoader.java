@@ -21,7 +21,13 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.*;
+import com.badlogic.gdx.maps.ImageResolver;
+import com.badlogic.gdx.maps.MapGroupLayer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
@@ -32,7 +38,15 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Base64Coder;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.SerializationException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -167,26 +181,26 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected void loadLayer (TiledMap map, MapLayers parentLayers, JsonValue element, FileHandle tmjFile,
-		ImageResolver imageResolver) {
+							  ImageResolver imageResolver) {
 		String type = element.getString("type", "");
 		switch (type) {
-		case "group":
-			loadLayerGroup(map, parentLayers, element, tmjFile, imageResolver);
-			break;
-		case "tilelayer":
-			loadTileLayer(map, parentLayers, element);
-			break;
-		case "objectgroup":
-			loadObjectGroup(map, parentLayers, element);
-			break;
-		case "imagelayer":
-			loadImageLayer(map, parentLayers, element, tmjFile, imageResolver);
-			break;
+			case "group":
+				loadLayerGroup(map, parentLayers, element, tmjFile, imageResolver);
+				break;
+			case "tilelayer":
+				loadTileLayer(map, parentLayers, element);
+				break;
+			case "objectgroup":
+				loadObjectGroup(map, parentLayers, element);
+				break;
+			case "imagelayer":
+				loadImageLayer(map, parentLayers, element, tmjFile, imageResolver);
+				break;
 		}
 	}
 
 	protected void loadLayerGroup (TiledMap map, MapLayers parentLayers, JsonValue element, FileHandle tmjFile,
-		ImageResolver imageResolver) {
+								   ImageResolver imageResolver) {
 		if (element.getString("type", "").equals("group")) {
 			MapGroupLayer groupLayer = new MapGroupLayer();
 			loadBasicLayerInfo(groupLayer, element);
@@ -265,7 +279,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected void loadImageLayer (TiledMap map, MapLayers parentLayers, JsonValue element, FileHandle tmjFile,
-		ImageResolver imageResolver) {
+								   ImageResolver imageResolver) {
 		if (element.getString("type", "").equals("imagelayer")) {
 			float x = element.getFloat("offsetx", 0);
 			float y = element.getFloat("offsety", 0);
@@ -421,38 +435,39 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	private void loadProperties (final MapProperties properties, JsonValue element) {
 		if (element == null) return;
 
-		if (element.name() != null && element.name().equals("properties")) {
-			for (JsonValue property : element) {
-				final String name = property.getString("name", null);
-				String value = property.getString("value", null);
-				String type = property.getString("type", null);
-				if (value == null) {
-					value = property.asString();
-				}
-				if (type != null && type.equals("object")) {
-					// Wait until the end of [loadTiledMap] to fetch the object
-					try {
-						// Value should be the id of the object being pointed to
-						final int id = Integer.parseInt(value);
-						// Create [Runnable] to fetch object and add it to props
-						Runnable fetch = new Runnable() {
-							@Override
-							public void run () {
-								MapObject object = idToObject.get(id);
-								properties.put(name, object);
-							}
-						};
-						// [Runnable] should not run until the end of [loadTiledMap]
-						runOnEndOfLoadTiled.add(fetch);
-					} catch (Exception exception) {
-						throw new GdxRuntimeException(
-							"Error parsing property [\" + name + \"] of type \"object\" with value: [" + value + "]", exception);
+		switch (element.name()) {
+			case "properties":
+				for (JsonValue property : element) {
+					final String name = property.getString("name", null);
+					String value = property.getString("value", null);
+					String type = property.getString("type", null);
+					if (value == null && !"class".equals(type)) {
+						value = property.asString();
 					}
-				} else {
-					Object castValue = castProperty(name, value, type);
-					properties.put(name, castValue);
+					if ("object".equals(type)) {
+						loadObjectProperty(properties, name, value);
+					} else if ("class".equals(type)) {
+						// A 'class' property is a property which is itself a set of properties
+						MapProperties classProperties = new MapProperties();
+						String className = property.getString("propertytype");
+						classProperties.put("type", className);
+						// the actual properties of a 'class' property are stored as a new properties tag
+						properties.put(name, classProperties);
+						JsonValue jsonClassProps = property.get("value");
+						jsonClassProps.setName("classProperties");
+						loadProperties(classProperties, jsonClassProps);
+					} else {
+						loadBasicProperty(properties, name, value, type);
+					}
 				}
-			}
+				break;
+
+			case "classProperties":
+				for (JsonValue property : element) {
+					final String name = property.name();
+					final JsonValue.ValueType type = property.type();
+				}
+				break;
 		}
 	}
 
@@ -490,7 +505,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 						if (read != temp.length)
 							throw new GdxRuntimeException("Error Reading TMJ Layer Data: Premature end of tile data");
 						ids[y * width + x] = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
-							| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
+								| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
 					}
 				}
 			} catch (IOException e) {
@@ -569,7 +584,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			}
 
 			addStaticTiles(tmjFile, imageResolver, tileSet, element, tiles, name, firstgid, tilewidth, tileheight, spacing, margin,
-				source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
+					source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
 
 			Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
 
@@ -597,8 +612,8 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected abstract void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet,
-		JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
-		String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
+											JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
+											String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
 
 	private void addTileProperties (TiledMapTile tile, JsonValue tileElement) {
 		String terrain = tileElement.getString("terrain", null);
@@ -629,7 +644,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	private AnimatedTiledMapTile createAnimatedTile (TiledMapTileSet tileSet, TiledMapTile tile, JsonValue tileElement,
-		int firstgid) {
+													 int firstgid) {
 		JsonValue animationElement = tileElement.get("animation");
 		if (animationElement != null) {
 			Array<StaticTiledMapTile> staticTiles = new Array<>();

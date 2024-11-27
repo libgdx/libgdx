@@ -1,0 +1,120 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "compatibilityVersion": 1100,
+    "extensionsPath": "extensions",
+    "folders": [
+        "."
+    ],
+    "properties": [
+    ],
+    "propertyTypes": [
+        {
+            "id": 1,
+            "name": "enumStr",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "STR1",
+                "STR2"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "id": 2,
+            "name": "enumNum",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "NUM1",
+                "NUM2"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "id": 4,
+            "name": "enumNumMulti",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "NUM1",
+                "NUM2"
+            ],
+            "valuesAsFlags": true
+        },
+        {
+            "id": 3,
+            "name": "enumStrMulti",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "STR1",
+                "STR2"
+            ],
+            "valuesAsFlags": true
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 5,
+            "members": [
+                {
+                    "name": "classInt",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "classStr",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "testClass",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 7,
+            "members": [
+                {
+                    "name": "classClass",
+                    "propertyType": "testClass",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "classInt",
+                    "type": "int",
+                    "value": 0
+                }
+            ],
+            "name": "testClassNested",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        }
+    ]
+}
