@@ -1,8 +1,7 @@
 
 package com.badlogic.gdx;
 
-/** Abstract implementation of the Graphics interface, providing common methods for graphics-related functionalities such as time
- * and density calculations. */
+
 public abstract class AbstractGraphics implements Graphics {
 
 	@Override
