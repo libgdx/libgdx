@@ -11,17 +11,6 @@
     ],
     "propertyTypes": [
         {
-            "id": 1,
-            "name": "enumStr",
-            "storageType": "string",
-            "type": "enum",
-            "values": [
-                "STR1",
-                "STR2"
-            ],
-            "valuesAsFlags": false
-        },
-        {
             "id": 2,
             "name": "enumNum",
             "storageType": "int",
@@ -44,6 +33,17 @@
             "valuesAsFlags": true
         },
         {
+            "id": 1,
+            "name": "enumStr",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "STR1",
+                "STR2"
+            ],
+            "valuesAsFlags": false
+        },
+        {
             "id": 3,
             "name": "enumStrMulti",
             "storageType": "string",
@@ -60,8 +60,18 @@
             "id": 5,
             "members": [
                 {
+                    "name": "classColor",
+                    "type": "color",
+                    "value": "#ff00ff00"
+                },
+                {
                     "name": "classInt",
                     "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "classObj",
+                    "type": "object",
                     "value": 0
                 },
                 {

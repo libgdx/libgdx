@@ -49,7 +49,9 @@
                             {
                              "classClass":
                                 {
+                                 "classColor":"#ff0000ff",
                                  "classInt":44,
+                                 "classObj":1,
                                  "classStr":"txt2"
                                 },
                              "classInt":45

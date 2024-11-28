@@ -96,6 +96,13 @@ public class MapProperties {
 	}
 
 	@Override
+	public String toString() {
+		return "MapProperties{" +
+				"properties=" + properties +
+				'}';
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof MapProperties)) return false;
 		MapProperties that = (MapProperties) o;
@@ -104,6 +111,6 @@ public class MapProperties {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(properties);
+		return properties.hashCode();
 	}
 }

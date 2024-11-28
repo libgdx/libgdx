@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TmjMapLoader;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.Objects;
 
@@ -16,6 +17,7 @@ public class TiledMapPropertiesTest extends GdxTest {
 
     private static final String LOG_TAG = "TILED-MAP-PROPS";
     private TiledMap tiledMap;
+    private boolean success;
 
     // TODO
     // add MapObject and Color properties to class -> how are they stored in TMJ? Type is not stored it seems
@@ -24,6 +26,8 @@ public class TiledMapPropertiesTest extends GdxTest {
 
     @Override
     public void create() {
+        success = false;
+
         // verify TMX
         TmxMapLoader tmxLoader = new TmxMapLoader();
         tiledMap = tmxLoader.load("data/maps/tiled-properties/tiled-prop-test.tmx");
@@ -31,18 +35,25 @@ public class TiledMapPropertiesTest extends GdxTest {
             verifyTiledMap(tiledMap);
         } catch (Exception e) {
             Gdx.app.error(LOG_TAG, "Verification of tiledmap properties failed", e);
+            return;
         }
+        Gdx.app.log(LOG_TAG, "TMX properties successfully verified!");
 
         // verify TMJ
         TmjMapLoader tmjLoader = new TmjMapLoader();
-        tiledMap = tmjLoader.load("data/maps/tiled-properties/tiled-prop-test.tmj");
+        TmjMapLoader.Parameters parameters = new TmjMapLoader.Parameters();
+        parameters.projectFilePath = "data/maps/tiled-properties/tiled-prop-test.tiled-project";
+        tiledMap.dispose();
+        tiledMap = tmjLoader.load("data/maps/tiled-properties/tiled-prop-test.tmj", parameters);
         try {
             verifyTiledMap(tiledMap);
         } catch (Exception e) {
             Gdx.app.error(LOG_TAG, "Verification of tiledmap properties failed", e);
+            return;
         }
+        Gdx.app.log(LOG_TAG, "TMJ properties successfully verified!");
 
-        Gdx.app.log(LOG_TAG, "Properties successfully verified!");
+        success = true;
     }
 
     private void verifyTiledMap(TiledMap tiledMap) {
@@ -67,6 +78,7 @@ public class TiledMapPropertiesTest extends GdxTest {
         expectedProps.put("classInt", 43);
         expectedProps.put("classStr", "txt");
         expectedProps.put("type", "testClass");
+        // TODO missing verification of color which doesn't work for TMX right now because of missing defaultValue information
         verifyProperty("objClass", expectedProps, objProps.get("objClass", MapProperties.class));
         // verify nested class property
         expectedProps = new MapProperties();
@@ -75,6 +87,8 @@ public class TiledMapPropertiesTest extends GdxTest {
         MapProperties nestedProps = new MapProperties();
         nestedProps.put("classInt", 44);
         nestedProps.put("classStr", "txt2");
+        nestedProps.put("classColor", Color.BLUE);
+        nestedProps.put("classObj", mapObj);
         nestedProps.put("type", "testClass");
         expectedProps.put("classClass", nestedProps);
         verifyProperty("objClassNested", expectedProps, objProps.get("objClassNested", MapProperties.class));
@@ -84,6 +98,11 @@ public class TiledMapPropertiesTest extends GdxTest {
         if (!Objects.equals(expected, actual)) {
             throw new GdxRuntimeException(propName + " does not match: expected=" + expected + ", actual=" + actual);
         }
+    }
+
+    @Override
+    public void render() {
+        ScreenUtils.clear(success ? 0f : 1f, success ? 1f : 0f, 0f, 1f);
     }
 
     @Override

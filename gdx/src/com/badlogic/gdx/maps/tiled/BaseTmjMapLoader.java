@@ -45,6 +45,7 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.StreamUtils;
 
@@ -57,8 +58,26 @@ import java.util.zip.InflaterInputStream;
 
 public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> extends BaseTiledMapLoader<P> {
 
+	protected static class ProjectClassMember {
+		public String name;
+		public String type;
+		public String propertyType;
+		public Object defaultValue;
+
+		@Override
+		public String toString() {
+			return "ProjectClassMember{" +
+					"name='" + name + '\'' +
+					", type='" + type + '\'' +
+					", propertyType='" + propertyType + '\'' +
+					", defaultValue=" + defaultValue +
+					'}';
+		}
+	}
+
 	protected JsonReader json = new JsonReader();
 	protected JsonValue root;
+	protected FileHandle projectFile;
 
 	public BaseTmjMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -433,41 +452,101 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	private void loadProperties (final MapProperties properties, JsonValue element) {
-		if (element == null) return;
+		if (element == null || !"properties".equals(element.name())) return;
 
-		switch (element.name()) {
-			case "properties":
-				for (JsonValue property : element) {
-					final String name = property.getString("name", null);
-					String value = property.getString("value", null);
-					String type = property.getString("type", null);
-					if (value == null && !"class".equals(type)) {
-						value = property.asString();
-					}
-					if ("object".equals(type)) {
-						loadObjectProperty(properties, name, value);
-					} else if ("class".equals(type)) {
-						// A 'class' property is a property which is itself a set of properties
-						MapProperties classProperties = new MapProperties();
-						String className = property.getString("propertytype");
-						classProperties.put("type", className);
-						// the actual properties of a 'class' property are stored as a new properties tag
-						properties.put(name, classProperties);
-						JsonValue jsonClassProps = property.get("value");
-						jsonClassProps.setName("classProperties");
-						loadProperties(classProperties, jsonClassProps);
-					} else {
-						loadBasicProperty(properties, name, value, type);
-					}
-				}
-				break;
+		for (JsonValue property : element) {
+			final String name = property.getString("name", null);
+			String value = property.getString("value", null);
+			String type = property.getString("type", null);
+			if (value == null && !"class".equals(type)) {
+				value = property.asString();
+			}
+			switch (type) {
+				case "object":
+					loadObjectProperty(properties, name, value);
+					break;
+				case "class":
+					// A 'class' property is a property which is itself a set of properties
+					MapProperties classProperties = new MapProperties();
+					String className = property.getString("propertytype");
+					classProperties.put("type", className);
+					// the actual properties of a 'class' property are stored as a new properties tag
+					properties.put(name, classProperties);
+					loadClassProperties(className, classProperties, property.get("value"));
+					break;
+				default:
+					loadBasicProperty(properties, name, value, type);
+					break;
+			}
+		}
+	}
 
-			case "classProperties":
-				for (JsonValue property : element) {
-					final String name = property.name();
-					final JsonValue.ValueType type = property.type();
-				}
-				break;
+	protected ObjectMap<String, ObjectMap<String, ProjectClassMember>> loadProjectFile() {
+		if (projectFile == null) {
+			throw new GdxRuntimeException("Missing class property information to load Tiled map. Please set the 'projectFile' parameter of the loader.");
+		}
+		JsonValue projectRoot = json.parse(projectFile);
+		JsonValue propertyTypes = projectRoot.get("propertyTypes");
+		if (propertyTypes == null) {
+			// no custom property types in project -> nothing to parse
+			throw new GdxRuntimeException("Missing class property information to load Tiled map. Please set the 'projectFile' parameter of the loader.");
+		}
+
+		ObjectMap<String, ObjectMap<String, ProjectClassMember>> projectClassInfo = new ObjectMap<>();
+		for (JsonValue propertyType : propertyTypes) {
+			if (!"class".equals(propertyType.getString("type"))) {
+				continue;
+			}
+			String className = propertyType.getString("name");
+			JsonValue members = propertyType.get("members");
+			if (members.isEmpty()) {
+				continue;
+			}
+
+			ObjectMap<String, ProjectClassMember> projectClassMembers = new ObjectMap<>();
+			projectClassInfo.put(className, projectClassMembers);
+			for (JsonValue member : members) {
+				ProjectClassMember projectClassMember = new ProjectClassMember();
+				projectClassMember.name = member.getString("name");
+				projectClassMember.type = member.getString("type");
+				projectClassMember.propertyType = member.getString("propertyType", null);
+				projectClassMember.defaultValue = member.get("value");
+				projectClassMembers.put(projectClassMember.name, projectClassMember);
+			}
+		}
+		return projectClassInfo;
+	}
+
+	protected void loadClassProperties(String className, MapProperties classProperties, JsonValue classElement) {
+		ObjectMap<String, ObjectMap<String, ProjectClassMember>> projectClassInfo = loadProjectFile();
+		ObjectMap<String, ProjectClassMember> projectClassMembers = projectClassInfo.get(className);
+		if (projectClassMembers == null) {
+			throw new GdxRuntimeException("There is no class with name '" + className + "' in Tiled project file '" + projectFile.path() + "'.");
+		}
+		for (JsonValue classProp : classElement) {
+			String propName = classProp.name;
+			ProjectClassMember projectClassMember = projectClassMembers.get(propName);
+			if (projectClassMember == null) {
+				throw new GdxRuntimeException("There is no class member of class '" + className + "' with name '" + propName + "' in Tiled project file '" + projectFile.path() + "'.");
+			}
+
+			switch (projectClassMember.type) {
+				case "object":
+					loadObjectProperty(classProperties, propName, classProp.asString());
+					break;
+				case "class":
+					// A 'class' property is a property which is itself a set of properties
+					MapProperties nestedClassProperties = new MapProperties();
+					String nestedClassName = projectClassMember.propertyType;
+					nestedClassProperties.put("type", nestedClassName);
+					// the actual properties of a 'class' property are stored as a new properties tag
+					classProperties.put(propName, nestedClassProperties);
+					loadClassProperties(nestedClassName, nestedClassProperties, classProp);
+					break;
+				default:
+					loadBasicProperty(classProperties, propName, classProp.asString(), projectClassMember.type);
+					break;
+			}
 		}
 	}
 
