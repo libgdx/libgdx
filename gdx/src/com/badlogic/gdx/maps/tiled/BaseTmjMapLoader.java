@@ -65,13 +65,9 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		public Object defaultValue;
 
 		@Override
-		public String toString() {
-			return "ProjectClassMember{" +
-					"name='" + name + '\'' +
-					", type='" + type + '\'' +
-					", propertyType='" + propertyType + '\'' +
-					", defaultValue=" + defaultValue +
-					'}';
+		public String toString () {
+			return "ProjectClassMember{" + "name='" + name + '\'' + ", type='" + type + '\'' + ", propertyType='" + propertyType
+				+ '\'' + ", defaultValue=" + defaultValue + '}';
 		}
 	}
 
@@ -200,26 +196,26 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected void loadLayer (TiledMap map, MapLayers parentLayers, JsonValue element, FileHandle tmjFile,
-							  ImageResolver imageResolver) {
+		ImageResolver imageResolver) {
 		String type = element.getString("type", "");
 		switch (type) {
-			case "group":
-				loadLayerGroup(map, parentLayers, element, tmjFile, imageResolver);
-				break;
-			case "tilelayer":
-				loadTileLayer(map, parentLayers, element);
-				break;
-			case "objectgroup":
-				loadObjectGroup(map, parentLayers, element);
-				break;
-			case "imagelayer":
-				loadImageLayer(map, parentLayers, element, tmjFile, imageResolver);
-				break;
+		case "group":
+			loadLayerGroup(map, parentLayers, element, tmjFile, imageResolver);
+			break;
+		case "tilelayer":
+			loadTileLayer(map, parentLayers, element);
+			break;
+		case "objectgroup":
+			loadObjectGroup(map, parentLayers, element);
+			break;
+		case "imagelayer":
+			loadImageLayer(map, parentLayers, element, tmjFile, imageResolver);
+			break;
 		}
 	}
 
 	protected void loadLayerGroup (TiledMap map, MapLayers parentLayers, JsonValue element, FileHandle tmjFile,
-								   ImageResolver imageResolver) {
+		ImageResolver imageResolver) {
 		if (element.getString("type", "").equals("group")) {
 			MapGroupLayer groupLayer = new MapGroupLayer();
 			loadBasicLayerInfo(groupLayer, element);
@@ -298,7 +294,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected void loadImageLayer (TiledMap map, MapLayers parentLayers, JsonValue element, FileHandle tmjFile,
-								   ImageResolver imageResolver) {
+		ImageResolver imageResolver) {
 		if (element.getString("type", "").equals("imagelayer")) {
 			float x = element.getFloat("offsetx", 0);
 			float y = element.getFloat("offsety", 0);
@@ -462,34 +458,36 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 				value = property.asString();
 			}
 			switch (type) {
-				case "object":
-					loadObjectProperty(properties, name, value);
-					break;
-				case "class":
-					// A 'class' property is a property which is itself a set of properties
-					MapProperties classProperties = new MapProperties();
-					String className = property.getString("propertytype");
-					classProperties.put("type", className);
-					// the actual properties of a 'class' property are stored as a new properties tag
-					properties.put(name, classProperties);
-					loadClassProperties(className, classProperties, property.get("value"));
-					break;
-				default:
-					loadBasicProperty(properties, name, value, type);
-					break;
+			case "object":
+				loadObjectProperty(properties, name, value);
+				break;
+			case "class":
+				// A 'class' property is a property which is itself a set of properties
+				MapProperties classProperties = new MapProperties();
+				String className = property.getString("propertytype");
+				classProperties.put("type", className);
+				// the actual properties of a 'class' property are stored as a new properties tag
+				properties.put(name, classProperties);
+				loadClassProperties(className, classProperties, property.get("value"));
+				break;
+			default:
+				loadBasicProperty(properties, name, value, type);
+				break;
 			}
 		}
 	}
 
-	protected ObjectMap<String, ObjectMap<String, ProjectClassMember>> loadProjectFile() {
+	protected ObjectMap<String, ObjectMap<String, ProjectClassMember>> loadProjectFile () {
 		if (projectFile == null) {
-			throw new GdxRuntimeException("Missing class property information to load Tiled map. Please set the 'projectFile' parameter of the loader.");
+			throw new GdxRuntimeException(
+				"Missing class property information to load Tiled map. Please set the 'projectFile' parameter of the loader.");
 		}
 		JsonValue projectRoot = json.parse(projectFile);
 		JsonValue propertyTypes = projectRoot.get("propertyTypes");
 		if (propertyTypes == null) {
 			// no custom property types in project -> nothing to parse
-			throw new GdxRuntimeException("Missing class property information to load Tiled map. Please set the 'projectFile' parameter of the loader.");
+			throw new GdxRuntimeException(
+				"Missing class property information to load Tiled map. Please set the 'projectFile' parameter of the loader.");
 		}
 
 		ObjectMap<String, ObjectMap<String, ProjectClassMember>> projectClassInfo = new ObjectMap<>();
@@ -517,35 +515,37 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return projectClassInfo;
 	}
 
-	protected void loadClassProperties(String className, MapProperties classProperties, JsonValue classElement) {
+	protected void loadClassProperties (String className, MapProperties classProperties, JsonValue classElement) {
 		ObjectMap<String, ObjectMap<String, ProjectClassMember>> projectClassInfo = loadProjectFile();
 		ObjectMap<String, ProjectClassMember> projectClassMembers = projectClassInfo.get(className);
 		if (projectClassMembers == null) {
-			throw new GdxRuntimeException("There is no class with name '" + className + "' in Tiled project file '" + projectFile.path() + "'.");
+			throw new GdxRuntimeException(
+				"There is no class with name '" + className + "' in Tiled project file '" + projectFile.path() + "'.");
 		}
 		for (JsonValue classProp : classElement) {
 			String propName = classProp.name;
 			ProjectClassMember projectClassMember = projectClassMembers.get(propName);
 			if (projectClassMember == null) {
-				throw new GdxRuntimeException("There is no class member of class '" + className + "' with name '" + propName + "' in Tiled project file '" + projectFile.path() + "'.");
+				throw new GdxRuntimeException("There is no class member of class '" + className + "' with name '" + propName
+					+ "' in Tiled project file '" + projectFile.path() + "'.");
 			}
 
 			switch (projectClassMember.type) {
-				case "object":
-					loadObjectProperty(classProperties, propName, classProp.asString());
-					break;
-				case "class":
-					// A 'class' property is a property which is itself a set of properties
-					MapProperties nestedClassProperties = new MapProperties();
-					String nestedClassName = projectClassMember.propertyType;
-					nestedClassProperties.put("type", nestedClassName);
-					// the actual properties of a 'class' property are stored as a new properties tag
-					classProperties.put(propName, nestedClassProperties);
-					loadClassProperties(nestedClassName, nestedClassProperties, classProp);
-					break;
-				default:
-					loadBasicProperty(classProperties, propName, classProp.asString(), projectClassMember.type);
-					break;
+			case "object":
+				loadObjectProperty(classProperties, propName, classProp.asString());
+				break;
+			case "class":
+				// A 'class' property is a property which is itself a set of properties
+				MapProperties nestedClassProperties = new MapProperties();
+				String nestedClassName = projectClassMember.propertyType;
+				nestedClassProperties.put("type", nestedClassName);
+				// the actual properties of a 'class' property are stored as a new properties tag
+				classProperties.put(propName, nestedClassProperties);
+				loadClassProperties(nestedClassName, nestedClassProperties, classProp);
+				break;
+			default:
+				loadBasicProperty(classProperties, propName, classProp.asString(), projectClassMember.type);
+				break;
 			}
 		}
 	}
@@ -584,7 +584,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 						if (read != temp.length)
 							throw new GdxRuntimeException("Error Reading TMJ Layer Data: Premature end of tile data");
 						ids[y * width + x] = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
-								| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
+							| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
 					}
 				}
 			} catch (IOException e) {
@@ -663,7 +663,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			}
 
 			addStaticTiles(tmjFile, imageResolver, tileSet, element, tiles, name, firstgid, tilewidth, tileheight, spacing, margin,
-					source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
+				source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
 
 			Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
 
@@ -691,8 +691,8 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected abstract void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet,
-											JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
-											String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
+		JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
+		String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
 
 	private void addTileProperties (TiledMapTile tile, JsonValue tileElement) {
 		String terrain = tileElement.getString("terrain", null);
@@ -723,7 +723,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	private AnimatedTiledMapTile createAnimatedTile (TiledMapTileSet tileSet, TiledMapTile tile, JsonValue tileElement,
-													 int firstgid) {
+		int firstgid) {
 		JsonValue animationElement = tileElement.get("animation");
 		if (animationElement != null) {
 			Array<StaticTiledMapTile> staticTiles = new Array<>();

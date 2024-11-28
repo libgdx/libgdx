@@ -96,21 +96,19 @@ public class MapProperties {
 	}
 
 	@Override
-	public String toString() {
-		return "MapProperties{" +
-				"properties=" + properties +
-				'}';
+	public String toString () {
+		return "MapProperties{" + "properties=" + properties + '}';
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals (Object o) {
 		if (!(o instanceof MapProperties)) return false;
-		MapProperties that = (MapProperties) o;
+		MapProperties that = (MapProperties)o;
 		return Objects.equals(properties, that.properties);
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode () {
 		return properties.hashCode();
 	}
 }
