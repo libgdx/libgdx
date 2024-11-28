@@ -52,11 +52,11 @@ public class FloatCounter implements Poolable {
 	public void put (float value) {
 		if (Float.isNaN(value)) throw new RuntimeException("value is not a number");
 		/*
-		Suggestions that I make to avoid errors when putting big numbers :
-
-		else if (Float.isInfinite(value)) throw new RuntimeException("value is infinite");
-		else if (value==Float.MAX_VALUE||value==-Float.MAX_VALUE) throw new RuntimeException("value is too big and " +
-				"there are risks that the next results will be different than expected");
+		 * Suggestions that I make to avoid errors when putting big numbers :
+		 * 
+		 * else if (Float.isInfinite(value)) throw new RuntimeException("value is infinite"); else if
+		 * (value==Float.MAX_VALUE||value==-Float.MAX_VALUE) throw new RuntimeException("value is too big and " +
+		 * "there are risks that the next results will be different than expected");
 		 */
 
 		latest = value;
