@@ -107,7 +107,7 @@ import com.badlogic.gdx.utils.StreamUtils;
  * @author badlogicgames@gmail.com */
 public class GdxTests {
 	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
-			// @off
+	// @off
 			IssueTest.class,
 			AccelerometerTest.class,
 			ActionSequenceTest.class,
@@ -352,8 +352,8 @@ public class GdxTests {
 			QuadTreeFloatNearestTest.class
 			// @on
 
-			// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
-			// VorbisTest.class
+	// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
+	// VorbisTest.class
 	));
 
 	static final ObjectMap<String, String> obfuscatedToOriginal = new ObjectMap();

@@ -183,7 +183,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected void loadLayer (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile,
-							  ImageResolver imageResolver) {
+		ImageResolver imageResolver) {
 		String name = element.getName();
 		if (name.equals("group")) {
 			loadLayerGroup(map, parentLayers, element, tmxFile, imageResolver);
@@ -197,7 +197,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected void loadLayerGroup (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile,
-								   ImageResolver imageResolver) {
+		ImageResolver imageResolver) {
 		if (element.getName().equals("group")) {
 			MapGroupLayer groupLayer = new MapGroupLayer();
 			loadBasicLayerInfo(groupLayer, element);
@@ -274,7 +274,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected void loadImageLayer (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile,
-								   ImageResolver imageResolver) {
+		ImageResolver imageResolver) {
 		if (element.getName().equals("imagelayer")) {
 			float x = 0;
 			float y = 0;
@@ -504,7 +504,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 							if (read != temp.length)
 								throw new GdxRuntimeException("Error Reading TMX Layer Data: Premature end of tile data");
 							ids[y * width + x] = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
-									| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
+								| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
 						}
 					}
 				} catch (IOException e) {
@@ -581,7 +581,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			Array<Element> tileElements = element.getChildrenByName("tile");
 
 			addStaticTiles(tmxFile, imageResolver, tileSet, element, tileElements, name, firstgid, tilewidth, tileheight, spacing,
-					margin, source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
+				margin, source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
 
 			Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
 
@@ -609,8 +609,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected abstract void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileset,
-											Element element, Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing,
-											int margin, String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
+		Element element, Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing,
+		int margin, String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
 
 	protected void addTileProperties (TiledMapTile tile, Element tileElement) {
 		String terrain = tileElement.getAttribute("terrain", null);
@@ -641,7 +641,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	protected AnimatedTiledMapTile createAnimatedTile (TiledMapTileSet tileSet, TiledMapTile tile, Element tileElement,
-													   int firstgid) {
+		int firstgid) {
 		Element animationElement = tileElement.getChildByName("animation");
 		if (animationElement != null) {
 			Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
