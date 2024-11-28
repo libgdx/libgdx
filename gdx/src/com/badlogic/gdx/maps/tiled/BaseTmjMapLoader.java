@@ -366,8 +366,28 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
 		} else if ((child = element.get("point")) != null) {
 			object = new PointMapObject(x, flipY ? y - height : y);
+		} else if ((child = element.get("text")) != null) {
+			 TextMapObject textMapObject = new TextMapObject(x, flipY ? y - height : y, width, height, child.getString("text",""));
+			 textMapObject.setRotation(child.getFloat("rotation", 0));
+			 textMapObject.setFontFamily(child.getString("fontfamily", ""));
+			 textMapObject.setPixelSize(child.getInt("pixelSize", 16));
+			 textMapObject.setHorizontalAlign(child.getString("halign", "left"));
+			 textMapObject.setVerticalAlign(child.getString("valign", "top"));
+			 textMapObject.setBold(child.getBoolean("bold", false));
+			 textMapObject.setItalic(child.getBoolean("italic", false));
+			 textMapObject.setUnderline(child.getBoolean("underline", false));
+			 textMapObject.setStrikeout(child.getBoolean("strikeout", false));
+			 textMapObject.setWrap(child.getBoolean("wrap", false));
+			 // When kerning is true, it won't be added as an attribute, it's true by default
+			 textMapObject.setKerning(child.getBoolean("kerning", true));
+			 // Default color is #000000, not added as attribute
+			 String textColor = child.getString("color", "#000000");
+			 // TODO:After PR #7076 is Merged. Update below section of code to use tiledColorToLibGDXColor().
+			 String alpha = textColor.length() == 9 ? textColor.substring(1, 3) : "ff";
+			 String color = textColor.length() == 9 ? textColor.substring(3) : textColor.substring(1);
+			 textMapObject.setColor(Color.valueOf(color + alpha));
+			 object = textMapObject;
 		}
-
 		if (object == null) {
 			String gid;
 			if ((gid = element.getString("gid", null)) != null) {

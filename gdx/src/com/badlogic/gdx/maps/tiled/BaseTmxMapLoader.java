@@ -399,7 +399,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 					TextMapObject textMapObject = new TextMapObject(x, flipY ? y - height : y, width, height, child.getText());
 					textMapObject.setRotation(child.getFloatAttribute("rotation", 0));
 					textMapObject.setFontFamily(child.getAttribute("fontfamily", ""));
-					textMapObject.setPixelSize(child.getInt("pixelSize", 16));
+					textMapObject.setPixelSize(child.getIntAttribute("pixelSize", 16));
 					textMapObject.setHorizontalAlign(child.getAttribute("halign", "left"));
 					textMapObject.setVerticalAlign(child.getAttribute("valign", "top"));
 					textMapObject.setBold(child.getIntAttribute("bold", 0) == 1);
@@ -407,7 +407,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 					textMapObject.setUnderline(child.getIntAttribute("underline", 0) == 1);
 					textMapObject.setStrikeout(child.getIntAttribute("strikeout", 0) == 1);
 					textMapObject.setWrap(child.getIntAttribute("wrap", 0) == 1);
-					// When kerning is true, it won't be added as an attribute
+					// When kerning is true, it won't be added as an attribute, it's true by default
 					textMapObject.setKerning(child.getIntAttribute("kerning", 1) == 1);
 					// Default color is #000000, not added as attribute
 					String textColor = child.getAttribute("color", "#000000");
