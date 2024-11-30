@@ -127,7 +127,7 @@ public class TiledMapPropertiesTest extends GdxTest {
 	}
 
 	private <T> void verifyProperty (String propName, T expected, T actual) {
-		if (expected instanceof Float && !MathUtils.isEqual((Float) expected, (Float) actual, 0.1f)) {
+		if (expected instanceof Float && !MathUtils.isEqual((Float)expected, (Float)actual, 0.1f)) {
 			throw new GdxRuntimeException(propName + " does not match: expected=" + expected + ", actual=" + actual);
 		} else if (!Objects.equals(expected, actual)) {
 			throw new GdxRuntimeException(propName + " does not match: expected=" + expected + ", actual=" + actual);
