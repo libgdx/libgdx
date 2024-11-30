@@ -451,12 +451,14 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		}
 	}
 
-	protected void loadClassProperties(String className, MapProperties classProperties, XmlReader.Element classElement) {
+	protected void loadClassProperties (String className, MapProperties classProperties, XmlReader.Element classElement) {
 		if (projectClassInfo == null) {
-			throw new GdxRuntimeException("No class information loaded to support class properties. Did you set the 'projectFilePath' parameter?");
+			throw new GdxRuntimeException(
+				"No class information loaded to support class properties. Did you set the 'projectFilePath' parameter?");
 		}
 		if (projectClassInfo.isEmpty()) {
-			throw new GdxRuntimeException("No class information available. Did you set the correct Tiled project path in the 'projectFilePath' parameter?");
+			throw new GdxRuntimeException(
+				"No class information available. Did you set the correct Tiled project path in the 'projectFilePath' parameter?");
 		}
 		Array<ProjectClassMember> projectClassMembers = projectClassInfo.get(className);
 		if (projectClassMembers == null) {
@@ -467,40 +469,40 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			String propName = projectClassMember.name;
 			XmlReader.Element classProp = classElement == null ? null : getPropertyByName(classElement, propName);
 			switch (projectClassMember.type) {
-				case "object": {
-					String value = classProp == null ? projectClassMember.defaultValue.asString() : getPropertyValue(classProp);
-					loadObjectProperty(classProperties, propName, value);
-					break;
+			case "object": {
+				String value = classProp == null ? projectClassMember.defaultValue.asString() : getPropertyValue(classProp);
+				loadObjectProperty(classProperties, propName, value);
+				break;
+			}
+			case "class": {
+				// A 'class' property is a property which is itself a set of properties
+				MapProperties nestedClassProperties = new MapProperties();
+				String nestedClassName = projectClassMember.propertyType;
+				nestedClassProperties.put("type", nestedClassName);
+				// the actual properties of a 'class' property are stored as a new properties tag
+				classProperties.put(propName, nestedClassProperties);
+				if (classProp == null) {
+					// no class values overridden -> use default class values
+					loadJsonClassProperties(nestedClassName, nestedClassProperties, projectClassMember.defaultValue);
+				} else {
+					loadClassProperties(nestedClassName, nestedClassProperties, classProp);
 				}
-				case "class": {
-					// A 'class' property is a property which is itself a set of properties
-					MapProperties nestedClassProperties = new MapProperties();
-					String nestedClassName = projectClassMember.propertyType;
-					nestedClassProperties.put("type", nestedClassName);
-					// the actual properties of a 'class' property are stored as a new properties tag
-					classProperties.put(propName, nestedClassProperties);
-					if (classProp == null) {
-						// no class values overridden -> use default class values
-						loadJsonClassProperties(nestedClassName, nestedClassProperties, projectClassMember.defaultValue);
-					} else {
-						loadClassProperties(nestedClassName, nestedClassProperties, classProp);
-					}
-					break;
-				}
-				default: {
-					String value = classProp == null ? projectClassMember.defaultValue.asString() : getPropertyValue(classProp);
-					loadBasicProperty(classProperties, propName, value, projectClassMember.type);
-					break;
-				}
+				break;
+			}
+			default: {
+				String value = classProp == null ? projectClassMember.defaultValue.asString() : getPropertyValue(classProp);
+				loadBasicProperty(classProperties, propName, value, projectClassMember.type);
+				break;
+			}
 			}
 		}
 	}
 
-	private static String getPropertyValue(Element classProp) {
+	private static String getPropertyValue (Element classProp) {
 		return classProp.getAttribute("value", classProp.getText());
 	}
 
-	protected Element getPropertyByName(Element classElement, String propName) {
+	protected Element getPropertyByName (Element classElement, String propName) {
 		// we use getChildrenByNameRecursively here because in case of nested classes,
 		// we get an element with a root property (=class) and inside additional property tags for the real
 		// class properties. If we just use getChildrenByName we don't get any children for a nested class.

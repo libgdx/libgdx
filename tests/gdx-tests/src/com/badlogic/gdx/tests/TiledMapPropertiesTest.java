@@ -14,24 +14,21 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.Objects;
 
-/**
- * This test verifies that all possible Tiled property types are loaded correctly.
- * This includes properties of type:
+/** This test verifies that all possible Tiled property types are loaded correctly. This includes properties of type:
  * <ul>
- *     <li>boolean</li>
- *     <li>class</li>
- *     <li>color</li>
- *     <li>enum</li>
- *     <li>file</li>
- *     <li>float</li>
- *     <li>int</li>
- *     <li>obj</li>
- *     <li>str</li>
+ * <li>boolean</li>
+ * <li>class</li>
+ * <li>color</li>
+ * <li>enum</li>
+ * <li>file</li>
+ * <li>float</li>
+ * <li>int</li>
+ * <li>obj</li>
+ * <li>str</li>
  * </ul>
  * <p>
- * It also verifies default value loading of class properties and different variations
- * of enums (single vs multi value and string vs int storage).
- */
+ * It also verifies default value loading of class properties and different variations of enums (single vs multi value and string
+ * vs int storage). */
 public class TiledMapPropertiesTest extends GdxTest {
 
 	private static final String LOG_TAG = "TILED-MAP-PROPS";

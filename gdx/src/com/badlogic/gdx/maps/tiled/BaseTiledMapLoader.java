@@ -51,13 +51,12 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		public String projectFilePath = null;
 	}
 
-	/**
-	 * Representation of a single Tiled class property. A property has:
+	/** Representation of a single Tiled class property. A property has:
 	 * <ul>
-	 *     <li>a property {@code name}</li>
-	 *     <li>a property {@code type} like string, int, ...</li>
-	 *     <li>an optional {@code propertyType} for class and enum types to refer to a specific class/enum</li>
-	 *     <li>a {@code defaultValue}</li>
+	 * <li>a property {@code name}</li>
+	 * <li>a property {@code type} like string, int, ...</li>
+	 * <li>an optional {@code propertyType} for class and enum types to refer to a specific class/enum</li>
+	 * <li>a {@code defaultValue}</li>
 	 * </ul>
 	 */
 	protected static class ProjectClassMember {
@@ -67,12 +66,12 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		public JsonValue defaultValue;
 
 		@Override
-		public String toString() {
+		public String toString () {
 			return "ProjectClassMember{" //
-					+ "name='" + name + "'" //
-					+ ", type='" + type + "'" //
-					+ ", propertyType='" + propertyType + "'" //
-					+ ", defaultValue=" + defaultValue + "}";
+				+ "name='" + name + "'" //
+				+ ", type='" + type + "'" //
+				+ ", propertyType='" + propertyType + "'" //
+				+ ", defaultValue=" + defaultValue + "}";
 		}
 	}
 
@@ -92,10 +91,8 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 	protected TiledMap map;
 	protected IntMap<MapObject> idToObject;
 	protected Array<Runnable> runOnEndOfLoadTiled;
-	/**
-	 * Optional Tiled project class information.
-	 * Key is the classname and value is an array of class members (=class properties)
-	 * */
+	/** Optional Tiled project class information. Key is the classname and value is an array of class members (=class
+	 * properties) */
 	protected ObjectMap<String, Array<ProjectClassMember>> projectClassInfo;
 
 	public BaseTiledMapLoader (FileHandleResolver resolver) {
@@ -218,11 +215,9 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		properties.put(name, castValue);
 	}
 
-	/**
-	 * Parses the given Tiled project file for class property information.
-	 * A class can have multiple members. Refer to {@link ProjectClassMember}.
-	 */
-	protected void loadProjectFile(String projectFilePath) {
+	/** Parses the given Tiled project file for class property information. A class can have multiple members. Refer to
+	 * {@link ProjectClassMember}. */
+	protected void loadProjectFile (String projectFilePath) {
 		projectClassInfo = new ObjectMap<>();
 		if (projectFilePath == null || projectFilePath.trim().isEmpty()) {
 			return;
@@ -259,12 +254,14 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		}
 	}
 
-	protected void loadJsonClassProperties(String className, MapProperties classProperties, JsonValue classElement) {
+	protected void loadJsonClassProperties (String className, MapProperties classProperties, JsonValue classElement) {
 		if (projectClassInfo == null) {
-			throw new GdxRuntimeException("No class information loaded to support class properties. Did you set the 'projectFilePath' parameter?");
+			throw new GdxRuntimeException(
+				"No class information loaded to support class properties. Did you set the 'projectFilePath' parameter?");
 		}
 		if (projectClassInfo.isEmpty()) {
-			throw new GdxRuntimeException("No class information available. Did you set the correct Tiled project path in the 'projectFilePath' parameter?");
+			throw new GdxRuntimeException(
+				"No class information available. Did you set the correct Tiled project path in the 'projectFilePath' parameter?");
 		}
 		Array<ProjectClassMember> projectClassMembers = projectClassInfo.get(className);
 		if (projectClassMembers == null) {
@@ -275,29 +272,29 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 			String propName = projectClassMember.name;
 			JsonValue classProp = classElement.get(propName);
 			switch (projectClassMember.type) {
-				case "object": {
-					String value = classProp == null ? projectClassMember.defaultValue.asString() : classProp.asString();
-					loadObjectProperty(classProperties, propName, value);
-					break;
+			case "object": {
+				String value = classProp == null ? projectClassMember.defaultValue.asString() : classProp.asString();
+				loadObjectProperty(classProperties, propName, value);
+				break;
+			}
+			case "class": {
+				// A 'class' property is a property which is itself a set of properties
+				if (classProp == null) {
+					classProp = projectClassMember.defaultValue;
 				}
-				case "class": {
-					// A 'class' property is a property which is itself a set of properties
-					if (classProp == null) {
-						classProp = projectClassMember.defaultValue;
-					}
-					MapProperties nestedClassProperties = new MapProperties();
-					String nestedClassName = projectClassMember.propertyType;
-					nestedClassProperties.put("type", nestedClassName);
-					// the actual properties of a 'class' property are stored as a new properties tag
-					classProperties.put(propName, nestedClassProperties);
-					loadJsonClassProperties(nestedClassName, nestedClassProperties, classProp);
-					break;
-				}
-				default: {
-					String value = classProp == null ? projectClassMember.defaultValue.asString() : classProp.asString();
-					loadBasicProperty(classProperties, propName, value, projectClassMember.type);
-					break;
-				}
+				MapProperties nestedClassProperties = new MapProperties();
+				String nestedClassName = projectClassMember.propertyType;
+				nestedClassProperties.put("type", nestedClassName);
+				// the actual properties of a 'class' property are stored as a new properties tag
+				classProperties.put(propName, nestedClassProperties);
+				loadJsonClassProperties(nestedClassName, nestedClassProperties, classProp);
+				break;
+			}
+			default: {
+				String value = classProp == null ? projectClassMember.defaultValue.asString() : classProp.asString();
+				loadBasicProperty(classProperties, propName, value, projectClassMember.type);
+				break;
+			}
 			}
 		}
 	}
