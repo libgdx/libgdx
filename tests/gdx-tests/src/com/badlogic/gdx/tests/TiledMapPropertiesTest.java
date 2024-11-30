@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmjMapLoader;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -126,7 +127,9 @@ public class TiledMapPropertiesTest extends GdxTest {
 	}
 
 	private <T> void verifyProperty (String propName, T expected, T actual) {
-		if (!Objects.equals(expected, actual)) {
+		if (expected instanceof Float && !MathUtils.isEqual((Float) expected, (Float) actual, 0.1f)) {
+			throw new GdxRuntimeException(propName + " does not match: expected=" + expected + ", actual=" + actual);
+		} else if (!Objects.equals(expected, actual)) {
 			throw new GdxRuntimeException(propName + " does not match: expected=" + expected + ", actual=" + actual);
 		}
 	}
