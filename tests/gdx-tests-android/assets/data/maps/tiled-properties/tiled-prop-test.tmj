@@ -42,6 +42,15 @@
                         },
                     
                         {
+                         "name":"objClassDefaults",
+                         "propertytype":"testClassDefaults",
+                         "type":"class",
+                         "value":
+                            {
+
+                            }
+                        }, 
+                        {
                          "name":"objClassNested",
                          "propertytype":"testClassNested",
                          "type":"class",
@@ -50,67 +59,66 @@
                              "classClass":
                                 {
                                  "classColor":"#ff0000ff",
-                                 "classInt":44,
                                  "classObj":1,
                                  "classStr":"txt2"
                                 },
                              "classInt":45
                             }
-                        }, 
+                        },
+                    
                         {
                          "name":"objColor",
                          "type":"color",
                          "value":"#ffff0000"
-                        },
-                    
+                        }, 
                         {
                          "name":"objEnumNum",
                          "propertytype":"enumNum",
                          "type":"int",
                          "value":1
-                        }, 
+                        },
+                    
                         {
                          "name":"objEnumNumMulti",
                          "propertytype":"enumNumMulti",
                          "type":"int",
                          "value":3
-                        },
-                    
+                        }, 
                         {
                          "name":"objEnumStr",
                          "propertytype":"enumStr",
                          "type":"string",
                          "value":"STR2"
-                        }, 
+                        },
+                    
                         {
                          "name":"objEnumStrMulti",
                          "propertytype":"enumStrMulti",
                          "type":"string",
                          "value":"STR1,STR2"
-                        },
-                    
+                        }, 
                         {
                          "name":"objFile",
                          "type":"file",
                          "value":"tiled-prop-test.tiled-project"
-                        }, 
+                        },
+                    
                         {
                          "name":"objFloat",
                          "type":"float",
                          "value":4.2
-                        },
-                    
+                        }, 
                         {
                          "name":"objInt",
                          "type":"int",
                          "value":42
-                        }, 
+                        },
+                    
                         {
                          "name":"objObj",
                          "type":"object",
                          "value":1
-                        },
-                    
+                        }, 
                         {
                          "name":"objStr",
                          "type":"string",
@@ -120,8 +128,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":14.7998342312474,
-                 "y":15.5955242436801
+                 "x":14.7998,
+                 "y":15.5955
                 }],
          "opacity":1,
          "type":"objectgroup",

@@ -14,38 +14,39 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.Objects;
 
+/**
+ * This test verifies that all possible Tiled property types are loaded correctly.
+ * This includes properties of type:
+ * <ul>
+ *     <li>boolean</li>
+ *     <li>class</li>
+ *     <li>color</li>
+ *     <li>enum</li>
+ *     <li>file</li>
+ *     <li>float</li>
+ *     <li>int</li>
+ *     <li>obj</li>
+ *     <li>str</li>
+ * </ul>
+ * <p>
+ * It also verifies default value loading of class properties and different variations
+ * of enums (single vs multi value and string vs int storage).
+ */
 public class TiledMapPropertiesTest extends GdxTest {
 
 	private static final String LOG_TAG = "TILED-MAP-PROPS";
 	private TiledMap tiledMap;
 	private boolean success;
 
-	// TODO
-	// add MapObject and Color properties to class -> how are they stored in TMJ? Type is not stored it seems
-	// properly parse tmj class
-	// properly parse tmj nested class
-
 	@Override
 	public void create () {
 		success = false;
 
-		// verify TMX
-		TmxMapLoader tmxLoader = new TmxMapLoader();
-		tiledMap = tmxLoader.load("data/maps/tiled-properties/tiled-prop-test.tmx");
-		try {
-			verifyTiledMap(tiledMap);
-		} catch (Exception e) {
-			Gdx.app.error(LOG_TAG, "Verification of tiledmap properties failed", e);
-			return;
-		}
-		Gdx.app.log(LOG_TAG, "TMX properties successfully verified!");
-
 		// verify TMJ
 		TmjMapLoader tmjLoader = new TmjMapLoader();
-		TmjMapLoader.Parameters parameters = new TmjMapLoader.Parameters();
-		parameters.projectFilePath = "data/maps/tiled-properties/tiled-prop-test.tiled-project";
-		tiledMap.dispose();
-		tiledMap = tmjLoader.load("data/maps/tiled-properties/tiled-prop-test.tmj", parameters);
+		TmjMapLoader.Parameters tmjLoaderParams = new TmjMapLoader.Parameters();
+		tmjLoaderParams.projectFilePath = "data/maps/tiled-properties/tiled-prop-test.tiled-project";
+		tiledMap = tmjLoader.load("data/maps/tiled-properties/tiled-prop-test.tmj", tmjLoaderParams);
 		try {
 			verifyTiledMap(tiledMap);
 		} catch (Exception e) {
@@ -53,6 +54,20 @@ public class TiledMapPropertiesTest extends GdxTest {
 			return;
 		}
 		Gdx.app.log(LOG_TAG, "TMJ properties successfully verified!");
+
+		// verify TMX
+		tiledMap.dispose();
+		TmxMapLoader tmxLoader = new TmxMapLoader();
+		TmxMapLoader.Parameters tmxLoaderParams = new TmxMapLoader.Parameters();
+		tmxLoaderParams.projectFilePath = "data/maps/tiled-properties/tiled-prop-test.tiled-project";
+		tiledMap = tmxLoader.load("data/maps/tiled-properties/tiled-prop-test.tmx", tmxLoaderParams);
+		try {
+			verifyTiledMap(tiledMap);
+		} catch (Exception e) {
+			Gdx.app.error(LOG_TAG, "Verification of tiledmap properties failed", e);
+			return;
+		}
+		Gdx.app.log(LOG_TAG, "TMX properties successfully verified!");
 
 		success = true;
 	}
@@ -79,20 +94,38 @@ public class TiledMapPropertiesTest extends GdxTest {
 		expectedProps.put("classInt", 43);
 		expectedProps.put("classStr", "txt");
 		expectedProps.put("type", "testClass");
-		// TODO missing verification of color which doesn't work for TMX right now because of missing defaultValue information
+		expectedProps.put("classObj", null);
+		expectedProps.put("classEnumStr", "STR2");
+		expectedProps.put("classColor", Color.GREEN); // default green color of class definition in project file
 		verifyProperty("objClass", expectedProps, objProps.get("objClass", MapProperties.class));
 		// verify nested class property
 		expectedProps = new MapProperties();
 		expectedProps.put("classInt", 45);
 		expectedProps.put("type", "testClassNested");
 		MapProperties nestedProps = new MapProperties();
-		nestedProps.put("classInt", 44);
+		nestedProps.put("classInt", 1); // default value of class definition in project file
 		nestedProps.put("classStr", "txt2");
 		nestedProps.put("classColor", Color.BLUE);
 		nestedProps.put("classObj", mapObj);
 		nestedProps.put("type", "testClass");
+		nestedProps.put("classEnumStr", "STR2");
 		expectedProps.put("classClass", nestedProps);
 		verifyProperty("objClassNested", expectedProps, objProps.get("objClassNested", MapProperties.class));
+		// verify class default value loading
+		expectedProps = new MapProperties();
+		expectedProps.put("classStr", "defaultStr");
+		expectedProps.put("classObj", null);
+		expectedProps.put("classColor", Color.YELLOW);
+		expectedProps.put("type", "testClassDefaults");
+		nestedProps = new MapProperties();
+		nestedProps.put("classColor", Color.GREEN);
+		nestedProps.put("classInt", 3);
+		nestedProps.put("classObj", null);
+		nestedProps.put("classStr", "defaultStrNested");
+		nestedProps.put("type", "testClass");
+		nestedProps.put("classEnumStr", "STR2");
+		expectedProps.put("classClass", nestedProps);
+		verifyProperty("objClassNested", expectedProps, objProps.get("objClassDefaults", MapProperties.class));
 	}
 
 	private <T> void verifyProperty (String propName, T expected, T actual) {

@@ -34,8 +34,6 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> {
 
 	public static class Parameters extends BaseTmjMapLoader.Parameters {
-		/** Path to Tiled project file. Needed for TMJ loader when using class properties. */
-		public String projectFilePath = null;
 	}
 
 	public TmjMapLoader () {
@@ -67,7 +65,6 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 	 * @return the TiledMap */
 	public TiledMap load (String fileName, TmjMapLoader.Parameters parameter) {
 		FileHandle tmjFile = resolve(fileName);
-		this.projectFile = parameter.projectFilePath == null ? null : resolve(parameter.projectFilePath);
 
 		this.root = json.parse(tmjFile);
 

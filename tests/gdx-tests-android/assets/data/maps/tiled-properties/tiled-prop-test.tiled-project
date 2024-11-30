@@ -65,9 +65,15 @@
                     "value": "#ff00ff00"
                 },
                 {
+                    "name": "classEnumStr",
+                    "propertyType": "enumStr",
+                    "type": "string",
+                    "value": "STR2"
+                },
+                {
                     "name": "classInt",
                     "type": "int",
-                    "value": 0
+                    "value": 1
                 },
                 {
                     "name": "classObj",
@@ -97,6 +103,50 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
+            "id": 8,
+            "members": [
+                {
+                    "name": "classClass",
+                    "propertyType": "testClass",
+                    "type": "class",
+                    "value": {
+                        "classInt": 3,
+                        "classStr": "defaultStrNested"
+                    }
+                },
+                {
+                    "name": "classColor",
+                    "type": "color",
+                    "value": "#ffffff00"
+                },
+                {
+                    "name": "classObj",
+                    "type": "object",
+                    "value": 0
+                },
+                {
+                    "name": "classStr",
+                    "type": "string",
+                    "value": "defaultStr"
+                }
+            ],
+            "name": "testClassDefaults",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
             "id": 7,
             "members": [
                 {
@@ -104,6 +154,7 @@
                     "propertyType": "testClass",
                     "type": "class",
                     "value": {
+                        "classInt": 2
                     }
                 },
                 {

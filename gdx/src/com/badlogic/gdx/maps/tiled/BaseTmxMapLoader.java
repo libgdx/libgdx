@@ -21,13 +21,7 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.ImageResolver;
-import com.badlogic.gdx.maps.MapGroupLayer;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapLayers;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.*;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
@@ -38,14 +32,7 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Base64Coder;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.SerializationException;
-import com.badlogic.gdx.utils.StreamUtils;
-import com.badlogic.gdx.utils.XmlReader;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 import java.io.BufferedInputStream;
@@ -93,6 +80,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
 			this.flipY = parameter.flipY;
+			loadProjectFile(parameter.projectFilePath);
 		} else {
 			this.convertObjectToTileSpace = false;
 			this.flipY = true;
@@ -444,11 +432,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		if (element.getName().equals("properties")) {
 			for (Element property : element.getChildrenByName("property")) {
 				final String name = property.getAttribute("name", null);
-				String value = property.getAttribute("value", null);
+				String value = getPropertyValue(property);
 				String type = property.getAttribute("type", null);
-				if (value == null) {
-					value = property.getText();
-				}
 				if ("object".equals(type)) {
 					loadObjectProperty(properties, name, value);
 				} else if ("class".equals(type)) {
@@ -458,12 +443,73 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 					classProperties.put("type", className);
 					// the actual properties of a 'class' property are stored as a new properties tag
 					properties.put(name, classProperties);
-					loadProperties(classProperties, property.getChildByName("properties"));
+					loadClassProperties(className, classProperties, property.getChildByName("properties"));
 				} else {
 					loadBasicProperty(properties, name, value, type);
 				}
 			}
 		}
+	}
+
+	protected void loadClassProperties(String className, MapProperties classProperties, XmlReader.Element classElement) {
+		if (projectClassInfo == null) {
+			throw new GdxRuntimeException("No class information loaded to support class properties. Did you set the 'projectFilePath' parameter?");
+		}
+		if (projectClassInfo.isEmpty()) {
+			throw new GdxRuntimeException("No class information available. Did you set the correct Tiled project path in the 'projectFilePath' parameter?");
+		}
+		Array<ProjectClassMember> projectClassMembers = projectClassInfo.get(className);
+		if (projectClassMembers == null) {
+			throw new GdxRuntimeException("There is no class with name '" + className + "' in given Tiled project file.");
+		}
+
+		for (ProjectClassMember projectClassMember : projectClassMembers) {
+			String propName = projectClassMember.name;
+			XmlReader.Element classProp = classElement == null ? null : getPropertyByName(classElement, propName);
+			switch (projectClassMember.type) {
+				case "object": {
+					String value = classProp == null ? projectClassMember.defaultValue.asString() : getPropertyValue(classProp);
+					loadObjectProperty(classProperties, propName, value);
+					break;
+				}
+				case "class": {
+					// A 'class' property is a property which is itself a set of properties
+					MapProperties nestedClassProperties = new MapProperties();
+					String nestedClassName = projectClassMember.propertyType;
+					nestedClassProperties.put("type", nestedClassName);
+					// the actual properties of a 'class' property are stored as a new properties tag
+					classProperties.put(propName, nestedClassProperties);
+					if (classProp == null) {
+						// no class values overridden -> use default class values
+						loadJsonClassProperties(nestedClassName, nestedClassProperties, projectClassMember.defaultValue);
+					} else {
+						loadClassProperties(nestedClassName, nestedClassProperties, classProp);
+					}
+					break;
+				}
+				default: {
+					String value = classProp == null ? projectClassMember.defaultValue.asString() : getPropertyValue(classProp);
+					loadBasicProperty(classProperties, propName, value, projectClassMember.type);
+					break;
+				}
+			}
+		}
+	}
+
+	private static String getPropertyValue(Element classProp) {
+		return classProp.getAttribute("value", classProp.getText());
+	}
+
+	protected Element getPropertyByName(Element classElement, String propName) {
+		// we use getChildrenByNameRecursively here because in case of nested classes,
+		// we get an element with a root property (=class) and inside additional property tags for the real
+		// class properties. If we just use getChildrenByName we don't get any children for a nested class.
+		for (Element property : classElement.getChildrenByNameRecursively("property")) {
+			if (propName.equals(property.getAttribute("name"))) {
+				return property;
+			}
+		}
+		return null;
 	}
 
 	static public int[] getTileIds (Element element, int width, int height) {

@@ -19,12 +19,12 @@
       <property name="classStr" value="txt"/>
      </properties>
     </property>
+    <property name="objClassDefaults" type="class" propertytype="testClassDefaults"/>
     <property name="objClassNested" type="class" propertytype="testClassNested">
      <properties>
       <property name="classClass" type="class" propertytype="testClass">
        <properties>
         <property name="classColor" type="color" value="#ff0000ff"/>
-        <property name="classInt" type="int" value="44"/>
         <property name="classObj" type="object" value="1"/>
         <property name="classStr" value="txt2"/>
        </properties>

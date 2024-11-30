@@ -29,10 +29,7 @@ import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.*;
 
 import java.util.StringTokenizer;
 
@@ -50,6 +47,33 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		/** Whether to flip all Y coordinates so that Y positive is up. All libGDX renderers require flipped Y coordinates, and thus
 		 * flipY set to true. This parameter is included for non-rendering related purposes of TMX files, or custom renderers. */
 		public boolean flipY = true;
+		/** Path to Tiled project file. Needed when using class properties. */
+		public String projectFilePath = null;
+	}
+
+	/**
+	 * Representation of a single Tiled class property. A property has:
+	 * <ul>
+	 *     <li>a property {@code name}</li>
+	 *     <li>a property {@code type} like string, int, ...</li>
+	 *     <li>an optional {@code propertyType} for class and enum types to refer to a specific class/enum</li>
+	 *     <li>a {@code defaultValue}</li>
+	 * </ul>
+	 */
+	protected static class ProjectClassMember {
+		public String name;
+		public String type;
+		public String propertyType;
+		public JsonValue defaultValue;
+
+		@Override
+		public String toString() {
+			return "ProjectClassMember{" //
+					+ "name='" + name + "'" //
+					+ ", type='" + type + "'" //
+					+ ", propertyType='" + propertyType + "'" //
+					+ ", defaultValue=" + defaultValue + "}";
+		}
 	}
 
 	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
@@ -68,6 +92,11 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 	protected TiledMap map;
 	protected IntMap<MapObject> idToObject;
 	protected Array<Runnable> runOnEndOfLoadTiled;
+	/**
+	 * Optional Tiled project class information.
+	 * Key is the classname and value is an array of class members (=class properties)
+	 * */
+	protected ObjectMap<String, Array<ProjectClassMember>> projectClassInfo;
 
 	public BaseTiledMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -187,6 +216,90 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 	protected void loadBasicProperty (MapProperties properties, String name, String value, String type) {
 		Object castValue = castProperty(name, value, type);
 		properties.put(name, castValue);
+	}
+
+	/**
+	 * Parses the given Tiled project file for class property information.
+	 * A class can have multiple members. Refer to {@link ProjectClassMember}.
+	 */
+	protected void loadProjectFile(String projectFilePath) {
+		projectClassInfo = new ObjectMap<>();
+		if (projectFilePath == null || projectFilePath.trim().isEmpty()) {
+			return;
+		}
+
+		FileHandle projectFile = resolve(projectFilePath);
+		JsonValue projectRoot = new JsonReader().parse(projectFile);
+		JsonValue propertyTypes = projectRoot.get("propertyTypes");
+		if (propertyTypes == null) {
+			// no custom property types in project -> nothing to parse
+			return;
+		}
+
+		for (JsonValue propertyType : propertyTypes) {
+			if (!"class".equals(propertyType.getString("type"))) {
+				continue;
+			}
+			String className = propertyType.getString("name");
+			JsonValue members = propertyType.get("members");
+			if (members.isEmpty()) {
+				continue;
+			}
+
+			Array<ProjectClassMember> projectClassMembers = new Array<>();
+			projectClassInfo.put(className, projectClassMembers);
+			for (JsonValue member : members) {
+				BaseTmjMapLoader.ProjectClassMember projectClassMember = new BaseTmjMapLoader.ProjectClassMember();
+				projectClassMember.name = member.getString("name");
+				projectClassMember.type = member.getString("type");
+				projectClassMember.propertyType = member.getString("propertyType", null);
+				projectClassMember.defaultValue = member.get("value");
+				projectClassMembers.add(projectClassMember);
+			}
+		}
+	}
+
+	protected void loadJsonClassProperties(String className, MapProperties classProperties, JsonValue classElement) {
+		if (projectClassInfo == null) {
+			throw new GdxRuntimeException("No class information loaded to support class properties. Did you set the 'projectFilePath' parameter?");
+		}
+		if (projectClassInfo.isEmpty()) {
+			throw new GdxRuntimeException("No class information available. Did you set the correct Tiled project path in the 'projectFilePath' parameter?");
+		}
+		Array<ProjectClassMember> projectClassMembers = projectClassInfo.get(className);
+		if (projectClassMembers == null) {
+			throw new GdxRuntimeException("There is no class with name '" + className + "' in given Tiled project file.");
+		}
+
+		for (ProjectClassMember projectClassMember : projectClassMembers) {
+			String propName = projectClassMember.name;
+			JsonValue classProp = classElement.get(propName);
+			switch (projectClassMember.type) {
+				case "object": {
+					String value = classProp == null ? projectClassMember.defaultValue.asString() : classProp.asString();
+					loadObjectProperty(classProperties, propName, value);
+					break;
+				}
+				case "class": {
+					// A 'class' property is a property which is itself a set of properties
+					if (classProp == null) {
+						classProp = projectClassMember.defaultValue;
+					}
+					MapProperties nestedClassProperties = new MapProperties();
+					String nestedClassName = projectClassMember.propertyType;
+					nestedClassProperties.put("type", nestedClassName);
+					// the actual properties of a 'class' property are stored as a new properties tag
+					classProperties.put(propName, nestedClassProperties);
+					loadJsonClassProperties(nestedClassName, nestedClassProperties, classProp);
+					break;
+				}
+				default: {
+					String value = classProp == null ? projectClassMember.defaultValue.asString() : classProp.asString();
+					loadBasicProperty(classProperties, propName, value, projectClassMember.type);
+					break;
+				}
+			}
+		}
 	}
 
 }
