@@ -28,15 +28,15 @@ public class AABBUtil {
         Vector2 vertex = new Vector2();
         lowerBound.set(Float.MAX_VALUE, Float.MAX_VALUE);
         upperBound.set(-Float.MAX_VALUE, -Float.MAX_VALUE);
+        Vector2 transformedVertex = transform.mul(vertex);
 
         for (int i = 0; i < polygon.getVertexCount(); i++) {
             polygon.getVertex(i, vertex);
-            transform.mul(vertex);
 
-            lowerBound.x = Math.min(lowerBound.x, vertex.x);
-            lowerBound.y = Math.min(lowerBound.y, vertex.y);
-            upperBound.x = Math.max(upperBound.x, vertex.x);
-            upperBound.y = Math.max(upperBound.y, vertex.y);
+            lowerBound.x = Math.min(lowerBound.x, transformedVertex.x);
+            lowerBound.y = Math.min(lowerBound.y, transformedVertex.y);
+            upperBound.x = Math.max(upperBound.x, transformedVertex.x);
+            upperBound.y = Math.max(upperBound.y, transformedVertex.y);
         }
     }
 
