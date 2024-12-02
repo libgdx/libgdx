@@ -48,7 +48,7 @@ public class CpuSpriteBatchTest extends GdxTest {
 
 		public void draw (Batch batch, float parentAlpha) {
 			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, parentAlpha);
+			batch.setColor(color.getR(), color.getG(), color.getB(), parentAlpha);
 			drawable.draw(batch, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
 				getRotation());
 		}

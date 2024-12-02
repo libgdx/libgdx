@@ -349,8 +349,8 @@ public class Sprite extends TextureRegion {
 
 	/** Sets the alpha portion of the color used to tint this sprite. */
 	public void setAlpha (float a) {
-		if (color.a != a) {
-			color.a = a;
+		if (color.getA() != a) {
+			color.setA(a);
 			packedColor = color.toFloatBits();
 			vertices[C1] = packedColor;
 			vertices[C2] = packedColor;
@@ -588,7 +588,7 @@ public class Sprite extends TextureRegion {
 	}
 
 	public void draw (Batch batch, float alphaModulation) {
-		float oldAlpha = getColor().a;
+		float oldAlpha = getColor().getA();
 		setAlpha(oldAlpha * alphaModulation);
 		draw(batch);
 		setAlpha(oldAlpha);

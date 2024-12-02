@@ -50,7 +50,7 @@ public class SphericalHarmonics {
 	}
 
 	public SphericalHarmonics set (final Color color) {
-		return set(color.r, color.g, color.b);
+		return set(color.getR(), color.getG(), color.getB());
 	}
 
 	public SphericalHarmonics set (float r, float g, float b) {

@@ -238,7 +238,7 @@ public class Box2DDebugRenderer implements Disposable {
 	private void drawSolidCircle (Vector2 center, float radius, Vector2 axis, Color color) {
 		float angle = 0;
 		float angleInc = 2 * (float)Math.PI / 20;
-		renderer.setColor(color.r, color.g, color.b, color.a);
+		renderer.setColor(color.getR(), color.getG(), color.getB(), color.getA());
 		for (int i = 0; i < 20; i++, angle += angleInc) {
 			v.set((float)Math.cos(angle) * radius + center.x, (float)Math.sin(angle) * radius + center.y);
 			if (i == 0) {
@@ -254,7 +254,7 @@ public class Box2DDebugRenderer implements Disposable {
 	}
 
 	private void drawSolidPolygon (Vector2[] vertices, int vertexCount, Color color, boolean closed) {
-		renderer.setColor(color.r, color.g, color.b, color.a);
+		renderer.setColor(color.getR(), color.getG(), color.getB(), color.getA());
 		lv.set(vertices[0]);
 		f.set(vertices[0]);
 		for (int i = 1; i < vertexCount; i++) {

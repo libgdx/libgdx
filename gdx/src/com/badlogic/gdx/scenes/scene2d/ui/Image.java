@@ -117,7 +117,7 @@ public class Image extends Widget {
 		validate();
 
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		batch.setColor(color.getR(), color.getG(), color.getB(), color.getA() * parentAlpha);
 
 		float x = getX();
 		float y = getY();

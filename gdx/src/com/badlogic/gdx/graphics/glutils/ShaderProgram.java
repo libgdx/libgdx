@@ -640,11 +640,11 @@ public class ShaderProgram implements Disposable {
 	 * @param name the name of the uniform
 	 * @param values r, g, b and a as the first through fourth values respectively */
 	public void setUniformf (String name, Color values) {
-		setUniformf(name, values.r, values.g, values.b, values.a);
+		setUniformf(name, values.getR(), values.getG(), values.getB(), values.getA());
 	}
 
 	public void setUniformf (int location, Color values) {
-		setUniformf(location, values.r, values.g, values.b, values.a);
+		setUniformf(location, values.getR(), values.getG(), values.getB(), values.getA());
 	}
 
 	/** Sets the vertex attribute with the given name. The {@link ShaderProgram} must be bound for this to work.

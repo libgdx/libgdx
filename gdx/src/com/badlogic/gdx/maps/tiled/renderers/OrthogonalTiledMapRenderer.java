@@ -66,7 +66,8 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
 		final Color batchColor = batch.getColor();
-		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
+		final float color = Color.toFloatBits(batchColor.getR(), batchColor.getG(), batchColor.getB(),
+			batchColor.getA() * layer.getOpacity());
 
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();

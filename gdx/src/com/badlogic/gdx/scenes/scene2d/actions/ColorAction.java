@@ -30,10 +30,10 @@ public class ColorAction extends TemporalAction {
 
 	protected void begin () {
 		if (color == null) color = target.getColor();
-		startR = color.r;
-		startG = color.g;
-		startB = color.b;
-		startA = color.a;
+		startR = color.getR();
+		startG = color.getG();
+		startB = color.getB();
+		startA = color.getA();
 	}
 
 	protected void update (float percent) {
@@ -42,10 +42,10 @@ public class ColorAction extends TemporalAction {
 		else if (percent == 1)
 			color.set(end);
 		else {
-			float r = startR + (end.r - startR) * percent;
-			float g = startG + (end.g - startG) * percent;
-			float b = startB + (end.b - startB) * percent;
-			float a = startA + (end.a - startA) * percent;
+			float r = startR + (end.getR() - startR) * percent;
+			float g = startG + (end.getG() - startG) * percent;
+			float b = startB + (end.getB() - startB) * percent;
+			float a = startA + (end.getA() - startA) * percent;
 			color.set(r, g, b, a);
 		}
 	}

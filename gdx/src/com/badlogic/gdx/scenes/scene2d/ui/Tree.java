@@ -268,9 +268,9 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	public void draw (Batch batch, float parentAlpha) {
 		drawBackground(batch, parentAlpha);
 		Color color = getColor();
-		float a = color.a * parentAlpha;
-		batch.setColor(color.r, color.g, color.b, a);
-		drawIcons(batch, color.r, color.g, color.b, a, null, rootNodes, paddingLeft, plusMinusWidth());
+		float a = color.getA() * parentAlpha;
+		batch.setColor(color.getR(), color.getG(), color.getB(), a);
+		drawIcons(batch, color.getR(), color.getG(), color.getB(), a, null, rootNodes, paddingLeft, plusMinusWidth());
 		super.draw(batch, parentAlpha); // Draw node actors.
 	}
 
@@ -278,7 +278,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 	protected void drawBackground (Batch batch, float parentAlpha) {
 		if (style.background != null) {
 			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			batch.setColor(color.getR(), color.getG(), color.getB(), color.getA() * parentAlpha);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
 	}
@@ -312,7 +312,7 @@ public class Tree<N extends Node, V> extends WidgetGroup {
 				if (node.icon != null) {
 					float iconY = y + actorY + Math.round((height - node.icon.getMinHeight()) / 2);
 					Color actorColor = actor.getColor();
-					batch.setColor(actorColor.r, actorColor.g, actorColor.b, actorColor.a * a);
+					batch.setColor(actorColor.getR(), actorColor.getG(), actorColor.getB(), actorColor.getA() * a);
 					drawIcon(node, node.icon, batch, iconX, iconY);
 					batch.setColor(r, g, b, a);
 				}

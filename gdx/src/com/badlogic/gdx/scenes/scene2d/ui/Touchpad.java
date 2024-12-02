@@ -154,7 +154,7 @@ public class Touchpad extends Widget {
 		validate();
 
 		Color c = getColor();
-		batch.setColor(c.r, c.g, c.b, c.a * parentAlpha);
+		batch.setColor(c.getR(), c.getG(), c.getB(), c.getA() * parentAlpha);
 
 		float x = getX();
 		float y = getY();

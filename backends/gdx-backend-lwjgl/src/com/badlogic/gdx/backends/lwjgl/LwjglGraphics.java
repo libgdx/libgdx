@@ -285,8 +285,8 @@ public class LwjglGraphics extends AbstractGraphics {
 		}
 		Display.setTitle(config.title);
 		Display.setResizable(config.resizable);
-		Display.setInitialBackground(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
-			config.initialBackgroundColor.b);
+		Display.setInitialBackground(config.initialBackgroundColor.getR(), config.initialBackgroundColor.getG(),
+			config.initialBackgroundColor.getB());
 
 		Display.setLocation(config.x, config.y);
 		createDisplayPixelFormat(config.useGL30, config.gles30ContextMajorVersion, config.gles30ContextMinorVersion);

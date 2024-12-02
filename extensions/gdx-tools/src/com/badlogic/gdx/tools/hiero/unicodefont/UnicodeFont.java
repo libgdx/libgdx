@@ -265,7 +265,7 @@ public class UnicodeFont {
 		x -= paddingLeft;
 		y -= paddingTop;
 
-		GL11.glColor4f(color.r, color.g, color.b, color.a);
+		GL11.glColor4f(color.getR(), color.getG(), color.getB(), color.getA());
 		GL11.glTranslatef(x, y, 0);
 
 		if (renderType == RenderType.FreeType && bitmapFont != null)

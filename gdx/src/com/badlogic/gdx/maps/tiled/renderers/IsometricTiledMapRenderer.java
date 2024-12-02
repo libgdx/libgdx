@@ -85,7 +85,8 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
 		final Color batchColor = batch.getColor();
-		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
+		final float color = Color.toFloatBits(batchColor.getR(), batchColor.getG(), batchColor.getB(),
+			batchColor.getA() * layer.getOpacity());
 
 		float tileWidth = layer.getTileWidth() * unitScale;
 		float tileHeight = layer.getTileHeight() * unitScale;

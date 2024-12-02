@@ -132,8 +132,8 @@ public class LwjglAWTCanvas implements Application {
 			return;
 		}
 
-		canvas.setBackground(new Color(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
-			config.initialBackgroundColor.b, config.initialBackgroundColor.a));
+		canvas.setBackground(new Color(config.initialBackgroundColor.getR(), config.initialBackgroundColor.getG(),
+			config.initialBackgroundColor.getB(), config.initialBackgroundColor.getA()));
 
 		graphics = new LwjglGraphics(canvas, config) {
 			@Override

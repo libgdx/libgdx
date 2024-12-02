@@ -207,7 +207,7 @@ public class List<T> extends Widget implements Cullable {
 		Color fontColorUnselected = style.fontColorUnselected;
 
 		Color color = getColor();
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		batch.setColor(color.getR(), color.getG(), color.getB(), color.getA() * parentAlpha);
 
 		float x = getX(), y = getY(), width = getWidth(), height = getHeight();
 		float itemY = height;
@@ -223,7 +223,8 @@ public class List<T> extends Widget implements Cullable {
 		float textOffsetX = selectedDrawable.getLeftWidth(), textWidth = width - textOffsetX - selectedDrawable.getRightWidth();
 		float textOffsetY = selectedDrawable.getTopHeight() - font.getDescent();
 
-		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
+		font.setColor(fontColorUnselected.getR(), fontColorUnselected.getG(), fontColorUnselected.getB(),
+			fontColorUnselected.getA() * parentAlpha);
 		for (int i = 0; i < items.size; i++) {
 			if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
 				T item = items.get(i);
@@ -233,14 +234,15 @@ public class List<T> extends Widget implements Cullable {
 					drawable = style.down;
 				else if (selected) {
 					drawable = selectedDrawable;
-					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
+					font.setColor(fontColorSelected.getR(), fontColorSelected.getG(), fontColorSelected.getB(),
+						fontColorSelected.getA() * parentAlpha);
 				} else if (overIndex == i && style.over != null) //
 					drawable = style.over;
 				drawSelection(batch, drawable, x, y + itemY - itemHeight, width, itemHeight);
 				drawItem(batch, font, i, item, x + textOffsetX, y + itemY - textOffsetY, textWidth);
 				if (selected) {
-					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b,
-						fontColorUnselected.a * parentAlpha);
+					font.setColor(fontColorUnselected.getR(), fontColorUnselected.getG(), fontColorUnselected.getB(),
+						fontColorUnselected.getA() * parentAlpha);
 				}
 			} else if (itemY < cullingArea.y) {
 				break;
@@ -257,7 +259,7 @@ public class List<T> extends Widget implements Cullable {
 	protected void drawBackground (Batch batch, float parentAlpha) {
 		if (style.background != null) {
 			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			batch.setColor(color.getR(), color.getG(), color.getB(), color.getA() * parentAlpha);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
 	}

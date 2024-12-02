@@ -834,10 +834,10 @@ public class PixmapPacker implements Disposable {
 
 			int colint = raster.getPixel(x, y);
 			c.set(colint);
-			rgba[0] = (int)(c.r * 255);
-			rgba[1] = (int)(c.g * 255);
-			rgba[2] = (int)(c.b * 255);
-			rgba[3] = (int)(c.a * 255);
+			rgba[0] = (int)(c.getR() * 255);
+			rgba[1] = (int)(c.getG() * 255);
+			rgba[2] = (int)(c.getB() * 255);
+			rgba[3] = (int)(c.getA() * 255);
 			if (rgba[3] == breakA) return next;
 
 			if (!startPoint && (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0 || rgba[3] != 255))
