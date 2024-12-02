@@ -20,12 +20,10 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.*;
-import com.badlogic.gdx.maps.objects.EllipseMapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
-import com.badlogic.gdx.maps.objects.PolylineMapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.objects.*;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
@@ -369,6 +367,27 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 					object = new PolylineMapObject(polyline);
 				} else if ((child = element.getChildByName("ellipse")) != null) {
 					object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
+				} else if ((child = element.getChildByName("text")) != null) {
+					TextMapObject textMapObject = new TextMapObject(x, flipY ? y - height : y, width, height, child.getText());
+					textMapObject.setRotation(child.getFloatAttribute("rotation", 0));
+					textMapObject.setFontFamily(child.getAttribute("fontfamily", ""));
+					textMapObject.setPixelSize(child.getIntAttribute("pixelSize", 16));
+					textMapObject.setHorizontalAlign(child.getAttribute("halign", "left"));
+					textMapObject.setVerticalAlign(child.getAttribute("valign", "top"));
+					textMapObject.setBold(child.getIntAttribute("bold", 0) == 1);
+					textMapObject.setItalic(child.getIntAttribute("italic", 0) == 1);
+					textMapObject.setUnderline(child.getIntAttribute("underline", 0) == 1);
+					textMapObject.setStrikeout(child.getIntAttribute("strikeout", 0) == 1);
+					textMapObject.setWrap(child.getIntAttribute("wrap", 0) == 1);
+					// When kerning is true, it won't be added as an attribute, it's true by default
+					textMapObject.setKerning(child.getIntAttribute("kerning", 1) == 1);
+					// Default color is #000000, not added as attribute
+					String textColor = child.getAttribute("color", "#000000");
+					// TODO:After PR #7076 is Merged. Update below section of code to use tiledColorToLibGDXColor().
+					String alpha = textColor.length() == 9 ? textColor.substring(1, 3) : "ff";
+					String color = textColor.length() == 9 ? textColor.substring(3) : textColor.substring(1);
+					textMapObject.setColor(Color.valueOf(color + alpha));
+					object = textMapObject;
 				}
 			}
 			if (object == null) {
