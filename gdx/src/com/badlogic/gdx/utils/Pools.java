@@ -16,13 +16,16 @@
 
 package com.badlogic.gdx.utils;
 
-/** Stores a map of {@link Pool}s (usually {@link ReflectionPool}s) by type for convenient static access.
+import com.badlogic.gdx.utils.DefaultPool.PoolSupplier;
+
+/** Stores a map of {@link Pool}s by type for convenient static access.
  * @author Nathan Sweet */
 public class Pools {
 	static private final ObjectMap<Class, Pool> typePools = new ObjectMap();
 
 	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note the max size is ignored
 	 * if this is not the first time this pool has been requested. */
+	@Deprecated
 	static public <T> Pool<T> get (Class<T> type, int max) {
 		Pool pool = typePools.get(type);
 		if (pool == null) {
@@ -34,8 +37,35 @@ public class Pools {
 
 	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. The max size of the pool used
 	 * is 100. */
+	@Deprecated
 	static public <T> Pool<T> get (Class<T> type) {
 		return get(type, 100);
+	}
+
+	/** Returns an existing pool or null for the specified type, stored in a Class to {@link Pool} map. */
+	static public <T> Pool<T> getOrNull (Class<T> type) {
+		return typePools.get(type);
+	}
+
+	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. A new pool will be of type
+	 * {@link DefaultPool} */
+	static public <T> Pool<T> getOrDefault (Class<T> type, PoolSupplier<T> poolTypeSupplier) {
+		Pool<T> pool = typePools.get(type);
+		if (pool == null) {
+			pool = new DefaultPool<>(poolTypeSupplier);
+			typePools.put(type, pool);
+		}
+		return pool;
+	}
+
+	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. */
+	static public <T> Pool<T> getOrCreate (Class<T> type, PoolSupplier<Pool<T>> poolSupplier) {
+		Pool<T> pool = typePools.get(type);
+		if (pool == null) {
+			pool = poolSupplier.get();
+			typePools.put(type, pool);
+		}
+		return pool;
 	}
 
 	/** Sets an existing pool for the specified type, stored in a Class to {@link Pool} map. */
