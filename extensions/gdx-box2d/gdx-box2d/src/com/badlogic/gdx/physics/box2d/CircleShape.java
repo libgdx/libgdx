@@ -23,16 +23,17 @@ import com.badlogic.gdx.math.Vector2;
 public class CircleShape extends Shape {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
-	 */
-	
+#include <box2d/box2d.h>
+	 */ // @on
+
 	public CircleShape () {
-		addr = newCircleShape();
+		this(newCircleShape());
 	}
 
-	private native long newCircleShape (); /*
+	private static native long newCircleShape (); /*
+		// @off
 		return (jlong)(new b2CircleShape( ));
-	*/
+	*/ // @on
 
 	protected CircleShape (long addr) {
 		this.addr = addr;
@@ -56,10 +57,11 @@ public class CircleShape extends Shape {
 	}
 
 	private native void jniGetPosition (long addr, float[] position); /*
+		// @off
 		b2CircleShape* circle = (b2CircleShape*)addr;
 		position[0] = circle->m_p.x;
 		position[1] = circle->m_p.y;
-	*/
+	*/ // @on
 
 	/** Sets the position of the shape */
 	public void setPosition (Vector2 position) {
@@ -67,8 +69,9 @@ public class CircleShape extends Shape {
 	}
 
 	private native void jniSetPosition (long addr, float positionX, float positionY); /*
+		// @off
 		b2CircleShape* circle = (b2CircleShape*)addr;
 		circle->m_p.x = positionX;
 		circle->m_p.y = positionY;
-	*/
+	*/ // @on
 }

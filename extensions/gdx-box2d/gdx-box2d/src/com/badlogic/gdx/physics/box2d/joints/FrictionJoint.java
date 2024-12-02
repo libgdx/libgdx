@@ -24,8 +24,8 @@ import com.badlogic.gdx.physics.box2d.World;
 public class FrictionJoint extends Joint {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h> 
-	 */
+#include <box2d/box2d.h>
+	 */ // @on
 
 	private final float[] tmp = new float[2];
 	private final Vector2 localAnchorA = new Vector2();
@@ -42,10 +42,11 @@ public class FrictionJoint extends Joint {
 	}
 
 	private native void jniGetLocalAnchorA (long addr, float[] anchor); /*
+		// @off
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorA().x;
 		anchor[1] = joint->GetLocalAnchorA().y;
-	*/
+	*/ // @on
 
 	public Vector2 getLocalAnchorB () {
 		jniGetLocalAnchorB(addr, tmp);
@@ -54,10 +55,11 @@ public class FrictionJoint extends Joint {
 	}
 
 	private native void jniGetLocalAnchorB (long addr, float[] anchor); /*
+		// @off
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorB().x;
 		anchor[1] = joint->GetLocalAnchorB().y;
-	*/
+	*/ // @on
 
 	/** Set the maximum friction force in N. */
 	public void setMaxForce (float force) {
@@ -65,9 +67,10 @@ public class FrictionJoint extends Joint {
 	}
 
 	private native void jniSetMaxForce (long addr, float force); /*
+		// @off
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		joint->SetMaxForce( force );
-	*/
+	*/ // @on
 
 	/** Get the maximum friction force in N. */
 	public float getMaxForce () {
@@ -75,9 +78,10 @@ public class FrictionJoint extends Joint {
 	}
 
 	private native float jniGetMaxForce (long addr); /*
+		// @off
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		return joint->GetMaxForce();
-	*/
+	*/ // @on
 
 	/** Set the maximum friction torque in N*m. */
 	public void setMaxTorque (float torque) {
@@ -85,9 +89,10 @@ public class FrictionJoint extends Joint {
 	}
 
 	private native void jniSetMaxTorque (long addr, float torque); /*
+		// @off
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		joint->SetMaxTorque( torque );
-	*/
+	*/ // @on
 
 	/** Get the maximum friction torque in N*m. */
 	public float getMaxTorque () {
@@ -95,7 +100,8 @@ public class FrictionJoint extends Joint {
 	}
 
 	private native float jniGetMaxTorque (long addr); /*
+		// @off
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		return joint->GetMaxTorque();
-	*/
+	*/ // @on
 }
