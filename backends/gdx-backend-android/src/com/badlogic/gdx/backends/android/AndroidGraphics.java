@@ -301,17 +301,25 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		GL20 latestGl = null;
 		switch (config.gles) {
 		case GLES32:
-			if (major > 3 || (major == 3 && minor >= 2)) latestGl = new AndroidGL32();
-			break;
+			if (major > 3 || (major == 3 && minor >= 2)) {
+				latestGl = new AndroidGL32();
+				break;
+			}
 		case GLES31:
-			if (major > 3 || (major == 3 && minor >= 1)) latestGl = new AndroidGL31();
-			break;
+			if (major > 3 || (major == 3 && minor >= 1)) {
+				latestGl = new AndroidGL31();
+				break;
+			}
 		case GLES30:
-			if (major >= 3) latestGl = new AndroidGL30();
-			break;
+			if (major >= 3) {
+				latestGl = new AndroidGL30();
+				break;
+			}
 		case GLES20:
-			if (major >= 2) latestGl = new AndroidGL20();
-			break;
+			if (major >= 2) {
+				latestGl = new AndroidGL20();
+				break;
+			}
 		}
 		gl20 = latestGl;
 		Gdx.gl = latestGl;
