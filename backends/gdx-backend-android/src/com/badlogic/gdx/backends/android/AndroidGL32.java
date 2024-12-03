@@ -37,7 +37,7 @@ public class AndroidGL32 extends AndroidGL31 implements GL32 {
 	}
 
 	@Override
-	public void glDebugMessageCallback (DebugProc callback) {
+	public void glDebugMessageCallback (final DebugProc callback) {
 		GLES32.glDebugMessageCallback(new GLES32.DebugProc() {
 			@Override
 			public void onMessage (int source, int type, int id, int severity, String message) {
