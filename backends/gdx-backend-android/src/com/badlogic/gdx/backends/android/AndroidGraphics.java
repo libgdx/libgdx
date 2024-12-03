@@ -70,6 +70,8 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	AndroidApplicationBase app;
 	GL20 gl20;
 	GL30 gl30;
+	GL31 gl31;
+	GL32 gl32;
 	EGLContext eglContext;
 	GLVersion glVersion;
 	String extensions;
@@ -123,7 +125,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		if (!checkGL20()) throw new GdxRuntimeException("libGDX requires OpenGL ES 2.0");
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
-		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.useGL30 ? 3 : 2);
+		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.gles.isGl30() ? 3 : 2);
 		if (configChooser != null)
 			view.setEGLConfigChooser(configChooser);
 		else
@@ -187,7 +189,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	@Override
 	public void setGL20 (GL20 gl20) {
 		this.gl20 = gl20;
-		if (gl30 == null) {
+		if (gl20 != null) {
 			Gdx.gl = gl20;
 			Gdx.gl20 = gl20;
 		}
@@ -212,40 +214,53 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		if (gl30 != null) {
 			this.gl20 = gl30;
 
-			Gdx.gl = gl20;
-			Gdx.gl20 = gl20;
+			Gdx.gl = gl30;
+			Gdx.gl20 = gl30;
 			Gdx.gl30 = gl30;
 		}
 	}
 
 	@Override
 	public boolean isGL31Available () {
-		return false;
+		return gl31 != null;
 	}
 
 	@Override
 	public GL31 getGL31 () {
-		return null;
+		return gl31;
 	}
 
 	@Override
 	public void setGL31 (GL31 gl31) {
-
+		this.gl31 = gl31;
+		if (gl31 != null) {
+			this.gl20 = gl31;
+			Gdx.gl = gl31;
+			Gdx.gl20 = gl31;
+			Gdx.gl30 = gl31;
+		}
 	}
 
 	@Override
 	public boolean isGL32Available () {
-		return false;
+		return gl32 != null;
 	}
 
 	@Override
 	public GL32 getGL32 () {
-		return null;
+		return gl32;
 	}
 
 	@Override
 	public void setGL32 (GL32 gl32) {
-
+		this.gl32 = gl32;
+		if (gl32 != null) {
+			this.gl20 = gl32;
+			Gdx.gl = gl32;
+			Gdx.gl20 = gl32;
+			Gdx.gl30 = gl32;
+			Gdx.gl32 = gl32;
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -280,20 +295,22 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		String vendorString = gl.glGetString(GL10.GL_VENDOR);
 		String rendererString = gl.glGetString(GL10.GL_RENDERER);
 		glVersion = new GLVersion(Application.ApplicationType.Android, versionString, vendorString, rendererString);
-		if (config.useGL30 && glVersion.getMajorVersion() > 2) {
-			if (gl30 != null) return;
-			gl20 = gl30 = new AndroidGL30();
 
-			Gdx.gl = gl30;
-			Gdx.gl20 = gl30;
-			Gdx.gl30 = gl30;
-		} else {
-			if (gl20 != null) return;
-			gl20 = new AndroidGL20();
-
-			Gdx.gl = gl20;
-			Gdx.gl20 = gl20;
+		int major = glVersion.getMajorVersion();
+		int minor = glVersion.getMinorVersion();
+		GL20 latestGl = null;
+		switch (config.gles) {
+			case GLES32: if (major > 3 || (major == 3 && minor >= 2)) latestGl = new AndroidGL32(); break;
+			case GLES31: if (major > 3 || (major == 3 && minor >= 1)) latestGl = new AndroidGL31(); break;
+			case GLES30: if (major >= 3) latestGl = new AndroidGL30(); break;
+			case GLES20: if (major >= 2) latestGl = new AndroidGL20(); break;
 		}
+		gl20 = latestGl;
+		Gdx.gl = latestGl;
+		Gdx.gl20 = latestGl;
+		Gdx.gl30 = gl30 = latestGl instanceof GL30 ? (GL30) latestGl : null;
+		Gdx.gl31 = gl31 = latestGl instanceof GL31 ? (GL31) latestGl : null;
+		Gdx.gl32 = gl32 = latestGl instanceof GL32 ? (GL32) latestGl : null;
 
 		Gdx.app.log(LOG_TAG, "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
 		Gdx.app.log(LOG_TAG, "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));

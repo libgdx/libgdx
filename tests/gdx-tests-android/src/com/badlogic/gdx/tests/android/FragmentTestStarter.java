@@ -132,6 +132,7 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 		@Override
 		public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+			config.gles = AndroidApplicationConfiguration.GLES.GLES32;
 			config.useImmersiveMode = true;
 			return initializeForView(test, config);
 		}

@@ -21,7 +21,7 @@ ext {
     gdxnatives = [:]
 }
 
-versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 7
+versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
 versions.javaLwjgl3 = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
 versions.robovm = "2.3.22"
 versions.gwt = "2.11.0"
@@ -54,59 +54,17 @@ libraries.lwjgl = [
 
 libraries.lwjgl3 = [
         "org.lwjgl:lwjgl:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-arm32",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-riscv64",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-arm32",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-riscv64",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-arm32",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-riscv64",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-arm32",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-riscv64",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-arm32",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-riscv64",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows-x86",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-arm32",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-riscv64",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows-x86",
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"
 ]
