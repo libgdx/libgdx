@@ -411,7 +411,7 @@ public class GdxTests {
 		return null;
 	}
 
-	public static void resetContext() {
+	public static void resetContext () {
 		ShaderProgram.prependFragmentCode = "";
 		ShaderProgram.prependVertexCode = "";
 	}
