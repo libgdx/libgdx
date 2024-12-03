@@ -23,7 +23,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
-import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /** Class defining the configuration of an {@link AndroidApplication}. Allows you to disable the use of the accelerometer to save
@@ -92,11 +91,8 @@ public class AndroidApplicationConfiguration {
 	/** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
 	public boolean useImmersiveMode = true;
 
-	/**
-	 * Sets which OpenGL ES version. If the set version is not supported on the device,
-	 * it will fall back to the OpenGL ES version that the device supports.
-	 * The OpenGL ES 3.2 requires at least Android 7.0 (API level 24).
-	 */
+	/** Sets which OpenGL ES version. If the set version is not supported on the device, it will fall back to the OpenGL ES version
+	 * that the device supports. The OpenGL ES 3.2 requires at least Android 7.0 (API level 24). */
 	public GLES gles = GLES.GLES20;
 
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
@@ -116,7 +112,7 @@ public class AndroidApplicationConfiguration {
 	public enum GLES {
 		GLES20, GLES30, GLES31, GLES32;
 
-		public boolean isGl30() {
+		public boolean isGl30 () {
 			return this == GLES30 || this == GLES31 || this == GLES32;
 		}
 	}
