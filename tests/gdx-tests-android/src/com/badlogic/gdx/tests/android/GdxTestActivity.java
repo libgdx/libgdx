@@ -32,6 +32,7 @@ public class GdxTestActivity extends AndroidApplication {
 		Bundle extras = getIntent().getExtras();
 		String testName = (String)extras.get("test");
 		GdxTest test = GdxTests.newTest(testName);
+		GdxTests.resetContext();
 
 		// and run the application...
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();

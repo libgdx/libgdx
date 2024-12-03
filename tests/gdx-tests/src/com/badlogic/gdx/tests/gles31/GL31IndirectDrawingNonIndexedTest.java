@@ -35,25 +35,42 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 /** see https://www.khronos.org/opengl/wiki/Vertex_Rendering#Indirect_rendering
  * 
- * Example of indirect commands. Note that commands could be defined directly in GPU via a comput shader. Also note that multi
+ * Example of indirect commands. Note that commands could be defined directly in GPU via a compute shader. Also note that multi
  * draw (glMultiDrawArraysIndirect) requires an extension to GLES 3.1
  * 
  * @author mgsx */
 @GdxTestConfig(requireGL31 = true)
 public class GL31IndirectDrawingNonIndexedTest extends GdxTest {
-	static String vsCode = "attribute vec4 a_position;\n" + //
-		"attribute vec4 a_color;\n" + //
-		"uniform mat4 u_projTrans;\n" + //
-		"varying vec4 v_color;\n" + //
-		"void main(){\n" + //
-		"    v_color = a_color;\n" + //
-		"    gl_Position =  u_projTrans * a_position;\n" + //
-		"}"; //
+	static String vsCode = "" + //
+			"#version 300 es\n" + //
+			"#ifdef GL_ES\n" + //
+			"#define HIGHP highp\n" + //
+			"precision highp float;\n"+ //
+			"#else\n" + //
+			"#define HIGHP\n" + //
+			"#endif\n" + //
+			"in vec4 a_position;\n" + //
+			"in vec4 a_color;\n" + //
+			"uniform mat4 u_projTrans;\n" + //
+			"out vec4 v_color;\n" + //
+			"void main(){\n" + //
+			"    v_color = a_color;\n" + //
+			"    gl_Position =  u_projTrans * a_position;\n" + //
+			"}"; //
 
-	static String fsCode = "varying vec4 v_color;\n" + //
-		"void main(){\n" + //
-		"    gl_FragColor = v_color;\n" + //
-		"}"; //
+	static String fsCode = "" + //
+			"#version 300 es\n" + //
+			"#ifdef GL_ES\n" + //
+			"#define HIGHP highp\n" + //
+			"precision highp float;\n"+ //
+			"#else\n" + //
+			"#define HIGHP\n" + //
+			"#endif\n" + //
+			"in vec4 v_color;\n" + //'
+			"out vec4 fragColor;\n" +
+			"void main(){\n" + //
+			"    fragColor = v_color;\n" + //
+			"}"; //
 
 	private int drawCommands;
 	private Mesh mesh;
