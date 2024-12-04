@@ -57,7 +57,8 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		init(false, 16, 0);
 	}
 
-	public GLSurfaceView20 (Context context, boolean translucent, int depth, int stencil, ResolutionStrategy resolutionStrategy, GLES targetGLESVersion) {
+	public GLSurfaceView20 (Context context, boolean translucent, int depth, int stencil, ResolutionStrategy resolutionStrategy,
+		GLES targetGLESVersion) {
 		super(context);
 		this.targetGLESVersion = targetGLESVersion;
 		this.resolutionStrategy = resolutionStrategy;
@@ -146,12 +147,15 @@ public class GLSurfaceView20 extends GLSurfaceView {
 
 			int[] attrib_list = null;
 			switch (version) {
-				case GLES20:
-				case GLES30: attrib_list = new int[] {EGL_CONTEXT_MAJOR_VERSION, version.major, EGL10.EGL_NONE};
-					break;
-				case GLES31:
-				case GLES32: attrib_list = new int[] {EGL_CONTEXT_MAJOR_VERSION, version.major, EGL_CONTEXT_MINOR_VERSION, version.minor, EGL10.EGL_NONE};
-					break;
+			case GLES20:
+			case GLES30:
+				attrib_list = new int[] {EGL_CONTEXT_MAJOR_VERSION, version.major, EGL10.EGL_NONE};
+				break;
+			case GLES31:
+			case GLES32:
+				attrib_list = new int[] {EGL_CONTEXT_MAJOR_VERSION, version.major, EGL_CONTEXT_MINOR_VERSION, version.minor,
+					EGL10.EGL_NONE};
+				break;
 			}
 
 			EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
