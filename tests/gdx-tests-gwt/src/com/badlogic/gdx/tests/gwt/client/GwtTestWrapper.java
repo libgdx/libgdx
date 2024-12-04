@@ -1,6 +1,8 @@
 
 package com.badlogic.gdx.tests.gwt.client;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tests.AbstractTestWrapper;
 import com.badlogic.gdx.tests.AccelerometerTest;
@@ -23,7 +25,6 @@ import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.BufferUtilsTest;
 import com.badlogic.gdx.tests.ClipboardTest;
-import com.badlogic.gdx.tests.TiledMapObjectPropertyTest;
 import com.badlogic.gdx.tests.ColorTest;
 import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
@@ -76,8 +77,8 @@ import com.badlogic.gdx.tests.SimpleDecalTest;
 import com.badlogic.gdx.tests.SimpleStageCullingTest;
 import com.badlogic.gdx.tests.SortedSpriteTest;
 import com.badlogic.gdx.tests.SoundTest;
-import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteBatchPerformanceTest;
+import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
@@ -91,6 +92,7 @@ import com.badlogic.gdx.tests.TextInputDialogTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
 import com.badlogic.gdx.tests.TiledMapObjectLoadingTest;
+import com.badlogic.gdx.tests.TiledMapObjectPropertyTest;
 import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
@@ -99,13 +101,14 @@ import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.MultipleRenderTargetTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
+import com.badlogic.gdx.tests.g3d.ShadowMappingTextureTest;
 import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.gles2.GlTexImage2D;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
+import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
 import com.badlogic.gdx.tests.gles3.UniformBufferObjectsTest;
-import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gwt.GwtInputTest;
 import com.badlogic.gdx.tests.gwt.GwtWindowModeTest;
 import com.badlogic.gdx.tests.math.CollisionPlaygroundTest;
@@ -114,8 +117,6 @@ import com.badlogic.gdx.tests.math.collision.OrientedBoundingBoxTest;
 import com.badlogic.gdx.tests.net.OpenBrowserExample;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
-
-import java.util.ArrayList;
 
 public class GwtTestWrapper extends AbstractTestWrapper {
 	@Override
@@ -486,6 +487,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new ShadowMappingTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ShadowMappingTextureTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
