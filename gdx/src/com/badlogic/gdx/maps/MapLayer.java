@@ -16,12 +16,15 @@
 
 package com.badlogic.gdx.maps;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Map layer containing a set of objects and properties */
 public class MapLayer {
 	private String name = "";
 	private float opacity = 1.0f;
+	private Color tintColor = new Color(Color.WHITE);
+	private Color tempColor = new Color(Color.WHITE);
 	private boolean visible = true;
 	private float offsetX;
 	private float offsetY;
@@ -46,12 +49,36 @@ public class MapLayer {
 
 	/** @return layer's opacity */
 	public float getOpacity () {
-		return opacity;
+		if (parent != null)
+			return opacity * parent.getOpacity();
+		else
+			return opacity;
 	}
 
 	/** @param opacity new opacity for the layer */
 	public void setOpacity (float opacity) {
 		this.opacity = opacity;
+	}
+
+	/** Returns a temporary color that is the combination of this layer's tint color and its parent's tint color. The returned
+	 * color is reused internally, so it should not be held onto or modified.
+	 * @return layer's tint color combined with the parent's tint color */
+	public Color getCombinedTintColor () {
+		if (parent != null) {
+			return tempColor.set(tintColor).mul(parent.getCombinedTintColor());
+		} else {
+			return tempColor.set(tintColor);
+		}
+	}
+
+	/** @return layer's tint color */
+	public Color getTintColor () {
+		return tintColor;
+	}
+
+	/** @param tintColor new tint color for the layer */
+	public void setTintColor (Color tintColor) {
+		this.tintColor.set(tintColor);
 	}
 
 	/** @return layer's x offset */
