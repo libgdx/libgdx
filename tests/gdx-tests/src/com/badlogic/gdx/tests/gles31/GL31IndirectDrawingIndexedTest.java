@@ -45,7 +45,7 @@ public class GL31IndirectDrawingIndexedTest extends GdxTest {
 		"#version 300 es\n" + //
 		"#ifdef GL_ES\n" + //
 		"#define HIGHP highp\n" + //
-		"precision highp float;\n"+ //
+		"precision highp float;\n" + //
 		"#else\n" + //
 		"#define HIGHP\n" + //
 		"#endif\n" + //
@@ -62,13 +62,12 @@ public class GL31IndirectDrawingIndexedTest extends GdxTest {
 		"#version 300 es\n" + //
 		"#ifdef GL_ES\n" + //
 		"#define HIGHP highp\n" + //
-		"precision highp float;\n"+ //
+		"precision highp float;\n" + //
 		"#else\n" + //
 		"#define HIGHP\n" + //
 		"#endif\n" + //
-		"in vec4 v_color;\n" + //'
-		"out vec4 fragColor;\n" +
-		"void main(){\n" + //
+		"in vec4 v_color;\n" + // '
+		"out vec4 fragColor;\n" + "void main(){\n" + //
 		"    fragColor = v_color;\n" + //
 		"}"; //
 

@@ -42,35 +42,34 @@ import com.badlogic.gdx.utils.ScreenUtils;
 @GdxTestConfig(requireGL31 = true)
 public class GL31IndirectDrawingNonIndexedTest extends GdxTest {
 	static String vsCode = "" + //
-			"#version 300 es\n" + //
-			"#ifdef GL_ES\n" + //
-			"#define HIGHP highp\n" + //
-			"precision highp float;\n"+ //
-			"#else\n" + //
-			"#define HIGHP\n" + //
-			"#endif\n" + //
-			"in vec4 a_position;\n" + //
-			"in vec4 a_color;\n" + //
-			"uniform mat4 u_projTrans;\n" + //
-			"out vec4 v_color;\n" + //
-			"void main(){\n" + //
-			"    v_color = a_color;\n" + //
-			"    gl_Position =  u_projTrans * a_position;\n" + //
-			"}"; //
+		"#version 300 es\n" + //
+		"#ifdef GL_ES\n" + //
+		"#define HIGHP highp\n" + //
+		"precision highp float;\n" + //
+		"#else\n" + //
+		"#define HIGHP\n" + //
+		"#endif\n" + //
+		"in vec4 a_position;\n" + //
+		"in vec4 a_color;\n" + //
+		"uniform mat4 u_projTrans;\n" + //
+		"out vec4 v_color;\n" + //
+		"void main(){\n" + //
+		"    v_color = a_color;\n" + //
+		"    gl_Position =  u_projTrans * a_position;\n" + //
+		"}"; //
 
 	static String fsCode = "" + //
-			"#version 300 es\n" + //
-			"#ifdef GL_ES\n" + //
-			"#define HIGHP highp\n" + //
-			"precision highp float;\n"+ //
-			"#else\n" + //
-			"#define HIGHP\n" + //
-			"#endif\n" + //
-			"in vec4 v_color;\n" + //'
-			"out vec4 fragColor;\n" +
-			"void main(){\n" + //
-			"    fragColor = v_color;\n" + //
-			"}"; //
+		"#version 300 es\n" + //
+		"#ifdef GL_ES\n" + //
+		"#define HIGHP highp\n" + //
+		"precision highp float;\n" + //
+		"#else\n" + //
+		"#define HIGHP\n" + //
+		"#endif\n" + //
+		"in vec4 v_color;\n" + // '
+		"out vec4 fragColor;\n" + "void main(){\n" + //
+		"    fragColor = v_color;\n" + //
+		"}"; //
 
 	private int drawCommands;
 	private Mesh mesh;

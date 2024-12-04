@@ -54,7 +54,7 @@ public class GL32OffsetElementsTest extends GdxTest {
 		"#version 300 es\n" + //
 		"#ifdef GL_ES\n" + //
 		"#define HIGHP highp\n" + //
-		"precision highp float;\n"+ //
+		"precision highp float;\n" + //
 		"#else\n" + //
 		"#define HIGHP\n" + //
 		"#endif\n" + //
