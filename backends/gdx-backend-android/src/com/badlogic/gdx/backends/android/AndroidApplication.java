@@ -31,7 +31,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.backends.android.keyboardheight.AndroidXKeyboardHeightProvider;
+import com.badlogic.gdx.backends.android.keyboardheight.AndroidRKeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.keyboardheight.StandardKeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
@@ -181,10 +181,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		setLayoutInDisplayCutoutMode(this.renderUnderCutout);
 
-		// As per the docs, it might work unreliable < 23 https://developer.android.com/jetpack/androidx/releases/core#1.5.0-alpha02
-		// So, I guess since 23 is pretty rare we can use the old API for the users
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-			keyboardHeightProvider = new AndroidXKeyboardHeightProvider(this);
+			keyboardHeightProvider = new AndroidRKeyboardHeightProvider(this);
 		} else {
 			keyboardHeightProvider = new StandardKeyboardHeightProvider(this);
 		}
