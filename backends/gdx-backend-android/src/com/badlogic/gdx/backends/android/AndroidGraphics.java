@@ -125,7 +125,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		if (!checkGL20()) throw new GdxRuntimeException("libGDX requires OpenGL ES 2.0");
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
-		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.gles.isGl30() ? 3 : 2);
+		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, config.gles);
 		if (configChooser != null)
 			view.setEGLConfigChooser(configChooser);
 		else
@@ -285,11 +285,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		return height;
 	}
 
-	/** This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11
-	 * but fuck up vertex buffer objects. This includes the pixelflinger which segfaults when buffers are deleted as well as the
-	 * Motorola CLIQ and the Samsung Behold II.
-	 *
-	 * @param gl */
+	/** This instantiates the GL instances. */
 	protected void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
 		String versionString = gl.glGetString(GL10.GL_VERSION);
 		String vendorString = gl.glGetString(GL10.GL_VENDOR);

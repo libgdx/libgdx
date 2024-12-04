@@ -20,6 +20,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.GLES;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
@@ -36,7 +37,7 @@ public class GdxTestActivity extends AndroidApplication {
 
 		// and run the application...
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.gles = AndroidApplicationConfiguration.GLES.GLES32;
+		config.gles = GLES.GLES32;
 		config.useImmersiveMode = true;
 		config.useRotationVectorSensor = true;
 		config.useGyroscope = true;

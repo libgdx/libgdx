@@ -108,12 +108,4 @@ public class AndroidApplicationConfiguration {
 			GdxNativesLoader.load();
 		}
 	};
-
-	public enum GLES {
-		GLES20, GLES30, GLES31, GLES32;
-
-		public boolean isGl30 () {
-			return this == GLES30 || this == GLES31 || this == GLES32;
-		}
-	}
 }

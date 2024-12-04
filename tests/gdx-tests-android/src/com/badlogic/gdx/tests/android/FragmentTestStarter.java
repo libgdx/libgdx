@@ -21,7 +21,7 @@ import android.widget.ListView;
 
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.backends.android.GLES;
 import com.badlogic.gdx.tests.BackTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
@@ -134,7 +134,7 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 		@Override
 		public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-			config.gles = AndroidApplicationConfiguration.GLES.GLES32;
+			config.gles = GLES.GLES32;
 			config.useImmersiveMode = true;
 			return initializeForView(test, config);
 		}
