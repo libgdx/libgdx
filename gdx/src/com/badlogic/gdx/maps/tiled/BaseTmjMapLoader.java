@@ -382,10 +382,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			 textMapObject.setKerning(child.getBoolean("kerning", true));
 			 // Default color is #000000, not added as attribute
 			 String textColor = child.getString("color", "#000000");
-			 // TODO:After PR #7076 is Merged. Update below section of code to use tiledColorToLibGDXColor().
-			 String alpha = textColor.length() == 9 ? textColor.substring(1, 3) : "ff";
-			 String color = textColor.length() == 9 ? textColor.substring(3) : textColor.substring(1);
-			 textMapObject.setColor(Color.valueOf(color + alpha));
+			 textMapObject.setColor(Color.valueOf(tiledColorToLibGDXColor(textColor)));
 			 object = textMapObject;
 		}
 		if (object == null) {
