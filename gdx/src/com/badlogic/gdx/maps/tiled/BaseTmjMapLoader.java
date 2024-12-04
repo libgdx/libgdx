@@ -20,6 +20,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.*;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
@@ -300,6 +301,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	protected void loadBasicLayerInfo (MapLayer layer, JsonValue element) {
 		String name = element.getString("name");
 		float opacity = element.getFloat("opacity", 1.0f);
+		String tintColor = element.getString("tintcolor", "#ffffffff");
 		boolean visible = element.getBoolean("visible", true);
 		float offsetX = element.getFloat("offsetx", 0);
 		float offsetY = element.getFloat("offsety", 0);
@@ -313,6 +315,9 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		layer.setOffsetY(offsetY);
 		layer.setParallaxX(parallaxX);
 		layer.setParallaxY(parallaxY);
+
+		// set layer tint color after converting from #AARRGGBB to #RRGGBBAA
+		layer.setTintColor(Color.valueOf(tiledColorToLibGDXColor(tintColor)));
 	}
 
 	protected void loadObject (TiledMap map, MapLayer layer, JsonValue element) {

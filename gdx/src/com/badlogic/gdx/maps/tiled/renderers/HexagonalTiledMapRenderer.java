@@ -109,7 +109,7 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
 		final Color batchColor = batch.getColor();
-		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
+		final float color = getTileLayerColor(layer, batchColor);
 
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();
@@ -263,7 +263,8 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 	@Override
 	public void renderImageLayer (TiledMapImageLayer layer) {
 		final Color batchColor = batch.getColor();
-		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
+
+		final float color = getImageLayerColor(layer, batchColor);
 
 		final float[] vertices = this.vertices;
 
