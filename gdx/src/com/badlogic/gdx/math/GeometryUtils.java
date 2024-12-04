@@ -222,7 +222,7 @@ public final class GeometryUtils {
 			x1 = x2;
 			y1 = y2;
 		}
-		return area * 0.5f;
+		return Math.abs(area * 0.5f);
 	}
 
 	static public void ensureCCW (float[] polygon) {
