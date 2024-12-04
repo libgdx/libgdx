@@ -32,7 +32,10 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import java.util.StringTokenizer;
 
