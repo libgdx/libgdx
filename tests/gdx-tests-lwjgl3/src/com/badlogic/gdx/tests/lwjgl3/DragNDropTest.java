@@ -42,7 +42,7 @@ public class DragNDropTest extends GdxTest {
 
 		root = new Table();
 		root.setFillParent(true);
-		root.align(Align.left | Align.top);
+		root.align(Align.topLeft);
 		stage.addActor(root);
 	}
 
@@ -51,7 +51,7 @@ public class DragNDropTest extends GdxTest {
 	 * @see com.badlogic.gdx.ApplicationListener#render() */
 	@Override
 	public void render () {
-		ScreenUtils.clear(1, 0, 0, 1);
+		ScreenUtils.clear(Color.GRAY);
 
 		stage.act();
 		stage.draw();
