@@ -319,6 +319,7 @@ public class GdxTests {
 		TiledMapBench.class,
 		TiledMapLayerOffsetTest.class,
 		TiledMapLayerTintOpacityTest.class,
+		TiledMapPropertiesTest.class,
 		TiledMapJsonFormatTest.class,
 		TiledMapJsonObjectLoadingTest.class,
 		TimerTest.class,

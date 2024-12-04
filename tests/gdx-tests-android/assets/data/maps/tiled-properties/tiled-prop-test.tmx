@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="2" height="2" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="3">
+ <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32" tilecount="256" columns="16">
+  <image source="../tiled/tiles.png" width="512" height="512"/>
+ </tileset>
+ <layer id="1" name="tile layer" width="2" height="2">
+  <data encoding="csv">
+0,0,
+0,0
+</data>
+ </layer>
+ <objectgroup id="2" name="object layer">
+  <object id="1" name="Test Object" x="14.7998" y="15.5955">
+   <properties>
+    <property name="objBool" type="bool" value="true"/>
+    <property name="objClass" type="class" propertytype="testClass">
+     <properties>
+      <property name="classInt" type="int" value="43"/>
+      <property name="classStr" value="txt"/>
+     </properties>
+    </property>
+    <property name="objClassDefaults" type="class" propertytype="testClassDefaults"/>
+    <property name="objClassNested" type="class" propertytype="testClassNested">
+     <properties>
+      <property name="classClass" type="class" propertytype="testClass">
+       <properties>
+        <property name="classColor" type="color" value="#ff0000ff"/>
+        <property name="classObj" type="object" value="1"/>
+        <property name="classStr" value="txt2"/>
+       </properties>
+      </property>
+      <property name="classInt" type="int" value="45"/>
+     </properties>
+    </property>
+    <property name="objColor" type="color" value="#ffff0000"/>
+    <property name="objEnumNum" type="int" propertytype="enumNum" value="1"/>
+    <property name="objEnumNumMulti" type="int" propertytype="enumNumMulti" value="3"/>
+    <property name="objEnumStr" propertytype="enumStr" value="STR2"/>
+    <property name="objEnumStrMulti" propertytype="enumStrMulti" value="STR1,STR2"/>
+    <property name="objFile" type="file" value="tiled-prop-test.tiled-project"/>
+    <property name="objFloat" type="float" value="4.2"/>
+    <property name="objInt" type="int" value="42"/>
+    <property name="objObj" type="object" value="1"/>
+    <property name="objStr" value="someTxt"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

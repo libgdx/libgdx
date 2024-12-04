@@ -34,7 +34,6 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> {
 
 	public static class Parameters extends BaseTmjMapLoader.Parameters {
-
 	}
 
 	public TmjMapLoader () {
