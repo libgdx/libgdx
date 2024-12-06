@@ -295,8 +295,8 @@ public class Hiero extends JFrame {
 
 		if (unicodeFont == null) {
 			// Load from java.awt.Font (kerning not available!).
-			unicodeFont = new UnicodeFont(Font.decode((String)fontList.getSelectedValue()), fontSize, boldCheckBox.isSelected(),
-				italicCheckBox.isSelected());
+			unicodeFont = new UnicodeFont(new Font((String)fontList.getSelectedValue(), Font.PLAIN, 12), fontSize,
+				boldCheckBox.isSelected(), italicCheckBox.isSelected());
 		}
 
 		unicodeFont.setMono(monoCheckBox.isSelected());
