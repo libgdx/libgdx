@@ -37,7 +37,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class SoundTest extends GdxTest {
 
-	private static final String[] FILENAMES = {"shotgun.ogg", "bubblepop.ogg", "bubblepop-stereo-left-only.wav"};
+	private static final String[] FILENAMES = {"shotgun.ogg", "shotgun-8bit.wav", "shotgun-32float.wav", "shotgun-64float.wav",
+		"quadraphonic.ogg", "quadraphonic.wav", "bubblepop.ogg", "bubblepop-stereo-left-only.wav"};
 
 	Sound sound;
 	float volume = 0.5f;

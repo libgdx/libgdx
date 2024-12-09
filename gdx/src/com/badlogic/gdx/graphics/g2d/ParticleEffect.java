@@ -212,7 +212,7 @@ public class ParticleEffect implements Disposable {
 				if (lastDotIndex != -1) imageName = imageName.substring(0, lastDotIndex);
 				if (atlasPrefix != null) imageName = atlasPrefix + imageName;
 				Sprite sprite = atlas.createSprite(imageName);
-				if (sprite == null) throw new IllegalArgumentException("SpriteSheet missing image: " + imageName);
+				if (sprite == null) throw new IllegalArgumentException("Atlas is missing region: " + imageName);
 				sprites.add(sprite);
 			}
 			emitter.setSprites(sprites);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "https://www.gwtproject.org/doctype/2.10.0/gwt-module.dtd">
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.11.0//EN" "https://www.gwtproject.org/doctype/2.11.0/gwt-module.dtd">
 <module>
   <inherits name="com.google.gwt.user.User"/>
   <inherits name="com.google.gwt.canvas.Canvas"/>

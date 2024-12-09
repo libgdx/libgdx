@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.utils.Os;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
@@ -50,6 +51,7 @@ public class Lwjgl3Window implements Disposable {
 	private final IntBuffer tmpBuffer2;
 	boolean iconified = false;
 	boolean focused = false;
+	boolean asyncResized = false;
 	private boolean requestRendering = false;
 
 	private final GLFWWindowFocusCallback focusCallback = new GLFWWindowFocusCallback() {
@@ -236,6 +238,7 @@ public class Lwjgl3Window implements Disposable {
 	/** Sets the position of the window in logical coordinates. All monitors span a virtual surface together. The coordinates are
 	 * relative to the first monitor in the virtual surface. **/
 	public void setPosition (int x, int y) {
+		if (GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) return;
 		GLFW.glfwSetWindowPos(windowHandle, x, y);
 	}
 
@@ -307,7 +310,7 @@ public class Lwjgl3Window implements Disposable {
 	}
 
 	static void setIcon (long windowHandle, String[] imagePaths, Files.FileType imageFileType) {
-		if (SharedLibraryLoader.isMac) return;
+		if (SharedLibraryLoader.os == Os.MacOsX) return;
 
 		Pixmap[] pixmaps = new Pixmap[imagePaths.length];
 		for (int i = 0; i < imagePaths.length; i++) {
@@ -322,7 +325,8 @@ public class Lwjgl3Window implements Disposable {
 	}
 
 	static void setIcon (long windowHandle, Pixmap[] images) {
-		if (SharedLibraryLoader.isMac) return;
+		if (SharedLibraryLoader.os == Os.MacOsX) return;
+		if (GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) return;
 
 		GLFWImage.Buffer buffer = GLFWImage.malloc(images.length);
 		Pixmap[] tmpPixmaps = new Pixmap[images.length];
@@ -409,6 +413,18 @@ public class Lwjgl3Window implements Disposable {
 		synchronized (this) {
 			shouldRender |= requestRendering && !iconified;
 			requestRendering = false;
+		}
+
+		// In case glfw_async is used, we need to resize outside the GLFW
+		if (asyncResized) {
+			asyncResized = false;
+			graphics.updateFramebufferInfo();
+			graphics.gl20.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+			listener.resize(graphics.getWidth(), graphics.getHeight());
+			graphics.update();
+			listener.render();
+			GLFW.glfwSwapBuffers(windowHandle);
+			return true;
 		}
 
 		if (shouldRender) {

@@ -42,11 +42,11 @@ dependencies {
 	implementation project(":tests:gdx-tests")
 	implementation project(":backends:gdx-backend-gwt")
 	implementation project(":extensions:gdx-box2d-parent:gdx-box2d-gwt")
-	compileOnly "com.google.gwt:gwt-dev:${versions.gwt}"
+	compileOnly "org.gwtproject:gwt-dev:${versions.gwt}"
 }
 
 gwt {
-	gwtVersion='2.10.0' // Should match the gwt version used for building the gwt backend
+	gwtVersion='2.11.0' // Should match the gwt version used for building the gwt backend
 	maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
 	minHeapSize="1G"
 

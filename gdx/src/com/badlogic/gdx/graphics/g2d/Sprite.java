@@ -37,6 +37,7 @@ public class Sprite extends TextureRegion {
 
 	final float[] vertices = new float[SPRITE_SIZE];
 	private final Color color = new Color(1, 1, 1, 1);
+	private float packedColor = Color.WHITE_FLOAT_BITS;
 	private float x, y;
 	float width, height;
 	private float originX, originY;
@@ -338,45 +339,52 @@ public class Sprite extends TextureRegion {
 	/** Sets the color used to tint this sprite. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
 		color.set(tint);
-		float color = tint.toFloatBits();
-		float[] vertices = this.vertices;
-		vertices[C1] = color;
-		vertices[C2] = color;
-		vertices[C3] = color;
-		vertices[C4] = color;
-	}
-
-	/** Sets the alpha portion of the color used to tint this sprite. */
-	public void setAlpha (float a) {
-		color.a = a;
-		float color = this.color.toFloatBits();
-		vertices[C1] = color;
-		vertices[C2] = color;
-		vertices[C3] = color;
-		vertices[C4] = color;
-	}
-
-	/** @see #setColor(Color) */
-	public void setColor (float r, float g, float b, float a) {
-		color.set(r, g, b, a);
-		float color = this.color.toFloatBits();
-		float[] vertices = this.vertices;
-		vertices[C1] = color;
-		vertices[C2] = color;
-		vertices[C3] = color;
-		vertices[C4] = color;
-	}
-
-	/** Sets the color of this sprite, expanding the alpha from 0-254 to 0-255.
-	 * @see #setColor(Color)
-	 * @see Color#toFloatBits() */
-	public void setPackedColor (float packedColor) {
-		Color.abgr8888ToColor(color, packedColor);
+		packedColor = tint.toFloatBits();
 		float[] vertices = this.vertices;
 		vertices[C1] = packedColor;
 		vertices[C2] = packedColor;
 		vertices[C3] = packedColor;
 		vertices[C4] = packedColor;
+	}
+
+	/** Sets the alpha portion of the color used to tint this sprite. */
+	public void setAlpha (float a) {
+		if (color.a != a) {
+			color.a = a;
+			packedColor = color.toFloatBits();
+			vertices[C1] = packedColor;
+			vertices[C2] = packedColor;
+			vertices[C3] = packedColor;
+			vertices[C4] = packedColor;
+		}
+	}
+
+	/** @see #setColor(Color) */
+	public void setColor (float r, float g, float b, float a) {
+		color.set(r, g, b, a);
+		packedColor = color.toFloatBits();
+		float[] vertices = this.vertices;
+		vertices[C1] = packedColor;
+		vertices[C2] = packedColor;
+		vertices[C3] = packedColor;
+		vertices[C4] = packedColor;
+	}
+
+	/** Sets the packed color used to tint this sprite.
+	 * @see #setColor(Color)
+	 * @see Color#toFloatBits() */
+	public void setPackedColor (float packedColor) {
+		// Handle 0f/-0f special case
+		if (packedColor != this.packedColor || (packedColor == 0f && this.packedColor == 0f
+			&& Float.floatToIntBits(packedColor) != Float.floatToIntBits(this.packedColor))) {
+			this.packedColor = packedColor;
+			Color.abgr8888ToColor(color, packedColor);
+			float[] vertices = this.vertices;
+			vertices[C1] = packedColor;
+			vertices[C2] = packedColor;
+			vertices[C3] = packedColor;
+			vertices[C4] = packedColor;
+		}
 	}
 
 	/** Sets the origin in relation to the sprite's position for scaling and rotation. */
@@ -630,6 +638,11 @@ public class Sprite extends TextureRegion {
 	 * afterward. */
 	public Color getColor () {
 		return color;
+	}
+
+	/** Returns the packed color of this sprite. */
+	public float getPackedColor () {
+		return packedColor;
 	}
 
 	public void setRegion (float u, float v, float u2, float v2) {
