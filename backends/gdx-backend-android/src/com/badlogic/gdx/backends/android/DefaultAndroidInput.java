@@ -186,7 +186,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 		haptics = new AndroidHaptics(context);
 
-		if (Build.VERSION.SDK_INT >= 33) {
+		if (Build.VERSION.SDK_INT >= 33 && context instanceof Activity) {
 			this.predictiveBackHandler = new PredictiveBackHandler();
 		}
 
@@ -202,13 +202,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		// this is for backward compatibility: libGDX always caught the circle button, original comment:
 		// circle button on Xperia Play shouldn't need catchBack == true
 		setCatchKey(Keys.BUTTON_CIRCLE, true);
-		handle.post(new Runnable() {
-			@Override
-			public void run () {
-				// Early call to have a proper layouted EditText already on first call of openNativeInput
-				createDefaultEditText();
-			}
-		});
 	}
 
 	@Override
@@ -255,7 +248,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				alert.setTitle(title);
 				final EditText input = new EditText(context);
 				if (keyboardType != OnscreenKeyboardType.Default) {
-					input.setInputType(getAndroidInputType(keyboardType));
+					input.setInputType(getAndroidInputType(keyboardType, false));
 				}
 				input.setHint(hint);
 				input.setText(text);
@@ -300,7 +293,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		});
 	}
 
-	public static int getAndroidInputType (OnscreenKeyboardType type) {
+	public static int getAndroidInputType (OnscreenKeyboardType type, boolean defaultDisableAutocorrection) {
 		int inputType;
 		switch (type) {
 		case NumberPad:
@@ -319,7 +312,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
 			break;
 		default:
-			inputType = InputType.TYPE_CLASS_TEXT;
+			if (defaultDisableAutocorrection) {
+				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+					| InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+			} else {
+				inputType = InputType.TYPE_CLASS_TEXT;
+			}
 			break;
 		}
 		return inputType;
@@ -702,7 +700,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 			height += getSoftButtonsBarHeight();
 		}
 
-		if (relativeLayoutField == null) {
+		if (!isNativeInputOpen()) {
 			if (observer != null) observer.onKeyboardHeightChanged(height);
 			return;
 		}
@@ -758,8 +756,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	private void createDefaultEditText () {
+		// TODO: 07.10.2024 This should probably just get the content/root view instead
 		View view = ((AndroidGraphics)app.getGraphics()).getView();
-		FrameLayout frameLayout = (FrameLayout)view.getParent();
+		ViewGroup frameLayout = (ViewGroup)view.getParent();
 		final RelativeLayout relativeLayout = new RelativeLayout(context);
 		relativeLayout.setGravity(Gravity.BOTTOM);
 		// Why? Why isn't it working without?
@@ -889,7 +888,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 					editText.setTransformationMethod(null);
 				}
 
-				editText.setInputType(getAndroidInputType(configuration.getType()));
+				editText.setInputType(getAndroidInputType(configuration.getType(), false));
 
 				if (configuration.isPreventCorrection()) {
 					editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -1452,7 +1451,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	@TargetApi(33)
 	private class PredictiveBackHandler {
 
-		private final OnBackInvokedDispatcher dispatcher = ((Activity)app).getOnBackInvokedDispatcher();
+		private final OnBackInvokedDispatcher dispatcher = ((Activity)context).getOnBackInvokedDispatcher();
 		private final OnBackInvokedCallback callback = new OnBackInvokedCallback() {
 			@Override
 			public void onBackInvoked () {

@@ -35,7 +35,7 @@ jobs:
           # See https://github.com/actions/virtual-environments/issues/2557
           sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
           sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
-          sudo mv /Applications/Xcode_14.3.1.app /Applications/Xcode.app
+          sudo mv /Applications/Xcode_15.4.0.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
           ./gradlew jniGen jnigenBuildIOS
@@ -47,7 +47,7 @@ jobs:
           zip -r natives-ios -@ < native-files-list
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: natives-ios.zip
           path: natives-ios.zip
@@ -74,7 +74,7 @@ jobs:
           # See https://github.com/actions/virtual-environments/issues/2557
           sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
           sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
-          sudo mv /Applications/Xcode_14.3.1.app /Applications/Xcode.app
+          sudo mv /Applications/Xcode_15.4.0.app /Applications/Xcode.app
           sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
           ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64
@@ -85,7 +85,7 @@ jobs:
           zip natives-macos -@ < native-files-list
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: natives-macos.zip
           path: natives-macos.zip
@@ -141,10 +141,11 @@ jobs:
           sudo apt install -y --force-yes gcc g++
           sudo apt install -y --force-yes gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-dev-arm64-cross
           sudo apt install -y --force-yes gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc6-dev-armhf-cross
+          sudo apt install -y --force-yes gcc-riscv64-linux-gnu g++-riscv64-linux-gnu libc6-dev-riscv64-cross
 
       - name: Build Linux natives
         run: |
-          ./gradlew jniGen jnigenBuildLinux64 jnigenBuildLinuxARM jnigenBuildLinuxARM64
+          ./gradlew jniGen jnigenBuildLinux64 jnigenBuildLinuxARM jnigenBuildLinuxARM64 jnigenBuildLinuxRISCV64
 
       - name: Pack artifacts
         run: |
@@ -152,7 +153,7 @@ jobs:
           zip natives-linux -@ < native-files-list
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: natives-linux.zip
           path: natives-linux.zip
@@ -189,7 +190,7 @@ jobs:
           zip natives-windows -@ < native-files-list
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: natives-windows.zip
           path: natives-windows.zip
@@ -228,7 +229,7 @@ jobs:
           zip natives-android -@ < native-files-list
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: natives-android.zip
           path: natives-android.zip
@@ -256,27 +257,27 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Download natives-ios artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: natives-ios.zip
 
       - name: Download natives-macos artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: natives-macos.zip
 
       - name: Download natives-linux artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: natives-linux.zip
 
       - name: Download natives-windows artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: natives-windows.zip
 
       - name: Download natives-android artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: natives-android.zip
 
@@ -302,7 +303,7 @@ jobs:
           zip -r natives -@ < native-files-list
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: natives.zip
           path: natives.zip
@@ -334,7 +335,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Download natives artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: natives.zip
 
