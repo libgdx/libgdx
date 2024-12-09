@@ -255,7 +255,7 @@ public class IntersectorTest {
 		sphere = new Sphere(new Vector3(0, 5, 5), 1);
 
 		assertTrue(Intersector.intersectSphereBounds(sphere, bounds));
-  }
+	}
 
 	public void testIntersectPolygonsWithVertexLyingOnEdge () {
 		Polygon p1 = new Polygon(new float[] {1, -1, 2, -1, 2, -2, 1, -2});
