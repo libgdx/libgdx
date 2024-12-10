@@ -26,9 +26,9 @@ import com.badlogic.gdx.physics.box2d.World;
 public class MouseJoint extends Joint {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
-	 */
-	
+#include <box2d/box2d.h>
+	 */ // @on
+
 	public MouseJoint (World world, long addr) {
 		super(world, addr);
 	}
@@ -39,9 +39,10 @@ public class MouseJoint extends Joint {
 	}
 
 	private native void jniSetTarget (long addr, float x, float y); /*
+		// @off
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		joint->SetTarget( b2Vec2(x, y ) );
-	*/
+	*/ // @on
 
 	/** Use this to update the target point. */
 	final float[] tmp = new float[2];
@@ -55,10 +56,11 @@ public class MouseJoint extends Joint {
 	}
 
 	private native void jniGetTarget (long addr, float[] target); /*
+		// @off
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		target[0] = joint->GetTarget().x;
 		target[1] = joint->GetTarget().y;
-	*/
+	*/ // @on
 
 	/** Set/get the maximum force in Newtons. */
 	public void setMaxForce (float force) {
@@ -66,9 +68,10 @@ public class MouseJoint extends Joint {
 	}
 
 	private native void jniSetMaxForce (long addr, float force); /*
+		// @off
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		joint->SetMaxForce( force );
-	*/
+	*/ // @on
 
 	/** Set/get the maximum force in Newtons. */
 	public float getMaxForce () {
@@ -76,47 +79,52 @@ public class MouseJoint extends Joint {
 	}
 
 	private native float jniGetMaxForce (long addr); /*
+		// @off
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
 		return joint->GetMaxForce();
-	*/
+	*/ // @on
 
-	/** Set/get the frequency in Hertz. */
-	public void setFrequency (float hz) {
-		jniSetFrequency(addr, hz);
+	/** Set/get the linear stiffness in N/m. */
+	public void setStiffness (float stiffness) {
+		jniSetStiffness(addr, stiffness);
 	}
 
-	private native void jniSetFrequency (long addr, float hz); /*
+	private native void jniSetStiffness (long addr, float stiffness); /*
+		// @off
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
-		joint->SetFrequency(hz);
-	*/
+		joint->SetStiffness(stiffness);
+	*/ // @on
 
-	/** Set/get the frequency in Hertz. */
-	public float getFrequency () {
-		return jniGetFrequency(addr);
+	/** Set/get the linear stiffness in N/m. */
+	public float getStiffness () {
+		return jniGetStiffness(addr);
 	}
 
-	private native float jniGetFrequency (long addr); /*
+	private native float jniGetStiffness (long addr); /*
+		// @off
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
-		return joint->GetFrequency();
-	*/
+		return joint->GetStiffness();
+	*/ // @on
 
-	/** Set/get the damping ratio (dimensionless). */
-	public void setDampingRatio (float ratio) {
-		jniSetDampingRatio(addr, ratio);
+	/** Set/get linear damping in N*s/m. */
+	public void setDamping (float ratio) {
+		jniSetDamping(addr, ratio);
 	}
 
-	private native void jniSetDampingRatio (long addr, float ratio); /*
+	private native void jniSetDamping (long addr, float ratio); /*
+		// @off
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
-		joint->SetDampingRatio( ratio );
-	*/
+		joint->SetDamping( ratio );
+	*/ // @on
 
-	/** Set/get the damping ratio (dimensionless). */
-	public float getDampingRatio () {
-		return jniGetDampingRatio(addr);
+	/** Set/get linear damping in N*s/m. */
+	public float getDamping () {
+		return jniGetDamping(addr);
 	}
 
-	private native float jniGetDampingRatio (long addr); /*
+	private native float jniGetDamping (long addr); /*
+		// @off
 		b2MouseJoint* joint = (b2MouseJoint*)addr;
-		return joint->GetDampingRatio();
-	*/
+		return joint->GetDamping();
+	*/ // @on
 }

@@ -17,8 +17,24 @@
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 jnigen {
 	sharedLibName = "gdx-box2d"
+
+	all {
+		headerDirs = ["src/box2d-2.4.1/include"]
+		cIncludes = [
+			"*.c",
+			"src/box2d-2.4.1/src/**/*.c"
+		]
+		cFlags += " -fvisibility=hidden "
+		cppIncludes = [
+			"*.cpp",
+			"src/box2d-2.4.1/src/**/*.cpp"
+		]
+		cppFlags += " -fvisibility=hidden -std=c++11 "
+	}
+
 	add(Windows, x32)
 	add(Windows, x64)
+	add(Linux, x32)
 	add(Linux, x64)
 	add(Linux, x32, ARM)
 	add(Linux, x64, ARM)
@@ -26,9 +42,26 @@ jnigen {
 	add(MacOsX, x64)
 	add(MacOsX, x64, ARM)
 	add(Android)
-	add(IOS)
+	add(IOS) {
+		cppFlags += " -stdlib=libc++ "
+	}
 
 	robovm {
 		forceLinkClasses "com.badlogic.gdx.physics.box2d.*"
 	}
+}
+
+clean.doFirst {
+	delete fileTree("jni") {
+		include "jni-headers"
+		include "target"
+		include "build*.xml"
+		include "*.c"
+		include "*.cpp"
+		include "*.h"
+		include "*.mk"
+		include "robovm.xml"
+	}
+	delete "libs"
+	delete "obj"
 }
