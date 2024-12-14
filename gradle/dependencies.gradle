@@ -36,11 +36,12 @@ versions.jorbis = "0.0.17"
 versions.junit = "4.13.2"
 versions.androidPlugin = "8.1.2"
 versions.multiDex = "2.0.1"
-versions.androidCompileSdk = 33
-versions.androidTargetSdk = 33
+versions.androidCompileSdk = 34
+versions.androidTargetSdk = 34
 versions.androidMinSdk = 19
-versions.androidBuildTools = "33.0.2"
-versions.androidFragment = "1.5.7"
+versions.androidxFragment = "1.5.7"
+versions.androidxCore = "1.13.1"
+versions.kotlinBomTests = "2.0.21"
 versions.javaparser = "2.3.0"
 versions.spotless = "6.7.1"
 
@@ -130,8 +131,12 @@ libraries.robovm = [
         "com.mobidevelop.robovm:robovm-cocoatouch:${versions.robovm}"
 ]
 
+libraries.android = [
+        "androidx.core:core:${versions.androidxCore}",
+]
+
 libraries.compileOnly.android = [
-        "androidx.fragment:fragment:${versions.androidFragment}"
+        "androidx.fragment:fragment:${versions.androidxFragment}"
 ]
 
 libraries.gwt = [
