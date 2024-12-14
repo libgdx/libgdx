@@ -27,7 +27,7 @@ public class PolygonTest {
 		float[] vertices = {0, 0, 3, 0, 3, 4};
 		Polygon polygon = new Polygon(vertices);
 		polygon.rotate(0);
-		assertArrayEquals("The polygons vertices don't correspond.", polygon.getTransformedVertices(), polygon.getVertices(), 1f);
+		assertArrayEquals("The polygon's vertices don't correspond.", polygon.getTransformedVertices(), polygon.getVertices(), 1f);
 	}
 
 	@Test
@@ -35,7 +35,7 @@ public class PolygonTest {
 		float[] vertices = {0, 0, 3, 0, 3, 4};
 		Polygon polygon = new Polygon(vertices);
 		polygon.rotate(360);
-		assertArrayEquals("The polygons vertices don't correspond.", polygon.getTransformedVertices(), polygon.getVertices(), 1f);
+		assertArrayEquals("The polygon's vertices don't correspond.", polygon.getTransformedVertices(), polygon.getVertices(), 1f);
 	}
 
 	@Test
