@@ -52,6 +52,5 @@ public class PolygonTest {
 		Polygon triangle = new Polygon(triangleVertices);
 		float expectedArea = 6.0f;
 		assertEquals("The area doesn't correspond.", expectedArea, triangle.area(), 1f);
-
 	}
 }
