@@ -27,11 +27,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import java.util.StringTokenizer;
 
@@ -49,6 +53,32 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		/** Whether to flip all Y coordinates so that Y positive is up. All libGDX renderers require flipped Y coordinates, and thus
 		 * flipY set to true. This parameter is included for non-rendering related purposes of TMX files, or custom renderers. */
 		public boolean flipY = true;
+		/** Path to Tiled project file. Needed when using class properties. */
+		public String projectFilePath = null;
+	}
+
+	/** Representation of a single Tiled class property. A property has:
+	 * <ul>
+	 * <li>a property {@code name}</li>
+	 * <li>a property {@code type} like string, int, ...</li>
+	 * <li>an optional {@code propertyType} for class and enum types to refer to a specific class/enum</li>
+	 * <li>a {@code defaultValue}</li>
+	 * </ul>
+	 */
+	protected static class ProjectClassMember {
+		public String name;
+		public String type;
+		public String propertyType;
+		public JsonValue defaultValue;
+
+		@Override
+		public String toString () {
+			return "ProjectClassMember{" //
+				+ "name='" + name + "'" //
+				+ ", type='" + type + "'" //
+				+ ", propertyType='" + propertyType + "'" //
+				+ ", defaultValue=" + defaultValue + "}";
+		}
 	}
 
 	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
@@ -67,6 +97,9 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 	protected TiledMap map;
 	protected IntMap<MapObject> idToObject;
 	protected Array<Runnable> runOnEndOfLoadTiled;
+	/** Optional Tiled project class information. Key is the classname and value is an array of class members (=class
+	 * properties) */
+	protected ObjectMap<String, Array<ProjectClassMember>> projectClassInfo;
 
 	public BaseTiledMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -94,7 +127,7 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 	}
 
 	protected Object castProperty (String name, String value, String type) {
-		if (type == null || "string".equals(type)) {
+		if (type == null || "string".equals(type) || "file".equals(type)) {
 			return value;
 		} else if (type.equals("int")) {
 			return Integer.valueOf(value);
@@ -106,8 +139,8 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 			// return color after converting from #AARRGGBB to #RRGGBBAA
 			return Color.valueOf(tiledColorToLibGDXColor(value));
 		} else {
-			throw new GdxRuntimeException(
-				"Wrong type given for property " + name + ", given : " + type + ", supported : string, bool, int, float, color");
+			throw new GdxRuntimeException("Wrong type given for property " + name + ", given : " + type
+				+ ", supported : string, file, bool, int, float, color");
 		}
 	}
 
@@ -158,6 +191,116 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		tile.setOffsetX(offsetX);
 		tile.setOffsetY(flipY ? -offsetY : offsetY);
 		tileSet.putTile(tileId, tile);
+	}
+
+	protected void loadObjectProperty (final MapProperties properties, final String name, String value) {
+		// Wait until the end of [loadTiledMap] to fetch the object
+		try {
+			// Value should be the id of the object being pointed to
+			final int id = Integer.parseInt(value);
+			// Create [Runnable] to fetch object and add it to props
+			Runnable fetch = new Runnable() {
+				@Override
+				public void run () {
+					MapObject object = idToObject.get(id);
+					properties.put(name, object);
+				}
+			};
+			// [Runnable] should not run until the end of [loadTiledMap]
+			runOnEndOfLoadTiled.add(fetch);
+		} catch (Exception exception) {
+			throw new GdxRuntimeException("Error parsing property [\" + name + \"] of type \"object\" with value: [" + value + "]",
+				exception);
+		}
+	}
+
+	protected void loadBasicProperty (MapProperties properties, String name, String value, String type) {
+		Object castValue = castProperty(name, value, type);
+		properties.put(name, castValue);
+	}
+
+	/** Parses the given Tiled project file for class property information. A class can have multiple members. Refer to
+	 * {@link ProjectClassMember}. */
+	protected void loadProjectFile (String projectFilePath) {
+		projectClassInfo = new ObjectMap<>();
+		if (projectFilePath == null || projectFilePath.trim().isEmpty()) {
+			return;
+		}
+
+		FileHandle projectFile = resolve(projectFilePath);
+		JsonValue projectRoot = new JsonReader().parse(projectFile);
+		JsonValue propertyTypes = projectRoot.get("propertyTypes");
+		if (propertyTypes == null) {
+			// no custom property types in project -> nothing to parse
+			return;
+		}
+
+		for (JsonValue propertyType : propertyTypes) {
+			if (!"class".equals(propertyType.getString("type"))) {
+				continue;
+			}
+			String className = propertyType.getString("name");
+			JsonValue members = propertyType.get("members");
+			if (members.isEmpty()) {
+				continue;
+			}
+
+			Array<ProjectClassMember> projectClassMembers = new Array<>();
+			projectClassInfo.put(className, projectClassMembers);
+			for (JsonValue member : members) {
+				BaseTmjMapLoader.ProjectClassMember projectClassMember = new BaseTmjMapLoader.ProjectClassMember();
+				projectClassMember.name = member.getString("name");
+				projectClassMember.type = member.getString("type");
+				projectClassMember.propertyType = member.getString("propertyType", null);
+				projectClassMember.defaultValue = member.get("value");
+				projectClassMembers.add(projectClassMember);
+			}
+		}
+	}
+
+	protected void loadJsonClassProperties (String className, MapProperties classProperties, JsonValue classElement) {
+		if (projectClassInfo == null) {
+			throw new GdxRuntimeException(
+				"No class information loaded to support class properties. Did you set the 'projectFilePath' parameter?");
+		}
+		if (projectClassInfo.isEmpty()) {
+			throw new GdxRuntimeException(
+				"No class information available. Did you set the correct Tiled project path in the 'projectFilePath' parameter?");
+		}
+		Array<ProjectClassMember> projectClassMembers = projectClassInfo.get(className);
+		if (projectClassMembers == null) {
+			throw new GdxRuntimeException("There is no class with name '" + className + "' in given Tiled project file.");
+		}
+
+		for (ProjectClassMember projectClassMember : projectClassMembers) {
+			String propName = projectClassMember.name;
+			JsonValue classProp = classElement.get(propName);
+			switch (projectClassMember.type) {
+			case "object": {
+				String value = classProp == null ? projectClassMember.defaultValue.asString() : classProp.asString();
+				loadObjectProperty(classProperties, propName, value);
+				break;
+			}
+			case "class": {
+				// A 'class' property is a property which is itself a set of properties
+				if (classProp == null) {
+					classProp = projectClassMember.defaultValue;
+				}
+				MapProperties nestedClassProperties = new MapProperties();
+				String nestedClassName = projectClassMember.propertyType;
+				nestedClassProperties.put("type", nestedClassName);
+				// the actual properties of a 'class' property are stored as a new properties tag
+				classProperties.put(propName, nestedClassProperties);
+				loadJsonClassProperties(nestedClassName, nestedClassProperties, classProp);
+				break;
+			}
+			default: {
+				String value = classProp == null ? projectClassMember.defaultValue.asString() : classProp.asString();
+				loadBasicProperty(classProperties, propName, value, projectClassMember.type);
+				break;
+			}
+			}
+		}
 	}
 
 	/** Converts Tiled's color format #AARRGGBB to a libGDX appropriate #RRGGBBAA The Tiled Map Editor uses the color format
