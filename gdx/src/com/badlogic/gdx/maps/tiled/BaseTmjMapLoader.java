@@ -79,6 +79,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
 			this.flipY = parameter.flipY;
+			loadProjectFile(parameter.projectFilePath);
 		} else {
 			this.convertObjectToTileSpace = false;
 			this.flipY = true;
@@ -424,39 +425,31 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	}
 
 	private void loadProperties (final MapProperties properties, JsonValue element) {
-		if (element == null) return;
+		if (element == null || !"properties".equals(element.name())) return;
 
-		if (element.name() != null && element.name().equals("properties")) {
-			for (JsonValue property : element) {
-				final String name = property.getString("name", null);
-				String value = property.getString("value", null);
-				String type = property.getString("type", null);
-				if (value == null) {
-					value = property.asString();
-				}
-				if (type != null && type.equals("object")) {
-					// Wait until the end of [loadTiledMap] to fetch the object
-					try {
-						// Value should be the id of the object being pointed to
-						final int id = Integer.parseInt(value);
-						// Create [Runnable] to fetch object and add it to props
-						Runnable fetch = new Runnable() {
-							@Override
-							public void run () {
-								MapObject object = idToObject.get(id);
-								properties.put(name, object);
-							}
-						};
-						// [Runnable] should not run until the end of [loadTiledMap]
-						runOnEndOfLoadTiled.add(fetch);
-					} catch (Exception exception) {
-						throw new GdxRuntimeException(
-							"Error parsing property [\" + name + \"] of type \"object\" with value: [" + value + "]", exception);
-					}
-				} else {
-					Object castValue = castProperty(name, value, type);
-					properties.put(name, castValue);
-				}
+		for (JsonValue property : element) {
+			final String name = property.getString("name", null);
+			String value = property.getString("value", null);
+			String type = property.getString("type", null);
+			if (value == null && !"class".equals(type)) {
+				value = property.asString();
+			}
+			switch (type) {
+			case "object":
+				loadObjectProperty(properties, name, value);
+				break;
+			case "class":
+				// A 'class' property is a property which is itself a set of properties
+				MapProperties classProperties = new MapProperties();
+				String className = property.getString("propertytype");
+				classProperties.put("type", className);
+				// the actual properties of a 'class' property are stored as a new properties tag
+				properties.put(name, classProperties);
+				loadJsonClassProperties(className, classProperties, property.get("value"));
+				break;
+			default:
+				loadBasicProperty(properties, name, value, type);
+				break;
 			}
 		}
 	}
