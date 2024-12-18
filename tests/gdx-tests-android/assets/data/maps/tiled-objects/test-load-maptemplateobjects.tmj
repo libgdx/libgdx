@@ -86,7 +86,7 @@
                  "id":48,
                  "properties":[
                         {
-                         "name":"NonTemplateProp",
+                         "name":"NonTemplateProperty",
                          "type":"string",
                          "value":"Non Template Property"
                         }, 
