@@ -19,7 +19,7 @@
   </object>
   <object id="37" template="template objects/Rectangle.tx" x="450" y="462.391">
    <properties>
-    <property name="NonTemplateProp" value="Non Template Property"/>
+    <property name="NonTemplateProperty" value="Non Template Property"/>
     <property name="Overridden" type="bool" value="true"/>
     <property name="StringProp" value="Overridden String"/>
    </properties>
