@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.11" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="20" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="1">
+ <tileset firstgid="1" name="ts1" tilewidth="16" tileheight="16" tilecount="256" columns="16">
+  <image source="tilesets/tileset1.png" width="256" height="256"/>
+ </tileset>
+ <tileset firstgid="257" name="ts2" tilewidth="32" tileheight="32" tilecount="256" columns="16">
+  <image source="tilesets/tileset2.png" width="512" height="512"/>
+ </tileset>
+ <imagelayer id="3" name="Image Layer 1" offsetx="63.8514" offsety="-64.2683">
+  <image source="../../badlogic.jpg" width="256" height="256"/>
+ </imagelayer>
+ <imagelayer id="4" name="Image Layer 2" offsetx="0.181631" offsety="0.588235">
+  <image source="../../Textures1.png" width="64" height="512"/>
+ </imagelayer>
+ <layer id="1" name="Tile Layer 1" width="20" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2D4AC5GBgZuKmAeRoh5ACn1AOU=
+  </data>
+ </layer>
+ <layer id="2" name="Tile Layer 2" width="20" height="10">
+  <data encoding="base64" compression="zlib">
+   eJzlzjkOggAQBVBqFLF2r13Q2r12wxvoDfQI3ACP7CuJ0ZDQEX/ymsnM5AfBfyWkQZOIFjHtiv86dOnRZ8CQUcld9mM+ZsKUGQlzFhX7LVmxZsOWHXtu3Au7+RefOXDkxJkLKVcePEv6vArqkDdo6gzB
+  </data>
+ </layer>
+</map>
