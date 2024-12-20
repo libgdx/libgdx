@@ -84,8 +84,8 @@ public class Lwjgl3Window implements Disposable {
 							}
 							listener.pause();
 						}
-						Lwjgl3Window.this.focused = false;
 					}
+					Lwjgl3Window.this.focused = focused;
 				}
 			});
 		}
