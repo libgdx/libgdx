@@ -27,7 +27,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Build macOS natives
+      - name: Build iOS natives
         run: |
           # See https://github.com/actions/virtual-environments/issues/2557
           sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
@@ -78,6 +78,10 @@ jobs:
 
       - name: Pack artifacts
         run: |
+          # Needed starting with Xcode 15 to run multiple instances of the same app
+          find . -name "*.dylib" | grep "libs" | while read dylib; do
+            codesign -s - -f "$dylib"
+          done
           find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
           zip natives-macos -@ < native-files-list
 
@@ -337,7 +341,7 @@ jobs:
         run: |
           ./gradlew clean fetchNatives
           ./gradlew buildRunnables build
-          
+
       - name: Upload artifacts to S3
         if: env.AWS_ACCESS_KEY_ID != null
         run: |
