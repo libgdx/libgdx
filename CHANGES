@@ -4,6 +4,7 @@
 - iOS: Fixes Gdx.openURI() not working on iOS 18.1 Simulator.
 - Change visibility of PolygonSpriteBatch.switchTexture() to protected
 - Added XmlReader.getChildren() and XmlReader.replaceChild()
+- LWJGL3: Fix pauseWhenLostFocus not working as expected
 - API Addition: Added FPSLogger#setBound
 
 [1.13.0]
