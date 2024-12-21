@@ -29,7 +29,7 @@ public class LwjglDebugStarter {
 // new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 // new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new ScrollPaneScrollBarsTest();
+		GdxTest test = new DelaunayTriangulatorTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.r = config.g = config.b = config.a = 8;
 // config.width = 320;

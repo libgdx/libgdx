@@ -46,13 +46,7 @@ public class DelaunayTriangulatorTest extends GdxTest {
 			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 				seed = MathUtils.random.nextLong();
 				System.out.println(seed);
-				triangulate();
 				return true;
-			}
-
-			public boolean mouseMoved (int screenX, int screenY) {
-				triangulate();
-				return false;
 			}
 		});
 	}
@@ -67,14 +61,23 @@ public class DelaunayTriangulatorTest extends GdxTest {
 		for (int i = 0; i < pointCount; i++) {
 			float value;
 			do {
-				value = MathUtils.random(10, 400);
+				value = MathUtils.random(10, 500);
 			} while (points.contains(value));
 			points.add(value);
 			do {
-				value = MathUtils.random(10, 400);
+				value = MathUtils.random(10, 500);
 			} while (points.contains(value));
 			points.add(value);
 		}
+
+// points.clear();
+// points.add(281.99274f, 473.00427f);
+// points.add(481.97058f, 126.60693f);
+// points.add(881.9485f, 126.5686f);
+// points.add(1081.9927f, 472.9276f);
+// points.add(882.0813f, 819.3633f);
+// points.add(482.10352f, 819.4784f);
+
 		points.add(Gdx.input.getX());
 		points.add(Gdx.graphics.getHeight() - Gdx.input.getY());
 
@@ -82,6 +85,7 @@ public class DelaunayTriangulatorTest extends GdxTest {
 	}
 
 	public void render () {
+		triangulate();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		renderer.setColor(Color.RED);
