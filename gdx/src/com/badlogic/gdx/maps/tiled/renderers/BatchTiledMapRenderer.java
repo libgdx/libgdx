@@ -337,8 +337,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 	 * multiplying is against the batchColor
 	 *
 	 * @param layer
-	 * @param batchColor
-	 * @return */
+	 * @param batchColor */
 	protected float getTileLayerColor (TiledMapTileLayer layer, Color batchColor) {
 		return Color.toFloatBits(batchColor.r * layer.getCombinedTintColor().r, batchColor.g * layer.getCombinedTintColor().g,
 			batchColor.b * layer.getCombinedTintColor().b, batchColor.a * layer.getCombinedTintColor().a * layer.getOpacity());
