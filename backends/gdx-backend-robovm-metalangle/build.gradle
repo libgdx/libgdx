@@ -59,7 +59,7 @@ tasks.register('fetchMetalANGLEKit', Download) {
 	doFirst {
 		file("build/tmp").mkdirs();
 	}
-	src 'https://github.com/Berstanio/MetalANGLEKit/releases/download/v1.0/metalanglekit.zip'
+	src 'https://github.com/Berstanio/MetalANGLEKit/releases/download/v1.1/metalanglekit.zip'
 	dest 'build/tmp/MetalANGLEKit.zip'
 	onlyIfModified true
 	useETag "all"
@@ -69,19 +69,19 @@ tasks.register('verifyMetalANGLEKit', Verify) {
 	dependsOn fetchMetalANGLEKit
 	src 'build/tmp/MetalANGLEKit.zip'
 	algorithm 'SHA-256'
-	checksum '689361567aff476c5cba1113208f2a80948b8d3e58ce1b1253a57bd62ac127c7'
+	checksum 'b017fb0a7e5ceba771ee80c5a785351037bdb8bc0f548bc32d880eb896403035'
 }
 
 tasks.register('extractMetalANGLEKit', Copy) {
 	dependsOn verifyMetalANGLEKit
 
 	doFirst {
-		delete("res/META-INF/robovm/ios/libs/MetalANGLE.xcframework")
-		delete("res/META-INF/robovm/ios/libs/MetalANGLEKit.xcframework")
+		delete("res/META-INF/robovm/ios/libs/")
+		delete("res/META-INF/robovm/ios/libs/")
 		file("res/META-INF/robovm/ios/libs").mkdirs();
 	}
 	from zipTree('build/tmp/MetalANGLEKit.zip')
-	into 'res/META-INF/robovm/ios/libs/MetalANGLEKit.xcframework'
+	into 'res/META-INF/robovm/ios/libs/'
 }
 
 tasks.register('jnigenBuildIOS') {

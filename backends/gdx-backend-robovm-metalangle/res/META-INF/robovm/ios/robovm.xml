@@ -7,9 +7,6 @@
         <framework>Metal</framework>
     </frameworks>
     <frameworkPaths>
-        <path variant="device">libs/MetalANGLEKit.xcframework/ios-arm64/</path>
-        <path variant="simulator">libs/MetalANGLEKit.xcframework/ios-arm64_x86_64-simulator/</path>
-        <path variant="device">libs/MetalANGLEKit.xcframework/ios-arm64/MetalANGLEKit.framework/Frameworks/</path>
-        <path variant="simulator">libs/MetalANGLEKit.xcframework/ios-arm64_x86_64-simulator/MetalANGLEKit.framework/Frameworks/</path>
+        <path>libs/</path>
     </frameworkPaths>
 </config>
