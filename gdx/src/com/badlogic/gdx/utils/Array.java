@@ -192,10 +192,33 @@ public class Array<T> implements Iterable<T> {
 		items[second] = firstValue;
 	}
 
-	public void replaceFirst (T value, boolean identity, T replacement) {
-		final int index = indexOf(value, identity);
-		if (index == -1) throw new IllegalArgumentException("value not found: " + value);
-		items[index] = replacement;
+	public boolean replaceFirst(T value, boolean identity, T replacement) {
+		T[] items = this.items;
+		if (identity || value == null) {
+			for (int i = 0, n = size; i < n; i++)
+				if (items[i] == value) {
+					items[i] = replacement;
+					return true;
+				}
+		} else {
+			for (int i = 0, n = size; i < n; i++)
+				if (value.equals(items[i])) {
+					items[i] = replacement;
+					return true;
+				}
+		}
+		return false;
+	}
+
+	public void replaceAll(T value, boolean identity, T replacement) {
+		T[] items = this.items;
+		if (identity || value == null) {
+			for (int i = 0, n = size; i < n; i++)
+				if (items[i] == value) items[i] = replacement;
+		} else {
+			for (int i = 0, n = size; i < n; i++)
+				if (value.equals(items[i])) items[i] = replacement;
+		}
 	}
 
 	/** Returns true if this array contains the specified value.

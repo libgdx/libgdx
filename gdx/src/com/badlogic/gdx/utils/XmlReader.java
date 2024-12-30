@@ -542,9 +542,9 @@ public class XmlReader {
 			parent.removeChild(this);
 		}
 
-		public void replaceChild (Element child, Element replacement) {
+		public boolean replaceChild (Element child, Element replacement) {
 			if (children == null) throw new GdxRuntimeException("Element has no children: " + name);
-			children.replaceFirst(child, true, replacement);
+			return children.replaceFirst(child, true, replacement);
 		}
 
 		public Element getParent () {
