@@ -192,7 +192,7 @@ public class Array<T> implements Iterable<T> {
 		items[second] = firstValue;
 	}
 
-	public boolean replaceFirst(T value, boolean identity, T replacement) {
+	public boolean replaceFirst (T value, boolean identity, T replacement) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++)
@@ -210,7 +210,7 @@ public class Array<T> implements Iterable<T> {
 		return false;
 	}
 
-	public void replaceAll(T value, boolean identity, T replacement) {
+	public void replaceAll (T value, boolean identity, T replacement) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++)
