@@ -192,6 +192,12 @@ public class Array<T> implements Iterable<T> {
 		items[second] = firstValue;
 	}
 
+	public void replaceFirst (T value, boolean identity, T replacement) {
+		final int index = indexOf(value, identity);
+		if (index == -1) throw new IllegalArgumentException("value not found: " + value);
+		items[index] = replacement;
+	}
+
 	/** Returns true if this array contains the specified value.
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
