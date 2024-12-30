@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,7 +44,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	}
 
 	/** Creates loader
-	 * 
+	 *
 	 * @param resolver */
 	public TmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -110,41 +110,12 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 		Array<FileHandle> fileHandles = new Array<FileHandle>();
 
 		// TileSet descriptors
-		for (Element tileset : root.getChildrenByName("tileset")) {
-			String source = tileset.getAttribute("source", null);
-			if (source != null) {
-				FileHandle tsxFile = getRelativeFileHandle(tmxFile, source);
-				tileset = xml.parse(tsxFile);
-				Element imageElement = tileset.getChildByName("image");
-				if (imageElement != null) {
-					String imageSource = tileset.getChildByName("image").getAttribute("source");
-					FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
-					fileHandles.add(image);
-				} else {
-					for (Element tile : tileset.getChildrenByName("tile")) {
-						String imageSource = tile.getChildByName("image").getAttribute("source");
-						FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
-						fileHandles.add(image);
-					}
-				}
-			} else {
-				Element imageElement = tileset.getChildByName("image");
-				if (imageElement != null) {
-					String imageSource = tileset.getChildByName("image").getAttribute("source");
-					FileHandle image = getRelativeFileHandle(tmxFile, imageSource);
-					fileHandles.add(image);
-				} else {
-					for (Element tile : tileset.getChildrenByName("tile")) {
-						String imageSource = tile.getChildByName("image").getAttribute("source");
-						FileHandle image = getRelativeFileHandle(tmxFile, imageSource);
-						fileHandles.add(image);
-					}
-				}
-			}
+		for (Element tileset : root.getChildrenByNameRecursively("tileset")) {
+			getTileSetDependencyFileHandle(fileHandles, tmxFile, tileset);
 		}
 
 		// ImageLayer descriptors
-		for (Element imageLayer : root.getChildrenByName("imagelayer")) {
+		for (Element imageLayer : root.getChildrenByNameRecursively("imagelayer")) {
 			Element image = imageLayer.getChildByName("image");
 			String source = image.getAttribute("source", null);
 
@@ -154,6 +125,46 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 			}
 		}
 
+		return fileHandles;
+	}
+
+	protected Array<FileHandle> getTileSetDependencyFileHandle (FileHandle tmxFile, Element tileset) {
+		Array<FileHandle> fileHandles = new Array<FileHandle>();
+		return getTileSetDependencyFileHandle(fileHandles, tmxFile, tileset);
+	}
+
+	protected Array<FileHandle> getTileSetDependencyFileHandle (Array<FileHandle> fileHandles, FileHandle tmxFile,
+		Element tileset) {
+		String source = tileset.getAttribute("source", null);
+		if (source != null) {
+			FileHandle tsxFile = getRelativeFileHandle(tmxFile, source);
+			tileset = xml.parse(tsxFile);
+			Element imageElement = tileset.getChildByName("image");
+			if (imageElement != null) {
+				String imageSource = tileset.getChildByName("image").getAttribute("source");
+				FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
+				fileHandles.add(image);
+			} else {
+				for (Element tile : tileset.getChildrenByName("tile")) {
+					String imageSource = tile.getChildByName("image").getAttribute("source");
+					FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
+					fileHandles.add(image);
+				}
+			}
+		} else {
+			Element imageElement = tileset.getChildByName("image");
+			if (imageElement != null) {
+				String imageSource = tileset.getChildByName("image").getAttribute("source");
+				FileHandle image = getRelativeFileHandle(tmxFile, imageSource);
+				fileHandles.add(image);
+			} else {
+				for (Element tile : tileset.getChildrenByName("tile")) {
+					String imageSource = tile.getChildByName("image").getAttribute("source");
+					FileHandle image = getRelativeFileHandle(tmxFile, imageSource);
+					fileHandles.add(image);
+				}
+			}
+		}
 		return fileHandles;
 	}
 
