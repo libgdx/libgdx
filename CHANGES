@@ -5,6 +5,7 @@
 - Change visibility of PolygonSpriteBatch.switchTexture() to protected
 - Added XmlReader.getChildren() and XmlReader.replaceChild()
 - LWJGL3: Fix pauseWhenLostFocus not working as expected
+- LWJGL 3: Downgrade to 3.3.3 due to AV false positives on 3.3.4 and OpenAL log spamming issue on 3.3.5.
 - API Addition: Added FPSLogger#setBound
 - Android: Fix crash on startup if `setContentView` was manually called after `initializeForView`
 
