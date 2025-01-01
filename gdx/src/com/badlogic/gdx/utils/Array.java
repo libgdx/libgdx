@@ -192,7 +192,12 @@ public class Array<T> implements Iterable<T> {
 		items[second] = firstValue;
 	}
 
-	public boolean replaceFirst (T value, boolean identity, T replacement) {
+	/** Returns true if the specified value was replaced successfully with the replacement
+	 * @param value  May be null.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @param replacement the first value will be replaced by this replacement if found
+	 * @return if value was found and replaced */
+	public boolean replaceFirst (@Null T value, boolean identity, T replacement) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++)
@@ -210,7 +215,7 @@ public class Array<T> implements Iterable<T> {
 		return false;
 	}
 
-	public void replaceAll (T value, boolean identity, T replacement) {
+	public void replaceAll (@Null T value, boolean identity, @Null T replacement) {
 		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++)
