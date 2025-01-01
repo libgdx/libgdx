@@ -30,7 +30,7 @@ versions.jsinteropAnnotations = "2.0.2"
 versions.gretty = "3.1.0"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.3"
-versions.lwjgl3 = "3.3.4"
+versions.lwjgl3 = "3.3.3"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.13.2"
@@ -58,7 +58,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows",
@@ -67,7 +67,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows",
@@ -76,7 +76,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows",
@@ -85,7 +85,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows",
@@ -94,7 +94,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows",
@@ -103,7 +103,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
@@ -117,7 +117,7 @@ libraries.lwjgl3GLES = [
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-windows",
