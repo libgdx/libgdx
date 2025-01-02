@@ -193,7 +193,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Returns true if the specified value was replaced successfully with the replacement
-	 * @param value  May be null.
+	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @param replacement the first value will be replaced by this replacement if found
 	 * @return if value was found and replaced */
