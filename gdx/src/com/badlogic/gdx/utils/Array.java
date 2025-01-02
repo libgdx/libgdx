@@ -215,15 +215,28 @@ public class Array<T> implements Iterable<T> {
 		return false;
 	}
 
-	public void replaceAll (@Null T value, boolean identity, @Null T replacement) {
+	/** Returns the number of replacements done.
+	 * @param value May be null.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @param replacement all occurances of value will be replaced by this replacement
+	 * @return the number of replacements done */
+	public int replaceAll(@Null T value, boolean identity, @Null T replacement) {
 		T[] items = this.items;
+		int replacements = 0;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++)
-				if (items[i] == value) items[i] = replacement;
+				if (items[i] == value) {
+					items[i] = replacement;
+					replacements++;
+				}
 		} else {
 			for (int i = 0, n = size; i < n; i++)
-				if (value.equals(items[i])) items[i] = replacement;
+				if (value.equals(items[i])) {
+					items[i] = replacement;
+					replacements++;
+				}
 		}
+		return replacements;
 	}
 
 	/** Returns true if this array contains the specified value.
