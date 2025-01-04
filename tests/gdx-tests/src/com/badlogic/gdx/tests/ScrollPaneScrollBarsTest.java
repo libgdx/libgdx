@@ -181,7 +181,7 @@ public class ScrollPaneScrollBarsTest extends GdxTest {
 		Table[] tables = new Table[] {bottomLeftTable, bottomRightTable, topLeftTable, topRightTable, horizOnlyTopTable,
 			horizOnlyBottomTable, vertOnlyLeftTable, vertOnlyRightTable};
 		for (Table t : tables)
-			t.defaults()..growX();
+			t.defaults().growX();
 
 		horizOnlyTopTable
 			.add(new Label("HORIZONTAL-ONLY-TOP verify HORIZONTAL scroll bar is on the TOP and properly aligned", skin)).row();

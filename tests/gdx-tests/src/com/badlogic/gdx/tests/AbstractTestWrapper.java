@@ -85,7 +85,7 @@ public abstract class AbstractTestWrapper extends GdxTest {
 					test.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				}
 			});
-			table.add(button)..growX();
+			table.add(button).growX();
 		}
 		container.row();
 		container.add(new Label("Click on a test to start it, press ESC or tap the upper left corner to close it.",

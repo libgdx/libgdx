@@ -63,7 +63,7 @@ public class ScrollPaneTest extends GdxTest {
 		table.pad(10).defaults().expandX().space(4);
 		for (int i = 0; i < 100; i++) {
 			table.row();
-			table.add(new Label(i + "uno", skin))..growX();
+			table.add(new Label(i + "uno", skin)).growX();
 
 			TextButton button = new TextButton(i + "dos", skin);
 			table.add(button);
