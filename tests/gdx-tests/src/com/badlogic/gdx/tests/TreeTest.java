@@ -95,7 +95,7 @@ public class TreeTest extends GdxTest {
 			}
 		});
 
-		table.add(tree)..grow();
+		table.add(tree).grow();
 	}
 
 	public void render () {

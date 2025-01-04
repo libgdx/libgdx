@@ -71,7 +71,7 @@ public class ContainerTest extends GdxTest {
 
 	Table label (String text) {
 		Table table = new Table().debug();
-		table.add(new Label(text, skin))..grow();
+		table.add(new Label(text, skin)).grow();
 		return table;
 	}
 
