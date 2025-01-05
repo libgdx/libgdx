@@ -191,7 +191,7 @@ public class ByteArray {
 	}
 
 	/** Returns true if the specified value was replaced successfully with the replacement
-	 * @param value		 the byte to be replaced
+	 * @param value the byte to be replaced
 	 * @param replacement the first value will be replaced by this replacement if found
 	 * @return if value was found and replaced */
 	public boolean replaceFirst (byte value, byte replacement) {
@@ -205,7 +205,7 @@ public class ByteArray {
 	}
 
 	/** Returns the number of replacements done.
-	 * @param value		 the byte to be replaced
+	 * @param value the byte to be replaced
 	 * @param replacement all occurrences of value will be replaced by this replacement
 	 * @return the number of replacements done */
 	public int replaceAll (byte value, byte replacement) {
@@ -218,7 +218,7 @@ public class ByteArray {
 			}
 		return replacements;
 	}
-	
+
 	public boolean contains (byte value) {
 		int i = size - 1;
 		byte[] items = this.items;
