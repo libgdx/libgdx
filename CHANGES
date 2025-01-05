@@ -9,6 +9,7 @@
 - API Addition: Added FPSLogger#setBound
 - Android: Fix crash on startup if `setContentView` was manually called after `initializeForView`
 - API Addition: Added Array#replaceFirst and Array#replaceAll
+- API Addition: Added BooleanArray#replaceFirst and BooleanArray#replaceAll
 - API Addition: Added ByteArray#replaceFirst and ByteArray#replaceAll
 - API Addition: Added CharArray#replaceFirst and CharArray#replaceAll
 - API Addition: Added DelayedRemovalArray#replaceFirst and DelayedRemovalArray#replaceAll
