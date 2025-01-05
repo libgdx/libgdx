@@ -76,7 +76,7 @@ public class Dialog extends Window {
 		setModal(true);
 
 		defaults().space(6);
-		add(contentTable = new Table(skin)).expand().fill();
+		add(contentTable = new Table(skin)).grow();
 		row();
 		add(buttonTable = new Table(skin)).fillX();
 
