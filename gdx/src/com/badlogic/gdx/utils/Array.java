@@ -218,7 +218,7 @@ public class Array<T> implements Iterable<T> {
 	/** Returns the number of replacements done.
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
-	 * @param replacement all occurances of value will be replaced by this replacement
+	 * @param replacement all occurrences of value will be replaced by this replacement
 	 * @return the number of replacements done */
 	public int replaceAll (@Null T value, boolean identity, @Null T replacement) {
 		T[] items = this.items;
