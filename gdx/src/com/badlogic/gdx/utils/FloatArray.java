@@ -191,7 +191,7 @@ public class FloatArray {
 	}
 
 	/** Returns true if the specified value was replaced successfully with the replacement
-	 * @param value		 the float to be replaced
+	 * @param value the float to be replaced
 	 * @param replacement the first value will be replaced by this replacement if found
 	 * @return if value was found and replaced */
 	public boolean replaceFirst (float value, float replacement) {
@@ -205,7 +205,7 @@ public class FloatArray {
 	}
 
 	/** Returns the number of replacements done.
-	 * @param value		 the float to be replaced
+	 * @param value the float to be replaced
 	 * @param replacement all occurrences of value will be replaced by this replacement
 	 * @return the number of replacements done */
 	public int replaceAll (float value, float replacement) {

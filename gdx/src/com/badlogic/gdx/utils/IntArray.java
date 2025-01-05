@@ -191,7 +191,7 @@ public class IntArray {
 	}
 
 	/** Returns true if the specified value was replaced successfully with the replacement
-	 * @param value		 the int to be replaced
+	 * @param value the int to be replaced
 	 * @param replacement the first value will be replaced by this replacement if found
 	 * @return if value was found and replaced */
 	public boolean replaceFirst (int value, int replacement) {
@@ -205,7 +205,7 @@ public class IntArray {
 	}
 
 	/** Returns the number of replacements done.
-	 * @param value		 the int to be replaced
+	 * @param value the int to be replaced
 	 * @param replacement all occurrences of value will be replaced by this replacement
 	 * @return the number of replacements done */
 	public int replaceAll (int value, int replacement) {
