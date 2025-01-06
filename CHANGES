@@ -1,5 +1,6 @@
 [1.13.1]
 - [BREAKING CHANGE] Android: Since 1.13.0 libGDX requires setting `android.useAndroidX=true` in your gradle.properties file. In 1.13.1 it is NO longer needed to define the `androidx.core:core` dependency in your Android module.
+- [BREAKING CHANGE] BaseTmxMapLoader no longer parses point objects into zero-sized RectangleMapObject. Instead, points are now represented with PointMapObject
 - iOS: Update to MobiVM 2.3.22
 - iOS: Fixes Gdx.openURI() not working on iOS 18.1 Simulator.
 - Change visibility of PolygonSpriteBatch.switchTexture() to protected
@@ -9,7 +10,6 @@
 - API Addition: Added FPSLogger#setBound
 - Android: Fix crash on startup if `setContentView` was manually called after `initializeForView`
 - API Addition: Added Array#replaceFirst and Array#replaceAll
-- [BREAKING CHANGE] BaseTmxMapLoader no longer parses point objects into zero-sized RectangleMapObject. Instead, points are now represented with PointMapObject
 
 [1.13.0]
 - [BREAKING CHANGE] GWT: Updated to 2.11.0. `com.google.jsinterop:jsinterop-annotations:2.0.2:sources` must be added as a dependency to your html project dependencies.
