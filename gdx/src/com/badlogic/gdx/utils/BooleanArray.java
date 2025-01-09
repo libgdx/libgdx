@@ -176,11 +176,12 @@ public class BooleanArray {
 	 * @return if value was found and replaced */
 	public boolean replaceFirst (boolean value, boolean replacement) {
 		boolean[] items = this.items;
-		for (int i = 0, n = size; i < n; i++)
+		for (int i = 0, n = size; i < n; i++) {
 			if (items[i] == value) {
 				items[i] = replacement;
 				return true;
 			}
+		}
 		return false;
 	}
 
@@ -191,11 +192,12 @@ public class BooleanArray {
 	public int replaceAll (boolean value, boolean replacement) {
 		boolean[] items = this.items;
 		int replacements = 0;
-		for (int i = 0, n = size; i < n; i++)
+		for (int i = 0, n = size; i < n; i++) {
 			if (items[i] == value) {
 				items[i] = replacement;
 				replacements++;
 			}
+		}
 		return replacements;
 	}
 

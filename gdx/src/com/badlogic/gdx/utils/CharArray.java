@@ -196,11 +196,12 @@ public class CharArray {
 	 * @return if value was found and replaced */
 	public boolean replaceFirst (char value, char replacement) {
 		char[] items = this.items;
-		for (int i = 0, n = size; i < n; i++)
+		for (int i = 0, n = size; i < n; i++) {
 			if (items[i] == value) {
 				items[i] = replacement;
 				return true;
 			}
+		}
 		return false;
 	}
 
@@ -211,11 +212,12 @@ public class CharArray {
 	public int replaceAll (char value, char replacement) {
 		char[] items = this.items;
 		int replacements = 0;
-		for (int i = 0, n = size; i < n; i++)
+		for (int i = 0, n = size; i < n; i++) {
 			if (items[i] == value) {
 				items[i] = replacement;
 				replacements++;
 			}
+		}
 		return replacements;
 	}
 

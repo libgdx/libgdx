@@ -1,3 +1,14 @@
+[1.13.2]
+- API Addition: Added BooleanArray#replaceFirst and BooleanArray#replaceAll
+- API Addition: Added ByteArray#replaceFirst and ByteArray#replaceAll
+- API Addition: Added CharArray#replaceFirst and CharArray#replaceAll
+- API Addition: Added DelayedRemovalArray#replaceFirst and DelayedRemovalArray#replaceAll
+- API Addition: Added FloatArray#replaceFirst and FloatArray#replaceAll
+- API Addition: Added IntArray#replaceFirst and IntArray#replaceAll
+- API Addition: Added LongArray#replaceFirst and LongArray#replaceAll
+- API Addition: Added ShortArray#replaceFirst and ShortArray#replaceAll
+- API Addition: Added SnapshotArray#replaceFirst and SnapshotArray#replaceAll
+
 [1.13.1]
 - [BREAKING CHANGE] Android: Since 1.13.0 libGDX requires setting `android.useAndroidX=true` in your gradle.properties file. In 1.13.1 it is NO longer needed to define the `androidx.core:core` dependency in your Android module.
 - iOS: Update to MobiVM 2.3.22
@@ -9,15 +20,6 @@
 - API Addition: Added FPSLogger#setBound
 - Android: Fix crash on startup if `setContentView` was manually called after `initializeForView`
 - API Addition: Added Array#replaceFirst and Array#replaceAll
-- API Addition: Added BooleanArray#replaceFirst and BooleanArray#replaceAll
-- API Addition: Added ByteArray#replaceFirst and ByteArray#replaceAll
-- API Addition: Added CharArray#replaceFirst and CharArray#replaceAll
-- API Addition: Added DelayedRemovalArray#replaceFirst and DelayedRemovalArray#replaceAll
-- API Addition: Added FloatArray#replaceFirst and FloatArray#replaceAll
-- API Addition: Added IntArray#replaceFirst and IntArray#replaceAll
-- API Addition: Added LongArray#replaceFirst and LongArray#replaceAll
-- API Addition: Added ShortArray#replaceFirst and ShortArray#replaceAll
-- API Addition: Added SnapshotArray#replaceFirst and SnapshotArray#replaceAll
 - Fixed ShortArray#lastIndexOf taking char instead of short.
 - Properly validate font name in Hiero
 - Fix depth shader recycling

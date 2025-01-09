@@ -196,11 +196,12 @@ public class IntArray {
 	 * @return if value was found and replaced */
 	public boolean replaceFirst (int value, int replacement) {
 		int[] items = this.items;
-		for (int i = 0, n = size; i < n; i++)
+		for (int i = 0, n = size; i < n; i++) {
 			if (items[i] == value) {
 				items[i] = replacement;
 				return true;
 			}
+		}
 		return false;
 	}
 
@@ -211,11 +212,12 @@ public class IntArray {
 	public int replaceAll (int value, int replacement) {
 		int[] items = this.items;
 		int replacements = 0;
-		for (int i = 0, n = size; i < n; i++)
+		for (int i = 0, n = size; i < n; i++) {
 			if (items[i] == value) {
 				items[i] = replacement;
 				replacements++;
 			}
+		}
 		return replacements;
 	}
 

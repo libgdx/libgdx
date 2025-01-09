@@ -200,17 +200,19 @@ public class Array<T> implements Iterable<T> {
 	public boolean replaceFirst (@Null T value, boolean identity, T replacement) {
 		T[] items = this.items;
 		if (identity || value == null) {
-			for (int i = 0, n = size; i < n; i++)
+			for (int i = 0, n = size; i < n; i++) {
 				if (items[i] == value) {
 					items[i] = replacement;
 					return true;
 				}
+			}
 		} else {
-			for (int i = 0, n = size; i < n; i++)
+			for (int i = 0, n = size; i < n; i++) {
 				if (value.equals(items[i])) {
 					items[i] = replacement;
 					return true;
 				}
+			}
 		}
 		return false;
 	}
@@ -224,17 +226,19 @@ public class Array<T> implements Iterable<T> {
 		T[] items = this.items;
 		int replacements = 0;
 		if (identity || value == null) {
-			for (int i = 0, n = size; i < n; i++)
+			for (int i = 0, n = size; i < n; i++) {
 				if (items[i] == value) {
 					items[i] = replacement;
 					replacements++;
 				}
+			}
 		} else {
-			for (int i = 0, n = size; i < n; i++)
+			for (int i = 0, n = size; i < n; i++) {
 				if (value.equals(items[i])) {
 					items[i] = replacement;
 					replacements++;
 				}
+			}
 		}
 		return replacements;
 	}

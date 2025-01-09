@@ -196,11 +196,12 @@ public class ByteArray {
 	 * @return if value was found and replaced */
 	public boolean replaceFirst (byte value, byte replacement) {
 		byte[] items = this.items;
-		for (int i = 0, n = size; i < n; i++)
+		for (int i = 0, n = size; i < n; i++) {
 			if (items[i] == value) {
 				items[i] = replacement;
 				return true;
 			}
+		}
 		return false;
 	}
 
@@ -211,11 +212,12 @@ public class ByteArray {
 	public int replaceAll (byte value, byte replacement) {
 		byte[] items = this.items;
 		int replacements = 0;
-		for (int i = 0, n = size; i < n; i++)
+		for (int i = 0, n = size; i < n; i++) {
 			if (items[i] == value) {
 				items[i] = replacement;
 				replacements++;
 			}
+		}
 		return replacements;
 	}
 

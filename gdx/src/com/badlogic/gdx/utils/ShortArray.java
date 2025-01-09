@@ -203,11 +203,12 @@ public class ShortArray {
 	 * @return if value was found and replaced */
 	public boolean replaceFirst (short value, short replacement) {
 		short[] items = this.items;
-		for (int i = 0, n = size; i < n; i++)
+		for (int i = 0, n = size; i < n; i++) {
 			if (items[i] == value) {
 				items[i] = replacement;
 				return true;
 			}
+		}
 		return false;
 	}
 
@@ -218,11 +219,12 @@ public class ShortArray {
 	public int replaceAll (short value, short replacement) {
 		short[] items = this.items;
 		int replacements = 0;
-		for (int i = 0, n = size; i < n; i++)
+		for (int i = 0, n = size; i < n; i++) {
 			if (items[i] == value) {
 				items[i] = replacement;
 				replacements++;
 			}
+		}
 		return replacements;
 	}
 
