@@ -18,6 +18,25 @@
 - API Addition: Added LongArray#replaceFirst and LongArray#replaceAll
 - API Addition: Added ShortArray#replaceFirst and ShortArray#replaceAll
 - API Addition: Added SnapshotArray#replaceFirst and SnapshotArray#replaceAll
+- Fixed ShortArray#lastIndexOf taking char instead of short.
+- Properly validate font name in Hiero
+- Fix depth shader recycling
+- Support 'class' Tiled/Tmx MapProperty
+- Support for Layer TintColor in TiledMap
+- Fix classpath files not being loaded on GWT
+- Fixed LongArray#lastIndexOf taking char instead of long.
+- LongArray#pop and #peek now throw expections if the array is empty
+- Reset existing transformations of provided overlap Polygon in Polygon::intersectPolygons
+- Added tiledmap loader for JSON files
+- Fix duplicate points returned in polygon intersection
+- Change defaults of SpriteBatch to use VBO instead of VertexArray on gl2/gles2.0
+- Fix: no longer inline the version string
+- GWT - Calculate MD5 hash while copying file to avoid errors on very large files
+- Fix: Wayland doesn't support setting window position and icon
+- Fix: Parsing imagelayer inside a group tag in TMX file
+- Improve Android input keyboard with autocorrection
+- Unproject and pick ray docs for Viewport/Camera
+- Support for Image Layer repeat x and y in TiledMap + Bugfix
 
 [1.13.0]
 - [BREAKING CHANGE] GWT: Updated to 2.11.0. `com.google.jsinterop:jsinterop-annotations:2.0.2:sources` must be added as a dependency to your html project dependencies.
