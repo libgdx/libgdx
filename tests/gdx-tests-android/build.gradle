@@ -61,7 +61,6 @@ dependencies {
 
 android {
 	namespace "com.badlogic.gdx.tests.android"
-	buildToolsVersion versions.androidBuildTools
 	compileSdkVersion versions.androidCompileSdk
 	sourceSets {
 		main {

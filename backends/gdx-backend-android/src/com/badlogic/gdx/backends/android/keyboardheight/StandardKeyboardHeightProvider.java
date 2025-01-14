@@ -74,8 +74,6 @@ public class StandardKeyboardHeightProvider extends PopupWindow implements Keybo
 		setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_RESIZE | LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 		setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
 
-		parentView = activity.findViewById(android.R.id.content);
-
 		setWidth(0);
 		setHeight(android.view.ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -94,7 +92,7 @@ public class StandardKeyboardHeightProvider extends PopupWindow implements Keybo
 	 * be registered before the onResume has finished of the Activity. */
 	@Override
 	public void start () {
-
+		parentView = activity.findViewById(android.R.id.content);
 		if (!isShowing() && parentView.getWindowToken() != null) {
 			setBackgroundDrawable(new ColorDrawable(0));
 			showAtLocation(parentView, Gravity.NO_GRAVITY, 0, 0);
