@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -341,6 +342,58 @@ public class FreeType {
 			return FT_Get_Char_Index((FT_Face)face, charCode);
 		*/
 
+		public void setTransform(Affine2 affine) {
+			setTransform(address, affine.m00, affine.m01, affine.m10, affine.m11, affine.m02, affine.m12);
+		}
+
+		private static native void setTransform(long face, float xx, float xy, float yx, float yy, float deltaX, float deltaY); /*
+			FT_Matrix ftMatrix = { 0 };
+
+			ftMatrix.xx = (FT_Fixed)(xx * 0x10000L);
+			ftMatrix.xy = (FT_Fixed)(xy * 0x10000L);
+			ftMatrix.yx = (FT_Fixed)(yx * 0x10000L);
+			ftMatrix.yy = (FT_Fixed)(yy * 0x10000L);
+
+			FT_Vector ftDelta = { 0 };
+			ftDelta.x = (FT_Pos)(deltaX * 64.0);
+			ftDelta.y = (FT_Pos)(deltaY * 64.0);
+			FT_Set_Transform((FT_Face)face, &ftMatrix, &ftDelta);
+		*/
+
+		public Affine2 getTransform(Affine2 transform) {
+			float[] v = getTransform(address);
+
+			transform.m00 = v[0];
+			transform.m01 = v[1];
+			transform.m10 = v[2];
+			transform.m11 = v[3];
+
+			transform.m02 = v[4];
+			transform.m12 = v[5];
+			return transform;
+		}
+
+		private static native float[] getTransform(long face); /*
+			FT_Face ftFace = (FT_Face)face;
+			FT_Matrix ftMatrix;
+			FT_Vector ftDelta;
+
+			FT_Get_Transform(ftFace, &ftMatrix, &ftDelta);
+
+			jfloatArray transformValues = env->NewFloatArray(6);
+			jfloat *values = env->GetFloatArrayElements(transformValues, NULL);
+
+			values[0] = (float)(ftMatrix.xx / 0x10000L);
+			values[1] = (float)(ftMatrix.xy / 0x10000L);
+			values[2] = (float)(ftMatrix.yx / 0x10000L);
+			values[3] = (float)(ftMatrix.yy / 0x10000L);
+			values[4] = (float)(ftDelta.x / 64.0);
+			values[5] = (float)(ftDelta.y / 64.0);
+
+			env->ReleaseFloatArrayElements(transformValues, values, 0);
+			return transformValues;
+		*/
+
 	}
 	
 	public static class Size extends Pointer {
@@ -607,6 +660,24 @@ public class FreeType {
 		private static native int getTop(long glyph); /*
 			FT_BitmapGlyph glyph_bitmap = ((FT_BitmapGlyph)glyph);
 			return glyph_bitmap->top;
+		*/
+
+		public void transform(Affine2 affine) {
+			transform(address, affine.m00, affine.m01, affine.m10, affine.m11, affine.m02, affine.m12);
+		}
+
+		private static native void transform(long glyph, float xx, float xy, float yx, float yy, float deltaX, float deltaY); /*
+			FT_Matrix ftMatrix = { 0 };
+
+			ftMatrix.xx = (FT_Fixed)(xx * 0x10000L);
+			ftMatrix.xy = (FT_Fixed)(xy * 0x10000L);
+			ftMatrix.yx = (FT_Fixed)(yx * 0x10000L);
+			ftMatrix.yy = (FT_Fixed)(yy * 0x10000L);
+
+			FT_Vector ftDelta = { 0 };
+			ftDelta.x = (FT_Pos)(deltaX * 64.0);
+			ftDelta.y = (FT_Pos)(deltaY * 64.0);
+			FT_Glyph_Transform((FT_Glyph)glyph, &ftMatrix, &ftDelta);
 		*/
 
 	}
