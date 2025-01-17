@@ -55,7 +55,6 @@ dependencies {
 	implementation project(":tests:gdx-tests")
 	implementation project(":backends:gdx-backend-android")
 	implementation libraries.compileOnly.android
-	implementation "androidx.multidex:multidex:${versions.multiDex}"
 	// Fix Duplicate class kotlin.collections.jdk8.CollectionsJDK8Kt found in modules kotlin-stdlib-X.X.X.jar
 	implementation(platform("org.jetbrains.kotlin:kotlin-bom:${versions.kotlinBomTests}"))
 }
