@@ -1,4 +1,5 @@
-[1.13.2]
+[1.14.0]
+- [BREAKING CHANGE] Android: Updated minSDK to 21. Multidex config is no longer required, please check https://developer.android.com/build/multidex.
 - API Addition: Added BooleanArray#replaceFirst and BooleanArray#replaceAll
 - API Addition: Added ByteArray#replaceFirst and ByteArray#replaceAll
 - API Addition: Added CharArray#replaceFirst and CharArray#replaceAll
