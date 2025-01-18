@@ -156,6 +156,16 @@ public class DelayedRemovalArray<T> extends Array<T> {
 		super.swap(first, second);
 	}
 
+	public boolean replaceFirst (@Null T value, boolean identity, T replacement) {
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
+		return super.replaceFirst(value, identity, replacement);
+	}
+
+	public int replaceAll (@Null T value, boolean identity, @Null T replacement) {
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
+		return super.replaceAll(value, identity, replacement);
+	}
+
 	public T pop () {
 		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		return super.pop();

@@ -197,6 +197,37 @@ public class ShortArray {
 		items[second] = firstValue;
 	}
 
+	/** Returns true if the specified value was replaced successfully with the replacement
+	 * @param value the short to be replaced
+	 * @param replacement the first value will be replaced by this replacement if found
+	 * @return if value was found and replaced */
+	public boolean replaceFirst (short value, short replacement) {
+		short[] items = this.items;
+		for (int i = 0, n = size; i < n; i++) {
+			if (items[i] == value) {
+				items[i] = replacement;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Returns the number of replacements done.
+	 * @param value the short to be replaced
+	 * @param replacement all occurrences of value will be replaced by this replacement
+	 * @return the number of replacements done */
+	public int replaceAll (short value, short replacement) {
+		short[] items = this.items;
+		int replacements = 0;
+		for (int i = 0, n = size; i < n; i++) {
+			if (items[i] == value) {
+				items[i] = replacement;
+				replacements++;
+			}
+		}
+		return replacements;
+	}
+
 	public boolean contains (short value) {
 		int i = size - 1;
 		short[] items = this.items;

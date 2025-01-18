@@ -190,6 +190,37 @@ public class LongArray {
 		items[second] = firstValue;
 	}
 
+	/** Returns true if the specified value was replaced successfully with the replacement
+	 * @param value the long to be replaced
+	 * @param replacement the first value will be replaced by this replacement if found
+	 * @return if value was found and replaced */
+	public boolean replaceFirst (long value, long replacement) {
+		long[] items = this.items;
+		for (int i = 0, n = size; i < n; i++) {
+			if (items[i] == value) {
+				items[i] = replacement;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Returns the number of replacements done.
+	 * @param value the long to be replaced
+	 * @param replacement all occurrences of value will be replaced by this replacement
+	 * @return the number of replacements done */
+	public int replaceAll (long value, long replacement) {
+		long[] items = this.items;
+		int replacements = 0;
+		for (int i = 0, n = size; i < n; i++) {
+			if (items[i] == value) {
+				items[i] = replacement;
+				replacements++;
+			}
+		}
+		return replacements;
+	}
+
 	public boolean contains (long value) {
 		int i = size - 1;
 		long[] items = this.items;
