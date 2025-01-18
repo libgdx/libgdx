@@ -9,6 +9,7 @@
 - API Addition: Added LongArray#replaceFirst and LongArray#replaceAll
 - API Addition: Added ShortArray#replaceFirst and ShortArray#replaceAll
 - API Addition: Added SnapshotArray#replaceFirst and SnapshotArray#replaceAll
+- Android: Fixed rare NPE when `onDestroy` was called
 
 [1.13.1]
 - [BREAKING CHANGE] Android: Since 1.13.0 libGDX requires setting `android.useAndroidX=true` in your gradle.properties file. In 1.13.1 it is NO longer needed to define the `androidx.core:core` dependency in your Android module.
