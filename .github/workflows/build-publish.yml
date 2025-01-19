@@ -8,9 +8,6 @@ on:
   release:
     types: [ published ]
 
-env:
-  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
-
 jobs:
 
   natives-ios:
@@ -30,7 +27,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Build macOS natives
+      - name: Build iOS natives
         run: |
           # See https://github.com/actions/virtual-environments/issues/2557
           sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
@@ -81,6 +78,10 @@ jobs:
 
       - name: Pack artifacts
         run: |
+          # Needed starting with Xcode 15 to run multiple instances of the same app
+          find . -name "*.dylib" | grep "libs" | while read dylib; do
+            codesign -s - -f "$dylib"
+          done
           find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
           zip natives-macos -@ < native-files-list
 
@@ -92,65 +93,15 @@ jobs:
 
   natives-linux:
     runs-on: ubuntu-20.04
-    container:
-      image: ubuntu:18.04
     steps:
-      - name: Install dependencies into minimal dockerfile
-        run: |
-          # ubuntu dockerfile is very minimal (only 122 packages are installed)
-          # need to install updated git (from official git ppa)
-          apt update
-          apt install -y software-properties-common
-          add-apt-repository ppa:git-core/ppa -y
-          # install dependencies expected by other steps
-          apt update
-          apt install -y git \
-          curl \
-          ca-certificates \
-          wget \
-          bzip2 \
-          zip \
-          unzip \
-          xz-utils \
-          maven \
-          ant sudo locales
-
-          # set Locale to en_US.UTF-8 (avoids hang during compilation)
-          locale-gen en_US.UTF-8
-          echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
-          echo "LANGUAGE=en_US.UTF-8" >> $GITHUB_ENV
-          echo "LC_ALL=en_US.UTF-8" >> $GITHUB_ENV
-
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           submodules: 'recursive'
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Install cross-compilation toolchains
-        run: |
-          sudo apt update
-          sudo apt install -y --force-yes gcc g++
-          sudo apt install -y --force-yes gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-dev-arm64-cross
-          sudo apt install -y --force-yes gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc6-dev-armhf-cross
-          sudo apt install -y --force-yes gcc-riscv64-linux-gnu g++-riscv64-linux-gnu libc6-dev-riscv64-cross
-
-      - name: Build Linux natives
-        run: |
-          ./gradlew jniGen jnigenBuildLinux64 jnigenBuildLinuxARM jnigenBuildLinuxARM64 jnigenBuildLinuxRISCV64
-
-      - name: Pack artifacts
-        run: |
-          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
-          zip natives-linux -@ < native-files-list
+      - name: Build Linux Natives in Docker Container
+        uses: ./.github/actions/build-linux-natives
+        id: docker
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -390,7 +341,7 @@ jobs:
         run: |
           ./gradlew clean fetchNatives
           ./gradlew buildRunnables build
-          
+
       - name: Upload artifacts to S3
         if: env.AWS_ACCESS_KEY_ID != null
         run: |

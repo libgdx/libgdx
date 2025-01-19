@@ -153,7 +153,7 @@ public class Lwjgl3TestStarter {
 				});
 			}
 
-			container.add(scroll).expand().fill();
+			container.add(scroll).grow();
 			container.row();
 
 			lastClickedTestButton = (TextButton)table.findActor(prefs.getString("LastTest"));

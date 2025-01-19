@@ -25,7 +25,6 @@ apply plugin: 'com.android.library'
 android {
 	namespace "com.badlogic.gdx.backends.android"
 	compileSdkVersion versions.androidCompileSdk
-	buildToolsVersion versions.androidBuildTools
 
 	defaultConfig {
 		minSdkVersion versions.androidMinSdk
@@ -52,5 +51,6 @@ android {
 
 dependencies {
 	implementation project(":gdx")
+	implementation libraries.android
 	compileOnly libraries.compileOnly.android
 }

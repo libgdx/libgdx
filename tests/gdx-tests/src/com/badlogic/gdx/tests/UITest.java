@@ -163,12 +163,12 @@ public class UITest extends GdxTest {
 		window.add(slider).minWidth(100).fillX().colspan(3);
 		window.row();
 		window.add(selectBox).maxWidth(100);
-		window.add(textfield).minWidth(100).expandX().fillX().colspan(3);
+		window.add(textfield).minWidth(100).growX().colspan(3);
 		window.row();
-		window.add(splitPane).fill().expand().colspan(4).maxHeight(200);
+		window.add(splitPane).grow().colspan(4).maxHeight(200);
 		window.row();
 		window.add(passwordLabel).colspan(2);
-		window.add(passwordTextField).minWidth(100).expandX().fillX().colspan(2);
+		window.add(passwordTextField).minWidth(100).growX().colspan(2);
 		window.row();
 		window.add(fpsLabel).colspan(4);
 		window.pack();

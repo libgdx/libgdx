@@ -17,6 +17,7 @@
 package com.badlogic.gdx.maps;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -94,4 +95,20 @@ public class MapProperties {
 		return properties.values();
 	}
 
+	@Override
+	public String toString () {
+		return "MapProperties{" + "properties=" + properties + '}';
+	}
+
+	@Override
+	public boolean equals (Object o) {
+		if (!(o instanceof MapProperties)) return false;
+		MapProperties that = (MapProperties)o;
+		return Objects.equals(properties, that.properties);
+	}
+
+	@Override
+	public int hashCode () {
+		return properties.hashCode();
+	}
 }

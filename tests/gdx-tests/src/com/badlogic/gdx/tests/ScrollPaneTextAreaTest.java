@@ -27,7 +27,7 @@ public class ScrollPaneTextAreaTest extends GdxTest {
 		stage.addActor(container);
 
 		container.setFillParent(true);
-		container.pad(10).defaults().expandX().fillX().space(4);
+		container.pad(10).defaults().growX().space(4);
 
 		textArea = new TextArea(">>> FIRST LINE <<<\n" + "Scrolling to the bottom of the area you should see the last line.\n"
 			+ "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n"

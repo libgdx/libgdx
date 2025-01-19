@@ -50,10 +50,6 @@ import com.badlogic.gdx.tests.extensions.FreeTypeMetricsTest;
 import com.badlogic.gdx.tests.extensions.FreeTypePackTest;
 import com.badlogic.gdx.tests.extensions.FreeTypeTest;
 import com.badlogic.gdx.tests.extensions.InternationalFontsTest;
-import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
-import com.badlogic.gdx.tests.gles3.UniformBufferObjectsTest;
-import com.badlogic.gdx.tests.math.CollisionPlaygroundTest;
-import com.badlogic.gdx.tests.math.OctreeTest;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.AnisotropyTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
@@ -75,6 +71,7 @@ import com.badlogic.gdx.tests.g3d.PolarAccelerationTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
+import com.badlogic.gdx.tests.g3d.ShadowMappingTextureTest;
 import com.badlogic.gdx.tests.g3d.SkeletonTest;
 import com.badlogic.gdx.tests.g3d.TangentialAccelerationTest;
 import com.badlogic.gdx.tests.g3d.TextureArrayTest;
@@ -87,7 +84,9 @@ import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.ModelInstancedRenderingTest;
+import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
 import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
+import com.badlogic.gdx.tests.gles3.UniformBufferObjectsTest;
 import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleMRTTest;
 import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleTest;
 import com.badlogic.gdx.tests.gles31.GL31IndirectDrawingIndexedTest;
@@ -97,6 +96,8 @@ import com.badlogic.gdx.tests.gles32.GL32AdvancedBlendingTest;
 import com.badlogic.gdx.tests.gles32.GL32DebugControlTest;
 import com.badlogic.gdx.tests.gles32.GL32MultipleRenderTargetsBlendingTest;
 import com.badlogic.gdx.tests.gles32.GL32OffsetElementsTest;
+import com.badlogic.gdx.tests.math.CollisionPlaygroundTest;
+import com.badlogic.gdx.tests.math.OctreeTest;
 import com.badlogic.gdx.tests.math.collision.OrientedBoundingBoxTest;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
@@ -268,6 +269,7 @@ public class GdxTests {
 		ShaderMultitextureTest.class,
 		ShaderTest.class,
 		ShadowMappingTest.class,
+		ShadowMappingTextureTest.class,
 		ShapeRendererTest.class,
 		ShapeRendererAlphaTest.class,
 		SimpleAnimationTest.class,
@@ -320,6 +322,7 @@ public class GdxTests {
 		TiledMapBench.class,
 		TiledMapLayerOffsetTest.class,
 		TiledMapLayerTintOpacityTest.class,
+		TiledMapPropertiesTest.class,
 		TiledMapJsonFormatTest.class,
 		TiledMapJsonObjectLoadingTest.class,
 		TimerTest.class,
