@@ -797,20 +797,16 @@ public class MaxRectsPacker implements Packer {
 		ContactPointRule
 	};
 
-	/**
-	 * Specialized R-Tree with 2 entries per node.
-	 */
+	/** Specialized R-Tree with 2 entries per node. */
 	static class RTree {
 		private Node root;
 
-		public RTree() {
+		public RTree () {
 			this.root = new Node(true);
 		}
 
-		/**
-		 * Insert a rectangle into the R-tree.
-		 */
-		public void insert(Rect rect) {
+		/** Insert a rectangle into the R-tree. */
+		public void insert (Rect rect) {
 			Node leaf = chooseLeaf(root, rect);
 			addEntryToNode(leaf, rect);
 			leaf.mbr = combine(leaf.mbr, rect);
@@ -822,11 +818,9 @@ public class MaxRectsPacker implements Packer {
 			adjustTree(leaf);
 		}
 
-		/**
-		 * Retrieve (search) for all rectangles that might intersect the given query.
-		 * @return all intersecting rectangles
-		 */
-		public Array<Rect> retrieve(int queryX, int queryY, int queryWidth, int queryHeight) {
+		/** Retrieve (search) for all rectangles that might intersect the given query.
+		 * @return all intersecting rectangles */
+		public Array<Rect> retrieve (int queryX, int queryY, int queryWidth, int queryHeight) {
 			Array<Rect> results = new Array<>();
 			Rect query = new Rect(queryX, queryWidth, queryY, queryHeight);
 			search(root, query, results);
@@ -843,7 +837,7 @@ public class MaxRectsPacker implements Packer {
 			Node[] children = null;
 			int childCount = 0;
 
-			Node(boolean leaf) {
+			Node (boolean leaf) {
 				this.isLeaf = leaf;
 				if (!leaf) {
 					children = new Node[3];
@@ -851,7 +845,7 @@ public class MaxRectsPacker implements Packer {
 			}
 		}
 
-		private Node chooseLeaf(Node node, Rect rect) {
+		private Node chooseLeaf (Node node, Rect rect) {
 			if (node.isLeaf) {
 				return node;
 			}
@@ -872,12 +866,12 @@ public class MaxRectsPacker implements Packer {
 			return chooseLeaf(bestChild, rect);
 		}
 
-		private void addEntryToNode(Node node, Rect rect) {
+		private void addEntryToNode (Node node, Rect rect) {
 			node.entries[node.entryCount] = rect;
 			node.entryCount++;
 		}
 
-		private void addChildToNode(Node parent, Node child) {
+		private void addChildToNode (Node parent, Node child) {
 			parent.children[parent.childCount] = child;
 			parent.entries[parent.childCount] = child.mbr;
 			parent.childCount++;
@@ -885,7 +879,7 @@ public class MaxRectsPacker implements Packer {
 			parent.mbr = computeMBR(parent);
 		}
 
-		private void splitNode(Node node) {
+		private void splitNode (Node node) {
 			Node newNode = new Node(node.isLeaf);
 
 			Rect[] all = new Rect[3];
@@ -941,11 +935,11 @@ public class MaxRectsPacker implements Packer {
 			}
 		}
 
-		private int[] pickSeeds(Rect[] all) {
+		private int[] pickSeeds (Rect[] all) {
 			float maxWaste = -1;
 			int idx1 = 0, idx2 = 1;
 			for (int i = 0; i < 3; i++) {
-				for (int j = i+1; j < 3; j++) {
+				for (int j = i + 1; j < 3; j++) {
 					float areaCombined = area(combine(all[i], all[j]));
 					float areaI = area(all[i]);
 					float areaJ = area(all[j]);
@@ -957,10 +951,10 @@ public class MaxRectsPacker implements Packer {
 					}
 				}
 			}
-			return new int[] { idx1, idx2 };
+			return new int[] {idx1, idx2};
 		}
 
-		private void adjustTree(Node node) {
+		private void adjustTree (Node node) {
 			if (node == root) {
 				return;
 			}
@@ -974,15 +968,14 @@ public class MaxRectsPacker implements Packer {
 			}
 			parent.mbr = computeMBR(parent);
 
-			if ((parent.isLeaf && parent.entryCount > 2)
-				|| (!parent.isLeaf && parent.childCount > 2)) {
+			if ((parent.isLeaf && parent.entryCount > 2) || (!parent.isLeaf && parent.childCount > 2)) {
 				splitNode(parent);
 			}
 
 			adjustTree(parent);
 		}
 
-		private Node findParent(Node current, Node target) {
+		private Node findParent (Node current, Node target) {
 			if (current == target || current.isLeaf) {
 				return null;
 			}
@@ -998,7 +991,7 @@ public class MaxRectsPacker implements Packer {
 			return null;
 		}
 
-		private void search(Node node, Rect query, Array<Rect> results) {
+		private void search (Node node, Rect query, Array<Rect> results) {
 			if (!intersects(node.mbr, query)) {
 				return;
 			}
@@ -1019,18 +1012,17 @@ public class MaxRectsPacker implements Packer {
 
 		/* Helpers */
 
-		private static boolean intersects(Rect a, Rect b) {
+		private static boolean intersects (Rect a, Rect b) {
 			if (a == null || b == null) return false;
-			return !(a.x + a.width < b.x || a.x > b.x + b.width
-				|| a.y + a.height < b.y || a.y > b.y + b.height);
+			return !(a.x + a.width < b.x || a.x > b.x + b.width || a.y + a.height < b.y || a.y > b.y + b.height);
 		}
 
-		private static float area(Rect r) {
+		private static float area (Rect r) {
 			if (r == null) return 0;
-			return (float) r.width * (float) r.height;
+			return (float)r.width * (float)r.height;
 		}
 
-		private static Rect combine(Rect a, Rect b) {
+		private static Rect combine (Rect a, Rect b) {
 			if (a == null) return b;
 			if (b == null) return a;
 			int minX = Math.min(a.x, b.x);
@@ -1040,7 +1032,7 @@ public class MaxRectsPacker implements Packer {
 			return new Rect(minX, maxX - minX, minY, maxY - minY);
 		}
 
-		private static Rect computeMBR(Node node) {
+		private static Rect computeMBR (Node node) {
 			Rect m = null;
 			for (int i = 0; i < node.entryCount; i++) {
 				m = combine(m, node.entries[i]);
