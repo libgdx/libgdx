@@ -23,6 +23,13 @@ public class JsonTest {
 	}
 
 	@Test
+	public void testCharFromNumber () {
+		Json json = new Json();
+		char value = json.fromJson(char.class, "90");
+		assertEquals('Z', value);
+	}
+
+	@Test
 	public void testReuseReader () {
 		Json json = new Json();
 		JsonValue value = json.fromJson(null, JsonValue.class, "{\"key\":\"value\"}");
