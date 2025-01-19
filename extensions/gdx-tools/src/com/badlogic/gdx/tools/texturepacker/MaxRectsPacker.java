@@ -302,7 +302,7 @@ public class MaxRectsPacker implements Packer {
 		private final Array<Rect> usedRectangles = new Array<>();
 		private final Array<Rect> freeRectangles = new Array<>();
 		private final Array<Rect> rectanglesToCheckWhenPruning = new Array<>();
-		private RTree rTree;
+		private RTree rTree = new RTree();
 
 		public void init (int width, int height) {
 			binWidth = width;
@@ -310,8 +310,6 @@ public class MaxRectsPacker implements Packer {
 
 			usedRectangles.clear();
 			freeRectangles.clear();
-
-			quadTree = new RTree(0, 0, binWidth, binHeight, 0);
 
 			Rect n = new Rect();
 			n.x = 0;
@@ -651,7 +649,7 @@ public class MaxRectsPacker implements Packer {
 			int queryW = width + 2;
 			int queryH = height + 2;
 
-			Array<Rect> candidates = quadTree.retrieve(queryX, queryY, queryW, queryH);
+			Array<Rect> candidates = rTree.retrieve(queryX, queryY, queryW, queryH);
 
 			for (int i = 0, n = candidates.size; i < n; i++) {
 				Rect Rect = candidates.get(i);
