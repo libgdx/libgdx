@@ -820,7 +820,11 @@ public class MaxRectsPacker implements Packer {
 		 * @return all intersecting rectangles */
 		public Array<Rect> retrieve (int queryX, int queryY, int queryWidth, int queryHeight) {
 			Array<Rect> results = new Array<>();
-			Rect query = new Rect(queryX, queryWidth, queryY, queryHeight);
+			Rect query = new Rect();
+			query.x = queryX;
+			query.y = queryY;
+			query.width = queryWidth;
+			query.height = queryHeight;
 			search(root, query, results);
 			return results;
 		}
@@ -1027,7 +1031,12 @@ public class MaxRectsPacker implements Packer {
 			int minY = Math.min(a.y, b.y);
 			int maxX = Math.max(a.x + a.width, b.x + b.width);
 			int maxY = Math.max(a.y + a.height, b.y + b.height);
-			return new Rect(minX, maxX - minX, minY, maxY - minY);
+			Rect combination = new Rect();
+			combination.x = minX;
+			combination.y = minY;
+			combination.width = maxX - minX;
+			combination.height = maxY - minY;
+			return combination;
 		}
 
 		private static Rect computeMBR (Node node) {
