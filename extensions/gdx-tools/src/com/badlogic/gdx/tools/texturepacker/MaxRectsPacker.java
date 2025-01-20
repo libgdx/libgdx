@@ -644,16 +644,10 @@ public class MaxRectsPacker implements Packer {
 			if (x == 0 || x + width == binWidth) score += height;
 			if (y == 0 || y + height == binHeight) score += width;
 
-			int queryX = x - 1;
-			int queryY = y - 1;
-			int queryW = width + 2;
-			int queryH = height + 2;
-
-			Array<Rect> candidates = rTree.retrieve(queryX, queryY, queryW, queryH);
+			Array<Rect> candidates = rTree.retrieve(x, y, width, height);
 
 			for (int i = 0, n = candidates.size; i < n; i++) {
 				Rect Rect = candidates.get(i);
-				// Only check actual adjacency:
 				if (Rect.x == x + width || Rect.x + Rect.width == x) {
 					score += commonIntervalLength(Rect.y, Rect.y + Rect.height, y, y + height);
 				}
@@ -1019,9 +1013,9 @@ public class MaxRectsPacker implements Packer {
 			return !(a.x + a.width < b.x || a.x > b.x + b.width || a.y + a.height < b.y || a.y > b.y + b.height);
 		}
 
-		private static float area (Rect r) {
+		private static int area (Rect r) {
 			if (r == null) return 0;
-			return (float)r.width * (float)r.height;
+			return r.width * r.height;
 		}
 
 		private static Rect combine (Rect a, Rect b) {
