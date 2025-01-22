@@ -201,7 +201,13 @@ public class Ellipse implements Serializable, Shape2D {
 			return (float)(MathUtils.PI2 * Math.sqrt((a * a + b * b) / 2));
 		}
 	}
-
+	
+	/** Returns a {@link String} representation of this {@link Ellipse} of the form {@code x,y,width,height}. */
+	@Override
+	public String toString () {
+		return x + "," + y + "," + width + "," + height;
+	}
+	
 	@Override
 	public boolean equals (Object o) {
 		if (o == this) return true;
