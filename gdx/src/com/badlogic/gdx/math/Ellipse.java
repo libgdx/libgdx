@@ -202,6 +202,12 @@ public class Ellipse implements Serializable, Shape2D {
 		}
 	}
 
+	/** Returns a {@link String} representation of this {@link Ellipse} of the form {@code [x,y,width,height]}. */
+	@Override
+	public String toString () {
+		return "[" + x + "," + y + "," + width + "," + height + "]";
+	}
+
 	@Override
 	public boolean equals (Object o) {
 		if (o == this) return true;
