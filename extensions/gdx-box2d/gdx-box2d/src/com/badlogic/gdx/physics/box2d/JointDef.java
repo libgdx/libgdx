@@ -22,7 +22,7 @@ public class JointDef {
 			7), WeldJoint(8), FrictionJoint(9), RopeJoint(10), MotorJoint(11);
 
 		public static JointType[] valueTypes = new JointType[] {Unknown, RevoluteJoint, PrismaticJoint, DistanceJoint, PulleyJoint,
-			MouseJoint, GearJoint, WheelJoint, WeldJoint, FrictionJoint, RopeJoint, MotorJoint};
+			MouseJoint, GearJoint, WheelJoint, WeldJoint, FrictionJoint, MotorJoint};
 		private int value;
 
 		JointType (int value) {

@@ -19,6 +19,7 @@ package com.badlogic.gdx.physics.box2d;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** This class's only purpose is to initialize Box2D by calling its {@link #init()} method.
+ * 
  * @author Daniel Holderbaum */
 public final class Box2D {
 

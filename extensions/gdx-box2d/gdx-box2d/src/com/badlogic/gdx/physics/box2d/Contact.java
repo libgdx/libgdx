@@ -24,9 +24,9 @@ import com.badlogic.gdx.math.Vector2;
 public class Contact {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
-	 */
-	
+#include <box2d/box2d.h>
+	 */ // @on
+
 	/** the address **/
 	protected long addr;
 
@@ -61,34 +61,36 @@ public class Contact {
 	}
 
 	private native int jniGetWorldManifold (long addr, float[] tmp); /*
+		// @off
 		b2Contact* contact = (b2Contact*)addr;
 		b2WorldManifold manifold;
 		contact->GetWorldManifold(&manifold);
 		int numPoints = contact->GetManifold()->pointCount;
-	
+
 		tmp[0] = manifold.normal.x;
 		tmp[1] = manifold.normal.y;
-	
+
 		for( int i = 0; i < numPoints; i++ )
 		{
 			tmp[2 + i*2] = manifold.points[i].x;
 			tmp[2 + i*2+1] = manifold.points[i].y;
 		}
-	
+
 		tmp[6] = manifold.separations[0];
 		tmp[7] = manifold.separations[1];
 
 		return numPoints;
-	*/
+	*/ // @on
 
 	public boolean isTouching () {
 		return jniIsTouching(addr);
 	}
 
 	private native boolean jniIsTouching (long addr); /*
+		// @off
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->IsTouching();
-	*/
+	*/ // @on
 
 	/** Enable/disable this contact. This can be used inside the pre-solve contact listener. The contact is only disabled for the
 	 * current time step (or sub-step in continuous collisions). */
@@ -97,9 +99,10 @@ public class Contact {
 	}
 
 	private native void jniSetEnabled (long addr, boolean flag); /*
+		// @off
 		b2Contact* contact = (b2Contact*)addr;
 		contact->SetEnabled(flag);
-	*/
+	*/ // @on
 
 	/** Has this contact been disabled? */
 	public boolean isEnabled () {
@@ -107,9 +110,10 @@ public class Contact {
 	}
 
 	private native boolean jniIsEnabled (long addr); /*
+		// @off
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->IsEnabled();
-	*/
+	*/ // @on
 
 	/** Get the first fixture in this contact. */
 	public Fixture getFixtureA () {
@@ -117,9 +121,10 @@ public class Contact {
 	}
 
 	private native long jniGetFixtureA (long addr); /*
+		// @off
 		b2Contact* contact = (b2Contact*)addr;
 		return (jlong)contact->GetFixtureA();
-	*/
+	*/ // @on
 
 	/** Get the second fixture in this contact. */
 	public Fixture getFixtureB () {
@@ -127,9 +132,10 @@ public class Contact {
 	}
 
 	private native long jniGetFixtureB (long addr); /*
+		// @off
 		b2Contact* contact = (b2Contact*)addr;
 		return (jlong)contact->GetFixtureB();
-	*/
+	*/ // @on
 
 	/** Get the child primitive index for fixture A. */
 	public int getChildIndexA () {
@@ -137,9 +143,10 @@ public class Contact {
 	}
 
 	private native int jniGetChildIndexA (long addr); /*
+		// @off
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->GetChildIndexA();
-	*/
+	*/ // @on
 
 	/** Get the child primitive index for fixture B. */
 	public int getChildIndexB () {
@@ -147,9 +154,10 @@ public class Contact {
 	}
 
 	private native int jniGetChildIndexB (long addr); /*
+		// @off
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->GetChildIndexB();
-	*/
+	*/ // @on
 
 	/** Override the default friction mixture. You can call this in b2ContactListener::PreSolve. This value persists until set or
 	 * reset. */
@@ -158,9 +166,10 @@ public class Contact {
 	}
 
 	private native void jniSetFriction (long addr, float friction); /*
+		// @off
 		b2Contact* contact = (b2Contact*)addr;
 		contact->SetFriction(friction);
-	*/
+	*/ // @on
 
 	/** Get the friction. */
 	public float getFriction () {
@@ -168,9 +177,10 @@ public class Contact {
 	}
 
 	private native float jniGetFriction (long addr); /*
+		// @off
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->GetFriction();
-	*/
+	*/ // @on
 
 	/** Reset the friction mixture to the default value. */
 	public void resetFriction () {
@@ -178,20 +188,22 @@ public class Contact {
 	}
 
 	private native void jniResetFriction (long addr); /*
+		// @off
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->ResetFriction();
-	*/
+	*/ // @on
 
-	/** Override the default restitution mixture. You can call this in b2ContactListener::PreSolve. The value persists until you set
-	 * or reset. */
+	/** Override the default restitution mixture. You can call this in b2ContactListener::PreSolve. The value persists until you
+	 * set or reset. */
 	public void setRestitution (float restitution) {
 		jniSetRestitution(addr, restitution);
 	}
 
 	private native void jniSetRestitution (long addr, float restitution); /*
+		// @off
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->SetRestitution(restitution);
-	*/
+	*/ // @on
 
 	/** Get the restitution. */
 	public float getRestitution () {
@@ -199,9 +211,10 @@ public class Contact {
 	}
 
 	private native float jniGetRestitution (long addr); /*
+		// @off
 	  	b2Contact* contact = (b2Contact*)addr;
 		return contact->GetRestitution();
-	*/
+	*/ // @on
 
 	/** Reset the restitution to the default value. */
 	public void ResetRestitution () {
@@ -209,19 +222,55 @@ public class Contact {
 	}
 
 	private native void jniResetRestitution (long addr); /*
+		// @off
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->ResetRestitution();
-	*/
-		
+	*/ // @on
+
+	/** Override the default restitution mixture. You can call this in b2ContactListener::PreSolve. The value persists until you
+	 * set or reset. */
+	public void setRestitutionThreshold (float restitutionThreshold) {
+		jniSetRestitutionThreshold(addr, restitutionThreshold);
+	}
+
+	private native void jniSetRestitutionThreshold (long addr, float restitutionThreshold); /*
+		// @off
+	  	b2Contact* contact = (b2Contact*)addr;
+		contact->SetRestitutionThreshold(restitutionThreshold);
+	*/ // @on
+
+	/** Get the restitution threshold. */
+	public float getRestitutionThreshold () {
+		return jniGetRestitutionThreshold(addr);
+	}
+
+	private native float jniGetRestitutionThreshold (long addr); /*
+		// @off
+	  	b2Contact* contact = (b2Contact*)addr;
+		return contact->GetRestitutionThreshold();
+	*/ // @on
+
+	/** Reset the restitution threshold to the default value. */
+	public void ResetRestitutionThreshold () {
+		jniResetRestitutionThreshold(addr);
+	}
+
+	private native void jniResetRestitutionThreshold (long addr); /*
+		// @off
+	  	b2Contact* contact = (b2Contact*)addr;
+		contact->ResetRestitutionThreshold();
+	*/ // @on
+
 	/** Get the tangent speed. */
 	public float getTangentSpeed () {
 		return jniGetTangentSpeed(addr);
 	}
 
 	private native float jniGetTangentSpeed (long addr); /*
+		// @off
 	  	b2Contact* contact = (b2Contact*)addr;
 		return contact->GetTangentSpeed();
-	*/
+	*/ // @on
 
 	/** Set the tangent speed. */
 	public void setTangentSpeed (float speed) {
@@ -229,7 +278,8 @@ public class Contact {
 	}
 
 	private native void jniSetTangentSpeed (long addr, float speed); /*
+		// @off
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->SetTangentSpeed(speed);
-	*/
+	*/ // @on
 }

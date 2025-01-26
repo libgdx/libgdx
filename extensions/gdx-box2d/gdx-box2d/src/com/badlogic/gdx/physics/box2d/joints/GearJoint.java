@@ -27,9 +27,9 @@ import com.badlogic.gdx.physics.box2d.World;
 public class GearJoint extends Joint {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h> 
-	 */
-	
+#include <box2d/box2d.h>
+	 */ // @on
+
 	private Joint joint1;
 	private Joint joint2;
 
@@ -45,10 +45,11 @@ public class GearJoint extends Joint {
 	}
 
 	private native long jniGetJoint1 (long addr); /*
+		// @off
 		b2GearJoint* joint =  (b2GearJoint*)addr;
 		b2Joint* joint1 = joint->GetJoint1();
 		return (jlong)joint1;
-	*/
+	*/ // @on
 
 	/** Get first joint. */
 	public Joint getJoint2 () {
@@ -56,10 +57,11 @@ public class GearJoint extends Joint {
 	}
 
 	private native long jniGetJoint2 (long addr); /*
+		// @off
 		b2GearJoint* joint =  (b2GearJoint*)addr;
 		b2Joint* joint2 = joint->GetJoint2();
 		return (jlong)joint2;
-	*/
+	*/ // @on
 
 	/** Set the gear ratio. */
 	public void setRatio (float ratio) {
@@ -67,9 +69,10 @@ public class GearJoint extends Joint {
 	}
 
 	private native void jniSetRatio (long addr, float ratio); /*
+		// @off
 		b2GearJoint* joint =  (b2GearJoint*)addr;
 		joint->SetRatio( ratio );
-	*/
+	*/ // @on
 
 	/** Get the gear ratio. */
 	public float getRatio () {
@@ -77,8 +80,9 @@ public class GearJoint extends Joint {
 	}
 
 	private native float jniGetRatio (long addr); /*
+		// @off
 		b2GearJoint* joint =  (b2GearJoint*)addr;
 		return joint->GetRatio();
-	*/
+	*/ // @on
 
 }

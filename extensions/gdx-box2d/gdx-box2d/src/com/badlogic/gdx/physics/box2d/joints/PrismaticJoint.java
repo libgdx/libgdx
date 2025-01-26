@@ -26,8 +26,8 @@ import com.badlogic.gdx.physics.box2d.World;
 public class PrismaticJoint extends Joint {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
-	 */
+#include <box2d/box2d.h>
+	 */ // @on
 
 	private final float[] tmp = new float[2];
 	private final Vector2 localAnchorA = new Vector2();
@@ -45,10 +45,11 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native void jniGetLocalAnchorA (long addr, float[] anchor); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorA().x;
 		anchor[1] = joint->GetLocalAnchorA().y;
-	*/
+	*/ // @on
 
 	public Vector2 getLocalAnchorB () {
 		jniGetLocalAnchorB(addr, tmp);
@@ -57,10 +58,11 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native void jniGetLocalAnchorB (long addr, float[] anchor); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorB().x;
 		anchor[1] = joint->GetLocalAnchorB().y;
-	*/
+	*/ // @on
 
 	public Vector2 getLocalAxisA () {
 		jniGetLocalAxisA(addr, tmp);
@@ -69,10 +71,11 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native void jniGetLocalAxisA (long addr, float[] anchor); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		anchor[0] = joint->GetLocalAxisA().x;
 		anchor[1] = joint->GetLocalAxisA().y;
-	*/
+	*/ // @on
 
 	/** Get the current joint translation, usually in meters. */
 	public float getJointTranslation () {
@@ -80,9 +83,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native float jniGetJointTranslation (long addr); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetJointTranslation();
-	*/
+	*/ // @on
 
 	/** Get the current joint translation speed, usually in meters per second. */
 	public float getJointSpeed () {
@@ -90,9 +94,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native float jniGetJointSpeed (long addr); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetJointSpeed();
-	*/
+	*/ // @on
 
 	/** Is the joint limit enabled? */
 	public boolean isLimitEnabled () {
@@ -100,9 +105,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native boolean jniIsLimitEnabled (long addr); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->IsLimitEnabled();
-	*/
+	*/ // @on
 
 	/** Enable/disable the joint limit. */
 	public void enableLimit (boolean flag) {
@@ -110,9 +116,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native void jniEnableLimit (long addr, boolean flag); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		joint->EnableLimit(flag);
-	*/
+	*/ // @on
 
 	/** Get the lower joint limit, usually in meters. */
 	public float getLowerLimit () {
@@ -120,9 +127,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native float jniGetLowerLimit (long addr); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetLowerLimit();
-	*/
+	*/ // @on
 
 	/** Get the upper joint limit, usually in meters. */
 	public float getUpperLimit () {
@@ -130,9 +138,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native float jniGetUpperLimit (long addr); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetUpperLimit();
-	*/
+	*/ // @on
 
 	/** Set the joint limits, usually in meters. */
 	public void setLimits (float lower, float upper) {
@@ -140,9 +149,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native void jniSetLimits (long addr, float lower, float upper); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		joint->SetLimits(lower, upper );
-	*/
+	*/ // @on
 
 	/** Is the joint motor enabled? */
 	public boolean isMotorEnabled () {
@@ -150,9 +160,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native boolean jniIsMotorEnabled (long addr); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->IsMotorEnabled();
-	*/
+	*/ // @on
 
 	/** Enable/disable the joint motor. */
 	public void enableMotor (boolean flag) {
@@ -160,9 +171,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native void jniEnableMotor (long addr, boolean flag); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		joint->EnableMotor(flag);
-	*/
+	*/ // @on
 
 	/** Set the motor speed, usually in meters per second. */
 	public void setMotorSpeed (float speed) {
@@ -170,9 +182,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native void jniSetMotorSpeed (long addr, float speed); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		joint->SetMotorSpeed(speed);
-	*/
+	*/ // @on
 
 	/** Get the motor speed, usually in meters per second. */
 	public float getMotorSpeed () {
@@ -180,9 +193,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native float jniGetMotorSpeed (long addr); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetMotorSpeed();
-	*/
+	*/ // @on
 
 	/** Set the maximum motor force, usually in N. */
 	public void setMaxMotorForce (float force) {
@@ -190,9 +204,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native void jniSetMaxMotorForce (long addr, float force); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		joint->SetMaxMotorForce(force);
-	*/
+	*/ // @on
 
 	/** Get the current motor force given the inverse time step, usually in N. */
 	public float getMotorForce (float invDt) {
@@ -200,9 +215,10 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native float jniGetMotorForce (long addr, float invDt); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetMotorForce(invDt);
-	*/
+	*/ // @on
 
 	/** Get the max motor force, usually in N. */
 	public float getMaxMotorForce () {
@@ -210,18 +226,20 @@ public class PrismaticJoint extends Joint {
 	}
 
 	private native float jniGetMaxMotorForce (long addr); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetMaxMotorForce();
-	*/
+	*/ // @on
 
-	/** Get the reference angle.  */
+	/** Get the reference angle. */
 	public float getReferenceAngle () {
 		return jniGetReferenceAngle(addr);
 	}
 
 	private native float jniGetReferenceAngle (long addr); /*
+		// @off
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetReferenceAngle();
-	*/
+	*/ // @on
 
 }

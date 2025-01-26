@@ -25,9 +25,9 @@ import com.badlogic.gdx.physics.box2d.World;
 public class DistanceJoint extends Joint {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h>
-	 */
-	
+#include <box2d/box2d.h>
+	 */ // @on
+
 	private final float[] tmp = new float[2];
 	private final Vector2 localAnchorA = new Vector2();
 	private final Vector2 localAnchorB = new Vector2();
@@ -43,10 +43,11 @@ public class DistanceJoint extends Joint {
 	}
 
 	private native void jniGetLocalAnchorA (long addr, float[] anchor); /*
+		// @off
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorA().x;
 		anchor[1] = joint->GetLocalAnchorA().y;
-	*/
+	*/ // @on
 
 	public Vector2 getLocalAnchorB () {
 		jniGetLocalAnchorB(addr, tmp);
@@ -55,10 +56,11 @@ public class DistanceJoint extends Joint {
 	}
 
 	private native void jniGetLocalAnchorB (long addr, float[] anchor); /*
+		// @off
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorB().x;
 		anchor[1] = joint->GetLocalAnchorB().y;
-	*/
+	*/ // @on
 
 	/** Set/get the natural length. Manipulating the length can lead to non-physical behavior when the frequency is zero. */
 	public void setLength (float length) {
@@ -66,9 +68,10 @@ public class DistanceJoint extends Joint {
 	}
 
 	private native void jniSetLength (long addr, float length); /*
+		// @off
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
 		joint->SetLength( length );
-	*/
+	*/ // @on
 
 	/** Set/get the natural length. Manipulating the length can lead to non-physical behavior when the frequency is zero. */
 	public float getLength () {
@@ -76,47 +79,52 @@ public class DistanceJoint extends Joint {
 	}
 
 	private native float jniGetLength (long addr); /*
+		// @off
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
 		return joint->GetLength();
-	*/
+	*/ // @on
 
-	/** Set/get frequency in Hz. */
-	public void setFrequency (float hz) {
-		jniSetFrequency(addr, hz);
+	/** Set/get stiffness. */
+	public void setStiffness (float stiffness) {
+		jniSetStiffness(addr, stiffness);
 	}
 
-	private native void jniSetFrequency (long addr, float hz); /*
+	private native void jniSetStiffness (long addr, float stiffness); /*
+		// @off
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
-		joint->SetFrequency( hz );
-	*/
+		joint->SetStiffness( stiffness );
+	*/ // @on
 
-	/** Set/get frequency in Hz. */
-	public float getFrequency () {
-		return jniGetFrequency(addr);
+	/** Set/get stiffness. */
+	public float getStiffness () {
+		return jniGetStiffness(addr);
 	}
 
-	private native float jniGetFrequency (long addr); /*
+	private native float jniGetStiffness (long addr); /*
+		// @off
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
-		return joint->GetFrequency();
-	*/
+		return joint->GetStiffness();
+	*/ // @on
 
-	/** Set/get damping ratio. */
-	public void setDampingRatio (float ratio) {
-		jniSetDampingRatio(addr, ratio);
+	/** Set/get damping. */
+	public void setDamping (float damping) {
+		jniSetDamping(addr, damping);
 	}
 
-	private native void jniSetDampingRatio (long addr, float ratio); /*
+	private native void jniSetDamping (long addr, float damping); /*
+		// @off
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
-		joint->SetDampingRatio( ratio );
-	*/
+		joint->SetDamping( damping );
+	*/ // @on
 
-	/** Set/get damping ratio. */
-	public float getDampingRatio () {
-		return jniGetDampingRatio(addr);
+	/** Set/get damping. */
+	public float getDamping () {
+		return jniGetDamping(addr);
 	}
 
-	private native float jniGetDampingRatio (long addr); /*
+	private native float jniGetDamping (long addr); /*
+		// @off
 		b2DistanceJoint* joint = (b2DistanceJoint*)addr;
-		return joint->GetDampingRatio();
-	*/
+		return joint->GetDamping();
+	*/ // @on
 }

@@ -27,13 +27,13 @@ import com.badlogic.gdx.physics.box2d.World;
 public class RevoluteJoint extends Joint {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h> 
-	 */
+#include <box2d/box2d.h>
+	 */ // @on
 	/** Get the first ground anchor. */
 	private final float[] tmp = new float[2];
 	private final Vector2 localAnchorA = new Vector2();
 	private final Vector2 localAnchorB = new Vector2();
-	
+
 	public RevoluteJoint (World world, long addr) {
 		super(world, addr);
 	}
@@ -44,9 +44,10 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native float jniGetJointAngle (long addr); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetJointAngle();
-	*/
+	*/ // @on
 
 	/** Get the current joint angle speed in radians per second. */
 	public float getJointSpeed () {
@@ -54,9 +55,10 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native float jniGetJointSpeed (long addr); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetJointSpeed();
-	*/
+	*/ // @on
 
 	/** Is the joint limit enabled? */
 	public boolean isLimitEnabled () {
@@ -64,9 +66,10 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native boolean jniIsLimitEnabled (long addr); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->IsLimitEnabled();
-	*/
+	*/ // @on
 
 	/** Enable/disable the joint limit. */
 	public void enableLimit (boolean flag) {
@@ -74,9 +77,10 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native void jniEnableLimit (long addr, boolean flag); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->EnableLimit(flag);
-	*/
+	*/ // @on
 
 	/** Get the lower joint limit in radians. */
 	public float getLowerLimit () {
@@ -84,9 +88,10 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native float jniGetLowerLimit (long addr); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetLowerLimit();
-	*/
+	*/ // @on
 
 	/** Get the upper joint limit in radians. */
 	public float getUpperLimit () {
@@ -94,20 +99,23 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native float jniGetUpperLimit (long addr); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetUpperLimit();
-	*/
+	*/ // @on
 
 	/** Set the joint limits in radians.
+	 * 
 	 * @param upper */
 	public void setLimits (float lower, float upper) {
 		jniSetLimits(addr, lower, upper);
 	}
 
 	private native void jniSetLimits (long addr, float lower, float upper); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->SetLimits(lower, upper );
-	*/
+	*/ // @on
 
 	/** Is the joint motor enabled? */
 	public boolean isMotorEnabled () {
@@ -115,9 +123,10 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native boolean jniIsMotorEnabled (long addr); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->IsMotorEnabled();
-	*/
+	*/ // @on
 
 	/** Enable/disable the joint motor. */
 	public void enableMotor (boolean flag) {
@@ -125,9 +134,10 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native void jniEnableMotor (long addr, boolean flag); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->EnableMotor(flag);
-	*/
+	*/ // @on
 
 	/** Set the motor speed in radians per second. */
 	public void setMotorSpeed (float speed) {
@@ -135,9 +145,10 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native void jniSetMotorSpeed (long addr, float speed); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->SetMotorSpeed(speed);
-	*/
+	*/ // @on
 
 	/** Get the motor speed in radians per second. */
 	public float getMotorSpeed () {
@@ -145,9 +156,10 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native float jniGetMotorSpeed (long addr); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetMotorSpeed();
-	*/
+	*/ // @on
 
 	/** Set the maximum motor torque, usually in N-m. */
 	public void setMaxMotorTorque (float torque) {
@@ -155,9 +167,10 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native void jniSetMaxMotorTorque (long addr, float torque); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		joint->SetMaxMotorTorque(torque);
-	*/
+	*/ // @on
 
 	/** Get the current motor torque, usually in N-m. */
 	public float getMotorTorque (float invDt) {
@@ -165,10 +178,11 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native float jniGetMotorTorque (long addr, float invDt); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetMotorTorque(invDt);
-	*/
-	
+	*/ // @on
+
 	public Vector2 getLocalAnchorA () {
 		jniGetLocalAnchorA(addr, tmp);
 		localAnchorA.set(tmp[0], tmp[1]);
@@ -176,11 +190,12 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native void jniGetLocalAnchorA (long addr, float[] anchor); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorA().x;
 		anchor[1] = joint->GetLocalAnchorA().y;
-	*/
-	
+	*/ // @on
+
 	public Vector2 getLocalAnchorB () {
 		jniGetLocalAnchorB(addr, tmp);
 		localAnchorB.set(tmp[0], tmp[1]);
@@ -188,27 +203,30 @@ public class RevoluteJoint extends Joint {
 	}
 
 	private native void jniGetLocalAnchorB (long addr, float[] anchor); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorB().x;
 		anchor[1] = joint->GetLocalAnchorB().y;
-	*/
-	
+	*/ // @on
+
 	/** Get the current motor torque, usually in N-m. */
 	public float getReferenceAngle () {
 		return jniGetReferenceAngle(addr);
 	}
 
 	private native float jniGetReferenceAngle (long addr); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetReferenceAngle();
-	*/
-	
+	*/ // @on
+
 	public float getMaxMotorTorque () {
 		return jniGetMaxMotorTorque(addr);
 	}
 
 	private native float jniGetMaxMotorTorque (long addr); /*
+		// @off
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetMaxMotorTorque();
-	*/
+	*/ // @on
 }

@@ -26,9 +26,9 @@ import com.badlogic.gdx.physics.box2d.World;
 public class PulleyJoint extends Joint {
 	// @off
 	/*JNI
-#include <Box2D/Box2D.h> 
-	 */
-	
+#include <box2d/box2d.h>
+	 */ // @on
+
 	public PulleyJoint (World world, long addr) {
 		super(world, addr);
 	}
@@ -44,10 +44,11 @@ public class PulleyJoint extends Joint {
 	}
 
 	private native void jniGetGroundAnchorA (long addr, float[] anchor); /*
+		// @off
 		b2PulleyJoint* joint = (b2PulleyJoint*)addr;
 		anchor[0] = joint->GetGroundAnchorA().x;
 		anchor[1] = joint->GetGroundAnchorA().y;
-	*/
+	*/ // @on
 
 	/** Get the second ground anchor. */
 	private final Vector2 groundAnchorB = new Vector2();
@@ -59,10 +60,11 @@ public class PulleyJoint extends Joint {
 	}
 
 	private native void jniGetGroundAnchorB (long addr, float[] anchor); /*
+		// @off
 		b2PulleyJoint* joint = (b2PulleyJoint*)addr;
 		anchor[0] = joint->GetGroundAnchorB().x;
 		anchor[1] = joint->GetGroundAnchorB().y;
-	*/
+	*/ // @on
 
 	/** Get the current length of the segment attached to body1. */
 	public float getLength1 () {
@@ -70,9 +72,10 @@ public class PulleyJoint extends Joint {
 	}
 
 	private native float jniGetLength1 (long addr); /*
+		// @off
 		b2PulleyJoint* joint = (b2PulleyJoint*)addr;
 		return joint->GetLengthA();
-	*/
+	*/ // @on
 
 	/** Get the current length of the segment attached to body2. */
 	public float getLength2 () {
@@ -80,9 +83,10 @@ public class PulleyJoint extends Joint {
 	}
 
 	private native float jniGetLength2 (long addr); /*
+		// @off
 		b2PulleyJoint* joint = (b2PulleyJoint*)addr;
 		return joint->GetLengthB();
-	*/
+	*/ // @on
 
 	/** Get the pulley ratio. */
 	public float getRatio () {
@@ -90,7 +94,8 @@ public class PulleyJoint extends Joint {
 	}
 
 	private native float jniGetRatio (long addr); /*
+		// @off
 		b2PulleyJoint* joint = (b2PulleyJoint*)addr;
 		return joint->GetRatio();
-	*/
+	*/ // @on
 }

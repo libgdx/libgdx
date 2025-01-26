@@ -46,6 +46,15 @@ public class WheelJointDef extends JointDef {
 	/** The local translation axis in body1. **/
 	public final Vector2 localAxisA = new Vector2(1, 0);
 
+	/** Enable/disable the joint limit. */
+	public boolean enableLimit = false;
+
+	/** The lower translation limit, usually in meters. */
+	public float lowerTranslation = 0;
+
+	/** The upper translation limit, usually in meters. */
+	public float upperTranslation = 0;
+
 	/** Enable/disable the joint motor. **/
 	public boolean enableMotor = false;
 
@@ -55,9 +64,9 @@ public class WheelJointDef extends JointDef {
 	/** The desired motor speed in radians per second. */
 	public float motorSpeed = 0;
 
-	/** Suspension frequency, zero indicates no suspension */
-	public float frequencyHz = 2;
+	/** Suspension stiffness. Typically in units N/m. */
+	public float stiffness = 0;
 
-	/** Suspension damping ratio, one indicates critical damping */
-	public float dampingRatio = 0.7f;
+	/** Suspension damping. Typically in units of N*s/m. */
+	public float damping = 0;
 }

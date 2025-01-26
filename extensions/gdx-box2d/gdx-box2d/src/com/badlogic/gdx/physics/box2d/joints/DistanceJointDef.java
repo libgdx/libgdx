@@ -1,13 +1,10 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
+ *  *   http://www.apache.org/licenses/LICENSE-2.0
+ *  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
@@ -47,9 +44,9 @@ public class DistanceJointDef extends JointDef {
 	/** The natural length between the anchor points. */
 	public float length = 1;
 
-	/** The mass-spring-damper frequency in Hertz. */
-	public float frequencyHz = 0;
+	/** The linear stiffness in N/m. A value of 0 disables softness. */
+	public float stiffness = 0;
 
-	/** The damping ratio. 0 = no damping, 1 = critical damping. */
-	public float dampingRatio = 0;
+	/** The linear damping in N*s/m. */
+	public float damping = 0;
 }

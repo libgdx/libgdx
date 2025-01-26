@@ -25,8 +25,8 @@ import com.badlogic.gdx.physics.box2d.World;
 public class WeldJoint extends Joint {
 	// @off
 	/*JNI
-		#include <Box2D/Box2D.h>
-	 */
+		#include <box2d/box2d.h>
+	 */ // @on
 
 	private final float[] tmp = new float[2];
 	private final Vector2 localAnchorA = new Vector2();
@@ -43,10 +43,11 @@ public class WeldJoint extends Joint {
 	}
 
 	private native void jniGetLocalAnchorA (long addr, float[] anchor); /*
+		// @off
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorA().x;
 		anchor[1] = joint->GetLocalAnchorA().y;
-	*/
+	*/ // @on
 
 	public Vector2 getLocalAnchorB () {
 		jniGetLocalAnchorB(addr, tmp);
@@ -55,54 +56,62 @@ public class WeldJoint extends Joint {
 	}
 
 	private native void jniGetLocalAnchorB (long addr, float[] anchor); /*
+		// @off
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorB().x;
 		anchor[1] = joint->GetLocalAnchorB().y;
-	*/
-	
+	*/ // @on
+
 	public float getReferenceAngle () {
 		return jniGetReferenceAngle(addr);
 	}
 
 	private native float jniGetReferenceAngle (long addr); /*
+		// @off
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		return joint->GetReferenceAngle();
-	*/
+	*/ // @on
 
-	public float getFrequency () {
-		return jniGetFrequency(addr);
+	/** Set/get stiffness. */
+	public void setStiffness (float stiffness) {
+		jniSetStiffness(addr, stiffness);
 	}
 
-	private native float jniGetFrequency (long addr); /*
+	private native void jniSetStiffness (long addr, float stiffness); /*
+		// @off
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
-		return joint->GetFrequency();
-	*/
+		joint->SetStiffness( stiffness );
+	*/ // @on
 
-	public void setFrequency (float hz) {
-		jniSetFrequency(addr, hz);
+	/** Set/get stiffness. */
+	public float getStiffness () {
+		return jniGetStiffness(addr);
 	}
 
-	private native void jniSetFrequency (long addr, float hz); /*
+	private native float jniGetStiffness (long addr); /*
+		// @off
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
-		joint->SetFrequency(hz);
-	*/
+		return joint->GetStiffness();
+	*/ // @on
 
-	public float getDampingRatio () {
-		return jniGetDampingRatio(addr);
+	public float getDamping () {
+		return jniGetDamping(addr);
 	}
 
-	private native float jniGetDampingRatio (long addr); /*
+	private native float jniGetDamping (long addr); /*
+		// @off
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
-		return joint->GetDampingRatio();
-	*/
+		return joint->GetDamping();
+	*/ // @on
 
-	public void setDampingRatio (float ratio) {
-		jniSetDampingRatio(addr, ratio);
+	public void setDamping (float ratio) {
+		jniSetDamping(addr, ratio);
 	}
 
-	private native void jniSetDampingRatio (long addr, float ratio); /*
+	private native void jniSetDamping (long addr, float damping); /*
+		// @off
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
-		joint->SetDampingRatio(ratio);
-	*/
+		joint->SetDamping(damping);
+	*/ // @on
 
 }
