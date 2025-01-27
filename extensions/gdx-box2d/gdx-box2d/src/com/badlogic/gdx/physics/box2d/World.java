@@ -99,7 +99,8 @@ public:
 	{
 		this->env = env;
 		this->obj = obj;
-		useDefaultContactFilter = env->CallBooleanMethod( obj, useDefaultContactFilterID );
+		if( useDefaultContactFilterID != 0 )
+			useDefaultContactFilter = env->CallBooleanMethod( obj, useDefaultContactFilterID );
 	}
 
 	virtual bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
