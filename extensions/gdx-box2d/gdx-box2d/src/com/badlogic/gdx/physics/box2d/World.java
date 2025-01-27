@@ -105,7 +105,7 @@ public:
 
 	virtual bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 	{
-		if( useDefaultContactFilter == true )
+		if( useDefaultContactFilter == JNI_TRUE )
 			return b2ContactFilter::ShouldCollide( fixtureA, fixtureB );
 		else if( shouldCollideID != 0 )
 			return env->CallBooleanMethod( obj, shouldCollideID, (jlong)fixtureA, (jlong)fixtureB );
