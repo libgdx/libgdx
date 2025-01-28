@@ -39,6 +39,7 @@ import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.Callback;
+import org.lwjgl.system.Configuration;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -121,6 +122,9 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	}
 
 	public Lwjgl3Application (ApplicationListener listener, Lwjgl3ApplicationConfiguration config) {
+		if (SharedLibraryLoader.os == Os.MacOsX) {
+			setMacOsXConfig(config.macOsX);
+		}
 		if (config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) loadANGLE();
 		initializeGlfw();
 		setApplicationLogger(new Lwjgl3ApplicationLogger());
@@ -159,6 +163,13 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 				throw new GdxRuntimeException(t);
 		} finally {
 			cleanup();
+		}
+	}
+
+	private void setMacOsXConfig(boolean macOsX) {
+		boolean useGlfwAsync = macOsX;
+		if (useGlfwAsync) {
+			Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
 		}
 	}
 

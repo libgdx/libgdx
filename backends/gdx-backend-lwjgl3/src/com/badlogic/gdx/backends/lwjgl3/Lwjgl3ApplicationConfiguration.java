@@ -21,6 +21,7 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.utils.Os;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -51,6 +52,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int audioDeviceSimultaneousSources = 16;
 	int audioDeviceBufferSize = 512;
 	int audioDeviceBufferCount = 9;
+	boolean macOsX;
 
 	public enum GLEmulation {
 		ANGLE_GLES20, GL20, GL30, GL31, GL32
@@ -232,6 +234,15 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	public void enableGLDebugOutput (boolean enable, PrintStream debugOutputStream) {
 		debug = enable;
 		debugStream = debugOutputStream;
+	}
+
+	/**
+	 * Configuration which will be set on if the {@link Os} is {@link Os/MacOsX}.
+	 *
+	 * @param useGlfwAsync Whether to use the experimental "glfw_async" library. This means you do not have to set the JVM argument "-XstartOnFirstThread".
+	 */
+	public void setMacOsX(boolean useGlfwAsync) {
+		macOsX = useGlfwAsync;
 	}
 
 	/** @return the currently active {@link DisplayMode} of the primary monitor */
