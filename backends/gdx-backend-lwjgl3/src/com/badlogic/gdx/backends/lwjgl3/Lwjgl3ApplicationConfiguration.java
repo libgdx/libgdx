@@ -236,12 +236,11 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		debugStream = debugOutputStream;
 	}
 
-	/**
-	 * Configuration which will be set on if the {@link Os} is {@link Os/MacOsX}.
+	/** Configuration which will be set on if the {@link Os} is {@link Os/MacOsX}.
 	 *
-	 * @param useGlfwAsync Whether to use the experimental "glfw_async" library. This means you do not have to set the JVM argument "-XstartOnFirstThread".
-	 */
-	public void setMacOsX(boolean useGlfwAsync) {
+	 * @param useGlfwAsync Whether to use the experimental "glfw_async" library. This means you do not have to set the JVM argument
+	 *           "-XstartOnFirstThread". */
+	public void setMacOsX (boolean useGlfwAsync) {
 		macOsX = useGlfwAsync;
 	}
 

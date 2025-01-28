@@ -166,7 +166,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		}
 	}
 
-	private void setMacOsXConfig(boolean macOsX) {
+	private void setMacOsXConfig (boolean macOsX) {
 		boolean useGlfwAsync = macOsX;
 		if (useGlfwAsync) {
 			Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
