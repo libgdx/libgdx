@@ -354,6 +354,7 @@
 		<include name="math/DelaunayTriangulator.java"/>
 		<include name="math/EarClippingTriangulator.java"/>
 		<include name="math/Ellipse.java"/>
+		<include name="math/FastNoiseLite.java"/>
 		<include name="math/FloatCounter.java"/>
 		<include name="math/Frustum.java"/>
 		<include name="math/GeometryUtils.java"/>
