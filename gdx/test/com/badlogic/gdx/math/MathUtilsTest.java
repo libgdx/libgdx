@@ -82,6 +82,36 @@ public class MathUtilsTest {
 	}
 
 	@Test
+	public void testGetNoise1D () {
+		for (int i = -256; i < 256; i++) {
+			float n = MathUtils.getNoise1D(i);
+			assertTrue(n >= -1f && n <= 1f);
+		}
+	}
+
+	@Test
+	public void testGetNoise2D () {
+		for (int i = -256; i < 256; i++) {
+			for (int j = -256; j < 256; j++) {
+				float n = MathUtils.getNoise2D(i, j);
+				assertTrue(n >= -1f && n <= 1f);
+			}
+		}
+	}
+
+	@Test
+	public void testGetNoise3D () {
+		for (int i = -256; i < 256; i++) {
+			for (int j = -256; j < 256; j++) {
+				for (int k = -256; k < 256; k++) {
+					float n = MathUtils.getNoise3D(i, j, k);
+					assertTrue(n >= -1f && n <= 1f);
+				}
+			}
+		}
+	}
+
+	@Test
 	public void testSinDeg () {
 		assertEquals(0f, MathUtils.sinDeg(0f), 0f);
 		assertEquals(1f, MathUtils.sinDeg(90f), 0f);

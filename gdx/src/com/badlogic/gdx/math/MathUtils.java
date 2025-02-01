@@ -495,6 +495,48 @@ public final class MathUtils {
 
 	// ---
 
+	public static FastNoiseLite noise = new FastNoiseLite();
+
+	/** 1D noise at given position using the default noise settings.
+	 * @param x X coordinate
+	 * @return noise output bounded between -1...1 */
+	public static float getNoise1D (float x) {
+		return noise.getNoise1D(x);
+	}
+
+	/** 2D noise at given position using the default noise settings.
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @return noise output bounded between -1...1 */
+	public static float getNoise2D (float x, float y) {
+		return noise.getNoise2D(x, y);
+	}
+
+	/** 2D noise at given position using the default noise settings.
+	 * @param vec2 X and Y coordinates
+	 * @return noise output bounded between -1...1 */
+	public static float getNoise2D (Vector2 vec2) {
+		return noise.getNoise2D(vec2.x, vec2.y);
+	}
+
+	/** 3D noise at given position using the default noise settings.
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param z Z coordinate
+	 * @return noise output bounded between -1...1 */
+	public static float getNoise3D (float x, float y, float z) {
+		return noise.getNoise3D(x, y, z);
+	}
+
+	/** 3D noise at given position using the default noise settings.
+	 * @param vec3 X, Y and Z coordinates
+	 * @return noise output bounded between -1...1 */
+	public static float getNoise3D (Vector3 vec3) {
+		return noise.getNoise3D(vec3.x, vec3.y, vec3.z);
+	}
+
+	// ---
+
 	/** Returns the next power of two. Returns the specified value if the value is already a power of two. */
 	static public int nextPowerOfTwo (int value) {
 		if (value == 0) return 1;
