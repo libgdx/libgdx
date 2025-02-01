@@ -19,6 +19,10 @@ package com.badlogic.gdx.physics.box2d;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.BufferUtils;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /** A rigid body. These are created via World.CreateBody.
  * @author mzechner */
@@ -33,6 +37,10 @@ public class Body {
 
 	/** temporary float array **/
 	private final float[] tmp = new float[4];
+
+	/** temporary ByteBuffer **/
+	private final ByteBuffer tmpBuff = ByteBuffer.allocateDirect(2 * 4).order(ByteOrder.nativeOrder());
+	private final long tmpBuffAddress = BufferUtils.getUnsafeBufferAddress(tmpBuff);
 
 	/** World **/
 	private final World world;
@@ -176,17 +184,18 @@ public class Body {
 	 * Note that the same Vector2 instance is returned each time this method is called.
 	 * @return the world position of the body's origin. */
 	public Vector2 getPosition () {
-		jniGetPosition(addr, tmp);
-		position.x = tmp[0];
-		position.y = tmp[1];
+		jniGetPosition(addr, tmpBuffAddress);
+		position.x = tmpBuff.getFloat(0);
+		position.y = tmpBuff.getFloat(4);
 		return position;
 	}
 
-	private native void jniGetPosition (long addr, float[] position); /*
+	private native void jniGetPosition (long addr, long positionAddr); /*
 		b2Body* body = (b2Body*)addr;
+		float* position = (float*) positionAddr;
 		b2Vec2 p = body->GetPosition();
-		position[0] = p.x;
-		position[1] = p.y;
+        position[0] = p.x;
+        position[1] = p.y;
 	*/
 
 	/** Get the angle in radians.
@@ -205,14 +214,15 @@ public class Body {
 	/** Get the world position of the center of mass.
 	 * Note that the same Vector2 instance is returned each time this method is called. */
 	public Vector2 getWorldCenter () {
-		jniGetWorldCenter(addr, tmp);
-		worldCenter.x = tmp[0];
-		worldCenter.y = tmp[1];
+		jniGetWorldCenter(addr, tmpBuffAddress);
+		worldCenter.x = tmpBuff.getFloat(0);
+		worldCenter.y = tmpBuff.getFloat(4);
 		return worldCenter;
 	}
 
-	private native void jniGetWorldCenter (long addr, float[] worldCenter); /*
+	private native void jniGetWorldCenter (long addr, long worldCenterAddr); /*
 		b2Body* body = (b2Body*)addr;
+		float* worldCenter = (float*) worldCenterAddr;
 		b2Vec2 w = body->GetWorldCenter();
 		worldCenter[0] = w.x;
 		worldCenter[1] = w.y;
@@ -223,14 +233,15 @@ public class Body {
 	/** Get the local position of the center of mass.
 	 * Note that the same Vector2 instance is returned each time this method is called. */
 	public Vector2 getLocalCenter () {
-		jniGetLocalCenter(addr, tmp);
-		localCenter.x = tmp[0];
-		localCenter.y = tmp[1];
+		jniGetLocalCenter(addr, tmpBuffAddress);
+		localCenter.x = tmpBuff.getFloat(0);
+		localCenter.y = tmpBuff.getFloat(4);
 		return localCenter;
 	}
 
-	private native void jniGetLocalCenter (long addr, float[] localCenter); /*
+	private native void jniGetLocalCenter (long addr, long localCenterAddr); /*
 		b2Body* body = (b2Body*)addr;
+		float* localCenter = (float*) localCenterAddr;
 		b2Vec2 w = body->GetLocalCenter();
 		localCenter[0] = w.x;
 		localCenter[1] = w.y;
@@ -256,14 +267,15 @@ public class Body {
 	/** Get the linear velocity of the center of mass.
 	 * Note that the same Vector2 instance is returned each time this method is called. */
 	public Vector2 getLinearVelocity () {
-		jniGetLinearVelocity(addr, tmp);
-		linearVelocity.x = tmp[0];
-		linearVelocity.y = tmp[1];
+		jniGetLinearVelocity(addr, tmpBuffAddress);
+		linearVelocity.x = tmpBuff.getFloat(0);
+		linearVelocity.y = tmpBuff.getFloat(4);
 		return linearVelocity;
 	}
 
-	private native void jniGetLinearVelocity (long addr, float[] linearVelocity); /*
+	private native void jniGetLinearVelocity (long addr, long linearVelocityAddr); /*
 		b2Body* body = (b2Body*)addr;
+		float* linearVelocity = (float*) linearVelocityAddr;
 		b2Vec2 l = body->GetLinearVelocity();
 		linearVelocity[0] = l.x;
 		linearVelocity[1] = l.y;
@@ -461,14 +473,15 @@ public class Body {
 	 * @param localPoint a point on the body measured relative the the body's origin.
 	 * @return the same point expressed in world coordinates. */
 	public Vector2 getWorldPoint (Vector2 localPoint) {
-		jniGetWorldPoint(addr, localPoint.x, localPoint.y, tmp);
-		this.localPoint.x = tmp[0];
-		this.localPoint.y = tmp[1];
+		jniGetWorldPoint(addr, localPoint.x, localPoint.y, tmpBuffAddress);
+		this.localPoint.x = tmpBuff.getFloat(0);
+		this.localPoint.y = tmpBuff.getFloat(4);
 		return this.localPoint;
 	}
 
-	private native void jniGetWorldPoint (long addr, float localPointX, float localPointY, float[] worldPoint); /*
+	private native void jniGetWorldPoint (long addr, float localPointX, float localPointY, long worldPointAddr); /*
 		b2Body* body = (b2Body*)addr;
+		float* worldPoint = (float*) worldPointAddr;
 		b2Vec2 w = body->GetWorldPoint( b2Vec2( localPointX, localPointY ) );
 		worldPoint[0] = w.x;
 		worldPoint[1] = w.y;
@@ -481,14 +494,15 @@ public class Body {
 	 * @param localVector a vector fixed in the body.
 	 * @return the same vector expressed in world coordinates. */
 	public Vector2 getWorldVector (Vector2 localVector) {
-		jniGetWorldVector(addr, localVector.x, localVector.y, tmp);
-		worldVector.x = tmp[0];
-		worldVector.y = tmp[1];
+		jniGetWorldVector(addr, localVector.x, localVector.y, tmpBuffAddress);
+		worldVector.x = tmpBuff.getFloat(0);
+		worldVector.y = tmpBuff.getFloat(4);
 		return worldVector;
 	}
 
-	private native void jniGetWorldVector (long addr, float localVectorX, float localVectorY, float[] worldVector); /*
+	private native void jniGetWorldVector (long addr, float localVectorX, float localVectorY, long worldVectorAddr); /*
 		b2Body* body = (b2Body*)addr;
+		float* worldVector = (float*) worldVectorAddr;
 		b2Vec2 w = body->GetWorldVector( b2Vec2( localVectorX, localVectorY ) );
 		worldVector[0] = w.x;
 		worldVector[1] = w.y;
@@ -501,14 +515,15 @@ public class Body {
 	 * @param worldPoint a point in world coordinates.
 	 * @return the corresponding local point relative to the body's origin. */
 	public Vector2 getLocalPoint (Vector2 worldPoint) {
-		jniGetLocalPoint(addr, worldPoint.x, worldPoint.y, tmp);
-		localPoint2.x = tmp[0];
-		localPoint2.y = tmp[1];
+		jniGetLocalPoint(addr, worldPoint.x, worldPoint.y, tmpBuffAddress);
+		localPoint2.x = tmpBuff.getFloat(0);
+		localPoint2.y = tmpBuff.getFloat(4);
 		return localPoint2;
 	}
 
-	private native void jniGetLocalPoint (long addr, float worldPointX, float worldPointY, float[] localPoint); /*
+	private native void jniGetLocalPoint (long addr, float worldPointX, float worldPointY, long localPointAddr); /*
 		b2Body* body = (b2Body*)addr;
+		float* localPoint = (float*) localPointAddr;
 		b2Vec2 w = body->GetLocalPoint( b2Vec2( worldPointX, worldPointY ) );
 		localPoint[0] = w.x;
 		localPoint[1] = w.y;
@@ -521,14 +536,15 @@ public class Body {
 	 * @param worldVector a vector in world coordinates.
 	 * @return the corresponding local vector. */
 	public Vector2 getLocalVector (Vector2 worldVector) {
-		jniGetLocalVector(addr, worldVector.x, worldVector.y, tmp);
-		localVector.x = tmp[0];
-		localVector.y = tmp[1];
+		jniGetLocalVector(addr, worldVector.x, worldVector.y, tmpBuffAddress);
+		localVector.x = tmpBuff.getFloat(0);
+		localVector.y = tmpBuff.getFloat(4);
 		return localVector;
 	}
 
-	private native void jniGetLocalVector (long addr, float worldVectorX, float worldVectorY, float[] worldVector); /*
+	private native void jniGetLocalVector (long addr, float worldVectorX, float worldVectorY, long worldVectorAddr); /*
 		b2Body* body = (b2Body*)addr;
+		float* worldVector = (float*) worldVectorAddr;
 		b2Vec2 w = body->GetLocalVector( b2Vec2( worldVectorX, worldVectorY ) );
 		worldVector[0] = w.x;
 		worldVector[1] = w.y;
@@ -541,14 +557,15 @@ public class Body {
 	 * @param worldPoint a point in world coordinates.
 	 * @return the world velocity of a point. */
 	public Vector2 getLinearVelocityFromWorldPoint (Vector2 worldPoint) {
-		jniGetLinearVelocityFromWorldPoint(addr, worldPoint.x, worldPoint.y, tmp);
-		linVelWorld.x = tmp[0];
-		linVelWorld.y = tmp[1];
+		jniGetLinearVelocityFromWorldPoint(addr, worldPoint.x, worldPoint.y, tmpBuffAddress);
+		linVelWorld.x = tmpBuff.getFloat(0);
+		linVelWorld.y = tmpBuff.getFloat(4);
 		return linVelWorld;
 	}
 
-	private native void jniGetLinearVelocityFromWorldPoint (long addr, float worldPointX, float worldPointY, float[] linVelWorld); /*
+	private native void jniGetLinearVelocityFromWorldPoint (long addr, float worldPointX, float worldPointY, long linVelWorldAddr); /*
 		b2Body* body = (b2Body*)addr;
+		float* linVelWorld = (float*) linVelWorldAddr;
 		b2Vec2 w = body->GetLinearVelocityFromWorldPoint( b2Vec2( worldPointX, worldPointY ) );
 		linVelWorld[0] = w.x;
 		linVelWorld[1] = w.y;
@@ -561,14 +578,15 @@ public class Body {
 	 * @param localPoint a point in local coordinates.
 	 * @return the world velocity of a point. */
 	public Vector2 getLinearVelocityFromLocalPoint (Vector2 localPoint) {
-		jniGetLinearVelocityFromLocalPoint(addr, localPoint.x, localPoint.y, tmp);
-		linVelLoc.x = tmp[0];
-		linVelLoc.y = tmp[1];
+		jniGetLinearVelocityFromLocalPoint(addr, localPoint.x, localPoint.y, tmpBuffAddress);
+		linVelLoc.x = tmpBuff.getFloat(0);
+		linVelLoc.y = tmpBuff.getFloat(4);
 		return linVelLoc;
 	}
 
-	private native void jniGetLinearVelocityFromLocalPoint (long addr, float localPointX, float localPointY, float[] linVelLoc); /*
+	private native void jniGetLinearVelocityFromLocalPoint (long addr, float localPointX, float localPointY, long linVelLocAddr); /*
 		b2Body* body = (b2Body*)addr;
+		float* linVelLoc = (float*) linVelLocAddr;
 		b2Vec2 w = body->GetLinearVelocityFromLocalPoint( b2Vec2( localPointX, localPointY ) );
 		linVelLoc[0] = w.x;
 		linVelLoc[1] = w.y;
