@@ -161,16 +161,16 @@ public class RandomXRSR128 extends Random {
 	/** Sets the internal seed of this generator based on the given {@code long} value.
 	 * @param seed a seed for this generator. */
 	@Override
-	public void setSeed (final long seed) {
-		long h = murmurHash3(seed);
-		this.seed0 = staffordMix13(h += PHI);
-		this.seed1 = staffordMix13(h + PHI);
+	public void setSeed (long seed) {
+		this.seed0 = staffordMix13(seed += PHI);
+		this.seed1 = staffordMix13(seed + PHI);
 	}
 
 	/** Sets the internal state of this generator.
 	 * @param seed0 the first part of the internal state
 	 * @param seed1 the second part of the internal state */
 	public void setState (final long seed0, final long seed1) {
+		assert seed0 != 0 || seed1 != 0 : "Both seeds cannot be 0.";
 		this.seed0 = seed0;
 		this.seed1 = seed1;
 	}
@@ -178,17 +178,8 @@ public class RandomXRSR128 extends Random {
 	/** Returns the internal seeds to allow state saving.
 	 * @param seed must be 0 or 1, designating which of the 2 long seeds to return
 	 * @return the internal seed that can be used in setState */
-	public long getState (int seed) {
+	public long getState (final int seed) {
 		return seed == 0 ? seed0 : seed1;
-	}
-
-	private static long murmurHash3 (long x) {
-		x ^= x >>> 33;
-		x *= 0xff51afd7ed558ccdL;
-		x ^= x >>> 33;
-		x *= 0xc4ceb9fe1a85ec53L;
-		x ^= x >>> 33;
-		return x;
 	}
 
 	/** Adapted from Sebastiano Vigna's <a href="https://github.com/vigna/fastutil">fastutil</a> */
