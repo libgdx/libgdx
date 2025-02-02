@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.math;
+package com.badlogic.gdx.math.noise;
 
 // MIT License
 //
@@ -39,8 +39,11 @@ package com.badlogic.gdx.math;
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+
 /** FastNoiseLite implementation */
-public class FastNoiseLite {
+public class FastNoiseLite implements Noise {
 	public enum NoiseType {
 		OpenSimplex2, OpenSimplex2S, Cellular, Perlin, ValueCubic, Value
 	}
@@ -207,6 +210,7 @@ public class FastNoiseLite {
 	/** 1D noise at given position using current settings. Equivalent to {@code getNoise1D(x, 0.0f)}.
 	 * @param x X coordinate
 	 * @return noise output bounded between -1...1 */
+	@Override
 	public float getNoise1D (float x) {
 		return getNoise2D(x, 0.0f);
 	}
@@ -215,6 +219,7 @@ public class FastNoiseLite {
 	 * @param x X coordinate
 	 * @param y Y coordinate
 	 * @return noise output bounded between -1...1 */
+	@Override
 	public float getNoise2D (float x, float y) {
 		x *= mFrequency;
 		y *= mFrequency;
@@ -237,11 +242,20 @@ public class FastNoiseLite {
 		}
 	}
 
+	/** 2D noise at given position using current settings.
+	 * @param vec2 X and Y coordinates
+	 * @return noise output bounded between -1...1 */
+	@Override
+	public float getNoise2D (Vector3 vec2) {
+		return getNoise2D(vec2.x, vec2.y);
+	}
+
 	/** 3D noise at given position using current settings.
 	 * @param x X coordinate
 	 * @param y Y coordinate
 	 * @param z Z coordinate
 	 * @return noise output bounded between -1...1 */
+	@Override
 	public float getNoise3D (float x, float y, float z) {
 		x *= mFrequency;
 		y *= mFrequency;
@@ -287,6 +301,14 @@ public class FastNoiseLite {
 		default:
 			return genNoiseSingle(mSeed, x, y, z);
 		}
+	}
+
+	/** 3D noise at given position using current settings.
+	 * @param vec3 X, Y and Z coordinates
+	 * @return noise output bounded between -1...1 */
+	@Override
+	public float getNoise3D (Vector3 vec3) {
+		return getNoise3D(vec3.x, vec3.y, vec3.z);
 	}
 
 	/** 2D warps the input position using current domain warp settings.
