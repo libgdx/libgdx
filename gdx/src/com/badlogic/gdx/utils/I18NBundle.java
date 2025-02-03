@@ -181,7 +181,7 @@ public class I18NBundle {
 					// Found the bundle for the only candidate locale
 					break;
 				}
-				if (isBaseBundle && baseBundle == null) {
+				if (baseBundle == null) {
 					// Store the base bundle and keep on processing the remaining fallback locales
 					baseBundle = bundle;
 				}
