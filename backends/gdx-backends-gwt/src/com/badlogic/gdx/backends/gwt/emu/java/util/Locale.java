@@ -59,8 +59,8 @@ import java.io.Serializable;
  * {@code java.util.spi} mechanisms) are not supported.
  *
  * <p>
- * See <a href="https://developer.android.com/guide/topics/resources/internationalization">Unicode and internationalization support</a>
- * for the versions of ICU (and the corresponding CLDR and Unicode versions) used in various Android releases.
+ * See <a href="https://developer.android.com/guide/topics/resources/internationalization">Unicode and internationalization
+ * support</a> for the versions of ICU (and the corresponding CLDR and Unicode versions) used in various Android releases.
  *
  * <a name="default_locale">
  * <h3>Be wary of the default locale</h3></a>
