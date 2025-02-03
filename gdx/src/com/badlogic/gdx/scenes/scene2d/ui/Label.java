@@ -140,13 +140,11 @@ public class Label extends Widget {
 
 	private void scaleAndComputePrefSize () {
 		BitmapFont font = cache.getFont();
-		float oldScaleX = font.getScaleX();
-		float oldScaleY = font.getScaleY();
 		if (fontScaleChanged) font.getData().setScale(fontScaleX, fontScaleY);
 
 		computePrefSize(Label.prefSizeLayout);
 
-		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
+		if (fontScaleChanged) font.getData().undoScale();
 	}
 
 	protected void computePrefSize (GlyphLayout layout) {
@@ -166,8 +164,6 @@ public class Label extends Widget {
 
 	public void layout () {
 		BitmapFont font = cache.getFont();
-		float oldScaleX = font.getScaleX();
-		float oldScaleY = font.getScaleY();
 		if (fontScaleChanged) font.getData().setScale(fontScaleX, fontScaleY);
 
 		boolean wrap = this.wrap && ellipsis == null;
@@ -222,7 +218,7 @@ public class Label extends Widget {
 		layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
 		cache.setText(layout, x, y);
 
-		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
+		if (fontScaleChanged) font.getData().undoScale();
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
