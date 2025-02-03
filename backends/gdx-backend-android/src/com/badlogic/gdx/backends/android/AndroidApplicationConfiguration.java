@@ -96,7 +96,7 @@ public class AndroidApplicationConfiguration {
 	public int maxNetThreads = Integer.MAX_VALUE;
 
 	/** set this to true to render under the display cutout. Use the Graphics::getSafeInsetXX to get the safe render space */
-	public boolean renderUnderCutout;
+	public boolean renderUnderCutout = false;
 
 	/** The loader used to load native libraries. Override this to use a different loading strategy. */
 	public GdxNativeLoader nativeLoader = new GdxNativeLoader() {
