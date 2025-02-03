@@ -259,7 +259,7 @@ public class I18NBundle {
 		String country = locale.getCountry();
 		String variant = locale.getVariant();
 
-		List<Locale> locales = new ArrayList<Locale>(4);
+		List<Locale> locales = new ArrayList<>(4);
 		if (!variant.isEmpty()) {
 			locales.add(locale);
 		}
@@ -356,7 +356,7 @@ public class I18NBundle {
 	// NOTE:
 	// This method can't be private otherwise GWT can't access it from loadBundle()
 	protected void load (Reader reader) throws IOException {
-		properties = new ObjectMap<String, String>();
+		properties = new ObjectMap<>();
 		PropertiesUtils.load(properties, reader);
 	}
 
