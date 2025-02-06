@@ -155,10 +155,13 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 				FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
 				fileHandles.add(image);
 			} else {
-				for (JsonValue tile : tileSet.get("tile")) {
-					String imageSource = tile.getString("image");
-					FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
-					fileHandles.add(image);
+				JsonValue tiles = tileSet.get("tiles");
+				if (tiles != null) {
+					for (JsonValue tile : tiles) {
+						String imageSource = tile.getString("image");
+						FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
+						fileHandles.add(image);
+					}
 				}
 			}
 		} else {
