@@ -135,7 +135,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	final Application app;
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
-	private int sleepTime = 0;
 	protected final AndroidHaptics haptics;
 	private boolean compassAvailable = false;
 	private boolean rotationVectorAvailable = false;
@@ -180,7 +179,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		handle = new Handler();
 		this.app = activity;
 		this.context = context;
-		this.sleepTime = config.touchSleepTime;
 		touchHandler = new AndroidTouchHandler();
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
@@ -501,12 +499,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		// synchronized in handler.postTouchEvent()
 		touchHandler.onTouch(event, this);
 
-		if (sleepTime != 0) {
-			try {
-				Thread.sleep(sleepTime);
-			} catch (InterruptedException e) {
-			}
-		}
 		return true;
 	}
 

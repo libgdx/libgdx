@@ -67,10 +67,6 @@ public class AndroidApplicationConfiguration {
 	 * Default: {@link SensorManager#SENSOR_DELAY_GAME} (20 ms updates). */
 	public int sensorDelay = SensorManager.SENSOR_DELAY_GAME;
 
-	/** the time in milliseconds to sleep after each event in the touch handler, set this to 16ms to get rid of touch flooding on
-	 * pre Android 2.0 devices. default: 0 **/
-	public int touchSleepTime = 0;
-
 	/** whether to keep the screen on and at full brightness or not while running the application. default: false. Uses
 	 * FLAG_KEEP_SCREEN_ON under the hood. */
 	public boolean useWakelock = false;
@@ -100,7 +96,7 @@ public class AndroidApplicationConfiguration {
 	public int maxNetThreads = Integer.MAX_VALUE;
 
 	/** set this to true to render under the display cutout. Use the Graphics::getSafeInsetXX to get the safe render space */
-	public boolean renderUnderCutout;
+	public boolean renderUnderCutout = false;
 
 	/** The loader used to load native libraries. Override this to use a different loading strategy. */
 	public GdxNativeLoader nativeLoader = new GdxNativeLoader() {
