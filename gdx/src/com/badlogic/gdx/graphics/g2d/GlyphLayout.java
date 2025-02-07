@@ -172,7 +172,7 @@ public class GlyphLayout implements Poolable {
 			runEnded:
 			{
 				// Store the run that has ended.
-				GlyphRun run = glyphRunPool.obtain();
+				GlyphRun run = obtainRun();
 				run.x = 0;
 				run.y = y;
 				fontData.getGlyphs(run, str, runStart, runEnd, lastGlyph);
@@ -190,14 +190,14 @@ public class GlyphLayout implements Poolable {
 				}
 
 				if (run.glyphs.size == 0) {
-					glyphRunPool.free(run);
+					freeRun(run);
 					if (lineRun == null) break runEnded; // Otherwise wrap and truncate must still be processed for lineRun.
 				} else if (lineRun == null) {
 					lineRun = run;
 					runs.add(lineRun);
 				} else {
 					lineRun.appendRun(run);
-					glyphRunPool.free(run);
+					freeRun(run);
 				}
 
 				if (newline || isLastRun) {
@@ -310,7 +310,7 @@ public class GlyphLayout implements Poolable {
 		int glyphCount = run.glyphs.size;
 
 		// Determine truncate string size.
-		GlyphRun truncateRun = glyphRunPool.obtain();
+		GlyphRun truncateRun = obtainRun();
 		fontData.getGlyphs(truncateRun, truncate, 0, truncate.length(), null);
 		float truncateWidth = 0;
 		if (truncateRun.xAdvances.size > 0) {
@@ -357,7 +357,7 @@ public class GlyphLayout implements Poolable {
 		run.glyphs.addAll(truncateRun.glyphs);
 		this.glyphCount += truncate.length();
 
-		glyphRunPool.free(truncateRun);
+		freeRun(truncateRun);
 	}
 
 	/** Breaks a run into two runs at the specified wrapIndex.
@@ -381,7 +381,7 @@ public class GlyphLayout implements Poolable {
 		// The second run will contain the remaining glyph data, so swap instances rather than copying.
 		GlyphRun second = null;
 		if (secondStart < glyphCount) {
-			second = glyphRunPool.obtain();
+			second = obtainRun();
 
 			Array<Glyph> glyphs1 = second.glyphs; // Starts empty.
 			glyphs1.addAll(glyphs2, 0, firstEnd);
@@ -430,7 +430,7 @@ public class GlyphLayout implements Poolable {
 
 		if (firstEnd == 0) {
 			// If the first run is now empty, remove it.
-			glyphRunPool.free(first);
+			freeRun(first);
 			runs.pop();
 		} else
 			setLastGlyphXAdvance(fontData, first);
@@ -499,12 +499,27 @@ public class GlyphLayout implements Poolable {
 	}
 
 	public void reset () {
-		glyphRunPool.freeAll(runs);
+		freeAllRuns(runs);
 		runs.clear();
 		colors.clear();
 		glyphCount = 0;
 		width = 0;
 		height = 0;
+	}
+
+	/** Obtains a GlyphRun */
+	protected GlyphRun obtainRun () {
+		return glyphRunPool.obtain();
+	}
+
+	/** Releases a previously obtained GlyphRun */
+	protected void freeRun (GlyphRun run) {
+		glyphRunPool.free(run);
+	}
+
+	/** Releases an array of previously obtained GlyphRuns */
+	protected void freeAllRuns (Array<GlyphRun> runs) {
+		glyphRunPool.freeAll(runs);
 	}
 
 	public String toString () {
@@ -535,7 +550,7 @@ public class GlyphLayout implements Poolable {
 
 		public float x, y, width;
 
-		void appendRun (GlyphRun run) {
+		public void appendRun (GlyphRun run) {
 			glyphs.addAll(run.glyphs);
 			// Remove the width of the last glyph. The first xadvance of the appended run has kerning for the last glyph of this run.
 			if (xAdvances.notEmpty()) xAdvances.size--;
