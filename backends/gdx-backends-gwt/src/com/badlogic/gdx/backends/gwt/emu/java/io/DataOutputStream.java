@@ -42,7 +42,7 @@ public class DataOutputStream extends OutputStream implements DataOutput {
 	public void writeBytes (String s) throws IOException {
 		int len = s.length();
 		for (int i = 0; i < len; i++) {
-			os.write(s.charAt(i) & 0xff);
+			os.write(s.charAt(i));
 		}
 	}
 
@@ -56,7 +56,7 @@ public class DataOutputStream extends OutputStream implements DataOutput {
 	}
 
 	public void writeDouble (double v) throws IOException {
-		writeLong(Double.doubleToLongBits(v));
+		writeLong(Numbers.doubleToLongBits(v));
 	}
 
 	public void writeFloat (float v) throws IOException {
@@ -71,7 +71,7 @@ public class DataOutputStream extends OutputStream implements DataOutput {
 	}
 
 	public void writeLong (long v) throws IOException {
-		writeInt((int)(v >> 32L));
+		writeInt((int)(v >> 32));
 		writeInt((int)v);
 	}
 
@@ -84,9 +84,9 @@ public class DataOutputStream extends OutputStream implements DataOutput {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
-			if (c > 0 && c < 80) {
+			if (c > 0 && c < 0x80) {
 				baos.write(c);
-			} else if (c < '\u0800') {
+			} else if (c < 0x800) {
 				baos.write(0xc0 | (0x1f & (c >> 6)));
 				baos.write(0x80 | (0x3f & c));
 			} else {
