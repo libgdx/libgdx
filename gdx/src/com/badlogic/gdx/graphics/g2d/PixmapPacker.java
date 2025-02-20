@@ -30,7 +30,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.Row;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -851,17 +850,17 @@ public class PixmapPacker implements Disposable {
 		public int x, y;
 		public int width, height;
 
-		public Bounds() {
+		public Bounds () {
 		}
 
-		public Bounds(int x, int y, int width, int height) {
+		public Bounds (int x, int y, int width, int height) {
 			this.x = x;
 			this.y = y;
 			this.width = width;
 			this.height = height;
 		}
 
-		public void set(int x, int y, int width, int height) {
+		public void set (int x, int y, int width, int height) {
 			this.x = x;
 			this.y = y;
 			this.width = width;
@@ -893,19 +892,19 @@ public class PixmapPacker implements Disposable {
 			this.originalHeight = originalHeight;
 		}
 
-		public int getX() {
+		public int getX () {
 			return bounds.x;
 		}
 
-		public int getY() {
+		public int getY () {
 			return bounds.y;
 		}
 
-		public int getWidth() {
+		public int getWidth () {
 			return bounds.width;
 		}
 
-		public int getHeight() {
+		public int getHeight () {
 			return bounds.height;
 		}
 	}
