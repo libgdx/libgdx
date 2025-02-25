@@ -305,11 +305,12 @@
 	<!-- maps/objects -->
 		<include name="maps/objects/CircleMapObject.java"/>
 		<include name="maps/objects/EllipseMapObject.java"/>
+		<include name="maps/objects/PointMapObject.java"/>
 		<include name="maps/objects/PolygonMapObject.java"/>
 		<include name="maps/objects/PolylineMapObject.java"/>
 		<include name="maps/objects/RectangleMapObject.java"/>
 		<include name="maps/objects/TextureMapObject.java"/>
-	
+
 	<!-- maps/tiled -->
 		<include name="maps/tiled/AtlasTmxMapLoader.java"/>
 		<include name="maps/tiled/BaseTiledMapLoader.java"/>
