@@ -1,0 +1,50 @@
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+
+public class RPGGame extends ApplicationAdapter {
+    private SpriteBatch batch;
+    private Texture playerTexture;
+    private Vector2 playerPosition;
+    private OrthographicCamera camera;
+
+    @Override
+    public void create() {
+        batch = new SpriteBatch();
+        playerTexture = new Texture("player.png"); // Asegúrate de tener un sprite llamado "player.png"
+        playerPosition = new Vector2(100, 100);
+        
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.zoom = 0.5f; // Ajustar el zoom para mejor visibilidad
+    }
+
+    @Override
+    public void render() {
+        handleInput();
+        camera.position.set(playerPosition.x, playerPosition.y, 0);
+        camera.update();
+
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        batch.draw(playerTexture, playerPosition.x, playerPosition.y);
+        batch.end();
+    }
+
+    private void handleInput() {
+        float speed = 200 * Gdx.graphics.getDeltaTime();
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) playerPosition.y += speed;
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) playerPosition.y -= speed;
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) playerPosition.x -= speed;
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) playerPosition.x += speed;
+    }
+
+    @Override
+    public void dispose() {
+        batch.dispose();
+        playerTexture.dispose();
+    }
+}
