@@ -39,7 +39,6 @@ public class DelayAction extends DelegateAction implements FinishableAction {
 	}
 
 	/** Causes the delay to be complete. */
-	@Override
 	public void finish () {
 		time = duration;
 	}

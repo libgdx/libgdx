@@ -76,7 +76,6 @@ abstract public class TemporalAction extends Action implements FinishableAction 
 	abstract protected void update (float percent);
 
 	/** Skips to the end of the transition. */
-	@Override
 	public void finish () {
 		time = duration;
 	}
