@@ -127,7 +127,11 @@ public class GlyphLayout implements Poolable {
 		int currentColor = color.toIntBits(), nextColor = currentColor;
 		colors.add(0, currentColor);
 		boolean markupEnabled = fontData.markupEnabled;
-		if (markupEnabled) colorStack.add(currentColor);
+		IntArray colorStack = null;
+		if (markupEnabled) {
+			colorStack = obtainColorStack();
+			colorStack.add(currentColor);
+		}
 
 		boolean isLastRun = false;
 		float y = 0, down = fontData.down;
@@ -151,7 +155,7 @@ public class GlyphLayout implements Poolable {
 					break;
 				case '[': // Possible color tag.
 					if (markupEnabled) {
-						int length = parseColorMarkup(str, start, end);
+						int length = parseColorMarkup(str, start, end, colorStack);
 						if (length >= 0) {
 							runEnd = start - 1;
 							start += length + 1;
@@ -268,7 +272,9 @@ public class GlyphLayout implements Poolable {
 		alignRuns(targetWidth, halign);
 
 		// Clear the color stack.
-		if (markupEnabled) colorStack.clear();
+		if (markupEnabled) {
+			freeColorStack(colorStack);
+		}
 	}
 
 	/** Calculate run widths and the entire layout width. */
@@ -455,7 +461,7 @@ public class GlyphLayout implements Poolable {
 		return (first.fixedWidth ? 0 : -first.xoffset * fontData.scaleX) - fontData.padLeft;
 	}
 
-	private int parseColorMarkup (CharSequence str, int start, int end) {
+	private int parseColorMarkup (CharSequence str, int start, int end, IntArray colorStack) {
 		if (start == end) return -1; // String ended with "[".
 		switch (str.charAt(start)) {
 		case '#':
@@ -520,6 +526,16 @@ public class GlyphLayout implements Poolable {
 	/** Releases an array of previously obtained GlyphRuns */
 	protected void freeAllRuns (Array<GlyphRun> runs) {
 		glyphRunPool.freeAll(runs);
+	}
+
+	/** Obtains a color stack. By default the static GlyphLayout colorStack is used. */
+	protected IntArray obtainColorStack () {
+		return colorStack;
+	}
+
+	/** Releases a previously obtained color stack. This may include clean-up in case of future re-use */
+	protected void freeColorStack (IntArray colorStack) {
+		colorStack.clear();
 	}
 
 	public String toString () {
