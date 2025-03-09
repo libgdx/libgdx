@@ -30,7 +30,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker.SkylineStrategy.SkylinePage.Row;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -247,13 +246,13 @@ public class PixmapPacker implements Disposable {
 			throw new GdxRuntimeException("Page size too small for pixmap: " + name);
 		}
 
-		Page page = packStrategy.pack(this, name, rect);
+		Page page = packStrategy.pack(this, name, rect.bounds);
 		if (name != null) {
 			page.rects.put(name, rect);
 			page.addedRects.add(name);
 		}
 
-		int rectX = (int)rect.x, rectY = (int)rect.y, rectWidth = (int)rect.width, rectHeight = (int)rect.height;
+		int rectX = rect.getX(), rectY = rect.getY(), rectWidth = rect.getWidth(), rectHeight = rect.getHeight();
 
 		if (packToTexture && !duplicateBorder && page.texture != null && !page.dirty) {
 			page.texture.bind();
@@ -294,9 +293,9 @@ public class PixmapPacker implements Disposable {
 
 	/** @param name the name of the image
 	 * @return the rectangle for the image in the page it's stored in or null */
-	public synchronized Rectangle getRect (String name) {
+	public synchronized PixmapPackerRectangle getRect (String name) {
 		for (Page page : pages) {
-			Rectangle rect = page.rects.get(name);
+			PixmapPackerRectangle rect = page.rects.get(name);
 			if (rect != null) return rect;
 		}
 		return null;
@@ -306,8 +305,7 @@ public class PixmapPacker implements Disposable {
 	 * @return the page the image is stored in or null */
 	public synchronized Page getPage (String name) {
 		for (Page page : pages) {
-			Rectangle rect = page.rects.get(name);
-			if (rect != null) return page;
+			if (page.rects.get(name) != null) return page;
 		}
 		return null;
 	}
@@ -317,8 +315,7 @@ public class PixmapPacker implements Disposable {
 	 * @return the index of the page the image is stored in or -1 */
 	public synchronized int getPageIndex (String name) {
 		for (int i = 0; i < pages.size; i++) {
-			Rectangle rect = pages.get(i).rects.get(name);
-			if (rect != null) return i;
+			if (pages.get(i).rects.get(name) != null) return i;
 		}
 		return -1;
 	}
@@ -362,8 +359,8 @@ public class PixmapPacker implements Disposable {
 			if (page.addedRects.size > 0) {
 				for (String name : page.addedRects) {
 					PixmapPackerRectangle rect = page.rects.get(name);
-					TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(page.texture, (int)rect.x, (int)rect.y,
-						(int)rect.width, (int)rect.height);
+					TextureAtlas.AtlasRegion region = new TextureAtlas.AtlasRegion(page.texture, rect.getX(), rect.getY(),
+						rect.getWidth(), rect.getHeight());
 
 					if (rect.splits != null) {
 						region.names = new String[] {"split", "pad"};
@@ -384,7 +381,7 @@ public class PixmapPacker implements Disposable {
 					region.name = imageName;
 					region.index = imageIndex;
 					region.offsetX = rect.offsetX;
-					region.offsetY = (int)(rect.originalHeight - rect.height - rect.offsetY);
+					region.offsetY = rect.originalHeight - rect.getHeight() - rect.offsetY;
 					region.originalWidth = rect.originalWidth;
 					region.originalHeight = rect.originalHeight;
 
@@ -518,11 +515,11 @@ public class PixmapPacker implements Disposable {
 
 	/** Choose the page and location for each rectangle.
 	 * @author Nathan Sweet */
-	static public interface PackStrategy {
-		public void sort (Array<Pixmap> images);
+	public interface PackStrategy {
+		void sort (Array<Pixmap> images);
 
-		/** Returns the page the rectangle should be placed in and modifies the specified rectangle position. */
-		public Page pack (PixmapPacker packer, String name, Rectangle rect);
+		/** Returns the page the bounds should be placed in and modifies the specified bounds position. */
+		Page pack (PixmapPacker packer, String name, Bounds bounds);
 	}
 
 	/** Does bin packing by inserting to the right or below previously packed rectangles. This is good at packing arbitrarily sized
@@ -544,7 +541,7 @@ public class PixmapPacker implements Disposable {
 			pixmaps.sort(comparator);
 		}
 
-		public Page pack (PixmapPacker packer, String name, Rectangle rect) {
+		public Page pack (PixmapPacker packer, String name, Bounds bounds) {
 			GuillotinePage page;
 			if (packer.pages.size == 0) {
 				// Add a page if empty.
@@ -556,21 +553,21 @@ public class PixmapPacker implements Disposable {
 			}
 
 			int padding = packer.padding;
-			rect.width += padding;
-			rect.height += padding;
-			Node node = insert(page.root, rect);
+			bounds.width += padding;
+			bounds.height += padding;
+			Node node = insert(page.root, bounds);
 			if (node == null) {
 				// Didn't fit, pack into a new page.
 				page = new GuillotinePage(packer);
 				packer.pages.add(page);
-				node = insert(page.root, rect);
+				node = insert(page.root, bounds);
 			}
 			node.full = true;
-			rect.set(node.rect.x, node.rect.y, node.rect.width - padding, node.rect.height - padding);
+			bounds.set(node.rect.x, node.rect.y, node.rect.width - padding, node.rect.height - padding);
 			return page;
 		}
 
-		private Node insert (Node node, Rectangle rect) {
+		private Node insert (Node node, Bounds rect) {
 			if (!node.full && node.leftChild != null && node.rightChild != null) {
 				Node newNode = insert(node.leftChild, rect);
 				if (newNode == null) newNode = insert(node.rightChild, rect);
@@ -583,8 +580,8 @@ public class PixmapPacker implements Disposable {
 				node.leftChild = new Node();
 				node.rightChild = new Node();
 
-				int deltaWidth = (int)node.rect.width - (int)rect.width;
-				int deltaHeight = (int)node.rect.height - (int)rect.height;
+				int deltaWidth = node.rect.width - rect.width;
+				int deltaHeight = node.rect.height - rect.height;
 				if (deltaWidth > deltaHeight) {
 					node.leftChild.rect.x = node.rect.x;
 					node.leftChild.rect.y = node.rect.y;
@@ -614,7 +611,7 @@ public class PixmapPacker implements Disposable {
 		static final class Node {
 			public Node leftChild;
 			public Node rightChild;
-			public final Rectangle rect = new Rectangle();
+			public final Bounds rect = new Bounds();
 			public boolean full;
 		}
 
@@ -648,10 +645,10 @@ public class PixmapPacker implements Disposable {
 			images.sort(comparator);
 		}
 
-		public Page pack (PixmapPacker packer, String name, Rectangle rect) {
+		public Page pack (PixmapPacker packer, String name, Bounds rect) {
 			int padding = packer.padding;
 			int pageWidth = packer.pageWidth - padding * 2, pageHeight = packer.pageHeight - padding * 2;
-			int rectWidth = (int)rect.width + padding, rectHeight = (int)rect.height + padding;
+			int rectWidth = rect.width + padding, rectHeight = rect.height + padding;
 			for (int i = 0, n = packer.pages.size; i < n; i++) {
 				SkylinePage page = (SkylinePage)packer.pages.get(i);
 				Row bestRow = null;
@@ -849,15 +846,38 @@ public class PixmapPacker implements Disposable {
 		return 0;
 	}
 
-	public static class PixmapPackerRectangle extends Rectangle {
+	public static class Bounds {
+		public int x, y;
+		public int width, height;
+
+		public Bounds () {
+		}
+
+		public Bounds (int x, int y, int width, int height) {
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+		}
+
+		public void set (int x, int y, int width, int height) {
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+		}
+	}
+
+	public static class PixmapPackerRectangle {
 		public Page page;
 		public int[] splits;
 		public int[] pads;
 		public int offsetX, offsetY;
 		public int originalWidth, originalHeight;
+		public Bounds bounds;
 
 		PixmapPackerRectangle (int x, int y, int width, int height) {
-			super(x, y, width, height);
+			bounds = new Bounds(x, y, width, height);
 			this.offsetX = 0;
 			this.offsetY = 0;
 			this.originalWidth = width;
@@ -865,11 +885,27 @@ public class PixmapPacker implements Disposable {
 		}
 
 		PixmapPackerRectangle (int x, int y, int width, int height, int left, int top, int originalWidth, int originalHeight) {
-			super(x, y, width, height);
+			bounds = new Bounds(x, y, width, height);
 			this.offsetX = left;
 			this.offsetY = top;
 			this.originalWidth = originalWidth;
 			this.originalHeight = originalHeight;
+		}
+
+		public int getX () {
+			return bounds.x;
+		}
+
+		public int getY () {
+			return bounds.y;
+		}
+
+		public int getWidth () {
+			return bounds.width;
+		}
+
+		public int getHeight () {
+			return bounds.height;
 		}
 	}
 

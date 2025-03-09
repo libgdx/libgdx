@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" orientation="isometric" renderorder="right-down" width="25" height="25" tilewidth="64" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="1">
+ <properties>
+  <property name="boolCustomProperty" type="bool" value="true"/>
+  <property name="floatCustomProperty" type="float" value="1.56"/>
+  <property name="intCustomProperty" type="int" value="5"/>
+  <property name="mapCustomProperty" value="mapCustomValue"/>
+ </properties>
+ <tileset firstgid="1" name="isometric_grass_and_water" tilewidth="64" tileheight="64" tilecount="24" columns="4">
+  <tileoffset x="0" y="16"/>
+  <properties>
+   <property name="tilesetCustomProperty" value="tilesetCustomValue"/>
+  </properties>
+  <image source="../tiled/isometric_grass_and_water.png" width="256" height="384"/>
+  <tile id="0">
+   <properties>
+    <property name="tileCustomProperty" value="tileCustomValue"/>
+   </properties>
+  </tile>
+  <wangsets>
+   <wangset name="Terrains" type="corner" tile="-1">
+    <wangcolor name="Grass" color="#ff0000" tile="0" probability="1"/>
+    <wangcolor name="Water" color="#00ff00" tile="22" probability="1"/>
+    <wangtile tileid="0" wangid="0,1,0,1,0,1,0,1"/>
+    <wangtile tileid="1" wangid="0,1,0,1,0,1,0,1"/>
+    <wangtile tileid="2" wangid="0,1,0,1,0,1,0,1"/>
+    <wangtile tileid="3" wangid="0,1,0,1,0,1,0,1"/>
+    <wangtile tileid="4" wangid="0,1,0,2,0,1,0,1"/>
+    <wangtile tileid="5" wangid="0,1,0,1,0,2,0,1"/>
+    <wangtile tileid="6" wangid="0,1,0,1,0,1,0,2"/>
+    <wangtile tileid="7" wangid="0,2,0,1,0,1,0,1"/>
+    <wangtile tileid="8" wangid="0,2,0,2,0,2,0,1"/>
+    <wangtile tileid="9" wangid="0,1,0,2,0,2,0,2"/>
+    <wangtile tileid="10" wangid="0,2,0,1,0,2,0,2"/>
+    <wangtile tileid="11" wangid="0,2,0,2,0,1,0,2"/>
+    <wangtile tileid="12" wangid="0,1,0,2,0,2,0,1"/>
+    <wangtile tileid="13" wangid="0,1,0,1,0,2,0,2"/>
+    <wangtile tileid="14" wangid="0,2,0,1,0,1,0,2"/>
+    <wangtile tileid="15" wangid="0,2,0,2,0,1,0,1"/>
+    <wangtile tileid="16" wangid="0,1,0,2,0,2,0,1"/>
+    <wangtile tileid="17" wangid="0,1,0,1,0,2,0,2"/>
+    <wangtile tileid="18" wangid="0,2,0,1,0,1,0,2"/>
+    <wangtile tileid="19" wangid="0,2,0,2,0,1,0,1"/>
+    <wangtile tileid="20" wangid="0,2,0,1,0,2,0,1"/>
+    <wangtile tileid="21" wangid="0,1,0,2,0,1,0,2"/>
+    <wangtile tileid="22" wangid="0,2,0,2,0,2,0,2"/>
+    <wangtile tileid="23" wangid="0,2,0,2,0,2,0,2"/>
+   </wangset>
+  </wangsets>
+ </tileset>
+ <layer id="3" name="Water Layer Bottom" width="25" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjIJRMApGAS2BxCgexTTAAKGUDhE=
+  </data>
+ </layer>
+ <layer id="1" name="Tint Water Layer Top" width="25" height="25" tintcolor="#00557f">
+  <data encoding="base64" compression="zlib">
+   eJztwzENAAAAAiBj2D+pKfxgo0mqqt7CwwASFiyJ
+  </data>
+ </layer>
+ <layer id="4" name="Transparent Grass Top Layer" width="25" height="25" opacity="0.5" offsetx="64" offsety="-64">
+  <data encoding="base64" compression="zlib">
+   eJztkFELwyAMhHW6tWylo24w//8vXYQ7uAZf+5aDDzSJJpeeUurGz3gZH7Ah1iW/GDeQjSr3gntFrsiZ7wc7coMVfdijufdZav3f7M/cmP0NFpf/ij968D2q1HtPrG+TGt7ppUmcOZ1Xd6eeyD7Zr55XeLgbh/GQHiWdd6KzavyJd36W7P6gJ1+vzGYdhEKhUCgUulZ/HucDtw==
+  </data>
+ </layer>
+ <layer id="6" name="Grass Middle Layer" width="25" height="25" offsetx="64" offsety="-64">
+  <data encoding="base64" compression="zlib">
+   eJztk8kOwjAMRJMm7FspiPL/X4ojecTDwA2JSyyNQpV4xsuQUo8ev4+7YTJkw2CohuJYGJZ+Hgwbw86w8vvqeQVnBY/QNI64E2/7vTbcnHv2t1vck595Bfzt+4K6svOuUGP73jv/7Gg6Z+eMedItuOOMBtShWtp5DRrCFHIy6s8AZ3/w2jJyF5jVDC3NmPMiH/ehHsYP867eQ+SnxhB4tJeaXr2QwUWd8mUfsQ/tXz1P0GAv4lI+36nHe3qdlTyvOsf0PkP1l4MO/SzPnEI/+p8MyB/T0wvaP71coHNBPn0mreh3eiPOsL3p0aPHf+MBrZ4Isg==
+  </data>
+ </layer>
+ <layer id="2" name="Tint Grass Bottom Layer" width="25" height="25" tintcolor="#ff0000" offsetx="64" offsety="-64">
+  <properties>
+   <property name="layerCustomProperty" value="layerCustomValue"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJztUtkOwyAM4yp02tHd3f9/6YJkS27Wl70TySqFOIkNIYwYMWLEiBH/RwKioQARe5OhSg7zMvIycs6Gg+ED3OW8SG1yk+NdsK/nnKXnvQwPwwn1j4Ymc5JDPvE0rG6mIpwIzKg3YZ4V+ao1uS97d+6C+ZrMXF1+37tJ/a7hDQ9q+PVHPVB9Rfq2sNVzhVbWb9ijHtXMNblECVsvU9jeN/Uu0n8W/Xrnyf1zre/Ma/R8nUd9US/2/PGcJH20V3Y1dNbooGd7PZWnfnpf/fv7AtqTBMA=
+  </data>
+ </layer>
+ <imagelayer id="7" name="Yellow Tint Alpha 225" tintcolor="#ffff00" offsetx="357.333" offsety="6">
+  <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
+ <imagelayer id="8" name="Yellow Tint Alpha 120" tintcolor="#78ffff00" offsetx="404" offsety="6">
+  <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
+ <imagelayer id="9" name="Yellow Tint Alpha 50" tintcolor="#32ffff00" offsetx="450.667" offsety="5.33333">
+  <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
+ <imagelayer id="10" name="Yellow Tint Alpha 0" tintcolor="#00ffff00" offsetx="503.333" offsety="5.33333">
+  <image source="../../badlogicsmall.jpg" width="32" height="32"/>
+ </imagelayer>
+ <imagelayer id="11" name="Badlogic PNG Yellow Tint Alpha (100)" tintcolor="#64ffff00" offsetx="478.667" offsety="76">
+  <image source="badlogic-with-whitespace-small.png" width="75" height="75"/>
+ </imagelayer>
+</map>

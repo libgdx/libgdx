@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -190,6 +190,37 @@ public class LongArray {
 		items[second] = firstValue;
 	}
 
+	/** Returns true if the specified value was replaced successfully with the replacement
+	 * @param value the long to be replaced
+	 * @param replacement the first value will be replaced by this replacement if found
+	 * @return if value was found and replaced */
+	public boolean replaceFirst (long value, long replacement) {
+		long[] items = this.items;
+		for (int i = 0, n = size; i < n; i++) {
+			if (items[i] == value) {
+				items[i] = replacement;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Returns the number of replacements done.
+	 * @param value the long to be replaced
+	 * @param replacement all occurrences of value will be replaced by this replacement
+	 * @return the number of replacements done */
+	public int replaceAll (long value, long replacement) {
+		long[] items = this.items;
+		int replacements = 0;
+		for (int i = 0, n = size; i < n; i++) {
+			if (items[i] == value) {
+				items[i] = replacement;
+				replacements++;
+			}
+		}
+		return replacements;
+	}
+
 	public boolean contains (long value) {
 		int i = size - 1;
 		long[] items = this.items;
@@ -205,7 +236,7 @@ public class LongArray {
 		return -1;
 	}
 
-	public int lastIndexOf (char value) {
+	public int lastIndexOf (long value) {
 		long[] items = this.items;
 		for (int i = size - 1; i >= 0; i--)
 			if (items[i] == value) return i;
@@ -272,11 +303,13 @@ public class LongArray {
 
 	/** Removes and returns the last item. */
 	public long pop () {
+		if (size <= 0) throw new IllegalStateException("Array is empty.");
 		return items[--size];
 	}
 
 	/** Returns the last item. */
 	public long peek () {
+		if (size <= 0) throw new IllegalStateException("Array is empty.");
 		return items[size - 1];
 	}
 

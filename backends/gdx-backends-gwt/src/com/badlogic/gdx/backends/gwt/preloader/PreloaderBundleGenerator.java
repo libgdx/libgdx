@@ -99,7 +99,7 @@ public class PreloaderBundleGenerator extends Generator {
 				FileWrapper dest = target.child(orig.name());
 				try {
 					InputStream resourceStream = context.getClass().getClassLoader().getResourceAsStream(classpathFile);
-					copy(resourceStream, dest.path(), dest, assetFilter, assets);
+					copy(resourceStream, orig.path(), dest, assetFilter, assets);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

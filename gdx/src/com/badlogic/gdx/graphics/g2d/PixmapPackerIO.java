@@ -94,8 +94,8 @@ public class PixmapPackerIO {
 					writer.write(imageName + "\n");
 					PixmapPacker.PixmapPackerRectangle rect = page.rects.get(name);
 					writer.write("  rotate: false" + "\n");
-					writer.write("  xy: " + (int)rect.x + "," + (int)rect.y + "\n");
-					writer.write("  size: " + (int)rect.width + "," + (int)rect.height + "\n");
+					writer.write("  xy: " + rect.getX() + "," + rect.getY() + "\n");
+					writer.write("  size: " + rect.getWidth() + "," + rect.getHeight() + "\n");
 					if (rect.splits != null) {
 						writer.write(
 							"  split: " + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
@@ -105,7 +105,7 @@ public class PixmapPackerIO {
 						}
 					}
 					writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
-					writer.write("  offset: " + rect.offsetX + ", " + (int)(rect.originalHeight - rect.height - rect.offsetY) + "\n");
+					writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.getHeight() - rect.offsetY) + "\n");
 
 					writer.write("  index: " + imageIndex + "\n");
 				}

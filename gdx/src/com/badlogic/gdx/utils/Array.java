@@ -192,6 +192,57 @@ public class Array<T> implements Iterable<T> {
 		items[second] = firstValue;
 	}
 
+	/** Returns true if the specified value was replaced successfully with the replacement
+	 * @param value May be null.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @param replacement the first value will be replaced by this replacement if found
+	 * @return if value was found and replaced */
+	public boolean replaceFirst (@Null T value, boolean identity, T replacement) {
+		T[] items = this.items;
+		if (identity || value == null) {
+			for (int i = 0, n = size; i < n; i++) {
+				if (items[i] == value) {
+					items[i] = replacement;
+					return true;
+				}
+			}
+		} else {
+			for (int i = 0, n = size; i < n; i++) {
+				if (value.equals(items[i])) {
+					items[i] = replacement;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/** Returns the number of replacements done.
+	 * @param value May be null.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @param replacement all occurrences of value will be replaced by this replacement
+	 * @return the number of replacements done */
+	public int replaceAll (@Null T value, boolean identity, @Null T replacement) {
+		T[] items = this.items;
+		int replacements = 0;
+		if (identity || value == null) {
+			for (int i = 0, n = size; i < n; i++) {
+				if (items[i] == value) {
+					items[i] = replacement;
+					replacements++;
+				}
+			}
+		} else {
+			for (int i = 0, n = size; i < n; i++) {
+				if (value.equals(items[i])) {
+					items[i] = replacement;
+					replacements++;
+				}
+			}
+		}
+		return replacements;
+	}
+
 	/** Returns true if this array contains the specified value.
 	 * @param value May be null.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */

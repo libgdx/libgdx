@@ -63,7 +63,7 @@ public abstract class AbstractTestWrapper extends GdxTest {
 		container.debug();
 		Table table = new Table();
 		ScrollPane scroll = new ScrollPane(table);
-		container.add(scroll).expand().fill();
+		container.add(scroll).grow();
 		container.setFillParent(true);
 		table.pad(10).defaults().expandX().space(4);
 		Arrays.sort(tests, new Comparator<Instancer>() {
@@ -85,7 +85,7 @@ public abstract class AbstractTestWrapper extends GdxTest {
 					test.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				}
 			});
-			table.add(button).expandX().fillX();
+			table.add(button).growX();
 		}
 		container.row();
 		container.add(new Label("Click on a test to start it, press ESC or tap the upper left corner to close it.",

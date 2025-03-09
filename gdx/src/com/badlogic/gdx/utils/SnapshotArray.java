@@ -128,6 +128,16 @@ public class SnapshotArray<T> extends Array<T> {
 		super.swap(first, second);
 	}
 
+	public boolean replaceFirst (@Null T value, boolean identity, T replacement) {
+		modified();
+		return super.replaceFirst(value, identity, replacement);
+	}
+
+	public int replaceAll (@Null T value, boolean identity, @Null T replacement) {
+		modified();
+		return super.replaceAll(value, identity, replacement);
+	}
+
 	public boolean removeValue (T value, boolean identity) {
 		modified();
 		return super.removeValue(value, identity);
