@@ -16,13 +16,17 @@
 
 package com.badlogic.gdx.utils;
 
-/** Stores a map of {@link Pool}s (usually {@link ReflectionPool}s) by type for convenient static access.
+import com.badlogic.gdx.utils.DefaultPool.PoolSupplier;
+
+/** Stores a map of {@link Pool}s by type for convenient static access.
  * @author Nathan Sweet */
 public class Pools {
-	static private final ObjectMap<Class, Pool> typePools = new ObjectMap();
+	static private final ObjectMap<Class<?>, Pool<?>> typePools = new ObjectMap<>();
+	static private final ObjectMap<Class<?>, Pool<?>> supplierPoolsCache = new ObjectMap<>();
 
 	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note the max size is ignored
 	 * if this is not the first time this pool has been requested. */
+	@Deprecated
 	static public <T> Pool<T> get (Class<T> type, int max) {
 		Pool pool = typePools.get(type);
 		if (pool == null) {
@@ -34,16 +38,48 @@ public class Pools {
 
 	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. The max size of the pool used
 	 * is 100. */
+	@Deprecated
 	static public <T> Pool<T> get (Class<T> type) {
 		return get(type, 100);
 	}
 
+	/** Returns an existing pool or creates a new one for the specified type, stored in a Class to {@link Pool} map. This method
+	 * may create a temporary object once, but the allocation will probably be eliminated on most platforms. */
+	static public <T> Pool<T> get (PoolSupplier<T> poolTypeSupplier) {
+		Pool<T> pool = (Pool<T>)supplierPoolsCache.get(poolTypeSupplier.getClass());
+		if (pool == null) {
+			T tmp = poolTypeSupplier.get();
+			Class<T> type = (Class<T>)tmp.getClass();
+			pool = (Pool<T>)typePools.get(type);
+			if (pool == null) {
+				pool = new DefaultPool<>(poolTypeSupplier);
+				typePools.put(type, pool);
+			}
+			supplierPoolsCache.put(poolTypeSupplier.getClass(), pool);
+		}
+
+		return pool;
+	}
+
 	/** Sets an existing pool for the specified type, stored in a Class to {@link Pool} map. */
 	static public <T> void set (Class<T> type, Pool<T> pool) {
-		typePools.put(type, pool);
+		Pool<?> old = typePools.put(type, pool);
+		if (old == null) return;
+
+		ObjectMap.Entries<Class<?>, Pool<?>> iterator = supplierPoolsCache.iterator();
+		while (iterator.hasNext()) {
+			iterator.next();
+			if (iterator.entry.value == old) iterator.remove();
+		}
+	}
+
+	/** Obtains an object from the {@link #get(PoolSupplier) pool}. */
+	static public <T> T obtain (PoolSupplier<T> poolTypeSupplier) {
+		return get(poolTypeSupplier).obtain();
 	}
 
 	/** Obtains an object from the {@link #get(Class) pool}. */
+	@Deprecated
 	static public <T> T obtain (Class<T> type) {
 		return get(type).obtain();
 	}
