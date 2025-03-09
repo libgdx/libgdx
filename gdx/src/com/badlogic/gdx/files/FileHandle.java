@@ -37,6 +37,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
+import java.nio.file.Files;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
@@ -684,9 +685,7 @@ public class FileHandle {
 
 	static public FileHandle tempDirectory (String prefix) {
 		try {
-			File file = File.createTempFile(prefix, null);
-			if (!file.delete()) throw new IOException("Unable to delete temp file: " + file);
-			if (!file.mkdir()) throw new IOException("Unable to create temp directory: " + file);
+			File file = Files.createTempDirectory(prefix).toFile();
 			return new FileHandle(file);
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Unable to create temp file.", ex);
