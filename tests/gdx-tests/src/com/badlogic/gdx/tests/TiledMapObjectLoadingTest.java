@@ -155,9 +155,9 @@ public class TiledMapObjectLoadingTest extends GdxTest {
 				// drawing circle, because shapeRenderer.point is barely visible, if visible at all
 				shapeRenderer.circle(point.x, point.y, 1f);
 				shapeRenderer.end();
-			} else if(mapObject instanceof TextMapObject){
-				 batch.begin();
-				 TextMapObject textMapObject = (TextMapObject)mapObject;
+			} else if (mapObject instanceof TextMapObject) {
+				batch.begin();
+				TextMapObject textMapObject = (TextMapObject)mapObject;
 
 				int alignment;
 				String hAlign = textMapObject.getHorizontalAlign();

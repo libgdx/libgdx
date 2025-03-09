@@ -151,42 +151,42 @@ public class TiledMapJsonObjectLoadingTest extends GdxTest {
 				shapeRenderer.circle(point.x, point.y, 1f);
 				shapeRenderer.end();
 			} else if (mapObject instanceof TextMapObject) {
-				 batch.begin();
-				 TextMapObject textMapObject = (TextMapObject)mapObject;
+				batch.begin();
+				TextMapObject textMapObject = (TextMapObject)mapObject;
 
-				 int alignment;
-				 String hAlign = textMapObject.getHorizontalAlign();
+				int alignment;
+				String hAlign = textMapObject.getHorizontalAlign();
 
-				 switch (hAlign.toLowerCase()) {
-				 case "center":
-					  alignment = Align.center;
-					  break;
-				 case "right":
-					  alignment = Align.right;
-					  break;
-				 case "left":
-				 default:
-					  // Default is 'left alignment, also there is no Align 'justify' like equivalent
-					  alignment = Align.left;
-					  break;
-				 }
+				switch (hAlign.toLowerCase()) {
+				case "center":
+					alignment = Align.center;
+					break;
+				case "right":
+					alignment = Align.right;
+					break;
+				case "left":
+				default:
+					// Default is 'left alignment, also there is no Align 'justify' like equivalent
+					alignment = Align.left;
+					break;
+				}
 
-				 textMapObjectFont.setColor(textMapObject.getColor());
-				 // The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
-				 // To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to
-				 // the Y position.
-				 textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(),
-					 textMapObject.getY() + textMapObject.getHeight(), textMapObject.getWidth(), alignment, textMapObject.isWrap());
-				 batch.end();
+				textMapObjectFont.setColor(textMapObject.getColor());
+				// The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
+				// To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to
+				// the Y position.
+				textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(),
+					textMapObject.getY() + textMapObject.getHeight(), textMapObject.getWidth(), alignment, textMapObject.isWrap());
+				batch.end();
 
-				 shapeRenderer.setColor(Color.DARK_GRAY);
-				 // Draw display bounding box of TextMapObject
-				 shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-				 shapeRenderer.rect(textMapObject.getX(), textMapObject.getY(), textMapObject.getWidth(), textMapObject.getHeight());
-				 shapeRenderer.end();
+				shapeRenderer.setColor(Color.DARK_GRAY);
+				// Draw display bounding box of TextMapObject
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+				shapeRenderer.rect(textMapObject.getX(), textMapObject.getY(), textMapObject.getWidth(), textMapObject.getHeight());
+				shapeRenderer.end();
 
-				 // reset back to blue
-				 shapeRenderer.setColor(Color.BLUE);
+				// reset back to blue
+				shapeRenderer.setColor(Color.BLUE);
 			}
 		}
 		batch.begin();
