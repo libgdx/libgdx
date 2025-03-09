@@ -86,6 +86,7 @@ public class TiledMapJsonObjectLoadingTest extends GdxTest {
 		loadingStatus += "- PolylineMapObject : " + mapObjects.getByType(PolylineMapObject.class).size + "\n";
 		loadingStatus += "- RectangleMapObject : " + mapObjects.getByType(RectangleMapObject.class).size + "\n";
 		loadingStatus += "- TextureMapObject : " + mapObjects.getByType(TextureMapObject.class).size + "\n";
+		loadingStatus += "- PointMapObject : " + mapObjects.getByType(PointMapObject.class).size + "\n";
 		loadingStatus += "- TiledMapTileMapObject : " + mapObjects.getByType(TiledMapTileMapObject.class).size + "\n";
 		loadingStatus += "- TextMapObject : " + mapObjects.getByType(TextMapObject.class).size + "\n";
 	}
