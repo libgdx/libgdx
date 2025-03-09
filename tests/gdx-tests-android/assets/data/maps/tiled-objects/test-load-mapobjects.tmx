@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="32" tileheight="32" nextobjectid="18">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="20">
  <tileset firstgid="1" name="Test" tilewidth="256" tileheight="256" tilecount="3" columns="0">
   <tile id="0">
    <image width="32" height="32" source="Start.bmp"/>
@@ -15,7 +15,7 @@
    <image width="256" height="256" source="../../badlogic.jpg"/>
   </tile>
  </tileset>
- <objectgroup name="Objects">
+ <objectgroup id="1" name="Objects">
   <object id="3" name="Ellipse" x="59.3333" y="335" width="130" height="87">
    <ellipse/>
   </object>
@@ -27,6 +27,9 @@
   <object id="14" gid="1073741825" x="384" y="256" width="64" height="32"/>
   <object id="17" name="Polyline" x="364" y="155">
    <polyline points="0,0 29,-60 57,4 91,-63"/>
+  </object>
+  <object id="18" name="Point" x="333.265" y="218.203">
+   <point/>
   </object>
  </objectgroup>
 </map>

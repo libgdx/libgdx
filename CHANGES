@@ -16,6 +16,7 @@
 
 [1.13.1]
 - [BREAKING CHANGE] Android: Since 1.13.0 libGDX requires setting `android.useAndroidX=true` in your gradle.properties file. In 1.13.1 it is NO longer needed to define the `androidx.core:core` dependency in your Android module.
+- [BREAKING CHANGE] BaseTmxMapLoader no longer parses point objects into zero-sized RectangleMapObject. Instead, points are now represented with PointMapObject
 - iOS: Update to MobiVM 2.3.22
 - iOS: Fixes Gdx.openURI() not working on iOS 18.1 Simulator.
 - Change visibility of PolygonSpriteBatch.switchTexture() to protected
