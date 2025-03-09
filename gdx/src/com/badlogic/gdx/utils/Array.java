@@ -35,8 +35,8 @@ public class Array<T> implements Iterable<T> {
 	public int size;
 	public boolean ordered;
 
-	private ArrayIterable iterable;
-	private Predicate.PredicateIterable<T> predicateIterable;
+	private transient ArrayIterable<T> iterable;
+	private transient Predicate.PredicateIterable<T> predicateIterable;
 
 	/** Creates an ordered array with a capacity of 16. */
 	public Array () {
@@ -190,6 +190,57 @@ public class Array<T> implements Iterable<T> {
 		T firstValue = items[first];
 		items[first] = items[second];
 		items[second] = firstValue;
+	}
+
+	/** Returns true if the specified value was replaced successfully with the replacement
+	 * @param value May be null.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @param replacement the first value will be replaced by this replacement if found
+	 * @return if value was found and replaced */
+	public boolean replaceFirst (@Null T value, boolean identity, T replacement) {
+		T[] items = this.items;
+		if (identity || value == null) {
+			for (int i = 0, n = size; i < n; i++) {
+				if (items[i] == value) {
+					items[i] = replacement;
+					return true;
+				}
+			}
+		} else {
+			for (int i = 0, n = size; i < n; i++) {
+				if (value.equals(items[i])) {
+					items[i] = replacement;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/** Returns the number of replacements done.
+	 * @param value May be null.
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
+	 * @param replacement all occurrences of value will be replaced by this replacement
+	 * @return the number of replacements done */
+	public int replaceAll (@Null T value, boolean identity, @Null T replacement) {
+		T[] items = this.items;
+		int replacements = 0;
+		if (identity || value == null) {
+			for (int i = 0, n = size; i < n; i++) {
+				if (items[i] == value) {
+					items[i] = replacement;
+					replacements++;
+				}
+			}
+		} else {
+			for (int i = 0, n = size; i < n; i++) {
+				if (value.equals(items[i])) {
+					items[i] = replacement;
+					replacements++;
+				}
+			}
+		}
+		return replacements;
 	}
 
 	/** Returns true if this array contains the specified value.
@@ -484,8 +535,8 @@ public class Array<T> implements Iterable<T> {
 	 * If {@link Collections#allocateIterators} is false, the same iterator instance is returned each time this method is called.
 	 * Use the {@link ArrayIterator} constructor for nested or multithreaded iteration. */
 	public ArrayIterator<T> iterator () {
-		if (Collections.allocateIterators) return new ArrayIterator(this, true);
-		if (iterable == null) iterable = new ArrayIterable(this);
+		if (Collections.allocateIterators) return new ArrayIterator<T>(this, true);
+		if (iterable == null) iterable = new ArrayIterable<T>(this);
 		return iterable.iterator();
 	}
 
@@ -667,7 +718,7 @@ public class Array<T> implements Iterable<T> {
 	static public class ArrayIterable<T> implements Iterable<T> {
 		private final Array<T> array;
 		private final boolean allowRemove;
-		private ArrayIterator iterator1, iterator2;
+		private transient ArrayIterator<T> iterator1, iterator2;
 
 // java.io.StringWriter lastAcquire = new java.io.StringWriter();
 
@@ -682,12 +733,12 @@ public class Array<T> implements Iterable<T> {
 
 		/** @see Collections#allocateIterators */
 		public ArrayIterator<T> iterator () {
-			if (Collections.allocateIterators) return new ArrayIterator(array, allowRemove);
+			if (Collections.allocateIterators) return new ArrayIterator<T>(array, allowRemove);
 // lastAcquire.getBuffer().setLength(0);
 // new Throwable().printStackTrace(new java.io.PrintWriter(lastAcquire));
 			if (iterator1 == null) {
-				iterator1 = new ArrayIterator(array, allowRemove);
-				iterator2 = new ArrayIterator(array, allowRemove);
+				iterator1 = new ArrayIterator<T>(array, allowRemove);
+				iterator2 = new ArrayIterator<T>(array, allowRemove);
 // iterator1.iterable = this;
 // iterator2.iterable = this;
 			}

@@ -28,23 +28,12 @@ public class TextInputDialogTest extends GdxTest {
 	String message;
 	SpriteBatch batch;
 	BitmapFont font;
+	int inputType = 0;
 
 	public void create () {
 		message = "Touch screen for dialog";
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-
-		Gdx.input.getTextInput(new TextInputListener() {
-			@Override
-			public void input (String text) {
-				message = "message: " + text + ", touch screen for new dialog";
-			}
-
-			@Override
-			public void canceled () {
-				message = "cancled by user";
-			}
-		}, "enter something funny", "funny", "something funny", Input.OnscreenKeyboardType.Default);
 	}
 
 	public void render () {
@@ -54,7 +43,19 @@ public class TextInputDialogTest extends GdxTest {
 		batch.end();
 
 		if (Gdx.input.justTouched()) {
+			Gdx.input.getTextInput(new TextInputListener() {
+				@Override
+				public void input (String text) {
+					message = "message: " + text + ", type: " + Input.OnscreenKeyboardType.values()[inputType]
+						+ ", touch screen for new dialog";
+				}
 
+				@Override
+				public void canceled () {
+					message = "cancled by user";
+				}
+			}, "enter something funny", "funny", "something funny", Input.OnscreenKeyboardType.values()[inputType]);
+			inputType = (inputType + 1) % Input.OnscreenKeyboardType.values().length;
 		}
 	}
 }

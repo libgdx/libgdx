@@ -302,8 +302,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@Override
 	protected void onDestroy () {
-		super.onDestroy();
 		keyboardHeightProvider.close();
+		super.onDestroy();
 	}
 
 	@Override

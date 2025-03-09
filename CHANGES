@@ -1,8 +1,57 @@
-[1.12.2-SNAPSHOT]
-- [BREAKING CHANGE] GWT: Updated to 2.10.0. `com.google.jsinterop:jsinterop-annotations:2.0.2:sources` must be added as a dependency to your html project dependencies.
+[1.14.0]
+- [BREAKING CHANGE] Android: Updated minSDK to 21. Multidex config is no longer required, please check https://developer.android.com/build/multidex.
+- [BREAKING CHANGE] Android: Proguard config line `boolean getUseDefaultContactFilter();` needs to be added. See https://github.com/libgdx/libgdx/pull/7578.
+- [BREAKING CHANGE] Android: Removed `AndroidApplicationConfiguration#touchSleepTime`.
+- API Addition: Allow option to set Box2D native ContactFilter (World#setContactFilter(null)) for performance improvements.
+- API Addition: Added BooleanArray#replaceFirst and BooleanArray#replaceAll
+- API Addition: Added ByteArray#replaceFirst and ByteArray#replaceAll
+- API Addition: Added CharArray#replaceFirst and CharArray#replaceAll
+- API Addition: Added DelayedRemovalArray#replaceFirst and DelayedRemovalArray#replaceAll
+- API Addition: Added FloatArray#replaceFirst and FloatArray#replaceAll
+- API Addition: Added IntArray#replaceFirst and IntArray#replaceAll
+- API Addition: Added LongArray#replaceFirst and LongArray#replaceAll
+- API Addition: Added ShortArray#replaceFirst and ShortArray#replaceAll
+- API Addition: Added SnapshotArray#replaceFirst and SnapshotArray#replaceAll
+- Android: Fixed rare NPE when `onDestroy` was called
+
+[1.13.1]
+- [BREAKING CHANGE] Android: Since 1.13.0 libGDX requires setting `android.useAndroidX=true` in your gradle.properties file. In 1.13.1 it is NO longer needed to define the `androidx.core:core` dependency in your Android module.
+- [BREAKING CHANGE] BaseTmxMapLoader no longer parses point objects into zero-sized RectangleMapObject. Instead, points are now represented with PointMapObject
+- iOS: Update to MobiVM 2.3.22
+- iOS: Fixes Gdx.openURI() not working on iOS 18.1 Simulator.
+- Change visibility of PolygonSpriteBatch.switchTexture() to protected
+- Added XmlReader.getChildren() and XmlReader.replaceChild()
+- LWJGL3: Fix pauseWhenLostFocus not working as expected
+- LWJGL 3: Downgrade to 3.3.3 due to AV false positives on 3.3.4 and OpenAL log spamming issue on 3.3.5.
+- API Addition: Added FPSLogger#setBound
+- Android: Fix crash on startup if `setContentView` was manually called after `initializeForView`
+- API Addition: Added Array#replaceFirst and Array#replaceAll
+- Fixed ShortArray#lastIndexOf taking char instead of short.
+- Properly validate font name in Hiero
+- Fix depth shader recycling
+- Support 'class' Tiled/Tmx MapProperty
+- Support for Layer TintColor in TiledMap
+- Fix classpath files not being loaded on GWT
+- Fixed LongArray#lastIndexOf taking char instead of long.
+- LongArray#pop and #peek now throw expections if the array is empty
+- Reset existing transformations of provided overlap Polygon in Polygon::intersectPolygons
+- Added tiledmap loader for JSON files
+- Fix duplicate points returned in polygon intersection
+- Change defaults of SpriteBatch to use VBO instead of VertexArray on gl2/gles2.0
+- Fix: no longer inline the version string
+- GWT - Calculate MD5 hash while copying file to avoid errors on very large files
+- Fix: Wayland doesn't support setting window position and icon
+- Fix: Parsing imagelayer inside a group tag in TMX file
+- Improve Android input keyboard with autocorrection
+- Unproject and pick ray docs for Viewport/Camera
+- Support for Image Layer repeat x and y in TiledMap + Bugfix
+
+[1.13.0]
+- [BREAKING CHANGE] GWT: Updated to 2.11.0. `com.google.jsinterop:jsinterop-annotations:2.0.2:sources` must be added as a dependency to your html project dependencies.
 - [BREAKING CHANGE] Android: Minimum API level is now level 19 (Android 4.4)
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 12.0. Update your Info.plist file if necessary.
 - [BREAKING CHANGE] Android, iOS: Exceptions occurring in Runnable tasks scheduled through Gdx.app.postRunnable() are no longer swallowed and will crash the app (add a protection if required).
+- Updated: Update to jnigen 2.5.2
 - iOS: Update to MobiVM 2.3.21
 - iOS: The iOS backend now implements AudioDevice. It can be configured through IOSApplicationConfiguration with audioDeviceBufferSize/audioDeviceBufferCount
 - Fixed GlyphLayout for fixed width glyph offsets at the start and end of lines.
@@ -19,6 +68,39 @@
 - Desktop: Added support for 8/32/64-bit PCM and MP3 WAVs
 - Desktop: Improved support for surround sound audio files (#6792)
 - gdx-setup has been replaced with https://github.com/libgdx/gdx-liftoff
+- Android: Added support for predictive back gesture (requires android:enableOnBackInvokedCallback="true" in manifest)
+- API Removal: Removed deprecated back and menu key methods. Use `setCatchKey` and `isCatchKey` instead.
+- Cache packed color on sprite to improve performance
+- Improve JsonReader, add JsonSkimmer, JsonString
+- Add proper glTexImage2D support on GWT
+- Expose the color variables of Box2DDebugRenderer
+- Add Color#set(Color rgb, float a)
+- Prevent loss of precision in OrthographicCamera#update
+- Fix offsets in ConvexHull while being unsorted
+- Small particle emitter improvements
+- Fix : RenderBuffer leak in GLFrameBuffer
+- LWJGL 3: Remove unnecessary window.makeCurrent() calls to improve performance (#7362)
+- Fix: DragListener only listens to the correct touch up events
+- Fix incorrect glyph page index in FreeTypeFontGenerator
+- Added TextureAtlas.TextureAtlasData.Page#name.
+- iOS: Improve preferred FPS setting logic and documentation on iOS backend
+- Fixed TextField breaking if the font has markup enabled.
+- Only allow scrolling of a scroll pane if it has scroll focus
+- iOS: Adding RoboVM AudioDevice implementation
+- Add new Color#CLEAR_WHITE
+- Fixed ScrollPane#scrollTo setting scrollX when there's a width
+- Screens now extend the Disposable interface
+- Added antialiasing flag to the ScreenUtils.
+- Fix Intersector.intersectPolygons() corner case
+- LWJGL 3: Fix the delta time not changing when resizing the window
+- GWT: Allow switching the audio device; this has to be enabled via GwtApplicationConfiguration#fetchAvailableOutputDevices
+- Add API to get user inout with native text fields (#7004)
+- Fix issue with the 'request still pending' check on NetJavaImpl
+- Added possibility to reset a particle effect without starting it
+- Android & iOS: Use empty Audio implementations on Android and iOS when audio is disabled
+- Adds status detection for an httpRequest
+- Fix ANGLE GLES renderer on dekstop (#7274)
+- Architecture support: Support for Linux RISC-V has been added. The gdx-xxx-natives-desktop.jar files now also contain native libraries for this architecture.
 
 [1.12.1]
 - LWJGL3 Improvement: Audio device is automatically switched if it was changed in the operating system.

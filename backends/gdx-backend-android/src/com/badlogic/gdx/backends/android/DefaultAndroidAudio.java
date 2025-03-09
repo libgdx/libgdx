@@ -48,16 +48,9 @@ public class DefaultAndroidAudio implements AndroidAudio {
 	private final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
 
 	public DefaultAndroidAudio (Context context, AndroidApplicationConfiguration config) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			AudioAttributes audioAttrib = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
-				.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
-			soundPool = new SoundPool.Builder().setAudioAttributes(audioAttrib).setMaxStreams(config.maxSimultaneousSounds).build();
-		} else {
-			soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 0);// srcQuality: the sample-rate
-																																// converter quality. Currently
-																																// has no effect. Use 0 for the
-																																// default.
-		}
+		AudioAttributes audioAttrib = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
+			.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
+		soundPool = new SoundPool.Builder().setAudioAttributes(audioAttrib).setMaxStreams(config.maxSimultaneousSounds).build();
 		manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 		if (context instanceof Activity) {
 			((Activity)context).setVolumeControlStream(AudioManager.STREAM_MUSIC);

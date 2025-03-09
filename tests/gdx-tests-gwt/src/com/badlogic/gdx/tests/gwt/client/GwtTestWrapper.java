@@ -77,6 +77,7 @@ import com.badlogic.gdx.tests.SimpleStageCullingTest;
 import com.badlogic.gdx.tests.SortedSpriteTest;
 import com.badlogic.gdx.tests.SoundTest;
 import com.badlogic.gdx.tests.SpriteBatchShaderTest;
+import com.badlogic.gdx.tests.SpriteBatchPerformanceTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
@@ -86,9 +87,11 @@ import com.badlogic.gdx.tests.TextAreaTest;
 import com.badlogic.gdx.tests.TextAreaTest2;
 import com.badlogic.gdx.tests.TextAreaTest3;
 import com.badlogic.gdx.tests.TextButtonTest;
+import com.badlogic.gdx.tests.TextInputDialogTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
 import com.badlogic.gdx.tests.TiledMapObjectLoadingTest;
+import com.badlogic.gdx.tests.TiledMapPropertiesTest;
 import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
@@ -97,6 +100,7 @@ import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.MultipleRenderTargetTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
+import com.badlogic.gdx.tests.g3d.ShadowMappingTextureTest;
 import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.gles2.GlTexImage2D;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
@@ -488,6 +492,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		});
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
+				return new ShadowMappingTextureTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
 				return new ShapeRendererTest();
 			}
 		});
@@ -514,6 +523,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new SpriteBatchShaderTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SpriteBatchPerformanceTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
@@ -559,6 +573,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		});
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
+				return new TextInputDialogTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
 				return new TextureAtlasTest();
 			}
 		});
@@ -571,6 +590,12 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			@Override
 			public GdxTest instance () {
 				return new TiledMapObjectPropertyTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			@Override
+			public GdxTest instance () {
+				return new TiledMapPropertiesTest();
 			}
 		});
 		tests.add(new GwtInstancer() {

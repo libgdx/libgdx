@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 
-	private final View view;
 	private final Activity activity;
+	private View view;
 	private KeyboardHeightObserver observer;
 
 	/** The cached landscape height of the keyboard */
@@ -24,12 +24,12 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 	private static int keyboardPortraitHeight;
 
 	public AndroidXKeyboardHeightProvider (final Activity activity) {
-		this.view = activity.findViewById(android.R.id.content);
 		this.activity = activity;
 	}
 
 	@Override
 	public void start () {
+		this.view = activity.findViewById(android.R.id.content);
 		ViewCompat.setOnApplyWindowInsetsListener(view, new OnApplyWindowInsetsListener() {
 			@NotNull
 			@Override
@@ -63,7 +63,8 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 
 	@Override
 	public void close () {
-		ViewCompat.setOnApplyWindowInsetsListener(view, null);
+		if (view != null) ViewCompat.setOnApplyWindowInsetsListener(view, null);
+		this.observer = null;
 	}
 
 	@Override

@@ -40,11 +40,11 @@ import javax.imageio.ImageIO;
  * </p>
  * 
  * <p>
- * <b>Usage:</b> instanciate an <code>ImagePacker</code> instance, load and optionally sort the images you want to add by size
+ * <b>Usage:</b> instantiate an <code>ImagePacker</code> instance, load and optionally sort the images you want to add by size
  * (e.g. area) then insert each image via a call to {@link #insertImage(String, BufferedImage)}. When you are done with inserting
  * images you can call {@link #getImage()} for the {@link BufferedImage} that holds the packed images. Additionally you can get a
- * <code>Map<String, Rectangle></code> where the keys the names you specified when inserting and the values are the rectangles
- * within the packed image where that specific image is located. All things are given in pixels.
+ * {@code Map<String, Rectangle>} where the keys the names you specified when inserting and the values are the rectangles within
+ * the packed image where that specific image is located. All things are given in pixels.
  * </p>
  * 
  * <p>

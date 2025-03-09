@@ -76,7 +76,7 @@ public class Window extends Table {
 				if (drawTitleTable) super.draw(batch, parentAlpha);
 			}
 		};
-		titleTable.add(titleLabel).expandX().fillX().minWidth(0);
+		titleTable.add(titleLabel).growX().minWidth(0);
 		addActor(titleTable);
 
 		setStyle(style);
