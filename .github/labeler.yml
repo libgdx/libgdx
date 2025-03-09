@@ -8,7 +8,7 @@ android:
     - /**/gdx-backend-android/**
     - /**/gdx-tests-android/**
   - all-globs-to-all-files:
-    - !/**/gdx-tests-android/assets/data/**
+    - '!/**/gdx-tests-android/assets/data/**'
 audio:
 - changed-files:
   - any-glob-to-any-file:
@@ -61,7 +61,7 @@ fonts:
   - any-glob-to-any-file:
     - /**/BitmapFont*.java
     - /**/gdx-freetype/**
-    - /***/FreeType*.java
+    - /**/FreeType*.java
 GL:
 - changed-files:
   - any-glob-to-any-file:
