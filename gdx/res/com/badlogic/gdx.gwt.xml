@@ -470,6 +470,7 @@
 		<include name="utils/Queue.java"/>
 		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/>
+		<include name="utils/DefaultPool.java"/>
 		<include name="utils/Scaling.java"/>
 		<include name="utils/ScreenUtils.java"/>
 		<include name="utils/Select.java"/>
