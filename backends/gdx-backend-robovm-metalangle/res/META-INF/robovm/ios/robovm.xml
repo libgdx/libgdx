@@ -1,10 +1,12 @@
 <config>
     <frameworks>
-        <framework>MetalANGLE</framework>
+        <framework>MetalANGLEKit</framework>
+        <framework>libGLESv2</framework>
+        <framework>libEGL</framework>
+        <framework>libfeature_support</framework>
         <framework>Metal</framework>
     </frameworks>
     <frameworkPaths>
-        <path variant="device">libs/MetalANGLE.xcframework/ios-arm64_armv7/</path>
-        <path variant="simulator">libs/MetalANGLE.xcframework/ios-arm64_i386_x86_64-simulator/</path>
+        <path>libs/</path>
     </frameworkPaths>
 </config>
