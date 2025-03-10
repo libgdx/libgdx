@@ -25,7 +25,9 @@ public class Pools {
 	static private final ObjectMap<Class<?>, Pool<?>> supplierPoolsCache = new ObjectMap<>();
 
 	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note the max size is ignored
-	 * if this is not the first time this pool has been requested. */
+	 * if this is not the first time this pool has been requested.
+	 *
+	 * @deprecated Use {@link Pools#get(PoolSupplier, int)} instead */
 	@Deprecated
 	static public <T> Pool<T> get (Class<T> type, int max) {
 		Pool pool = typePools.get(type);
@@ -37,28 +39,40 @@ public class Pools {
 	}
 
 	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. The max size of the pool used
-	 * is 100. */
+	 * is 100.
+	 *
+	 * @deprecated Use {@link Pools#get(PoolSupplier)} instead */
 	@Deprecated
 	static public <T> Pool<T> get (Class<T> type) {
 		return get(type, 100);
 	}
 
-	/** Returns an existing pool or creates a new one for the specified type, stored in a Class to {@link Pool} map. This method
-	 * may create a temporary object once, but the allocation will probably be eliminated on most platforms. */
-	static public <T> Pool<T> get (PoolSupplier<T> poolTypeSupplier) {
+	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note the max size is ignored
+	 * if this is not the first time this pool has been requested. This method may create a temporary object once, but the
+	 * allocation will probably be eliminated on most platforms. <br>
+	 * Usage can use java 8 method references: {@code Pools.get(MyClass::new, max)} */
+	static public <T> Pool<T> get (PoolSupplier<T> poolTypeSupplier, int max) {
 		Pool<T> pool = (Pool<T>)supplierPoolsCache.get(poolTypeSupplier.getClass());
 		if (pool == null) {
 			T tmp = poolTypeSupplier.get();
 			Class<T> type = (Class<T>)tmp.getClass();
 			pool = (Pool<T>)typePools.get(type);
 			if (pool == null) {
-				pool = new DefaultPool<>(poolTypeSupplier);
+				pool = new DefaultPool<>(poolTypeSupplier, 4, max);
 				typePools.put(type, pool);
 			}
 			supplierPoolsCache.put(poolTypeSupplier.getClass(), pool);
 		}
 
 		return pool;
+	}
+
+	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. The max size of the pool used
+	 * is 100. This method may create a temporary object once, but the allocation will probably be eliminated on most platforms.
+	 * <br>
+	 * Usage can use java 8 method references: {@code Pools.get(MyClass::new)} */
+	static public <T> Pool<T> get (PoolSupplier<T> poolTypeSupplier) {
+		return get(poolTypeSupplier, 100);
 	}
 
 	/** Sets an existing pool for the specified type, stored in a Class to {@link Pool} map. */
@@ -73,7 +87,8 @@ public class Pools {
 		}
 	}
 
-	/** Obtains an object from the {@link #get(PoolSupplier) pool}. */
+	/** Obtains an object from the {@link Pools#get(PoolSupplier)} pool. <br>
+	 * Usage can use java 8 method references: {@code Pools.obtain(MyClass::new)} */
 	static public <T> T obtain (PoolSupplier<T> poolTypeSupplier) {
 		return get(poolTypeSupplier).obtain();
 	}
