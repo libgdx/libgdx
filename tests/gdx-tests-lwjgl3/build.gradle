@@ -21,11 +21,11 @@ sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
 
 if (JavaVersion.current().isJava9Compatible()) {
 	compileJava {
-		options.release = versions.javaLwjgl3
+		options.release = versions.java
 	}
 }
-sourceCompatibility = versions.javaLwjgl3
-targetCompatibility = versions.javaLwjgl3
+sourceCompatibility = versions.java
+targetCompatibility = versions.java
 
 dependencies {
 	implementation project(":tests:gdx-tests")

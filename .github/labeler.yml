@@ -3,12 +3,13 @@
   - any-glob-to-any-file:
     - /**/g3d/**
 android:
-- changed-files:
-  - any-glob-to-any-file:
-    - /**/gdx-backend-android/**
-    - /**/gdx-tests-android/**
-  - all-globs-to-all-files:
-    - '!/**/gdx-tests-android/assets/data/**'
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - /**/gdx-backend-android/**
+      - /**/gdx-tests-android/**
+    - all-globs-to-all-files:
+      - '!/**/gdx-tests-android/assets/data/**'
 audio:
 - changed-files:
   - any-glob-to-any-file:
