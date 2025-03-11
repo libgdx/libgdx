@@ -99,7 +99,7 @@ public class Pools {
 		return get(type).obtain();
 	}
 
-	/** Frees an object from the {@link #get(Class) pool}. */
+	/** Frees an object from the {@link #get(PoolSupplier) pool}. */
 	static public void free (Object object) {
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
 		Pool pool = typePools.get(object.getClass());
@@ -107,13 +107,13 @@ public class Pools {
 		pool.free(object);
 	}
 
-	/** Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored. Objects
-	 * don't need to be from the same pool. */
+	/** Frees the specified objects from the {@link #get(PoolSupplier) pool}. Null objects within the array are silently ignored.
+	 * Objects don't need to be from the same pool. */
 	static public void freeAll (Array objects) {
 		freeAll(objects, false);
 	}
 
-	/** Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored.
+	/** Frees the specified objects from the {@link #get(PoolSupplier) pool}. Null objects within the array are silently ignored.
 	 * @param samePool If true, objects don't need to be from the same pool but the pool must be looked up for each object. */
 	static public void freeAll (Array objects, boolean samePool) {
 		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");

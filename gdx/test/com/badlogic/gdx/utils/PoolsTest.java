@@ -30,20 +30,8 @@ public class PoolsTest {
 
 	@Test
 	public void testDifferentLambdasSamePool () {
-		PoolSupplier<Object> pool1 = new PoolSupplier<Object>() {
-
-			@Override
-			public Object get () {
-				return new Object();
-			}
-		};
-		PoolSupplier<Object> pool2 = new PoolSupplier<Object>() {
-
-			@Override
-			public Object get () {
-				return new Object();
-			}
-		};
+		PoolSupplier<Object> pool1 = Object::new;
+		PoolSupplier<Object> pool2 = Object::new;
 
 		assertNotEquals(pool1.getClass(), pool2.getClass());
 		assertEquals(Pools.get(pool1), Pools.get(pool2));
@@ -54,33 +42,15 @@ public class PoolsTest {
 
 	@Test
 	public void testPoolsSet () {
-		PoolSupplier<Object> pool1 = new PoolSupplier<Object>() {
+		PoolSupplier<Object> pool1 = Object::new;
 
-			@Override
-			public Object get () {
-				return new Object();
-			}
-		};
-
-		PoolSupplier<Object> pool2 = new PoolSupplier<Object>() {
-
-			@Override
-			public Object get () {
-				return new Object();
-			}
-		};
+		PoolSupplier<Object> pool2 = Object::new;
 
 		assertNotEquals(pool1.getClass(), pool2.getClass());
 		assertEquals(Pools.get(pool1), Pools.get(pool2));
 		assertEquals(2, supplierPoolsCache.size);
 
-		DefaultPool<Object> newPool = new DefaultPool<>(new PoolSupplier<Object>() {
-
-			@Override
-			public Object get () {
-				return new Object();
-			}
-		});
+		DefaultPool<Object> newPool = new DefaultPool<>(Object::new);
 		Pools.set(Object.class, newPool);
 		assertEquals(0, supplierPoolsCache.size);
 		assertEquals(newPool, Pools.get(pool1));
@@ -90,20 +60,8 @@ public class PoolsTest {
 
 	@Test
 	public void testPoolsReset () {
-		PoolSupplier<Object> pool1 = new PoolSupplier<Object>() {
-
-			@Override
-			public Object get () {
-				return new Object();
-			}
-		};
-		PoolSupplier<Object> pool2 = new PoolSupplier<Object>() {
-
-			@Override
-			public Object get () {
-				return new Object();
-			}
-		};
+		PoolSupplier<Object> pool1 = Object::new;
+		PoolSupplier<Object> pool2 = Object::new;
 
 		assertNotEquals(pool1.getClass(), pool2.getClass());
 		assertEquals(Pools.get(pool1), Pools.get(pool2));

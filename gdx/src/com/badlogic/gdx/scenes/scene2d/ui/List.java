@@ -179,7 +179,7 @@ public class List<T> extends Widget implements Cullable {
 		itemHeight += selectedDrawable.getTopHeight() + selectedDrawable.getBottomHeight();
 
 		prefWidth = 0;
-		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
+		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout::new);
 		GlyphLayout layout = layoutPool.obtain();
 		for (int i = 0; i < items.size; i++) {
 			layout.setText(font, toString(items.get(i)));
