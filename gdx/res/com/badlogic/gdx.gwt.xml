@@ -309,7 +309,8 @@
 		<include name="maps/objects/PolygonMapObject.java"/>
 		<include name="maps/objects/PolylineMapObject.java"/>
 		<include name="maps/objects/RectangleMapObject.java"/>
-		<include name="maps/objects/TextureMapObject.java"/>
+        <include name="maps/objects/TextMapObject.java"/>
+        <include name="maps/objects/TextureMapObject.java"/>
 
 	<!-- maps/tiled -->
 		<include name="maps/tiled/AtlasTmxMapLoader.java"/>
