@@ -39,6 +39,10 @@ public class DefaultPool<T> extends Pool<T> {
 		return poolTypeSupplier.get();
 	}
 
+	/** An interface that is used to create objects for the Pool. Even tho not annotated with "FunctionalInterface", it can act as
+	 * one. <br>
+	 * You can use a constructor reference or lambda as a PoolSupplier, such as with {@code MyClass::new} or
+	 * {@code () -> new MyClass()}. */
 	public interface PoolSupplier<T> {
 		T get ();
 	}
