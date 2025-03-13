@@ -454,7 +454,7 @@ public class Skin implements Disposable {
 		} catch (Exception ignored) {
 		}
 
-		Gdx.app.error("[DEPRECATED]",
+		Gdx.app.error("DEPRECATED",
 			"Setting style on Actor " + actor.getClass().getName() + ", which does not implement 'Styleable' interface");
 	}
 
