@@ -48,8 +48,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(
-		LifecycleListener.class);
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<>(LifecycleListener[]::new);
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
 	protected volatile Color[] wallpaperColors = null;

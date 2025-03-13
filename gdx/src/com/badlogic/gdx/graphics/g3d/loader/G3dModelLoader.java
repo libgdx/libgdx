@@ -117,7 +117,7 @@ public class G3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> {
 					jsonPart.indices = meshPart.require("indices").asShortArray();
 					parts.add(jsonPart);
 				}
-				jsonMesh.parts = parts.toArray(ModelMeshPart.class);
+				jsonMesh.parts = parts.toArray(ModelMeshPart[]::new);
 				model.meshes.add(jsonMesh);
 			}
 		}
@@ -168,7 +168,7 @@ public class G3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> {
 					"Unknown vertex attribute '" + attr + "', should be one of position, normal, uv, tangent or binormal");
 			}
 		}
-		return vertexAttributes.toArray(VertexAttribute.class);
+		return vertexAttributes.toArray(VertexAttribute[]::new);
 	}
 
 	protected void parseMaterials (ModelData model, JsonValue json, String materialDir) {
