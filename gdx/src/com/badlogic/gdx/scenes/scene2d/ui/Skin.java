@@ -419,6 +419,19 @@ public class Skin implements Disposable {
 	 * reflection and the name of that style is found in the skin. If the actor doesn't have a "getStyle" method or the style was
 	 * not found in the skin, no exception is thrown and the actor is left unchanged. */
 	public void setEnabled (Actor actor, boolean enabled) {
+		if (actor instanceof Styleable) {
+			// noinspection unchecked
+			Styleable<Object> styleable = (Styleable<Object>)actor;
+			Object style = styleable.getStyle();
+
+			String name = find(style);
+			if (name == null) return;
+			name = name.replace("-disabled", "") + (enabled ? "" : "-disabled");
+			style = get(name, style.getClass());
+
+			styleable.setStyle(style);
+			return;
+		}
 		// Get current style.
 		Method method = findMethod(actor.getClass(), "getStyle");
 		if (method == null) return;
@@ -440,6 +453,9 @@ public class Skin implements Disposable {
 			method.invoke(actor, style);
 		} catch (Exception ignored) {
 		}
+
+		Gdx.app.error("[DEPRECATED]",
+			"Setting style on Actor " + actor.getClass().getName() + ", which does not implement 'Styleable' interface");
 	}
 
 	/** Returns the {@link TextureAtlas} passed to this skin constructor, or null. */
