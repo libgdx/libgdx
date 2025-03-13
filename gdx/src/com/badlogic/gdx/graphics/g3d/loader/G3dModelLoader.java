@@ -328,7 +328,7 @@ public class G3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> {
 
 				JsonValue bones = material.get("bones");
 				if (bones != null) {
-					nodePart.bones = new ArrayMap<String, Matrix4>(true, bones.size, String.class, Matrix4.class);
+					nodePart.bones = new ArrayMap<>(true, bones.size, String[]::new, Matrix4[]::new);
 					int j = 0;
 					for (JsonValue bone = bones.child; bone != null; bone = bone.next, j++) {
 						String nodeId = bone.getString("node", null);
