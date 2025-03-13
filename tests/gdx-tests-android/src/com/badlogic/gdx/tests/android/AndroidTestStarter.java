@@ -18,16 +18,20 @@ package com.badlogic.gdx.tests.android;
 
 import java.util.List;
 
+import android.Manifest;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.core.content.ContextCompat;
 import com.badlogic.gdx.tests.BackTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
@@ -45,6 +49,18 @@ public class AndroidTestStarter extends ListActivity {
 
 		prefs = getSharedPreferences("libgdx-tests", Context.MODE_PRIVATE);
 		getListView().setSelectionFromTop(prefs.getInt("index", 0), prefs.getInt("top", 0));
+
+		requestAudioRecorderPermission();
+	}
+
+	private void requestAudioRecorderPermission () {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			boolean hasPermission = (ContextCompat.checkSelfPermission(this,
+				Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED);
+			if (!hasPermission) {
+				this.requestPermissions(new String[] {Manifest.permission.RECORD_AUDIO}, 200);
+			}
+		}
 	}
 
 	protected void onListItemClick (ListView listView, View view, int position, long id) {
@@ -65,5 +81,4 @@ public class AndroidTestStarter extends ListActivity {
 
 		startActivity(intent);
 	}
-
 }
