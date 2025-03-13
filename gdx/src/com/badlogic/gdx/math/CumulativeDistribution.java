@@ -2,6 +2,7 @@
 package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** This class represents a cumulative distribution. It can be used in scenarios where there are values with different
  * probabilities and it's required to pick one of those respecting the probability. For example one could represent the frequency
@@ -27,7 +28,10 @@ public class CumulativeDistribution<T> {
 	private Array<CumulativeValue> values;
 
 	public CumulativeDistribution () {
-		values = new Array<CumulativeValue>(false, 10, CumulativeValue.class);
+		@SuppressWarnings("unchecked")
+		// It is impossible to create a generic array without reflection (I think)
+		CumulativeValue[] tmp = (CumulativeValue[])ArrayReflection.newInstance(CumulativeValue.class, 10);
+		values = new Array<>(tmp);
 	}
 
 	/** Adds a value with a given interval size to the distribution */
