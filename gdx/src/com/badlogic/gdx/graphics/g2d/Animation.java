@@ -20,6 +20,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
+import java.util.Arrays;
+
 /**
  * <p>
  * An Animation stores a list of objects representing an animated sequence, e.g. for running or jumping. Each object in the
@@ -54,11 +56,7 @@ public class Animation<T> {
 	 *           correct type of array. Otherwise, it returns an Object[]. */
 	public Animation (float frameDuration, Array<? extends T> keyFrames) {
 		this.frameDuration = frameDuration;
-		Class arrayType = keyFrames.items.getClass().getComponentType();
-		T[] frames = (T[])ArrayReflection.newInstance(arrayType, keyFrames.size);
-		for (int i = 0, n = keyFrames.size; i < n; i++) {
-			frames[i] = keyFrames.get(i);
-		}
+		T[] frames = Arrays.copyOf(keyFrames.items, keyFrames.size);
 		setKeyFrames(frames);
 	}
 
