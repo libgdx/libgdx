@@ -54,8 +54,9 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown. */
 	public ArrayMap (boolean ordered, int capacity) {
-        //noinspection unchecked
-        this(ordered, capacity, (ArraySupplier<K[]>)ArraySupplier.OBJECT_ARRAY_SUPPLIER, (ArraySupplier<V[]>)ArraySupplier.OBJECT_ARRAY_SUPPLIER);
+		// noinspection unchecked
+		this(ordered, capacity, (ArraySupplier<K[]>)ArraySupplier.OBJECT_ARRAY_SUPPLIER,
+			(ArraySupplier<V[]>)ArraySupplier.OBJECT_ARRAY_SUPPLIER);
 	}
 
 	/** Creates a new map with {@link #keys} and {@link #values} with the specified supplier.
@@ -78,18 +79,17 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown.
 	 *
-	 * @deprecated Use {@link ArrayMap#ArrayMap(boolean, int, ArraySupplier, ArraySupplier)} instead
-	 * */
+	 * @deprecated Use {@link ArrayMap#ArrayMap(boolean, int, ArraySupplier, ArraySupplier)} instead */
 	@Deprecated
 	public ArrayMap (boolean ordered, int capacity, Class keyArrayType, Class valueArrayType) {
-        //noinspection unchecked
-        this(ordered, capacity, size -> (K[])ArrayReflection.newInstance(keyArrayType, size), size -> (V[])ArrayReflection.newInstance(valueArrayType, size));
+		// noinspection unchecked
+		this(ordered, capacity, size -> (K[])ArrayReflection.newInstance(keyArrayType, size),
+			size -> (V[])ArrayReflection.newInstance(valueArrayType, size));
 	}
 
 	/** Creates an ordered map with {@link #keys} and {@link #values} of the specified type and a capacity of 16.
 	 *
-	 * @deprecated Use {@link ArrayMap#ArrayMap(ArraySupplier, ArraySupplier)} instead
-	 * */
+	 * @deprecated Use {@link ArrayMap#ArrayMap(ArraySupplier, ArraySupplier)} instead */
 	@Deprecated
 	public ArrayMap (Class keyArrayType, Class valueArrayType) {
 		this(false, 16, keyArrayType, valueArrayType);

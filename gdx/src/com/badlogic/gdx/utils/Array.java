@@ -52,8 +52,8 @@ public class Array<T> implements Iterable<T> {
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
 	public Array (boolean ordered, int capacity) {
-        //noinspection unchecked
-        this(ordered, capacity, (ArraySupplier<T[]>)ArraySupplier.OBJECT_ARRAY_SUPPLIER);
+		// noinspection unchecked
+		this(ordered, capacity, (ArraySupplier<T[]>)ArraySupplier.OBJECT_ARRAY_SUPPLIER);
 	}
 
 	/** Creates a new array with {@link #items} with the specified supplier.
@@ -75,8 +75,7 @@ public class Array<T> implements Iterable<T> {
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown.
 	 *
-	 * @deprecated Use {@link Array#Array(boolean, int, ArraySupplier)} instead
-	 * */
+	 * @deprecated Use {@link Array#Array(boolean, int, ArraySupplier)} instead */
 	@Deprecated
 	public Array (boolean ordered, int capacity, Class arrayType) {
 		// noinspection unchecked
@@ -85,8 +84,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Creates an ordered array with {@link #items} of the specified type and a capacity of 16.
 	 *
-	 * @deprecated Use {@link Array#Array(ArraySupplier)} instead
-	 * */
+	 * @deprecated Use {@link Array#Array(ArraySupplier)} instead */
 	@Deprecated
 	public Array (Class arrayType) {
 		this(true, 16, arrayType);
@@ -600,9 +598,7 @@ public class Array<T> implements Iterable<T> {
 		return result;
 	}
 
-	/**
-	 * @deprecated Use {@link Array#toArray(ArraySupplier)} instead
-	 */
+	/** @deprecated Use {@link Array#toArray(ArraySupplier)} instead */
 	@Deprecated
 	public <V> V[] toArray (Class<V> type) {
 		V[] result = (V[])ArrayReflection.newInstance(type, size);
@@ -692,7 +688,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** @see #Array(Class)
 	 *
-	 * @deprecated Use {@link Array#of(ArraySupplier)}*/
+	 * @deprecated Use {@link Array#of(ArraySupplier)} */
 	@Deprecated
 	static public <T> Array<T> of (Class<T> arrayType) {
 		return new Array(arrayType);
@@ -700,7 +696,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** @see #Array(boolean, int, Class)
 	 *
-	 * @deprecated Use {@link Array#of(boolean, int, ArraySupplier)}*/
+	 * @deprecated Use {@link Array#of(boolean, int, ArraySupplier)} */
 	@Deprecated
 	static public <T> Array<T> of (boolean ordered, int capacity, Class<T> arrayType) {
 		return new Array(ordered, capacity, arrayType);
