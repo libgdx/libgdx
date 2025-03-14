@@ -48,8 +48,7 @@ public class Queue<T> implements Iterable<T> {
 
 	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array. */
 	public Queue (int initialSize) {
-		// noinspection unchecked
-		this(initialSize, (ArraySupplier<T[]>)ArraySupplier.OBJECT_ARRAY_SUPPLIER);
+		this(initialSize, ArraySupplier.object());
 	}
 
 	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array. This creates
@@ -57,7 +56,6 @@ public class Queue<T> implements Iterable<T> {
 	 * @deprecated Use {@link Queue#Queue(int, ArraySupplier)} instead */
 	@Deprecated
 	public Queue (int initialSize, Class<T> type) {
-		// noinspection unchecked
 		this(initialSize, size -> (T[])ArrayReflection.newInstance(type, size));
 	}
 

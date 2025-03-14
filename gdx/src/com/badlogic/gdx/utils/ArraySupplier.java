@@ -6,7 +6,13 @@ package com.badlogic.gdx.utils;
  * {@code (size) -> new MyClass[size]}. */
 public interface ArraySupplier<T> {
 	/** A default array supplier that creates an Object[]. */
-	ArraySupplier<?> OBJECT_ARRAY_SUPPLIER = Object[]::new;
+	ArraySupplier<?> ANY = Object[]::new;
+
+	/** Returns a default array supplier that creates an Object[]. */
+	@SuppressWarnings("unchecked")
+	static <T> ArraySupplier<T[]> object () {
+		return (ArraySupplier<T[]>)ANY;
+	}
 
 	T get (int size);
 }

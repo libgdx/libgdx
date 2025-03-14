@@ -52,8 +52,7 @@ public class Array<T> implements Iterable<T> {
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
 	public Array (boolean ordered, int capacity) {
-		// noinspection unchecked
-		this(ordered, capacity, (ArraySupplier<T[]>)ArraySupplier.OBJECT_ARRAY_SUPPLIER);
+		this(ordered, capacity, ArraySupplier.object());
 	}
 
 	/** Creates a new array with {@link #items} with the specified supplier.
@@ -78,7 +77,6 @@ public class Array<T> implements Iterable<T> {
 	 * @deprecated Use {@link Array#Array(boolean, int, ArraySupplier)} instead */
 	@Deprecated
 	public Array (boolean ordered, int capacity, Class arrayType) {
-		// noinspection unchecked
 		this(ordered, capacity, size -> (T[])ArrayReflection.newInstance(arrayType, size));
 	}
 

@@ -54,9 +54,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown. */
 	public ArrayMap (boolean ordered, int capacity) {
-		// noinspection unchecked
-		this(ordered, capacity, (ArraySupplier<K[]>)ArraySupplier.OBJECT_ARRAY_SUPPLIER,
-			(ArraySupplier<V[]>)ArraySupplier.OBJECT_ARRAY_SUPPLIER);
+		this(ordered, capacity, ArraySupplier.object(), ArraySupplier.object());
 	}
 
 	/** Creates a new map with {@link #keys} and {@link #values} with the specified supplier.
@@ -82,7 +80,6 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 * @deprecated Use {@link ArrayMap#ArrayMap(boolean, int, ArraySupplier, ArraySupplier)} instead */
 	@Deprecated
 	public ArrayMap (boolean ordered, int capacity, Class keyArrayType, Class valueArrayType) {
-		// noinspection unchecked
 		this(ordered, capacity, size -> (K[])ArrayReflection.newInstance(keyArrayType, size),
 			size -> (V[])ArrayReflection.newInstance(valueArrayType, size));
 	}
