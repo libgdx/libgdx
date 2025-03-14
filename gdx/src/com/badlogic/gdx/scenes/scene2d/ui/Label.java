@@ -30,7 +30,7 @@ import com.badlogic.gdx.utils.StringBuilder;
  * <p>
  * The preferred size of the label is determined by the actual text bounds, unless {@link #setWrap(boolean) word wrap} is enabled.
  * @author Nathan Sweet */
-public class Label extends Widget {
+public class Label extends Widget implements Styleable<Label.LabelStyle> {
 	static private final Color tempColor = new Color();
 	static private final GlyphLayout prefSizeLayout = new GlyphLayout();
 

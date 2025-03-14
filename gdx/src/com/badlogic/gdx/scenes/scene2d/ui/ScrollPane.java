@@ -45,7 +45,7 @@ import com.badlogic.gdx.utils.Null;
  * scroll pane is typically sized by ignoring the preferred size in one or both directions.
  * @author mzechner
  * @author Nathan Sweet */
-public class ScrollPane extends WidgetGroup {
+public class ScrollPane extends WidgetGroup implements Styleable<ScrollPane.ScrollPaneStyle> {
 	private ScrollPaneStyle style;
 	private Actor actor;
 
