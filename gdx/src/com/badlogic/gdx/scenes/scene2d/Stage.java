@@ -78,7 +78,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private int mouseScreenX, mouseScreenY;
 	private @Null Actor mouseOverActor;
 	private @Null Actor keyboardFocus, scrollFocus;
-	final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
+	final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray<>(true, 4, TouchFocus[]::new);
 	private boolean actionsRequestRendering = true;
 
 	private ShapeRenderer debugShapes;

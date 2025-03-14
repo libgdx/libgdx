@@ -180,7 +180,7 @@ public class ParallelArray {
 	public int size;
 
 	public ParallelArray (int capacity) {
-		arrays = new Array<Channel>(false, 2, Channel.class);
+		arrays = new Array<>(false, 2, Channel[]::new);
 		this.capacity = capacity;
 		size = 0;
 	}

@@ -412,6 +412,7 @@
 		<include name="utils/Align.java"/>
 		<include name="utils/Array.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/ArrayMap.java"/> <!-- Emulated: Reflection -->
+		<include name="utils/ArraySupplier.java"/>
 		<include name="utils/AtomicQueue.java"/>
 		<include name="utils/Base64Coder.java"/>
 		<include name="utils/BaseJsonReader.java"/>

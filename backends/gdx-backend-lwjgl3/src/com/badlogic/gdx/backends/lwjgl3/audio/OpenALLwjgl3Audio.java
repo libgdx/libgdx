@@ -65,7 +65,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 	private String preferredOutputDevice = null;
 	private Thread observerThread;
 
-	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
+	Array<OpenALMusic> music = new Array<>(false, 1, OpenALMusic[]::new);
 	long device;
 	long context;
 	boolean noDevice = false;

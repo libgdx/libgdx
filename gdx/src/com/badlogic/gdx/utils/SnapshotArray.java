@@ -52,6 +52,11 @@ public class SnapshotArray<T> extends Array<T> {
 		super(array);
 	}
 
+	public SnapshotArray (boolean ordered, int capacity, ArraySupplier<T[]> arraySupplier) {
+		super(ordered, capacity, arraySupplier);
+	}
+
+	@Deprecated
 	public SnapshotArray (boolean ordered, int capacity, Class arrayType) {
 		super(ordered, capacity, arrayType);
 	}
@@ -64,6 +69,11 @@ public class SnapshotArray<T> extends Array<T> {
 		super(ordered, array, startIndex, count);
 	}
 
+	public SnapshotArray (ArraySupplier<T[]> arraySupplier) {
+		super(arraySupplier);
+	}
+
+	@Deprecated
 	public SnapshotArray (Class arrayType) {
 		super(arrayType);
 	}

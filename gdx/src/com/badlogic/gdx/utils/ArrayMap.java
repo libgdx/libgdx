@@ -54,22 +54,40 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown. */
 	public ArrayMap (boolean ordered, int capacity) {
+		this(ordered, capacity, ArraySupplier.object(), ArraySupplier.object());
+	}
+
+	/** Creates a new map with {@link #keys} and {@link #values} with the specified supplier.
+	 * @param ordered If false, methods that remove elements may change the order of other elements in the arrays, which avoids a
+	 *           memory copy.
+	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown. */
+	public ArrayMap (boolean ordered, int capacity, ArraySupplier<K[]> keyArraySupplier, ArraySupplier<V[]> valueArraySupplier) {
 		this.ordered = ordered;
-		keys = (K[])new Object[capacity];
-		values = (V[])new Object[capacity];
+		keys = keyArraySupplier.get(capacity);
+		values = valueArraySupplier.get(capacity);
+	}
+
+	/** Creates an ordered map with {@link #keys} and {@link #values} with the specified supplier and a capacity of 16. */
+	public ArrayMap (ArraySupplier<K[]> keyArraySupplier, ArraySupplier<V[]> valueArraySupplier) {
+		this(false, 16, keyArraySupplier, valueArraySupplier);
 	}
 
 	/** Creates a new map with {@link #keys} and {@link #values} of the specified type.
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the arrays, which avoids a
 	 *           memory copy.
-	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown. */
+	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown.
+	 *
+	 * @deprecated Use {@link ArrayMap#ArrayMap(boolean, int, ArraySupplier, ArraySupplier)} instead */
+	@Deprecated
 	public ArrayMap (boolean ordered, int capacity, Class keyArrayType, Class valueArrayType) {
-		this.ordered = ordered;
-		keys = (K[])ArrayReflection.newInstance(keyArrayType, capacity);
-		values = (V[])ArrayReflection.newInstance(valueArrayType, capacity);
+		this(ordered, capacity, size -> (K[])ArrayReflection.newInstance(keyArrayType, size),
+			size -> (V[])ArrayReflection.newInstance(valueArrayType, size));
 	}
 
-	/** Creates an ordered map with {@link #keys} and {@link #values} of the specified type and a capacity of 16. */
+	/** Creates an ordered map with {@link #keys} and {@link #values} of the specified type and a capacity of 16.
+	 *
+	 * @deprecated Use {@link ArrayMap#ArrayMap(ArraySupplier, ArraySupplier)} instead */
+	@Deprecated
 	public ArrayMap (Class keyArrayType, Class valueArrayType) {
 		this(false, 16, keyArrayType, valueArrayType);
 	}
@@ -77,11 +95,11 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	/** Creates a new map containing the elements in the specified map. The new map will have the same type of backing arrays and
 	 * will be ordered if the specified map is ordered. The capacity is set to the number of elements, so any subsequent elements
 	 * added will cause the backing arrays to be grown. */
-	public ArrayMap (ArrayMap array) {
-		this(array.ordered, array.size, array.keys.getClass().getComponentType(), array.values.getClass().getComponentType());
+	public ArrayMap (ArrayMap<K, V> array) {
+		ordered = array.ordered;
+		keys = Arrays.copyOf(array.keys, array.keys.length);
+		values = Arrays.copyOf(array.values, array.values.length);
 		size = array.size;
-		System.arraycopy(array.keys, 0, keys, 0, size);
-		System.arraycopy(array.values, 0, values, 0, size);
 	}
 
 	public int put (K key, V value) {
@@ -366,13 +384,8 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	protected void resize (int newSize) {
-		K[] newKeys = (K[])ArrayReflection.newInstance(keys.getClass().getComponentType(), newSize);
-		System.arraycopy(keys, 0, newKeys, 0, Math.min(size, newKeys.length));
-		this.keys = newKeys;
-
-		V[] newValues = (V[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
-		System.arraycopy(values, 0, newValues, 0, Math.min(size, newValues.length));
-		this.values = newValues;
+		this.keys = Arrays.copyOf(keys, newSize);
+		this.values = Arrays.copyOf(values, newSize);
 	}
 
 	public void reverse () {

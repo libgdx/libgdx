@@ -150,7 +150,7 @@ public class ResourceData<T> implements Json.Serializable {
 
 	public ResourceData () {
 		uniqueData = new ObjectMap<String, SaveData>();
-		data = new Array<SaveData>(true, 3, SaveData.class);
+		data = new Array<>(true, 3, SaveData[]::new);
 		sharedAssets = new Array<AssetData>();
 		currentLoadIndex = 0;
 	}
@@ -212,7 +212,7 @@ public class ResourceData<T> implements Json.Serializable {
 	public void write (Json json) {
 		json.writeValue("unique", uniqueData, ObjectMap.class);
 		json.writeValue("data", data, Array.class, SaveData.class);
-		json.writeValue("assets", sharedAssets.toArray(AssetData.class), AssetData[].class);
+		json.writeValue("assets", sharedAssets.toArray(AssetData[]::new), AssetData[].class);
 		json.writeValue("resource", resource, null);
 	}
 

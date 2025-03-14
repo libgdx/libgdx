@@ -60,7 +60,7 @@ public class AnimationTest extends GdxTest {
 	public void create () {
 		texture = new Texture(Gdx.files.internal("data/walkanim.png"));
 		TextureRegion[] leftWalkFrames = TextureRegion.split(texture, 64, 64)[0];
-		Array<TextureRegion> rightWalkFrames = new Array(TextureRegion.class);
+		Array<TextureRegion> rightWalkFrames = new Array<>(TextureRegion[]::new);
 		for (int i = 0; i < leftWalkFrames.length; i++) {
 			TextureRegion frame = new TextureRegion(leftWalkFrames[i]);
 			frame.flip(true, false);

@@ -14,6 +14,7 @@
 - API Addition: Added SnapshotArray#replaceFirst and SnapshotArray#replaceAll
 - Android: Fixed rare NPE when `onDestroy` was called
 - API Deprecation: Deprecated ReflectionPool and the related Pools#get/Pools#obtain method. Please use the new DefaultPool with the new Pools#get/Pools#obtain methods. They offer more safety and can be used with the java 8 method reference syntax (e.g. Pools.get(MyClass::new))
+- API Deprecation: Deprecated constructors taking a "Class" for Queue/ArrayMap/Array. Please use the constructors utilising "ArraySupplier". They offer more safety and can be used with the java 8 method reference syntax (e.g. MyClass[]::new)
 
 [1.13.1]
 - [BREAKING CHANGE] Android: Since 1.13.0 libGDX requires setting `android.useAndroidX=true` in your gradle.properties file. In 1.13.1 it is NO longer needed to define the `androidx.core:core` dependency in your Android module.
