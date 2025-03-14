@@ -420,7 +420,7 @@ public class Skin implements Disposable {
 	public <V> void setEnabled (Styleable<V> styleable, boolean enabled) {
 		V style = styleable.getStyle();
 
-		// noinspection unchecked
+		@SuppressWarnings("unchecked")
 		Class<V> styleClass = (Class<V>)style.getClass();
 
 		String name = find(style);
