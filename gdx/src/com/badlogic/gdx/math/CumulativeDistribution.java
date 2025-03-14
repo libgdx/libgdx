@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
  * <a href="http://en.wikipedia.org/wiki/Cumulative_distribution_function">Wikipedia</a> for a detailed explanation.
  * @author Inferno */
 public class CumulativeDistribution<T> {
-	public static class CumulativeValue<T> {
+	private static class CumulativeValue<T> {
 		public T value;
 		public float frequency;
 		public float interval;
