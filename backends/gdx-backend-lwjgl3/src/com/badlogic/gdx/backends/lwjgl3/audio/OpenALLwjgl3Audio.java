@@ -206,7 +206,8 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 
 	public OpenALMusic newMusic (FileHandle file) {
 		if (file == null) throw new IllegalArgumentException("file cannot be null.");
-		BiFunction<OpenALLwjgl3Audio, FileHandle, OpenALMusic> musicSupplier = extensionToMusicClass.get(file.extension().toLowerCase());
+		BiFunction<OpenALLwjgl3Audio, FileHandle, OpenALMusic> musicSupplier = extensionToMusicClass
+			.get(file.extension().toLowerCase());
 		if (musicSupplier == null) throw new GdxRuntimeException("Unknown file extension for music: " + file);
 		return musicSupplier.apply(this, file);
 	}
