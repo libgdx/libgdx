@@ -13,6 +13,7 @@
 - API Addition: Added ShortArray#replaceFirst and ShortArray#replaceAll
 - API Addition: Added SnapshotArray#replaceFirst and SnapshotArray#replaceAll
 - Android: Fixed rare NPE when `onDestroy` was called
+- API Deprecation: Actors that implement `getStyle` and `setStyle` should now implement the `Styleable` interface
 - API Deprecation: Deprecated ReflectionPool and the related Pools#get/Pools#obtain method. Please use the new DefaultPool with the new Pools#get/Pools#obtain methods. They offer more safety and can be used with the java 8 method reference syntax (e.g. Pools.get(MyClass::new))
 
 [1.13.1]
