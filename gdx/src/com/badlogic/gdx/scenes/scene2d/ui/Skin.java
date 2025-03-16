@@ -420,13 +420,10 @@ public class Skin implements Disposable {
 	public <V> void setEnabled (Styleable<V> styleable, boolean enabled) {
 		V style = styleable.getStyle();
 
-		@SuppressWarnings("unchecked")
-		Class<V> styleClass = (Class<V>)style.getClass();
-
 		String name = find(style);
 		if (name == null) return;
 		name = name.replace("-disabled", "") + (enabled ? "" : "-disabled");
-		style = get(name, styleClass);
+		style = get(name, (Class<V>)style.getClass());
 
 		styleable.setStyle(style);
 	}
