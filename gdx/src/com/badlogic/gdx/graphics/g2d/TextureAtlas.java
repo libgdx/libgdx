@@ -155,7 +155,7 @@ public class TextureAtlas implements Disposable {
 	 * uses string comparison to find the regions, so the result should be cached rather than calling this method multiple
 	 * times. */
 	public Array<AtlasRegion> findRegions (String name) {
-		Array<AtlasRegion> matched = new Array(AtlasRegion.class);
+		Array<AtlasRegion> matched = new Array<>(AtlasRegion[]::new);
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (region.name.equals(name)) matched.add(new AtlasRegion(region));
@@ -167,7 +167,7 @@ public class TextureAtlas implements Disposable {
 	 * stored rather than calling this method multiple times.
 	 * @see #createSprite(String) */
 	public Array<Sprite> createSprites () {
-		Array sprites = new Array(true, regions.size, Sprite.class);
+		Array sprites = new Array(true, regions.size, Sprite[]::new);
 		for (int i = 0, n = regions.size; i < n; i++)
 			sprites.add(newSprite(regions.get(i)));
 		return sprites;
@@ -201,7 +201,7 @@ public class TextureAtlas implements Disposable {
 	 * than calling this method multiple times.
 	 * @see #createSprite(String) */
 	public Array<Sprite> createSprites (String name) {
-		Array<Sprite> matched = new Array(Sprite.class);
+		Array<Sprite> matched = new Array<>(Sprite[]::new);
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (region.name.equals(name)) matched.add(newSprite(region));
@@ -372,7 +372,8 @@ public class TextureAtlas implements Disposable {
 				}
 				// Page and region entries.
 				Page page = null;
-				Array<Object> names = null, values = null;
+				Array<String> names = null;
+				Array<int[]> values = null;
 				while (true) {
 					if (line == null) break;
 					if (line.trim().length() == 0) {
@@ -420,8 +421,8 @@ public class TextureAtlas implements Disposable {
 							region.originalHeight = region.height;
 						}
 						if (names != null && names.size > 0) {
-							region.names = names.toArray(String.class);
-							region.values = values.toArray(int[].class);
+							region.names = names.toArray(String[]::new);
+							region.values = values.toArray(int[][]::new);
 							names.clear();
 							values.clear();
 						}

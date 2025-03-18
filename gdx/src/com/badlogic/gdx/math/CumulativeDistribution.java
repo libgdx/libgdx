@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
  * <a href="http://en.wikipedia.org/wiki/Cumulative_distribution_function">Wikipedia</a> for a detailed explanation.
  * @author Inferno */
 public class CumulativeDistribution<T> {
-	public class CumulativeValue {
+	private static class CumulativeValue<T> {
 		public T value;
 		public float frequency;
 		public float interval;
@@ -24,20 +24,20 @@ public class CumulativeDistribution<T> {
 		}
 	}
 
-	private Array<CumulativeValue> values;
+	private final Array<CumulativeValue<T>> values;
 
 	public CumulativeDistribution () {
-		values = new Array<CumulativeValue>(false, 10, CumulativeValue.class);
+		values = new Array<CumulativeValue<T>>(false, 10, CumulativeValue[]::new);
 	}
 
 	/** Adds a value with a given interval size to the distribution */
 	public void add (T value, float intervalSize) {
-		values.add(new CumulativeValue(value, 0, intervalSize));
+		values.add(new CumulativeValue<>(value, 0, intervalSize));
 	}
 
 	/** Adds a value with interval size equal to zero to the distribution */
 	public void add (T value) {
-		values.add(new CumulativeValue(value, 0, 0));
+		values.add(new CumulativeValue<>(value, 0, 0));
 	}
 
 	/** Generate the cumulative distribution */
@@ -76,7 +76,7 @@ public class CumulativeDistribution<T> {
 	 * @param probability
 	 * @return the value whose interval contains the probability */
 	public T value (float probability) {
-		CumulativeValue value = null;
+		CumulativeValue<T> value = null;
 		int imax = values.size - 1, imin = 0, imid;
 		while (imin <= imax) {
 			imid = imin + ((imax - imin) / 2);
@@ -114,7 +114,7 @@ public class CumulativeDistribution<T> {
 
 	/** Set the interval size on the passed in object. The object must be present in the distribution. */
 	public void setInterval (T obj, float intervalSize) {
-		for (CumulativeValue value : values)
+		for (CumulativeValue<T> value : values)
 			if (value.value == obj) {
 				value.interval = intervalSize;
 				return;
