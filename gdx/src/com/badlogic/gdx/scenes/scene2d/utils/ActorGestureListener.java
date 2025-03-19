@@ -122,9 +122,11 @@ public class ActorGestureListener implements EventListener {
 			else {
 				this.event = event;
 				actor = event.getListenerActor();
-				detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
-				actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
-				touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
+				if (actor != null) {
+					detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
+					actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
+					touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
+				}
 			}
 			this.event = null;
 			actor = null;
