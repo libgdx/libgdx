@@ -27,7 +27,7 @@ targetCompatibility = versions.java
 
 dependencies {
 	implementation project(":tests:gdx-tests")
-	implementation project(":backends:gdx-backend-robovm")
+	implementation project(":backends:gdx-backend-robovm-metalangle")
 }
 
 ext {
