@@ -14,6 +14,7 @@
 - API Addition: Added ShortArray#replaceFirst and ShortArray#replaceAll
 - API Addition: Added SnapshotArray#replaceFirst and SnapshotArray#replaceAll
 - API Addition: Actors that implement `getStyle` and `setStyle` should now implement the `Styleable` interface
+- API Addition: Added BitmapFontCache#getPageCount.
 - Android: Fixed rare NPE when `onDestroy` was called
 - API Deprecation: Deprecated ReflectionPool and the related Pools#get/Pools#obtain method. Please use the new DefaultPool with the new Pools#get/Pools#obtain methods. They offer more safety and can be used with the java 8 method reference syntax (e.g. Pools.get(MyClass::new))
 - API Deprecation: Deprecated constructors taking a "Class" for Queue/ArrayMap/Array. Please use the constructors utilising "ArraySupplier". They offer more safety and can be used with the java 8 method reference syntax (e.g. MyClass[]::new)
