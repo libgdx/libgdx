@@ -3,6 +3,7 @@
 - [BREAKING CHANGE] Android: Proguard config line `boolean getUseDefaultContactFilter();` needs to be added. See https://github.com/libgdx/libgdx/pull/7578.
 - [BREAKING CHANGE] Android: Removed `AndroidApplicationConfiguration#touchSleepTime`.
 - [BREAKING CHANGE] Skin `setEnabled` now only works with actors that implement `Styleable`. Use `setEnabledReflection` for old behavior or add `Styleable` to your actors.
+- [BREAKING CHANGE] LWJGL3: The signature of `OpenALLwjgl3Audio#registerSound/registerMusic` has changed. To migrate just replace `registerMusic("myMusic", MyMusic.class);` with `registerMusic("myMusic", MyMusic::new);`
 - API Addition: Allow option to set Box2D native ContactFilter (World#setContactFilter(null)) for performance improvements.
 - API Addition: Added BooleanArray#replaceFirst and BooleanArray#replaceAll
 - API Addition: Added ByteArray#replaceFirst and ByteArray#replaceAll
