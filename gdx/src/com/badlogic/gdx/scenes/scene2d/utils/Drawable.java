@@ -42,6 +42,21 @@ public interface Drawable {
 
 	public void setBottomHeight (float bottomHeight);
 
+	default public void setPadding (float topHeight, float leftWidth, float bottomHeight, float rightWidth) {
+		setTopHeight(topHeight);
+		setLeftWidth(leftWidth);
+		setBottomHeight(bottomHeight);
+		setRightWidth(rightWidth);
+	}
+
+	default public void setPadding (float padding) {
+		setPadding(padding, padding, padding, padding);
+	}
+
+	default public void setPadding (Drawable from) {
+		setPadding(from.getTopHeight(), from.getLeftWidth(), from.getBottomHeight(), from.getRightWidth());
+	}
+
 	public float getMinWidth ();
 
 	public void setMinWidth (float minWidth);
@@ -49,4 +64,9 @@ public interface Drawable {
 	public float getMinHeight ();
 
 	public void setMinHeight (float minHeight);
+
+	default public void setMinSize (float minWidth, float minHeight) {
+		setMinWidth(minWidth);
+		setMinHeight(minHeight);
+	}
 }
