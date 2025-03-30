@@ -14,7 +14,7 @@ public class AndroidCursor implements Cursor {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 			int type;
 			switch (systemCursor) { //@off
-				case Arrow: type = PointerIcon.TYPE_DEFAULT; break;
+				case Arrow: type = PointerIcon.TYPE_ARROW; break;
 				case Ibeam: type = PointerIcon.TYPE_TEXT; break;
 				case Crosshair: type = PointerIcon.TYPE_CROSSHAIR; break;
 				case Hand: type = PointerIcon.TYPE_HAND; break;
