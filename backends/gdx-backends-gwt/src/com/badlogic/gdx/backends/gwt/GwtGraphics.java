@@ -575,6 +575,7 @@ public class GwtGraphics extends AbstractGraphics {
 	@Override
 	public void setForegroundFPS (int fps) {
 	}
+
 	@Override
 	public void setBackgroundFPS (int fps) {
 	}
