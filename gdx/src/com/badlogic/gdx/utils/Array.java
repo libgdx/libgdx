@@ -386,7 +386,7 @@ public class Array<T> implements Iterable<T> {
 		size = n - count;
 	}
 
-	/** Removes from this array all of elements contained in the specified array.
+	/** Removes from this array the first instance of each element contained in the specified array.
 	 * @param identity True to use ==, false to use .equals().
 	 * @return true if this array was modified. */
 	public boolean removeAll (Array<? extends T> array, boolean identity) {
