@@ -521,7 +521,6 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 	@Override
 	public void setBackgroundFPS (int fps) {
 		getWindow().getConfig().backgroundFPS = fps;
-		getWindow().getConfig().activateBackgroundFPS = true;
 	}
 
 	@Override
