@@ -78,6 +78,7 @@ public class Lwjgl3TestStarter {
 			if (SharedLibraryLoader.os == Os.MacOsX) {
 				config.useVsync(false);
 				config.setForegroundFPS(60);
+				config.setBackgroundFPS(30);
 			}
 		}
 

@@ -177,10 +177,9 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 					currentWindow = window;
 				}
 				if (targetFramerate == -2 && window.isFocused()) targetFramerate = window.getConfig().foregroundFPS;
-				synchronized (lifecycleListeners) {
-					haveWindowsRendered |= window.update();
+				else {
+					if (targetFramerate == -2 && !window.isFocused()) targetFramerate = window.getConfig().backgroundFPS;
 				}
-				if (targetFramerate == -2 && !window.isFocused()) targetFramerate = window.getConfig().backgroundFPS;
 				synchronized (lifecycleListeners) {
 					haveWindowsRendered |= window.update();
 				}

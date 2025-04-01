@@ -67,9 +67,8 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 
 	int idleFPS = 60;
 	int foregroundFPS = 0;
-	int backgroundFPS = 0;
+	int backgroundFPS = -1;
 
-	boolean activateBackgroundFPS = false;
 	boolean pauseWhenMinimized = true;
 	boolean pauseWhenLostFocus = false;
 
