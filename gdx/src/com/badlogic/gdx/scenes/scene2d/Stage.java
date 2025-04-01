@@ -599,13 +599,13 @@ public class Stage extends InputAdapter implements Disposable {
 		for (int pointer = 0, n = pointerOverActors.length; pointer < n; pointer++) {
 			if (actor == pointerOverActors[pointer]) {
 				pointerOverActors[pointer] = null;
-				fireExit(actor, pointerScreenX[pointer], pointerScreenY[pointer], pointer);
+				fireEnterAndExit(actor, pointerScreenX[pointer], pointerScreenY[pointer], pointer);
 			}
 		}
 
 		if (actor == mouseOverActor) {
 			mouseOverActor = null;
-			fireExit(actor, mouseScreenX, mouseScreenY, -1);
+			fireEnterAndExit(actor, mouseScreenX, mouseScreenY, -1);
 		}
 	}
 
