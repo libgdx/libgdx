@@ -222,6 +222,7 @@ public class MockGraphics extends AbstractGraphics {
 	public void setForegroundFPS (int fps) {
 		this.targetRenderInterval = (long)(fps <= 0 ? (fps == 0 ? 0 : -1) : ((1F / fps) * 1000000000F));
 	}
+
 	@Override
 	public void setBackgroundFPS (int fps) {
 
