@@ -282,7 +282,7 @@ public class FloatArray {
 		size = n - count;
 	}
 
-	/** Removes from this array all of elements contained in the specified array.
+	/** Removes from this array the first instance of each element contained in the specified array.
 	 * @return true if this array was modified. */
 	public boolean removeAll (FloatArray array) {
 		int size = this.size;
