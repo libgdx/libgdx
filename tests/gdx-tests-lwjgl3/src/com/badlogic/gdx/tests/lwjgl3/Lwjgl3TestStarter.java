@@ -45,14 +45,12 @@ public class Lwjgl3TestStarter {
 
 	static CommandLineOptions options;
 
-	/**
-	 * Runs libgdx tests.
+	/** Runs libgdx tests.
 	 * 
 	 * some options can be passed, see {@link CommandLineOptions}
 	 * 
-	 * @param argv command line arguments
-	 */
-	public static void main(String[] argv) {
+	 * @param argv command line arguments */
+	public static void main (String[] argv) {
 		options = new CommandLineOptions(argv);
 
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
@@ -101,7 +99,7 @@ public class Lwjgl3TestStarter {
 		private Skin skin;
 		TextButton lastClickedTestButton;
 
-		public void create() {
+		public void create () {
 			System.out.println("OpenGL renderer: " + Gdx.graphics.getGLVersion().getRendererString());
 			System.out.println("OpenGL vendor: " + Gdx.graphics.getGLVersion().getVendorString());
 
@@ -132,16 +130,15 @@ public class Lwjgl3TestStarter {
 				table.row();
 				testButton.addListener(new ChangeListener() {
 					@Override
-					public void changed(ChangeEvent event, Actor actor) {
+					public void changed (ChangeEvent event, Actor actor) {
 						ApplicationListener test = GdxTests.newTest(testName);
 						Lwjgl3WindowConfiguration winConfig = new Lwjgl3WindowConfiguration();
 						winConfig.setTitle(testName);
 						winConfig.setWindowedMode(640, 480);
-						winConfig.setWindowPosition(((Lwjgl3Graphics) Gdx.graphics).getWindow().getPositionX() + 40,
-								((Lwjgl3Graphics) Gdx.graphics).getWindow().getPositionY() + 40);
+						winConfig.setWindowPosition(((Lwjgl3Graphics)Gdx.graphics).getWindow().getPositionX() + 40,
+							((Lwjgl3Graphics)Gdx.graphics).getWindow().getPositionY() + 40);
 						winConfig.useVsync(false);
-						((Lwjgl3Application) Gdx.app).newWindow(new GdxTestWrapper(test, options.logGLErrors),
-								winConfig);
+						((Lwjgl3Application)Gdx.app).newWindow(new GdxTestWrapper(test, options.logGLErrors), winConfig);
 						System.out.println("Started test: " + testName);
 						prefs.putString("LastTest", testName);
 						prefs.flush();
@@ -159,13 +156,12 @@ public class Lwjgl3TestStarter {
 			container.add(scroll).grow();
 			container.row();
 
-			lastClickedTestButton = (TextButton) table.findActor(prefs.getString("LastTest"));
+			lastClickedTestButton = (TextButton)table.findActor(prefs.getString("LastTest"));
 			if (lastClickedTestButton != null) {
 				lastClickedTestButton.setColor(Color.CYAN);
 				scroll.layout();
-				float scrollY = lastClickedTestButton.getY() + scroll.getScrollHeight() / 2
-						+ lastClickedTestButton.getHeight() / 2
-						+ tableSpace * 2 + 20;
+				float scrollY = lastClickedTestButton.getY() + scroll.getScrollHeight() / 2 + lastClickedTestButton.getHeight() / 2
+					+ tableSpace * 2 + 20;
 				scroll.scrollTo(0, scrollY, 0, 0, false, false);
 
 				// Since ScrollPane takes some time for scrolling to a position, we just "fake"
@@ -177,19 +173,19 @@ public class Lwjgl3TestStarter {
 		}
 
 		@Override
-		public void render() {
+		public void render () {
 			ScreenUtils.clear(0, 0, 0, 1);
 			stage.act();
 			stage.draw();
 		}
 
 		@Override
-		public void resize(int width, int height) {
+		public void resize (int width, int height) {
 			stage.getViewport().update(width, height, true);
 		}
 
 		@Override
-		public void dispose() {
+		public void dispose () {
 			skin.dispose();
 			stage.dispose();
 		}
