@@ -59,7 +59,7 @@ tasks.register('fetchMetalANGLEKit', Download) {
 	doFirst {
 		file("build/tmp").mkdirs();
 	}
-	src 'https://github.com/Berstanio/MetalANGLEKit/releases/download/v1.2/metalanglekit.zip'
+	src 'https://github.com/libgdx/MetalANGLEKit/releases/download/v1.2/metalanglekit.zip'
 	dest 'build/tmp/MetalANGLEKit.zip'
 	onlyIfModified true
 	useETag "all"
