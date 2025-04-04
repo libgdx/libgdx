@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- High vulnerability: Missing CSP header in meta -->
+    <meta charset="UTF-8">
+    <title>Vulnerable Application</title>
+    
+    <!-- Medium vulnerability: Using outdated jQuery version -->
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    
+    <!-- High vulnerability: Inline JavaScript with XSS potential -->
+    <script>
+        function processForm() {
+            // Critical vulnerability: Direct DOM injection without sanitization
+            var userInput = document.getElementById('userInput').value;
+            document.getElementById('output').innerHTML = "You entered: " + userInput;
+            
+            // Medium vulnerability: Storing sensitive data in localStorage
+            localStorage.setItem('lastInput', userInput);
+            
+            // High vulnerability: Using eval with user input
+            try {
+                eval('var result = ' + userInput);
+                console.log(result);
+            } catch(e) {
+                console.error(e);
+            }
+            
+            // Low vulnerability: Unencrypted AJAX request
+            $.ajax({
+                url: 'http://insecure-endpoint.com/api',
+                data: {input: userInput},
+                success: function(data) {
+                    // Critical vulnerability: Reflected XSS
+                    $('#response').html('<div>' + data + '</div>');
+                }
+            });
+        }
+    </script>
+    
+    <!-- High vulnerability: Inline styles with CSS injection potential -->
+    <style>
+        .user-style {
+            color: red;
+            background: url('<?php echo $_GET["bg"]; ?>'); /* Critical: Server-side code injection */
+        }
+    </style>
+</head>
+<body>
+    <!-- High vulnerability: Form without CSRF protection -->
+    <form id="userForm" onsubmit="processForm(); return false;">
+        <!-- Medium vulnerability: Autocomplete enabled on sensitive field -->
+        <input type="text" id="userInput" name="userInput" autocomplete="on" placeholder="Enter something dangerous">
+        
+        <!-- Low vulnerability: Password field without proper type -->
+        <input type="text" id="password" name="password" placeholder="Password">
+        
+        <button type="submit">Submit</button>
+    </form>
+    
+    <div id="output"></div>
+    <div id="response"></div>
+    
+    <!-- Critical vulnerability: Including script from untrusted source -->
+    <script src="https://untrusted-cdn.com/malicious-script.js"></script>
+    
+    <!-- Medium vulnerability: Using deprecated HTML attribute -->
+    <table border="1" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="100">Deprecated</td>
+        </tr>
+    </table>
+    
+    <!-- High vulnerability: Hidden form field for sensitive data -->
+    <input type="hidden" id="sessionToken" value="12345-67890-ABCDE">
+    
+    <script>
+        // Critical vulnerability: Exposing sensitive data in client-side code
+        var apiKeys = {
+            googleMaps: 'AIzaSyB_THIS_IS_A_REAL_KEY_123456789',
+            stripe: 'sk_test_THIS_IS_A_REAL_KEY_987654321'
+        };
+        
+        // Medium vulnerability: Using document.write
+        document.write('<p>Welcome back, user!</p>');
+        
+        // Low vulnerability: Using innerHTML without sanitization
+        document.body.innerHTML += '<div>Footer content</div>';
+    </script>
+    
+    <!-- Security Metrics Section -->
+    <script>
+        // Vulnerability metrics
+        const securityMetrics = {
+            totalIssues: 12,
+            critical: 5,
+            high: 4,
+            medium: 2,
+            low: 1,
+            hotspots: [
+                { file: "index.html", line: 15, type: "XSS", severity: "critical" },
+                { file: "index.html", line: 22, type: "eval injection", severity: "high" },
+                { file: "index.html", line: 30, type: "CSRF", severity: "high" },
+                { file: "index.html", line: 55, type: "sensitive data exposure", severity: "critical" },
+                { file: "index.html", line: 42, type: "deprecated HTML", severity: "medium" }
+            ],
+            owaspCoverage: ["A1", "A3", "A5", "A6", "A7"],
+            securityScore: 28, // Out of 100
+            lastScanDate: "2023-11-15"
+        };
+        
+        console.log("Security Metrics:", securityMetrics);
+    </script>
+</body>
+</html>
