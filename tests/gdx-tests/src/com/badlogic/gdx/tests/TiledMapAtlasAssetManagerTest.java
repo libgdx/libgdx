@@ -30,7 +30,6 @@ import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader.AtlasTiledMapLoaderParameters;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
@@ -95,20 +94,20 @@ public class TiledMapAtlasAssetManagerTest extends GdxTest {
 			map = assetManager.get(fileName);
 			renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
 		} else if (renderer != null) {
-			 if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-				  if (mapType != 0) {
-						mapType = 0;
-						map = assetManager.get(fileName);
-						renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
-				  }
-			 } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-				  if (mapType != 1) {
-						if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
-						mapType = 1;
-						map = assetManager.get(fileNameWithImageLayers);
-						renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
-				  }
-			 }
+			if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+				if (mapType != 0) {
+					mapType = 0;
+					map = assetManager.get(fileName);
+					renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
+				}
+			} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+				if (mapType != 1) {
+					if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
+					mapType = 1;
+					map = assetManager.get(fileNameWithImageLayers);
+					renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
+				}
+			}
 
 			renderer.setView(camera);
 			renderer.render();

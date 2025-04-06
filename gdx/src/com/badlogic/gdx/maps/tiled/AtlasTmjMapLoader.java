@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.JsonValue;
  * @author Justin Shapcott
  * @author Manuel Bua */
 public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasTiledMapLoaderParameters> {
-	//TODO: too much duplicate functionality between atlas loaders, any options without making breaking changes?
+	// TODO: too much duplicate functionality between atlas loaders, any options without making breaking changes?
 	public static class AtlasTiledMapLoaderParameters extends BaseTmjMapLoader.Parameters {
 		/** force texture filters? **/
 		public boolean forceTextureFilters = false;
@@ -65,7 +65,7 @@ public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasT
 
 			@Override
 			public TextureRegion getImage (String name) {
-				//check for imagelayer and strip if needed
+				// check for imagelayer and strip if needed
 				String regionName = parseRegionName(name);
 				return atlas.findRegion(regionName);
 			}
@@ -87,9 +87,9 @@ public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasT
 
 			@Override
 			public TextureRegion getImage (String name) {
-				 //check for imagelayer and strip if needed
-				 String regionName = parseRegionName(name);
-				 return getAtlas().findRegion(regionName);
+				// check for imagelayer and strip if needed
+				String regionName = parseRegionName(name);
+				return getAtlas().findRegion(regionName);
 			}
 		}
 	}
@@ -106,7 +106,7 @@ public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasT
 		super(resolver);
 	}
 
-	 public TiledMap load (String fileName) {
+	public TiledMap load (String fileName) {
 		return load(fileName, new AtlasTiledMapLoaderParameters());
 	}
 
@@ -156,11 +156,10 @@ public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasT
 		return descriptors;
 	}
 
-
 	@Override
-	protected void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet,
-		JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
-		String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
+	protected void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet, JsonValue element,
+		JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, String source,
+		int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
 
 		TextureAtlas atlas = atlasResolver.getAtlas();
 		String regionsName = name;
@@ -196,7 +195,7 @@ public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasT
 			int tileId = firstgid + tileElement.getInt("id", 0);
 			TiledMapTile tile = tileSet.getTile(tileId);
 			if (tile == null) {
-				 JsonValue imageElement = tileElement.get("image");
+				JsonValue imageElement = tileElement.get("image");
 				if (imageElement != null) {
 					String regionName = imageElement.asString();
 					regionName = regionName.substring(0, regionName.lastIndexOf('.'));
@@ -214,9 +213,9 @@ public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasT
 		String atlasFilePath = null;
 		if (properties != null) {
 			for (JsonValue property : properties) {
-				String name = property.getString("name","");
+				String name = property.getString("name", "");
 				if (name.startsWith("atlas")) {
-					atlasFilePath = property.getString("value","");
+					atlasFilePath = property.getString("value", "");
 					break;
 				}
 			}
@@ -240,20 +239,16 @@ public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasT
 		trackedTextures.clear();
 	}
 
-	 /**
-	  * Parse incoming region name to check for 'atlas_imagelayer' within the String
-	  * These are regions representing Image Layers that have been packed into the atlas
-	  * ImageLayer Image names include the relative assets path, so it must be stripped.
-	  * @param name Name to check
-	  * @return The name of the region to pass into an atlas
-	  */
-	private static String parseRegionName(String name){
-		 if (name.contains("atlas_imagelayer")) {
-			  // Extract the name of region from path
-			  return new FileHandle(name).name();
-		 }
-		 else{
-			  return name;
-		 }
+	/** Parse incoming region name to check for 'atlas_imagelayer' within the String These are regions representing Image Layers
+	 * that have been packed into the atlas ImageLayer Image names include the relative assets path, so it must be stripped.
+	 * @param name Name to check
+	 * @return The name of the region to pass into an atlas */
+	private static String parseRegionName (String name) {
+		if (name.contains("atlas_imagelayer")) {
+			// Extract the name of region from path
+			return new FileHandle(name).name();
+		} else {
+			return name;
+		}
 	}
 }
