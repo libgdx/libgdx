@@ -18,9 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.UUID;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
@@ -77,6 +75,11 @@ public class TiledMapPacker {
 
 	private TmxMapLoader mapLoader = new TmxMapLoader(new AbsoluteFileHandleResolver());
 	private TmjMapLoader tmjMapLoader = new TmjMapLoader(new AbsoluteFileHandleResolver());
+
+	//Params needed for maps which load custom classes
+	private TmxMapLoader.Parameters tmxLoaderParams = new TmxMapLoader.Parameters();
+	private TmjMapLoader.Parameters tmjLoaderParams = new TmjMapLoader.Parameters();
+
 	private TiledMapPackerSettings settings;
 
 	private static final String TilesetsOutputDir = "tileset";
@@ -90,6 +93,9 @@ public class TiledMapPacker {
 
 	static File inputDir;
 	static File outputDir;
+	//Project Files are required in specific circumstances where a map needs to load custom classes.
+	static String projectFilePath="";
+
 	private FileHandle currentDir;
 
 	private static class MapFileFilter implements FilenameFilter {
@@ -194,7 +200,13 @@ public class TiledMapPacker {
 		}
 
 		if(mapFile.getName().endsWith(".tmx")) {
-			map = mapLoader.load(mapFile.getCanonicalPath());
+			if(projectFilePath.isEmpty()) {
+				 map = mapLoader.load(mapFile.getCanonicalPath());
+			}
+			else{
+				 tmxLoaderParams.projectFilePath = projectFilePath;
+				 map = mapLoader.load(mapFile.getCanonicalPath(), tmxLoaderParams);
+			}
 
 			// if enabled, build a list of used tileids for the tileset used by this map
 			boolean stripUnusedTiles = this.settings.stripUnusedTiles;
@@ -228,7 +240,13 @@ public class TiledMapPacker {
 			}
 		} else if (mapFile.getName().endsWith(".tmj")) {
 
-			map = tmjMapLoader.load(mapFile.getCanonicalPath());
+			if(projectFilePath.isEmpty()) {
+				 map = tmjMapLoader.load(mapFile.getCanonicalPath());
+			}
+			else{
+				 tmjLoaderParams.projectFilePath = projectFilePath;
+				 map = tmjMapLoader.load(mapFile.getCanonicalPath(), tmjLoaderParams);
+			}
 
 			// if enabled, build a list of used tileids for the tileset used by this map
 			boolean stripUnusedTiles = this.settings.stripUnusedTiles;
@@ -686,7 +704,8 @@ public class TiledMapPacker {
 	/** Processes a directory of Tile Maps, compressing each tile set contained in any map once.
 	 * 
 	 * @param args args[0]: the input directory containing the tmx/tmj files (and tile sets, and imagelayer imaged relative to the path listed in the tmx
-	 *           file). args[1]: The output directory for the tmx/tmj files, should be empty before running. args[2-4] options */
+	 *           file). args[1]: The output directory for the tmx/tmj files, should be empty before running.
+	 *            args[2]: The location of the TiledMap Project File.  args[2-5] options */
 	public static void main (String[] args) {
 		final Settings texturePackerSettings = new Settings();
 		texturePackerSettings.paddingX = 2;
@@ -699,20 +718,55 @@ public class TiledMapPacker {
 
 		final TiledMapPackerSettings packerSettings = new TiledMapPackerSettings();
 
-		if (args.length == 0) {
-			printUsage();
-			System.exit(0);
-		} else if (args.length == 1) {
-			inputDir = new File(args[0]);
-			outputDir = new File(inputDir, "../output/");
-		} else if (args.length == 2) {
-			inputDir = new File(args[0]);
-			outputDir = new File(args[1]);
-		} else {
-			inputDir = new File(args[0]);
-			outputDir = new File(args[1]);
-			processExtraArgs(args, packerSettings);
-		}
+		 //Place to store all non-flag (positional) arguments
+		 List<String> positionalArgs = new ArrayList<>();
+
+		 //First, parse every argument:
+		 for (String arg : args) {
+			  if (arg.equals("--strip-unused")) {
+					packerSettings.stripUnusedTiles = true;
+
+			  } else if (arg.equals("--combine-tilesets")) {
+					packerSettings.combineTilesets = true;
+
+			  } else if (arg.equals("-v")) {
+					packerSettings.verbose = true;
+
+			  } else if (arg.startsWith("-")) {
+					System.out.println("\nOption \"" + arg + "\" not recognized.\n");
+					printUsage();
+					System.exit(0);
+			  } else {
+					// Not a flag, so it must be a positional argument:
+					positionalArgs.add(arg);
+			  }
+		 }
+
+		 //We expect between 1 and 3 positional args:
+		 if (positionalArgs.isEmpty()) {
+			  System.out.println("Error: Missing required INPUTDIR argument.");
+			  printUsage();
+			  System.exit(0);
+		 }
+		 if (positionalArgs.size() > 3) {
+			  System.out.println("Error: Too many positional arguments. Expected up to 3.");
+			  printUsage();
+			  System.exit(0);
+		 }
+
+		 //Positional arguments
+		 inputDir = new File(positionalArgs.get(0));
+
+		 if (positionalArgs.size() >= 2) {
+			 outputDir = new File(positionalArgs.get(1));
+		 } else {
+			  // default output if not provided
+			  outputDir = new File(inputDir, "../output/");
+		 }
+
+		 if (positionalArgs.size() == 3) {
+			  projectFilePath = positionalArgs.get(2);
+		 }
 
 		TiledMapPacker packer = new TiledMapPacker(packerSettings);
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -762,37 +816,18 @@ public class TiledMapPacker {
 		}, config);
 	}
 
-	private static void processExtraArgs (String[] args, TiledMapPackerSettings packerSettings) {
-		String stripUnused = "--strip-unused";
-		String combineTilesets = "--combine-tilesets";
-		String verbose = "-v";
-
-		int length = args.length - 2;
-		String[] argsNotDir = new String[length];
-		System.arraycopy(args, 2, argsNotDir, 0, length);
-
-		for (String string : argsNotDir) {
-			if (stripUnused.equals(string)) {
-				packerSettings.stripUnusedTiles = true;
-
-			} else if (combineTilesets.equals(string)) {
-				packerSettings.combineTilesets = true;
-
-			} else if (verbose.equals(string)) {
-				packerSettings.verbose = true;
-
-			} else {
-				System.out.println("\nOption \"" + string + "\" not recognized.\n");
-				printUsage();
-				System.exit(0);
-			}
-		}
-	}
-
 	private static void printUsage () {
-		System.out.println("Usage: INPUTDIR [OUTPUTDIR] [--strip-unused] [--combine-tilesets] [-v]");
+
+		System.out.println("Usage: INPUTDIR [OUTPUTDIR] [PROJECTFILEPATH] [--strip-unused] [--combine-tilesets] [-v]");
 		System.out.println("Processes a directory of Tiled .tmx or .tmj maps. Unable to process maps with XML");
 		System.out.println("tile layer format.");
+		System.out.println("Positional arguments:");
+		System.out.println("  INPUTDIR                  path to the input folder containing Tiled maps");
+		System.out.println("  OUTPUTDIR                 (optional) path to write processed output");
+		System.out.println("  PROJECTFILEPATH           (optional) path to Tiled map project file");
+		System.out.println("                            (requires OUTPUTDIR to be provided)");
+		System.out.println();
+		System.out.println("Flags:");
 		System.out.println("  --strip-unused             omits all tiles that are not used. Speeds up");
 		System.out.println("                             the processing. Smaller tilesets.");
 		System.out.println("  --combine-tilesets         instead of creating a tileset for each map,");
@@ -801,6 +836,10 @@ public class TiledMapPacker {
 		System.out.println("                             location. Has problems with nested folders.");
 		System.out.println("                             Not recommended.");
 		System.out.println("  -v                         outputs which tiles are stripped and included");
+		System.out.println();
+		System.out.println("Examples:");
+		System.out.println("  java -jar TiledMapPacker.jar ./MyMaps");
+		System.out.println("  java -jar TiledMapPacker.jar ./MyMaps ./Output --strip-unused -v");
 		System.out.println();
 	}
 
