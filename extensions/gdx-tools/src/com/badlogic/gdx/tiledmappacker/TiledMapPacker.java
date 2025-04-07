@@ -81,7 +81,7 @@ public class TiledMapPacker {
 	private TmxMapLoader mapLoader = new TmxMapLoader(new AbsoluteFileHandleResolver());
 	private TmjMapLoader tmjMapLoader = new TmjMapLoader(new AbsoluteFileHandleResolver());
 
-	//Params needed for maps which load custom classes
+	// Params needed for maps which load custom classes
 	private TmxMapLoader.Parameters tmxLoaderParams = new TmxMapLoader.Parameters();
 	private TmjMapLoader.Parameters tmjLoaderParams = new TmjMapLoader.Parameters();
 
@@ -98,8 +98,8 @@ public class TiledMapPacker {
 
 	static File inputDir;
 	static File outputDir;
-	//Project Files are required in specific circumstances where a map needs to load custom classes.
-	static String projectFilePath="";
+	// Project Files are required in specific circumstances where a map needs to load custom classes.
+	static String projectFilePath = "";
 
 	private FileHandle currentDir;
 
@@ -204,13 +204,12 @@ public class TiledMapPacker {
 			imageLayerSourceFiles = new ObjectMap<String, String>();
 		}
 
-		if(mapFile.getName().endsWith(".tmx")) {
-			if(projectFilePath.isEmpty()) {
-				 map = mapLoader.load(mapFile.getCanonicalPath());
-			}
-			else{
-				 tmxLoaderParams.projectFilePath = projectFilePath;
-				 map = mapLoader.load(mapFile.getCanonicalPath(), tmxLoaderParams);
+		if (mapFile.getName().endsWith(".tmx")) {
+			if (projectFilePath.isEmpty()) {
+				map = mapLoader.load(mapFile.getCanonicalPath());
+			} else {
+				tmxLoaderParams.projectFilePath = projectFilePath;
+				map = mapLoader.load(mapFile.getCanonicalPath(), tmxLoaderParams);
 			}
 
 			// if enabled, build a list of used tileids for the tileset used by this map
@@ -245,12 +244,11 @@ public class TiledMapPacker {
 			}
 		} else if (mapFile.getName().endsWith(".tmj")) {
 
-			if(projectFilePath.isEmpty()) {
-				 map = tmjMapLoader.load(mapFile.getCanonicalPath());
-			}
-			else{
-				 tmjLoaderParams.projectFilePath = projectFilePath;
-				 map = tmjMapLoader.load(mapFile.getCanonicalPath(), tmjLoaderParams);
+			if (projectFilePath.isEmpty()) {
+				map = tmjMapLoader.load(mapFile.getCanonicalPath());
+			} else {
+				tmjLoaderParams.projectFilePath = projectFilePath;
+				map = tmjMapLoader.load(mapFile.getCanonicalPath(), tmjLoaderParams);
 			}
 
 			// if enabled, build a list of used tileids for the tileset used by this map
@@ -705,9 +703,9 @@ public class TiledMapPacker {
 
 	/** Processes a directory of Tile Maps, compressing each tile set contained in any map once.
 	 * 
-	 * @param args args[0]: the input directory containing the tmx/tmj files (and tile sets, and imagelayer imaged relative to the path listed in the tmx
-	 *           file). args[1]: The output directory for the tmx/tmj files, should be empty before running.
-	 *            args[2]: The location of the TiledMap Project File.  args[2-5] options */
+	 * @param args args[0]: the input directory containing the tmx/tmj files (and tile sets, and imagelayer imaged relative to the
+	 *           path listed in the tmx file). args[1]: The output directory for the tmx/tmj files, should be empty before running.
+	 *           args[2]: The location of the TiledMap Project File. args[2-5] options */
 	public static void main (String[] args) {
 		final Settings texturePackerSettings = new Settings();
 		texturePackerSettings.paddingX = 2;
@@ -720,55 +718,55 @@ public class TiledMapPacker {
 
 		final TiledMapPackerSettings packerSettings = new TiledMapPackerSettings();
 
-		 //Place to store all non-flag (positional) arguments
-		 List<String> positionalArgs = new ArrayList<>();
+		// Place to store all non-flag (positional) arguments
+		List<String> positionalArgs = new ArrayList<>();
 
-		 //First, parse every argument:
-		 for (String arg : args) {
-			  if (arg.equals("--strip-unused")) {
-					packerSettings.stripUnusedTiles = true;
+		// First, parse every argument:
+		for (String arg : args) {
+			if (arg.equals("--strip-unused")) {
+				packerSettings.stripUnusedTiles = true;
 
-			  } else if (arg.equals("--combine-tilesets")) {
-					packerSettings.combineTilesets = true;
+			} else if (arg.equals("--combine-tilesets")) {
+				packerSettings.combineTilesets = true;
 
-			  } else if (arg.equals("-v")) {
-					packerSettings.verbose = true;
+			} else if (arg.equals("-v")) {
+				packerSettings.verbose = true;
 
-			  } else if (arg.startsWith("-")) {
-					System.out.println("\nOption \"" + arg + "\" not recognized.\n");
-					printUsage();
-					System.exit(0);
-			  } else {
-					// Not a flag, so it must be a positional argument:
-					positionalArgs.add(arg);
-			  }
-		 }
+			} else if (arg.startsWith("-")) {
+				System.out.println("\nOption \"" + arg + "\" not recognized.\n");
+				printUsage();
+				System.exit(0);
+			} else {
+				// Not a flag, so it must be a positional argument:
+				positionalArgs.add(arg);
+			}
+		}
 
-		 //We expect between 1 and 3 positional args:
-		 if (positionalArgs.isEmpty()) {
-			  System.out.println("Error: Missing required INPUTDIR argument.");
-			  printUsage();
-			  System.exit(0);
-		 }
-		 if (positionalArgs.size() > 3) {
-			  System.out.println("Error: Too many positional arguments. Expected up to 3.");
-			  printUsage();
-			  System.exit(0);
-		 }
+		// We expect between 1 and 3 positional args:
+		if (positionalArgs.isEmpty()) {
+			System.out.println("Error: Missing required INPUTDIR argument.");
+			printUsage();
+			System.exit(0);
+		}
+		if (positionalArgs.size() > 3) {
+			System.out.println("Error: Too many positional arguments. Expected up to 3.");
+			printUsage();
+			System.exit(0);
+		}
 
-		 //Positional arguments
-		 inputDir = new File(positionalArgs.get(0));
+		// Positional arguments
+		inputDir = new File(positionalArgs.get(0));
 
-		 if (positionalArgs.size() >= 2) {
-			 outputDir = new File(positionalArgs.get(1));
-		 } else {
-			  // default output if not provided
-			  outputDir = new File(inputDir, "../output/");
-		 }
+		if (positionalArgs.size() >= 2) {
+			outputDir = new File(positionalArgs.get(1));
+		} else {
+			// default output if not provided
+			outputDir = new File(inputDir, "../output/");
+		}
 
-		 if (positionalArgs.size() == 3) {
-			  projectFilePath = positionalArgs.get(2);
-		 }
+		if (positionalArgs.size() == 3) {
+			projectFilePath = positionalArgs.get(2);
+		}
 
 		TiledMapPacker packer = new TiledMapPacker(packerSettings);
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
