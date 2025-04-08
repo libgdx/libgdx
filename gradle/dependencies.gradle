@@ -22,7 +22,7 @@ ext {
 }
 
 versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
-versions.robovm = "2.3.22"
+versions.robovm = "2.3.23"
 versions.gwt = "2.11.0"
 versions.gwtPlugin = "1.1.29"
 versions.jsinteropAnnotations = "2.0.2"
