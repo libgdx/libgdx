@@ -42,7 +42,6 @@ public class LongQueue {
 
 	/** Creates a new LongQueue which can hold the specified number of values without needing to resize backing array. */
 	public LongQueue (int initialSize) {
-		// noinspection unchecked
 		this.values = new long[initialSize];
 	}
 

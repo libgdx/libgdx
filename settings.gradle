@@ -31,7 +31,6 @@ include ":extensions:gdx-box2d-parent:gdx-box2d"
 include ":extensions:gdx-box2d-parent:gdx-box2d-gwt"
 include ":extensions:gdx-bullet"
 include ":extensions:gdx-freetype"
-include ":extensions:gdx-setup"
 include ":extensions:gdx-tools"
 include ":extensions:gdx-lwjgl3-angle"
 

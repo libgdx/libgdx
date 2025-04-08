@@ -139,6 +139,12 @@ public class TiledMapJsonObjectLoadingTest extends GdxTest {
 				Polyline polyline = ((PolylineMapObject)mapObject).getPolyline();
 				shapeRenderer.polyline(polyline.getTransformedVertices());
 				shapeRenderer.end();
+			} else if (mapObject instanceof PointMapObject) {
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+				Vector2 point = ((PointMapObject)mapObject).getPoint();
+				// drawing circle, because shapeRenderer.point is barely visible, if visible at all
+				shapeRenderer.circle(point.x, point.y, 1f);
+				shapeRenderer.end();
 			}
 		}
 		batch.begin();

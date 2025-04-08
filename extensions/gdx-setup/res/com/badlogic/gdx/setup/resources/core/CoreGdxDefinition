@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.11.0//EN" "https://www.gwtproject.org/doctype/2.11.0/gwt-module.dtd">
-<module>
-	<source path="%PACKAGE_DIR%" />
-</module>

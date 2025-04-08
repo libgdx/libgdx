@@ -62,7 +62,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * implementation will bring up the default IME.
  * @author mzechner
  * @author Nathan Sweet */
-public class TextField extends Widget implements Disableable {
+public class TextField extends Widget implements Disableable, Styleable<TextField.TextFieldStyle> {
 	static protected final char BACKSPACE = 8;
 	static protected final char CARRIAGE_RETURN = '\r';
 	static protected final char NEWLINE = '\n';
@@ -328,7 +328,7 @@ public class TextField extends Widget implements Disableable {
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		float bgLeftWidth = 0, bgRightWidth = 0;
 		if (background != null) {
-			background.draw(batch, x, y, width, height);
+			drawBackground(background, batch, x, y, width, height);
 			bgLeftWidth = background.getLeftWidth();
 			bgRightWidth = background.getRightWidth();
 		}
@@ -377,6 +377,10 @@ public class TextField extends Widget implements Disableable {
 		return textY;
 	}
 
+	protected void drawBackground (Drawable background, Batch batch, float x, float y, float width, float height) {
+		background.draw(batch, x, y, width, height);
+	}
+
 	/** Draws selection rectangle **/
 	protected void drawSelection (Drawable selection, Batch batch, BitmapFont font, float x, float y) {
 		selection.draw(batch, x + textOffset + selectionX + fontOffset, y - textHeight - font.getDescent(), selectionWidth,
@@ -397,7 +401,7 @@ public class TextField extends Widget implements Disableable {
 			y - textHeight - font.getDescent(), cursorPatch.getMinWidth(), textHeight);
 	}
 
-	void updateDisplayText () {
+	protected void updateDisplayText () {
 		BitmapFont font = style.font;
 		BitmapFontData data = font.getData();
 		String text = this.text;
@@ -640,7 +644,7 @@ public class TextField extends Widget implements Disableable {
 	boolean changeText (String oldText, String newText) {
 		if (newText.equals(oldText)) return false;
 		text = newText;
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+		ChangeEvent changeEvent = Pools.obtain(ChangeEvent::new);
 		boolean cancelled = fire(changeEvent);
 		if (cancelled) text = oldText;
 		Pools.free(changeEvent);

@@ -989,7 +989,7 @@ public class TexturePacker {
 
 		public String getScaledPackFileName (String packFileName, int scaleIndex) {
 			// Use suffix if not empty string.
-			if (scaleSuffix[scaleIndex].length() > 0)
+			if (scaleIndex < scaleSuffix.length && scaleSuffix[scaleIndex].length() > 0)
 				packFileName += scaleSuffix[scaleIndex];
 			else {
 				// Otherwise if scale != 1 or multiple scales, use subdirectory.

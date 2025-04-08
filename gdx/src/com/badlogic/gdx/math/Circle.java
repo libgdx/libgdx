@@ -30,8 +30,8 @@ public class Circle implements Serializable, Shape2D {
 
 	/** Constructs a new circle with the given X and Y coordinates and the given radius.
 	 * 
-	 * @param x X coordinate
-	 * @param y Y coordinate
+	 * @param x X coordinate of the center of the circle
+	 * @param y Y coordinate of the center of the circle
 	 * @param radius The radius of the circle */
 	public Circle (float x, float y, float radius) {
 		this.x = x;
@@ -41,7 +41,7 @@ public class Circle implements Serializable, Shape2D {
 
 	/** Constructs a new circle using a given {@link Vector2} that contains the desired X and Y coordinates, and a given radius.
 	 * 
-	 * @param position The position {@link Vector2}.
+	 * @param position The position {@link Vector2} of the center of the circle
 	 * @param radius The radius */
 	public Circle (Vector2 position, float radius) {
 		this.x = position.x;
@@ -70,8 +70,8 @@ public class Circle implements Serializable, Shape2D {
 
 	/** Sets a new location and radius for this circle.
 	 * 
-	 * @param x X coordinate
-	 * @param y Y coordinate
+	 * @param x X coordinate of the center of the circle
+	 * @param y Y coordinate of the center of the circle
 	 * @param radius Circle radius */
 	public void set (float x, float y, float radius) {
 		this.x = x;

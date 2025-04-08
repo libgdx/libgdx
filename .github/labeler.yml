@@ -1,0 +1,100 @@
+3D:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/g3d/**
+android:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - /**/gdx-backend-android/**
+      - /**/gdx-tests-android/**
+    - all-globs-to-all-files:
+      - '!/**/gdx-tests-android/assets/data/**'
+audio:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/com/badlogic/gdx/Audio*.java
+    - /**/com/badlogic/gdx/audio/**
+    - /**/com/badlogic/gdx/backends/headless/mock/audio/**
+    - /**/com/badlogic/gdx/backends/lwjgl/audio/**
+    - /**/com/badlogic/gdx/backends/lwjgl3/audio/**
+    - /**/com/badlogic/gdx/backends/gwt/webaudio/**
+box2d:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/gdx-box2d/**
+    - /**/box2d/**
+build:
+- changed-files:
+  - any-glob-to-any-file:
+    - /gradle/**
+    - /gradlew
+    - /gradlew.bat
+    - /gradle.properties
+    - /**/*.gradle
+    - .github/workflows/**
+bullet:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/gdx-bullet/**
+    - /**/bullet/**
+controllers:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/gdx-controllers/**
+core:
+- changed-files:
+  - any-glob-to-any-file:
+    - /gdx/**
+desktop:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/gdx-backend-lwjgl/**
+    - /**/gdx-tests-lwjgl/**
+    - /**/gdx-backend-lwjgl3/**
+    - /**/gdx-tests-lwjgl3/**
+file handling:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/files/**
+fonts:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/BitmapFont*.java
+    - /**/gdx-freetype/**
+    - /**/FreeType*.java
+GL:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/GL*.java
+    - /**/AndroidGL*.java
+    - /**/LwjglGL*.java
+    - /**/Lwjgl3GL*.java
+    - /**/IOSGL*.java
+    - /**/GwtGL*.java
+    - /**/gles*/**
+glfw-awt-macos:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/gdx-lwjgl3-glfw-awt-macos/**
+gradle:
+- changed-files:
+  - any-glob-to-any-file:
+    - /gradle/**
+    - /gradlew
+    - /gradlew.bat
+    - /gradle.properties
+    - /**/*.gradle
+graphics:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/com/badlogic/gdx/Graphics.java
+    - /**/graphics/**
+gwt:
+- changed-files:
+  - any-glob-to-any-file:
+    - /**/gdx-backends-gwt/**
+    - /**/gdx-tests-gwt/**
+    - /**/gwt/**
+    - /**/gdx-box2d-gwt/**
+    - /**/*.gwt.xml

@@ -518,7 +518,7 @@ public class BitmapFontCache {
 	 * @return The glyph layout for the cached string (the layout's height is the distance from y to the baseline). */
 	public GlyphLayout addText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign,
 		boolean wrap, String truncate) {
-		GlyphLayout layout = Pools.obtain(GlyphLayout.class);
+		GlyphLayout layout = Pools.obtain(GlyphLayout::new);
 		pooledLayouts.add(layout);
 		layout.setText(font, str, start, end, color, targetWidth, halign, wrap, truncate);
 		addText(layout, x, y);
@@ -554,6 +554,10 @@ public class BitmapFontCache {
 	/** @return whether this font uses integer positions for drawing. */
 	public boolean usesIntegerPositions () {
 		return integer;
+	}
+
+	public int getPageCount () {
+		return pageVertices.length;
 	}
 
 	public float[] getVertices () {

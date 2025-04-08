@@ -1,12 +1,12 @@
 eclipse.preferences.version=1
 org.eclipse.jdt.core.compiler.annotation.inheritNullAnnotations=enabled
 org.eclipse.jdt.core.compiler.annotation.missingNonNullByDefaultAnnotation=ignore
-org.eclipse.jdt.core.compiler.annotation.nonnull=com.badlogic.gdx.utils.Null.NonNull
+org.eclipse.jdt.core.compiler.annotation.nonnull=com.badlogic.gdx.utils.NonNull
 org.eclipse.jdt.core.compiler.annotation.nonnull.secondary=
-org.eclipse.jdt.core.compiler.annotation.nonnullbydefault=com.badlogic.gdx.utils.Null.NonNullByDefault
+org.eclipse.jdt.core.compiler.annotation.nonnullbydefault=com.badlogic.gdx.utils.NonNullByDefault
 org.eclipse.jdt.core.compiler.annotation.nonnullbydefault.secondary=
+org.eclipse.jdt.core.compiler.annotation.nullable.secondary=
 org.eclipse.jdt.core.compiler.annotation.nullable=com.badlogic.gdx.utils.Null
-org.eclipse.jdt.core.compiler.annotation.nullable.secondary=com.esotericsoftware.spine.launcher.utils.Null,com.esotericsoftware.spine.server.utils.Null,com.esotericsoftware.spine.editor.utils.Null
 org.eclipse.jdt.core.compiler.annotation.nullanalysis=enabled
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
 org.eclipse.jdt.core.compiler.codegen.methodParameters=do not generate

@@ -42,6 +42,11 @@ public class DelayedRemovalArray<T> extends Array<T> {
 		super(array);
 	}
 
+	public DelayedRemovalArray (boolean ordered, int capacity, ArraySupplier<T[]> arraySupplier) {
+		super(ordered, capacity, arraySupplier);
+	}
+
+	@Deprecated
 	public DelayedRemovalArray (boolean ordered, int capacity, Class arrayType) {
 		super(ordered, capacity, arrayType);
 	}
@@ -54,6 +59,11 @@ public class DelayedRemovalArray<T> extends Array<T> {
 		super(ordered, array, startIndex, count);
 	}
 
+	public DelayedRemovalArray (ArraySupplier<T[]> arraySupplier) {
+		super(arraySupplier);
+	}
+
+	@Deprecated
 	public DelayedRemovalArray (Class arrayType) {
 		super(arrayType);
 	}
