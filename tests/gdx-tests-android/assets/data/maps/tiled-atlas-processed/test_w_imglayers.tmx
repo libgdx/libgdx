@@ -6,10 +6,10 @@
   <image height="512" source="tilesets/tileset2.png" width="512"/>
  </tileset>
  <imagelayer id="3" name="Image Layer 1" offsetx="63.8514" offsety="-64.2683">
-  <image height="256" source="atlas_imagelayer_badlogic_fbf0a532" width="256"/>
+  <image height="256" source="atlas_imagelayer_badlogic_823091196941500x" width="256"/>
  </imagelayer>
  <imagelayer id="4" name="Image Layer 2" offsetx="0.181631" offsety="0.588235">
-  <image height="512" source="atlas_imagelayer_Textures1_a5cca59b" width="64"/>
+  <image height="512" source="atlas_imagelayer_Textures1_823091196941501x" width="64"/>
  </imagelayer>
  <layer height="10" id="1" name="Tile Layer 1" width="20">
   <data compression="zlib" encoding="base64">

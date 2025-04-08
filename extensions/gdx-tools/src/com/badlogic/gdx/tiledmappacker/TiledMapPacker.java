@@ -20,7 +20,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.UUID;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -100,7 +99,8 @@ public class TiledMapPacker {
 	static File outputDir;
 	// Project Files are required in specific circumstances where a map needs to load custom classes.
 	static String projectFilePath = "";
-
+	// Counter for use in generating unique image names
+	static long uniqueIdCounter = System.nanoTime();
 	private FileHandle currentDir;
 
 	private static class MapFileFilter implements FilenameFilter {
@@ -205,12 +205,27 @@ public class TiledMapPacker {
 		}
 
 		if (mapFile.getName().endsWith(".tmx")) {
-			if (projectFilePath.isEmpty()) {
-				map = mapLoader.load(mapFile.getCanonicalPath());
-			} else {
-				tmxLoaderParams.projectFilePath = projectFilePath;
-				map = mapLoader.load(mapFile.getCanonicalPath(), tmxLoaderParams);
-			}
+			 try {
+				  if (projectFilePath.isEmpty()) {
+						map = mapLoader.load(mapFile.getCanonicalPath());
+				  } else {
+						tmxLoaderParams.projectFilePath = projectFilePath;
+						map = mapLoader.load(mapFile.getCanonicalPath(), tmxLoaderParams);
+				  }
+			 }
+			 catch (GdxRuntimeException e) {
+				  // Check if it’s the "no class info" exception related to missing projectFilePath, or something else
+				  if (e.getMessage() != null && e.getMessage().contains("No class information available.")) {
+						System.out.println("SKIPPING map " + mapFile.getName()
+							+ " because it needs a Tiled project file parameter [PROJECTFILEPATH] passed in.\n"
+							+ "Message: " + e.getMessage());
+						// Return and skip map processing
+						return;
+				  } else {
+						//Some other error, rethrow
+						throw e;
+				  }
+			 }
 
 			// if enabled, build a list of used tileids for the tileset used by this map
 			boolean stripUnusedTiles = this.settings.stripUnusedTiles;
@@ -243,13 +258,27 @@ public class TiledMapPacker {
 				savePacker();
 			}
 		} else if (mapFile.getName().endsWith(".tmj")) {
-
-			if (projectFilePath.isEmpty()) {
-				map = tmjMapLoader.load(mapFile.getCanonicalPath());
-			} else {
-				tmjLoaderParams.projectFilePath = projectFilePath;
-				map = tmjMapLoader.load(mapFile.getCanonicalPath(), tmjLoaderParams);
-			}
+			 try {
+				  if (projectFilePath.isEmpty()) {
+						map = tmjMapLoader.load(mapFile.getCanonicalPath());
+				  } else {
+						tmjLoaderParams.projectFilePath = projectFilePath;
+						map = tmjMapLoader.load(mapFile.getCanonicalPath(), tmjLoaderParams);
+				  }
+			 }
+			 catch (GdxRuntimeException e) {
+				  // Check if it’s the "no class info" exception related to missing projectFilePath, or something else
+				  if (e.getMessage() != null && e.getMessage().contains("No class information available.")) {
+						System.out.println("SKIPPING map " + mapFile.getName()
+							+ " because it needs a Tiled project file parameter [PROJECTFILEPATH] passed in.\n"
+							+ "Message: " + e.getMessage());
+						// Return and skip map processing
+						return;
+				  } else {
+						// Some other error, rethrow
+						throw e;
+				  }
+			 }
 
 			// if enabled, build a list of used tileids for the tileset used by this map
 			boolean stripUnusedTiles = this.settings.stripUnusedTiles;
@@ -465,8 +494,11 @@ public class TiledMapPacker {
 	// Method to generate a unique image name
 	private String generateUniqueImageName (String imageSource) {
 		String baseName = new FileHandle(imageSource).nameWithoutExtension();
-		String uniqueId = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8);
-		return "atlas_imagelayer_" + baseName + "_" + uniqueId;
+		// Increment our counter value for a unique id
+		long id = uniqueIdCounter++;
+		// Appending an "x" after our id number because when useIndexes = true,
+		// TexturePacker treats trailing digits in the region name as an integer index, which leads to problems.
+		return "atlas_imagelayer_" + baseName + "_" + id+"x";
 	}
 
 	/** We needed a way to handle images across nested folders as well as matching names relative to the .tmx file As well as
