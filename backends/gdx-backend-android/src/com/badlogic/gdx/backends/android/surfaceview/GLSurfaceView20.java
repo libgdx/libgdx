@@ -44,7 +44,7 @@ import com.badlogic.gdx.backends.android.GLES;
  * red/green/blue/alpha channels bit depths). Failure to do so would result in an EGL_BAD_MATCH error. */
 public class GLSurfaceView20 extends GLSurfaceView {
 	static String TAG = "GL2JNIView";
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	final ResolutionStrategy resolutionStrategy;
 	public GLES targetGLESVersion;
