@@ -46,11 +46,11 @@ public class TiledMapJsonAtlasAssetManagerTest extends GdxTest {
 	private SpriteBatch batch;
 	String errorMessage;
 	private String fileName = "data/maps/tiled-atlas-processed/test.tmj";
-	//This Map also must include a tiled properties file
+	// This Map also must include a tiled properties file
 	private String fileNameWithImageLayersAndProps = "data/maps/tiled-atlas-processed/test_w_imglayer_props.tmj";
 	private String projectFilePath = "data/maps/tiled-atlas-processed/tiled-prop-test.tiled-project";
 
-	 private int mapType = 0;
+	private int mapType = 0;
 
 	@Override
 	public void create () {

@@ -205,27 +205,26 @@ public class TiledMapPacker {
 		}
 
 		if (mapFile.getName().endsWith(".tmx")) {
-			 try {
-				  if (projectFilePath.isEmpty()) {
-						map = mapLoader.load(mapFile.getCanonicalPath());
-				  } else {
-						tmxLoaderParams.projectFilePath = projectFilePath;
-						map = mapLoader.load(mapFile.getCanonicalPath(), tmxLoaderParams);
-				  }
-			 }
-			 catch (GdxRuntimeException e) {
-				  // Check if it’s the "no class info" exception related to missing projectFilePath, or something else
-				  if (e.getMessage() != null && e.getMessage().contains("No class information available.")) {
-						System.out.println("SKIPPING map " + mapFile.getName()
-							+ " because it needs a Tiled project file parameter [PROJECTFILEPATH] passed in.\n"
-							+ "Message: " + e.getMessage());
-						// Return and skip map processing
-						return;
-				  } else {
-						//Some other error, rethrow
-						throw e;
-				  }
-			 }
+			try {
+				if (projectFilePath.isEmpty()) {
+					map = mapLoader.load(mapFile.getCanonicalPath());
+				} else {
+					tmxLoaderParams.projectFilePath = projectFilePath;
+					map = mapLoader.load(mapFile.getCanonicalPath(), tmxLoaderParams);
+				}
+			} catch (GdxRuntimeException e) {
+				// Check if it’s the "no class info" exception related to missing projectFilePath, or something else
+				if (e.getMessage() != null && e.getMessage().contains("No class information available.")) {
+					System.out.println("SKIPPING map " + mapFile.getName()
+						+ " because it needs a Tiled project file parameter [PROJECTFILEPATH] passed in.\n" + "Message: "
+						+ e.getMessage());
+					// Return and skip map processing
+					return;
+				} else {
+					// Some other error, rethrow
+					throw e;
+				}
+			}
 
 			// if enabled, build a list of used tileids for the tileset used by this map
 			boolean stripUnusedTiles = this.settings.stripUnusedTiles;
@@ -258,27 +257,26 @@ public class TiledMapPacker {
 				savePacker();
 			}
 		} else if (mapFile.getName().endsWith(".tmj")) {
-			 try {
-				  if (projectFilePath.isEmpty()) {
-						map = tmjMapLoader.load(mapFile.getCanonicalPath());
-				  } else {
-						tmjLoaderParams.projectFilePath = projectFilePath;
-						map = tmjMapLoader.load(mapFile.getCanonicalPath(), tmjLoaderParams);
-				  }
-			 }
-			 catch (GdxRuntimeException e) {
-				  // Check if it’s the "no class info" exception related to missing projectFilePath, or something else
-				  if (e.getMessage() != null && e.getMessage().contains("No class information available.")) {
-						System.out.println("SKIPPING map " + mapFile.getName()
-							+ " because it needs a Tiled project file parameter [PROJECTFILEPATH] passed in.\n"
-							+ "Message: " + e.getMessage());
-						// Return and skip map processing
-						return;
-				  } else {
-						// Some other error, rethrow
-						throw e;
-				  }
-			 }
+			try {
+				if (projectFilePath.isEmpty()) {
+					map = tmjMapLoader.load(mapFile.getCanonicalPath());
+				} else {
+					tmjLoaderParams.projectFilePath = projectFilePath;
+					map = tmjMapLoader.load(mapFile.getCanonicalPath(), tmjLoaderParams);
+				}
+			} catch (GdxRuntimeException e) {
+				// Check if it’s the "no class info" exception related to missing projectFilePath, or something else
+				if (e.getMessage() != null && e.getMessage().contains("No class information available.")) {
+					System.out.println("SKIPPING map " + mapFile.getName()
+						+ " because it needs a Tiled project file parameter [PROJECTFILEPATH] passed in.\n" + "Message: "
+						+ e.getMessage());
+					// Return and skip map processing
+					return;
+				} else {
+					// Some other error, rethrow
+					throw e;
+				}
+			}
 
 			// if enabled, build a list of used tileids for the tileset used by this map
 			boolean stripUnusedTiles = this.settings.stripUnusedTiles;
@@ -498,7 +496,7 @@ public class TiledMapPacker {
 		long id = uniqueIdCounter++;
 		// Appending an "x" after our id number because when useIndexes = true,
 		// TexturePacker treats trailing digits in the region name as an integer index, which leads to problems.
-		return "atlas_imagelayer_" + baseName + "_" + id+"x";
+		return "atlas_imagelayer_" + baseName + "_" + id + "x";
 	}
 
 	/** We needed a way to handle images across nested folders as well as matching names relative to the .tmx file As well as

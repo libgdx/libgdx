@@ -37,12 +37,9 @@ public class TiledMapPackerTest {
 		String combine = "--combine-tilesets";
 		String badOpt = "bad";
 
-		/**
-		 * There is an optional 3rd path parameter, which is specifically meant to support maps which use
-		 * the custom class properties. You must specify the path to the tiled project file if your files requires it.
-		 * If not, that map will be skipped during processing.
-		 * Can be tested by setting TestType testType = TestType.DefaultUsageWithProjectFile;
-		 */
+		/** There is an optional 3rd path parameter, which is specifically meant to support maps which use the custom class
+		 * properties. You must specify the path to the tiled project file if your files requires it. If not, that map will be
+		 * skipped during processing. Can be tested by setting TestType testType = TestType.DefaultUsageWithProjectFile; */
 		String projectFilePath = input + "/tiled-prop-test.tiled-project";
 
 		File outputDir = new File(output);
@@ -56,8 +53,8 @@ public class TiledMapPackerTest {
 
 		String[] noArgs = {};
 		String[] defaultUsage = {input, output};
-		String[] defaultUsageWithProjectFile = {input, output,projectFilePath};
-		String[] defaultUsageWithProjectFileVerbose = {input, output,projectFilePath,verboseOpt};
+		String[] defaultUsageWithProjectFile = {input, output, projectFilePath};
+		String[] defaultUsageWithProjectFileVerbose = {input, output, projectFilePath, verboseOpt};
 		String[] verbose = {input, output, verboseOpt};
 		String[] stripUnused = {input, output, unused};
 		String[] combineTilesets = {input, output, combine};
@@ -72,14 +69,14 @@ public class TiledMapPackerTest {
 			TiledMapPacker.main(defaultUsage);
 			break;
 		case DefaultUsageWithProjectFile:
-			 TiledMapPacker.main(defaultUsageWithProjectFile);
-			 break;
+			TiledMapPacker.main(defaultUsageWithProjectFile);
+			break;
 		case Verbose:
 			TiledMapPacker.main(verbose);
 			break;
 		case DefaultUsageWithProjectFileVerbose:
-			 TiledMapPacker.main(defaultUsageWithProjectFileVerbose);
-			 break;
+			TiledMapPacker.main(defaultUsageWithProjectFileVerbose);
+			break;
 		case StripUnused:
 			TiledMapPacker.main(stripUnused);
 			break;
