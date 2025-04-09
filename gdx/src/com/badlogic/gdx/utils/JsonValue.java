@@ -101,6 +101,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		if (siblings && value.next != null) {
 			next = new JsonValue(value.next, true);
 			next.prev = this;
+			next.parent = this;
 		}
 		size = value.size;
 	}
