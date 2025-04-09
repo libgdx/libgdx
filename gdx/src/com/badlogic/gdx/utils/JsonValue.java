@@ -85,23 +85,20 @@ public class JsonValue implements Iterable<JsonValue> {
 
 	/** Creates a deep copy of the specific value, except {@link #parent()}, {@link #next()}, and {@link #prev()} are not null. */
 	public JsonValue (JsonValue value) {
-		this(value, false);
+		this(value, null);
 	}
 
-	private JsonValue (JsonValue value, boolean siblings) {
+	private JsonValue (JsonValue value, @Null JsonValue parent) {
 		type = value.type;
 		stringValue = value.stringValue;
 		doubleValue = value.doubleValue;
 		longValue = value.longValue;
 		name = value.name;
-		if (value.child != null) {
-			child = new JsonValue(value.child, true);
-			child.parent = this;
-		}
-		if (siblings && value.next != null) {
-			next = new JsonValue(value.next, true);
+		this.parent = parent;
+		if (value.child != null) child = new JsonValue(value.child, this);
+		if (parent != null && value.next != null) {
+			next = new JsonValue(value.next, parent);
 			next.prev = this;
-			next.parent = this;
 		}
 		size = value.size;
 	}

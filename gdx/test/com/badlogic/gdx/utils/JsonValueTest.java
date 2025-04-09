@@ -76,12 +76,14 @@ public class JsonValueTest {
 		Assert.assertEquals(object.get("b"), b);
 		Assert.assertEquals(object.get("b").get("c").asString(), "C");
 		Assert.assertEquals(object.get("b").get("d").asString(), "D");
+		Assert.assertEquals(object.get("b").parent(), object);
 		Assert.assertEquals(object.get("E").asInt(), 123);
 
 		Assert.assertEquals(copy.get("a").asString(), "A");
 		Assert.assertNotEquals(copy.get("b"), b);
 		Assert.assertEquals(copy.get("b").get("c").asString(), "C");
 		Assert.assertEquals(copy.get("b").get("d").asString(), "D");
+		Assert.assertEquals(copy.get("b").parent(), copy);
 		Assert.assertEquals(copy.get("E").asInt(), 123);
 
 		JsonValue bCopy = new JsonValue(copy.get("b"));
@@ -89,5 +91,6 @@ public class JsonValueTest {
 		Assert.assertNotEquals(copy.get("b"), bCopy);
 		Assert.assertEquals(bCopy.get("c").asString(), "C");
 		Assert.assertEquals(bCopy.get("d").asString(), "D");
+		Assert.assertEquals(bCopy.get("d").parent(), bCopy);
 	}
 }
