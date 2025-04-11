@@ -43,22 +43,31 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 	private final boolean DELETE_DELETEME_FOLDER_ON_EXIT = false; // read warning before setting to true
 	private final static String MAP_PATH = "data/maps/tiled-atlas-processed/deleteMe/";
 
-	/** Choose which processed map you want to load DEFAULT_TMX_MAP: The original default test map. DEFAULT_TMJ_MAP: The original
-	 * default test map in the .tmj format. DEFAULT_TMX_IMGLAYER_MAP: A Test map which also loads image layers.
-	 * DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP: A Test Map in the .tmj format, with an image layer and also supports custom class via a
-	 * project file.
+	/** Choose which processed map you want to load.
+	 * DEFAULT_TMX_MAP: The original default test map.
+	 *
+	 * DEFAULT_TMJ_MAP: The original default test map in the .tmj format.
+	 *
+	 * DEFAULT_TMX_IMGLAYER_MAP: A Test map which also loads image layers.
+	 *
+	 * DEFAULT_TMX_IMGLAYERS_COLLECTION_TILESET: The DEFAULT_TMX_IMGLAYER_MAP but also uses tileset
+	 * made up of a collection of images as well as a normal tilesheet tileset.
+	 *
+	 * DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP: A Test Map in the .tmj format, with an image layer
+	 * and also supports custom class via a project file.
 	 *
 	 * *NOTE the DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP map will only show up in deleteMe folder if the TiledMapPackerTest is run with
 	 * TestType testType = TestType.DefaultUsageWithProjectFile; */
-	private final TestMapType TEST_MAP_TYPE = TestMapType.DEFAULT_TMX_IMGLAYER_MAP;
+
+	private final TestMapType TEST_MAP_TYPE = TestMapType.DEFAULT_TMX_MAP;
 
 	/** Project file won't exist in the deleteMe folder. We must use the one in tiled-atlas-processed folder that will always be
 	 * there */
 	private final static String PROJECT_FILE_PATH = "data/maps/tiled-atlas-processed/tiled-prop-test.tiled-project";
 
 	private final boolean CENTER_CAM = true;
-	private final float WORLD_WIDTH = 32;
-	private final float WORLD_HEIGHT = 18;
+	private final float WORLD_WIDTH = 16;
+	private final float WORLD_HEIGHT = 8;
 	private final float PIXELS_PER_METER = 32;
 	private final float UNIT_SCALE = 1f / PIXELS_PER_METER;
 	private AtlasTmxMapLoader.AtlasTiledMapLoaderParameters params;
@@ -71,7 +80,8 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 	private OrthographicCamera cam;
 
 	public enum TestMapType {
-		DEFAULT_TMX_MAP, DEFAULT_TMJ_MAP, DEFAULT_TMX_IMGLAYER_MAP, DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP;
+		DEFAULT_TMX_MAP, DEFAULT_TMJ_MAP, DEFAULT_TMX_IMGLAYER_MAP, DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP,
+		DEFAULT_TMX_IMGLAYERS_COLLECTION_TILESET;
 	}
 
 	@Override
@@ -111,6 +121,17 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 			mapLocation = MAP_PATH + "test_w_imglayers.tmx";
 			map = atlasTmxMapLoader.load(mapLocation, params);
 			break;
+		case DEFAULT_TMX_IMGLAYERS_COLLECTION_TILESET:
+			 atlasTmxMapLoader = new AtlasTmxMapLoader(new InternalFileHandleResolver());
+			 params = new AtlasTmxMapLoader.AtlasTiledMapLoaderParameters();
+			 params.generateMipMaps = false;
+			 params.convertObjectToTileSpace = false;
+			 params.flipY = true;
+			 params.projectFilePath = "";
+
+			 mapLocation = MAP_PATH + "test_w_imglayers_coi.tmx";
+			 map = atlasTmxMapLoader.load(mapLocation, params);
+			 break;
 		case DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP:
 			atlasTmjMapLoader = new AtlasTmjMapLoader(new InternalFileHandleResolver());
 			paramsTmj = new AtlasTmjMapLoader.AtlasTiledMapLoaderParameters();
