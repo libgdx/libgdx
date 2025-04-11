@@ -325,18 +325,18 @@ public class GlyphLayout implements Poolable {
 		run.width = targetWidth;
 	}
 
-	private static boolean shouldJustify(Justify justify, int wrapState) {
+	private static boolean shouldJustify (Justify justify, int wrapState) {
 		switch (justify) {
-			case OverflowedLinesBySpace:
-			case OverflowedLinesByGlyph:
-				if (wrapState == lastWrapped) return true;
-				// Fall through.
-			case WrappedLinesBySpace:
-			case WrappedLinesByGlyph:
-				return wrapState == wrapped;
-			case AllLinesBySpace:
-			case AllLinesByGlyph:
-				return true;
+		case OverflowedLinesBySpace:
+		case OverflowedLinesByGlyph:
+			if (wrapState == lastWrapped) return true;
+			// Fall through.
+		case WrappedLinesBySpace:
+		case WrappedLinesByGlyph:
+			return wrapState == wrapped;
+		case AllLinesBySpace:
+		case AllLinesByGlyph:
+			return true;
 		}
 		return false;
 	}
