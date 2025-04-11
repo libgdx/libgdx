@@ -43,18 +43,17 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 	private final boolean DELETE_DELETEME_FOLDER_ON_EXIT = false; // read warning before setting to true
 	private final static String MAP_PATH = "data/maps/tiled-atlas-processed/deleteMe/";
 
-	/** Choose which processed map you want to load.
-	 * DEFAULT_TMX_MAP: The original default test map.
+	/** Choose which processed map you want to load. DEFAULT_TMX_MAP: The original default test map.
 	 *
 	 * DEFAULT_TMJ_MAP: The original default test map in the .tmj format.
 	 *
 	 * DEFAULT_TMX_IMGLAYER_MAP: A Test map which also loads image layers.
 	 *
-	 * DEFAULT_TMX_IMGLAYERS_COLLECTION_TILESET: The DEFAULT_TMX_IMGLAYER_MAP but also uses tileset
-	 * made up of a collection of images as well as a normal tilesheet tileset.
+	 * DEFAULT_TMX_IMGLAYERS_COLLECTION_TILESET: The DEFAULT_TMX_IMGLAYER_MAP but also uses tileset made up of a collection of
+	 * images as well as a normal tilesheet tileset.
 	 *
-	 * DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP: A Test Map in the .tmj format, with an image layer
-	 * and also supports custom class via a project file.
+	 * DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP: A Test Map in the .tmj format, with an image layer and also supports custom class via a
+	 * project file.
 	 *
 	 * *NOTE the DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP map will only show up in deleteMe folder if the TiledMapPackerTest is run with
 	 * TestType testType = TestType.DefaultUsageWithProjectFile; */
@@ -80,8 +79,7 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 	private OrthographicCamera cam;
 
 	public enum TestMapType {
-		DEFAULT_TMX_MAP, DEFAULT_TMJ_MAP, DEFAULT_TMX_IMGLAYER_MAP, DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP,
-		DEFAULT_TMX_IMGLAYERS_COLLECTION_TILESET;
+		DEFAULT_TMX_MAP, DEFAULT_TMJ_MAP, DEFAULT_TMX_IMGLAYER_MAP, DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP, DEFAULT_TMX_IMGLAYERS_COLLECTION_TILESET;
 	}
 
 	@Override
@@ -122,16 +120,16 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 			map = atlasTmxMapLoader.load(mapLocation, params);
 			break;
 		case DEFAULT_TMX_IMGLAYERS_COLLECTION_TILESET:
-			 atlasTmxMapLoader = new AtlasTmxMapLoader(new InternalFileHandleResolver());
-			 params = new AtlasTmxMapLoader.AtlasTiledMapLoaderParameters();
-			 params.generateMipMaps = false;
-			 params.convertObjectToTileSpace = false;
-			 params.flipY = true;
-			 params.projectFilePath = "";
+			atlasTmxMapLoader = new AtlasTmxMapLoader(new InternalFileHandleResolver());
+			params = new AtlasTmxMapLoader.AtlasTiledMapLoaderParameters();
+			params.generateMipMaps = false;
+			params.convertObjectToTileSpace = false;
+			params.flipY = true;
+			params.projectFilePath = "";
 
-			 mapLocation = MAP_PATH + "test_w_imglayers_coi.tmx";
-			 map = atlasTmxMapLoader.load(mapLocation, params);
-			 break;
+			mapLocation = MAP_PATH + "test_w_imglayers_coi.tmx";
+			map = atlasTmxMapLoader.load(mapLocation, params);
+			break;
 		case DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP:
 			atlasTmjMapLoader = new AtlasTmjMapLoader(new InternalFileHandleResolver());
 			paramsTmj = new AtlasTmjMapLoader.AtlasTiledMapLoaderParameters();

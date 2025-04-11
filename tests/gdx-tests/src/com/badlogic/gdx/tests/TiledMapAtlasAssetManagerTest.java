@@ -109,12 +109,12 @@ public class TiledMapAtlasAssetManagerTest extends GdxTest {
 					renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
 				}
 			} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
-				 if (mapType != 2) {
-					  if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
-					  mapType = 2;
-					  map = assetManager.get(fileNameWithCollectionImages);
-					  renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
-				 }
+				if (mapType != 2) {
+					if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
+					mapType = 2;
+					map = assetManager.get(fileNameWithCollectionImages);
+					renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
+				}
 			}
 
 			renderer.setView(camera);

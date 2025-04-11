@@ -178,22 +178,19 @@ public class TiledMapPacker {
 		}
 	}
 
-	/**
-	 * Processes a directory of Tiled .tmx or .tmj map files, optionally including subdirectories,
-	 * and outputs updated map files and a texture atlas. This method is intended for usage from
-	 * external callers such as build scripts or other Java classes.
+	/** Processes a directory of Tiled .tmx or .tmj map files, optionally including subdirectories, and outputs updated map files
+	 * and a texture atlas. This method is intended for usage from external callers such as build scripts or other Java classes.
 	 *
-	 * @param texturePackerSettings the {@link TexturePacker.Settings}
-	 *                              used for packing textures (e.g., padding, filtering, etc.)
+	 * @param texturePackerSettings the {@link TexturePacker.Settings} used for packing textures (e.g., padding, filtering, etc.)
 	 * @param inputDirPath the path to the directory containing map files (.tmx or .tmj); must not be null or empty
-	 * @param outputDirPath optional path where processed map files and the atlas will be written;
-	 *                      if empty or null, defaults to "../output/" relative to input
-	 * @param prjtFilePath optional path to a Tiled project file, used when maps require loading a custom tiled project file
-	 *                     can be left "" or null
+	 * @param outputDirPath optional path where processed map files and the atlas will be written; if empty or null, defaults to
+	 *           "../output/" relative to input
+	 * @param prjtFilePath optional path to a Tiled project file, used when maps require loading a custom tiled project file can be
+	 *           left "" or null
 	 * @throws IOException if a file cannot be read or written
-	 * @throws IllegalArgumentException if inputDirPath is null or blank
-	 */
-	public void processInputDir (Settings texturePackerSettings, String inputDirPath, String outputDirPath, @Null String prjtFilePath) throws IOException {
+	 * @throws IllegalArgumentException if inputDirPath is null or blank */
+	public void processInputDir (Settings texturePackerSettings, String inputDirPath, String outputDirPath,
+		@Null String prjtFilePath) throws IOException {
 
 		// Check for empty input directory param
 		if (inputDirPath == null || inputDirPath.trim().isEmpty()) {
@@ -208,32 +205,31 @@ public class TiledMapPacker {
 			outputDir = new File(inputDir, "../output/");
 		}
 
-		if (prjtFilePath != null && !prjtFilePath.trim().isEmpty()){
+		if (prjtFilePath != null && !prjtFilePath.trim().isEmpty()) {
 			projectFilePath = prjtFilePath;
 		} else {
 			// Set to empty string if not provided
 			projectFilePath = "";
 		}
 
-	   FileHandle inputDirHandle = new FileHandle(inputDir.getCanonicalPath());
-	   File[] mapFilesInCurrentDir = inputDir.listFiles(new MapFileFilter());
-	   tilesetsToPack = new ObjectMap<String, TiledMapTileSet>();
-	   imagesLayersToPack = new ObjectMap<String, Array<String>>();
-	   imageLayerSourceFiles = new ObjectMap<String, String>();
+		FileHandle inputDirHandle = new FileHandle(inputDir.getCanonicalPath());
+		File[] mapFilesInCurrentDir = inputDir.listFiles(new MapFileFilter());
+		tilesetsToPack = new ObjectMap<String, TiledMapTileSet>();
+		imagesLayersToPack = new ObjectMap<String, Array<String>>();
+		imageLayerSourceFiles = new ObjectMap<String, String>();
 
-	   // Processes the maps inside inputDir
-	   for (File mapFile : mapFilesInCurrentDir) {
-			 processSingleMap(mapFile, inputDirHandle, texturePackerSettings);
-	   }
-	   processSubdirectories(inputDirHandle, texturePackerSettings);
-	   boolean combineTilesets = this.settings.combineTilesets;
-	   if (combineTilesets == true) {
-			 packTilesets(inputDirHandle, texturePackerSettings);
-			 packImageLayerImages(inputDirHandle);
-			 savePacker();
-	   }
+		// Processes the maps inside inputDir
+		for (File mapFile : mapFilesInCurrentDir) {
+			processSingleMap(mapFile, inputDirHandle, texturePackerSettings);
+		}
+		processSubdirectories(inputDirHandle, texturePackerSettings);
+		boolean combineTilesets = this.settings.combineTilesets;
+		if (combineTilesets == true) {
+			packTilesets(inputDirHandle, texturePackerSettings);
+			packImageLayerImages(inputDirHandle);
+			savePacker();
+		}
 	}
-
 
 	/** Looks for subdirectories inside parentHandle, processes maps in subdirectory, repeat.
 	 * @param currentDir The directory to look for maps and other directories
@@ -509,11 +505,10 @@ public class TiledMapPacker {
 				packSingleImageTileset(set, inputDirHandle);
 			} else {
 				System.out.println("Image source on tileset is null, tileset is now assumed to be a 'Collection of Images'");
-				if(this.settings.ignoreCollectionOfImages==false) {
-					 packCollectionOfImagesTileset(set, inputDirHandle);
-				}
-				else{
-					 System.out.println("--ignore-coi flag is set, Skipping...");
+				if (this.settings.ignoreCollectionOfImages == false) {
+					packCollectionOfImagesTileset(set, inputDirHandle);
+				} else {
+					System.out.println("--ignore-coi flag is set, Skipping...");
 				}
 			}
 		}
@@ -939,7 +934,7 @@ public class TiledMapPacker {
 			} else if (arg.equals("--ignore-coi")) {
 				packerSettings.ignoreCollectionOfImages = true;
 
-		   } else if (arg.equals("-v")) {
+			} else if (arg.equals("-v")) {
 				packerSettings.verbose = true;
 
 			} else if (arg.startsWith("-")) {
@@ -1115,20 +1110,20 @@ public class TiledMapPacker {
 
 		// Animated tiles to be handled a bit differently as they are created after static tiles
 		// and lose the imagesource property we added so we must add it manually
-		 @Override
-		 protected AnimatedTiledMapTile createAnimatedTile(TiledMapTileSet tileSet, TiledMapTile originalTile,
-			 XmlReader.Element tileElement, int firstgid) {
+		@Override
+		protected AnimatedTiledMapTile createAnimatedTile (TiledMapTileSet tileSet, TiledMapTile originalTile,
+			XmlReader.Element tileElement, int firstgid) {
 
-			  // Build the animated tile via the parent logic
-			  AnimatedTiledMapTile animatedTile = super.createAnimatedTile(tileSet, originalTile, tileElement, firstgid);
+			// Build the animated tile via the parent logic
+			AnimatedTiledMapTile animatedTile = super.createAnimatedTile(tileSet, originalTile, tileElement, firstgid);
 
-			  // Copy original properties so "imagesource" isn't lost
-			  if (animatedTile != null) {
-					animatedTile.getProperties().putAll(originalTile.getProperties());
-			  }
+			// Copy original properties so "imagesource" isn't lost
+			if (animatedTile != null) {
+				animatedTile.getProperties().putAll(originalTile.getProperties());
+			}
 
-			  return animatedTile;
-		 }
+			return animatedTile;
+		}
 
 	}
 
@@ -1168,18 +1163,18 @@ public class TiledMapPacker {
 		}
 
 		@Override
-		protected AnimatedTiledMapTile createAnimatedTile(TiledMapTileSet tileSet, TiledMapTile originalTile,
+		protected AnimatedTiledMapTile createAnimatedTile (TiledMapTileSet tileSet, TiledMapTile originalTile,
 			JsonValue tileDefinition, int firstgid) {
 
-			 // Build the animated tile via the parent logic
-			 AnimatedTiledMapTile animatedTile = super.createAnimatedTile(tileSet, originalTile, tileDefinition, firstgid);
+			// Build the animated tile via the parent logic
+			AnimatedTiledMapTile animatedTile = super.createAnimatedTile(tileSet, originalTile, tileDefinition, firstgid);
 
-			 // Copy original properties so "imagesource" isn't lost
-			 if (animatedTile != null) {
-			 	animatedTile.getProperties().putAll(originalTile.getProperties());
-			 }
+			// Copy original properties so "imagesource" isn't lost
+			if (animatedTile != null) {
+				animatedTile.getProperties().putAll(originalTile.getProperties());
+			}
 
-			 return animatedTile;
+			return animatedTile;
 		}
 	}
 
