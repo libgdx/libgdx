@@ -106,6 +106,14 @@ public class GlyphLayout implements Poolable {
 		setText(font, str, 0, str.length(), color, targetWidth, halign, wrap, null);
 	}
 
+	/** @param color The default color to use for the text (the BitmapFont {@link BitmapFont#getColor() color} is not used). If
+	 *           {@link BitmapFontData#markupEnabled} is true, color markup tags in the specified string may change the color for
+	 *           portions of the text.
+	 * @param halign Horizontal alignment of the text, see {@link Align}.
+	 * @param targetWidth The width used for alignment, line wrapping, and truncation. May be zero if those features are not used.
+	 * @param truncate If not null and the width of the glyphs exceed targetWidth, the glyphs are truncated and the glyphs for the
+	 *           specified truncate string are placed at the end. Empty string can be used to truncate without adding glyphs.
+	 *           Truncate should not be used with text that contains multiple lines. Wrap is ignored if truncate is not null. */
 	public void setText (BitmapFont font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
 		boolean wrap, @Null String truncate) {
 		setText(font, str, start, end, color, targetWidth, halign, wrap, Justify.None, truncate);
@@ -116,6 +124,7 @@ public class GlyphLayout implements Poolable {
 	 *           portions of the text.
 	 * @param halign Horizontal alignment of the text, see {@link Align}.
 	 * @param targetWidth The width used for alignment, line wrapping, and truncation. May be zero if those features are not used.
+	 * @param justify Justification of the text, see {@link Justify}.
 	 * @param truncate If not null and the width of the glyphs exceed targetWidth, the glyphs are truncated and the glyphs for the
 	 *           specified truncate string are placed at the end. Empty string can be used to truncate without adding glyphs.
 	 *           Truncate should not be used with text that contains multiple lines. Wrap is ignored if truncate is not null. */
@@ -327,12 +336,12 @@ public class GlyphLayout implements Poolable {
 
 	private static boolean shouldJustify (Justify justify, int wrapState) {
 		switch (justify) {
-		case OverflowedLinesBySpace:
-		case OverflowedLinesByGlyph:
-			if (wrapState == lastWrapped) return true;
-			// Fall through.
 		case WrappedLinesBySpace:
 		case WrappedLinesByGlyph:
+			if (wrapState == lastWrapped) return true;
+			// Fall through.
+		case ParagraphBySpace:
+		case ParagraphByGlyph:
 			return wrapState == wrapped;
 		case AllLinesBySpace:
 		case AllLinesByGlyph:

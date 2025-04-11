@@ -1,17 +1,31 @@
 
 package com.badlogic.gdx.utils;
 
+/** The text justification hint on the type of spacing and which lines to justify. */
 public enum Justify {
-	None, WrappedLinesBySpace, WrappedLinesByGlyph, OverflowedLinesBySpace, OverflowedLinesByGlyph, AllLinesBySpace, AllLinesByGlyph;
+	/** No justification is applied. */
+	None,
+	/** Space glyphs are padded for wrapped lines except the last. */
+	ParagraphBySpace,
+	/** Spaces inserted between glyphs for wrapped lines except the last. */
+	ParagraphByGlyph,
+	/** Space glyphs are padded for wrapped lines including the last. */
+	WrappedLinesBySpace,
+	/** Spaces inserted between glyphs on wrapped lines including the last. */
+	WrappedLinesByGlyph,
+	/** Space glyphs are padded for all lines. */
+	AllLinesBySpace,
+	/** Spaces inserted between glyphs for all lines. */
+	AllLinesByGlyph;
 
 	public boolean matchChar (int ch) {
 		switch (this) {
+		case ParagraphBySpace:
 		case WrappedLinesBySpace:
-		case OverflowedLinesBySpace:
 		case AllLinesBySpace:
 			return ch == ' ';
+		case ParagraphByGlyph:
 		case WrappedLinesByGlyph:
-		case OverflowedLinesByGlyph:
 		case AllLinesByGlyph:
 			return true;
 		}
@@ -22,7 +36,15 @@ public enum Justify {
 		return this == None;
 	}
 
-	/** Lines that were wrapped, excluding the last. */
+	public boolean isParagraph () {
+		switch (this) {
+		case ParagraphBySpace:
+		case ParagraphByGlyph:
+			return true;
+		}
+		return false;
+	}
+
 	public boolean isWrappedLines () {
 		switch (this) {
 		case WrappedLinesBySpace:
@@ -32,17 +54,6 @@ public enum Justify {
 		return false;
 	}
 
-	/** Lines that wrapped, including the last. */
-	public boolean isOverflowedLines () {
-		switch (this) {
-		case OverflowedLinesBySpace:
-		case OverflowedLinesByGlyph:
-			return true;
-		}
-		return false;
-	}
-
-	/** All lines, regardless of wrapping. */
 	public boolean isAllLines () {
 		switch (this) {
 		case AllLinesBySpace:
@@ -52,22 +63,20 @@ public enum Justify {
 		return false;
 	}
 
-	/** Fill width by padding space glyphs. */
 	public boolean isBySpace () {
 		switch (this) {
+		case ParagraphBySpace:
 		case WrappedLinesBySpace:
-		case OverflowedLinesBySpace:
 		case AllLinesBySpace:
 			return true;
 		}
 		return false;
 	}
 
-	/** Fill width by padding all glyphs. */
 	public boolean isByGlyph () {
 		switch (this) {
+		case ParagraphByGlyph:
 		case WrappedLinesByGlyph:
-		case OverflowedLinesByGlyph:
 		case AllLinesByGlyph:
 			return true;
 		}
