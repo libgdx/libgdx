@@ -338,11 +338,11 @@ public class GlyphLayout implements Poolable {
 		switch (justify) {
 		case WrappedLinesBySpace:
 		case WrappedLinesByGlyph:
-			if (wrapState == lastWrapped) return true;
+			if (wrapState == GlyphLayout.lastWrapped) return true;
 			// Fall through.
 		case ParagraphBySpace:
 		case ParagraphByGlyph:
-			return wrapState == wrapped;
+			return wrapState == GlyphLayout.wrapped;
 		case AllLinesBySpace:
 		case AllLinesByGlyph:
 			return true;
