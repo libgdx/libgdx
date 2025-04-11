@@ -4,22 +4,6 @@ package com.badlogic.gdx.utils;
 public enum Justify {
 	None, WrappedLinesBySpace, WrappedLinesByGlyph, OverflowedLinesBySpace, OverflowedLinesByGlyph, AllLinesBySpace, AllLinesByGlyph;
 
-	public boolean matchWrapping (int wrapping) {
-		switch (this) {
-		case OverflowedLinesBySpace:
-		case OverflowedLinesByGlyph:
-			if (wrapping == Wrapping.wrappingLast) return true;
-			// Fall through.
-		case WrappedLinesBySpace:
-		case WrappedLinesByGlyph:
-			return wrapping == Wrapping.wrapped;
-		case AllLinesBySpace:
-		case AllLinesByGlyph:
-			return true;
-		}
-		return false;
-	}
-
 	public boolean matchChar (int ch) {
 		switch (this) {
 		case WrappedLinesBySpace:

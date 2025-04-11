@@ -489,7 +489,6 @@
 		<include name="utils/TimSort.java"/>
 		<include name="utils/UBJsonReader.java"/>
 		<include name="utils/UBJsonWriter.java"/>
-		<include name="utils/Wrapping.java"/>
 		<include name="utils/XmlReader.java"/>
 		<include name="utils/XmlWriter.java"/>
 

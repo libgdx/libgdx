@@ -29,7 +29,6 @@ import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.Pools;
-import com.badlogic.gdx.utils.Wrapping;
 
 /** Stores {@link GlyphRun runs} of glyphs for a piece of text. The text may contain newlines and color markup tags.
  * <p>
@@ -50,6 +49,10 @@ public class GlyphLayout implements Poolable {
 	static private final Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun::new);
 	static private final IntArray colorStack = new IntArray(4);
 	static private final float epsilon = 0.0001f;
+
+	static protected final int notWrapped = 0;
+	static protected final int wrapped = 1;
+	static protected final int lastWrapped = 2;
 
 	/** Each run has the glyphs for a line of text.
 	 * <p>
@@ -306,7 +309,7 @@ public class GlyphLayout implements Poolable {
 	}
 
 	private void justifyRun (GlyphRun run, float targetWidth, int gaps, Justify justify) {
-		if (gaps == 0 || !justify.matchWrapping(run.wrapping)) return;
+		if (gaps == 0 || !GlyphLayout.shouldJustify(justify, run.wrapState)) return;
 
 		float pad = targetWidth - run.width;
 		if (pad <= 0.0f) return;
@@ -320,6 +323,22 @@ public class GlyphLayout implements Poolable {
 			if (justify.matchChar(glyph.id)) xAdvances[i] += pad;
 		}
 		run.width = targetWidth;
+	}
+
+	private static boolean shouldJustify(Justify justify, int wrapState) {
+		switch (justify) {
+			case OverflowedLinesBySpace:
+			case OverflowedLinesByGlyph:
+				if (wrapState == lastWrapped) return true;
+				// Fall through.
+			case WrappedLinesBySpace:
+			case WrappedLinesByGlyph:
+				return wrapState == wrapped;
+			case AllLinesBySpace:
+			case AllLinesByGlyph:
+				return true;
+		}
+		return false;
 	}
 
 	/** Align runs to center or right of targetWidth. Requires run.width of runs to be already set */
@@ -392,7 +411,7 @@ public class GlyphLayout implements Poolable {
 	/** Breaks a run into two runs at the specified wrapIndex.
 	 * @return May be null if second run is all whitespace. */
 	private GlyphRun wrap (BitmapFontData fontData, GlyphRun first, int wrapIndex) {
-		first.wrapping = Wrapping.wrapped;
+		first.wrapState = GlyphLayout.wrapped;
 		Array<Glyph> glyphs2 = first.glyphs; // Starts with all the glyphs.
 		int glyphCount = first.glyphs.size;
 		FloatArray xAdvances2 = first.xAdvances; // Starts with all the xadvances.
@@ -412,7 +431,7 @@ public class GlyphLayout implements Poolable {
 		GlyphRun second = null;
 		if (secondStart < glyphCount) {
 			second = glyphRunPool.obtain();
-			second.wrapping = Wrapping.wrappingLast;
+			second.wrapState = GlyphLayout.lastWrapped;
 
 			Array<Glyph> glyphs1 = second.glyphs; // Starts empty.
 			glyphs1.addAll(glyphs2, 0, firstEnd);
@@ -566,7 +585,7 @@ public class GlyphLayout implements Poolable {
 
 		public float x, y, width;
 
-		public int wrapping;
+		protected int wrapState;
 
 		void appendRun (GlyphRun run) {
 			glyphs.addAll(run.glyphs);
@@ -578,7 +597,7 @@ public class GlyphLayout implements Poolable {
 		public void reset () {
 			glyphs.clear();
 			xAdvances.clear();
-			wrapping = Wrapping.none;
+			wrapState = GlyphLayout.notWrapped;
 		}
 
 		public String toString () {
