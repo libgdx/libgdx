@@ -142,15 +142,15 @@ public class TiledMapPacker {
 	 * <code> <br><br>
 	 * Linux / OS X <br>
 	   java -cp gdx.jar:gdx-natives.jar:gdx-backend-lwjgl.jar:gdx-backend-lwjgl-natives.jar:gdx-tiled-preprocessor.jar:extensions/gdx-tools/gdx-tools.jar
-	    com.badlogic.gdx.tiledmappacker.TiledMapPacker inputDir [outputDir]  [--strip-unused] [--combine-tilesets] [-v]
+	    com.badlogic.gdx.tiledmappacker.TiledMapPacker inputDir [outputDir] [projectFilePath] [--strip-unused] [--combine-tilesets] [-v]
 	 * <br><br>
 	 * 
 	 * Windows <br>
 	   java -cp gdx.jar;gdx-natives.jar;gdx-backend-lwjgl.jar;gdx-backend-lwjgl-natives.jar;gdx-tiled-preprocessor.jar;extensions/gdx-tools/gdx-tools.jar
-	    com.badlogic.gdx.tiledmappacker.TiledMapPacker inputDir [outputDir]  [--strip-unused] [--combine-tilesets] [-v]
+	    com.badlogic.gdx.tiledmappacker.TiledMapPacker inputDir [outputDir] [projectFilePath] [--strip-unused] [--combine-tilesets] [-v]
 	 * <br><br> </code>
 	 * 
-	 * Keep in mind that this preprocessor will need to load the maps by using the {@link TmxMapLoader} loader and this in turn
+	 * Keep in mind that this preprocessor will need to load the maps by using the {@link TmxMapLoader} or {@link TmjMapLoader} loader and this in turn
 	 * will need a valid OpenGL context to work.
 	 * 
 	 * Process a directory containing TMX or TMJ map files representing Tiled maps and produce multiple, or a single, TextureAtlas
@@ -180,6 +180,9 @@ public class TiledMapPacker {
 
 	/** Processes a directory of Tiled .tmx or .tmj map files, optionally including subdirectories, and outputs updated map files
 	 * and a texture atlas. This method is intended for usage from external callers such as build scripts or other Java classes.
+	 *
+	 * Keep in mind that this preprocessor will need to load the maps by using the {@link TmxMapLoader} or {@link TmjMapLoader} loader and this in turn
+	 * will need a valid OpenGL context to work.
 	 *
 	 * @param texturePackerSettings the {@link TexturePacker.Settings} used for packing textures (e.g., padding, filtering, etc.)
 	 * @param inputDirPath the path to the directory containing map files (.tmx or .tmj); must not be null or empty
@@ -627,7 +630,7 @@ public class TiledMapPacker {
 	}
 
 	/** Here we Process a single <imagelayer> node. We needed a way to handle images across nested folders as well as matching
-	 * names relative to the .tmx file. As well as keeping the changes to the AtlasTmxMapLoader minimal. With that goal in mind we
+	 * names relative to the .tmx file. And keeping the changes to the AtlasTmxMapLoader minimal. With that goal in mind we
 	 * get each image's source attribute, generate a unique name for it, appended that name to this string 'atlas_imagelayer_' and
 	 * later use it as the atlas id. The AtlasTmxMapLoader's AtlasResolver .getImage() method will check for 'atlas_imagelayer_' to
 	 * use imagelayer specific logic.
@@ -1059,9 +1062,9 @@ public class TiledMapPacker {
 	}
 
 	/** Below we have 2 custom subclasses of the Map Loaders we use within the TiledMapPacker PackerTmxMapLoader and
-	 * PackerTmjMapLoader. The only reason these are here is to add support for packing Maps which user a Collection of Images
-	 * tileset This was done so we would not be forced to make Core code changes just to appease the TiledMapPacker. We just needed
-	 * a way to pass along the image source into a tile's property so we could use this to find and load the texture for packing.
+	 * PackerTmjMapLoader. The only reason these are here is to add support for packing Maps which use a Collection of Images
+	 * tileset. This was done so we would not be forced to make Core code changes just to appease the TiledMapPacker. We just needed
+	 * a way to pass along the image source into a tile's property so we could use this to find and load the textures for packing.
 	 * When loading a Collection of Images that data is not stored anywhere.
 	 *
 	 * The basic logic is as follows: Let super.addStaticTiles() run like normal. Within that method addStaticTiledMapTile() is
