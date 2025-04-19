@@ -880,7 +880,7 @@ public class BitmapFont implements Disposable {
 				}
 				return page[ch - LOW_SURROGATE_MIN];
 			}
-			assert highSurrogate == null : "Saw high surrogate but no low surrogate at " + ch;
+			assert highSurrogate == null : "Saw high surrogate " + Integer.toHexString(highSurrogate) + " but no low surrogate at character '" + ch + "'";
             //noinspection DataFlowIssue
             highSurrogate = null;
 			Glyph[] page = glyphs[ch / PAGE_SIZE];
