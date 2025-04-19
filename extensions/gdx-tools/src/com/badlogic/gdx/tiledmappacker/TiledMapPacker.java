@@ -184,7 +184,7 @@ public class TiledMapPacker {
 	 * Keep in mind that this preprocessor will need to load the maps by using the {@link TmxMapLoader} or {@link TmjMapLoader}
 	 * loader and this in turn will need a valid OpenGL context to work.
 	 *
-	 * @param texturePackerSettings the {@link TexturePacker.Settings} used for packing textures (e.g., padding, filtering, etc.)
+	 * @param texturePackerSettings the {@link Settings} used for packing textures (e.g., padding, filtering, etc.)
 	 * @param inputDirPath the path to the directory containing map files (.tmx or .tmj); must not be null or empty
 	 * @param outputDirPath optional path where processed map files and the atlas will be written; if empty or null, defaults to
 	 *           "../output/" relative to input
