@@ -92,7 +92,7 @@ jobs:
           path: natives-macos.zip
 
   natives-linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -110,7 +110,7 @@ jobs:
           path: natives-linux.zip
 
   natives-windows:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -147,7 +147,7 @@ jobs:
           path: natives-windows.zip
 
   natives-android:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -186,7 +186,7 @@ jobs:
           path: natives-android.zip
 
   pack-natives:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [natives-macos, natives-linux, natives-windows, natives-ios, natives-android]
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -265,7 +265,7 @@ jobs:
           aws s3 cp natives.zip s3://libgdx-nightlies/libgdx-nightlies/natives.zip
 
   publish:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: pack-natives
     env:
       ORG_GRADLE_PROJECT_MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -316,7 +316,7 @@ jobs:
         run: ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
 
   build-and-upload-runnables:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: pack-natives
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
