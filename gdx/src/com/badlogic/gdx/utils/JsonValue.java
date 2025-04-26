@@ -83,6 +83,26 @@ public class JsonValue implements Iterable<JsonValue> {
 		set(value);
 	}
 
+	/** Creates a deep copy of the specific value, except {@link #parent()}, {@link #next()}, and {@link #prev()} are not null. */
+	public JsonValue (JsonValue value) {
+		this(value, null);
+	}
+
+	private JsonValue (JsonValue value, @Null JsonValue parent) {
+		type = value.type;
+		stringValue = value.stringValue;
+		doubleValue = value.doubleValue;
+		longValue = value.longValue;
+		name = value.name;
+		this.parent = parent;
+		if (value.child != null) child = new JsonValue(value.child, this);
+		if (parent != null && value.next != null) {
+			next = new JsonValue(value.next, parent);
+			next.prev = this;
+		}
+		size = value.size;
+	}
+
 	/** Returns the child at the specified index. This requires walking the linked list to the specified entry, see
 	 * {@link JsonValue} for how to iterate efficiently.
 	 * @return May be null. */
@@ -897,6 +917,41 @@ public class JsonValue implements Iterable<JsonValue> {
 	 * @return May be null. */
 	public @Null JsonValue child () {
 		return child;
+	}
+
+	/** Sets the name of the specified value and replaces an existing child with the same name, else adds it after the last
+	 * child. */
+	public void setChild (String name, JsonValue value) {
+		if (name == null) throw new IllegalArgumentException("name cannot be null.");
+		value.name = name;
+		setChild(value);
+	}
+
+	/** Replaces an existing child with the same name as the specified value, else adds it after the last child. */
+	public void setChild (JsonValue value) {
+		String name = value.name;
+		if (name == null) throw new IllegalStateException("An object child requires a name: " + value);
+		JsonValue current = child;
+		if (current.name.equals(name)) {
+			child = value;
+			value.next = current.next;
+			if (current.next != null) current.next.prev = value;
+			value.parent = this;
+		} else {
+			current = current.next;
+			while (current != null) {
+				if (current.name.equals(name)) {
+					current.prev.next = value;
+					value.prev = current.prev;
+					value.next = current.next;
+					if (current.next != null) current.next.prev = value;
+					value.parent = this;
+					return;
+				}
+				current = current.next;
+			}
+			addChild(value);
+		}
 	}
 
 	/** Sets the name of the specified value and adds it after the last child. */

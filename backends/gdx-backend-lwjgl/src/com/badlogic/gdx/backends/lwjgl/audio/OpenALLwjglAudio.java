@@ -50,7 +50,7 @@ public class OpenALLwjglAudio implements LwjglAudio {
 	private OpenALSound[] recentSounds;
 	private int mostRecentSound = -1;
 
-	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
+	Array<OpenALMusic> music = new Array<>(false, 1, OpenALMusic[]::new);
 	boolean noDevice = false;
 
 	public OpenALLwjglAudio () {

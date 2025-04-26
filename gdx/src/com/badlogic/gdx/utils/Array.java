@@ -52,20 +52,38 @@ public class Array<T> implements Iterable<T> {
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
 	public Array (boolean ordered, int capacity) {
+		this(ordered, capacity, ArraySupplier.object());
+	}
+
+	/** Creates a new array with {@link #items} with the specified supplier.
+	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
+	 *           memory copy.
+	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
+	public Array (boolean ordered, int capacity, ArraySupplier<T[]> arraySupplier) {
 		this.ordered = ordered;
-		items = (T[])new Object[capacity];
+		items = arraySupplier.get(capacity);
+	}
+
+	/** Creates an ordered array with {@link #items} with the specified supplier and a capacity of 16. */
+	public Array (ArraySupplier<T[]> arraySupplier) {
+		this(true, 16, arraySupplier);
 	}
 
 	/** Creates a new array with {@link #items} of the specified type.
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy.
-	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
+	 * @param capacity Any elements added beyond this will cause the backing array to be grown.
+	 *
+	 * @deprecated Use {@link Array#Array(boolean, int, ArraySupplier)} instead */
+	@Deprecated
 	public Array (boolean ordered, int capacity, Class arrayType) {
-		this.ordered = ordered;
-		items = (T[])ArrayReflection.newInstance(arrayType, capacity);
+		this(ordered, capacity, size -> (T[])ArrayReflection.newInstance(arrayType, size));
 	}
 
-	/** Creates an ordered array with {@link #items} of the specified type and a capacity of 16. */
+	/** Creates an ordered array with {@link #items} of the specified type and a capacity of 16.
+	 *
+	 * @deprecated Use {@link Array#Array(ArraySupplier)} instead */
+	@Deprecated
 	public Array (Class arrayType) {
 		this(true, 16, arrayType);
 	}
@@ -73,10 +91,10 @@ public class Array<T> implements Iterable<T> {
 	/** Creates a new array containing the elements in the specified array. The new array will have the same type of backing array
 	 * and will be ordered if the specified array is ordered. The capacity is set to the number of elements, so any subsequent
 	 * elements added will cause the backing array to be grown. */
-	public Array (Array<? extends T> array) {
-		this(array.ordered, array.size, array.items.getClass().getComponentType());
+	public Array (Array<T> array) {
+		items = Arrays.copyOf(array.items, array.size);
+		ordered = array.ordered;
 		size = array.size;
-		System.arraycopy(array.items, 0, items, 0, size);
 	}
 
 	/** Creates a new ordered array containing the elements in the specified array. The new array will have the same type of
@@ -91,9 +109,9 @@ public class Array<T> implements Iterable<T> {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy. */
 	public Array (boolean ordered, T[] array, int start, int count) {
-		this(ordered, count, array.getClass().getComponentType());
+		items = Arrays.copyOfRange(array, start, start + count);
+		this.ordered = ordered;
 		size = count;
-		System.arraycopy(array, start, items, 0, size);
 	}
 
 	public void add (T value) {
@@ -368,7 +386,7 @@ public class Array<T> implements Iterable<T> {
 		size = n - count;
 	}
 
-	/** Removes from this array all of elements contained in the specified array.
+	/** Removes from this array the first instance of each element contained in the specified array.
 	 * @param identity True to use ==, false to use .equals().
 	 * @return true if this array was modified. */
 	public boolean removeAll (Array<? extends T> array, boolean identity) {
@@ -466,11 +484,8 @@ public class Array<T> implements Iterable<T> {
 
 	/** Creates a new backing array with the specified size containing the current items. */
 	protected T[] resize (int newSize) {
-		T[] items = this.items;
-		T[] newItems = (T[])ArrayReflection.newInstance(items.getClass().getComponentType(), newSize);
-		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
-		this.items = newItems;
-		return newItems;
+		items = Arrays.copyOf(items, newSize);
+		return items;
 	}
 
 	/** Sorts this array. The array elements must implement {@link Comparable}. This method is not thread safe (uses
@@ -570,11 +585,19 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Returns the items as an array. Note the array is typed, so the {@link #Array(Class)} constructor must have been used.
-	 * Otherwise use {@link #toArray(Class)} to specify the array type. */
+	 * Otherwise use {@link #toArray(ArraySupplier)} to specify the array type. */
 	public T[] toArray () {
-		return (T[])toArray(items.getClass().getComponentType());
+		return Arrays.copyOf(items, size);
 	}
 
+	public T[] toArray (ArraySupplier<T[]> arraySupplier) {
+		T[] result = arraySupplier.get(size);
+		System.arraycopy(items, 0, result, 0, size);
+		return result;
+	}
+
+	/** @deprecated Use {@link Array#toArray(ArraySupplier)} instead */
+	@Deprecated
 	public <V> V[] toArray (Class<V> type) {
 		V[] result = (V[])ArrayReflection.newInstance(type, size);
 		System.arraycopy(items, 0, result, 0, size);
@@ -651,12 +674,28 @@ public class Array<T> implements Iterable<T> {
 		return buffer.toString();
 	}
 
-	/** @see #Array(Class) */
+	/** @see #Array(ArraySupplier) */
+	static public <T> Array<T> of (ArraySupplier<T[]> arraySupplier) {
+		return new Array<>(arraySupplier);
+	}
+
+	/** @see #Array(boolean, int, ArraySupplier) */
+	static public <T> Array<T> of (boolean ordered, int capacity, ArraySupplier<T[]> arraySupplier) {
+		return new Array<>(ordered, capacity, arraySupplier);
+	}
+
+	/** @see #Array(Class)
+	 *
+	 * @deprecated Use {@link Array#of(ArraySupplier)} */
+	@Deprecated
 	static public <T> Array<T> of (Class<T> arrayType) {
 		return new Array(arrayType);
 	}
 
-	/** @see #Array(boolean, int, Class) */
+	/** @see #Array(boolean, int, Class)
+	 *
+	 * @deprecated Use {@link Array#of(boolean, int, ArraySupplier)} */
+	@Deprecated
 	static public <T> Array<T> of (boolean ordered, int capacity, Class<T> arrayType) {
 		return new Array(ordered, capacity, arrayType);
 	}

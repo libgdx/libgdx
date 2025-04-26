@@ -1,0 +1,181 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "compatibilityVersion": 1100,
+    "extensionsPath": "extensions",
+    "folders": [
+        "."
+    ],
+    "properties": [
+    ],
+    "propertyTypes": [
+        {
+            "id": 2,
+            "name": "enumNum",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "NUM1",
+                "NUM2"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "id": 4,
+            "name": "enumNumMulti",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "NUM1",
+                "NUM2"
+            ],
+            "valuesAsFlags": true
+        },
+        {
+            "id": 1,
+            "name": "enumStr",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "STR1",
+                "STR2"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "id": 3,
+            "name": "enumStrMulti",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "STR1",
+                "STR2"
+            ],
+            "valuesAsFlags": true
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 5,
+            "members": [
+                {
+                    "name": "classColor",
+                    "type": "color",
+                    "value": "#ff00ff00"
+                },
+                {
+                    "name": "classEnumStr",
+                    "propertyType": "enumStr",
+                    "type": "string",
+                    "value": "STR2"
+                },
+                {
+                    "name": "classInt",
+                    "type": "int",
+                    "value": 1
+                },
+                {
+                    "name": "classObj",
+                    "type": "object",
+                    "value": 0
+                },
+                {
+                    "name": "classStr",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "testClass",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 8,
+            "members": [
+                {
+                    "name": "classClass",
+                    "propertyType": "testClass",
+                    "type": "class",
+                    "value": {
+                        "classInt": 3,
+                        "classStr": "defaultStrNested"
+                    }
+                },
+                {
+                    "name": "classColor",
+                    "type": "color",
+                    "value": "#ffffff00"
+                },
+                {
+                    "name": "classObj",
+                    "type": "object",
+                    "value": 0
+                },
+                {
+                    "name": "classStr",
+                    "type": "string",
+                    "value": "defaultStr"
+                }
+            ],
+            "name": "testClassDefaults",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 7,
+            "members": [
+                {
+                    "name": "classClass",
+                    "propertyType": "testClass",
+                    "type": "class",
+                    "value": {
+                        "classInt": 2
+                    }
+                },
+                {
+                    "name": "classInt",
+                    "type": "int",
+                    "value": 0
+                }
+            ],
+            "name": "testClassNested",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        }
+    ]
+}

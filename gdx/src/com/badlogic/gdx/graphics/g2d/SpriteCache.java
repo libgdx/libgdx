@@ -203,7 +203,7 @@ public class SpriteCache implements Disposable {
 			// New cache.
 			cache.maxCount = cacheCount;
 			cache.textureCount = textures.size;
-			cache.textures = textures.toArray(Texture.class);
+			cache.textures = textures.toArray(Texture[]::new);
 			cache.counts = new int[cache.textureCount];
 			for (int i = 0, n = counts.size; i < n; i++)
 				cache.counts[i] = counts.get(i);

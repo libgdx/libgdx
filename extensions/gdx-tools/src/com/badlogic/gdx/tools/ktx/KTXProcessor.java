@@ -32,7 +32,7 @@ public class KTXProcessor {
 
 	public static void convert (String input, String output, boolean genMipmaps, boolean packETC1, boolean genAlphaAtlas)
 		throws Exception {
-		Array<String> opts = new Array<String>(String.class);
+		Array<String> opts = new Array<>(String[]::new);
 		opts.add(input);
 		opts.add(output);
 		if (genMipmaps) opts.add("-mipmaps");
@@ -43,7 +43,7 @@ public class KTXProcessor {
 
 	public static void convert (String inPx, String inNx, String inPy, String inNy, String inPz, String inNz, String output,
 		boolean genMipmaps, boolean packETC1, boolean genAlphaAtlas) throws Exception {
-		Array<String> opts = new Array<String>(String.class);
+		Array<String> opts = new Array<>(String[]::new);
 		opts.add(inPx);
 		opts.add(inNx);
 		opts.add(inPy);

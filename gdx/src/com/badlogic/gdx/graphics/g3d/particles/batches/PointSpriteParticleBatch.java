@@ -86,7 +86,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 
 	public PointSpriteParticleBatch (int capacity, ParticleShader.Config shaderConfig, BlendingAttribute blendingAttribute,
 		DepthTestAttribute depthTestAttribute) {
-		super(PointSpriteControllerRenderData.class);
+		super(PointSpriteControllerRenderData[]::new);
 
 		if (!pointSpritesEnabled) enablePointSprites();
 

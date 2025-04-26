@@ -65,7 +65,9 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 			@Override
 			public TextureRegion getImage (String name) {
-				return atlas.findRegion(name);
+				// check for imagelayer and strip if needed
+				String regionName = parseRegionName(name);
+				return atlas.findRegion(regionName);
 			}
 		}
 
@@ -85,7 +87,9 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 
 			@Override
 			public TextureRegion getImage (String name) {
-				return getAtlas().findRegion(name);
+				// check for imagelayer and strip if needed
+				String regionName = parseRegionName(name);
+				return getAtlas().findRegion(regionName);
 			}
 		}
 	}
@@ -232,5 +236,18 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			texture.setFilter(min, mag);
 		}
 		trackedTextures.clear();
+	}
+
+	/** Parse incoming region name to check for 'atlas_imagelayer' within the String These are regions representing Image Layers
+	 * that have been packed into the atlas ImageLayer Image names include the relative assets path, so it must be stripped.
+	 * @param name Name to check
+	 * @return The name of the region to pass into an atlas */
+	private static String parseRegionName (String name) {
+		if (name.contains("atlas_imagelayer")) {
+			// Extract the name of region from path
+			return new FileHandle(name).name();
+		} else {
+			return name;
+		}
 	}
 }
