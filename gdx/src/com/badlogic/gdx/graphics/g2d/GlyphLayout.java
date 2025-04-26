@@ -50,10 +50,6 @@ public class GlyphLayout implements Poolable {
 	static private final IntArray colorStack = new IntArray(4);
 	static private final float epsilon = 0.0001f;
 
-	static protected final int notWrapped = 0;
-	static protected final int wrapped = 1;
-	static protected final int lastWrapped = 2;
-
 	/** Each run has the glyphs for a line of text.
 	 * <p>
 	 * Runs are pooled, so references should not be kept past the next call to
@@ -334,15 +330,15 @@ public class GlyphLayout implements Poolable {
 		run.width = targetWidth;
 	}
 
-	private static boolean shouldJustify (Justify justify, int wrapState) {
+	private static boolean shouldJustify (Justify justify, WrapState wrapState) {
 		switch (justify) {
 		case WrappedLinesBySpace:
 		case WrappedLinesByGlyph:
-			if (wrapState == GlyphLayout.lastWrapped) return true;
+			if (wrapState == WrapState.lastWrapped) return true;
 			// Fall through.
 		case ParagraphBySpace:
 		case ParagraphByGlyph:
-			return wrapState == GlyphLayout.wrapped;
+			return wrapState == WrapState.wrapped;
 		case AllLinesBySpace:
 		case AllLinesByGlyph:
 			return true;
@@ -420,7 +416,7 @@ public class GlyphLayout implements Poolable {
 	/** Breaks a run into two runs at the specified wrapIndex.
 	 * @return May be null if second run is all whitespace. */
 	private GlyphRun wrap (BitmapFontData fontData, GlyphRun first, int wrapIndex) {
-		first.wrapState = GlyphLayout.wrapped;
+		first.wrapState = WrapState.wrapped;
 		Array<Glyph> glyphs2 = first.glyphs; // Starts with all the glyphs.
 		int glyphCount = first.glyphs.size;
 		FloatArray xAdvances2 = first.xAdvances; // Starts with all the xadvances.
@@ -440,7 +436,7 @@ public class GlyphLayout implements Poolable {
 		GlyphRun second = null;
 		if (secondStart < glyphCount) {
 			second = glyphRunPool.obtain();
-			second.wrapState = GlyphLayout.lastWrapped;
+			second.wrapState = WrapState.lastWrapped;
 
 			Array<Glyph> glyphs1 = second.glyphs; // Starts empty.
 			glyphs1.addAll(glyphs2, 0, firstEnd);
@@ -581,6 +577,8 @@ public class GlyphLayout implements Poolable {
 		return buffer.toString();
 	}
 
+	public enum WrapState { notWrapped, wrapped, lastWrapped }
+
 	/** Stores glyphs and positions for a line of text.
 	 * @author Nathan Sweet */
 	static public class GlyphRun implements Poolable {
@@ -594,7 +592,7 @@ public class GlyphLayout implements Poolable {
 
 		public float x, y, width;
 
-		protected int wrapState;
+		public WrapState wrapState;
 
 		void appendRun (GlyphRun run) {
 			glyphs.addAll(run.glyphs);
@@ -606,7 +604,7 @@ public class GlyphLayout implements Poolable {
 		public void reset () {
 			glyphs.clear();
 			xAdvances.clear();
-			wrapState = GlyphLayout.notWrapped;
+			wrapState = WrapState.notWrapped;
 		}
 
 		public String toString () {
