@@ -1,4 +1,65 @@
-[1.12.2-SNAPSHOT]
+[1.14.0]
+- [BREAKING CHANGE] Android: Updated minSDK to 21. Multidex config is no longer required, please check https://developer.android.com/build/multidex.
+- [BREAKING CHANGE] Android: Proguard config line `boolean getUseDefaultContactFilter();` needs to be added. See https://github.com/libgdx/libgdx/pull/7578.
+- [BREAKING CHANGE] Android: Removed `AndroidApplicationConfiguration#touchSleepTime`.
+- [BREAKING CHANGE] Skin `setEnabled` now only works with actors that implement `Styleable`. Use `setEnabledReflection` for old behavior or add `Styleable` to your actors.
+- [BREAKING CHANGE] LWJGL3: The signature of `OpenALLwjgl3Audio#registerSound/registerMusic` has changed. To migrate just replace `registerMusic("myMusic", MyMusic.class);` with `registerMusic("myMusic", MyMusic::new);`
+- API Addition: Allow option to set Box2D native ContactFilter (World#setContactFilter(null)) for performance improvements.
+- API Addition: Added BooleanArray#replaceFirst and BooleanArray#replaceAll
+- API Addition: Added ByteArray#replaceFirst and ByteArray#replaceAll
+- API Addition: Added CharArray#replaceFirst and CharArray#replaceAll
+- API Addition: Added DelayedRemovalArray#replaceFirst and DelayedRemovalArray#replaceAll
+- API Addition: Added FloatArray#replaceFirst and FloatArray#replaceAll
+- API Addition: Added IntArray#replaceFirst and IntArray#replaceAll
+- API Addition: Added LongArray#replaceFirst and LongArray#replaceAll
+- API Addition: Added ShortArray#replaceFirst and ShortArray#replaceAll
+- API Addition: Added SnapshotArray#replaceFirst and SnapshotArray#replaceAll
+- API Addition: Actors that implement `getStyle` and `setStyle` should now implement the `Styleable` interface
+- API Addition: Added BitmapFontCache#getPageCount.
+- API Addition: Added TextField#drawBackground, #updateDisplayText is protected.
+- API Addition: Added Drawable default interface methods.
+- Android: Fixed rare NPE when `onDestroy` was called
+- Support has been added for Tiled "Text Objects", through new TextMapObject class
+- API Deprecation: Deprecated ReflectionPool and the related Pools#get/Pools#obtain method. Please use the new DefaultPool with the new Pools#get/Pools#obtain methods. They offer more safety and can be used with the java 8 method reference syntax (e.g. Pools.get(MyClass::new))
+- API Deprecation: Deprecated constructors taking a "Class" for Queue/ArrayMap/Array. Please use the constructors utilising "ArraySupplier". They offer more safety and can be used with the java 8 method reference syntax (e.g. MyClass[]::new)
+- API Deprecation: Deprecated constructors taking a "Class" for ParallelArray.ChannelDescriptor. Please use the constructors utilising "ArraySupplier". They offer more safety and can be used with the java 8 method reference syntax (e.g. MyClass[]::new)
+- iOS: Update to MobiVM 2.3.23
+- iOS: The MetalANGLE backend has been replaced by MetalANGLEKit which uses a newer ANGLE revision
+- iOS: Fixing issue where after setText is called on TextField, characters cannot be deleted until a new character is added.
+
+[1.13.1]
+- [BREAKING CHANGE] Android: Since 1.13.0 libGDX requires setting `android.useAndroidX=true` in your gradle.properties file. In 1.13.1 it is NO longer needed to define the `androidx.core:core` dependency in your Android module.
+- [BREAKING CHANGE] BaseTmxMapLoader no longer parses point objects into zero-sized RectangleMapObject. Instead, points are now represented with PointMapObject
+- iOS: Update to MobiVM 2.3.22
+- iOS: Fixes Gdx.openURI() not working on iOS 18.1 Simulator.
+- Change visibility of PolygonSpriteBatch.switchTexture() to protected
+- Added XmlReader.getChildren() and XmlReader.replaceChild()
+- LWJGL3: Fix pauseWhenLostFocus not working as expected
+- LWJGL 3: Downgrade to 3.3.3 due to AV false positives on 3.3.4 and OpenAL log spamming issue on 3.3.5.
+- API Addition: Added FPSLogger#setBound
+- Android: Fix crash on startup if `setContentView` was manually called after `initializeForView`
+- API Addition: Added Array#replaceFirst and Array#replaceAll
+- Fixed ShortArray#lastIndexOf taking char instead of short.
+- Properly validate font name in Hiero
+- Fix depth shader recycling
+- Support 'class' Tiled/Tmx MapProperty
+- Support for Layer TintColor in TiledMap
+- Fix classpath files not being loaded on GWT
+- Fixed LongArray#lastIndexOf taking char instead of long.
+- LongArray#pop and #peek now throw expections if the array is empty
+- Reset existing transformations of provided overlap Polygon in Polygon::intersectPolygons
+- Added tiledmap loader for JSON files
+- Fix duplicate points returned in polygon intersection
+- Change defaults of SpriteBatch to use VBO instead of VertexArray on gl2/gles2.0
+- Fix: no longer inline the version string
+- GWT - Calculate MD5 hash while copying file to avoid errors on very large files
+- Fix: Wayland doesn't support setting window position and icon
+- Fix: Parsing imagelayer inside a group tag in TMX file
+- Improve Android input keyboard with autocorrection
+- Unproject and pick ray docs for Viewport/Camera
+- Support for Image Layer repeat x and y in TiledMap + Bugfix
+
+[1.13.0]
 - [BREAKING CHANGE] GWT: Updated to 2.11.0. `com.google.jsinterop:jsinterop-annotations:2.0.2:sources` must be added as a dependency to your html project dependencies.
 - [BREAKING CHANGE] Android: Minimum API level is now level 19 (Android 4.4)
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 12.0. Update your Info.plist file if necessary.
@@ -10,7 +71,6 @@
 - Fixed scene2d.ui layout for fractional positions and sizes.
 - LWJGL3: Added pauseWhenMinimized and pauseWhenLostFocus flags to Lwjgl3ApplicationConfiguration.
 - libGDX is now built using Java 17 due to Gradle 8 requirements.
-- New GDX Setup projects now use Gradle 8.4 and AGP Plugin 8.1.2 which require at least Java 17.
 - Fixed Timer#stop, remember time spent stopped and delay tasks when started again. #7281
 - Android: Add configuration option to render under the cutout if available on the device.
 - Fix: Keep SelectBox popup from extending past right edge of stage.
@@ -20,6 +80,9 @@
 - Optimization of SpriteBatch in GL30 default modes, as indices do not need to be updated
 - Desktop: Added support for 8/32/64-bit PCM and MP3 WAVs
 - Desktop: Improved support for surround sound audio files (#6792)
+- gdx-setup has been replaced with https://github.com/libgdx/gdx-liftoff
+- Android: Added support for predictive back gesture (requires android:enableOnBackInvokedCallback="true" in manifest)
+- API Removal: Removed deprecated back and menu key methods. Use `setCatchKey` and `isCatchKey` instead.
 - Cache packed color on sprite to improve performance
 - Improve JsonReader, add JsonSkimmer, JsonString
 - Add proper glTexImage2D support on GWT

@@ -55,77 +55,37 @@ tasks.register('generate', JavaExec) {
 	outputs.dir 'src/'
 }
 
-tasks.register('fetchMetalANGLE', Download) {
+tasks.register('fetchMetalANGLEKit', Download) {
 	doFirst {
 		file("build/tmp").mkdirs();
 	}
-	src 'https://github.com/kakashidinho/metalangle/releases/download/gles3-0.0.8/MetalANGLE.framework.ios.zip'
-	dest 'build/tmp/MetalANGLE.framework.ios.zip'
+	src 'https://github.com/libgdx/MetalANGLEKit/releases/download/v1.2/metalanglekit.zip'
+	dest 'build/tmp/MetalANGLEKit.zip'
 	onlyIfModified true
 	useETag "all"
 }
 
-tasks.register('fetchMetalANGLESimulator', Download) {
-	doFirst {
-		file("build/tmp").mkdirs();
-	}
-	src 'https://github.com/kakashidinho/metalangle/releases/download/gles3-0.0.8/MetalANGLE.framework.ios.simulator.zip'
-	dest 'build/tmp/MetalANGLE.framework.ios.simulator.zip'
-	onlyIfModified true
-	useETag "all"
-}
-
-tasks.register('verifyMetalANGLE', Verify) {
-	dependsOn fetchMetalANGLE
-	src 'build/tmp/MetalANGLE.framework.ios.zip'
+tasks.register('verifyMetalANGLEKit', Verify) {
+	dependsOn fetchMetalANGLEKit
+	src 'build/tmp/MetalANGLEKit.zip'
 	algorithm 'SHA-256'
-	checksum '9b6e7c82d41749266200ed19bb184c4f47df63c4dcde0972186ea557de623018'
+	checksum '91f2b78208a1d8f59c28e2dc4a2d2a122a2cb2e61dcb853baa339386e6faf4a0'
 }
 
-tasks.register('verifyMetalANGLESimulator', Verify) {
-	dependsOn fetchMetalANGLESimulator
-	src 'build/tmp/MetalANGLE.framework.ios.simulator.zip'
-	algorithm 'SHA-256'
-	checksum '63ff063bf7825e2da9a01eda981067eb4eacd42e202c86f448541d2c5bd564a9'
-}
+tasks.register('extractMetalANGLEKit', Copy) {
+	dependsOn verifyMetalANGLEKit
 
-tasks.register('extractMetalANGLE', Copy) {
-	dependsOn verifyMetalANGLE
 	doFirst {
-		file("build/tmp/real").mkdirs();
-	}
-	from zipTree('build/tmp/MetalANGLE.framework.ios.zip')
-	into 'build/tmp/real'
-}
-
-tasks.register('extractMetalANGLESimulator', Copy) {
-	dependsOn verifyMetalANGLESimulator
-	doFirst {
-		file("build/tmp/sim").mkdirs();
-	}
-	from zipTree('build/tmp/MetalANGLE.framework.ios.simulator.zip')
-	into 'build/tmp/sim'
-}
-
-tasks.register('buildMetalANGLE', Exec) {
-	dependsOn extractMetalANGLE, extractMetalANGLESimulator
-	doFirst {
-		delete("res/META-INF/robovm/ios/libs/MetalANGLE.xcframework")
+		delete("res/META-INF/robovm/ios/libs/")
+		delete("res/META-INF/robovm/ios/libs/")
 		file("res/META-INF/robovm/ios/libs").mkdirs();
 	}
-	commandLine 'xcodebuild', '-create-xcframework', '-framework', 'build/tmp/real/MetalANGLE.framework', '-framework', 'build/tmp/sim/MetalANGLE.framework', '-output', 'res/META-INF/robovm/ios/libs/MetalANGLE.xcframework'
-	standardOutput = new ByteArrayOutputStream()
-	ext.output = {
-		return standardOutput.toString()
-	}
-
-	inputs.dir 'build/tmp/real/MetalANGLE.framework'
-	inputs.dir 'build/tmp/sim/MetalANGLE.framework'
-	outputs.dir 'res/META-INF/robovm/ios/libs/MetalANGLE.xcframework'
+	from zipTree('build/tmp/MetalANGLEKit.zip')
+	into 'res/META-INF/robovm/ios/libs/'
 }
 
 tasks.register('jnigenBuildIOS') {
-	dependsOn buildMetalANGLE
+	dependsOn extractMetalANGLEKit
 }
 
 tasks.register('jnigenBuild') {

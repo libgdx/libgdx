@@ -294,6 +294,10 @@ public class XmlReader {
 			if (children == null) return 0;
 			return children.size;
 		}
+		
+		public Array<Element> getChildren () {
+        		return children;
+       		}
 
 		/** @throws GdxRuntimeException if the element has no children. */
 		public Element getChild (int index) {
@@ -324,6 +328,13 @@ public class XmlReader {
 
 		public void remove () {
 			parent.removeChild(this);
+		}
+		
+		public void replaceChild (Element child, Element replacement) {
+			if (children == null) throw new GdxRuntimeException("Element has no children: " + name);
+           	if (!children.replaceFirst(child, true, replacement)) {
+           		throw new GdxRuntimeException("Element '" + name + "' does not contain child: " + child);
+            }
 		}
 
 		public Element getParent () {

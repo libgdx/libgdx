@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.Pools;
  * width is 140, a relatively arbitrary size. These parameters are reversed for a vertical progress bar.
  * @author mzechner
  * @author Nathan Sweet */
-public class ProgressBar extends Widget implements Disableable {
+public class ProgressBar extends Widget implements Disableable, Styleable<ProgressBar.ProgressBarStyle> {
 	private ProgressBarStyle style;
 	float min, max, stepSize;
 	private float value, animateFromValue;
@@ -263,7 +263,7 @@ public class ProgressBar extends Widget implements Disableable {
 		this.value = value;
 
 		if (programmaticChangeEvents) {
-			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent::new);
 			boolean cancelled = fire(changeEvent);
 			Pools.free(changeEvent);
 			if (cancelled) {

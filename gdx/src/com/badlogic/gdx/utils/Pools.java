@@ -16,13 +16,19 @@
 
 package com.badlogic.gdx.utils;
 
-/** Stores a map of {@link Pool}s (usually {@link ReflectionPool}s) by type for convenient static access.
+import com.badlogic.gdx.utils.DefaultPool.PoolSupplier;
+
+/** Stores a map of {@link Pool}s by type for convenient static access.
  * @author Nathan Sweet */
 public class Pools {
-	static private final ObjectMap<Class, Pool> typePools = new ObjectMap();
+	static private final ObjectMap<Class<?>, Pool<?>> typePools = new ObjectMap<>();
+	static private final ObjectMap<Class<?>, Pool<?>> supplierPoolsCache = new ObjectMap<>();
 
 	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note the max size is ignored
-	 * if this is not the first time this pool has been requested. */
+	 * if this is not the first time this pool has been requested.
+	 *
+	 * @deprecated Use {@link Pools#get(PoolSupplier, int)} instead */
+	@Deprecated
 	static public <T> Pool<T> get (Class<T> type, int max) {
 		Pool pool = typePools.get(type);
 		if (pool == null) {
@@ -33,22 +39,67 @@ public class Pools {
 	}
 
 	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. The max size of the pool used
-	 * is 100. */
+	 * is 100.
+	 *
+	 * @deprecated Use {@link Pools#get(PoolSupplier)} instead */
+	@Deprecated
 	static public <T> Pool<T> get (Class<T> type) {
 		return get(type, 100);
 	}
 
+	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note the max size is ignored
+	 * if this is not the first time this pool has been requested. This method may create a temporary object once, but the
+	 * allocation will probably be eliminated on most platforms. <br>
+	 * Usage can use java 8 method references: {@code Pools.get(MyClass::new, max)} */
+	static public <T> Pool<T> get (PoolSupplier<T> poolTypeSupplier, int max) {
+		Pool<T> pool = (Pool<T>)supplierPoolsCache.get(poolTypeSupplier.getClass());
+		if (pool == null) {
+			T tmp = poolTypeSupplier.get();
+			Class<T> type = (Class<T>)tmp.getClass();
+			pool = (Pool<T>)typePools.get(type);
+			if (pool == null) {
+				pool = new DefaultPool<>(poolTypeSupplier, 4, max);
+				typePools.put(type, pool);
+			}
+			supplierPoolsCache.put(poolTypeSupplier.getClass(), pool);
+		}
+
+		return pool;
+	}
+
+	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. The max size of the pool used
+	 * is 100. This method may create a temporary object once, but the allocation will probably be eliminated on most platforms.
+	 * <br>
+	 * Usage can use java 8 method references: {@code Pools.get(MyClass::new)} */
+	static public <T> Pool<T> get (PoolSupplier<T> poolTypeSupplier) {
+		return get(poolTypeSupplier, 100);
+	}
+
 	/** Sets an existing pool for the specified type, stored in a Class to {@link Pool} map. */
 	static public <T> void set (Class<T> type, Pool<T> pool) {
-		typePools.put(type, pool);
+		Pool<?> old = typePools.put(type, pool);
+		if (old == null) return;
+
+		ObjectMap.Entries<Class<?>, Pool<?>> iterator = supplierPoolsCache.iterator();
+		while (iterator.hasNext()) {
+			iterator.next();
+			if (iterator.entry.value == old) iterator.remove();
+		}
+	}
+
+	/** Obtains an object from the {@link Pools#get(PoolSupplier)} pool. <br>
+	 * Usage can use java 8 method references: {@code Pools.obtain(MyClass::new)} */
+	static public <T> T obtain (PoolSupplier<T> poolTypeSupplier) {
+		return get(poolTypeSupplier).obtain();
 	}
 
 	/** Obtains an object from the {@link #get(Class) pool}. */
+	@Deprecated
 	static public <T> T obtain (Class<T> type) {
 		return get(type).obtain();
 	}
 
-	/** Frees an object from the {@link #get(Class) pool}. */
+	/** Frees an object from the {@link #get(PoolSupplier) pool}. */
 	static public void free (Object object) {
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
 		Pool pool = typePools.get(object.getClass());
@@ -56,13 +107,13 @@ public class Pools {
 		pool.free(object);
 	}
 
-	/** Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored. Objects
-	 * don't need to be from the same pool. */
+	/** Frees the specified objects from the {@link #get(PoolSupplier) pool}. Null objects within the array are silently ignored.
+	 * Objects don't need to be from the same pool. */
 	static public void freeAll (Array objects) {
 		freeAll(objects, false);
 	}
 
-	/** Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored.
+	/** Frees the specified objects from the {@link #get(PoolSupplier) pool}. Null objects within the array are silently ignored.
 	 * @param samePool If true, objects don't need to be from the same pool but the pool must be looked up for each object. */
 	static public void freeAll (Array objects, boolean samePool) {
 		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");

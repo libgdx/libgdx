@@ -52,6 +52,11 @@ public class SnapshotArray<T> extends Array<T> {
 		super(array);
 	}
 
+	public SnapshotArray (boolean ordered, int capacity, ArraySupplier<T[]> arraySupplier) {
+		super(ordered, capacity, arraySupplier);
+	}
+
+	@Deprecated
 	public SnapshotArray (boolean ordered, int capacity, Class arrayType) {
 		super(ordered, capacity, arrayType);
 	}
@@ -64,6 +69,11 @@ public class SnapshotArray<T> extends Array<T> {
 		super(ordered, array, startIndex, count);
 	}
 
+	public SnapshotArray (ArraySupplier<T[]> arraySupplier) {
+		super(arraySupplier);
+	}
+
+	@Deprecated
 	public SnapshotArray (Class arrayType) {
 		super(arrayType);
 	}
@@ -126,6 +136,16 @@ public class SnapshotArray<T> extends Array<T> {
 	public void swap (int first, int second) {
 		modified();
 		super.swap(first, second);
+	}
+
+	public boolean replaceFirst (@Null T value, boolean identity, T replacement) {
+		modified();
+		return super.replaceFirst(value, identity, replacement);
+	}
+
+	public int replaceAll (@Null T value, boolean identity, @Null T replacement) {
+		modified();
+		return super.replaceAll(value, identity, replacement);
 	}
 
 	public boolean removeValue (T value, boolean identity) {

@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.Pools;
  * <p>
  * The preferred size of the button is determined by the background and the button contents.
  * @author Nathan Sweet */
-public class Button extends Table implements Disableable {
+public class Button extends Table implements Disableable, Styleable<Button.ButtonStyle> {
 	private ButtonStyle style;
 	boolean isChecked, isDisabled;
 	ButtonGroup buttonGroup;
@@ -121,7 +121,7 @@ public class Button extends Table implements Disableable {
 		this.isChecked = isChecked;
 
 		if (fireEvent) {
-			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent::new);
 			if (fire(changeEvent)) this.isChecked = !isChecked;
 			Pools.free(changeEvent);
 		}

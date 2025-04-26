@@ -22,12 +22,12 @@ buildscript {
 
 apply plugin: "robovm"
 
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
+sourceCompatibility = versions.java
+targetCompatibility = versions.java
 
 dependencies {
 	implementation project(":tests:gdx-tests")
-	implementation project(":backends:gdx-backend-robovm")
+	implementation project(":backends:gdx-backend-robovm-metalangle")
 }
 
 ext {

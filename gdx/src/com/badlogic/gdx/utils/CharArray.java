@@ -190,6 +190,37 @@ public class CharArray {
 		items[second] = firstValue;
 	}
 
+	/** Returns true if the specified value was replaced successfully with the replacement
+	 * @param value the char to be replaced
+	 * @param replacement the first value will be replaced by this replacement if found
+	 * @return if value was found and replaced */
+	public boolean replaceFirst (char value, char replacement) {
+		char[] items = this.items;
+		for (int i = 0, n = size; i < n; i++) {
+			if (items[i] == value) {
+				items[i] = replacement;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Returns the number of replacements done.
+	 * @param value the char to be replaced
+	 * @param replacement all occurrences of value will be replaced by this replacement
+	 * @return the number of replacements done */
+	public int replaceAll (char value, char replacement) {
+		char[] items = this.items;
+		int replacements = 0;
+		for (int i = 0, n = size; i < n; i++) {
+			if (items[i] == value) {
+				items[i] = replacement;
+				replacements++;
+			}
+		}
+		return replacements;
+	}
+
 	public boolean contains (char value) {
 		int i = size - 1;
 		char[] items = this.items;
@@ -251,7 +282,7 @@ public class CharArray {
 		size = n - count;
 	}
 
-	/** Removes from this array all of elements contained in the specified array.
+	/** Removes from this array the first instance of each element contained in the specified array.
 	 * @return true if this array was modified. */
 	public boolean removeAll (CharArray array) {
 		int size = this.size;
