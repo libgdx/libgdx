@@ -577,7 +577,9 @@ public class GlyphLayout implements Poolable {
 		return buffer.toString();
 	}
 
-	public enum WrapState { notWrapped, wrapped, lastWrapped }
+	public enum WrapState {
+		notWrapped, wrapped, lastWrapped
+	}
 
 	/** Stores glyphs and positions for a line of text.
 	 * @author Nathan Sweet */
