@@ -106,7 +106,7 @@ tasks.register('distTiledMapPacker', Jar) {
 
 tasks.register('buildRunnables') {
 	dependsOn("build")
-	dependsOn dist3DParticles, distHiero, distTexturePacker
+	dependsOn dist3DParticles, distHiero, distTexturePacker, distTiledMapPacker
 	doLast {
 		println "Building ye runnables"
 	}
