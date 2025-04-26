@@ -19,6 +19,7 @@
 - API Addition: Added TextField#drawBackground, #updateDisplayText is protected.
 - API Addition: Added Drawable default interface methods.
 - Android: Fixed rare NPE when `onDestroy` was called
+- Support has been added for Tiled "Text Objects", through new TextMapObject class
 - API Deprecation: Deprecated ReflectionPool and the related Pools#get/Pools#obtain method. Please use the new DefaultPool with the new Pools#get/Pools#obtain methods. They offer more safety and can be used with the java 8 method reference syntax (e.g. Pools.get(MyClass::new))
 - API Deprecation: Deprecated constructors taking a "Class" for Queue/ArrayMap/Array. Please use the constructors utilising "ArraySupplier". They offer more safety and can be used with the java 8 method reference syntax (e.g. MyClass[]::new)
 - API Deprecation: Deprecated constructors taking a "Class" for ParallelArray.ChannelDescriptor. Please use the constructors utilising "ArraySupplier". They offer more safety and can be used with the java 8 method reference syntax (e.g. MyClass[]::new)

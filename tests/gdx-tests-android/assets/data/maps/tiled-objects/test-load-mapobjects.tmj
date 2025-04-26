@@ -47,7 +47,7 @@
                  "height":100,
                  "id":9,
                  "name":"Rectangle",
-                 "rotation":0,
+                 "rotation":4,
                  "type":"",
                  "visible":true,
                  "width":118.667,
@@ -67,7 +67,7 @@
                  "y":298.667
                 }, 
                 {
-                 "gid":1073741825,
+                 "gid":1,
                  "height":32,
                  "id":14,
                  "name":"",
@@ -105,7 +105,7 @@
                  "width":0,
                  "x":364,
                  "y":155
-                }, 
+                },
                 {
                  "height":0,
                  "id":18,
@@ -117,6 +117,58 @@
                  "width":0,
                  "x":333.26,
                  "y":218.2
+                },
+                {
+                 "height":19,
+                 "id":28,
+                 "name":"",
+                 "rotation":0,
+                 "text":
+                    {
+                     "color":"#ff0000",
+                     "text":"Tiled Text Object 1",
+                     "wrap":true
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":254.846,
+                 "x":128,
+                 "y":224
+                },
+                {
+                 "height":19,
+                 "id":32,
+                 "name":"",
+                 "rotation":0,
+                 "text":
+                    {
+                     "halign":"right",
+                     "text":"Tiled Text Object 2",
+                     "wrap":true
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":254.846,
+                 "x":128,
+                 "y":246
+                },
+                {
+                 "height":75.4086,
+                 "id":33,
+                 "name":"",
+                 "rotation":0,
+                 "text":
+                    {
+                     "color":"#ffff00",
+                     "halign":"center",
+                     "text":"Tiled Text Object 3",
+                     "wrap":true
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":50.0583,
+                 "x":84.1092,
+                 "y":261.507
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -124,8 +176,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":2,
- "nextobjectid":20,
+ "nextlayerid":3,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",
