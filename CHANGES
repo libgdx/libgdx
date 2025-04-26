@@ -23,6 +23,7 @@
 - API Deprecation: Deprecated constructors taking a "Class" for Queue/ArrayMap/Array. Please use the constructors utilising "ArraySupplier". They offer more safety and can be used with the java 8 method reference syntax (e.g. MyClass[]::new)
 - iOS: Update to MobiVM 2.3.23
 - iOS: The MetalANGLE backend has been replaced by MetalANGLEKit which uses a newer ANGLE revision
+- Fixed Container#setCullingArea.
 
 [1.13.1]
 - [BREAKING CHANGE] Android: Since 1.13.0 libGDX requires setting `android.useAndroidX=true` in your gradle.properties file. In 1.13.1 it is NO longer needed to define the `androidx.core:core` dependency in your Android module.
