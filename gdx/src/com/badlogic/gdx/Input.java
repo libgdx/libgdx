@@ -227,6 +227,9 @@ public interface Input {
 		public static final int NUMPAD_RIGHT_PAREN = 163;
 		public static final int NUM_LOCK = 143;
 
+		public static final int WORLD_1 = 240;
+		public static final int WORLD_2 = 241;
+
 // public static final int BACKTICK = 0;
 // public static final int TILDE = 0;
 // public static final int UNDERSCORE = 0;
