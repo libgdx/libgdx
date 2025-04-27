@@ -26,6 +26,7 @@
 - API Deprecation: Deprecated constructors taking a "Class" for ParallelArray.ChannelDescriptor. Please use the constructors utilising "ArraySupplier". They offer more safety and can be used with the java 8 method reference syntax (e.g. MyClass[]::new)
 - iOS: Update to MobiVM 2.3.23
 - iOS: The MetalANGLE backend has been replaced by MetalANGLEKit which uses a newer ANGLE revision
+- Fixed Container#setCullingArea.
 - iOS: Fixing issue where after setText is called on TextField, characters cannot be deleted until a new character is added.
 
 [1.13.1]
