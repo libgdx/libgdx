@@ -402,7 +402,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 					object = new PointMapObject(x, flipY ? y - height : y);
 				} else if ((child = element.getChildByName("text")) != null) {
 					TextMapObject textMapObject = new TextMapObject(x, flipY ? y - height : y, width, height, child.getText());
-					textMapObject.setRotation(child.getFloatAttribute("rotation", 0));
 					textMapObject.setFontFamily(child.getAttribute("fontfamily", ""));
 					textMapObject.setPixelSize(child.getIntAttribute("pixelSize", 16));
 					textMapObject.setHorizontalAlign(child.getAttribute("halign", "left"));
@@ -480,189 +479,132 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		}
 	}
 
-	 /**
-	  * Meant to merge the attributes of the template element object and the parent element object
-	  * The parent's attribute should take precedence over the template attribute of the same name
-	  * @param element Main object element
-	  * @param templateElement Template object element
-	  * @return new ObjectMap containing the merged attributes of both elements
-	  */
-	 private ObjectMap<String, String> mergeAttributes(Element element, Element templateElement) {
-		  ObjectMap<String, String> attributes = new  ObjectMap<String, String>();
-
-		  // Add attributes from the template element
-		  for (String attributeName : templateElement.getAttributes().keys()) {
-				attributes.put(attributeName, templateElement.getAttribute(attributeName));
-		  }
-
-		  // Overwrite with attributes from the element
-		  for (String attributeName : element.getAttributes().keys()) {
-				attributes.put(attributeName, element.getAttribute(attributeName));
-		  }
-
-		  return attributes;
-	 }
-
-	 /**
-	  * Custom method specifically meant to load template objects found in objectgroups
+	 /*  * Tiled Template Loading Section Starts Below *  */
+	 /** Method specifically meant to help load template objects found in objectgroups
 	  * Each template object links to a specific .tx file.
-	  * Unlike when loading every other object, we need to read the property attributes contained in the .tx file first.
-	  * These attributes are allowed to be overwritten by any matching property attributes found in its parent element.
-	  * @param map TileMap obect
+	  * Attributes and properties found in the template are allowed to be overwritten by any matching ones found in its parent element.
+	  * Knowing this, we will merge the two elements together with the parent's props taking precedence and then pass to the loadObject
+	  * @param map TileMap object
 	  * @param layer MapLayer object
-	  * @param element Element which contains the single xml element we are currently parsing
-	  * @param tmxFile tmxFile
-	  */
-	 protected void loadTemplateObject (TiledMap map, MapLayer layer, Element element, FileHandle tmxFile) {
-		  if (element.getName().equals("object")) {
-				MapObjects objects = layer.getObjects();
-
-				//Get template (.tx) file name from element
-				String tsFileName = element.getAttribute("template");
-				//check for cached tx element
-				Element templateElement = templateCache.get(tsFileName);
-				if (templateElement == null) {
-					 FileHandle templateFile = getRelativeFileHandle(tmxFile, tsFileName);
-					 //parse the .tx template file
-					 try {
-						  templateElement = xml.parse(templateFile);
-					 } catch (Exception e) {
-						  throw new GdxRuntimeException("Error parsing template file: " + tsFileName, e);
-					 }
-					 templateCache.put(tsFileName, templateElement);
+	  * @param mapElement Element which contains the single xml element we are currently parsing
+	  * @param tmxFile tmxFile */
+	 protected void loadTemplateObject (TiledMap map, MapLayer layer, Element mapElement, FileHandle tmxFile) {
+		  //Get template (.tx) file name from element
+		  String txFileName = mapElement.getAttribute("template");
+		  //check for cached tx element
+		  Element templateElement = templateCache.get(txFileName);
+		  if (templateElement == null) {
+				FileHandle templateFile = getRelativeFileHandle(tmxFile, txFileName);
+				//parse the .tx template file
+				try {
+					 templateElement = xml.parse(templateFile);
+				} catch (Exception e) {
+					 throw new GdxRuntimeException("Error parsing template file: " + txFileName, e);
 				}
-
-				//Get Template element object
-				Element templateObjectElement = templateElement.getChildByName("object");
-
-				//Create a map consisting of the combined attributes of the template and parent element
-				ObjectMap<String, String> combinedAttributes = mergeAttributes(element, templateObjectElement);
-
-				MapObject object = null;
-
-				float scaleX = convertObjectToTileSpace ? 1.0f / mapTileWidth : 1.0f;
-				float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
-
-				//.tx template does not contain an x/y value in object elements attributes
-				float x = Float.parseFloat(combinedAttributes.get("x", "0")) * scaleX;
-				float y = (flipY ?
-					(mapHeightInPixels - Float.parseFloat(combinedAttributes.get("y", "0"))) :
-					Float.parseFloat(combinedAttributes.get("y", "0"))) * scaleY;
-
-				//Check if attributes exists in element(parent object of template object) before checking the template element
-				float width = Float.parseFloat(combinedAttributes.get("width", "0")) * scaleX;
-				float height = Float.parseFloat(combinedAttributes.get("height", "0")) * scaleY;
-
-				if (templateObjectElement.getChildCount() > 0) {
-					 Element child = null;
-					 if ((child = templateObjectElement.getChildByName("polygon")) != null) {
-						  String[] points = child.getAttribute("points").split(" ");
-						  float[] vertices = new float[points.length * 2];
-						  for (int i = 0; i < points.length; i++) {
-								String[] point = points[i].split(",");
-								vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
-								vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY * (flipY ? -1 : 1);
-						  }
-						  Polygon polygon = new Polygon(vertices);
-						  polygon.setPosition(x, y);
-						  object = new PolygonMapObject(polygon);
-					 } else if ((child = templateObjectElement.getChildByName("polyline")) != null) {
-						  String[] points = child.getAttribute("points").split(" ");
-						  float[] vertices = new float[points.length * 2];
-						  for (int i = 0; i < points.length; i++) {
-								String[] point = points[i].split(",");
-								vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
-								vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY * (flipY ? -1 : 1);
-						  }
-						  Polyline polyline = new Polyline(vertices);
-						  polyline.setPosition(x, y);
-						  object = new PolylineMapObject(polyline);
-					 } else if ((child = templateObjectElement.getChildByName("ellipse")) != null) {
-						  object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
-					 }
-				}
-
-				if (object == null) {
-					 String gid = combinedAttributes.get("gid", null);
-					 if (gid != null) {
-						  int id = (int) Long.parseLong(gid);
-
-						  boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
-						  boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
-
-						  TiledMapTile tile = map.getTileSets().getTile(id & ~MASK_CLEAR);
-						  TiledMapTileMapObject tiledMapTileMapObject = new TiledMapTileMapObject(tile, flipHorizontally,
-							  flipVertically);
-						  TextureRegion textureRegion = tiledMapTileMapObject.getTextureRegion();
-						  tiledMapTileMapObject.getProperties().put("gid", id);
-						  tiledMapTileMapObject.setX(x);
-						  tiledMapTileMapObject.setY(flipY ? y : y - height);
-
-						  float objectWidth = Float.parseFloat(
-							  combinedAttributes.get("width", String.valueOf(textureRegion.getRegionWidth())));
-						  float objectHeight = Float.parseFloat(
-							  combinedAttributes.get("height", String.valueOf(textureRegion.getRegionHeight())));
-
-						  tiledMapTileMapObject.setScaleX(scaleX * (objectWidth / textureRegion.getRegionWidth()));
-						  tiledMapTileMapObject.setScaleY(scaleY * (objectHeight / textureRegion.getRegionHeight()));
-
-						  float rotation = Float.parseFloat(combinedAttributes.get("rotation", "0"));
-
-						  tiledMapTileMapObject.setRotation(rotation);
-						  object = tiledMapTileMapObject;
-
-					 } else {
-						  object = new RectangleMapObject(x, flipY ? y - height : y, width, height);
-					 }
-				}
-
-				//Begin adding property attributes to the MapObject
-				object.getProperties().put("x", x);
-				if (object instanceof TiledMapTileMapObject) {
-					 object.getProperties().put("y", y);
-				} else {
-					 object.getProperties().put("y", (flipY ? y - height : y));
-				}
-
-				object.getProperties().put("width", width);
-				object.getProperties().put("height", height);
-
-				String name = combinedAttributes.get("name", null);
-				if (name != null) {
-					 object.setName(name);
-				}
-
-				String type = combinedAttributes.get("type", null);
-				if (type != null) {
-					 object.getProperties().put("type", type);
-				}
-
-				int id = Integer.parseInt(combinedAttributes.get("id", "0"));
-				if (id != 0) {
-					 object.getProperties().put("id", id);
-				}
-
-				float rotation = Float.parseFloat(combinedAttributes.get("rotation", "0"));
-				object.getProperties().put("rotation", rotation);
-
-				boolean visible = Integer.parseInt(combinedAttributes.get("visible", "1")) == 1;
-				object.setVisible(visible);
-
-				Element tsProperties = templateObjectElement.getChildByName("properties");
-				//load property attributes of object found in .ts(template) file
-				if (tsProperties != null) {
-					 loadProperties(object.getProperties(), tsProperties);
-				}
-
-				Element properties = element.getChildByName("properties");
-				//load property attributes of main element object
-				if (properties != null) {
-					 loadProperties(object.getProperties(), properties);
-				}
-				idToObject.put(id, object);
-				objects.add(object);
+				templateCache.put(txFileName, templateElement);
 		  }
+		  // Get the root object from the template file
+		  Element templateObjectElement = templateElement.getChildByName("object");
+		  // Merge the parent map element with its template element
+		  Element mergedObject = mergeParentElementWithTemplate(mapElement, templateObjectElement);
+		  // Pass the newly merged element to the loadObject method
+		  loadObject(map, layer, mergedObject);
 	 }
+
+	 /** Returns a shallow copy of the source element we pass in. */
+	 protected Element cloneElementShallow(Element sourceElement) {
+		  //New element for our copy
+		  Element copyElement = new Element(sourceElement.getName(), null);
+		  // Get list of attributes from the source element
+		  ObjectMap<String,String> attrs = sourceElement.getAttributes();
+		  if (attrs != null) {
+				// Place those entries in our new copied element
+				for (ObjectMap.Entry<String,String> entry : attrs.entries()) {
+					 copyElement.setAttribute(entry.key,entry.value);
+				}
+		  }
+		  // Checking for text
+		  if (sourceElement.getText() != null) copyElement.setText(sourceElement.getText());
+		  return copyElement;
+	 }
+
+	 /** Merges two <properties> tags from a parent and template
+	  * Matching properties from the parent will override the template's. */
+	 protected Element mergeProperties (Element parentProps, Element templateProps) {
+		  if (templateProps == null) return parentProps;
+		  if (parentProps  == null) return templateProps;
+		  // Create a new merged properties element which will contain a combination of parent and template properties.
+		  Element merged = new Element("properties", null);
+		  // Set properties from template
+		  for (Element property : templateProps.getChildrenByName("property")) {
+				merged.addChild(cloneElementShallow(property));
+		  }
+		  // Set properties from the parent, matching ones from template will be overridden
+		  for (Element property : parentProps.getChildrenByName("property")) {
+				String name = property.getAttribute("name", null);
+				// Find & remove a duplicate by name, if any
+				// Remove existing with same name (if any)
+				Element existing = null;
+				for (int i = 0; i < merged.getChildCount(); i++) {
+					 Element child = merged.getChild(i);
+					 if ("property".equals(child.getName()) && name.equals(child.getAttribute("name", null))) {
+						  existing = child;
+						  break;
+					 }
+				}
+				if (existing != null) merged.removeChild(existing);
+				merged.addChild(cloneElementShallow(property));
+		  }
+		  return merged;
+	 }
+
+	 /** Recursively merges a “parent” (map) object element with its referenced
+	  * template object element.
+	  * Attributes and properties found in the template are allowed to be overwritten
+	  * by any matching ones found in its parent element.
+	  * The returned element is a new detached tree (parent = null) so it can
+	  * be handed straight to the loadObject() method without issues. */
+	 protected Element mergeParentElementWithTemplate (Element parent, Element template) {
+		  if (template == null) return parent;
+		  if (parent  == null) return template;
+		  // Create a new merged element which will contain a combination of parent and template attributes, properties etc...
+		  Element merged = new Element(template.getName(), null);
+		  // Set attributes from template
+		  if (template.getAttributes() != null) {
+				for (ObjectMap.Entry<String, String> a : template.getAttributes().entries()) {
+					 merged.setAttribute(a.key, a.value);
+				}
+		  }
+		  // Set attributes from the parent, matching ones from template will be overridden
+		  if (parent.getAttributes() != null) {
+				for (ObjectMap.Entry<String, String> a : parent.getAttributes().entries()) {
+					 merged.setAttribute(a.key, a.value);
+				}
+		  }
+		  // Specifically added for TextMapObjects since they are unique compared to other objects.
+		  String txt = (parent.getText() != null && parent.getText().length() > 0) ?  parent.getText() :  template.getText();
+		  if (txt != null) {
+				merged.setText(txt);
+		  }
+		  // Handle Child Elements
+		  // Collect all child tag names that appear in either element
+		  ObjectSet<String> tagNames = new ObjectSet<>();
+		  for (int i=0;i<template.getChildCount();i++) tagNames.add(template.getChild(i).getName());
+		  for (int i=0;i<parent .getChildCount();i++) tagNames.add(parent .getChild(i).getName());
+
+		  for (String tag : tagNames) {
+				Element mapChild  = parent .getChildByName(tag);
+				Element tmplChild = template.getChildByName(tag);
+
+				/** Look for properties tags so we can merge those as well
+				 * Recursive check if properties is not found. */
+				Element mergedChild = "properties".equals(tag) ? mergeProperties(mapChild, tmplChild)
+					: mergeParentElementWithTemplate(mapChild, tmplChild);
+				merged.addChild(mergedChild);
+		  }
+		  return merged;
+	 }
+	/*  * End of Tiled Template Loading Section *  */
 
 	protected void loadProperties (final MapProperties properties, Element element) {
 		if (element == null) return;

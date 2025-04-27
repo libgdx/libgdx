@@ -365,51 +365,53 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		float width = element.getFloat("width", 0) * scaleX;
 		float height = element.getFloat("height", 0) * scaleY;
 
-		JsonValue child;
-		if ((child = element.get("polygon")) != null) {
-			float[] vertices = new float[child.size * 2];
-			int index = 0;
-			for (JsonValue point : child) {
-				// Apply scale and flip transformations
-				vertices[index++] = point.getFloat("x", 0) * scaleX; // Scaled X
-				vertices[index++] = point.getFloat("y", 0) * scaleY * (flipY ? -1 : 1); // Scaled/flipped Y
-			}
-			Polygon polygon = new Polygon(vertices);
-			polygon.setPosition(x, y);
-			object = new PolygonMapObject(polygon);
-		} else if ((child = element.get("polyline")) != null) {
-			float[] vertices = new float[child.size * 2];
-			int index = 0;
-			for (JsonValue point : child) {
-				// Apply scale and flip transformations
-				vertices[index++] = point.getFloat("x", 0) * scaleX; // Scaled X
-				vertices[index++] = point.getFloat("y", 0) * scaleY * (flipY ? -1 : 1); // Scaled/flipped Y
-			}
-			Polyline polyline = new Polyline(vertices);
-			polyline.setPosition(x, y);
-			object = new PolylineMapObject(polyline);
-		} else if (element.get("ellipse") != null) {
-			object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
-		} else if ((child = element.get("point")) != null) {
-			object = new PointMapObject(x, flipY ? y - height : y);
-		} else if ((child = element.get("text")) != null) {
-			TextMapObject textMapObject = new TextMapObject(x, flipY ? y - height : y, width, height, child.getString("text", ""));
-			textMapObject.setRotation(child.getFloat("rotation", 0));
-			textMapObject.setFontFamily(child.getString("fontfamily", ""));
-			textMapObject.setPixelSize(child.getInt("pixelSize", 16));
-			textMapObject.setHorizontalAlign(child.getString("halign", "left"));
-			textMapObject.setVerticalAlign(child.getString("valign", "top"));
-			textMapObject.setBold(child.getBoolean("bold", false));
-			textMapObject.setItalic(child.getBoolean("italic", false));
-			textMapObject.setUnderline(child.getBoolean("underline", false));
-			textMapObject.setStrikeout(child.getBoolean("strikeout", false));
-			textMapObject.setWrap(child.getBoolean("wrap", false));
-			// When kerning is true, it won't be added as an attribute, it's true by default
-			textMapObject.setKerning(child.getBoolean("kerning", true));
-			// Default color is #000000, not added as attribute
-			String textColor = child.getString("color", "#000000");
-			textMapObject.setColor(Color.valueOf(tiledColorToLibGDXColor(textColor)));
-			object = textMapObject;
+		if (element.size > 0) {
+			 JsonValue child;
+			 if ((child = element.get("polygon")) != null) {
+				  float[] vertices = new float[child.size * 2];
+				  int index = 0;
+				  for (JsonValue point : child) {
+						// Apply scale and flip transformations
+						vertices[index++] = point.getFloat("x", 0) * scaleX; // Scaled X
+						vertices[index++] = point.getFloat("y", 0) * scaleY * (flipY ? -1 : 1); // Scaled/flipped Y
+				  }
+				  Polygon polygon = new Polygon(vertices);
+				  polygon.setPosition(x, y);
+				  object = new PolygonMapObject(polygon);
+			 } else if ((child = element.get("polyline")) != null) {
+				  float[] vertices = new float[child.size * 2];
+				  int index = 0;
+				  for (JsonValue point : child) {
+						// Apply scale and flip transformations
+						vertices[index++] = point.getFloat("x", 0) * scaleX; // Scaled X
+						vertices[index++] = point.getFloat("y", 0) * scaleY * (flipY ? -1 : 1); // Scaled/flipped Y
+				  }
+				  Polyline polyline = new Polyline(vertices);
+				  polyline.setPosition(x, y);
+				  object = new PolylineMapObject(polyline);
+			 } else if (element.get("ellipse") != null) {
+				  object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
+			 } else if ((child = element.get("point")) != null) {
+				  object = new PointMapObject(x, flipY ? y - height : y);
+			 } else if ((child = element.get("text")) != null) {
+				  TextMapObject textMapObject = new TextMapObject(x, flipY ? y - height : y, width, height,
+					  child.getString("text", ""));
+				  textMapObject.setFontFamily(child.getString("fontfamily", ""));
+				  textMapObject.setPixelSize(child.getInt("pixelSize", 16));
+				  textMapObject.setHorizontalAlign(child.getString("halign", "left"));
+				  textMapObject.setVerticalAlign(child.getString("valign", "top"));
+				  textMapObject.setBold(child.getBoolean("bold", false));
+				  textMapObject.setItalic(child.getBoolean("italic", false));
+				  textMapObject.setUnderline(child.getBoolean("underline", false));
+				  textMapObject.setStrikeout(child.getBoolean("strikeout", false));
+				  textMapObject.setWrap(child.getBoolean("wrap", false));
+				  // When kerning is true, it won't be added as an attribute, it's true by default
+				  textMapObject.setKerning(child.getBoolean("kerning", true));
+				  // Default color is #000000, not added as attribute
+				  String textColor = child.getString("color", "#000000");
+				  textMapObject.setColor(Color.valueOf(tiledColorToLibGDXColor(textColor)));
+				  object = textMapObject;
+			 }
 		}
 		if (object == null) {
 			String gid;
@@ -471,194 +473,146 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 
 	}
 
-	 /**
-	  * Meant to merge the attributes of the template element object and the parent element object
-	  * The parent's attribute should take precedence over the template attribute of the same name
-	  * @param element Main object element
-	  * @param templateElement Template object element
-	  * @return new ObjectMap containing the merged attributes of both elements
-	  */
-	 private ObjectMap<String, String> mergeAttributes(JsonValue element, JsonValue templateElement) {
-		  ObjectMap<String, String> attributes = new  ObjectMap<String, String>();
-
-
-		  // Add attributes from the template element
-		  for (JsonValue jsonAttribute: templateElement) {
-				if(jsonAttribute.type() != JsonValue.ValueType.array) {
-					 attributes.put(jsonAttribute.name, jsonAttribute.asString());
-				}
-		  }
-
-		  // Overwrite with attributes from the element
-		  for (JsonValue jsonAttribute: element) {
-				if(jsonAttribute.type() != JsonValue.ValueType.array) {
-					attributes.put(jsonAttribute.name, jsonAttribute.asString());
-				}
-		  }
-
-		  return attributes;
-	 }
-
-	 /**
-	  * Custom method specifically meant to load template objects found in objectgroups
+	 /*  * Tiled Template Loading Section Starts Below *  */
+	 /** Method specifically meant to help load template objects found in objectgroups
 	  * Each template object links to a specific .tj file.
-	  * Unlike when loading every other object, we need to read the property attributes contained in the .tj file first.
-	  * These attributes are allowed to be overwritten by any matching property attributes found in its parent element.
-	  * @param map TileMap obect
+	  * Attributes and properties found in the template are allowed to be overwritten by any matching ones found in its parent element.
+	  * Knowing this, we will merge the two elements together with the parent's props taking precedence and then pass to the loadObject
+	  * @param map TileMap object
 	  * @param layer MapLayer object
-	  * @param element Element which contains the single json element we are currently parsing
-	  * @param tmjFile tmjFile
-	  */
-	 protected void loadTemplateObject (TiledMap map, MapLayer layer, JsonValue element, FileHandle tmjFile) {
-
-		  MapObjects objects = layer.getObjects();
-
+	  * @param mapElement Element which contains the single xml element we are currently parsing
+	  * @param tmjFile tmjFile */
+	 protected void loadTemplateObject (TiledMap map, MapLayer layer, JsonValue mapElement, FileHandle tmjFile) {
 		  //Get template (.tj) file name from element
-		  String tsFileName = element.getString("template");
+		  String tjFileName = mapElement.getString("template");
 		  //check for cached tj element
-		  JsonValue templateElement = templateCache.get(tsFileName);
+		  JsonValue templateElement = templateCache.get(tjFileName);
 		  if (templateElement == null) {
-				FileHandle templateFile = getRelativeFileHandle(tmjFile, tsFileName);
-				//parse the .tx template file
+				//parse the .tj template file
 				try {
-					 templateElement = json.parse(templateFile);
-				} catch (Exception e) {
-					 throw new GdxRuntimeException("Error parsing template file: " + tsFileName, e);
+					 templateElement = json.parse(getRelativeFileHandle(tmjFile, tjFileName));
+				}  catch (Exception e) {
+					throw new GdxRuntimeException("Error parsing template file: " + tjFileName, e);
 				}
-				templateCache.put(tsFileName, templateElement);
+				templateCache.put(tjFileName, templateElement);
 		  }
-
-		  //Get Template element object
+		  // Get the root object from the template file
 		  JsonValue templateObjectElement = templateElement.get("object");
-
-		  //Create a map consisting of the combined attributes of the template and parent element
-		  ObjectMap<String, String> combinedAttributes = mergeAttributes(element, templateObjectElement);
-
-		  MapObject object = null;
-
-		  float scaleX = convertObjectToTileSpace ? 1.0f / mapTileWidth : 1.0f;
-		  float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
-
-		  //.tj template does not contain an x/y value in object elements attributes
-		  float x = Float.parseFloat(combinedAttributes.get("x", "0")) * scaleX;
-		  float y = (flipY ?
-			  (mapHeightInPixels - Float.parseFloat(combinedAttributes.get("y", "0"))) :
-			  Float.parseFloat(combinedAttributes.get("y", "0"))) * scaleY;
-
-		  //Check if attributes exists in element(parent object of template object) before checking the template element
-		  float width = Float.parseFloat(combinedAttributes.get("width", "0")) * scaleX;
-		  float height = Float.parseFloat(combinedAttributes.get("height", "0")) * scaleY;
-
-		  if (templateObjectElement.size > 0) {
-				JsonValue child = null;
-				if ((child = templateObjectElement.get("polygon")) != null) {
-					 float[] vertices = new float[child.size * 2];
-					 int index = 0;
-					 for (JsonValue point : child) {
-						  // Apply scale and flip transformations
-						  vertices[index++] = point.getFloat("x", 0) * scaleX; // Scaled X
-						  vertices[index++] = point.getFloat("y", 0) * scaleY * (flipY ? -1 : 1); // Scaled/flipped Y
-					 }
-					 Polygon polygon = new Polygon(vertices);
-					 polygon.setPosition(x, y);
-					 object = new PolygonMapObject(polygon);
-				} else if ((child = templateObjectElement.get("polyline")) != null) {
-					 float[] vertices = new float[child.size * 2];
-					 int index = 0;
-					 for (JsonValue point : child) {
-						  // Apply scale and flip transformations
-						  vertices[index++] = point.getFloat("x", 0) * scaleX; // Scaled X
-						  vertices[index++] = point.getFloat("y", 0) * scaleY * (flipY ? -1 : 1); // Scaled/flipped Y
-					 }
-					 Polyline polyline = new Polyline(vertices);
-					 polyline.setPosition(x, y);
-					 object = new PolylineMapObject(polyline);
-				} else if (templateObjectElement.get("ellipse") != null) {
-					 object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
-				}
-		  }
-
-		  if (object == null) {
-				String gid = combinedAttributes.get("gid", null);
-				if (gid != null) {
-					 int id = (int) Long.parseLong(gid);
-
-					 boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
-					 boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
-
-					 TiledMapTile tile = map.getTileSets().getTile(id & ~MASK_CLEAR);
-					 TiledMapTileMapObject tiledMapTileMapObject = new TiledMapTileMapObject(tile, flipHorizontally,
-						 flipVertically);
-					 TextureRegion textureRegion = tiledMapTileMapObject.getTextureRegion();
-					 tiledMapTileMapObject.getProperties().put("gid", id);
-					 tiledMapTileMapObject.setX(x);
-					 tiledMapTileMapObject.setY(flipY ? y : y - height);
-
-					 float objectWidth = Float.parseFloat(
-						 combinedAttributes.get("width", String.valueOf(textureRegion.getRegionWidth())));
-					 float objectHeight = Float.parseFloat(
-						 combinedAttributes.get("height", String.valueOf(textureRegion.getRegionHeight())));
-
-					 tiledMapTileMapObject.setScaleX(scaleX * (objectWidth / textureRegion.getRegionWidth()));
-					 tiledMapTileMapObject.setScaleY(scaleY * (objectHeight / textureRegion.getRegionHeight()));
-
-					 float rotation = Float.parseFloat(combinedAttributes.get("rotation", "0"));
-
-					 tiledMapTileMapObject.setRotation(rotation);
-					 object = tiledMapTileMapObject;
-
-				} else {
-					 object = new RectangleMapObject(x, flipY ? y - height : y, width, height);
-				}
-		  }
-
-		  //Begin adding property attributes to the MapObject
-		  object.getProperties().put("x", x);
-		  if (object instanceof TiledMapTileMapObject) {
-				object.getProperties().put("y", y);
-		  } else {
-				object.getProperties().put("y", (flipY ? y - height : y));
-		  }
-
-		  object.getProperties().put("width", width);
-		  object.getProperties().put("height", height);
-
-		  String name = combinedAttributes.get("name", null);
-		  if (name != null) {
-				object.setName(name);
-		  }
-
-		  String type = combinedAttributes.get("type", null);
-		  if (type != null) {
-				object.getProperties().put("type", type);
-		  }
-
-		  int id = Integer.parseInt(combinedAttributes.get("id", "0"));
-		  if (id != 0) {
-				object.getProperties().put("id", id);
-		  }
-
-		  float rotation = Float.parseFloat(combinedAttributes.get("rotation", "0"));
-		  object.getProperties().put("rotation", rotation);
-
-		  boolean visible = Boolean.parseBoolean(combinedAttributes.get("visible", "true"));
-		  object.setVisible(visible);
-
-		  JsonValue tsProperties = templateObjectElement.get("properties");
-		  //load property attributes of object found in .ts(template) file
-		  if (tsProperties != null) {
-				loadProperties(object.getProperties(), tsProperties);
-		  }
-
-		  JsonValue properties = element.get("properties");
-		  //load property attributes of main element object
-		  if (properties != null) {
-				loadProperties(object.getProperties(), properties);
-		  }
-		  idToObject.put(id, object);
-		  objects.add(object);
-
+		  // Merge the parent map element with its template element
+		  JsonValue merged = mergeParentElementWithTemplate(mapElement, templateObjectElement);
+		  // Pass the newly merged element to the loadObject method
+		  loadObject(map, layer, merged);
 	 }
+	 /** JSON TextMapObjects contain object nodes containing specific text related attributes
+	  *  Here we merge them, parent attributes will override those found in templates. */
+	 protected JsonValue mergeJsonObject (JsonValue parentObject, JsonValue templateObject) {
+		  if (templateObject == null) return parentObject;
+		  if (parentObject  == null) return templateObject;
+		  // Create a new merged element which will contain a combination of parent and template objects
+		  JsonValue merged = new JsonValue(JsonValue.ValueType.object);
+		  // Add children from template
+		  for (JsonValue child : templateObject) {
+				merged.addChild(child.name(), cloneElementShallow(child));
+		  }
+		  // Add or override children from parent
+		  for (JsonValue child : parentObject) {
+				merged.setChild(child.name(), cloneElementShallow(child));
+		  }
+		  return merged;
+	 }
+
+	 /** Returns a shallow copy of the source JsonValue element we pass in.
+	  * This method only copies the basic type and value (string, number, boolean, or null)
+	  * from the source element. It does not clone child element for arrays or objects.
+	  * If the source element is an array or object, the entire element is copied using JsonValue's
+	  * copy constructor, resulting in a deep copy for those types. */
+	 protected JsonValue cloneElementShallow(JsonValue src) {
+		  JsonValue clone;
+		  switch (src.type()) {
+		  case stringValue:
+				clone = new JsonValue(src.asString());
+				break;
+		  case doubleValue:
+				clone = new JsonValue(src.asDouble());
+				break;
+		  case longValue:
+				clone = new JsonValue(src.asLong());
+				break;
+		  case booleanValue:
+				clone = new JsonValue(src.asBoolean());
+				break;
+		  case nullValue:
+				clone = new JsonValue((String)null);
+				break;
+		  default:
+				// Fallback for a full deep copy for an object/array
+				clone = new JsonValue(src);
+				break;
+		  }
+		  clone.setName(src.name());
+		  return clone;
+	 }
+
+	 /** Merges two properties arrays from a parent and template
+	  * Matching properties from the parent will override the template's. */
+	 protected JsonValue mergeJsonProperties (JsonValue parentProps, JsonValue templateProps) {
+		  if (templateProps == null) return parentProps;
+		  if (parentProps  == null) return templateProps;
+		  // Create a new merged properties element which will contain a combination of parent and template properties.
+		  JsonValue merged = new JsonValue(JsonValue.ValueType.array);
+		  // Set properties from template
+		  for (JsonValue property : templateProps) {
+				merged.addChild(new JsonValue(property)); // deep copy
+		  }
+		  // Set properties from the parent, matching ones from template will be overridden
+		  for (JsonValue property : parentProps) {
+				String propName = property.getString("name", null);
+				if (propName == null) continue; // Should never happen
+				// Search for an existing property with the same name
+				for (JsonValue child : merged) {
+					 if (propName.equals(child.getString("name", null))) {
+						  child.remove(); // Remove the template's copy
+						  break;
+					 }
+				}
+				merged.addChild(new JsonValue(property)); // Add or replace with map copy
+		  }
+		  return merged;
+	 }
+
+	 /** Recursively merges a “parent” (map) object element with its referenced
+	  * template object element.
+	  * Attributes and properties found in the template are allowed to be overwritten
+	  * by any matching ones found in its parent element.
+	  * The returned element is a new detached tree (parent = null) so it can
+	  * be handed straight to the loadObject() method without issues. */
+	 protected JsonValue mergeParentElementWithTemplate (JsonValue parent, JsonValue template) {
+		  if (template == null) return parent;
+		  if (parent == null)  return template;
+		  // Create a new merged element which will contain a combination of parent and template attributes, properties etc...
+		  JsonValue merged = new JsonValue(JsonValue.ValueType.object);
+		  // Set attributes from template
+		  for (JsonValue child : template) {
+				merged.addChild(cloneElementShallow(child));
+		  }
+		  // Set attributes from the parent, matching ones from template will be overridden
+		  // Specifically added special case to handle JSON version of TextMapObjects since they are unique compared to other objects.
+		  for (JsonValue child : parent) {
+				String key = child.name();
+				switch (key) {
+				case "properties":
+					 merged.setChild(key, mergeJsonProperties(child, template.get("properties")));
+					 break;
+				case "text":
+					 merged.setChild(key, mergeJsonObject(child, template.get("text")));
+					 break;
+				default:
+					 merged.setChild(key, cloneElementShallow(child));
+				}
+		  }
+		  return merged;
+	 }
+	 /*  * End of Tiled Template Loading Section *  */
 
 	private void loadProperties (final MapProperties properties, JsonValue element) {
 		if (element == null || !"properties".equals(element.name())) return;

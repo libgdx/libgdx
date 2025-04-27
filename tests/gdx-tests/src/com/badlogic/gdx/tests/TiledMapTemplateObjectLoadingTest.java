@@ -39,6 +39,7 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.StringBuilder;
 
@@ -56,6 +57,7 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 	private String properties;
 	private TmxMapLoader tmxMapLoader;
 	private TmjMapLoader tmjMapLoader;
+	private BitmapFont textMapObjectFont;
 	private int mapType = 0;
 
 	private final static String TMJ_TESTMAP = "data/maps/tiled-objects/test-load-maptemplateobjects.tmj";
@@ -77,6 +79,7 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 
 		stringBuilder = new StringBuilder();
 		font = new BitmapFont();
+		textMapObjectFont = new BitmapFont();
 		batch = new SpriteBatch();
 		tmxMapLoader = new TmxMapLoader();
 		tmjMapLoader = new TmjMapLoader();
@@ -90,7 +93,8 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 		loadingStatus += "Top Object contains default template property values.\n";
 		loadingStatus += "Object Underneath, may contain default values or overridden values.\n";
 		loadingStatus += "Objects Marked as Overridden can be compared against the map file.\n";
-		loadingStatus += "Toggle between loaders with keys 1 and 2. BOTH should have identical properties.\n";
+		loadingStatus += "Toggle between loaders with keys 1 and 2. BOTH should have identical objects and properties.\n";
+		loadingStatus += "Except for the TEXT object which has some different values based on map. \n";
 		loadingStatus += "If not there may be a parsing issue. Compare files since Maps should be identical.";
 
 		MapLayer layer = map.getLayers().get("Objects");
@@ -163,27 +167,68 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 				Polyline polyline = ((PolylineMapObject)mapObject).getPolyline();
 				shapeRenderer.polyline(polyline.getTransformedVertices());
 				shapeRenderer.end();
+			} else if (mapObject instanceof PointMapObject) {
+				 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+				 Vector2 point = ((PointMapObject)mapObject).getPoint();
+				 // drawing circle, because shapeRenderer.point is barely visible, if visible at all
+				 shapeRenderer.circle(point.x, point.y, 2f);
+				 shapeRenderer.end();
+			}  else if (mapObject instanceof TextMapObject) {
+				 batch.begin();
+				 TextMapObject textMapObject = (TextMapObject)mapObject;
+
+				 int alignment;
+				 String hAlign = textMapObject.getHorizontalAlign();
+
+				 switch (hAlign.toLowerCase()) {
+				 case "center":
+					  alignment = Align.center;
+					  break;
+				 case "right":
+					  alignment = Align.right;
+					  break;
+				 case "left":
+				 default:
+					  // Default is 'left alignment, also there is no Align 'justify' like equivalent
+					  alignment = Align.left;
+					  break;
+				 }
+
+				 textMapObjectFont.setColor(textMapObject.getColor());
+				 // The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
+				 // To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to
+				 // the Y position.
+				 textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(),
+					 textMapObject.getY() + textMapObject.getHeight(), textMapObject.getWidth(), alignment, textMapObject.isWrap());
+				 batch.end();
+
+				 // Draw display bounding box of TextMapObject
+				 shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+				 shapeRenderer.rect(textMapObject.getX(), textMapObject.getY(), textMapObject.getWidth(), textMapObject.getHeight());
+				 shapeRenderer.end();
+
 			}
 		}
 
+
 		 defaultTemplateInfo ="Hard Coded Default Reference:\n"+
 			 "BoolProp: true\n"+
-			 "ColorProp: #ffff0000\n"+
+			 "ColorProp: #ff0000ff\n"+
 			 "IntProp: 86\n"+
 			 "StringProp: Template Default";
 
 		 batch.begin();
 		 if(mapType==0){
 			  font.setColor(Color.BLUE);
-			  font.draw(batch,"Current Loader: TMX\n Press KEY 2\n to switch to TMJ LOADER", 20, 1155);
+			  font.draw(batch,"Current Loader: TMX\n Press KEY 2\n to switch to TMJ LOADER", 20, 1315);
 			  font.setColor(Color.WHITE);
 		 } else if(mapType==1){
 			  font.setColor(Color.RED);
-			  font.draw(batch,"Current Loader: TMJ:\n Press KEY 1\n to switch to TMX LOADER\"", 20, 1155);
+			  font.draw(batch,"Current Loader: TMJ:\n Press KEY 1\n to switch to TMX LOADER\"", 20, 1315);
 			  font.setColor(Color.WHITE);
 		 }
 
-		 font.draw(batch,defaultTemplateInfo, 220, 1155);
+		 font.draw(batch,defaultTemplateInfo, 220, 1315);
 		 //Display Properties under the unaltered template objects
 		 for (MapObject mapObject : layer.getObjects()) {
 			  if (!mapObject.isVisible()) continue;
@@ -266,10 +311,42 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 							 "Overridden: "+mapObject.getProperties().get("Overridden");
 						 font.draw(batch, properties, (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height")/3 -10);
 					}
+			  } else if (mapObject instanceof PointMapObject) {
+					//check for default object without any alterations
+					if(!mapObject.getProperties().containsKey("Overridden")){
+						 //All properties should match the default hard coded ones
+						 font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x") -60, (float)mapObject.getProperties().get("y") -20);
+					} else {
+						 properties ="Overridden:\n"+
+							 "BoolProp: "+mapObject.getProperties().get("BoolProp")+"\n"+
+							 "ColorProp: "+mapObject.getProperties().get("ColorProp")+"\n"+
+							 "IntProp: "+mapObject.getProperties().get("IntProp")+"\n"+
+							 "StringProp: "+mapObject.getProperties().get("StringProp")+"\n"+
+							 "Overridden: "+mapObject.getProperties().get("Overridden");
+						 font.draw(batch, properties, (float)mapObject.getProperties().get("x")-60, (float)mapObject.getProperties().get("y") -20);
+
+					}
+
+			  } else if (mapObject instanceof TextMapObject) {
+					//check for default object without any alterations
+					if(!mapObject.getProperties().containsKey("Overridden")){
+						 //All properties should match the default hard coded ones
+						 font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") -40);
+					} else {
+						 properties ="Overridden:\n"+
+							 "BoolProp: "+mapObject.getProperties().get("BoolProp")+"\n"+
+							 "ColorProp: "+mapObject.getProperties().get("ColorProp")+"\n"+
+							 "IntProp: "+mapObject.getProperties().get("IntProp")+"\n"+
+							 "StringProp: "+mapObject.getProperties().get("StringProp")+"\n"+
+							 "Overridden: "+mapObject.getProperties().get("Overridden");
+						 font.draw(batch, properties, (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") -40);
+
+					}
+
 			  }
 		 }
 
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond() + "\n" + loadingStatus, 20, 1310);
+		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond() + "\n" + loadingStatus, 20, 1470);
 		batch.end();
 	}
 	private String readDefaultProps(MapObject mapObject) {
