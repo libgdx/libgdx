@@ -500,6 +500,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			textfield.reloadInputViews();
 			textfield.becomeFirstResponder();
 			uiTextField.setDelegate(textDelegateInvisible);
+			uiTextField.setText("x");
 		} else {
 			textfield.resignFirstResponder();
 			textfield.removeFromSuperview();
