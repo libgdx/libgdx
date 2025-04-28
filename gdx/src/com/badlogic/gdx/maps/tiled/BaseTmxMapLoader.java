@@ -273,12 +273,11 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			}
 
 			for (Element objectElement : element.getChildrenByName("object")) {
-			  if(objectElement.hasAttribute("template")){
-					loadTemplateObject(map,layer,objectElement,tmxFile);
-			  }
-			  else{
+				if (objectElement.hasAttribute("template")) {
+					loadTemplateObject(map, layer, objectElement, tmxFile);
+				} else {
 					loadObject(map, layer, objectElement);
-			  }
+				}
 			}
 
 			parentLayers.add(layer);
@@ -479,132 +478,130 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		}
 	}
 
-	 /*  * Tiled Template Loading Section Starts Below *  */
-	 /** Method specifically meant to help load template objects found in objectgroups
-	  * Each template object links to a specific .tx file.
-	  * Attributes and properties found in the template are allowed to be overwritten by any matching ones found in its parent element.
-	  * Knowing this, we will merge the two elements together with the parent's props taking precedence and then pass to the loadObject
-	  * @param map TileMap object
-	  * @param layer MapLayer object
-	  * @param mapElement Element which contains the single xml element we are currently parsing
-	  * @param tmxFile tmxFile */
-	 protected void loadTemplateObject (TiledMap map, MapLayer layer, Element mapElement, FileHandle tmxFile) {
-		  //Get template (.tx) file name from element
-		  String txFileName = mapElement.getAttribute("template");
-		  //check for cached tx element
-		  Element templateElement = templateCache.get(txFileName);
-		  if (templateElement == null) {
-				FileHandle templateFile = getRelativeFileHandle(tmxFile, txFileName);
-				//parse the .tx template file
-				try {
-					 templateElement = xml.parse(templateFile);
-				} catch (Exception e) {
-					 throw new GdxRuntimeException("Error parsing template file: " + txFileName, e);
-				}
-				templateCache.put(txFileName, templateElement);
-		  }
-		  // Get the root object from the template file
-		  Element templateObjectElement = templateElement.getChildByName("object");
-		  // Merge the parent map element with its template element
-		  Element mergedObject = mergeParentElementWithTemplate(mapElement, templateObjectElement);
-		  // Pass the newly merged element to the loadObject method
-		  loadObject(map, layer, mergedObject);
-	 }
+	/* * Tiled Template Loading Section Starts Below * */
+	/** Method specifically meant to help load template objects found in objectgroups Each template object links to a specific .tx
+	 * file. Attributes and properties found in the template are allowed to be overwritten by any matching ones found in its parent
+	 * element. Knowing this, we will merge the two elements together with the parent's props taking precedence and then pass to
+	 * the loadObject
+	 * @param map TileMap object
+	 * @param layer MapLayer object
+	 * @param mapElement Element which contains the single xml element we are currently parsing
+	 * @param tmxFile tmxFile */
+	protected void loadTemplateObject (TiledMap map, MapLayer layer, Element mapElement, FileHandle tmxFile) {
+		// Get template (.tx) file name from element
+		String txFileName = mapElement.getAttribute("template");
+		// check for cached tx element
+		Element templateElement = templateCache.get(txFileName);
+		if (templateElement == null) {
+			FileHandle templateFile = getRelativeFileHandle(tmxFile, txFileName);
+			// parse the .tx template file
+			try {
+				templateElement = xml.parse(templateFile);
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Error parsing template file: " + txFileName, e);
+			}
+			templateCache.put(txFileName, templateElement);
+		}
+		// Get the root object from the template file
+		Element templateObjectElement = templateElement.getChildByName("object");
+		// Merge the parent map element with its template element
+		Element mergedObject = mergeParentElementWithTemplate(mapElement, templateObjectElement);
+		// Pass the newly merged element to the loadObject method
+		loadObject(map, layer, mergedObject);
+	}
 
-	 /** Returns a shallow copy of the source element we pass in. */
-	 protected Element cloneElementShallow(Element sourceElement) {
-		  //New element for our copy
-		  Element copyElement = new Element(sourceElement.getName(), null);
-		  // Get list of attributes from the source element
-		  ObjectMap<String,String> attrs = sourceElement.getAttributes();
-		  if (attrs != null) {
-				// Place those entries in our new copied element
-				for (ObjectMap.Entry<String,String> entry : attrs.entries()) {
-					 copyElement.setAttribute(entry.key,entry.value);
-				}
-		  }
-		  // Checking for text
-		  if (sourceElement.getText() != null) copyElement.setText(sourceElement.getText());
-		  return copyElement;
-	 }
+	/** Returns a shallow copy of the source element we pass in. */
+	protected Element cloneElementShallow (Element sourceElement) {
+		// New element for our copy
+		Element copyElement = new Element(sourceElement.getName(), null);
+		// Get list of attributes from the source element
+		ObjectMap<String, String> attrs = sourceElement.getAttributes();
+		if (attrs != null) {
+			// Place those entries in our new copied element
+			for (ObjectMap.Entry<String, String> entry : attrs.entries()) {
+				copyElement.setAttribute(entry.key, entry.value);
+			}
+		}
+		// Checking for text
+		if (sourceElement.getText() != null) copyElement.setText(sourceElement.getText());
+		return copyElement;
+	}
 
-	 /** Merges two <properties> tags from a parent and template
-	  * Matching properties from the parent will override the template's. */
-	 protected Element mergeProperties (Element parentProps, Element templateProps) {
-		  if (templateProps == null) return parentProps;
-		  if (parentProps  == null) return templateProps;
-		  // Create a new merged properties element which will contain a combination of parent and template properties.
-		  Element merged = new Element("properties", null);
-		  // Set properties from template
-		  for (Element property : templateProps.getChildrenByName("property")) {
-				merged.addChild(cloneElementShallow(property));
-		  }
-		  // Set properties from the parent, matching ones from template will be overridden
-		  for (Element property : parentProps.getChildrenByName("property")) {
-				String name = property.getAttribute("name", null);
-				// Find & remove a duplicate by name, if any
-				// Remove existing with same name (if any)
-				Element existing = null;
-				for (int i = 0; i < merged.getChildCount(); i++) {
-					 Element child = merged.getChild(i);
-					 if ("property".equals(child.getName()) && name.equals(child.getAttribute("name", null))) {
-						  existing = child;
-						  break;
-					 }
+	/** Merges two <properties> tags from a parent and template Matching properties from the parent will override the
+	 * template's. */
+	protected Element mergeProperties (Element parentProps, Element templateProps) {
+		if (templateProps == null) return parentProps;
+		if (parentProps == null) return templateProps;
+		// Create a new merged properties element which will contain a combination of parent and template properties.
+		Element merged = new Element("properties", null);
+		// Set properties from template
+		for (Element property : templateProps.getChildrenByName("property")) {
+			merged.addChild(cloneElementShallow(property));
+		}
+		// Set properties from the parent, matching ones from template will be overridden
+		for (Element property : parentProps.getChildrenByName("property")) {
+			String name = property.getAttribute("name", null);
+			// Find & remove a duplicate by name, if any
+			// Remove existing with same name (if any)
+			Element existing = null;
+			for (int i = 0; i < merged.getChildCount(); i++) {
+				Element child = merged.getChild(i);
+				if ("property".equals(child.getName()) && name.equals(child.getAttribute("name", null))) {
+					existing = child;
+					break;
 				}
-				if (existing != null) merged.removeChild(existing);
-				merged.addChild(cloneElementShallow(property));
-		  }
-		  return merged;
-	 }
+			}
+			if (existing != null) merged.removeChild(existing);
+			merged.addChild(cloneElementShallow(property));
+		}
+		return merged;
+	}
 
-	 /** Recursively merges a “parent” (map) object element with its referenced
-	  * template object element.
-	  * Attributes and properties found in the template are allowed to be overwritten
-	  * by any matching ones found in its parent element.
-	  * The returned element is a new detached tree (parent = null) so it can
-	  * be handed straight to the loadObject() method without issues. */
-	 protected Element mergeParentElementWithTemplate (Element parent, Element template) {
-		  if (template == null) return parent;
-		  if (parent  == null) return template;
-		  // Create a new merged element which will contain a combination of parent and template attributes, properties etc...
-		  Element merged = new Element(template.getName(), null);
-		  // Set attributes from template
-		  if (template.getAttributes() != null) {
-				for (ObjectMap.Entry<String, String> a : template.getAttributes().entries()) {
-					 merged.setAttribute(a.key, a.value);
-				}
-		  }
-		  // Set attributes from the parent, matching ones from template will be overridden
-		  if (parent.getAttributes() != null) {
-				for (ObjectMap.Entry<String, String> a : parent.getAttributes().entries()) {
-					 merged.setAttribute(a.key, a.value);
-				}
-		  }
-		  // Specifically added for TextMapObjects since they are unique compared to other objects.
-		  String txt = (parent.getText() != null && parent.getText().length() > 0) ?  parent.getText() :  template.getText();
-		  if (txt != null) {
-				merged.setText(txt);
-		  }
-		  // Handle Child Elements
-		  // Collect all child tag names that appear in either element
-		  ObjectSet<String> tagNames = new ObjectSet<>();
-		  for (int i=0;i<template.getChildCount();i++) tagNames.add(template.getChild(i).getName());
-		  for (int i=0;i<parent .getChildCount();i++) tagNames.add(parent .getChild(i).getName());
+	/** Recursively merges a “parent” (map) object element with its referenced template object element. Attributes and properties
+	 * found in the template are allowed to be overwritten by any matching ones found in its parent element. The returned element
+	 * is a new detached tree (parent = null) so it can be handed straight to the loadObject() method without issues. */
+	protected Element mergeParentElementWithTemplate (Element parent, Element template) {
+		if (template == null) return parent;
+		if (parent == null) return template;
+		// Create a new merged element which will contain a combination of parent and template attributes, properties etc...
+		Element merged = new Element(template.getName(), null);
+		// Set attributes from template
+		if (template.getAttributes() != null) {
+			for (ObjectMap.Entry<String, String> a : template.getAttributes().entries()) {
+				merged.setAttribute(a.key, a.value);
+			}
+		}
+		// Set attributes from the parent, matching ones from template will be overridden
+		if (parent.getAttributes() != null) {
+			for (ObjectMap.Entry<String, String> a : parent.getAttributes().entries()) {
+				merged.setAttribute(a.key, a.value);
+			}
+		}
+		// Specifically added for TextMapObjects since they are unique compared to other objects.
+		String txt = (parent.getText() != null && parent.getText().length() > 0) ? parent.getText() : template.getText();
+		if (txt != null) {
+			merged.setText(txt);
+		}
+		// Handle Child Elements
+		// Collect all child tag names that appear in either element
+		ObjectSet<String> tagNames = new ObjectSet<>();
+		for (int i = 0; i < template.getChildCount(); i++)
+			tagNames.add(template.getChild(i).getName());
+		for (int i = 0; i < parent.getChildCount(); i++)
+			tagNames.add(parent.getChild(i).getName());
 
-		  for (String tag : tagNames) {
-				Element mapChild  = parent .getChildByName(tag);
-				Element tmplChild = template.getChildByName(tag);
+		for (String tag : tagNames) {
+			Element mapChild = parent.getChildByName(tag);
+			Element tmplChild = template.getChildByName(tag);
 
-				/** Look for properties tags so we can merge those as well
-				 * Recursive check if properties is not found. */
-				Element mergedChild = "properties".equals(tag) ? mergeProperties(mapChild, tmplChild)
-					: mergeParentElementWithTemplate(mapChild, tmplChild);
-				merged.addChild(mergedChild);
-		  }
-		  return merged;
-	 }
-	/*  * End of Tiled Template Loading Section *  */
+			/** Look for properties tags so we can merge those as well Recursive check if properties is not found. */
+			Element mergedChild = "properties".equals(tag) ? mergeProperties(mapChild, tmplChild)
+				: mergeParentElementWithTemplate(mapChild, tmplChild);
+			merged.addChild(mergedChild);
+		}
+		return merged;
+	}
+	/* * End of Tiled Template Loading Section * */
 
 	protected void loadProperties (final MapProperties properties, Element element) {
 		if (element == null) return;

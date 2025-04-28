@@ -104,26 +104,26 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 
 	@Override
 	public void render () {
-		 if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-			  if (mapType != 0) {
-					mapType = 0;
-					map = tmxMapLoader.load(TMX_TESTMAP);
-			  }
-		 } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-			  if (mapType != 1) {
-					mapType = 1;
-					map = tmjMapLoader.load(TMJ_TESTMAP);
-			  }
-		 }
+		if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+			if (mapType != 0) {
+				mapType = 0;
+				map = tmxMapLoader.load(TMX_TESTMAP);
+			}
+		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+			if (mapType != 1) {
+				mapType = 1;
+				map = tmjMapLoader.load(TMJ_TESTMAP);
+			}
+		}
 
 		ScreenUtils.clear(0.55f, 0.55f, 0.55f, 1f);
 		camera.update();
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		batch.setProjectionMatrix(camera.combined);
-		if(mapType==0) {
-			 shapeRenderer.setColor(Color.BLUE);
+		if (mapType == 0) {
+			shapeRenderer.setColor(Color.BLUE);
 		} else {
-			 shapeRenderer.setColor(Color.RED);
+			shapeRenderer.setColor(Color.RED);
 		}
 
 		Gdx.gl20.glLineWidth(2);
@@ -168,197 +168,191 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 				shapeRenderer.polyline(polyline.getTransformedVertices());
 				shapeRenderer.end();
 			} else if (mapObject instanceof PointMapObject) {
-				 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-				 Vector2 point = ((PointMapObject)mapObject).getPoint();
-				 // drawing circle, because shapeRenderer.point is barely visible, if visible at all
-				 shapeRenderer.circle(point.x, point.y, 2f);
-				 shapeRenderer.end();
-			}  else if (mapObject instanceof TextMapObject) {
-				 batch.begin();
-				 TextMapObject textMapObject = (TextMapObject)mapObject;
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+				Vector2 point = ((PointMapObject)mapObject).getPoint();
+				// drawing circle, because shapeRenderer.point is barely visible, if visible at all
+				shapeRenderer.circle(point.x, point.y, 2f);
+				shapeRenderer.end();
+			} else if (mapObject instanceof TextMapObject) {
+				batch.begin();
+				TextMapObject textMapObject = (TextMapObject)mapObject;
 
-				 int alignment;
-				 String hAlign = textMapObject.getHorizontalAlign();
+				int alignment;
+				String hAlign = textMapObject.getHorizontalAlign();
 
-				 switch (hAlign.toLowerCase()) {
-				 case "center":
-					  alignment = Align.center;
-					  break;
-				 case "right":
-					  alignment = Align.right;
-					  break;
-				 case "left":
-				 default:
-					  // Default is 'left alignment, also there is no Align 'justify' like equivalent
-					  alignment = Align.left;
-					  break;
-				 }
+				switch (hAlign.toLowerCase()) {
+				case "center":
+					alignment = Align.center;
+					break;
+				case "right":
+					alignment = Align.right;
+					break;
+				case "left":
+				default:
+					// Default is 'left alignment, also there is no Align 'justify' like equivalent
+					alignment = Align.left;
+					break;
+				}
 
-				 textMapObjectFont.setColor(textMapObject.getColor());
-				 // The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
-				 // To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to
-				 // the Y position.
-				 textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(),
-					 textMapObject.getY() + textMapObject.getHeight(), textMapObject.getWidth(), alignment, textMapObject.isWrap());
-				 batch.end();
+				textMapObjectFont.setColor(textMapObject.getColor());
+				// The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
+				// To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to
+				// the Y position.
+				textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(),
+					textMapObject.getY() + textMapObject.getHeight(), textMapObject.getWidth(), alignment, textMapObject.isWrap());
+				batch.end();
 
-				 // Draw display bounding box of TextMapObject
-				 shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-				 shapeRenderer.rect(textMapObject.getX(), textMapObject.getY(), textMapObject.getWidth(), textMapObject.getHeight());
-				 shapeRenderer.end();
+				// Draw display bounding box of TextMapObject
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+				shapeRenderer.rect(textMapObject.getX(), textMapObject.getY(), textMapObject.getWidth(), textMapObject.getHeight());
+				shapeRenderer.end();
 
 			}
 		}
 
+		defaultTemplateInfo = "Hard Coded Default Reference:\n" + "BoolProp: true\n" + "ColorProp: #ff0000ff\n" + "IntProp: 86\n"
+			+ "StringProp: Template Default";
 
-		 defaultTemplateInfo ="Hard Coded Default Reference:\n"+
-			 "BoolProp: true\n"+
-			 "ColorProp: #ff0000ff\n"+
-			 "IntProp: 86\n"+
-			 "StringProp: Template Default";
+		batch.begin();
+		if (mapType == 0) {
+			font.setColor(Color.BLUE);
+			font.draw(batch, "Current Loader: TMX\n Press KEY 2\n to switch to TMJ LOADER", 20, 1315);
+			font.setColor(Color.WHITE);
+		} else if (mapType == 1) {
+			font.setColor(Color.RED);
+			font.draw(batch, "Current Loader: TMJ:\n Press KEY 1\n to switch to TMX LOADER\"", 20, 1315);
+			font.setColor(Color.WHITE);
+		}
 
-		 batch.begin();
-		 if(mapType==0){
-			  font.setColor(Color.BLUE);
-			  font.draw(batch,"Current Loader: TMX\n Press KEY 2\n to switch to TMJ LOADER", 20, 1315);
-			  font.setColor(Color.WHITE);
-		 } else if(mapType==1){
-			  font.setColor(Color.RED);
-			  font.draw(batch,"Current Loader: TMJ:\n Press KEY 1\n to switch to TMX LOADER\"", 20, 1315);
-			  font.setColor(Color.WHITE);
-		 }
+		font.draw(batch, defaultTemplateInfo, 220, 1315);
+		// Display Properties under the unaltered template objects
+		for (MapObject mapObject : layer.getObjects()) {
+			if (!mapObject.isVisible()) continue;
+			if (mapObject instanceof TiledMapTileMapObject) {
+				// check for default object without any alterations
+				if (!mapObject.getProperties().containsKey("Overridden")) {
+					// All properties should match the default hard coded ones
+					font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height") / 3);
+				} else {
+					/** Note, object named Texture that is overridden will be flipped on the Y axis since we overrode the Flipping
+					 * Vertical property to true, that's why it appears upside down * */
+					properties = "Overridden:\n" + "BoolProp: " + mapObject.getProperties().get("BoolProp") + "\n" + "ColorProp: "
+						+ mapObject.getProperties().get("ColorProp") + "\n" + "IntProp: " + mapObject.getProperties().get("IntProp")
+						+ "\n" + "StringProp: " + mapObject.getProperties().get("StringProp") + "\n" + "Overridden: "
+						+ mapObject.getProperties().get("Overridden");
+					font.draw(batch, properties, (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height") / 3);
+				}
 
-		 font.draw(batch,defaultTemplateInfo, 220, 1315);
-		 //Display Properties under the unaltered template objects
-		 for (MapObject mapObject : layer.getObjects()) {
-			  if (!mapObject.isVisible()) continue;
-			  if (mapObject instanceof TiledMapTileMapObject) {
-					//check for default object without any alterations
-					if(!mapObject.getProperties().containsKey("Overridden")){
-						 //All properties should match the default hard coded ones
-						 font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height")/3);
-					} else {
-						 /**
-						  * Note, object named Texture that is overridden will be flipped on the Y axis since we overrode the
-						  * Flipping Vertical property to true, that's why it appears upside down						  *
-						  */
-						 properties ="Overridden:\n"+
-							 "BoolProp: "+mapObject.getProperties().get("BoolProp")+"\n"+
-							 "ColorProp: "+mapObject.getProperties().get("ColorProp")+"\n"+
-							 "IntProp: "+mapObject.getProperties().get("IntProp")+"\n"+
-							 "StringProp: "+mapObject.getProperties().get("StringProp")+"\n"+
-							 "Overridden: "+mapObject.getProperties().get("Overridden");
-						 font.draw(batch, properties, (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height")/3);
-					}
+			} else if (mapObject instanceof EllipseMapObject) {
+				// check for default object without any alterations
+				if (!mapObject.getProperties().containsKey("Overridden")) {
+					// All properties should match the default hard coded ones
+					font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height") / 3);
+				} else {
+					properties = "Overridden:\n" + "BoolProp: " + mapObject.getProperties().get("BoolProp") + "\n" + "ColorProp: "
+						+ mapObject.getProperties().get("ColorProp") + "\n" + "IntProp: " + mapObject.getProperties().get("IntProp")
+						+ "\n" + "StringProp: " + mapObject.getProperties().get("StringProp") + "\n" + "Overridden: "
+						+ mapObject.getProperties().get("Overridden");
+					font.draw(batch, properties, (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height") / 3);
+				}
+			} else if (mapObject instanceof RectangleMapObject) {
 
-			  } else if (mapObject instanceof EllipseMapObject) {
-					//check for default object without any alterations
-					if(!mapObject.getProperties().containsKey("Overridden")){
-						 //All properties should match the default hard coded ones
-						 font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height")/3);
-					} else {
-						 properties ="Overridden:\n"+
-							 "BoolProp: "+mapObject.getProperties().get("BoolProp")+"\n"+
-							 "ColorProp: "+mapObject.getProperties().get("ColorProp")+"\n"+
-							 "IntProp: "+mapObject.getProperties().get("IntProp")+"\n"+
-							 "StringProp: "+mapObject.getProperties().get("StringProp")+"\n"+
-							 "Overridden: "+mapObject.getProperties().get("Overridden");
-						 font.draw(batch, properties, (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height")/3);
-					}
-			  } else if (mapObject instanceof RectangleMapObject) {
+				// check for default object without any alterations
+				if (!mapObject.getProperties().containsKey("Overridden")) {
+					// All properties should match the default hard coded ones
+					font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height") / 3);
+				} else {
+					properties = "Overridden + Extra prop:\n" + "BoolProp: " + mapObject.getProperties().get("BoolProp") + "\n"
+						+ "ColorProp: " + mapObject.getProperties().get("ColorProp") + "\n" + "IntProp: "
+						+ mapObject.getProperties().get("IntProp") + "\n" + "StringProp: " + mapObject.getProperties().get("StringProp")
+						+ "\n" + "NonTemplateProperty: " + mapObject.getProperties().get("NonTemplateProperty") + "\n" + "Overridden: "
+						+ mapObject.getProperties().get("Overridden");
+					font.draw(batch, properties, (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height") / 3);
+				}
 
-					//check for default object without any alterations
-					if(!mapObject.getProperties().containsKey("Overridden")){
-						 //All properties should match the default hard coded ones
-						 font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height")/3);
-					} else {
-						 properties ="Overridden + Extra prop:\n"+
-							 "BoolProp: "+mapObject.getProperties().get("BoolProp")+"\n"+
-							 "ColorProp: "+mapObject.getProperties().get("ColorProp")+"\n"+
-							 "IntProp: "+mapObject.getProperties().get("IntProp")+"\n"+
-							 "StringProp: "+mapObject.getProperties().get("StringProp")+"\n"+
-							 "NonTemplateProperty: "+mapObject.getProperties().get("NonTemplateProperty")+"\n"+
-							 "Overridden: "+mapObject.getProperties().get("Overridden");
-						 font.draw(batch, properties, (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height")/3);
-					}
+			} else if (mapObject instanceof PolygonMapObject) {
+				// check for default object without any alterations
+				if (!mapObject.getProperties().containsKey("Overridden")) {
+					// All properties should match the default hard coded ones
+					font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - 75);
+				} else {
+					properties = "Overridden:\n" + "BoolProp: " + mapObject.getProperties().get("BoolProp") + "\n" + "ColorProp: "
+						+ mapObject.getProperties().get("ColorProp") + "\n" + "IntProp: " + mapObject.getProperties().get("IntProp")
+						+ "\n" + "StringProp: " + mapObject.getProperties().get("StringProp") + "\n" + "Overridden: "
+						+ mapObject.getProperties().get("Overridden");
+					font.draw(batch, properties, (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - 75);
+				}
 
-			  } else if (mapObject instanceof PolygonMapObject) {
-					//check for default object without any alterations
-					if(!mapObject.getProperties().containsKey("Overridden")){
-						 //All properties should match the default hard coded ones
-						 font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") - 75);
-					} else {
-						 properties ="Overridden:\n"+
-							 "BoolProp: "+mapObject.getProperties().get("BoolProp")+"\n"+
-							 "ColorProp: "+mapObject.getProperties().get("ColorProp")+"\n"+
-							 "IntProp: "+mapObject.getProperties().get("IntProp")+"\n"+
-							 "StringProp: "+mapObject.getProperties().get("StringProp")+"\n"+
-							 "Overridden: "+mapObject.getProperties().get("Overridden");
-						 font.draw(batch, properties, (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") - 75);
-					}
+			} else if (mapObject instanceof PolylineMapObject) {
+				// check for default object without any alterations
+				if (!mapObject.getProperties().containsKey("Overridden")) {
+					// All properties should match the default hard coded ones
+					font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height") / 3 - 10);
+				} else {
+					properties = "Overridden:\n" + "BoolProp: " + mapObject.getProperties().get("BoolProp") + "\n" + "ColorProp: "
+						+ mapObject.getProperties().get("ColorProp") + "\n" + "IntProp: " + mapObject.getProperties().get("IntProp")
+						+ "\n" + "StringProp: " + mapObject.getProperties().get("StringProp") + "\n" + "Overridden: "
+						+ mapObject.getProperties().get("Overridden");
+					font.draw(batch, properties, (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height") / 3 - 10);
+				}
+			} else if (mapObject instanceof PointMapObject) {
+				// check for default object without any alterations
+				if (!mapObject.getProperties().containsKey("Overridden")) {
+					// All properties should match the default hard coded ones
+					font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x") - 60,
+						(float)mapObject.getProperties().get("y") - 20);
+				} else {
+					properties = "Overridden:\n" + "BoolProp: " + mapObject.getProperties().get("BoolProp") + "\n" + "ColorProp: "
+						+ mapObject.getProperties().get("ColorProp") + "\n" + "IntProp: " + mapObject.getProperties().get("IntProp")
+						+ "\n" + "StringProp: " + mapObject.getProperties().get("StringProp") + "\n" + "Overridden: "
+						+ mapObject.getProperties().get("Overridden");
+					font.draw(batch, properties, (float)mapObject.getProperties().get("x") - 60,
+						(float)mapObject.getProperties().get("y") - 20);
 
-			  } else if (mapObject instanceof PolylineMapObject) {
-					//check for default object without any alterations
-					if(!mapObject.getProperties().containsKey("Overridden")){
-						 //All properties should match the default hard coded ones
-						 font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height")/3 -10);
-					} else {
-						 properties ="Overridden:\n"+
-							 "BoolProp: "+mapObject.getProperties().get("BoolProp")+"\n"+
-							 "ColorProp: "+mapObject.getProperties().get("ColorProp")+"\n"+
-							 "IntProp: "+mapObject.getProperties().get("IntProp")+"\n"+
-							 "StringProp: "+mapObject.getProperties().get("StringProp")+"\n"+
-							 "Overridden: "+mapObject.getProperties().get("Overridden");
-						 font.draw(batch, properties, (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") - (float)mapObject.getProperties().get("height")/3 -10);
-					}
-			  } else if (mapObject instanceof PointMapObject) {
-					//check for default object without any alterations
-					if(!mapObject.getProperties().containsKey("Overridden")){
-						 //All properties should match the default hard coded ones
-						 font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x") -60, (float)mapObject.getProperties().get("y") -20);
-					} else {
-						 properties ="Overridden:\n"+
-							 "BoolProp: "+mapObject.getProperties().get("BoolProp")+"\n"+
-							 "ColorProp: "+mapObject.getProperties().get("ColorProp")+"\n"+
-							 "IntProp: "+mapObject.getProperties().get("IntProp")+"\n"+
-							 "StringProp: "+mapObject.getProperties().get("StringProp")+"\n"+
-							 "Overridden: "+mapObject.getProperties().get("Overridden");
-						 font.draw(batch, properties, (float)mapObject.getProperties().get("x")-60, (float)mapObject.getProperties().get("y") -20);
+				}
 
-					}
+			} else if (mapObject instanceof TextMapObject) {
+				// check for default object without any alterations
+				if (!mapObject.getProperties().containsKey("Overridden")) {
+					// All properties should match the default hard coded ones
+					font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - 40);
+				} else {
+					properties = "Overridden:\n" + "BoolProp: " + mapObject.getProperties().get("BoolProp") + "\n" + "ColorProp: "
+						+ mapObject.getProperties().get("ColorProp") + "\n" + "IntProp: " + mapObject.getProperties().get("IntProp")
+						+ "\n" + "StringProp: " + mapObject.getProperties().get("StringProp") + "\n" + "Overridden: "
+						+ mapObject.getProperties().get("Overridden");
+					font.draw(batch, properties, (float)mapObject.getProperties().get("x"),
+						(float)mapObject.getProperties().get("y") - 40);
 
-			  } else if (mapObject instanceof TextMapObject) {
-					//check for default object without any alterations
-					if(!mapObject.getProperties().containsKey("Overridden")){
-						 //All properties should match the default hard coded ones
-						 font.draw(batch, readDefaultProps(mapObject), (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") -40);
-					} else {
-						 properties ="Overridden:\n"+
-							 "BoolProp: "+mapObject.getProperties().get("BoolProp")+"\n"+
-							 "ColorProp: "+mapObject.getProperties().get("ColorProp")+"\n"+
-							 "IntProp: "+mapObject.getProperties().get("IntProp")+"\n"+
-							 "StringProp: "+mapObject.getProperties().get("StringProp")+"\n"+
-							 "Overridden: "+mapObject.getProperties().get("Overridden");
-						 font.draw(batch, properties, (float)mapObject.getProperties().get("x"), (float)mapObject.getProperties().get("y") -40);
+				}
 
-					}
-
-			  }
-		 }
+			}
+		}
 
 		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond() + "\n" + loadingStatus, 20, 1470);
 		batch.end();
 	}
-	private String readDefaultProps(MapObject mapObject) {
-		 stringBuilder.setLength(0);
-		 stringBuilder.append("Template Default:\n");
-		 stringBuilder.append("BoolProp: ").append(mapObject.getProperties().get("BoolProp")).append("\n");
-		 stringBuilder.append("ColorProp: ").append(mapObject.getProperties().get("ColorProp")).append("\n");
-		 stringBuilder.append("IntProp: ").append(mapObject.getProperties().get("IntProp")).append("\n");
-		 stringBuilder.append("StringProp: ").append(mapObject.getProperties().get("StringProp"));
-		 return stringBuilder.toString();
-	}
 
+	private String readDefaultProps (MapObject mapObject) {
+		stringBuilder.setLength(0);
+		stringBuilder.append("Template Default:\n");
+		stringBuilder.append("BoolProp: ").append(mapObject.getProperties().get("BoolProp")).append("\n");
+		stringBuilder.append("ColorProp: ").append(mapObject.getProperties().get("ColorProp")).append("\n");
+		stringBuilder.append("IntProp: ").append(mapObject.getProperties().get("IntProp")).append("\n");
+		stringBuilder.append("StringProp: ").append(mapObject.getProperties().get("StringProp"));
+		return stringBuilder.toString();
+	}
 
 	@Override
 	public void dispose () {

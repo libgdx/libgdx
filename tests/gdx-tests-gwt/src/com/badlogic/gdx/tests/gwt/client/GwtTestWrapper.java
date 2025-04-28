@@ -597,11 +597,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			}
 		});
 		tests.add(new GwtInstancer() {
-			  @Override
-			  public GdxTest instance () {
-					return new TiledMapTemplateObjectLoadingTest();
-			  }
-		 });
+			@Override
+			public GdxTest instance () {
+				return new TiledMapTemplateObjectLoadingTest();
+			}
+		});
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new UITest();
