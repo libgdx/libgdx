@@ -144,32 +144,32 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 		return getTileSetDependencyFileHandle(fileHandles, tmjFile, tileSet);
 	}
 
-	 protected Array<FileHandle> getTileSetDependencyFileHandle (Array<FileHandle> fileHandles, FileHandle tmjFile,
-		 JsonValue tileSet) {
-		  FileHandle tsjFile;
-		  String source = tileSet.getString("source", null);
-		  if (source != null) {
-				tsjFile = getRelativeFileHandle(tmjFile, source);
-				tileSet = json.parse(tsjFile);
-		  } else {
-				tsjFile = tmjFile;
-		  }
-		  if (tileSet.has("image")) {
-				String imageSource = tileSet.getString("image");
-				FileHandle image = getRelativeFileHandle(tsjFile, imageSource);
-				fileHandles.add(image);
-		  } else {
-				JsonValue tiles = tileSet.get("tiles");
-				if (tiles != null) {
-					 for (JsonValue tile : tiles) {
-						  String imageSource = tile.getString("image");
-						  FileHandle image = getRelativeFileHandle(tsjFile, imageSource);
-						  fileHandles.add(image);
-					 }
+	protected Array<FileHandle> getTileSetDependencyFileHandle (Array<FileHandle> fileHandles, FileHandle tmjFile,
+		JsonValue tileSet) {
+		FileHandle tsjFile;
+		String source = tileSet.getString("source", null);
+		if (source != null) {
+			tsjFile = getRelativeFileHandle(tmjFile, source);
+			tileSet = json.parse(tsjFile);
+		} else {
+			tsjFile = tmjFile;
+		}
+		if (tileSet.has("image")) {
+			String imageSource = tileSet.getString("image");
+			FileHandle image = getRelativeFileHandle(tsjFile, imageSource);
+			fileHandles.add(image);
+		} else {
+			JsonValue tiles = tileSet.get("tiles");
+			if (tiles != null) {
+				for (JsonValue tile : tiles) {
+					String imageSource = tile.getString("image");
+					FileHandle image = getRelativeFileHandle(tsjFile, imageSource);
+					fileHandles.add(image);
 				}
-		  }
-		  return fileHandles;
-	 }
+			}
+		}
+		return fileHandles;
+	}
 
 	@Override
 	protected void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet, JsonValue element,
