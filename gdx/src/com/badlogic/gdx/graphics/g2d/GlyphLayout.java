@@ -622,6 +622,8 @@ public class GlyphLayout implements Poolable {
 			buffer.append(y);
 			buffer.append(", ");
 			buffer.append(width);
+			buffer.append(", ");
+			buffer.append(wrapState);
 			return buffer.toString();
 		}
 	}
