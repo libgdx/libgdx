@@ -158,8 +158,8 @@ public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasT
 
 	@Override
 	protected void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet, JsonValue element,
-		JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, String source,
-		int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
+		JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, int offsetX,
+		int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
 
 		TextureAtlas atlas = atlasResolver.getAtlas();
 		String regionsName = name;

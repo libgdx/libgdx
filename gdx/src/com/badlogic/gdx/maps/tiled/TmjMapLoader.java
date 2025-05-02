@@ -92,6 +92,32 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 		return map;
 	}
 
+	/** Loads the {@link TiledMapTileSet} from the given file. The file is resolved via the {@link FileHandleResolver} set in the
+	 * constructor of this class. By default it will resolve to an internal file. The map will be loaded for a y-up coordinate
+	 * system.
+	 *
+	 * @param fileName the filename
+	 * @return the TiledMapTileSet */
+	public TiledMapTileSet loadTileset (String fileName) {
+		return loadTileset(fileName, new TmjMapLoader.Parameters());
+	}
+
+	/** Loads the {@link TiledMapTileSet} from the given file. The file is resolved via the {@link FileHandleResolver} set in the
+	 * constructor of this class. By default it will resolve to an internal file.
+	 *
+	 * @param fileName the filename
+	 * @param parameter specifies whether to use y-up, generate mip maps etc.
+	 * @return the TiledMapTileSet */
+	public TiledMapTileSet loadTileset (String fileName, TmjMapLoader.Parameters parameter) {
+		FileHandle tmjFile = resolve(fileName);
+
+		this.root = json.parse(tmjFile);
+
+		ObjectMap<String, Texture> textures = new ObjectMap<>();
+
+		return loadTileSet(root, tmjFile, new ImageResolver.DirectImageResolver(textures));
+	}
+
 	@Override
 	protected Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmjFile,
 		TextureLoader.TextureParameter textureParameter) {
@@ -185,14 +211,13 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 
 	@Override
 	protected void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet, JsonValue element,
-		JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, String source,
-		int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
+		JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, int offsetX,
+		int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
 
 		MapProperties props = tileSet.getProperties();
-		if (image != null) {
-			// One image for the whole tileSet
-			TextureRegion texture = imageResolver.getImage(image.path());
 
+		if (image != null) {
+			TextureRegion texture = imageResolver.getImage(image.path());
 			props.put("imagesource", imageSource);
 			props.put("imagewidth", imageWidth);
 			props.put("imageheight", imageHeight);
@@ -205,29 +230,22 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 			int stopHeight = texture.getRegionHeight() - tileheight;
 
 			int id = firstgid;
-
 			for (int y = margin; y <= stopHeight; y += tileheight + spacing) {
 				for (int x = margin; x <= stopWidth; x += tilewidth + spacing) {
 					TextureRegion tileRegion = new TextureRegion(texture, x, y, tilewidth, tileheight);
-					int tileId = id++;
-					addStaticTiledMapTile(tileSet, tileRegion, tileId, offsetX, offsetY);
+					addStaticTiledMapTile(tileSet, tileRegion, id++, offsetX, offsetY);
 				}
 			}
 		} else {
-			// Every tile has its own image source
 			for (JsonValue tile : tiles) {
 				if (tile.has("image")) {
-					imageSource = tile.getString("image");
+					String tileImageSource = tile.getString("image");
+					FileHandle tileImage = getRelativeFileHandle(tmjFile, tileImageSource);
+					TextureRegion texture = imageResolver.getImage(tileImage.path());
 
-					if (source != null) {
-						image = getRelativeFileHandle(getRelativeFileHandle(tmjFile, source), imageSource);
-					} else {
-						image = getRelativeFileHandle(tmjFile, imageSource);
-					}
+					int tileId = firstgid + tile.getInt("id");
+					addStaticTiledMapTile(tileSet, texture, tileId, offsetX, offsetY);
 				}
-				TextureRegion texture = imageResolver.getImage(image.path());
-				int tileId = firstgid + tile.getInt("id");
-				addStaticTiledMapTile(tileSet, texture, tileId, offsetX, offsetY);
 			}
 		}
 	}
