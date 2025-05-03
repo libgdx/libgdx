@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** @brief synchronous loader for TMJ maps created with the Tiled tool */
-public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> {
+public class TmjMapLoader extends BaseTmjMapLoader<TmjMapLoader.Parameters> {
 
 	public static class Parameters extends BaseTmjMapLoader.Parameters {
 	}
@@ -83,12 +83,12 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, FileHandle tmjFile, BaseTmjMapLoader.Parameters parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle tmjFile, Parameters parameter) {
 		this.map = loadTiledMap(tmjFile, parameter, new ImageResolver.AssetManagerImageResolver(manager));
 	}
 
 	@Override
-	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, BaseTmjMapLoader.Parameters parameter) {
+	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, Parameters parameter) {
 		return map;
 	}
 
