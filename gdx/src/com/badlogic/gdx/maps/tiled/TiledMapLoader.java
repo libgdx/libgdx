@@ -24,12 +24,12 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.*;
 
-/** A universal TiledMap loader that supports all currently available map formats in libGDX. This loader automatically delegates
- * to the appropriate underlying map loader {@link TmxMapLoader}, {@link AtlasTmxMapLoader}, {@link TmjMapLoader}, or
- * {@link AtlasTmjMapLoader} based solely on the map file's extension and content. A primary use case is for projects that need to
- * load a mix of TMX and TMJ maps (with or without atlases) using a single loader instance inside an {@link AssetManager}. For TMX
- * and TMJ files, this loader checks for the presence of an {@code "atlas"} property. If found, it uses an atlas-based loader;
- * otherwise, it falls back to the standard loader. */
+/** A universal map loader that automatically delegates to the appropriate underlying map loader
+ * {@link TmxMapLoader}, {@link AtlasTmxMapLoader}, {@link TmjMapLoader}, or {@link AtlasTmjMapLoader} based solely on the map
+ * file's extension and content. A primary use case is for projects that need to load a mix of TMX and TMJ maps
+ * (with or without atlases) using a single loader instance inside an {@link AssetManager}. For TMX and TMJ files,
+ * this loader checks for the presence of an {@code "atlas"} property. If found, it uses an atlas-based loader; otherwise,
+ * it falls back to the standard loader. */
 public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, BaseTiledMapLoader.Parameters> {
 
 	private final TmxMapLoader tmxMapLoader;
@@ -78,20 +78,18 @@ public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, BaseTiledM
 		if (extension.equals("tmx")) {
 			if (usesAtlas(file)) {
 				// atlas‑backed TMX
-				return atlasTmxMapLoader.load(fileName,
-					convertParameters(parameter, AtlasTmxMapLoader.AtlasTiledMapLoaderParameters.class));
+				return atlasTmxMapLoader.load(fileName,parameter);
 			} else {
 				// plain TMX
-				return tmxMapLoader.load(fileName, convertParameters(parameter, TmxMapLoader.Parameters.class));
+				return tmxMapLoader.load(fileName, parameter);
 			}
 		} else if (extension.equals("tmj")) {
 			if (usesAtlas(file)) {
 				// atlas‑backed TMJ
-				return atlasTmjMapLoader.load(fileName,
-					convertParameters(parameter, AtlasTmjMapLoader.AtlasTiledMapLoaderParameters.class));
+				return atlasTmjMapLoader.load(fileName, parameter);
 			} else {
 				// plain TMJ
-				return tmjMapLoader.load(fileName, convertParameters(parameter, TmjMapLoader.Parameters.class));
+				return tmjMapLoader.load(fileName, parameter);
 			}
 		} else {
 			// no other formats supported
@@ -106,17 +104,15 @@ public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, BaseTiledM
 		String extension = file.extension().toLowerCase();
 		if (extension.equals("tmx")) {
 			if (usesAtlas(file)) {
-				return atlasTmxMapLoader.getDependencies(fileName, file,
-					convertParameters(parameter, AtlasTmxMapLoader.AtlasTiledMapLoaderParameters.class));
+				return atlasTmxMapLoader.getDependencies(fileName, file,parameter);
 			} else {
-				return tmxMapLoader.getDependencies(fileName, file, convertParameters(parameter, TmxMapLoader.Parameters.class));
+				return tmxMapLoader.getDependencies(fileName, file, parameter);
 			}
 		} else if (extension.equals("tmj")) {
 			if (usesAtlas(file)) {
-				return atlasTmjMapLoader.getDependencies(fileName, file,
-					convertParameters(parameter, AtlasTmjMapLoader.AtlasTiledMapLoaderParameters.class));
+				return atlasTmjMapLoader.getDependencies(fileName, file, parameter);
 			} else {
-				return tmjMapLoader.getDependencies(fileName, file, convertParameters(parameter, TmjMapLoader.Parameters.class));
+				return tmjMapLoader.getDependencies(fileName, file, parameter);
 			}
 		} else {
 			throw new IllegalArgumentException("Unsupported map format: " + extension);
@@ -130,17 +126,15 @@ public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, BaseTiledM
 		String extension = file.extension().toLowerCase();
 		if (extension.equals("tmx")) {
 			if (usesAtlas(file)) {
-				atlasTmxMapLoader.loadAsync(manager, fileName, file,
-					convertParameters(parameter, AtlasTmxMapLoader.AtlasTiledMapLoaderParameters.class));
+				atlasTmxMapLoader.loadAsync(manager, fileName, file,parameter);
 			} else {
-				tmxMapLoader.loadAsync(manager, fileName, file, convertParameters(parameter, TmxMapLoader.Parameters.class));
+				tmxMapLoader.loadAsync(manager, fileName, file, parameter);
 			}
 		} else if (extension.equals("tmj")) {
 			if (usesAtlas(file)) {
-				atlasTmjMapLoader.loadAsync(manager, fileName, file,
-					convertParameters(parameter, AtlasTmjMapLoader.AtlasTiledMapLoaderParameters.class));
+				atlasTmjMapLoader.loadAsync(manager, fileName, file, parameter);
 			} else {
-				tmjMapLoader.loadAsync(manager, fileName, file, convertParameters(parameter, TmjMapLoader.Parameters.class));
+				tmjMapLoader.loadAsync(manager, fileName, file, parameter);
 			}
 
 		} else {
@@ -156,17 +150,15 @@ public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, BaseTiledM
 		String extension = file.extension().toLowerCase();
 		if (extension.equals("tmx")) {
 			if (usesAtlas(file)) {
-				map = atlasTmxMapLoader.loadSync(manager, fileName, file,
-					convertParameters(parameter, AtlasTmxMapLoader.AtlasTiledMapLoaderParameters.class));
+				map = atlasTmxMapLoader.loadSync(manager, fileName, file,parameter);
 			} else {
-				map = tmxMapLoader.loadSync(manager, fileName, file, convertParameters(parameter, TmxMapLoader.Parameters.class));
+				map = tmxMapLoader.loadSync(manager, fileName, file, parameter);
 			}
 		} else if (extension.equals("tmj")) {
 			if (usesAtlas(file)) {
-				map = atlasTmjMapLoader.loadSync(manager, fileName, file,
-					convertParameters(parameter, AtlasTmjMapLoader.AtlasTiledMapLoaderParameters.class));
+				map = atlasTmjMapLoader.loadSync(manager, fileName, file,parameter);
 			} else {
-				map = tmjMapLoader.loadSync(manager, fileName, file, convertParameters(parameter, TmjMapLoader.Parameters.class));
+				map = tmjMapLoader.loadSync(manager, fileName, file, parameter);
 			}
 		} else {
 			throw new IllegalArgumentException("Unsupported map format: " + extension);
@@ -200,60 +192,6 @@ public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, BaseTiledM
 			}
 		}
 		return false;
-	}
-
-	/** Each individual map loader has its own subclass of Parameters extended from BaseTiledMapLoader.Parameters This method will
-	 * make sure we are returning the proper Parameters that the loader expects. If BaseTiledMapLoader.Parameters are passed in, we
-	 * will create the appropriate Parameters for the user and pass them back.
-	 *
-	 * @param incomingParameters whatever the user supplied to the TiledMapLoader
-	 * @param targetParameterClass the concrete Parameters type required by the specific loader
-	 * @param <T> same as {@code targetParameterClass}
-	 * @return a non‑null instance of {@code targetParameterClass}, to be used by the loader
-	 * @throws RuntimeException if the supplied parameters are of an incompatible subclass */
-	private <T extends BaseTiledMapLoader.Parameters> T convertParameters (BaseTiledMapLoader.Parameters incomingParameters,
-		Class<T> targetParameterClass) {
-
-		// If the parameters passed in are already the appropriate subclass. We return them as is.
-		if (targetParameterClass.isInstance(incomingParameters)) return (T)incomingParameters;
-
-		// It's possible a user has decided to pass in Map Parameters in the form of Class BaseTiledMapLoader.Parameters
-		// Instead of throwing an error we convert them to the correct format instead.
-		BaseTiledMapLoader.Parameters convertedParameters = null;
-
-		// Check to see if Parameter class is an instance of BaseTiledMapLoader.Parameters
-		if (incomingParameters.getClass() == BaseTiledMapLoader.Parameters.class) {
-			// Check to see what type of Map Loader Parameters we should be looking to convert to
-			if (targetParameterClass == TmxMapLoader.Parameters.class) {
-				convertedParameters = new TmxMapLoader.Parameters();
-			} else if (targetParameterClass == AtlasTmxMapLoader.AtlasTiledMapLoaderParameters.class) {
-				convertedParameters = new AtlasTmxMapLoader.AtlasTiledMapLoaderParameters();
-			} else if (targetParameterClass == TmjMapLoader.Parameters.class) {
-				convertedParameters = new TmjMapLoader.Parameters();
-			} else if (targetParameterClass == AtlasTmjMapLoader.AtlasTiledMapLoaderParameters.class) {
-				convertedParameters = new AtlasTmjMapLoader.AtlasTiledMapLoaderParameters();
-			} else {
-				throw new IllegalArgumentException("Unsupported map parameter class: " + targetParameterClass);
-			}
-		} else {
-			// Throw an error if user has explicitly passed in Parameters of incorrect map type
-			throw new IllegalArgumentException("Parameters passed in: " + incomingParameters.getClass()
-				+ ", does not match the expected parameter type: " + targetParameterClass);
-		}
-
-		// Copy over the base parameters found in BaseTiledMapLoader.Parameters to the newly built parameters object
-		copyBaseParams(incomingParameters, convertedParameters);
-		return (T)convertedParameters;
-	}
-
-	/** Copies all fields that exist in the BaseTiledMapLoader.Parameters class. */
-	private void copyBaseParams (BaseTiledMapLoader.Parameters oldParameters, BaseTiledMapLoader.Parameters newParameters) {
-		newParameters.textureMinFilter = oldParameters.textureMinFilter;
-		newParameters.textureMagFilter = oldParameters.textureMagFilter;
-		newParameters.generateMipMaps = oldParameters.generateMipMaps;
-		newParameters.flipY = oldParameters.flipY;
-		newParameters.convertObjectToTileSpace = oldParameters.convertObjectToTileSpace;
-		newParameters.projectFilePath = oldParameters.projectFilePath;
 	}
 
 }

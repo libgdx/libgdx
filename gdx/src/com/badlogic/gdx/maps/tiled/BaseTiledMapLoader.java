@@ -55,6 +55,8 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		public boolean flipY = true;
 		/** Path to Tiled project file. Needed when using class properties. */
 		public String projectFilePath = null;
+		/** force texture filters? **/
+		public boolean forceTextureFilters = false;
 	}
 
 	/** Representation of a single Tiled class property. A property has:

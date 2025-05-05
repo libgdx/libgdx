@@ -83,7 +83,7 @@ public class TiledMapUniversalLoaderTest extends GdxTest {
 
 		assetManager.load(MAP_ATLAS_TMX, TiledMap.class);
 
-		AtlasTmjMapLoader.AtlasTiledMapLoaderParameters mapAtlasTmjParams = new AtlasTmjMapLoader.AtlasTiledMapLoaderParameters();
+		BaseTiledMapLoader.Parameters mapAtlasTmjParams= new BaseTiledMapLoader.Parameters();
 		mapAtlasTmjParams.projectFilePath = "data/maps/tiled-atlas-processed/tiled-prop-test.tiled-project";
 		assetManager.load(MAP_ATLAS_TMJ, TiledMap.class, mapAtlasTmjParams);
 
