@@ -24,12 +24,11 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.*;
 
-/** A universal map loader that automatically delegates to the appropriate underlying map loader
- * {@link TmxMapLoader}, {@link AtlasTmxMapLoader}, {@link TmjMapLoader}, or {@link AtlasTmjMapLoader} based solely on the map
- * file's extension and content. A primary use case is for projects that need to load a mix of TMX and TMJ maps
- * (with or without atlases) using a single loader instance inside an {@link AssetManager}. For TMX and TMJ files,
- * this loader checks for the presence of an {@code "atlas"} property. If found, it uses an atlas-based loader; otherwise,
- * it falls back to the standard loader. */
+/** A universal map loader that automatically delegates to the appropriate underlying map loader {@link TmxMapLoader},
+ * {@link AtlasTmxMapLoader}, {@link TmjMapLoader}, or {@link AtlasTmjMapLoader} based solely on the map file's extension and
+ * content. A primary use case is for projects that need to load a mix of TMX and TMJ maps (with or without atlases) using a
+ * single loader instance inside an {@link AssetManager}. For TMX and TMJ files, this loader checks for the presence of an
+ * {@code "atlas"} property. If found, it uses an atlas-based loader; otherwise, it falls back to the standard loader. */
 public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, BaseTiledMapLoader.Parameters> {
 
 	private final TmxMapLoader tmxMapLoader;
@@ -78,7 +77,7 @@ public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, BaseTiledM
 		if (extension.equals("tmx")) {
 			if (usesAtlas(file)) {
 				// atlas‑backed TMX
-				return atlasTmxMapLoader.load(fileName,parameter);
+				return atlasTmxMapLoader.load(fileName, parameter);
 			} else {
 				// plain TMX
 				return tmxMapLoader.load(fileName, parameter);
@@ -104,7 +103,7 @@ public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, BaseTiledM
 		String extension = file.extension().toLowerCase();
 		if (extension.equals("tmx")) {
 			if (usesAtlas(file)) {
-				return atlasTmxMapLoader.getDependencies(fileName, file,parameter);
+				return atlasTmxMapLoader.getDependencies(fileName, file, parameter);
 			} else {
 				return tmxMapLoader.getDependencies(fileName, file, parameter);
 			}
@@ -126,7 +125,7 @@ public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, BaseTiledM
 		String extension = file.extension().toLowerCase();
 		if (extension.equals("tmx")) {
 			if (usesAtlas(file)) {
-				atlasTmxMapLoader.loadAsync(manager, fileName, file,parameter);
+				atlasTmxMapLoader.loadAsync(manager, fileName, file, parameter);
 			} else {
 				tmxMapLoader.loadAsync(manager, fileName, file, parameter);
 			}
@@ -150,13 +149,13 @@ public class TiledMapLoader extends AsynchronousAssetLoader<TiledMap, BaseTiledM
 		String extension = file.extension().toLowerCase();
 		if (extension.equals("tmx")) {
 			if (usesAtlas(file)) {
-				map = atlasTmxMapLoader.loadSync(manager, fileName, file,parameter);
+				map = atlasTmxMapLoader.loadSync(manager, fileName, file, parameter);
 			} else {
 				map = tmxMapLoader.loadSync(manager, fileName, file, parameter);
 			}
 		} else if (extension.equals("tmj")) {
 			if (usesAtlas(file)) {
-				map = atlasTmjMapLoader.loadSync(manager, fileName, file,parameter);
+				map = atlasTmjMapLoader.loadSync(manager, fileName, file, parameter);
 			} else {
 				map = tmjMapLoader.loadSync(manager, fileName, file, parameter);
 			}
