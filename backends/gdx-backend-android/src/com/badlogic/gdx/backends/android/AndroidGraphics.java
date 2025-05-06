@@ -104,8 +104,8 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy, boolean focusableView) {
-		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a,
-			config.depth, config.stencil, config.numSamples, config.coverageSampling);
+		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples,
+			config.coverageSampling);
 		this.config = config;
 		this.app = application;
 		view = createGLSurfaceView(application, resolutionStrategy);
