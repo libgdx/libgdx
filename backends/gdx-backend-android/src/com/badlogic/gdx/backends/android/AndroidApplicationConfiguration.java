@@ -38,6 +38,9 @@ public class AndroidApplicationConfiguration {
 	/** number of samples for CSAA/MSAA, 2 is a good value **/
 	public int numSamples = 0;
 
+	/** whether coverage sampling anti-aliasing is used. in that case you have to clear the coverage buffer as well! */
+	public boolean coverageSampling = false;
+
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;
 
