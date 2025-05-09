@@ -27,7 +27,7 @@ import org.robovm.objc.annotation.Method;
 /*</javadoc>*/
 /*<annotations>*//*</annotations>*/
 /*<visibility>*/public/* </visibility> */ interface /* <name> */ MGLKViewControllerDelegate/* </name> */
-	/* <implements> */extends NSObjectProtocol/* </implements> */ {
+	/* <implements> */ extends NSObjectProtocol/* </implements> */ {
 
 	/* <ptr> */
 	/* </ptr> */
