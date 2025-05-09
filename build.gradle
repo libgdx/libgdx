@@ -44,7 +44,7 @@ ext {
 
 	getSnapshotRepositoryUrl = {
 		return project.hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
-				: "https://oss.sonatype.org/content/repositories/snapshots/"
+				: "https://central.sonatype.com/repository/maven-snapshots/"
 	}
 
 	getRepositoryUsername = {
@@ -68,6 +68,7 @@ allprojects {
 			gradlePluginPortal()
 			maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 			maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+			maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
 		}
 	}
 
@@ -78,6 +79,7 @@ allprojects {
 		gradlePluginPortal()
 		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 		maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+		maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
 	}
 
 	tasks.withType(JavaCompile) {
