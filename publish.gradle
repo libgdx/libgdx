@@ -110,9 +110,9 @@ configure([
 				repositories {
 					maven {
 						url = version.endsWith('SNAPSHOT')
-							? getSnapshotRepositoryUrl()
-							// If release build, dump artifacts to local build/staging-deploy folder for consumption by jreleaser below
-							: rootProject.layout.buildDirectory.dir('staging-deploy')
+								? getSnapshotRepositoryUrl()
+								// If release build, dump artifacts to local build/staging-deploy folder for consumption by jreleaser below
+								: rootProject.layout.buildDirectory.dir('staging-deploy')
 
 						if (version.endsWith('SNAPSHOT') && (getRepositoryUsername() || getRepositoryPassword())) {
 							credentials {
