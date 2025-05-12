@@ -23,6 +23,7 @@ buildscript {
 	dependencies {
 		classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
 		classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.5.2"
+		classpath 'org.jreleaser:jreleaser-gradle-plugin:1.18.0'
 	}
 }
 
@@ -35,11 +36,6 @@ apply from: "gradle/dependencies.gradle"
 ext {
 	isReleaseBuild = {
 		return project.hasProperty("RELEASE")
-	}
-
-	getReleaseRepositoryUrl = {
-		return project.hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
-				: "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 	}
 
 	getSnapshotRepositoryUrl = {

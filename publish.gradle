@@ -17,6 +17,7 @@ configure([
 ]) {
 	apply plugin: 'maven-publish'
 	apply plugin: 'signing'
+	apply plugin: 'org.jreleaser'
 
 	afterEvaluate { project ->
 		//Workaround android not having components populated yet.
@@ -109,10 +110,11 @@ configure([
 
 				repositories {
 					maven {
-						url = version.endsWith('SNAPSHOT') ? getSnapshotRepositoryUrl() : getReleaseRepositoryUrl()
+						url = version.endsWith('SNAPSHOT')
+							? getSnapshotRepositoryUrl()
+							: layout.buildDirectory.dir('staging-deploy')
 
-						if (getRepositoryUsername() || getRepositoryPassword())
-						{
+						if (version.endsWith('SNAPSHOT') && (getRepositoryUsername() || getRepositoryPassword())) {
 							credentials {
 								username = getRepositoryUsername()
 								password = getRepositoryPassword()
@@ -134,6 +136,32 @@ configure([
 			gradle.taskGraph.whenReady {
 				tasks.withType(Sign) {
 					onlyIf { isReleaseBuild() }
+				}
+			}
+
+			if (!version.endsWith('SNAPSHOT')) {
+				jreleaser {
+					deploy {
+						maven {
+							mavenCentral {
+								sonatype {
+									active = 'ALWAYS'
+									username = getRepositoryUsername()
+									password = getRepositoryPassword()
+									url = 'https://central.sonatype.com/api/v1/publisher'
+									stagingRepository("${project.buildDir}/staging-deploy")
+									sign = false
+									verifyPom = false // Needed the POM verifier can't handle <packaging>aar</packaging> ...
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if (!version.endsWith('SNAPSHOT')) {
+				tasks.named('publish') {
+					finalizedBy tasks.named('jreleaserDeploy')
 				}
 			}
 		}
