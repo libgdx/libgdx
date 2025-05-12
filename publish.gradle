@@ -111,8 +111,8 @@ configure([
 				repositories {
 					maven {
 						url = version.endsWith('SNAPSHOT')
-							? getSnapshotRepositoryUrl()
-							: layout.buildDirectory.dir('staging-deploy')
+								? getSnapshotRepositoryUrl()
+								: layout.buildDirectory.dir('staging-deploy')
 
 						if (version.endsWith('SNAPSHOT') && (getRepositoryUsername() || getRepositoryPassword())) {
 							credentials {
