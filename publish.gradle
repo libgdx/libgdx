@@ -17,7 +17,6 @@ configure([
 ]) {
 	apply plugin: 'maven-publish'
 	apply plugin: 'signing'
-	apply plugin: 'org.jreleaser'
 
 	afterEvaluate { project ->
 		//Workaround android not having components populated yet.
@@ -111,8 +110,9 @@ configure([
 				repositories {
 					maven {
 						url = version.endsWith('SNAPSHOT')
-								? getSnapshotRepositoryUrl()
-								: layout.buildDirectory.dir('staging-deploy')
+							? getSnapshotRepositoryUrl()
+							// If release build, dump artifacts to local build/staging-deploy folder for consumption by jreleaser below
+							: rootProject.layout.buildDirectory.dir('staging-deploy')
 
 						if (version.endsWith('SNAPSHOT') && (getRepositoryUsername() || getRepositoryPassword())) {
 							credentials {
@@ -138,32 +138,34 @@ configure([
 					onlyIf { isReleaseBuild() }
 				}
 			}
+		}
+	}
+}
 
-			if (!version.endsWith('SNAPSHOT')) {
-				jreleaser {
-					deploy {
-						maven {
-							mavenCentral {
-								sonatype {
-									active = 'ALWAYS'
-									username = getRepositoryUsername()
-									password = getRepositoryPassword()
-									url = 'https://central.sonatype.com/api/v1/publisher'
-									stagingRepository("${project.buildDir}/staging-deploy")
-									sign = false
-									verifyPom = false // Needed the POM verifier can't handle <packaging>aar</packaging> ...
-								}
-							}
-						}
+// JReleaser config for release builds to Central Portal
+if (project.hasProperty('RELEASE')) {
+	rootProject.apply plugin: 'org.jreleaser'
+
+	rootProject.jreleaser {
+		deploy {
+			maven {
+				mavenCentral {
+					sonatype {
+						active = 'ALWAYS'
+						username = getRepositoryUsername()
+						password = getRepositoryPassword()
+						url = 'https://central.sonatype.com/api/v1/publisher'
+						stagingRepository("${rootProject.buildDir}/staging-deploy")
+						sign = false
+						verifyPom = false
 					}
 				}
 			}
-
-			if (!version.endsWith('SNAPSHOT')) {
-				tasks.named('publish') {
-					finalizedBy tasks.named('jreleaserDeploy')
-				}
-			}
 		}
+	}
+
+	rootProject.tasks.register('publish') {
+		dependsOn subprojects.collect { it.tasks.withType(PublishToMavenRepository) }
+		finalizedBy rootProject.tasks.named('jreleaserDeploy')
 	}
 }
