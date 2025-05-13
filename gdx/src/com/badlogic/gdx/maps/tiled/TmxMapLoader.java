@@ -33,11 +33,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 /** @brief synchronous loader for TMX maps created with the Tiled tool */
-public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
-
-	public static class Parameters extends BaseTmxMapLoader.Parameters {
-
-	}
+public class TmxMapLoader extends BaseTmxMapLoader<BaseTiledMapLoader.Parameters> {
 
 	public TmxMapLoader () {
 		super(new InternalFileHandleResolver());
@@ -56,7 +52,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	 * @param fileName the filename
 	 * @return the TiledMap */
 	public TiledMap load (String fileName) {
-		return load(fileName, new TmxMapLoader.Parameters());
+		return load(fileName, new Parameters());
 	}
 
 	/** Loads the {@link TiledMap} from the given file. The file is resolved via the {@link FileHandleResolver} set in the
@@ -64,7 +60,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<TmxMapLoader.Parameters> {
 	 * @param fileName the filename
 	 * @param parameter specifies whether to use y-up, generate mip maps etc.
 	 * @return the TiledMap */
-	public TiledMap load (String fileName, TmxMapLoader.Parameters parameter) {
+	public TiledMap load (String fileName, Parameters parameter) {
 		FileHandle tmxFile = resolve(fileName);
 
 		this.root = xml.parse(tmxFile);
