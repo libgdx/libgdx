@@ -309,7 +309,7 @@ jobs:
           ./gradlew build publish
 
       - name: Import GPG key
-        if: github.event_name == 'release' && github.repository_owner == 'libgdx'
+        if: (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release)) && github.repository_owner == 'libgdx'
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@1c6a9e9d3594f2d743f1b1dd7669ab0dfdffa922
         with:
