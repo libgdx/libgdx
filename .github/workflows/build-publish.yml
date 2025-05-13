@@ -4,7 +4,12 @@ on:
   push:
     branches: [ master ]
   workflow_dispatch:
-    branches: [ master ]
+    inputs:
+      release:
+        description: 'Publish release to Maven Central'
+        type: boolean
+        required: true
+        default: false
   release:
     types: [ published ]
 
@@ -312,8 +317,10 @@ jobs:
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Release build deploy
-        if: github.event_name == 'release' && github.repository_owner == 'libgdx'
-        run: ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
+        if: (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release)) && github.repository_owner == 'libgdx'
+        run: |
+          export GRADLE_OPTS="-Xmx8g"
+          ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
 
   build-and-upload-runnables:
     runs-on: ubuntu-22.04
