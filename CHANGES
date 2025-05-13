@@ -30,6 +30,9 @@
 - Fixed Container#setCullingArea.
 - iOS: Fixing issue where after setText is called on TextField, characters cannot be deleted until a new character is added.
 
+[1.13.5]
+- [BREAKING CHANGE] Gradle: The `publish` task now uses jreleaser to publish to Maven Central. The RELEASE_REPOSITORY_URL environment variable is no longer interpreted. SNAPSHOT_REPOSITORY_URL works as before.
+
 [1.13.1]
 - [BREAKING CHANGE] Android: Since 1.13.0 libGDX requires setting `android.useAndroidX=true` in your gradle.properties file. In 1.13.1 it is NO longer needed to define the `androidx.core:core` dependency in your Android module.
 - [BREAKING CHANGE] BaseTmxMapLoader no longer parses point objects into zero-sized RectangleMapObject. Instead, points are now represented with PointMapObject
