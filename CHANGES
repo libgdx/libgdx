@@ -1,3 +1,6 @@
+[1.13.6]
+- API Addition: Added JsonValue#toJson that takes a Writer.
+
 [1.13.5]
 - [BREAKING CHANGE] Gradle: snapshot builds are now publishes to https://central.sonatype.com/repository/maven-snapshots/. Update your build scripts and the new repository URL. Some of your other snapshot dependencies might still live on OSSRH, so make sure to keep that repository as well.
 - [BREAKING CHANGE] Gradle: The `publish` task now uses jreleaser to publish to Maven Central. The RELEASE_REPOSITORY_URL environment variable is no longer interpreted. SNAPSHOT_REPOSITORY_URL works as before.]
