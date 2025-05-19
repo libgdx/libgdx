@@ -88,6 +88,11 @@ public class OrderedSet<T> extends ObjectSet<T> {
 			add(keys[i]);
 	}
 
+	public void ensureCapacity (int additionalCapacity) {
+		super.ensureCapacity(additionalCapacity);
+		items.ensureCapacity(additionalCapacity);
+	}
+
 	public boolean remove (T key) {
 		if (!super.remove(key)) return false;
 		items.removeValue(key, false);
@@ -141,6 +146,30 @@ public class OrderedSet<T> extends ObjectSet<T> {
 
 	public Array<T> orderedItems () {
 		return items;
+	}
+
+	public T first () {
+		return items.first();
+	}
+
+	public int hashCode () {
+		int h = size;
+		T[] items = this.items.items;
+		for (int i = 0, n = this.items.size; i < n; i++) {
+			T key = items[i];
+			if (key != null) h += key.hashCode();
+		}
+		return h;
+	}
+
+	public boolean equals (Object obj) {
+		if (!(obj instanceof ObjectSet)) return false;
+		ObjectSet other = (ObjectSet)obj;
+		if (other.size != size) return false;
+		T[] items = this.items.items;
+		for (int i = 0, n = this.items.size; i < n; i++)
+			if (items[i] != null && !other.contains(items[i])) return false;
+		return true;
 	}
 
 	public OrderedSetIterator<T> iterator () {
