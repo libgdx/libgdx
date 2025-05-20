@@ -17,6 +17,7 @@
 package com.badlogic.gdx.utils;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -81,6 +82,26 @@ public class JsonValue implements Iterable<JsonValue> {
 
 	public JsonValue (boolean value) {
 		set(value);
+	}
+
+	/** Creates a deep copy of the specific value, except {@link #parent()}, {@link #next()}, and {@link #prev()} are not null. */
+	public JsonValue (JsonValue value) {
+		this(value, null);
+	}
+
+	private JsonValue (JsonValue value, @Null JsonValue parent) {
+		type = value.type;
+		stringValue = value.stringValue;
+		doubleValue = value.doubleValue;
+		longValue = value.longValue;
+		name = value.name;
+		this.parent = parent;
+		if (value.child != null) child = new JsonValue(value.child, this);
+		if (parent != null && value.next != null) {
+			next = new JsonValue(value.next, parent);
+			next.prev = this;
+		}
+		size = value.size;
 	}
 
 	/** Returns the child at the specified index. This requires walking the linked list to the specified entry, see
@@ -899,6 +920,41 @@ public class JsonValue implements Iterable<JsonValue> {
 		return child;
 	}
 
+	/** Sets the name of the specified value and replaces an existing child with the same name, else adds it after the last
+	 * child. */
+	public void setChild (String name, JsonValue value) {
+		if (name == null) throw new IllegalArgumentException("name cannot be null.");
+		value.name = name;
+		setChild(value);
+	}
+
+	/** Replaces an existing child with the same name as the specified value, else adds it after the last child. */
+	public void setChild (JsonValue value) {
+		String name = value.name;
+		if (name == null) throw new IllegalStateException("An object child requires a name: " + value);
+		JsonValue current = child;
+		if (current.name.equals(name)) {
+			child = value;
+			value.next = current.next;
+			if (current.next != null) current.next.prev = value;
+			value.parent = this;
+		} else {
+			current = current.next;
+			while (current != null) {
+				if (current.name.equals(name)) {
+					current.prev.next = value;
+					value.prev = current.prev;
+					value.next = current.next;
+					if (current.next != null) current.next.prev = value;
+					value.parent = this;
+					return;
+				}
+				current = current.next;
+			}
+			addChild(value);
+		}
+	}
+
 	/** Sets the name of the specified value and adds it after the last child. */
 	public void addChild (String name, JsonValue value) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
@@ -983,59 +1039,46 @@ public class JsonValue implements Iterable<JsonValue> {
 
 	public String toJson (OutputType outputType) {
 		if (isValue()) return asString();
-		StringBuilder buffer = new StringBuilder(512);
-		json(this, buffer, outputType);
-		return buffer.toString();
+		StringWriter writer = new StringWriter(512);
+		try {
+			toJson(outputType, writer);
+		} catch (IOException ex) {
+			throw new GdxRuntimeException(ex);
+		}
+		return writer.toString();
 	}
 
-	private void json (JsonValue object, StringBuilder buffer, OutputType outputType) {
-		if (object.isObject()) {
-			if (object.child == null)
-				buffer.append("{}");
-			else {
-				int start = buffer.length();
-				while (true) {
-					buffer.append('{');
-					int i = 0;
-					for (JsonValue child = object.child; child != null; child = child.next) {
-						buffer.append(outputType.quoteName(child.name));
-						buffer.append(':');
-						json(child, buffer, outputType);
-						if (child.next != null) buffer.append(',');
-					}
-					break;
-				}
-				buffer.append('}');
+	public void toJson (OutputType outputType, Writer writer) throws IOException {
+		if (isObject()) {
+			writer.write('{');
+			for (JsonValue child = this.child; child != null; child = child.next) {
+				writer.write(outputType.quoteName(child.name));
+				writer.write(':');
+				child.toJson(outputType, writer);
+				if (child.next != null) writer.write(',');
 			}
-		} else if (object.isArray()) {
-			if (object.child == null)
-				buffer.append("[]");
-			else {
-				int start = buffer.length();
-				while (true) {
-					buffer.append('[');
-					for (JsonValue child = object.child; child != null; child = child.next) {
-						json(child, buffer, outputType);
-						if (child.next != null) buffer.append(',');
-					}
-					break;
-				}
-				buffer.append(']');
+			writer.write('}');
+		} else if (isArray()) {
+			writer.write('[');
+			for (JsonValue child = this.child; child != null; child = child.next) {
+				child.toJson(outputType, writer);
+				if (child.next != null) writer.write(',');
 			}
-		} else if (object.isString()) {
-			buffer.append(outputType.quoteValue(object.asString()));
-		} else if (object.isDouble()) {
-			double doubleValue = object.asDouble();
-			long longValue = object.asLong();
-			buffer.append(doubleValue == longValue ? longValue : doubleValue);
-		} else if (object.isLong()) {
-			buffer.append(object.asLong());
-		} else if (object.isBoolean()) {
-			buffer.append(object.asBoolean());
-		} else if (object.isNull()) {
-			buffer.append("null");
+			writer.write(']');
+		} else if (isString()) {
+			writer.write(outputType.quoteValue(asString()));
+		} else if (isDouble()) {
+			double doubleValue = asDouble();
+			long longValue = asLong();
+			writer.write(doubleValue == longValue ? Long.toString(longValue) : Double.toString(doubleValue));
+		} else if (isLong()) {
+			writer.write(Long.toString(asLong()));
+		} else if (isBoolean()) {
+			writer.write(asBoolean() ? "true" : "false");
+		} else if (isNull()) {
+			writer.write("null");
 		} else
-			throw new SerializationException("Unknown object type: " + object);
+			throw new SerializationException("Unknown object type: " + this);
 	}
 
 	/** Iterates the children of this array or object. */
@@ -1096,7 +1139,6 @@ public class JsonValue implements Iterable<JsonValue> {
 				outer:
 				while (true) {
 					buffer.append(newLines ? "{\n" : "{ ");
-					int i = 0;
 					for (JsonValue child = object.child; child != null; child = child.next) {
 						if (newLines) indent(indent, buffer);
 						buffer.append(outputType.quoteName(child.name));
@@ -1169,50 +1211,50 @@ public class JsonValue implements Iterable<JsonValue> {
 		OutputType outputType = settings.outputType;
 		if (object.isObject()) {
 			if (object.child == null)
-				writer.append("{}");
+				writer.write("{}");
 			else {
 				boolean newLines = !isFlat(object) || object.size > 6;
-				writer.append(newLines ? "{\n" : "{ ");
+				writer.write(newLines ? "{\n" : "{ ");
 				int i = 0;
 				for (JsonValue child = object.child; child != null; child = child.next) {
 					if (newLines) indent(indent, writer);
-					writer.append(outputType.quoteName(child.name));
-					writer.append(": ");
+					writer.write(outputType.quoteName(child.name));
+					writer.write(": ");
 					prettyPrint(child, writer, indent + 1, settings);
-					if ((!newLines || outputType != OutputType.minimal) && child.next != null) writer.append(',');
-					writer.append(newLines ? '\n' : ' ');
+					if ((!newLines || outputType != OutputType.minimal) && child.next != null) writer.write(',');
+					writer.write(newLines ? '\n' : ' ');
 				}
 				if (newLines) indent(indent - 1, writer);
-				writer.append('}');
+				writer.write('}');
 			}
 		} else if (object.isArray()) {
 			if (object.child == null)
-				writer.append("[]");
+				writer.write("[]");
 			else {
 				boolean newLines = !isFlat(object);
-				writer.append(newLines ? "[\n" : "[ ");
+				writer.write(newLines ? "[\n" : "[ ");
 				int i = 0;
 				for (JsonValue child = object.child; child != null; child = child.next) {
 					if (newLines) indent(indent, writer);
 					prettyPrint(child, writer, indent + 1, settings);
-					if ((!newLines || outputType != OutputType.minimal) && child.next != null) writer.append(',');
-					writer.append(newLines ? '\n' : ' ');
+					if ((!newLines || outputType != OutputType.minimal) && child.next != null) writer.write(',');
+					writer.write(newLines ? '\n' : ' ');
 				}
 				if (newLines) indent(indent - 1, writer);
-				writer.append(']');
+				writer.write(']');
 			}
 		} else if (object.isString()) {
-			writer.append(outputType.quoteValue(object.asString()));
+			writer.write(outputType.quoteValue(object.asString()));
 		} else if (object.isDouble()) {
 			double doubleValue = object.asDouble();
 			long longValue = object.asLong();
-			writer.append(Double.toString(doubleValue == longValue ? longValue : doubleValue));
+			writer.write(Double.toString(doubleValue == longValue ? longValue : doubleValue));
 		} else if (object.isLong()) {
-			writer.append(Long.toString(object.asLong()));
+			writer.write(Long.toString(object.asLong()));
 		} else if (object.isBoolean()) {
-			writer.append(Boolean.toString(object.asBoolean()));
+			writer.write(Boolean.toString(object.asBoolean()));
 		} else if (object.isNull()) {
-			writer.append("null");
+			writer.write("null");
 		} else
 			throw new SerializationException("Unknown object type: " + object);
 	}
@@ -1234,9 +1276,9 @@ public class JsonValue implements Iterable<JsonValue> {
 			buffer.append('\t');
 	}
 
-	static private void indent (int count, Writer buffer) throws IOException {
+	static private void indent (int count, Writer writer) throws IOException {
 		for (int i = 0; i < count; i++)
-			buffer.append('\t');
+			writer.write('\t');
 	}
 
 	public class JsonIterator implements Iterator<JsonValue>, Iterable<JsonValue> {

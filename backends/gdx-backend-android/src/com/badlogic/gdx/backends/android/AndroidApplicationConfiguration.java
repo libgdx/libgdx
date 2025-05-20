@@ -30,13 +30,16 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * @author mzechner */
 public class AndroidApplicationConfiguration {
 	/** number of bits per color channel **/
-	public int r = 8, g = 8, b = 8, a = 0;
+	public int r = 8, g = 8, b = 8, a = 8;
 
 	/** number of bits for depth and stencil buffer **/
 	public int depth = 16, stencil = 0;
 
 	/** number of samples for CSAA/MSAA, 2 is a good value **/
 	public int numSamples = 0;
+
+	/** whether coverage sampling anti-aliasing is used. in that case you have to clear the coverage buffer as well! */
+	public boolean coverageSampling = false;
 
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;

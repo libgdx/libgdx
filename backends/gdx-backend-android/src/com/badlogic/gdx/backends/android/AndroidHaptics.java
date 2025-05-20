@@ -20,8 +20,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.os.Build;
+import android.os.VibrationAttributes;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.os.VibratorManager;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -29,21 +31,30 @@ public class AndroidHaptics {
 
 	private final Vibrator vibrator;
 	private AudioAttributes audioAttributes;
+	private VibrationAttributes vibrationAttributes;
 	private boolean vibratorSupport;
 	private boolean hapticsSupport;
 
 	public AndroidHaptics (Context context) {
 		vibratorSupport = false;
 		hapticsSupport = false;
-		this.vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			VibratorManager vibratorManager = (VibratorManager)context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+			vibrator = vibratorManager.getDefaultVibrator();
+		} else {
+			vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+		}
 		if (vibrator != null && vibrator.hasVibrator()) {
 			vibratorSupport = true;
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 				if (vibrator.hasAmplitudeControl()) {
 					hapticsSupport = true;
 				}
-				this.audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-					.setUsage(AudioAttributes.USAGE_GAME).build();
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+					this.vibrationAttributes = new VibrationAttributes.Builder().setUsage(VibrationAttributes.USAGE_MEDIA).build();
+				else
+					this.audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+						.setUsage(AudioAttributes.USAGE_GAME).build();
 			}
 		}
 	}
@@ -76,7 +87,10 @@ public class AndroidHaptics {
 				default:
 					throw new IllegalArgumentException("Unknown VibrationType " + vibrationType);
 				}
-				vibrator.vibrate(VibrationEffect.createPredefined(vibrationEffect), audioAttributes);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+					vibrator.vibrate(VibrationEffect.createPredefined(vibrationEffect), vibrationAttributes);
+				else
+					vibrator.vibrate(VibrationEffect.createPredefined(vibrationEffect), audioAttributes);
 			}
 		}
 	}
