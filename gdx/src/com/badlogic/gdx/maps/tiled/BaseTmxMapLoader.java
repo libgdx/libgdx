@@ -133,8 +133,11 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 
 		Array<Element> tilesets = root.getChildrenByName("tileset");
 		for (Element element : tilesets) {
-			loadTileSet(element, tmxFile, imageResolver);
+			TiledMapTileSet tileSet = loadTileSet(element, tmxFile, imageResolver);
 			root.removeChild(element);
+			if (tileSet != null) {
+				map.getTileSets().addTileSet(tileSet);
+			}
 		}
 
 		for (int i = 0, j = root.getChildCount(); i < j; i++) {
@@ -420,7 +423,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			object.setName(element.getAttribute("name", null));
 			String rotation = element.getAttribute("rotation", null);
 			if (rotation != null) {
-				object.getProperties().put("rotation", Float.parseFloat(rotation));
+				object.getProperties().put("rotation", Float.valueOf(rotation));
 			}
 			String type = element.getAttribute("type", null);
 			if (type != null) {
@@ -591,96 +594,94 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return ids;
 	}
 
-	protected void loadTileSet (Element element, FileHandle tmxFile, ImageResolver imageResolver) {
-		if (element.getName().equals("tileset")) {
-			int firstgid = element.getIntAttribute("firstgid", 1);
-			String imageSource = "";
-			int imageWidth = 0;
-			int imageHeight = 0;
-			FileHandle image = null;
+	public TiledMapTileSet loadTileSet (Element tilesetElementRaw, FileHandle tmxFile, ImageResolver imageResolver) {
+		int firstgid = tilesetElementRaw.getIntAttribute("firstgid", 1);
+		Element tilesetElement = resolveTilesetElement(tilesetElementRaw, tmxFile);
 
-			String source = element.getAttribute("source", null);
-			if (source != null) {
-				FileHandle tsx = getRelativeFileHandle(tmxFile, source);
-				try {
-					element = xml.parse(tsx);
-					Element imageElement = element.getChildByName("image");
-					if (imageElement != null) {
-						imageSource = imageElement.getAttribute("source");
-						imageWidth = imageElement.getIntAttribute("width", 0);
-						imageHeight = imageElement.getIntAttribute("height", 0);
-						image = getRelativeFileHandle(tsx, imageSource);
-					}
-				} catch (SerializationException e) {
-					throw new GdxRuntimeException("Error parsing external tileset.");
-				}
-			} else {
-				Element imageElement = element.getChildByName("image");
-				if (imageElement != null) {
-					imageSource = imageElement.getAttribute("source");
-					imageWidth = imageElement.getIntAttribute("width", 0);
-					imageHeight = imageElement.getIntAttribute("height", 0);
-					image = getRelativeFileHandle(tmxFile, imageSource);
-				}
-			}
-			String name = element.get("name", null);
-			int tilewidth = element.getIntAttribute("tilewidth", 0);
-			int tileheight = element.getIntAttribute("tileheight", 0);
-			int spacing = element.getIntAttribute("spacing", 0);
-			int margin = element.getIntAttribute("margin", 0);
+		String name = tilesetElement.get("name", null);
+		int tilewidth = tilesetElement.getIntAttribute("tilewidth", 0);
+		int tileheight = tilesetElement.getIntAttribute("tileheight", 0);
+		int spacing = tilesetElement.getIntAttribute("spacing", 0);
+		int margin = tilesetElement.getIntAttribute("margin", 0);
 
-			Element offset = element.getChildByName("tileoffset");
-			int offsetX = 0;
-			int offsetY = 0;
-			if (offset != null) {
-				offsetX = offset.getIntAttribute("x", 0);
-				offsetY = offset.getIntAttribute("y", 0);
-			}
-			TiledMapTileSet tileSet = new TiledMapTileSet();
-
-			// TileSet
-			tileSet.setName(name);
-			final MapProperties tileSetProperties = tileSet.getProperties();
-			Element properties = element.getChildByName("properties");
-			if (properties != null) {
-				loadProperties(tileSetProperties, properties);
-			}
-			tileSetProperties.put("firstgid", firstgid);
-
-			// Tiles
-			Array<Element> tileElements = element.getChildrenByName("tile");
-
-			addStaticTiles(tmxFile, imageResolver, tileSet, element, tileElements, name, firstgid, tilewidth, tileheight, spacing,
-				margin, source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
-
-			Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
-
-			for (Element tileElement : tileElements) {
-				int localtid = tileElement.getIntAttribute("id", 0);
-				TiledMapTile tile = tileSet.getTile(firstgid + localtid);
-				if (tile != null) {
-					AnimatedTiledMapTile animatedTile = createAnimatedTile(tileSet, tile, tileElement, firstgid);
-					if (animatedTile != null) {
-						animatedTiles.add(animatedTile);
-						tile = animatedTile;
-					}
-					addTileProperties(tile, tileElement);
-					addTileObjectGroup(tile, tileElement);
-				}
-			}
-
-			// replace original static tiles by animated tiles
-			for (AnimatedTiledMapTile animatedTile : animatedTiles) {
-				tileSet.putTile(animatedTile.getId(), animatedTile);
-			}
-
-			map.getTileSets().addTileSet(tileSet);
+		int offsetX = 0, offsetY = 0;
+		Element offset = tilesetElement.getChildByName("tileoffset");
+		if (offset != null) {
+			offsetX = offset.getIntAttribute("x", 0);
+			offsetY = offset.getIntAttribute("y", 0);
 		}
+
+		FileHandle image = resolveTilesetImage(tilesetElement, tmxFile);
+		Element imageElement = tilesetElement.getChildByName("image");
+		String imageSource = (imageElement != null) ? imageElement.getAttribute("source", null) : null;
+		int imageWidth = (imageElement != null) ? imageElement.getIntAttribute("width", 0) : 0;
+		int imageHeight = (imageElement != null) ? imageElement.getIntAttribute("height", 0) : 0;
+
+		TiledMapTileSet tileSet = new TiledMapTileSet();
+		tileSet.setName(name);
+		tileSet.getProperties().put("firstgid", firstgid);
+
+		Element properties = tilesetElement.getChildByName("properties");
+		if (properties != null) {
+			loadProperties(tileSet.getProperties(), properties);
+		}
+
+		Array<Element> tileElements = tilesetElement.getChildrenByName("tile");
+
+		addStaticTiles(tmxFile, imageResolver, tileSet, tilesetElement, tileElements, name, firstgid, tilewidth, tileheight,
+			spacing, margin, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
+
+		Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
+		for (Element tileElement : tileElements) {
+			int localtid = tileElement.getIntAttribute("id", 0);
+			TiledMapTile tile = tileSet.getTile(firstgid + localtid);
+			if (tile != null) {
+				AnimatedTiledMapTile animatedTile = createAnimatedTile(tileSet, tile, tileElement, firstgid);
+				if (animatedTile != null) {
+					animatedTiles.add(animatedTile);
+					tile = animatedTile;
+				}
+				addTileProperties(tile, tileElement);
+				addTileObjectGroup(tile, tileElement);
+			}
+		}
+		for (AnimatedTiledMapTile animatedTile : animatedTiles) {
+			tileSet.putTile(animatedTile.getId(), animatedTile);
+		}
+
+		return tileSet;
+	}
+
+	private Element resolveTilesetElement (Element tilesetElement, FileHandle tmxFile) {
+		String source = tilesetElement.getAttribute("source", null);
+		if (source != null) {
+			FileHandle tsx = getRelativeFileHandle(tmxFile, source);
+			try {
+				Element tsxElement = xml.parse(tsx);
+				tsxElement.setAttribute("source", source);
+				return tsxElement;
+			} catch (SerializationException e) {
+				throw new GdxRuntimeException("Error parsing external tileset: " + source, e);
+			}
+		}
+		return tilesetElement;
+	}
+
+	private FileHandle resolveTilesetImage (Element tilesetElement, FileHandle tmxFile) {
+		Element imageElement = tilesetElement.getChildByName("image");
+		if (imageElement == null) return null;
+
+		String imageSource = imageElement.getAttribute("source");
+		String tilesetSource = tilesetElement.getAttribute("source", null);
+
+		FileHandle base = (tilesetSource != null) ? getRelativeFileHandle(tmxFile, tilesetSource) : tmxFile;
+
+		return getRelativeFileHandle(base, imageSource);
 	}
 
 	protected abstract void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileset,
 		Element element, Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing,
-		int margin, String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
+		int margin, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
 
 	protected void addTileProperties (TiledMapTile tile, Element tileElement) {
 		String terrain = tileElement.getAttribute("terrain", null);
@@ -714,7 +715,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		int firstgid) {
 		Element animationElement = tileElement.getChildByName("animation");
 		if (animationElement != null) {
-			Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
+			Array<StaticTiledMapTile> staticTiles = new Array<>();
 			IntArray intervals = new IntArray();
 			for (Element frameElement : animationElement.getChildrenByName("frame")) {
 				staticTiles.add((StaticTiledMapTile)tileSet.getTile(firstgid + frameElement.getIntAttribute("tileid")));
