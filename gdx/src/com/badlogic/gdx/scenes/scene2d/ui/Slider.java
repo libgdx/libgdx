@@ -82,7 +82,7 @@ public class Slider extends ProgressBar {
 				// The position is invalid when focus is cancelled
 				if (event.isTouchFocusCancel() || !calculatePositionAndValue(x, y)) {
 					// Fire an event on touchUp even if the value didn't change, so listeners can see when a drag ends via isDragging.
-					ChangeEvent changeEvent = Pools.obtain(ChangeEvent::new);
+					ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 					fire(changeEvent);
 					Pools.free(changeEvent);
 				}

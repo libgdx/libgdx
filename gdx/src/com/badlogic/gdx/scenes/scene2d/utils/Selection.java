@@ -223,7 +223,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	 * @return true if the change should be undone. */
 	public boolean fireChangeEvent () {
 		if (actor == null) return false;
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent::new);
+		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 		try {
 			return actor.fire(changeEvent);
 		} finally {
