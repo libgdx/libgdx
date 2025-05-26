@@ -379,6 +379,10 @@ public class ProgressBar extends Widget implements Disableable, Styleable<Progre
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
+	public boolean getProgrammaticChangeEvents () {
+		return programmaticChangeEvents;
+	}
+
 	/** The style for a progress bar, see {@link ProgressBar}.
 	 * @author mzechner
 	 * @author Nathan Sweet */

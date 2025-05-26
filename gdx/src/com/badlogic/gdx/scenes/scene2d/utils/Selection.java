@@ -300,6 +300,10 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
+	public boolean getProgrammaticChangeEvents () {
+		return programmaticChangeEvents;
+	}
+
 	public String toString () {
 		return selected.toString();
 	}

@@ -164,6 +164,10 @@ public class Button extends Table implements Disableable, Styleable<Button.Butto
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
+	public boolean getProgrammaticChangeEvents () {
+		return programmaticChangeEvents;
+	}
+
 	public void setStyle (ButtonStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
