@@ -933,26 +933,24 @@ public class JsonValue implements Iterable<JsonValue> {
 		String name = value.name;
 		if (name == null) throw new IllegalStateException("An object child requires a name: " + value);
 		JsonValue current = child;
-		if (current.name.equals(name)) {
-			child = value;
-			value.next = current.next;
-			if (current.next != null) current.next.prev = value;
-			value.parent = this;
-		} else {
-			current = current.next;
-			while (current != null) {
-				if (current.name.equals(name)) {
+		while (current != null) {
+			if (current.name.equals(name)) {
+				if (current.prev != null)
 					current.prev.next = value;
-					value.prev = current.prev;
-					value.next = current.next;
-					if (current.next != null) current.next.prev = value;
-					value.parent = this;
-					return;
-				}
-				current = current.next;
+				else
+					child = value;
+				value.prev = current.prev;
+				value.next = current.next;
+				if (current.next != null) current.next.prev = value;
+				value.parent = this;
+				current.prev = null;
+				current.next = null;
+				current.parent = null;
+				return;
 			}
-			addChild(value);
+			current = current.next;
 		}
+		addChild(value);
 	}
 
 	/** Sets the name of the specified value and adds it after the last child. */
@@ -969,21 +967,17 @@ public class JsonValue implements Iterable<JsonValue> {
 			throw new IllegalStateException("An object child requires a name: " + value);
 		value.parent = this;
 		value.next = null;
-		size++;
 		JsonValue current = child;
 		if (current == null) {
 			value.prev = null;
 			child = value;
 		} else {
-			while (true) {
-				if (current.next == null) {
-					current.next = value;
-					value.prev = current;
-					return;
-				}
+			while (current.next != null)
 				current = current.next;
-			}
+			current.next = value;
+			value.prev = current;
 		}
+		size++;
 	}
 
 	/** Returns the next sibling of this value.
