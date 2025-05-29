@@ -74,8 +74,7 @@ jnigen {
 			"freetype/src/psaux/psaux.c",
 			"freetype/src/pshinter/pshinter.c",
 			"freetype/src/psnames/psnames.c",
-
-                        "freetype/src/svg/svg.c",
+			"freetype/src/svg/svg.c",
 		]
 
 		cppExcludes = ["freetype/subprojects/"]
