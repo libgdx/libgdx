@@ -50,7 +50,7 @@ public class HttpRequestBuilder {
 			throw new IllegalStateException("A new request has already been started. Call HttpRequestBuilder.build() first.");
 		}
 
-		httpRequest = Pools.obtain(HttpRequest::new);
+		httpRequest = Pools.obtain(HttpRequest.class);
 		httpRequest.setTimeOut(defaultTimeout);
 		return this;
 	}
