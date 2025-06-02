@@ -315,7 +315,7 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		return color + alpha;
 	}
 
-	protected void loadTilePropertiesClassDefaults(String className, MapProperties mapProperties) {
+	protected void loadMapPropertiesClassDefaults(String className, MapProperties mapProperties) {
 		if (className == null || !projectClassInfo.containsKey(className)) {
 			return;
 		}

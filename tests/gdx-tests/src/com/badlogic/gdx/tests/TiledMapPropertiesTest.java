@@ -154,6 +154,23 @@ public class TiledMapPropertiesTest extends GdxTest {
 		nestedProps.put("classStr", "");
 		expectedProps.put("classClass", nestedProps);
 		verifyProperty("tilePropsNested", expectedProps, tileProps);
+		// verify an object with a class
+		mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Test Object 2");
+		objProps = mapObj.getProperties();
+		expectedProps = new MapProperties();
+		expectedProps.put("type", "testClass");
+		expectedProps.put("classColor", Color.GREEN);
+		expectedProps.put("classEnumStr", "STR2");
+		expectedProps.put("classInt", 2);
+		expectedProps.put("classObj", null);
+		expectedProps.put("classStr", "");
+		objProps.remove("x");
+		objProps.remove("y");
+		objProps.remove("id");
+		objProps.remove("width");
+		objProps.remove("height");
+		objProps.remove("rotation");
+		verifyProperty("classObjProps", expectedProps, objProps);
 	}
 
 	private <T> void verifyProperty (String propName, T expected, T actual) {

@@ -155,6 +155,23 @@
                  "width":32,
                  "x":0,
                  "y":64
+                }, 
+                {
+                 "height":12,
+                 "id":5,
+                 "name":"Test Object 2",
+                 "properties":[
+                        {
+                         "name":"classInt",
+                         "type":"int",
+                         "value":2
+                        }],
+                 "rotation":0,
+                 "type":"testClass",
+                 "visible":true,
+                 "width":12,
+                 "x":46,
+                 "y":46
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -163,7 +180,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":5,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.1-99-gec89c545",

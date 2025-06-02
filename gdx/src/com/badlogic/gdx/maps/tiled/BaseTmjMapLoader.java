@@ -454,6 +454,11 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		if (properties != null) {
 			loadProperties(object.getProperties(), properties);
 		}
+
+		// if there is a 'type' (=class) specified, then check if there are any other
+		// class properties available and put their default values into the properties.
+		loadMapPropertiesClassDefaults(type, object.getProperties());
+
 		idToObject.put(id, object);
 		objects.add(object);
 
@@ -654,7 +659,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 
 		// if there is a 'type' (=class) specified, then check if there are any other
 		// class properties available and put their default values into the properties.
-		loadTilePropertiesClassDefaults(type, tileProperties);
+		loadMapPropertiesClassDefaults(type, tileProperties);
 	}
 
 	private void addTileObjectGroup (TiledMapTile tile, JsonValue tileElement) {
