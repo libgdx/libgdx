@@ -130,6 +130,18 @@
                  "width":0,
                  "x":14.7998,
                  "y":15.5955
+                }, 
+                {
+                 "gid":1,
+                 "height":32,
+                 "id":3,
+                 "name":"Tile Object",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":32,
+                 "y":32
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -138,10 +150,10 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":3,
+ "nextobjectid":4,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.0",
+ "tiledversion":"1.11.1-99-gec89c545",
  "tileheight":32,
  "tilesets":[
         {
@@ -155,6 +167,23 @@
          "spacing":0,
          "tilecount":256,
          "tileheight":32,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"classEnumStr",
+                         "propertytype":"enumStr",
+                         "type":"string",
+                         "value":"STR1"
+                        }, 
+                        {
+                         "name":"classInt",
+                         "type":"int",
+                         "value":2
+                        }],
+                 "type":"testClass"
+                }],
          "tilewidth":32
         }],
  "tilewidth":32,

@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="2" height="2" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="3">
+<map version="1.10" tiledversion="1.11.1-99-gec89c545" orientation="orthogonal" renderorder="right-down" width="2" height="2" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="4">
  <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32" tilecount="256" columns="16">
   <image source="../tiled/tiles.png" width="512" height="512"/>
+  <tile id="0" type="testClass">
+   <properties>
+    <property name="classEnumStr" propertytype="enumStr" value="STR1"/>
+    <property name="classInt" type="int" value="2"/>
+   </properties>
+  </tile>
  </tileset>
  <layer id="1" name="tile layer" width="2" height="2">
   <data encoding="csv">
@@ -44,5 +50,6 @@
     <property name="objStr" value="someTxt"/>
    </properties>
   </object>
+  <object id="3" name="Tile Object" gid="1" x="32" y="32" width="32" height="32"/>
  </objectgroup>
 </map>
