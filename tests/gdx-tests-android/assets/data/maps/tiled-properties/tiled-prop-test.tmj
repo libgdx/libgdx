@@ -130,6 +130,48 @@
                  "width":0,
                  "x":14.7998,
                  "y":15.5955
+                }, 
+                {
+                 "gid":1,
+                 "height":32,
+                 "id":3,
+                 "name":"Tile Object",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":32,
+                 "y":32
+                },
+            
+                {
+                 "gid":2,
+                 "height":32,
+                 "id":4,
+                 "name":"Tile Object Nested",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":0,
+                 "y":64
+                }, 
+                {
+                 "height":12,
+                 "id":5,
+                 "name":"Test Object 2",
+                 "properties":[
+                        {
+                         "name":"classInt",
+                         "type":"int",
+                         "value":2
+                        }],
+                 "rotation":0,
+                 "type":"testClass",
+                 "visible":true,
+                 "width":12,
+                 "x":46,
+                 "y":46
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -138,10 +180,10 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":3,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.0",
+ "tiledversion":"1.11.1-99-gec89c545",
  "tileheight":32,
  "tilesets":[
         {
@@ -155,6 +197,43 @@
          "spacing":0,
          "tilecount":256,
          "tileheight":32,
+         "tiles":[
+                {
+                 "id":0,
+                 "properties":[
+                        {
+                         "name":"classEnumStr",
+                         "propertytype":"enumStr",
+                         "type":"string",
+                         "value":"STR1"
+                        }, 
+                        {
+                         "name":"classInt",
+                         "type":"int",
+                         "value":2
+                        }],
+                 "type":"testClass"
+                }, 
+                {
+                 "id":1,
+                 "properties":[
+                        {
+                         "name":"classClass",
+                         "propertytype":"testClass",
+                         "type":"class",
+                         "value":
+                            {
+                             "classEnumStr":"STR1",
+                             "classInt":1
+                            }
+                        }, 
+                        {
+                         "name":"classInt",
+                         "type":"int",
+                         "value":2
+                        }],
+                 "type":"testClassNested"
+                }],
          "tilewidth":32
         }],
  "tilewidth":32,
