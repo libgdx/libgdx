@@ -138,7 +138,22 @@ public class TiledMapPropertiesTest extends GdxTest {
 		expectedProps.put("classObj", null);
 		expectedProps.put("classStr", "");
 		verifyProperty("tileProps", expectedProps, tileProps);
-
+		// verify an object linked to a tile with a nested class
+		tileMapObj = (TiledMapTileMapObject) tiledMap.getLayers().get("object layer").getObjects().get("Tile Object Nested");
+		tile = tileMapObj.getTile();
+		tileProps = tile.getProperties();
+		expectedProps = new MapProperties();
+		expectedProps.put("type", "testClassNested");
+		expectedProps.put("classInt", 2);
+		nestedProps = new MapProperties();
+		nestedProps.put("type", "testClass");
+		nestedProps.put("classColor", Color.GREEN);
+		nestedProps.put("classEnumStr", "STR1");
+		nestedProps.put("classInt", 1);
+		nestedProps.put("classObj", null);
+		nestedProps.put("classStr", "");
+		expectedProps.put("classClass", nestedProps);
+		verifyProperty("tilePropsNested", expectedProps, tileProps);
 	}
 
 	private <T> void verifyProperty (String propName, T expected, T actual) {
