@@ -237,10 +237,10 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 
 
 	/**
-	 * Whether to use the experimental "glfw_async" library.
-   *
-   * This means you do not have to set the JVM argument "-XstartOnFirstThread"
-   *
+	 *  Whether to use the experimental "glfw_async" library.
+	 *
+	 *  This means you do not have to set the JVM argument "-XstartOnFirstThread"
+	 *
 	 * @see <a href= "https://javadoc.lwjgl.org/org/lwjgl/glfw/package-summary.html#using-glfw-on-macos-heading"> LWJGL GLFW Documentation</a>
 	 */
 	public static void setGlfwAsync() {
