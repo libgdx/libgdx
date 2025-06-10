@@ -21,12 +21,12 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.LifecycleListener;
-import com.badlogic.gdx.utils.Os;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWVidMode.Buffer;
+import org.lwjgl.system.Configuration;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
@@ -52,7 +52,6 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int audioDeviceSimultaneousSources = 16;
 	int audioDeviceBufferSize = 512;
 	int audioDeviceBufferCount = 9;
-	boolean macOsX;
 
 	public enum GLEmulation {
 		ANGLE_GLES20, GL20, GL30, GL31, GL32
@@ -236,12 +235,16 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		debugStream = debugOutputStream;
 	}
 
-	/** Configuration which will be set on if the {@link Os} is {@link Os/MacOsX}.
-	 *
-	 * @param useGlfwAsync Whether to use the experimental "glfw_async" library. This means you do not have to set the JVM argument
-	 *           "-XstartOnFirstThread". */
-	public void setMacOsX (boolean useGlfwAsync) {
-		macOsX = useGlfwAsync;
+
+	/**
+	 * Whether to use the experimental "glfw_async" library.
+   *
+   * This means you do not have to set the JVM argument "-XstartOnFirstThread"
+   *
+	 * @see <a href= "https://javadoc.lwjgl.org/org/lwjgl/glfw/package-summary.html#using-glfw-on-macos-heading"> LWJGL GLFW Documentation</a>
+	 */
+	public static void setGlfwAsync() {
+		Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
 	}
 
 	/** @return the currently active {@link DisplayMode} of the primary monitor */
