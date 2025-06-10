@@ -26,6 +26,7 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWVidMode.Buffer;
+import org.lwjgl.system.Configuration;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
@@ -232,6 +233,16 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	public void enableGLDebugOutput (boolean enable, PrintStream debugOutputStream) {
 		debug = enable;
 		debugStream = debugOutputStream;
+	}
+
+	/** Whether to use the experimental "glfw_async" library.
+	 *
+	 * This means you do not have to set the JVM argument "-XstartOnFirstThread"
+	 *
+	 * @see <a href= "https://javadoc.lwjgl.org/org/lwjgl/glfw/package-summary.html#using-glfw-on-macos-heading"> LWJGL GLFW
+	 *      Documentation</a> */
+	public static void setGlfwAsync () {
+		Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
 	}
 
 	/** @return the currently active {@link DisplayMode} of the primary monitor */
