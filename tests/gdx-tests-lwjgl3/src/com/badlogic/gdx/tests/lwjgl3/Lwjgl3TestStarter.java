@@ -61,6 +61,10 @@ public class Lwjgl3TestStarter {
 			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
 		}
 
+		if (SharedLibraryLoader.os == Os.MacOsX) {
+			Lwjgl3ApplicationConfiguration.setGlfwAsync();
+		}
+
 		if (options.gl32) {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL32, 4, 6);
 		} else if (options.gl31) {
