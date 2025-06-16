@@ -22,15 +22,34 @@ import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.*;
-import com.badlogic.gdx.maps.objects.*;
+import com.badlogic.gdx.maps.ImageResolver;
+import com.badlogic.gdx.maps.MapGroupLayer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.EllipseMapObject;
+import com.badlogic.gdx.maps.objects.PointMapObject;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.maps.objects.PolylineMapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.objects.TextMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Base64Coder;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.SerializationException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -435,6 +454,11 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		if (properties != null) {
 			loadProperties(object.getProperties(), properties);
 		}
+
+		// if there is a 'type' (=class) specified, then check if there are any other
+		// class properties available and put their default values into the properties.
+		loadMapPropertiesClassDefaults(type, object.getProperties());
+
 		idToObject.put(id, object);
 		objects.add(object);
 
@@ -616,21 +640,26 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 
 	private void addTileProperties (TiledMapTile tile, JsonValue tileElement) {
 		String terrain = tileElement.getString("terrain", null);
+		MapProperties tileProperties = tile.getProperties();
 		if (terrain != null) {
-			tile.getProperties().put("terrain", terrain);
+			tileProperties.put("terrain", terrain);
 		}
 		String probability = tileElement.getString("probability", null);
 		if (probability != null) {
-			tile.getProperties().put("probability", probability);
+			tileProperties.put("probability", probability);
 		}
 		String type = tileElement.getString("type", null);
 		if (type != null) {
-			tile.getProperties().put("type", type);
+			tileProperties.put("type", type);
 		}
 		JsonValue properties = tileElement.get("properties");
 		if (properties != null) {
-			loadProperties(tile.getProperties(), properties);
+			loadProperties(tileProperties, properties);
 		}
+
+		// if there is a 'type' (=class) specified, then check if there are any other
+		// class properties available and put their default values into the properties.
+		loadMapPropertiesClassDefaults(type, tileProperties);
 	}
 
 	private void addTileObjectGroup (TiledMapTile tile, JsonValue tileElement) {

@@ -315,4 +315,28 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		return color + alpha;
 	}
 
+	protected void loadMapPropertiesClassDefaults (String className, MapProperties mapProperties) {
+		if (className == null || !projectClassInfo.containsKey(className)) {
+			return;
+		}
+
+		Array<ProjectClassMember> classMembers = projectClassInfo.get(className);
+		for (ProjectClassMember classMember : classMembers) {
+			String propName = classMember.name;
+			if (mapProperties.containsKey(propName)) {
+				// value already specified -> no need to load the default value
+				continue;
+			}
+
+			// Properties of the type 'class' are already correctly loaded before in loadProperties and can
+			// therefore be ignored here. They are already excluded via the 'containsKey' check above.
+			String value = classMember.defaultValue.asString();
+			if ("object".equals(classMember.type)) {
+				loadObjectProperty(mapProperties, propName, value);
+			} else {
+				loadBasicProperty(mapProperties, propName, value, classMember.type);
+			}
+		}
+	}
+
 }
