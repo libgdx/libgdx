@@ -318,10 +318,8 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 
 	protected void loadMapPropertiesClassDefaults (String className, MapProperties mapProperties) {
 		if (projectClassInfo == null) {
-			Gdx.app.log("TiledMapLoader",
-					"WARN: There is at least one property of type class or an object with a class defined. " +
-							"Use the 'projectFilePath' parameter to correctly load the default values of a class."
-			);
+			Gdx.app.log("TiledMapLoader", "WARN: There is at least one property of type class or an object with a class defined. "
+				+ "Use the 'projectFilePath' parameter to correctly load the default values of a class.");
 			// to avoid spamming the warning message we can set an empty ObjectMap as projectClassInfo
 			this.projectClassInfo = new ObjectMap<>();
 			return;
