@@ -235,15 +235,12 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		debugStream = debugOutputStream;
 	}
 
-
-	/**
-	 *  Whether to use the "glfw_async" library.
+	/** Whether to use the "glfw_async" library.
 	 *
-	 *  This means you do not have to set the JVM argument "-XstartOnFirstThread"
+	 * This means you do not have to set the JVM argument "-XstartOnFirstThread"
 	 *
-	 * @see <a href= "https://libgdx.com/news/2021/07/devlog-7-lwjgl3#do-i-need-to-do-anything-else"> Documentation</a>
-	 */
-	public static void useGlfwAsync() {
+	 * @see <a href= "https://libgdx.com/news/2021/07/devlog-7-lwjgl3#do-i-need-to-do-anything-else"> Documentation</a> */
+	public static void useGlfwAsync () {
 		Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
 	}
 

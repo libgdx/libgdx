@@ -15,7 +15,6 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.system.Configuration;
 
 import static org.lwjgl.glfw.GLFW.*;
 
