@@ -59,6 +59,7 @@ public final class World implements Disposable {
 
 static jclass worldClass = 0;
 static jmethodID shouldCollideID = 0;
+static jmethodID useDefaultContactFilterID = 0;
 static jmethodID beginContactID = 0;
 static jmethodID endContactID = 0;
 static jmethodID preSolveID = 0;
@@ -91,17 +92,22 @@ class CustomContactFilter: public b2ContactFilter
 private:
 	JNIEnv* env;
 	jobject obj;
+	jboolean useDefaultContactFilter;
 
 public:
 	CustomContactFilter( JNIEnv* env, jobject obj )
 	{
 		this->env = env;
 		this->obj = obj;
+		if( useDefaultContactFilterID != 0 )
+			useDefaultContactFilter = env->CallBooleanMethod( obj, useDefaultContactFilterID );
 	}
 
 	virtual bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 	{
-		if( shouldCollideID != 0 )
+		if( useDefaultContactFilter == JNI_TRUE )
+			return b2ContactFilter::ShouldCollide( fixtureA, fixtureB );
+		else if( shouldCollideID != 0 )
 			return env->CallBooleanMethod( obj, shouldCollideID, (jlong)fixtureA, (jlong)fixtureB );
 		else
 			return true;
@@ -246,6 +252,7 @@ b2ContactFilter defaultFilter;
 			reportFixtureID = env->GetMethodID(worldClass, "reportFixture", "(J)Z" );
 			reportRayFixtureID = env->GetMethodID(worldClass, "reportRayFixture", "(JFFFFF)F" );
 			shouldCollideID = env->GetMethodID( worldClass, "contactFilter", "(JJ)Z");
+			useDefaultContactFilterID = env->GetMethodID( worldClass, "getUseDefaultContactFilter", "()Z" );
 		}
 	
 		b2World* world = new b2World( b2Vec2( gravityX, gravityY ));
@@ -264,11 +271,19 @@ b2ContactFilter defaultFilter;
 		this.contactFilter = filter;
 		setUseDefaultContactFilter(filter == null);
 	}
+
+	private boolean useDefaultContactFilter;
+
+	/** Internal method called from JNI
+	 * @return whether the native default ContactFilter should be used */
+	private boolean getUseDefaultContactFilter() {
+		return useDefaultContactFilter;
+	}
 	
-	/** tells the native code not to call the Java world class if use is false **/
-	private native void setUseDefaultContactFilter(boolean use); /*
-		// FIXME
-	*/
+	/** Sets flag to tell the native code not to call the Java World class if use is true **/
+	private void setUseDefaultContactFilter(boolean use) {
+		useDefaultContactFilter = use;
+	}
 
 	/** Register a contact event listener. The listener is owned by you and must remain in scope. */
 	public void setContactListener (ContactListener listener) {

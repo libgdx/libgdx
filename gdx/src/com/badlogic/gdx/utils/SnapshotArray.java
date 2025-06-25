@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 /** An array that allows modification during iteration. Guarantees that array entries provided by {@link #begin()} between indexes
@@ -52,6 +53,11 @@ public class SnapshotArray<T> extends Array<T> {
 		super(array);
 	}
 
+	public SnapshotArray (boolean ordered, int capacity, ArraySupplier<T[]> arraySupplier) {
+		super(ordered, capacity, arraySupplier);
+	}
+
+	@Deprecated
 	public SnapshotArray (boolean ordered, int capacity, Class arrayType) {
 		super(ordered, capacity, arrayType);
 	}
@@ -64,6 +70,11 @@ public class SnapshotArray<T> extends Array<T> {
 		super(ordered, array, startIndex, count);
 	}
 
+	public SnapshotArray (ArraySupplier<T[]> arraySupplier) {
+		super(arraySupplier);
+	}
+
+	@Deprecated
 	public SnapshotArray (Class arrayType) {
 		super(arrayType);
 	}
@@ -91,8 +102,7 @@ public class SnapshotArray<T> extends Array<T> {
 		if (snapshot != items && snapshots == 0) {
 			// The backing array was copied, keep around the old array.
 			recycled = snapshot;
-			for (int i = 0, n = recycled.length; i < n; i++)
-				recycled[i] = null;
+			Arrays.fill(recycled, null);
 		}
 		snapshot = null;
 	}

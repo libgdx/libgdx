@@ -23,10 +23,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.*;
-import com.badlogic.gdx.maps.objects.EllipseMapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
-import com.badlogic.gdx.maps.objects.PolylineMapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.objects.*;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
@@ -367,8 +364,27 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			object = new PolylineMapObject(polyline);
 		} else if (element.get("ellipse") != null) {
 			object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
+		} else if ((child = element.get("point")) != null) {
+			object = new PointMapObject(x, flipY ? y - height : y);
+		} else if ((child = element.get("text")) != null) {
+			TextMapObject textMapObject = new TextMapObject(x, flipY ? y - height : y, width, height, child.getString("text", ""));
+			textMapObject.setRotation(child.getFloat("rotation", 0));
+			textMapObject.setFontFamily(child.getString("fontfamily", ""));
+			textMapObject.setPixelSize(child.getInt("pixelSize", 16));
+			textMapObject.setHorizontalAlign(child.getString("halign", "left"));
+			textMapObject.setVerticalAlign(child.getString("valign", "top"));
+			textMapObject.setBold(child.getBoolean("bold", false));
+			textMapObject.setItalic(child.getBoolean("italic", false));
+			textMapObject.setUnderline(child.getBoolean("underline", false));
+			textMapObject.setStrikeout(child.getBoolean("strikeout", false));
+			textMapObject.setWrap(child.getBoolean("wrap", false));
+			// When kerning is true, it won't be added as an attribute, it's true by default
+			textMapObject.setKerning(child.getBoolean("kerning", true));
+			// Default color is #000000, not added as attribute
+			String textColor = child.getString("color", "#000000");
+			textMapObject.setColor(Color.valueOf(tiledColorToLibGDXColor(textColor)));
+			object = textMapObject;
 		}
-
 		if (object == null) {
 			String gid;
 			if ((gid = element.getString("gid", null)) != null) {
@@ -626,7 +642,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		}
 	}
 
-	private AnimatedTiledMapTile createAnimatedTile (TiledMapTileSet tileSet, TiledMapTile tile, JsonValue tileElement,
+	protected AnimatedTiledMapTile createAnimatedTile (TiledMapTileSet tileSet, TiledMapTile tile, JsonValue tileElement,
 		int firstgid) {
 		JsonValue animationElement = tileElement.get("animation");
 		if (animationElement != null) {

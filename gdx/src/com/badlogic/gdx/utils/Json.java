@@ -1144,6 +1144,7 @@ public class Json {
 				if (type == String.class) return (T)jsonData.asString();
 				if (type == short.class || type == Short.class) return (T)(Short)jsonData.asShort();
 				if (type == byte.class || type == Byte.class) return (T)(Byte)jsonData.asByte();
+				if (type == char.class || type == Character.class) return (T)(Character)jsonData.asChar();
 			} catch (NumberFormatException ignored) {
 			}
 			jsonData = new JsonValue(jsonData.asString());

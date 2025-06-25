@@ -37,6 +37,7 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapJsonObjectLoadingTest extends GdxTest {
@@ -46,6 +47,7 @@ public class TiledMapJsonObjectLoadingTest extends GdxTest {
 	private OrthographicCamera camera;
 	private OrthoCamController cameraController;
 	private BitmapFont font;
+	private BitmapFont textMapObjectFont;
 	private SpriteBatch batch;
 	private String loadingStatus;
 
@@ -63,6 +65,7 @@ public class TiledMapJsonObjectLoadingTest extends GdxTest {
 		Gdx.input.setInputProcessor(cameraController);
 
 		font = new BitmapFont();
+		textMapObjectFont = new BitmapFont();
 		batch = new SpriteBatch();
 		map = new TmjMapLoader().load("data/maps/tiled-objects/test-load-mapobjects.tmj");
 		MapProperties properties = map.getProperties();
@@ -83,7 +86,9 @@ public class TiledMapJsonObjectLoadingTest extends GdxTest {
 		loadingStatus += "- PolylineMapObject : " + mapObjects.getByType(PolylineMapObject.class).size + "\n";
 		loadingStatus += "- RectangleMapObject : " + mapObjects.getByType(RectangleMapObject.class).size + "\n";
 		loadingStatus += "- TextureMapObject : " + mapObjects.getByType(TextureMapObject.class).size + "\n";
+		loadingStatus += "- PointMapObject : " + mapObjects.getByType(PointMapObject.class).size + "\n";
 		loadingStatus += "- TiledMapTileMapObject : " + mapObjects.getByType(TiledMapTileMapObject.class).size + "\n";
+		loadingStatus += "- TextMapObject : " + mapObjects.getByType(TextMapObject.class).size + "\n";
 	}
 
 	@Override
@@ -139,6 +144,49 @@ public class TiledMapJsonObjectLoadingTest extends GdxTest {
 				Polyline polyline = ((PolylineMapObject)mapObject).getPolyline();
 				shapeRenderer.polyline(polyline.getTransformedVertices());
 				shapeRenderer.end();
+			} else if (mapObject instanceof PointMapObject) {
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+				Vector2 point = ((PointMapObject)mapObject).getPoint();
+				// drawing circle, because shapeRenderer.point is barely visible, if visible at all
+				shapeRenderer.circle(point.x, point.y, 1f);
+				shapeRenderer.end();
+			} else if (mapObject instanceof TextMapObject) {
+				batch.begin();
+				TextMapObject textMapObject = (TextMapObject)mapObject;
+
+				int alignment;
+				String hAlign = textMapObject.getHorizontalAlign();
+
+				switch (hAlign.toLowerCase()) {
+				case "center":
+					alignment = Align.center;
+					break;
+				case "right":
+					alignment = Align.right;
+					break;
+				case "left":
+				default:
+					// Default is 'left alignment, also there is no Align 'justify' like equivalent
+					alignment = Align.left;
+					break;
+				}
+
+				textMapObjectFont.setColor(textMapObject.getColor());
+				// The text rendering starts from the baseline, causing the text to appear below the specified Y-coordinate.
+				// To align the text with the top of the bounding box (as it appears in Tiled), we add textMapObject.getHeight() to
+				// the Y position.
+				textMapObjectFont.draw(batch, textMapObject.getText(), textMapObject.getX(),
+					textMapObject.getY() + textMapObject.getHeight(), textMapObject.getWidth(), alignment, textMapObject.isWrap());
+				batch.end();
+
+				shapeRenderer.setColor(Color.DARK_GRAY);
+				// Draw display bounding box of TextMapObject
+				shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+				shapeRenderer.rect(textMapObject.getX(), textMapObject.getY(), textMapObject.getWidth(), textMapObject.getHeight());
+				shapeRenderer.end();
+
+				// reset back to blue
+				shapeRenderer.setColor(Color.BLUE);
 			}
 		}
 		batch.begin();
@@ -150,5 +198,7 @@ public class TiledMapJsonObjectLoadingTest extends GdxTest {
 	public void dispose () {
 		map.dispose();
 		shapeRenderer.dispose();
+		font.dispose();
+		textMapObjectFont.dispose();
 	}
 }

@@ -27,6 +27,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL;
@@ -58,14 +59,14 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 	private LongMap<Integer> soundIdToSource;
 	private IntMap<Long> sourceToSoundId;
 	private long nextSoundId = 0;
-	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap();
-	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap();
+	private ObjectMap<String, BiFunction<OpenALLwjgl3Audio, FileHandle, OpenALSound>> extensionToSoundClass = new ObjectMap<>();
+	private ObjectMap<String, BiFunction<OpenALLwjgl3Audio, FileHandle, OpenALMusic>> extensionToMusicClass = new ObjectMap<>();
 	private OpenALSound[] recentSounds;
 	private int mostRecetSound = -1;
 	private String preferredOutputDevice = null;
 	private Thread observerThread;
 
-	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
+	Array<OpenALMusic> music = new Array<>(false, 1, OpenALMusic[]::new);
 	long device;
 	long context;
 	boolean noDevice = false;
@@ -78,12 +79,12 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		this.deviceBufferSize = deviceBufferSize;
 		this.deviceBufferCount = deviceBufferCount;
 
-		registerSound("ogg", Ogg.Sound.class);
-		registerMusic("ogg", Ogg.Music.class);
-		registerSound("wav", Wav.Sound.class);
-		registerMusic("wav", Wav.Music.class);
-		registerSound("mp3", Mp3.Sound.class);
-		registerMusic("mp3", Mp3.Music.class);
+		registerSound("ogg", Ogg.Sound::new);
+		registerMusic("ogg", Ogg.Music::new);
+		registerSound("wav", Wav.Sound::new);
+		registerMusic("wav", Wav.Music::new);
+		registerSound("mp3", Mp3.Sound::new);
+		registerMusic("mp3", Mp3.Music::new);
 
 		device = alcOpenDevice((ByteBuffer)null);
 		if (device == 0L) {
@@ -175,16 +176,16 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		recentSounds = new OpenALSound[simultaneousSources];
 	}
 
-	public void registerSound (String extension, Class<? extends OpenALSound> soundClass) {
+	public void registerSound (String extension, BiFunction<OpenALLwjgl3Audio, FileHandle, OpenALSound> soundSupplier) {
 		if (extension == null) throw new IllegalArgumentException("extension cannot be null.");
-		if (soundClass == null) throw new IllegalArgumentException("soundClass cannot be null.");
-		extensionToSoundClass.put(extension, soundClass);
+		if (soundSupplier == null) throw new IllegalArgumentException("soundClass cannot be null.");
+		extensionToSoundClass.put(extension, soundSupplier);
 	}
 
-	public void registerMusic (String extension, Class<? extends OpenALMusic> musicClass) {
+	public void registerMusic (String extension, BiFunction<OpenALLwjgl3Audio, FileHandle, OpenALMusic> soundSupplier) {
 		if (extension == null) throw new IllegalArgumentException("extension cannot be null.");
-		if (musicClass == null) throw new IllegalArgumentException("musicClass cannot be null.");
-		extensionToMusicClass.put(extension, musicClass);
+		if (soundSupplier == null) throw new IllegalArgumentException("musicClass cannot be null.");
+		extensionToMusicClass.put(extension, soundSupplier);
 	}
 
 	public OpenALSound newSound (FileHandle file) {
@@ -194,29 +195,21 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 
 	public OpenALSound newSound (FileHandle file, String extension) {
 		if (file == null) throw new IllegalArgumentException("file cannot be null.");
-		Class<? extends OpenALSound> soundClass = extensionToSoundClass.get(extension);
-		if (soundClass == null) throw new GdxRuntimeException("Unknown file extension for sound: " + file);
-		try {
-			OpenALSound sound = soundClass.getConstructor(new Class[] {OpenALLwjgl3Audio.class, FileHandle.class}).newInstance(this,
-				file);
-			if (sound.getType() != null && !sound.getType().equals(extension)) {
-				return newSound(file, sound.getType());
-			}
-			return sound;
-		} catch (Exception ex) {
-			throw new GdxRuntimeException("Error creating sound " + soundClass.getName() + " for file: " + file, ex);
+		BiFunction<OpenALLwjgl3Audio, FileHandle, OpenALSound> soundSupplier = extensionToSoundClass.get(extension);
+		if (soundSupplier == null) throw new GdxRuntimeException("Unknown file extension for sound: " + file);
+		OpenALSound sound = soundSupplier.apply(this, file);
+		if (sound.getType() != null && !sound.getType().equals(extension)) {
+			return newSound(file, sound.getType());
 		}
+		return sound;
 	}
 
 	public OpenALMusic newMusic (FileHandle file) {
 		if (file == null) throw new IllegalArgumentException("file cannot be null.");
-		Class<? extends OpenALMusic> musicClass = extensionToMusicClass.get(file.extension().toLowerCase());
-		if (musicClass == null) throw new GdxRuntimeException("Unknown file extension for music: " + file);
-		try {
-			return musicClass.getConstructor(new Class[] {OpenALLwjgl3Audio.class, FileHandle.class}).newInstance(this, file);
-		} catch (Exception ex) {
-			throw new GdxRuntimeException("Error creating music " + musicClass.getName() + " for file: " + file, ex);
-		}
+		BiFunction<OpenALLwjgl3Audio, FileHandle, OpenALMusic> musicSupplier = extensionToMusicClass
+			.get(file.extension().toLowerCase());
+		if (musicSupplier == null) throw new GdxRuntimeException("Unknown file extension for music: " + file);
+		return musicSupplier.apply(this, file);
 	}
 
 	@Override

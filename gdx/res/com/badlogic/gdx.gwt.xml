@@ -305,13 +305,16 @@
 	<!-- maps/objects -->
 		<include name="maps/objects/CircleMapObject.java"/>
 		<include name="maps/objects/EllipseMapObject.java"/>
+		<include name="maps/objects/PointMapObject.java"/>
 		<include name="maps/objects/PolygonMapObject.java"/>
 		<include name="maps/objects/PolylineMapObject.java"/>
 		<include name="maps/objects/RectangleMapObject.java"/>
-		<include name="maps/objects/TextureMapObject.java"/>
-	
+        <include name="maps/objects/TextMapObject.java"/>
+        <include name="maps/objects/TextureMapObject.java"/>
+
 	<!-- maps/tiled -->
 		<include name="maps/tiled/AtlasTmxMapLoader.java"/>
+		<include name="maps/tiled/AtlasTmjMapLoader.java"/>
 		<include name="maps/tiled/BaseTiledMapLoader.java"/>
 		<include name="maps/tiled/BaseTmxMapLoader.java"/>
 		<include name="maps/tiled/BaseTmjMapLoader.java"/>
@@ -411,6 +414,7 @@
 		<include name="utils/Align.java"/>
 		<include name="utils/Array.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/ArrayMap.java"/> <!-- Emulated: Reflection -->
+		<include name="utils/ArraySupplier.java"/>
 		<include name="utils/AtomicQueue.java"/>
 		<include name="utils/Base64Coder.java"/>
 		<include name="utils/BaseJsonReader.java"/>
@@ -469,6 +473,7 @@
 		<include name="utils/Queue.java"/>
 		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/>
+		<include name="utils/DefaultPool.java"/>
 		<include name="utils/Scaling.java"/>
 		<include name="utils/ScreenUtils.java"/>
 		<include name="utils/Select.java"/>

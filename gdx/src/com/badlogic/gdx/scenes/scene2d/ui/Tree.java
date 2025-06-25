@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.Null;
  * @param <N> The type of nodes in the tree.
  * @param <V> The type of values for each node.
  * @author Nathan Sweet */
-public class Tree<N extends Node, V> extends WidgetGroup {
+public class Tree<N extends Node, V> extends WidgetGroup implements Styleable<Tree.TreeStyle> {
 	static private final Vector2 tmp = new Vector2();
 
 	TreeStyle style;

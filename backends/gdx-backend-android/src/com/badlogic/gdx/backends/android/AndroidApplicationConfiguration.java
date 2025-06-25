@@ -30,13 +30,16 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * @author mzechner */
 public class AndroidApplicationConfiguration {
 	/** number of bits per color channel **/
-	public int r = 8, g = 8, b = 8, a = 0;
+	public int r = 8, g = 8, b = 8, a = 8;
 
 	/** number of bits for depth and stencil buffer **/
 	public int depth = 16, stencil = 0;
 
 	/** number of samples for CSAA/MSAA, 2 is a good value **/
 	public int numSamples = 0;
+
+	/** whether coverage sampling anti-aliasing is used. in that case you have to clear the coverage buffer as well! */
+	public boolean coverageSampling = false;
 
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;
@@ -67,10 +70,6 @@ public class AndroidApplicationConfiguration {
 	 * Default: {@link SensorManager#SENSOR_DELAY_GAME} (20 ms updates). */
 	public int sensorDelay = SensorManager.SENSOR_DELAY_GAME;
 
-	/** the time in milliseconds to sleep after each event in the touch handler, set this to 16ms to get rid of touch flooding on
-	 * pre Android 2.0 devices. default: 0 **/
-	public int touchSleepTime = 0;
-
 	/** whether to keep the screen on and at full brightness or not while running the application. default: false. Uses
 	 * FLAG_KEEP_SCREEN_ON under the hood. */
 	public boolean useWakelock = false;
@@ -100,7 +99,7 @@ public class AndroidApplicationConfiguration {
 	public int maxNetThreads = Integer.MAX_VALUE;
 
 	/** set this to true to render under the display cutout. Use the Graphics::getSafeInsetXX to get the safe render space */
-	public boolean renderUnderCutout;
+	public boolean renderUnderCutout = false;
 
 	/** The loader used to load native libraries. Override this to use a different loading strategy. */
 	public GdxNativeLoader nativeLoader = new GdxNativeLoader() {

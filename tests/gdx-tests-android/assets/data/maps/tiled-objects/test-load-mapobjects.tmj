@@ -8,19 +8,18 @@
          "name":"Objects",
          "objects":[
                 {
-                 "class":"",
                  "ellipse":true,
                  "height":87,
                  "id":3,
                  "name":"Ellipse",
                  "rotation":0,
+                 "type":"",
                  "visible":true,
                  "width":130,
                  "x":59.3333,
                  "y":335
                 }, 
                 {
-                 "class":"",
                  "height":0,
                  "id":5,
                  "name":"Polygon",
@@ -38,48 +37,48 @@
                          "y":73
                         }],
                  "rotation":0,
+                 "type":"",
                  "visible":true,
                  "width":0,
                  "x":238.667,
                  "y":351.333
                 }, 
                 {
-                 "class":"",
                  "height":100,
                  "id":9,
                  "name":"Rectangle",
-                 "rotation":0,
+                 "rotation":4,
+                 "type":"",
                  "visible":true,
                  "width":118.667,
                  "x":340,
                  "y":341.333
                 }, 
                 {
-                 "class":"",
                  "gid":3,
                  "height":33.667,
                  "id":12,
                  "name":"Texture",
                  "rotation":0,
+                 "type":"",
                  "visible":true,
                  "width":256,
                  "x":128,
                  "y":298.667
                 }, 
                 {
-                 "class":"",
-                 "gid":1073741825,
+                 "gid":1,
                  "height":32,
                  "id":14,
                  "name":"",
                  "rotation":0,
+                 "type":"",
                  "visible":true,
                  "width":64,
                  "x":384,
                  "y":256
                 }, 
                 {
-                 "class":"",
                  "height":0,
                  "id":17,
                  "name":"Polyline",
@@ -101,10 +100,75 @@
                          "y":-63
                         }],
                  "rotation":0,
+                 "type":"",
                  "visible":true,
                  "width":0,
                  "x":364,
                  "y":155
+                },
+                {
+                 "height":0,
+                 "id":18,
+                 "name":"Point",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":333.26,
+                 "y":218.2
+                },
+                {
+                 "height":19,
+                 "id":28,
+                 "name":"",
+                 "rotation":0,
+                 "text":
+                    {
+                     "color":"#ff0000",
+                     "text":"Tiled Text Object 1",
+                     "wrap":true
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":254.846,
+                 "x":128,
+                 "y":224
+                },
+                {
+                 "height":19,
+                 "id":32,
+                 "name":"",
+                 "rotation":0,
+                 "text":
+                    {
+                     "halign":"right",
+                     "text":"Tiled Text Object 2",
+                     "wrap":true
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":254.846,
+                 "x":128,
+                 "y":246
+                },
+                {
+                 "height":75.4086,
+                 "id":33,
+                 "name":"",
+                 "rotation":0,
+                 "text":
+                    {
+                     "color":"#ffff00",
+                     "halign":"center",
+                     "text":"Tiled Text Object 3",
+                     "wrap":true
+                    },
+                 "type":"",
+                 "visible":true,
+                 "width":50.0583,
+                 "x":84.1092,
+                 "y":261.507
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -112,8 +176,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":2,
- "nextobjectid":18,
+ "nextlayerid":3,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",
@@ -159,6 +223,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":"1.9",
+ "version":"1.11",
  "width":16
 }
