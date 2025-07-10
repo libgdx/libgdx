@@ -528,7 +528,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		return new DefaultAndroidFiles(this.getAssets(), this, true);
 	}
 
-	protected AndroidGraphics createGraphics(AndroidApplicationConfiguration config) {
+	protected AndroidGraphics createGraphics (AndroidApplicationConfiguration config) {
 		return new AndroidGraphics(this, config,
 			config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
 	}
