@@ -18,10 +18,15 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.Pools;
 
 /** An action that has a float, whose value is transitioned over time.
  * @author Nathan Sweet */
 public class FloatAction extends TemporalAction {
+	static {
+		Pools.set(FloatAction::new);
+	}
+
 	private float start, end;
 	private float value;
 

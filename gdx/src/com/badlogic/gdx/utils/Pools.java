@@ -33,62 +33,51 @@ import com.badlogic.gdx.utils.DefaultPool.PoolSupplier;
  * @author Nathan Sweet */
 public class Pools {
 	static private final ObjectMap<Class<?>, Pool<?>> typePools = new ObjectMap<>();
+	static private final ObjectSet<Class<?>> initializedTypes = new ObjectSet<>();
 	static public boolean WARN_ON_REFLECTION_POOL_CREATION = true;
 	static public boolean THROW_ON_REFLECTION_POOL_CREATION = false;
-
-	static {
-		set(Array::new);
-		set(ChangeEvent::new);
-		set(DebugRect::new);
-		set(FocusEvent::new);
-		set(GlyphLayout::new);
-		set(GlyphRun::new);
-		set(HttpRequest::new);
-		set(InputEvent::new);
-		set(Rectangle::new);
-		set(TouchFocus::new);
-
-		// Actions
-		set(AddAction::new);
-		set(AddListenerAction::new);
-		set(AfterAction::new);
-		set(AlphaAction::new);
-		set(ColorAction::new);
-		set(DelayAction::new);
-		set(FloatAction::new);
-		set(IntAction::new);
-		set(LayoutAction::new);
-		set(MoveByAction::new);
-		set(MoveToAction::new);
-		set(ParallelAction::new);
-		set(RemoveAction::new);
-		set(RemoveActorAction::new);
-		set(RemoveListenerAction::new);
-		set(RepeatAction::new);
-		set(RotateByAction::new);
-		set(RotateToAction::new);
-		set(RunnableAction::new);
-		set(ScaleByAction::new);
-		set(ScaleToAction::new);
-		set(SequenceAction::new);
-		set(SizeByAction::new);
-		set(SizeToAction::new);
-		set(TimeScaleAction::new);
-		set(TouchableAction::new);
-		set(VisibleAction::new);
-	}
 
 	/** Returns a new or existing pool for the specified type, stored in a Class to {@link Pool} map. Note the max size is ignored
 	 * if this is not the first time this pool has been requested. */
 	static public <T> Pool<T> get (Class<T> type, int max) {
 		Pool pool = typePools.get(type);
 		if (pool == null) {
-			if (THROW_ON_REFLECTION_POOL_CREATION) throw new RuntimeException(
-				"Please manually define a Pool for " + type + " by calling Pools#set before calling Pools#get");
-			if (WARN_ON_REFLECTION_POOL_CREATION && Gdx.app != null) Gdx.app.error("Pools",
-				"Please manually define a Pool for " + type + " by calling Pools#set before calling Pools#get");
-			pool = new ReflectionPool(type, 4, max);
-			typePools.put(type, pool);
+			// Force class initialization to run static blocks. All poolable libGDX classes have static initializers
+			// that call Pools.set(ClassName::new). This approach avoids manual initialization order management and
+			// prevents pulling in unused classes (unlike a central Pools static block), allowing ProGuard/R8/GraalVM
+			// to strip unused classes while ensuring used ones register their pools before ReflectionPool creation.
+			if (!initializedTypes.contains(type)) {
+				initializedTypes.add(type);
+				try {
+					Class.forName(type.getName(), true, type.getClassLoader());
+				} catch (ClassNotFoundException e) {
+					// This should never happen in normal circumstances since we already have the Class object.
+					// However, it can occur with aggressive code optimization/obfuscation tools that may:
+					// - Remove classes deemed unused (ProGuard/R8 shrinking)
+					// - Merge/inline classes (R8 optimization)
+					// - Transform classes in incompatible ways (GraalVM native-image)
+					// If you encounter this, ensure the class is kept by your obfuscation rules.
+					if (Gdx.app != null) {
+						Gdx.app.error("Pools",
+							"Failed to initialize class " + type.getName() + ". " +
+							"This may occur with code obfuscation, shrinking, class merging (ProGuard/R8), or native compilation (GraalVM). " +
+							"Add keep rules for this class and its constructors.");
+					}
+				}
+				pool = typePools.get(type);
+			}
+			if (pool == null) {
+				if (THROW_ON_REFLECTION_POOL_CREATION) throw new RuntimeException(
+					"No pool registered for type " + type.getName() + ". " +
+					"A ReflectionPool will be created which is slower and will fail if the class is not explicitly included with ProGuard/R8/GraalVM. " +
+					"To fix: Add Pools.set(" + type.getSimpleName() + "::new) - this will automatically keep the class in ProGuard/R8/GraalVM.");
+				if (WARN_ON_REFLECTION_POOL_CREATION && Gdx.app != null) Gdx.app.error("Pools",
+					"No pool registered for type " + type.getName() + ". " +
+					"A ReflectionPool will be created which is slower and will fail if the class is not explicitly included with ProGuard/R8/GraalVM. " +
+					"To fix: Add Pools.set(" + type.getSimpleName() + "::new) - this will automatically keep the class in ProGuard/R8/GraalVM.");
+				pool = new ReflectionPool(type, 4, max);
+				typePools.put(type, pool);
+			}
 		}
 		return pool;
 	}

@@ -18,10 +18,15 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.utils.Pools;
 
 /** Removes a listener from an actor.
  * @author Nathan Sweet */
 public class RemoveListenerAction extends Action {
+	static {
+		Pools.set(RemoveListenerAction::new);
+	}
+
 	private EventListener listener;
 	private boolean capture;
 

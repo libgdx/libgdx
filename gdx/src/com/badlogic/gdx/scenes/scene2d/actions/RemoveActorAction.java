@@ -17,10 +17,15 @@
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.utils.Pools;
 
 /** Removes an actor from the stage.
  * @author Nathan Sweet */
 public class RemoveActorAction extends Action {
+	static {
+		Pools.set(RemoveActorAction::new);
+	}
+
 	private boolean removed;
 
 	public boolean act (float delta) {

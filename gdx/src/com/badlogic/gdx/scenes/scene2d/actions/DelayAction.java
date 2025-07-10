@@ -16,9 +16,15 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.utils.Pools;
+
 /** Delays execution of an action or inserts a pause in a {@link SequenceAction}.
  * @author Nathan Sweet */
 public class DelayAction extends DelegateAction implements FinishableAction {
+	static {
+		Pools.set(DelayAction::new);
+	}
+
 	private float duration, time;
 
 	public DelayAction () {

@@ -16,9 +16,15 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.utils.Pools;
+
 /** Repeats an action a number of times or forever.
  * @author Nathan Sweet */
 public class RepeatAction extends DelegateAction implements FinishableAction {
+	static {
+		Pools.set(RepeatAction::new);
+	}
+
 	static public final int FOREVER = -1;
 
 	private int repeatCount, executedCount;

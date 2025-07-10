@@ -17,6 +17,7 @@
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Pools;
 
 /** Sets the actor's rotation from its current value to a specific value.
  * 
@@ -30,6 +31,10 @@ import com.badlogic.gdx.math.MathUtils;
  * 
  * @author Nathan Sweet */
 public class RotateToAction extends TemporalAction {
+	static {
+		Pools.set(RotateToAction::new);
+	}
+
 	private float start, end;
 
 	private boolean useShortestDirection = false;

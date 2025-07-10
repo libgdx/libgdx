@@ -18,10 +18,15 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 
 /** Executes a number of actions one at a time.
  * @author Nathan Sweet */
 public class SequenceAction extends ParallelAction {
+	static {
+		Pools.set(SequenceAction::new);
+	}
+
 	private int index;
 
 	public SequenceAction () {

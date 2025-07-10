@@ -16,9 +16,15 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.utils.Pools;
+
 /** Moves an actor from its current size to a relative size.
  * @author Nathan Sweet */
 public class SizeByAction extends RelativeTemporalAction {
+	static {
+		Pools.set(SizeByAction::new);
+	}
+
 	private float amountWidth, amountHeight;
 
 	protected void updateRelative (float percentDelta) {

@@ -17,11 +17,16 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Scaling;
 
 /** Encapsulates a 2D rectangle defined by its corner point in the bottom left and its extents in x (width) and y (height).
  * @author badlogicgames@gmail.com */
 public class Rectangle implements Serializable, Shape2D {
+	static {
+		Pools.set(Rectangle::new);
+	}
+
 	/** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */
 	static public final Rectangle tmp = new Rectangle();
 

@@ -33,6 +33,7 @@ import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.utils.Pools;
 
 /** Provides methods to perform networking operations, such as simple HTTP get and post requests, and TCP server/client socket
  * communication.
@@ -161,6 +162,9 @@ public interface Net {
 	 * </pre>
 	 */
 	public static class HttpRequest implements Poolable {
+		static {
+			Pools.set(HttpRequest::new);
+		}
 
 		private String httpMethod;
 		private String url;

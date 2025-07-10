@@ -20,11 +20,16 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Pools;
 
 /** Sets an actor's {@link Layout#setLayoutEnabled(boolean) layout} to enabled or disabled. The actor must implements
  * {@link Layout}.
  * @author Nathan Sweet */
 public class LayoutAction extends Action {
+	static {
+		Pools.set(LayoutAction::new);
+	}
+
 	private boolean enabled;
 
 	public void setTarget (Actor actor) {

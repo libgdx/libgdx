@@ -45,6 +45,10 @@ import com.badlogic.gdx.utils.Pools;
  * @author Alexander Dorokhov
  * @author Thomas Creutzenberg */
 public class GlyphLayout implements Poolable {
+	static {
+		Pools.set(GlyphLayout::new);
+	}
+
 	static private final Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class);
 	static private final IntArray colorStack = new IntArray(4);
 	static private final float epsilon = 0.0001f;
@@ -525,6 +529,10 @@ public class GlyphLayout implements Poolable {
 	/** Stores glyphs and positions for a line of text.
 	 * @author Nathan Sweet */
 	static public class GlyphRun implements Poolable {
+		static {
+			Pools.set(GlyphRun::new);
+		}
+
 		public Array<Glyph> glyphs = new Array();
 
 		/** Contains glyphs.size+1 entries:<br>
