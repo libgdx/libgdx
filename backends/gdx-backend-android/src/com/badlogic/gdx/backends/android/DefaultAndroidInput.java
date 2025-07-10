@@ -248,7 +248,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				alert.setTitle(title);
 				final EditText input = new EditText(context);
 				if (keyboardType != OnscreenKeyboardType.Default) {
-					input.setInputType(getAndroidInputType(keyboardType, false));
+					input.setInputType(getInputType(keyboardType, false));
 				}
 				input.setHint(hint);
 				input.setText(text);
@@ -291,36 +291,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				alert.show();
 			}
 		});
-	}
-
-	public static int getAndroidInputType (OnscreenKeyboardType type, boolean defaultDisableAutocorrection) {
-		int inputType;
-		switch (type) {
-		case NumberPad:
-			inputType = InputType.TYPE_CLASS_NUMBER;
-			break;
-		case PhonePad:
-			inputType = InputType.TYPE_CLASS_PHONE;
-			break;
-		case Email:
-			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
-			break;
-		case Password:
-			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
-			break;
-		case URI:
-			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
-			break;
-		default:
-			if (defaultDisableAutocorrection) {
-				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-					| InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
-			} else {
-				inputType = InputType.TYPE_CLASS_TEXT;
-			}
-			break;
-		}
-		return inputType;
 	}
 
 	@Override
@@ -594,35 +564,51 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	@Override
-	public void setOnscreenKeyboardVisible (final boolean visible) {
+	public void setOnscreenKeyboardVisible (boolean visible) {
 		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
+	}
+
+	/** @param type The type of the onscreen keyboard to show.
+	 * @param onscreenKeyboard If true, an input type for the default onscreen keyboard will be used. If false, the input type for
+	 *           the text input will be used.
+	 *
+	 * @return The Android input type for the given onscreen keyboard type. */
+	protected int getInputType (OnscreenKeyboardType type, boolean onscreenKeyboard) {
+		return AndroidInputType.getType(type, onscreenKeyboard);
 	}
 
 	private boolean onscreenVisible = false;
 
 	@Override
-	public void setOnscreenKeyboardVisible (final boolean visible, final OnscreenKeyboardType type) {
+	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
 		if (isNativeInputOpen()) throw new GdxRuntimeException("Can't open keyboard if already open");
 		onscreenVisible = visible;
-		handle.post(new Runnable() {
-			public void run () {
-				InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-				if (visible) {
-					View view = ((AndroidGraphics)app.getGraphics()).getView();
-					OnscreenKeyboardType tmp = type == null ? OnscreenKeyboardType.Default : type;
-					if (((GLSurfaceView20)view).onscreenKeyboardType != tmp) {
-						((GLSurfaceView20)view).onscreenKeyboardType = tmp;
-						manager.restartInput(view);
-					}
+		handle.post( () -> doSetOnscreenKeyboardVisible(visible, type));
+	}
 
-					view.setFocusable(true);
-					view.setFocusableInTouchMode(true);
-					manager.showSoftInput(((AndroidGraphics)app.getGraphics()).getView(), 0);
-				} else {
-					manager.hideSoftInputFromWindow(((AndroidGraphics)app.getGraphics()).getView().getWindowToken(), 0);
-				}
-			}
-		});
+	private void doSetOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
+		if (!visible) {
+			type = OnscreenKeyboardType.None;
+		} else if (type == null) {
+			type = OnscreenKeyboardType.Default;
+		}
+
+		InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+		GLSurfaceView20 view = (GLSurfaceView20)(((AndroidGraphics)app.getGraphics()).getView());
+
+		int inputType = getInputType(type, true);
+		if (view.inputType != inputType) {
+			view.inputType = inputType;
+			manager.restartInput(view);
+		}
+
+		if (visible) {
+			view.setFocusable(true);
+			view.setFocusableInTouchMode(true);
+			manager.showSoftInput(view, 0);
+		} else {
+			manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+		}
 	}
 
 	private RelativeLayout relativeLayoutField = null;
@@ -840,7 +826,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 					editText.setTransformationMethod(null);
 				}
 
-				editText.setInputType(getAndroidInputType(configuration.getType(), false));
+				editText.setInputType(getInputType(configuration.getType(), false));
 
 				if (configuration.isPreventCorrection()) {
 					editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
