@@ -17,16 +17,7 @@
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net.HttpRequest;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage.TouchFocus;
 import com.badlogic.gdx.scenes.scene2d.actions.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Table.DebugRect;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
 import com.badlogic.gdx.utils.DefaultPool.PoolSupplier;
 
 /** Stores a map of {@link Pool}s by type for convenient static access.
@@ -58,23 +49,24 @@ public class Pools {
 					// - Transform classes in incompatible ways (GraalVM native-image)
 					// If you encounter this, ensure the class is kept by your obfuscation rules.
 					if (Gdx.app != null) {
-						Gdx.app.error("Pools",
-							"Failed to initialize class " + type.getName() + ". " +
-							"This may occur with code obfuscation, shrinking, class merging (ProGuard/R8), or native compilation (GraalVM). " +
-							"Add keep rules for this class and its constructors.");
+						Gdx.app.error("Pools", "Failed to initialize class " + type.getName() + ". "
+							+ "This may occur with code obfuscation, shrinking, class merging (ProGuard/R8), or native compilation (GraalVM). "
+							+ "Add keep rules for this class and its constructors.");
 					}
 				}
 				pool = typePools.get(type);
 			}
 			if (pool == null) {
-				if (THROW_ON_REFLECTION_POOL_CREATION) throw new RuntimeException(
-					"No pool registered for type " + type.getName() + ". " +
-					"A ReflectionPool will be created which is slower and will fail if the class is not explicitly included with ProGuard/R8/GraalVM. " +
-					"To fix: Add Pools.set(" + type.getSimpleName() + "::new) - this will automatically keep the class in ProGuard/R8/GraalVM.");
-				if (WARN_ON_REFLECTION_POOL_CREATION && Gdx.app != null) Gdx.app.error("Pools",
-					"No pool registered for type " + type.getName() + ". " +
-					"A ReflectionPool will be created which is slower and will fail if the class is not explicitly included with ProGuard/R8/GraalVM. " +
-					"To fix: Add Pools.set(" + type.getSimpleName() + "::new) - this will automatically keep the class in ProGuard/R8/GraalVM.");
+				if (THROW_ON_REFLECTION_POOL_CREATION) throw new RuntimeException("No pool registered for type " + type.getName()
+					+ ". "
+					+ "A ReflectionPool will be created which is slower and will fail if the class is not explicitly included with ProGuard/R8/GraalVM. "
+					+ "To fix: Add Pools.set(" + type.getSimpleName()
+					+ "::new) - this will automatically keep the class in ProGuard/R8/GraalVM.");
+				if (WARN_ON_REFLECTION_POOL_CREATION && Gdx.app != null) Gdx.app.error("Pools", "No pool registered for type "
+					+ type.getName() + ". "
+					+ "A ReflectionPool will be created which is slower and will fail if the class is not explicitly included with ProGuard/R8/GraalVM. "
+					+ "To fix: Add Pools.set(" + type.getSimpleName()
+					+ "::new) - this will automatically keep the class in ProGuard/R8/GraalVM.");
 				pool = new ReflectionPool(type, 4, max);
 				typePools.put(type, pool);
 			}
