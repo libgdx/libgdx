@@ -32,7 +32,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class AsyncExecutor implements Disposable {
 	private final ExecutorService executor;
 
-	/** Creates a new AsynchExecutor with the name "AsyncExecutor-Thread". */
+	/** Creates a new AsyncExecutor with the name "AsyncExecutor-Thread". */
 	public AsyncExecutor (int maxConcurrent) {
 		this(maxConcurrent, "AsyncExecutor-Thread");
 	}
