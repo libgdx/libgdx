@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <object name="Text" width="129" height="19">
+  <properties>
+   <property name="BoolProp" type="bool" value="true"/>
+   <property name="ColorProp" type="color" value="#ffff0000"/>
+   <property name="IntProp" type="int" value="86"/>
+   <property name="StringProp" value="Template Default"/>
+  </properties>
+  <text wrap="1">Text Object</text>
+ </object>
+</template>
