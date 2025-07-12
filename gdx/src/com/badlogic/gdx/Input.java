@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,27 +25,27 @@ import com.badlogic.gdx.utils.ObjectIntMap;
  * some backends (desktop, gwt, etc) the touch screen is replaced by mouse input. The accelerometer is of course not available on
  * all backends.
  * </p>
- * 
+ *
  * <p>
  * Instead of polling for events, one can process all input events with an {@link InputProcessor}. You can set the InputProcessor
  * via the {@link #setInputProcessor(InputProcessor)} method. It will be called before the {@link ApplicationListener#render()}
  * method in each frame.
  * </p>
- * 
+ *
  * <p>
  * Keyboard keys are translated to the constants in {@link Keys} transparently on all systems. Do not use system specific key
  * constants.
  * </p>
- * 
+ *
  * <p>
  * The class also offers methods to use (and test for the presence of) other input systems like vibration, compass, on-screen
  * keyboards, and cursor capture. Support for simple input dialogs is also provided.
  * </p>
- * 
+ *
  * @author mzechner */
 public interface Input {
 	/** Callback interface for {@link Input#getTextInput(TextInputListener, String, String, String)}
-	 * 
+	 *
 	 * @author mzechner */
 	static public interface TextInputListener {
 		public void input (String text);
@@ -64,7 +64,7 @@ public interface Input {
 	}
 
 	/** Keys.
-	 * 
+	 *
 	 * @author mzechner */
 	static public class Keys {
 		public static final int ANY_KEY = -1;
@@ -678,7 +678,7 @@ public interface Input {
 	 * identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on
 	 * the touch screen the first free index will be used.
-	 * 
+	 *
 	 * @param pointer the pointer id.
 	 * @return the x coordinate */
 	public int getX (int pointer);
@@ -697,7 +697,7 @@ public interface Input {
 	 * identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on
 	 * the touch screen the first free index will be used.
-	 * 
+	 *
 	 * @param pointer the pointer id.
 	 * @return the y coordinate */
 	public int getY (int pointer);
@@ -749,13 +749,13 @@ public interface Input {
 	public boolean isButtonJustPressed (int button);
 
 	/** Returns whether the key is pressed.
-	 * 
+	 *
 	 * @param key The key code as found in {@link Input.Keys}.
 	 * @return true or false. */
 	public boolean isKeyPressed (int key);
 
 	/** Returns whether the key has just been pressed.
-	 * 
+	 *
 	 * @param key The key code as found in {@link Input.Keys}.
 	 * @return true or false. */
 	public boolean isKeyJustPressed (int key);
@@ -763,7 +763,7 @@ public interface Input {
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as
 	 * a message for the user. Will use the Default keyboard type. Once the dialog has been closed the provided
 	 * {@link TextInputListener} will be called on the rendering thread.
-	 * 
+	 *
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
 	 * @param text The message presented to the user. */
@@ -780,7 +780,7 @@ public interface Input {
 	public void getTextInput (TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type);
 
 	/** Sets the on-screen keyboard visible if available. Will use the Default keyboard type.
-	 * 
+	 *
 	 * @param visible visible or not */
 	public void setOnscreenKeyboardVisible (boolean visible);
 
@@ -814,14 +814,14 @@ public interface Input {
 	public void setKeyboardHeightObserver (KeyboardHeightObserver observer);
 
 	public enum OnscreenKeyboardType {
-		Default, NumberPad, PhonePad, Email, Password, URI
+		Default, NumberPad, PhonePad, Email, Password, URI, None
 	}
 
 	/** Generates a simple haptic effect of a given duration or a vibration effect on devices without haptic capabilities. Note
 	 * that on Android backend you'll need the permission
 	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
 	 * On iOS backend you'll need to set <code>useHaptics = true</code> for devices with haptics capabilities to use them.
-	 * 
+	 *
 	 * @param milliseconds the number of milliseconds to vibrate. */
 	public void vibrate (int milliseconds);
 
@@ -860,7 +860,7 @@ public interface Input {
 
 	/** The azimuth is the angle of the device's orientation around the z-axis. The positive z-axis points towards the earths
 	 * center.
-	 * 
+	 *
 	 * @see <a
 	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[],
 	 *      float[], float[], float[])</a>
@@ -908,7 +908,7 @@ public interface Input {
 
 	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
 	 * {@link ApplicationListener#render()} method each frame.
-	 * 
+	 *
 	 * @param processor the InputProcessor */
 	public void setInputProcessor (InputProcessor processor);
 
@@ -917,7 +917,7 @@ public interface Input {
 
 	/** Queries whether a {@link Peripheral} is currently available. In case of Android and the {@link Peripheral#HardwareKeyboard}
 	 * this returns the whether the keyboard is currently slid out or not.
-	 * 
+	 *
 	 * @param peripheral the {@link Peripheral}
 	 * @return whether the peripheral is available or not. */
 	public boolean isPeripheralAvailable (Peripheral peripheral);
