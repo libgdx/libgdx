@@ -16,9 +16,15 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.utils.Pools;
+
 /** Sets the actor's scale from its current value to a specific value.
  * @author Nathan Sweet */
 public class ScaleToAction extends TemporalAction {
+	static {
+		Pools.set(ScaleToAction::new);
+	}
+
 	private float startX, startY;
 	private float endX, endY;
 

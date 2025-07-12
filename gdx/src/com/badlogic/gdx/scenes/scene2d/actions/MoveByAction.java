@@ -16,9 +16,15 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.utils.Pools;
+
 /** Moves an actor to a relative position.
  * @author Nathan Sweet */
 public class MoveByAction extends RelativeTemporalAction {
+	static {
+		Pools.set(MoveByAction::new);
+	}
+
 	private float amountX, amountY;
 
 	protected void updateRelative (float percentDelta) {

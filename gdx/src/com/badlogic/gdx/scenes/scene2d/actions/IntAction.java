@@ -18,10 +18,15 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.Pools;
 
 /** An action that has an int, whose value is transitioned over time.
  * @author Nathan Sweet */
 public class IntAction extends TemporalAction {
+	static {
+		Pools.set(IntAction::new);
+	}
+
 	private int start, end;
 	private int value;
 

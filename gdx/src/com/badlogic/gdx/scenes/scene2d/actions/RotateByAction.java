@@ -16,9 +16,15 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.utils.Pools;
+
 /** Sets the actor's rotation from its current value to a relative value.
  * @author Nathan Sweet */
 public class RotateByAction extends RelativeTemporalAction {
+	static {
+		Pools.set(RotateByAction::new);
+	}
+
 	private float amount;
 
 	protected void updateRelative (float percentDelta) {

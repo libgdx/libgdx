@@ -878,6 +878,10 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Internal class for managing touch focus. Public only for GWT.
 	 * @author Nathan Sweet */
 	public static final class TouchFocus implements Poolable {
+		static {
+			Pools.set(TouchFocus::new);
+		}
+
 		EventListener listener;
 		Actor listenerActor, target;
 		int pointer, button;

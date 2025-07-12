@@ -16,9 +16,15 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.utils.Pools;
+
 /** Multiplies the delta of an action.
  * @author Nathan Sweet */
 public class TimeScaleAction extends DelegateAction {
+	static {
+		Pools.set(TimeScaleAction::new);
+	}
+
 	private float scale;
 
 	protected boolean delegate (float delta) {

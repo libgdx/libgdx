@@ -16,9 +16,15 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
+import com.badlogic.gdx.utils.Pools;
+
 /** Moves an actor from its current size to a specific size.
  * @author Nathan Sweet */
 public class SizeToAction extends TemporalAction {
+	static {
+		Pools.set(SizeToAction::new);
+	}
+
 	private float startWidth, startHeight;
 	private float endWidth, endHeight;
 
