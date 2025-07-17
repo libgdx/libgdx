@@ -41,8 +41,8 @@ public class Pools {
 		set(ChangeEvent::new);
 		set(DebugRect::new);
 		set(FocusEvent::new);
-		set(GlyphLayout::new);
 		set(GlyphRun::new);
+		set(GlyphLayout::new);
 		set(HttpRequest::new);
 		set(InputEvent::new);
 		set(Rectangle::new);
