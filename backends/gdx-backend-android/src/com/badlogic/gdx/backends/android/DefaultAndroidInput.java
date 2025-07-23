@@ -672,10 +672,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 			return;
 		}
 		if (observer != null) observer.onKeyboardHeightChanged(height + getEditTextForNativeInput().getHeight());
-		// This is weird, if I don't do that there is a weird scaling/position error after rotating the 2. time
-		relativeLayoutField.setX(0);
-		relativeLayoutField.setScaleX(1);
-		relativeLayoutField.setY(0);
+
 		// @off
 		if ((((Activity)context).getWindow().getAttributes().softInputMode & WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST) != WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING) {
 			height = 0;
