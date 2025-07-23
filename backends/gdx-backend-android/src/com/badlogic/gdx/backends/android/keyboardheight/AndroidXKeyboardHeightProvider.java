@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.backends.android.keyboardheight;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.view.View;
@@ -45,11 +44,11 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 						keyboardLandscapeHeight = insets.bottom;
 					}
 
-					// I don't know whether I went completly insane now, but WindowInsets.Type.all() isn't existing?
-					@SuppressLint("WrongConstant")
-					int leftInset = windowInsets.getInsets(0xFFFFFFFF).left;
-					@SuppressLint("WrongConstant")
-					int rightInset = windowInsets.getInsets(0xFFFFFFFF).right;
+					int inset = WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime()
+							| WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.mandatorySystemGestures();
+
+					int leftInset = windowInsets.getInsets(inset).left;
+					int rightInset = windowInsets.getInsets(inset).right;
 
 					observer.onKeyboardHeightChanged(insets.bottom, leftInset, rightInset, orientation);
 				} else {
