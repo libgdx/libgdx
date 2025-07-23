@@ -496,10 +496,11 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			uiTextField.setKeyboardType(getIosInputType(type));
 			uiTextField.setAutocorrectionType(UITextAutocorrectionType.No);
 			uiTextField.setSpellCheckingType(UITextSpellCheckingType.No);
-			textfield.reloadInputViews();
-			textfield.becomeFirstResponder();
+			uiTextField.reloadInputViews();
+			uiTextField.becomeFirstResponder();
 			uiTextField.setDelegate(textDelegateInvisible);
 			uiTextField.setText("x");
+			uiTextField.setHidden(true);
 		} else {
 			textfield.resignFirstResponder();
 			textfield.removeFromSuperview();
@@ -508,19 +509,18 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		}
 	}
 
-	static class UtilityCallback extends NSObject {
+	static class PasswordViewCallback extends NSObject {
 
-		@Method(selector = "doneClicked")
-		public void doneClicked () {
-			Gdx.input.closeTextInputField(true);
+		private final UITextField textField;
+
+		public PasswordViewCallback (UITextField textfield) {
+			this.textField = textfield;
 		}
 
-		@Method(selector = "doneClicked")
+		@Method(selector = "togglePasswordView")
 		public void togglePasswordView (UIButton sender) {
-			// TODO: 24.11.22 This is silly, but idk how to do reasonable better
-			UITextField field = (UITextField)((DefaultIOSInput)Gdx.input).getActiveKeyboardTextField();
-			field.setSecureTextEntry(!field.isSecureTextEntry());
-			String fileName = field.isSecureTextEntry() ? "ic_password_visible.png" : "ic_password_invisible.png";
+			textField.setSecureTextEntry(!textField.isSecureTextEntry());
+			String fileName = textField.isSecureTextEntry() ? "ic_password_visible.png" : "ic_password_invisible.png";
 			byte[] data = Gdx.files.classpath(fileName).readBytes();
 			NSData nsData = new NSData(data);
 			sender.setImage(new UIImage(nsData), UIControlState.Normal);
@@ -628,11 +628,11 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 			if (configuration.getType() == OnscreenKeyboardType.Password) {
 				UIButton button = new UIButton(UIButtonType.Custom);
-				UtilityCallback utilityCallback = new UtilityCallback();
-				utilityCallback.togglePasswordView(button);
+				PasswordViewCallback passwordViewCallback = new PasswordViewCallback(asTextField);
+				passwordViewCallback.togglePasswordView(button);
 				button.setImageEdgeInsets(new UIEdgeInsets(0, -16, 0, 0));
 				button.setFrame(new CGRect(new CGPoint(textfield.getFrame().getSize().getWidth() - 25, 5), new CGSize(25, 25)));
-				button.addTarget(utilityCallback, Selector.register("togglePasswordView"), UIControlEvents.TouchUpInside);
+				button.addTarget(passwordViewCallback, Selector.register("togglePasswordView"), UIControlEvents.TouchUpInside);
 				asTextField.setRightView(button);
 				asTextField.setRightViewMode(UITextFieldViewMode.Always);
 			}
@@ -697,7 +697,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	@Override
 	public boolean isTextInputFieldOpened () {
-		return textfield != null;
+		return textfield != null && !textfield.isHidden();
 	}
 
 	@Override
@@ -750,8 +750,13 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 			UIBarButtonItem space = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, (NSObject)null, null);
 
-			UIBarButtonItem doneButton = new UIBarButtonItem(UIBarButtonSystemItem.Done, new UtilityCallback(),
-				Selector.register("doneClicked"));
+			UIBarButtonItem doneButton = new UIBarButtonItem(UIBarButtonSystemItem.Done, new NSObject() {
+				@Method(selector = "doneClicked")
+				public void doneClicked () {
+					Gdx.input.closeTextInputField(true);
+				}
+			}, Selector.register("doneClicked"));
+
 			uiToolbar.setItems(new NSArray<>(space, doneButton));
 			uiToolbar.updateConstraintsIfNeeded();
 		}
