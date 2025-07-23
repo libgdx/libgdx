@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAcceleration;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
@@ -26,9 +25,10 @@ import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.input.NativeInputConfiguration;
-import com.badlogic.gdx.input.TextInputWrapper;
+import com.badlogic.gdx.input.NativeInputConfiguration.NativeInputCloseCallback;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 
 import org.robovm.apple.coregraphics.CGPoint;
@@ -383,16 +383,13 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	private UIView textfield = null;
 	private UITableView suggestionTable;
-	private Input.InputStringValidator inputStringValidator = null;
-	private String placeHolder = "";
-	private TextInputWrapper textInputWrapper;
-	private Integer maxTextLength;
+	private NativeInputConfiguration nativeInputConfiguration;
 
 	private final UITextViewDelegate textViewDelegate = new UITextViewDelegateAdapter() {
 		@Override
 		public void didChange (UITextView textView) {
 			if (textView.getText().isEmpty()) {
-				textView.setText(placeHolder);
+				textView.setText(nativeInputConfiguration.getPlaceholder());
 				textView.setTextColor(UIColor.lightGray());
 				textView
 					.setSelectedTextRange(textView.getTextRange(textView.getBeginningOfDocument(), textView.getBeginningOfDocument()));
@@ -409,12 +406,13 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 					return false;
 				}
 			}
-			if (maxTextLength != null && textView.getText().length() + (text.length() - range.getLength()) > maxTextLength) {
+			if (nativeInputConfiguration.getMaxLength() != -1
+				&& textView.getText().length() + (text.length() - range.getLength()) > nativeInputConfiguration.getMaxLength()) {
 				return false;
 			}
 
-			if (inputStringValidator == null) return true;
-			return inputStringValidator.validate(text);
+			if (nativeInputConfiguration.getValidator() == null) return true;
+			return nativeInputConfiguration.getValidator().validate(text);
 		}
 	};
 
@@ -422,11 +420,12 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 		@Override
 		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String text) {
-			if (maxTextLength != null && textField.getText().length() + (text.length() - range.getLength()) > maxTextLength) {
+			if (nativeInputConfiguration.getMaxLength() != -1
+				&& textField.getText().length() + (text.length() - range.getLength()) > nativeInputConfiguration.getMaxLength()) {
 				return false;
 			}
-			if (inputStringValidator == null) return true;
-			return inputStringValidator.validate(text);
+			if (nativeInputConfiguration.getValidator() == null) return true;
+			return nativeInputConfiguration.getValidator().validate(text);
 		}
 
 		@Override
@@ -535,13 +534,9 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		createDefaultTextField(configuration.isMultiLine(),
 			configuration.isMultiLine() || (configuration.getType() != OnscreenKeyboardType.Default
 				&& configuration.getType() != OnscreenKeyboardType.Password));
-		placeHolder = configuration.getPlaceholder();
 		softkeyboardActive = true;
-		inputStringValidator = configuration.getValidator();
-		maxTextLength = configuration.getMaxLength();
 		UITextInput uiTextInput = (UITextInput)textfield;
 		textfield.setHidden(false);
-		textInputWrapper = configuration.getTextInputWrapper();
 		uiTextInput.setKeyboardType(getIosInputType(configuration.getType()));
 
 		if (configuration.isPreventCorrection()) {
@@ -555,11 +550,11 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		}
 
 		if (textfield instanceof UITextView) {
-			if (textInputWrapper.getText().isEmpty()) {
+			if (configuration.getTextInputWrapper().getText().isEmpty()) {
 				((UITextView)textfield).setText(configuration.getPlaceholder());
 				((UITextView)textfield).setTextColor(UIColor.lightGray());
 			} else {
-				((UITextView)textfield).setText(textInputWrapper.getText());
+				((UITextView)textfield).setText(configuration.getTextInputWrapper().getText());
 			}
 			((UITextView)textfield).setDelegate(textViewDelegate);
 		} else {
@@ -624,7 +619,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				}, Selector.register("changedText"), UIControlEvents.EditingChanged);
 				app.getUIViewController().getView().addSubview(suggestionTable);
 			}
-			asTextField.setText(textInputWrapper.getText());
+			asTextField.setText(configuration.getTextInputWrapper().getText());
 			asTextField.setDelegate(textDelegate);
 			// Because apple seems to have unreadable placeholder color by default
 			NSAttributedString placeholderString = new NSAttributedString(configuration.getPlaceholder(),
@@ -645,39 +640,42 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		textfield.reloadInputViews();
 		textfield.becomeFirstResponder();
 
-		UITextPosition start = uiTextInput.getPosition(uiTextInput.getBeginningOfDocument(), textInputWrapper.getSelectionStart());
-		UITextPosition end = uiTextInput.getPosition(uiTextInput.getBeginningOfDocument(), textInputWrapper.getSelectionEnd());
+		UITextPosition start = uiTextInput.getPosition(uiTextInput.getBeginningOfDocument(),
+			configuration.getTextInputWrapper().getSelectionStart());
+		UITextPosition end = uiTextInput.getPosition(uiTextInput.getBeginningOfDocument(),
+			configuration.getTextInputWrapper().getSelectionEnd());
 
 		uiTextInput.setSelectedTextRange(uiTextInput.getTextRange(start, end));
 	}
 
 	@Override
-	public void closeTextInputField (final boolean sendReturn) {
+	public void closeTextInputField (boolean isConfirmative, @Null NativeInputCloseCallback callback) {
 		if (textfield == null) return;
 		UITextInput uiTextInput = (UITextInput)textfield;
 		softkeyboardActive = false;
 		String text;
 		if (textfield instanceof UITextView) {
-			text = ((UITextView)textfield).getText();
-			if (((UITextView)textfield).getTextColor().isEqual(UIColor.lightGray())) text = "";
+			UITextView textView = (UITextView)textfield;
+			if (textView.getTextColor().isEqual(UIColor.lightGray())) {
+				text = "";
+			} else {
+				text = ((UITextView)textfield).getText();
+			}
 		} else {
 			text = ((UITextField)textfield).getText();
 		}
-		final long position = uiTextInput.getOffset(uiTextInput.getBeginningOfDocument(),
+		long selectionStart = uiTextInput.getOffset(uiTextInput.getBeginningOfDocument(),
 			uiTextInput.getSelectedTextRange().getStart());
-		final String finalText = text;
-		Gdx.app.postRunnable(new Runnable() {
-			TextInputWrapper wrapper = textInputWrapper;
+		long selectionEnd = uiTextInput.getOffset(uiTextInput.getBeginningOfDocument(),
+			uiTextInput.getSelectedTextRange().getEnd());
 
-			@Override
-			public void run () {
-				wrapper.setText(finalText);
-				wrapper.setPosition((int)position);
-				if (sendReturn) {
-					inputProcessor.keyDown(Keys.ENTER);
-					inputProcessor.keyTyped((char)13);
-				}
-			}
+		NativeInputConfiguration configuration = nativeInputConfiguration;
+		Gdx.app.postRunnable( () -> {
+			configuration.getTextInputWrapper().writeResults(text, (int)selectionStart, (int)selectionEnd);
+
+			// We actually don't care about whether the keyboard should be closed or not, cause iOS is not buggy in that regard
+			boolean keepOpen = configuration.getCloseCallback().onClose(isConfirmative);
+			if (callback != null) keepOpen |= callback.onClose(isConfirmative);
 		});
 
 		if (suggestionTable != null) {
@@ -694,9 +692,12 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		// We could first move the text field animated down and than delete, but I think it doesn't matter
 		textfield.removeFromSuperview();
 		textfield = null;
-		inputStringValidator = null;
-		textInputWrapper = null;
+		nativeInputConfiguration = null;
+	}
 
+	@Override
+	public boolean isTextInputFieldOpened () {
+		return textfield != null;
 	}
 
 	@Override
