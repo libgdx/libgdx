@@ -10,11 +10,13 @@ public class NativeInputConfiguration {
 
 	private TextInputWrapper textInputWrapper;
 	private boolean isMultiLine = false;
-	private Integer maxLength;
+	private int maxLength = -1;
 	private Input.InputStringValidator validator;
 	private String placeholder = "";
 	private boolean showPasswordButton = false;
 	private String[] autoComplete = null;
+
+	private NativeInputCloseCallback closeCallback = (confirm) -> false;
 
 	public Input.OnscreenKeyboardType getType () {
 		return type;
@@ -56,12 +58,12 @@ public class NativeInputConfiguration {
 		return this;
 	}
 
-	public Integer getMaxLength () {
+	public int getMaxLength () {
 		return maxLength;
 	}
 
-	/** @param maxLength What the text length limit should be. */
-	public NativeInputConfiguration setMaxLength (Integer maxLength) {
+	/** @param maxLength What the text length limit should be. -1 for no max length */
+	public NativeInputConfiguration setMaxLength (int maxLength) {
 		this.maxLength = maxLength;
 		return this;
 	}
@@ -105,6 +107,16 @@ public class NativeInputConfiguration {
 		return this;
 	}
 
+	public NativeInputCloseCallback getCloseCallback () {
+		return closeCallback;
+	}
+
+	/** Installing a callback for when the native input is closed. See {@link NativeInputCloseCallback} for more information */
+	public NativeInputConfiguration setCloseCallback (NativeInputCloseCallback closeCallback) {
+		this.closeCallback = closeCallback;
+		return this;
+	}
+
 	public void validate () {
 		String message = null;
 		if (type == null) message = "OnscreenKeyboardType needs to be non null";
@@ -115,9 +127,20 @@ public class NativeInputConfiguration {
 		if (autoComplete != null && type != Input.OnscreenKeyboardType.Default)
 			message = "AutoComplete should only be used with OnscreenKeyboardType.Default";
 		if (autoComplete != null && isMultiLine) message = "AutoComplete shouldn't be used with multiline";
+		if (closeCallback == null) message = "CloseCallback needs to be non null";
 
 		if (message != null) {
 			throw new IllegalArgumentException("NativeInputConfiguration validation failed: " + message);
 		}
+	}
+
+	public interface NativeInputCloseCallback {
+		/** This will be called on the main thread, when the closing of a native input is processed. This does not mean, that the
+		 * keyboard is already hidden. You can schedule a new `openTextInputField` call here.
+		 * @param confirmativeAction Whether the way the keyboard was closed can be considered a confirmative action e.g. to advance
+		 *           the UI
+		 * @return Whether the keyboard should be kept open to be opened again soon. e.g. when advancing through multiple text
+		 *         fields */
+		boolean onClose (boolean confirmativeAction);
 	}
 }

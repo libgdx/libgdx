@@ -45,7 +45,7 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 					}
 
 					int inset = WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime()
-							| WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.mandatorySystemGestures();
+						| WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.mandatorySystemGestures();
 
 					int leftInset = windowInsets.getInsets(inset).left;
 					int rightInset = windowInsets.getInsets(inset).right;
