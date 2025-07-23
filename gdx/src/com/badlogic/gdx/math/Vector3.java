@@ -660,6 +660,11 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	@Override
+	public Vector3 clampComponents (float min, float max) {
+		return clampComponents(min, max, min, max, min, max);
+	}
+
+	@Override
 	public int hashCode () {
 		final int prime = 31;
 		int result = 1;
@@ -715,6 +720,22 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @return true if vector are equal, otherwise false */
 	public boolean epsilonEquals (float x, float y, float z) {
 		return epsilonEquals(x, y, z, MathUtils.FLOAT_ROUNDING_ERROR);
+	}
+
+	/** Clamps the vector's X, Y and Z with the given boundaries.
+	 *
+	 * @param xMin The minimum value to clamp the vector's X-component
+	 * @param xMax The maximum value to clamp the vector's X-component
+	 * @param yMin The minimum value to clamp the vector's Y-component
+	 * @param yMax The maximum value to clamp the vector's Y-component
+	 * @param zMin The minimum value to clamp the vector's Z-component
+	 * @param zMax The maximum value to clamp the vector's Z-component
+	 * @return this vector for chaining */
+	public Vector3 clampComponents (float xMin, float xMax, float yMin, float yMax, float zMin, float zMax) {
+		x = MathUtils.clamp(x, xMin, xMax);
+		y = MathUtils.clamp(y, yMin, yMax);
+		z = MathUtils.clamp(z, zMin, zMax);
+		return this;
 	}
 
 	@Override
