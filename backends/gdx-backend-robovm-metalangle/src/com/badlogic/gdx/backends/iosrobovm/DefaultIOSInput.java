@@ -540,8 +540,9 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	@Override
 	public void openTextInputField (final NativeInputConfiguration configuration) {
-		configuration.validate();
 		if (textfield != null) throw new GdxRuntimeException("Can't open TextInputField, if KeyBoard is already open");
+		configuration.validate();
+		this.nativeInputConfiguration = configuration;
 		createDefaultTextField(configuration.isMultiLine(),
 			configuration.isMultiLine() || (configuration.getType() != OnscreenKeyboardType.Default
 				&& configuration.getType() != OnscreenKeyboardType.Password));
