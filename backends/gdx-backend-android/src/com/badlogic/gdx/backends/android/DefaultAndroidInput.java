@@ -60,6 +60,7 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.input.TextInputWrapper;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayList;
@@ -569,12 +570,33 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	/** @param type The type of the onscreen keyboard to show.
-	 * @param onscreenKeyboard If true, an input type for the default onscreen keyboard will be used. If false, the input type for
-	 *           the text input will be used.
+	 * @param defaultDisablesAutocorrection If true the default input type should disable autocorrection.
 	 *
 	 * @return The Android input type for the given onscreen keyboard type. */
-	protected int getInputType (OnscreenKeyboardType type, boolean onscreenKeyboard) {
-		return AndroidInputType.getType(type, onscreenKeyboard);
+	protected int getInputType (@Null OnscreenKeyboardType type, boolean defaultDisablesAutocorrection) {
+		if (type == null) {
+			type = OnscreenKeyboardType.Default;
+		}
+
+		switch (type) {
+		case NumberPad:
+			return InputType.TYPE_CLASS_NUMBER;
+		case PhonePad:
+			return InputType.TYPE_CLASS_PHONE;
+		case Email:
+			return InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+		case Password:
+			return InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
+		case URI:
+			return InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
+		default:
+			if (defaultDisablesAutocorrection) {
+				return InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+					| InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+			} else {
+				return InputType.TYPE_CLASS_TEXT;
+			}
+		}
 	}
 
 	private boolean onscreenVisible = false;
@@ -583,32 +605,30 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
 		if (isNativeInputOpen()) throw new GdxRuntimeException("Can't open keyboard if already open");
 		onscreenVisible = visible;
-		handle.post( () -> doSetOnscreenKeyboardVisible(visible, type));
-	}
+		handle.post( () -> {
+			int inputType;
+			if (!visible) {
+				inputType = InputType.TYPE_NULL;
+			} else {
+				inputType = getInputType(type, true);
+			}
 
-	private void doSetOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
-		if (!visible) {
-			type = OnscreenKeyboardType.None;
-		} else if (type == null) {
-			type = OnscreenKeyboardType.Default;
-		}
+			InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+			GLSurfaceView20 view = (GLSurfaceView20)(((AndroidGraphics)app.getGraphics()).getView());
 
-		InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-		GLSurfaceView20 view = (GLSurfaceView20)(((AndroidGraphics)app.getGraphics()).getView());
+			if (view.inputType != inputType) {
+				view.inputType = inputType;
+				manager.restartInput(view);
+			}
 
-		int inputType = getInputType(type, true);
-		if (view.inputType != inputType) {
-			view.inputType = inputType;
-			manager.restartInput(view);
-		}
-
-		if (visible) {
-			view.setFocusable(true);
-			view.setFocusableInTouchMode(true);
-			manager.showSoftInput(view, 0);
-		} else {
-			manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-		}
+			if (visible) {
+				view.setFocusable(true);
+				view.setFocusableInTouchMode(true);
+				manager.showSoftInput(view, 0);
+			} else {
+				manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+			}
+		});
 	}
 
 	private RelativeLayout relativeLayoutField = null;
@@ -636,6 +656,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		boolean isStandardHeightProvider = keyboardHeightProvider instanceof StandardKeyboardHeightProvider;
 		if (config.useImmersiveMode && isStandardHeightProvider) {
 			height += getSoftButtonsBarHeight();
+		}
+
+		if (onscreenVisible && height == 0) {
+			// The keyboard was closed by the system, not through `setOnscreenKeyboardVisible`.
+			// We need to actively close it to keep the input state consistent.
+			setOnscreenKeyboardVisible(false);
 		}
 
 		if (!isNativeInputOpen()) {

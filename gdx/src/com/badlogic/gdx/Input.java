@@ -814,7 +814,7 @@ public interface Input {
 	public void setKeyboardHeightObserver (KeyboardHeightObserver observer);
 
 	public enum OnscreenKeyboardType {
-		Default, NumberPad, PhonePad, Email, Password, URI, None
+		Default, NumberPad, PhonePad, Email, Password, URI
 	}
 
 	/** Generates a simple haptic effect of a given duration or a vibration effect on devices without haptic capabilities. Note
