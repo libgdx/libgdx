@@ -564,15 +564,15 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		return isCatchKey(keyCode);
 	}
 
-	@Override
-	public void setOnscreenKeyboardVisible (boolean visible) {
-		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
-	}
-
 	private boolean onscreenVisible = false;
 
 	@Override
-	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
+	public void setOnscreenKeyboardVisible (final boolean visible) {
+		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
+	}
+
+	@Override
+	public void setOnscreenKeyboardVisible (final boolean visible, final OnscreenKeyboardType type) {
 		if (isNativeInputOpen()) throw new GdxRuntimeException("Can't open keyboard if already open");
 		onscreenVisible = visible;
 		handle.post( () -> {
