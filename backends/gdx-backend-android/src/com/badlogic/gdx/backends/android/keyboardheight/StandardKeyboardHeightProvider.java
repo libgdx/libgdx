@@ -56,6 +56,13 @@ public class StandardKeyboardHeightProvider extends PopupWindow implements Keybo
 	/** The root activity that uses this KeyboardHeightProvider */
 	private Activity activity;
 
+	/** The cached inset to the left */
+	private static int cachedInsetLeft;
+	/** The cached inset to the right */
+	private static int cachedInsetRight;
+	/** The cached inset to the bottom */
+	private static int cachedBottomInset;
+
 	/** Construct a new KeyboardHeightProvider
 	 *
 	 * @param activity The parent activity */
@@ -140,15 +147,21 @@ public class StandardKeyboardHeightProvider extends PopupWindow implements Keybo
 		int leftInset = rect.left;
 		int rightInset = Math.abs(screenSize.x - rect.right + rect.left);
 
-		if (keyboardHeight == 0) {
-			notifyKeyboardHeightChanged(0, leftInset, rightInset, orientation);
-		} else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-			keyboardPortraitHeight = keyboardHeight;
-			notifyKeyboardHeightChanged(keyboardPortraitHeight, leftInset, rightInset, orientation);
-		} else {
-			keyboardLandscapeHeight = keyboardHeight;
-			notifyKeyboardHeightChanged(keyboardLandscapeHeight, leftInset, rightInset, orientation);
+		if (keyboardHeight > 0) {
+			if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+				keyboardPortraitHeight = keyboardHeight;
+			} else {
+				keyboardLandscapeHeight = keyboardHeight;
+			}
 		}
+
+		if (keyboardHeight == cachedBottomInset && leftInset == cachedInsetLeft && rightInset == cachedInsetRight) return;
+
+		cachedBottomInset = keyboardHeight;
+		cachedInsetLeft = leftInset;
+		cachedInsetRight = rightInset;
+
+		notifyKeyboardHeightChanged(keyboardHeight, leftInset, rightInset, orientation);
 	}
 
 	/**
