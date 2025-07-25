@@ -1,5 +1,19 @@
 [1.14.1]
 - [BREAKING CHANGE] iOS: Removed IOSAudio#willTerminate to be replaced by new Audio#dispose.
+[1.13.6]
+- [BREAKING CHANGE] API: Pools changes in 1.13.5 have been partially reverted. Pools#get/Pools#obtain method return to requiring a Class parameter. Reflection is avoided by using pre-populated Pools for libgdx classes. See https://github.com/libgdx/libgdx/pull/7648
+- [BREAKING CHANGE] API: The `open/closeTextInputField` API has undergone a bigger rewrite:
+                        - A `NativeInputCloseCallback` has been added, which can be passed over the `NativeInputConfiguration#setCloseCallback`. This will be called on the main thread, once the closing of the native input field is processed. See the javadoc for more information.
+                        - The API will no longer send "ENTER" events automatically on close actions. This can be now done in the close callback by the user.
+                        - `NativeInputConfiguration#maxTextLength` is not nullable anymore. "-1" should be used for unset.
+                        - `TextInputWrapper#setText/setPosition` have been removed and replaced with `writeResults`
+                        - `TextInputWrapper#shouldClose` has been removed and should now be handled over the close callback
+- API Addition: `Input#isTextInputFieldOpened` has been added, to check, whether an InputField opened by `openTextInputField` is open
+- Android: The KeyboardHeightObserver will not report duplicate events anymore
+- Android: The KeyboardHeightObserver will now only consider `systemBars`, `ime`, `displayCutout`, `mandatorySystemGestures` for insets.
+- API Addition: Added JsonValue#toJson that takes a Writer.
+- API Addition: Added getProgrammaticChangeEvents() to scene2d.ui actors that have setProgrammaticChangeEvents.
+- Fixed crashes when reading the soft buttons bar height on Android.
 
 [1.14.0]
 - [BREAKING CHANGE] API: Pools changes in 1.13.5 have been partially reverted. Pools#get/Pools#obtain method return to requiring a Class parameter. Reflection is avoided by using pre-populated Pools for libgdx classes. See https://github.com/libgdx/libgdx/pull/7648 and https://github.com/libgdx/libgdx/pull/7678
