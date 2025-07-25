@@ -842,7 +842,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				});
 
 				// Needs to be done first, for some reason...
-				if (configuration.getType() != OnscreenKeyboardType.Password) {
+				if (!configuration.isMaskInput()) {
 					editText.setTransformationMethod(null);
 				}
 
@@ -920,10 +920,10 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 				editText.setBackgroundColor(Color.WHITE);
 
-				if (configuration.getType() == OnscreenKeyboardType.Password) {
+				if (configuration.isMaskInput()) {
 					// For some reason this needs to be done last, otherwise it won't work
 					editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
-					if (configuration.isShowPasswordButton()) {
+					if (configuration.isShowUnmaskButton()) {
 						final ImageView imageView = new ImageView(context);
 
 						imageView.setImageResource(com.badlogic.gdx.backends.android.R.drawable.design_ic_visibility);

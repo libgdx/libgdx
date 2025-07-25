@@ -13,7 +13,8 @@ public class NativeInputConfiguration {
 	private int maxLength = -1;
 	private Input.InputStringValidator validator;
 	private String placeholder = "";
-	private boolean showPasswordButton = false;
+	private boolean maskInput = false;
+	private boolean showUnmaskButton = false;
 	private String[] autoComplete = null;
 
 	private NativeInputCloseCallback closeCallback = (confirm) -> false;
@@ -88,13 +89,23 @@ public class NativeInputConfiguration {
 		return this;
 	}
 
-	public boolean isShowPasswordButton () {
-		return showPasswordButton;
+	/** @param maskInput Whether to hide the text input while typing (usually for passwords) */
+	public NativeInputConfiguration setMaskInput (boolean maskInput) {
+		this.maskInput = maskInput;
+		return this;
 	}
 
-	/** @param showPasswordButton Whether to show a button to show unhidden password */
-	public NativeInputConfiguration setShowPasswordButton (boolean showPasswordButton) {
-		this.showPasswordButton = showPasswordButton;
+	public boolean isMaskInput () {
+		return maskInput;
+	}
+
+	public boolean isShowUnmaskButton () {
+		return showUnmaskButton;
+	}
+
+	/** @param showUnmaskButton Whether to show a button to show unhidden password */
+	public NativeInputConfiguration setShowUnmaskButton (boolean showUnmaskButton) {
+		this.showUnmaskButton = showUnmaskButton;
 		return this;
 	}
 
@@ -121,8 +132,7 @@ public class NativeInputConfiguration {
 		String message = null;
 		if (type == null) message = "OnscreenKeyboardType needs to be non null";
 		if (textInputWrapper == null) message = "TextInputWrapper needs to be non null";
-		if (showPasswordButton && type != Input.OnscreenKeyboardType.Password)
-			message = "ShowPasswordButton only works with OnscreenKeyboardType.Password";
+		if (showUnmaskButton && !maskInput) message = "ShowUnmaskButton only works with MaskInput";
 		if (placeholder == null) message = "Placeholder needs to be non null";
 		if (autoComplete != null && type != Input.OnscreenKeyboardType.Default)
 			message = "AutoComplete should only be used with OnscreenKeyboardType.Default";

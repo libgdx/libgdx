@@ -34,7 +34,8 @@ public class NativeInputTest extends GdxTest {
 
 	private SelectBox<OnscreenKeyboardType> keyboardTypeSelect;
 
-	private CheckBox showPasswordButton;
+	private CheckBox maskInputButton;
+	private CheckBox showUnmaskButton;
 	private CheckBox multilineButton;
 	private CheckBox noAutocorrectButton;
 	private CheckBox useValidatorButton;
@@ -78,7 +79,8 @@ public class NativeInputTest extends GdxTest {
 			}
 		});
 
-		showPasswordButton = new CheckBox("Show Password button", skin);
+		maskInputButton = new CheckBox("Mask Input", skin);
+		showUnmaskButton = new CheckBox("Show Password button", skin);
 		multilineButton = new CheckBox("Multiline", skin);
 		noAutocorrectButton = new CheckBox("No Autocorrect", skin);
 		useValidatorButton = new CheckBox("Use validator", skin);
@@ -123,7 +125,8 @@ public class NativeInputTest extends GdxTest {
 		table.row();
 		HorizontalGroup g2 = new HorizontalGroup();
 		g2.space(5);
-		g2.addActor(showPasswordButton);
+		g2.addActor(maskInputButton);
+		g2.addActor(showUnmaskButton);
 		g2.addActor(multilineButton);
 		g2.addActor(noAutocorrectButton);
 		g2.addActor(useValidatorButton);
@@ -149,8 +152,8 @@ public class NativeInputTest extends GdxTest {
 	public void openNativeInputField () {
 		NativeInputConfiguration configuration = new NativeInputConfiguration();
 		configuration.setPreventCorrection(noAutocorrectButton.isChecked()).setMultiLine(multilineButton.isChecked())
-			.setShowPasswordButton(showPasswordButton.isChecked()).setPlaceholder(placeHolderField.getText())
-			.setType(keyboardTypeSelect.getSelected());
+			.setMaskInput(maskInputButton.isChecked()).setShowUnmaskButton(showUnmaskButton.isChecked())
+			.setPlaceholder(placeHolderField.getText()).setType(keyboardTypeSelect.getSelected());
 		if (useCustomAutocompleteButton.isChecked())
 			configuration.setAutoComplete(new String[] {"Hello", "Hillo", "Hellale", "Dog", "Dogfood"});
 		if (maxLengthSlider.getValue() != 0) configuration.setMaxLength((int)maxLengthSlider.getValue());
