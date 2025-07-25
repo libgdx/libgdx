@@ -553,7 +553,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		if (configuration.isPreventCorrection()) {
 			uiTextInput.setAutocorrectionType(UITextAutocorrectionType.No);
 			uiTextInput.setSpellCheckingType(UITextSpellCheckingType.No);
-			uiTextInput.setAutocapitalizationType(UITextAutocapitalizationType.Sentences);
+			uiTextInput.setAutocapitalizationType(UITextAutocapitalizationType.None);
 		} else {
 			uiTextInput.setAutocorrectionType(UITextAutocorrectionType.Yes);
 			uiTextInput.setSpellCheckingType(UITextSpellCheckingType.Yes);
@@ -635,15 +635,19 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			NSAttributedString placeholderString = new NSAttributedString(configuration.getPlaceholder(),
 				new NSDictionary<>(NSAttributedStringAttribute.ForegroundColor.value(), UIColor.lightGray()));
 			asTextField.setAttributedPlaceholder(placeholderString);
-			if (configuration.getType() == OnscreenKeyboardType.Password && configuration.isShowPasswordButton()) {
-				UIButton button = new UIButton(UIButtonType.Custom);
-				PasswordViewCallback passwordViewCallback = new PasswordViewCallback(asTextField);
-				passwordViewCallback.togglePasswordView(button);
-				button.setImageEdgeInsets(new UIEdgeInsets(0, -16, 0, 0));
-				button.setFrame(new CGRect(new CGPoint(textfield.getFrame().getSize().getWidth() - 25, 5), new CGSize(25, 25)));
-				button.addTarget(passwordViewCallback, Selector.register("togglePasswordView"), UIControlEvents.TouchUpInside);
-				asTextField.setRightView(button);
-				asTextField.setRightViewMode(UITextFieldViewMode.Always);
+			if (configuration.isMaskInput()) {
+				if (configuration.isShowUnmaskButton()) {
+					UIButton button = new UIButton(UIButtonType.Custom);
+					PasswordViewCallback passwordViewCallback = new PasswordViewCallback(asTextField);
+					passwordViewCallback.togglePasswordView(button);
+					button.setImageEdgeInsets(new UIEdgeInsets(0, -16, 0, 0));
+					button.setFrame(new CGRect(new CGPoint(textfield.getFrame().getSize().getWidth() - 25, 5), new CGSize(25, 25)));
+					button.addTarget(passwordViewCallback, Selector.register("togglePasswordView"), UIControlEvents.TouchUpInside);
+					asTextField.setRightView(button);
+					asTextField.setRightViewMode(UITextFieldViewMode.Always);
+				} else {
+					asTextField.setSecureTextEntry(true);
+				}
 			}
 		}
 		textfield.reloadInputViews();
