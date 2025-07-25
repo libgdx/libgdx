@@ -643,12 +643,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private RelativeLayout relativeLayoutField = null;
 
 	private int getSoftButtonsBarHeight () {
-		AndroidApplication androidApplication = (AndroidApplication)app;
+		WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
 
 		DisplayMetrics metrics = new DisplayMetrics();
-		androidApplication.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		windowManager.getDefaultDisplay().getMetrics(metrics);
 		int usableHeight = metrics.heightPixels;
-		androidApplication.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+		windowManager.getDefaultDisplay().getRealMetrics(metrics);
 		int realHeight = metrics.heightPixels;
 
 		if (realHeight > usableHeight) {
@@ -727,8 +727,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	private void createDefaultEditText () {
-		// TODO: 07.10.2024 This should probably just get the content/root view instead
-		ViewGroup frameLayout = (ViewGroup)view.getParent();
+		FrameLayout frameLayout = view.getRootView().findViewById(android.R.id.content);
 		final RelativeLayout relativeLayout = new RelativeLayout(context);
 		relativeLayout.setGravity(Gravity.BOTTOM);
 		// Why? Why isn't it working without?
