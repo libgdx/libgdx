@@ -40,8 +40,7 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 			@NotNull
 			@Override
 			public WindowInsetsCompat onApplyWindowInsets (@NotNull View v, @NotNull WindowInsetsCompat windowInsets) {
-				if (observer == null) 
-					return windowInsets;
+				if (observer == null) return windowInsets;
 				int bottomInset = 0;
 				int leftInset = 0;
 				int rightInset = 0;
@@ -50,7 +49,7 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 				boolean isVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime());
 				if (isVisible) {
 					int inset = WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime()
-							| WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.mandatorySystemGestures();
+						| WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.mandatorySystemGestures();
 
 					Insets insets = windowInsets.getInsets(inset);
 					if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -63,7 +62,6 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 					leftInset = insets.left;
 					rightInset = insets.right;
 				}
-
 
 				if (bottomInset == cachedBottomInset && leftInset == cachedInsetLeft && rightInset == cachedInsetRight)
 					return windowInsets;
