@@ -22,6 +22,13 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 	/** The cached portrait height of the keyboard */
 	private static int keyboardPortraitHeight;
 
+	/** The cached inset to the left */
+	private static int cachedInsetLeft;
+	/** The cached inset to the right */
+	private static int cachedInsetRight;
+	/** The cached inset to the bottom */
+	private static int cachedBottomInset;
+
 	public AndroidXKeyboardHeightProvider (final Activity activity) {
 		this.activity = activity;
 	}
@@ -33,27 +40,39 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 			@NotNull
 			@Override
 			public WindowInsetsCompat onApplyWindowInsets (@NotNull View v, @NotNull WindowInsetsCompat windowInsets) {
-				if (observer == null) return windowInsets;
+				if (observer == null) 
+					return windowInsets;
+				int bottomInset = 0;
+				int leftInset = 0;
+				int rightInset = 0;
+
 				int orientation = activity.getResources().getConfiguration().orientation;
 				boolean isVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime());
 				if (isVisible) {
-					Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
+					int inset = WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime()
+							| WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.mandatorySystemGestures();
+
+					Insets insets = windowInsets.getInsets(inset);
 					if (orientation == Configuration.ORIENTATION_PORTRAIT) {
 						keyboardPortraitHeight = insets.bottom;
 					} else {
 						keyboardLandscapeHeight = insets.bottom;
 					}
 
-					int inset = WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime()
-						| WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.mandatorySystemGestures();
-
-					int leftInset = windowInsets.getInsets(inset).left;
-					int rightInset = windowInsets.getInsets(inset).right;
-
-					observer.onKeyboardHeightChanged(insets.bottom, leftInset, rightInset, orientation);
-				} else {
-					observer.onKeyboardHeightChanged(0, 0, 0, orientation);
+					bottomInset = insets.bottom;
+					leftInset = insets.left;
+					rightInset = insets.right;
 				}
+
+
+				if (bottomInset == cachedBottomInset && leftInset == cachedInsetLeft && rightInset == cachedInsetRight)
+					return windowInsets;
+
+				cachedBottomInset = bottomInset;
+				cachedInsetLeft = leftInset;
+				cachedInsetRight = rightInset;
+
+				observer.onKeyboardHeightChanged(bottomInset, leftInset, rightInset, orientation);
 
 				return windowInsets;
 			}
