@@ -629,7 +629,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				new NSDictionary<>(NSAttributedStringAttribute.ForegroundColor.value(), UIColor.lightGray()));
 			asTextField.setAttributedPlaceholder(placeholderString);
 
-			if (configuration.getType() == OnscreenKeyboardType.Password) {
+			if (configuration.getType() == OnscreenKeyboardType.Password && configuration.isShowPasswordButton()) {
 				UIButton button = new UIButton(UIButtonType.Custom);
 				PasswordViewCallback passwordViewCallback = new PasswordViewCallback(asTextField);
 				passwordViewCallback.togglePasswordView(button);
