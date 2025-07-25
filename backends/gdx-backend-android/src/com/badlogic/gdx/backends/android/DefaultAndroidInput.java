@@ -45,7 +45,6 @@ import android.view.Surface;
 import android.view.View;
 import android.view.View.OnGenericMotionListener;
 import android.view.View.OnKeyListener;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
