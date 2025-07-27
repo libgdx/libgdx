@@ -1871,6 +1871,16 @@ public class StringBuilder implements CharSequence, Appendable {
 		return true;
 	}
 
+	public boolean equalsString (@Null String other) {
+		if (other == null) return false;
+		int length = this.length;
+		if (length != other.length()) return false;
+		char[] chars = this.chars;
+		for (int i = 0; i < length; i++)
+			if (chars[i] != other.charAt(i)) return false;
+		return true;
+	}
+
 	public boolean equalsIgnoreCase (@Null String other) {
 		if (other == null) return false;
 		int length = this.length;
