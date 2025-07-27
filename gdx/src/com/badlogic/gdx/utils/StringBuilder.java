@@ -51,8 +51,8 @@ import java.util.Objects;
  * </ul>
  * <li>Views:
  * <ul>
- * <li>asReader - uses the internal buffer as the source of a Reader
- * <li>asWriter - allows a Writer to write directly to the internal buffer
+ * <li>reader() - uses the internal buffer as the source of a Reader
+ * <li>writer() - allows a Writer to write directly to the internal buffer
  * </ul>
  * </ul>
  * The aim has been to provide an API that mimics very closely what StringBuffer provides, but with additional methods. It should
