@@ -3,19 +3,30 @@ package com.badlogic.gdx.utils;
 
 import static org.junit.Assert.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
 public class JsonMatcherTests {
 	@Test
 	public void singlePatterns () {
-		test( // * wildcard with multiple patterns
+		test( // *
 			json, //
 			"*[type]", //
-			"{type=ENCHARGE}");
+			"{type=ENCHARGE}"); // First.
 
-		test( // * wildcard for nested paths
+		test( // @
+			json, //
+			"@[type]", //
+			"{type=ENCHARGE}", "{type=ENPOWER}");
+
+		test( // * for nested paths
 			json, //
 			"*/devices/*[serial_num,percentFull]", //
 			"{percentFull=100, serial_num=32131444}");
@@ -53,7 +64,7 @@ public class JsonMatcherTests {
 		test( // @ process each array element
 			json, //
 			"*/devices/@[serial_num,percentFull]", //
-			"{percentFull=100, serial_num=32131444}", "{percentFull=75, serial_num=234234211}");
+			"{percentFull=100, serial_num=32131444}", "{percentFull=75, serial_num=234234211}", "{serial_num=9834711}");
 
 		test( // @ with no array
 			"{data:{value:not-an-array}}", //
@@ -889,29 +900,46 @@ public class JsonMatcherTests {
 	}
 
 	@Test
+	public void rejection () {
+		JsonMatcher matcher = new JsonMatcher();
+		matcher.addPattern("*[@type]", map -> {
+			if (map.get("type").equals("ENCHARGE")) matcher.reject();
+		});
+		var maps = new Array<ObjectMap>();
+		matcher.addPattern("*/devices/@[serial_num,percentFull]", map -> {
+			var copy = new OrderedMap();
+			copy.putAll(map);
+			copy.orderedKeys().sort();
+			maps.add(copy);
+		});
+		matcher.parse(json);
+
+		assertEquals(1, maps.size);
+		ObjectMap map = maps.first();
+		assertEquals("9834711", map.get("serial_num"));
+		assertNull(map.get("percentFull"));
+	}
+
+	@Test
 	public void invalidPatterns () {
-		var matcher = new JsonMatcher() {
-			@Override
-			protected void process (ObjectMap<String, Object> map) {
-			}
-		};
+		var matcher = new JsonMatcher();
 		assertThrows(IllegalArgumentException.class, () -> {
-			matcher.add("path/to/nowhere");
+			matcher.addPattern("path/to/nowhere");
 		});
 		assertThrows(IllegalArgumentException.class, () -> {
-			matcher.add("path[]");
+			matcher.addPattern("path[]");
 		});
 		assertThrows(IllegalArgumentException.class, () -> {
-			matcher.add("path[name");
+			matcher.addPattern("path[name");
 		});
 		assertThrows(IllegalArgumentException.class, () -> {
-			matcher.add("path/name");
+			matcher.addPattern("path/name");
 		});
 		assertThrows(IllegalArgumentException.class, () -> {
-			matcher.add("a//b/c[value]"); // Double slash
+			matcher.addPattern("a//b/c[value]"); // Double slash
 		});
 		assertThrows(IllegalArgumentException.class, () -> {
-			matcher.add("a/[b]"); // Empty path component
+			matcher.addPattern("a/[b]"); // Empty path component
 		});
 	}
 
@@ -928,14 +956,6 @@ public class JsonMatcherTests {
 		var stopped = new boolean[1];
 		var matcher = new JsonMatcher() {
 			@Override
-			protected void process (ObjectMap<String, Object> map) {
-				var copy = new OrderedMap();
-				copy.putAll(map);
-				copy.orderedKeys().sort();
-				maps.add(copy);
-			}
-
-			@Override
 			protected void value (JsonString name, JsonString value) {
 				if (notParsedValue != null && name.equals(notParsedValue))
 					fail("Should have stopped before parsing value: " + notParsedValue);
@@ -948,8 +968,14 @@ public class JsonMatcherTests {
 				stopped[0] = true;
 			}
 		};
+		matcher.setProcessor(map -> {
+			var copy = new OrderedMap();
+			copy.putAll(map);
+			copy.orderedKeys().sort();
+			maps.add(copy);
+		});
 		for (String pattern : patterns)
-			matcher.add(pattern);
+			matcher.addPattern(pattern);
 		matcher.parse(json);
 		try {
 			assertEquals("Wrong match count", expected.length, maps.size);
@@ -1015,5 +1041,28 @@ public class JsonMatcherTests {
 					"prop.waiting"
 				]
 			}
-		]}]""";
+		]},{
+			"type": "ENPOWER",
+			"devices": [{
+				"serial_num": "9834711",
+			}]
+		}]""";
+
+	@Rule public TestWatcher watcher = new TestWatcher() {
+		protected void failed (Throwable cause, Description desc) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			cause.printStackTrace(pw);
+			String trimmed = sw.toString() //
+				.replace("\t", "   ") //
+				.replace("java.lang.AssertionError: ", "") //
+				.lines().filter(line -> {
+					String stripped = line.stripLeading();
+					return stripped.isEmpty() || !stripped.startsWith("at ") || stripped.startsWith("at com.badlogic.gdx");
+				}).collect(Collectors.joining("\n"));
+			System.out.println("--- " + desc.getTestClass().getSimpleName() + ": " + desc.getMethodName() + " ---");
+			System.out.println(trimmed);
+			System.out.println();
+		}
+	};
 }
