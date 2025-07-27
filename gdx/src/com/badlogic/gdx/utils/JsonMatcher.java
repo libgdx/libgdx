@@ -1,0 +1,336 @@
+
+package com.badlogic.gdx.utils;
+
+import java.util.function.Consumer;
+
+/** Efficient JSON parser that does minimal parsing to extract values matching specified patterns.
+ * <h4>Pattern syntax:</h4>
+ * <ul>
+ * <li>{@code /} Path separator.
+ * <li>{@code *} Matches any single object or array.
+ * <li>{@code @} Matches any single object or array, calls process() after each object or array.
+ * <li>{@code **} Matches zero or more objects or arrays.
+ * <li>{@code @@} Matches zero or more objects or arrays, calls process() after any capture.
+ * <li>{@code [name]} Captures field "name" as a single value.
+ * <li>{@code [name[]]} Captures field "name" into an array.
+ * <li>{@code [name,id,title]} Captures multiple fields.
+ * <li>{@code [*]} Captures first object, array, or field.
+ * <li>{@code [*[]]} Captures all objects, arrays, or fields into an array.
+ * <li>{@code [@]} Captures each object, array, or field, calls process() after each.
+ * </ul>
+ * 
+ * <h4>Examples:</h4>
+ * 
+ * <code>{users:[{name:nate},{name:iva}]}</code><br>
+ * Process each user name: {@code users/@[name]}<br>
+ * <ul>
+ * <li>The JSON root is matched implicitly.
+ * <li>{@code users} matches the <code>users:[</code> array. The field name and value are matched together.
+ * <li>{@code @} matches each object in the array. process() is called when the end of each object is reached.
+ * <li>{@code [name]} captures the name field.
+ * <li>process() is called with <code>{name=nate}</code> and again with <code>{name=iva}</code>.
+ * </ul>
+ * <p>
+ * <code>{config:{port:value}}</code><br>
+ * Get the first port from config found at any depth: <code>**&#47;config[port]</code>
+ * <p>
+ * Get all device statuses as array: <code>devices/*&#47;status[*[]]</code>
+ * <p>
+ * Process each id and name: {@code items/@[id,name]}
+ * 
+ * <h4>Arrays:</h4> Arrays are captured as-is:
+ * <ul>
+ * <li>{@code data[items]} with <code>{data:{items:[1,2,3]}}</code> gives: <code>{items=[1,2,3]}</code>
+ * </ul>
+ * To collect multiple values into an array, use {@code []}:
+ * <ul>
+ * <li>{@code *[id]} with <code>{first:{id:1},second:{id:2}}</code> gives: <code>{id=1}</code> (first match)
+ * <li>{@code *[id[]]} gives: <code>{id=[1, 2]}</code> (all matches in an array)
+ * </ul>
+ * 
+ * <h4>Processing behavior:</h4>
+ * <ul>
+ * <li>Without {@code @}, {@code @@}, {@code [@]}, {@code [*]}, or {@code []} parsing stops once all specified values are
+ * captured.
+ * <li>With {@code @} process() is called after the object or array that {@code @} matched.
+ * <li>With {@code @@} process() is called for each capture.
+ * <li>With {@code [@]} process() is called for each object, array, or field.
+ * <li>When capturing a whole object or array, other patterns will not match inside it.
+ * </ul>
+ * @author Nathan Sweet */
+public class JsonMatcher extends JsonSkimmer {
+	static private final int none = 0, captureValue = 0b001, captureArray = 0b010, captureProcess = 0b100;
+
+	final Array<Node> roots = new Array();
+	int total;
+	boolean stoppable = true;
+	Consumer<ObjectMap<String, Object>> processor;
+
+	Node[] active = new Node[1];
+	final ObjectMap<String, Object> values = new ObjectMap();
+	final Array captureAll = new Array();
+	int depth, captured;
+
+	public void setProcessor (Consumer<ObjectMap<String, Object>> processor) {
+		this.processor = processor;
+	}
+
+	/** Called with captured values. The default implementation invokes the {@link #setProcessor(Consumer) processor}.
+	 * @param map Contains field names as keys and captured values. The key for unnamed values (eg array elements) is empty string
+	 *           (""). Cleared after returning and reused for subsequent calls. */
+	protected void process (ObjectMap<String, Object> map) {
+		processor.accept(map);
+	}
+
+	private void process () {
+		process(values);
+		values.clear();
+	}
+
+	/** Adds a pattern for value extraction. */
+	public void add (String pattern) {
+		String test = pattern.replace("@@", "@");
+		boolean processEach = test.indexOf('@') != test.lastIndexOf('@');
+
+		Node root = null, current = null;
+		for (String original : pattern.split("/")) {
+			String part = original;
+
+			// Capture.
+			String[] capture = null;
+			int[] captureType = null;
+			boolean captureStar = false, captureAt = false;
+			int brace = part.indexOf('[');
+			if (brace != -1) {
+				if (!part.endsWith("]")) throw new IllegalArgumentException("Invalid pattern, no ] at end: " + pattern);
+				String capturePart = part.substring(brace + 1, part.length() - 1).trim();
+				if (capturePart.isEmpty()) throw new IllegalArgumentException("Invalid pattern, empty capture: " + pattern);
+				capture = part.substring(brace + 1, part.length() - 1).split(",");
+				total += capture.length;
+				captureType = new int[capture.length];
+				for (int i = 0, n = capture.length; i < n; i++) {
+					String value = capture[i].trim();
+					if (value.endsWith("[]")) {
+						value = value.substring(0, value.length() - 2);
+						captureType[i] = captureArray;
+						stoppable = false;
+					} else
+						captureType[i] = captureValue;
+					capture[i] = value;
+					if (value.startsWith("*")) {
+						captureStar = true;
+						capture = null;
+						break;
+					} else if (value.startsWith("@")) {
+						captureAt = true;
+						capture = null;
+						break;
+					}
+				}
+				part = part.substring(0, brace);
+			}
+
+			// Add node.
+			String name = part.trim();
+			Node node = new Node(name, processEach, capture, captureType, captureStar, captureAt);
+			if (root == null && (name.isEmpty() || node.zeroPlus))
+				root = node;
+			else {
+				if (root == null)
+					current = root = new Node(".", false, null, null, false, false);
+				else if (name.isEmpty())
+					throw new IllegalArgumentException("Invalid pattern, " + original + " missing name: " + pattern);
+				current.next = node;
+				current.nextZeroPlus = node.zeroPlus;
+				node.prev = current;
+			}
+			processEach = node.processEach; // All subsequent captures process immediately.
+			if (stoppable && (node.processPop || captureAt || processEach || captureStar)) stoppable = false;
+			current = node;
+		}
+		if (total == 0) throw new IllegalArgumentException("Invalid pattern, no capture: " + pattern);
+		roots.add(root);
+	}
+
+	@Override
+	public void parse (String json) {
+		int n = roots.size;
+		for (int i = 0; i < n; i++)
+			roots.get(i).reset();
+		if (active.length != n) active = new Node[n];
+		System.arraycopy(roots.items, 0, active, 0, n);
+		depth = 0;
+		captured = 0;
+		try {
+			super.parse(json);
+			if (values.notEmpty()) process();
+		} finally {
+			values.clear();
+			captureAll.clear();
+		}
+	}
+
+	@Override
+	protected void push (@Null JsonString name, boolean object) {
+		if (depth > 0) {
+			if (captureAll.notEmpty()) {
+				Object value = object ? new ObjectMap() : new Array();
+				captureAllValue(name, value);
+				captureAll.add(value);
+			} else {
+				for (int i = 0, n = active.length; i < n; i++) {
+					Node node = active[i];
+					if (depth <= node.dead) {
+						int capture = node.capture(name);
+						if (capture != none) // Capture object or array.
+							captureAllStart(node, capture, name, object);
+						else if (node.next(name)) { // Advance to next nodes.
+							Node next = node.next;
+							while (true) {
+								next.pop = depth;
+								if (!next.zeroPlus || !next.next(name)) break;
+								next = next.next;
+							}
+							active[i] = next;
+						} else if (!node.zeroPlus) // Can't match deeper.
+							node.dead = depth;
+					}
+				}
+			}
+		}
+		depth++;
+	}
+
+	@Override
+	protected void pop () {
+		depth--;
+		if (captureAll.notEmpty()) {
+			captureAll.pop();
+			if (captureAll.notEmpty()) return;
+			captured();
+		}
+		boolean process = false;
+		for (int i = 0, n = active.length; i < n; i++) {
+			Node node = active[i];
+			while (true) {
+				if (node.processEach) process = true;
+				if (node.pop != depth) break;
+				if (node.processPop) process = true;
+				node.dead = Integer.MAX_VALUE;
+				if (node.prev == null) break;
+				node = node.prev;
+				active[i] = node;
+			}
+		}
+		if (process && values.notEmpty()) process();
+	}
+
+	@Override
+	protected void value (@Null JsonString name, JsonString value) {
+		if (captureAll.notEmpty()) {
+			captureAllValue(name, value.decode());
+			return;
+		}
+		for (int i = 0, n = active.length; i < n; i++) {
+			Node node = active[i];
+			if (depth <= node.dead) {
+				int capture = node.capture(name);
+				if (capture != none) {
+					captureValue(node, capture, name, value.decode());
+					captured();
+					if ((capture & captureProcess) != 0) process();
+				}
+			}
+		}
+	}
+
+	private void captureValue (Node node, int capture, @Null JsonString name, Object value) {
+		String key = name == null ? "" : name.toString();
+		if ((capture & captureArray) != 0) {
+			if (values.get(key) instanceof Array array)
+				array.add(value);
+			else {
+				var array = new Array();
+				array.add(value);
+				values.put(key, array);
+			}
+		} else
+			values.put(key, value);
+	}
+
+	private void captured () {
+		if (stoppable && ++captured == total) stop();
+	}
+
+	private void captureAllStart (Node node, int capture, @Null JsonString name, boolean object) {
+		Object value;
+		if (object && name == null)
+			value = values;
+		else {
+			value = object ? new ObjectMap() : new Array();
+			captureValue(node, capture, name, value);
+		}
+		captureAll.add(value);
+	}
+
+	private void captureAllValue (@Null JsonString name, Object value) {
+		Object parent = captureAll.peek();
+		if (name == null)
+			((Array)parent).add(value);
+		else
+			((ObjectMap)parent).put(name.toString(), value);
+	}
+
+	static private class Node {
+		private final String name;
+		final boolean processPop, processEach, zeroPlus;
+		private final boolean anyNode;
+		private final int anyCapture;
+		private final @Null String[] capture;
+		private final @Null int[] captureType;
+		@Null Node prev, next;
+		boolean nextZeroPlus;
+		int pop, dead;
+
+		Node (String name, boolean processEach, @Null String[] capture, int[] captureType, boolean captureStar, boolean captureAt) {
+			this.name = name;
+			this.capture = capture;
+			boolean star = name.equals("*"), starStar = name.equals("**"), at = name.equals("@"), atAt = name.equals("@@");
+			processPop = at;
+			if (!processEach) processEach = atAt || captureAt;
+			this.processEach = processEach;
+			if (captureType != null && (atAt || captureAt || processEach)) {
+				for (int i = 0, n = captureType.length; i < n; i++)
+					captureType[i] |= captureProcess;
+			}
+			zeroPlus = starStar || atAt;
+			anyNode = star || starStar || at || atAt;
+			if (captureStar || captureAt) {
+				anyCapture = captureType[0];
+				this.captureType = null;
+			} else {
+				anyCapture = 0;
+				this.captureType = captureType;
+			}
+		}
+
+		void reset () {
+			dead = Integer.MAX_VALUE;
+			if (next != null) next.reset();
+		}
+
+		int capture (@Null JsonString name) {
+			if (anyCapture != 0) return anyCapture;
+			if (name != null && capture != null) {
+				for (int i = 0, n = capture.length; i < n; i++)
+					if (name.equalsString(capture[i])) return captureType[i];
+			}
+			if (nextZeroPlus) return next.capture(name);
+			return none;
+		}
+
+		boolean next (@Null JsonString name) {
+			return next != null && (next.anyNode || (name != null && name.equalsString(next.name)));
+		}
+	}
+}
