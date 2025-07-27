@@ -578,11 +578,11 @@ public class StringBuilder implements CharSequence, Appendable {
 
 	/** Appends a string followed by a new line to this string builder. Appending null will call {@link #appendNull()}. */
 	public StringBuilder appendln (@Null String str) {
-		return append(str).appendNewLine();
+		append(str);
+		return append('\n');
 	}
 
-	/** Appends a string followed by a new line to this string builder. Appending null will call {@link #appendNull()}.
-	 * @deprecated Use {@link #appendln(String)} */
+	/** Appends a string followed by a new line to this string builder. Appending null will call {@link #appendNull()}. */
 	public StringBuilder appendLine (@Null String str) {
 		append(str);
 		return append('\n');
