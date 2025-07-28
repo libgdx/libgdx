@@ -853,13 +853,27 @@ public class JsonMatcherTests {
 			"{user:{name:John,age:30},meta:{version:1.0}}", new String[] { //
 				"user[name]", //
 				"meta[version]"},
-			"{name=John, version=1.0}");
+			"{name=John}", "{version=1.0}");
 
-		test( // Multiple patterns with same field name
+		test( // Same field name, different patterns
 			"{user:{name:John},profile:{user:{name:Jane}}}", new String[] { //
 				"user[name]", //
 				"profile/user[name]"},
-			"{name=Jane}");
+			"{name=John}", "{name=Jane}");
+
+		test( // Same field name, same patterns
+			"{user:{name:John},profile:{user:{name:Jane}}}", new String[] { //
+				"user[name]", //
+				"user[name]", //
+				"profile/user[name]", //
+				"profile/user[name]"},
+			"{name=John}", "{name=John}", "{name=Jane}", "{name=Jane}");
+
+		test( // Overlapping matches
+			"{a:{b:{c:1}}}", new String[] { //
+				"@@[b]", //
+				"@@[c]"},
+			"{c=1}", "{b={c=1}}");
 	}
 
 	@Test
@@ -868,13 +882,13 @@ public class JsonMatcherTests {
 			"{first:{id:1},second:{data:ignored},extra:should-not-parse}", new String[] { //
 				"first[id]", //
 				"[second]"},
-			"{id=1, second={data=ignored}}");
+			"{id=1}", "{second={data=ignored}}");
 
 		test("extra", // Same name twice
 			"{first:{id:1},second:{id:ignored},extra:should-not-parse}", new String[] { //
 				"*[id]", //
 				"*[id]"},
-			"{id=1}");
+			"{id=1}", "{id=1}");
 
 		test("extra", // Multiple values
 			"{first:{id:1},second:{id:ignored},extra:should-not-parse}", new String[] { //
@@ -890,7 +904,7 @@ public class JsonMatcherTests {
 			"{first:{id:1},second:{id:ignored},third:{other:1},extra:should-not-parse}", new String[] { //
 				"[first,second]", //
 				"*[other]"},
-			"{first={id=1}, other=1, second={id=ignored}}");
+			"{first={id=1}, second={id=ignored}}", "{other=1}");
 
 		test("extra", // Same field at different levels
 			"{value:1,nested:{value:2},extra:{value:3}}", new String[] { //
@@ -900,19 +914,24 @@ public class JsonMatcherTests {
 
 	@Test
 	public void rejection () {
-		JsonMatcher matcher = new JsonMatcher();
-		matcher.addPattern("*[@type]", map -> {
-			if (map.get("type").equals("ENCHARGE")) matcher.reject();
-		});
 		Array<ObjectMap> maps = new Array();
-		matcher.addPattern("*/devices/@[serial_num,percentFull]", map -> {
-			OrderedMap copy = new OrderedMap();
-			copy.putAll(map);
-			copy.orderedKeys().sort();
-			maps.add(copy);
-		});
-		matcher.parse(json);
+		{
+			JsonMatcher matcher = new JsonMatcher();
+			matcher.addPattern("*[@type]", map -> {
+				if (map.get("type").equals("ENCHARGE")) matcher.reject();
+			});
+			matcher.addPattern("*/devices/@[serial_num,percentFull]", map -> copy(map, maps));
+			matcher.parse(json);
+		}
+		{
+			JsonMatcher matcher = new JsonMatcher();
+			matcher.addPattern("**[@serial_num]", map -> 
+				matcher.reject());
+			matcher.addPattern("*/*/@[serial_num[]]", map -> copy(map, maps));
+			matcher.parse(json);
+		}
 
+		System.out.println(maps);
 		assertEquals(1, maps.size);
 		ObjectMap map = maps.first();
 		assertEquals("9834711", map.get("serial_num"));
@@ -926,12 +945,7 @@ public class JsonMatcherTests {
 			if (map.get("type").equals("ENCHARGE")) matcher.stop(); // Stop parsing before any matches.
 		});
 		Array<ObjectMap> maps = new Array();
-		matcher.addPattern("*/devices/@[serial_num,percentFull]", map -> {
-			OrderedMap copy = new OrderedMap();
-			copy.putAll(map);
-			copy.orderedKeys().sort();
-			maps.add(copy);
-		});
+		matcher.addPattern("*/devices/@[serial_num,percentFull]", map -> copy(map, maps));
 		matcher.parse(json);
 
 		assertEquals(0, maps.size);
@@ -993,12 +1007,7 @@ public class JsonMatcherTests {
 		JsonMatcher matcher = new JsonMatcher();
 		Array<ObjectMap> maps = new Array();
 		matcher.addPattern("*/devices/*[maxCellTemp,temperature,dc_switch_off,admin_state_str,sleep_enabled,device_status,object]");
-		matcher.setProcessor(map -> {
-			OrderedMap copy = new OrderedMap();
-			copy.putAll(map);
-			copy.orderedKeys().sort();
-			maps.add(copy);
-		});
+		matcher.setProcessor(map -> copy(map, maps));
 		matcher.parse(json);
 
 		assertEquals(1, maps.size);
@@ -1061,19 +1070,14 @@ public class JsonMatcherTests {
 				stopped[0] = true;
 			}
 		};
-		matcher.setProcessor(map -> {
-			OrderedMap copy = new OrderedMap();
-			copy.putAll(map);
-			copy.orderedKeys().sort();
-			maps.add(copy);
-		});
+		matcher.setProcessor(map -> copy(map, maps));
 		for (String pattern : patterns)
 			matcher.addPattern(pattern);
 		matcher.parse(json);
 		try {
 			assertEquals("Wrong match count", expected.length, maps.size);
 			for (int i = 0, n = expected.length; i < n; i++)
-				assertEquals("Wrong match " + i, expected[i], maps.get(i).toString());
+				assertEquals("Wrong match, pattern " + i, expected[i], maps.get(i).toString());
 			if (notParsedValue != null && !stopped[0]) fail("Should have stopped but did not");
 		} catch (AssertionError ex) {
 			System.out.println("    JSON: " + json);
@@ -1088,57 +1092,64 @@ public class JsonMatcherTests {
 		}
 	}
 
+	static void copy (ObjectMap<String, Object> map, Array<ObjectMap> maps) {
+		OrderedMap copy = new OrderedMap();
+		copy.putAll(map);
+		copy.orderedKeys().sort();
+		maps.add(copy);
+	}
+
 	static private final String json = // @off
 		"[{\n"
-		+ "\"type\": \"ENCHARGE\",\n"
-		+ "\"devices\": [\n"
+		+ "type: ENCHARGE,\n"
+		+ "devices: [\n"
 		+ "	{\n"
-		+ "		\"part_num\": \"830-00703-r84\",\n"
-		+ "		\"serial_num\": \"32131444\",\n"
-		+ "		\"installed\": 17519017,\n"
-		+ "		\"device_status\": [\n"
-		+ "			\"envoy.global.ok\",\n"
-		+ "			\"prop.done\"\n"
+		+ "		part_num: 830-00703-r84,\n"
+		+ "		serial_num: \"32131444\",\n"
+		+ "		installed: 17519017,\n"
+		+ "		device_status: [\n"
+		+ "			envoy.global.ok,\n"
+		+ "			prop.done\n"
 		+ "		],\n"
-		+ "		\"last_rpt_date\": 1753239176,\n"
-		+ "		\"admin_state\": 6,\n"
-		+ "		\"admin_state_str\": \"ENCHG_STATE_READY\",\n"
-		+ "		\"created_date\": 1751974017,\n"
-		+ "		\"img_load_date\": 1751974017,\n"
-		+ "		\"img_pnum_running\": \"2.0.8116_rel/22.33\",\n"
-		+ "		\"bmu_fw_version\": \"2.1.38\",\n"
-		+ "		\"communicating\": true,\n"
-		+ "		\"sleep_enabled\": false,\n"
-		+ "		\"percentFull\": 100,\n"
-		+ "		\"temperature\": 31.4,\n"
-		+ "		\"maxCellTemp\": 31,\n"
-		+ "		\"reported_enc_grid_state\": \"grid-tied\",\n"
-		+ "		\"comm_level_sub_ghz\": 5,\n"
-		+ "		\"comm_level_2_4_ghz\": 5,\n"
-		+ "		\"led_status\": 14,\n"
-		+ "		\"dc_switch_off\": null,\n"
-		+ "		\"child\": { \"value\": 1 },\n"
-		+ "		\"encharge_rev\": 1,\n"
-		+ "		\"encharge_capacity\": 3360,\n"
-		+ "		\"phase\": \"ph-a\",\n"
-		+ "		\"der_index\": 1,\n"
-		+ "		\"object\": {}\n"
+		+ "		last_rpt_date: 1753239176,\n"
+		+ "		admin_state: 6,\n"
+		+ "		admin_state_str: ENCHG_STATE_READY,\n"
+		+ "		created_date: 1751974017,\n"
+		+ "		img_load_date: 1751974017,\n"
+		+ "		img_pnum_running: \"2.0.8116_rel/22.33\",\n"
+		+ "		bmu_fw_version: 2.1.38,\n"
+		+ "		communicating: true,\n"
+		+ "		sleep_enabled: false,\n"
+		+ "		percentFull: 100,\n"
+		+ "		temperature: 31.4,\n"
+		+ "		maxCellTemp: 31,\n"
+		+ "		reported_enc_grid_state: grid-tied,\n"
+		+ "		comm_level_sub_ghz: 5,\n"
+		+ "		comm_level_2_4_ghz: 5,\n"
+		+ "		led_status: 14,\n"
+		+ "		dc_switch_off: null,\n"
+		+ "		child: { value: 1 },\n"
+		+ "		encharge_rev: 1,\n"
+		+ "		encharge_capacity: 3360,\n"
+		+ "		phase: ph-a,\n"
+		+ "		der_index: 1,\n"
+		+ "		object: {}\n"
 		+ "	},\n"
 		+ "	{\n"
-		+ "		\"part_num\": \"830-00703-r84\",\n"
-		+ "		\"installed\": 17518704,\n"
-		+ "		\"percentFull\": 75,\n"
-		+ "		\"serial_num\": \"234234211\",\n"
-		+ "		\"child\": { \"value\": 2 },\n"
-		+ "		\"device_status\": [\n"
-		+ "			\"envoy.global.failure\",\n"
-		+ "			\"prop.waiting\"\n"
+		+ "		part_num: 830-00703-r84,\n"
+		+ "		installed: 17518704,\n"
+		+ "		percentFull: 75,\n"
+		+ "		serial_num: \"234234211\",\n"
+		+ "		child: { value: 2 },\n"
+		+ "		device_status: [\n"
+		+ "			envoy.global.failure,\n"
+		+ "			prop.waiting\n"
 		+ "		]\n"
 		+ "	}\n"
 		+ "]},{\n"
-		+ "\"type\": \"ENPOWER\",\n"
-		+ "\"devices\": [{\n"
-		+ "	\"serial_num\": \"9834711\",\n"
+		+ "type: ENPOWER,\n"
+		+ "devices: [{\n"
+		+ "	serial_num: \"9834711\",\n"
 		+ "}]\n"
 		+ "}]"; // @on
 

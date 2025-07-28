@@ -2,6 +2,7 @@
 package com.badlogic.gdx.utils;
 
 /** Efficient JSON parser that does minimal parsing to extract values matching specified patterns.
+ * 
  * <h4>Pattern syntax</h4>
  * <ul>
  * <li>{@code /} Path separator.
@@ -59,11 +60,10 @@ package com.badlogic.gdx.utils;
  * <li>Calling reject() prevents any further matching at this level or deeper, making for easy filtering.
  * <li>Calling stop() prevents further matching and stops parsing.
  * <li>Without {@code @} (in any form), {@code [*]}, or {@code []} parsing stops once all specified values are captured.
+ * <li>Without {@code @} (in any form) process() is called once at the end.
  * <li>With {@code @} process() is called after the object or array that {@code @} matched.
- * <li>With multiple {@code @} process() is called for each capture, except for captures after the last {@code @}.
- * <li>With {@code @@} process() is called for each capture.
+ * <li>With {@code @@} or multiple {@code @} process() is called for each capture.
  * <li>With {@code [@]} process() is called for each object, array, or field.
- * <li>When capturing a whole object or array, other patterns will not match inside it.
  * <li>The key for unnamed values (eg array elements) is empty string ("").
  * <li>Value types are true, false, Long, Double, Array, ObjectMap, or null.
  * </ul>
@@ -72,18 +72,16 @@ public class JsonMatcher extends JsonSkimmer {
 	static private final int none = 0, captureValue = 0b001, captureArray = 0b010, captureProcess = 0b100;
 
 	Processor processor;
-	final Array<Processor> processors = new Array();
-	final Array<Node> roots = new Array();
+	Pattern[] patterns = new Pattern[0];
 	int total;
 	boolean stoppable = true, rejected;
 
-	Node[] active = new Node[1];
-	final ObjectMap<String, Object> values = new ObjectMap();
-	final Array captureAll = new Array();
 	int depth, captured;
+	Pattern processPattern;
 	char[] chars;
 	final IntArray path = new IntArray();
 
+	/** This processor is invoked for all pattern matches, after per pattern processors and before {@link #process(ObjectMap)}. */
 	public void setProcessor (@Null Processor processor) {
 		this.processor = processor;
 	}
@@ -93,15 +91,12 @@ public class JsonMatcher extends JsonSkimmer {
 		addPattern(pattern, null);
 	}
 
-	/** Adds a pattern for value extraction. */
+	/** Adds a pattern for value extraction. The processor is invoked only for this pattern's matches. */
 	public void addPattern (String pattern, @Null Processor processor) {
 		String test = pattern.replace("@@", "@");
-		int atIndex = test.indexOf('@');
-		boolean processEach = atIndex != test.lastIndexOf('@');
-		if (atIndex == -1 && processor != null)
-			throw new IllegalArgumentException("Invalid pattern, @ required for per pattern processor: " + pattern);
+		boolean processEach = test.indexOf('@') != test.lastIndexOf('@');
 
-		Node root = null, current = null;
+		Node root = null, prev = null;
 		for (String original : pattern.split("/")) {
 			String part = original;
 
@@ -150,39 +145,42 @@ public class JsonMatcher extends JsonSkimmer {
 				root = node;
 			else {
 				if (root == null)
-					current = root = new Node(".", false, null, null, false, false);
+					prev = root = new Node(".", false, null, null, false, false);
 				else if (name.isEmpty())
 					throw new IllegalArgumentException("Invalid pattern, " + original + " missing name: " + pattern);
-				current.next = node;
-				current.nextZeroPlus = node.zeroPlus;
-				node.prev = current;
+				prev.next = node;
+				prev.nextZeroPlus = node.zeroPlus;
+				node.prev = prev;
 			}
+
 			processEach = node.processEach; // All subsequent captures process immediately.
 			if (stoppable && (node.processPop || captureAt || processEach || captureStar)) stoppable = false;
-			current = node;
+			prev = node;
 		}
 		if (total == 0) throw new IllegalArgumentException("Invalid pattern, no capture: " + pattern);
-		roots.add(root);
-		processors.add(processor);
+
+		Pattern[] newPatterns = new Pattern[patterns.length + 1];
+		System.arraycopy(patterns, 0, newPatterns, 0, patterns.length);
+		newPatterns[patterns.length] = new Pattern(root, processor);
+		patterns = newPatterns;
 	}
 
 	@Override
 	public void parse (char[] data, int offset, int length) {
-		int n = roots.size;
-		for (int i = 0; i < n; i++)
-			roots.get(i).reset();
-		if (active.length != n) active = new Node[n];
-		System.arraycopy(roots.items, 0, active, 0, n);
 		depth = 0;
 		captured = 0;
 		chars = data;
 		try {
 			super.parse(data, offset, length);
-			if (values.notEmpty()) process(-1);
+			for (Pattern pattern : patterns) {
+				process(pattern);
+				pattern.reset();
+			}
+		} catch (RuntimeException ex) {
+			for (Pattern pattern : patterns)
+				pattern.reset();
 		} finally {
 			chars = null;
-			values.clear();
-			captureAll.clear();
 			path.clear();
 		}
 	}
@@ -194,25 +192,25 @@ public class JsonMatcher extends JsonSkimmer {
 		else
 			path.add(object ? 0 : 1, 0);
 		if (depth > 0) {
-			if (captureAll.notEmpty()) {
-				Object value = object ? new ObjectMap() : new Array();
-				captureAllValue(name, value);
-				captureAll.add(value);
-			} else {
-				for (int i = 0, n = active.length; i < n; i++) {
-					Node node = active[i];
+			for (Pattern pattern : patterns) {
+				if (pattern.captureAll.notEmpty()) {
+					Object value = object ? new ObjectMap() : new Array();
+					captureAllValue(pattern, name, value);
+					pattern.captureAll.add(value);
+				} else {
+					Node node = pattern.current;
 					if (depth <= node.dead) {
 						int capture = node.capture(name);
 						if (capture != none) // Capture object or array.
-							captureAllStart(node, capture, name, object);
-						else if (node.next(name)) { // Advance to next nodes.
+							captureAllStart(pattern, capture, name, object);
+						else if (node.next(name)) { // Advance to next node(s).
 							Node next = node.next;
 							while (true) {
 								next.pop = depth;
 								if (!next.zeroPlus || !next.next(name)) break;
 								next = next.next;
 							}
-							active[i] = next;
+							pattern.current = next;
 						} else if (!node.zeroPlus) // Can't match deeper.
 							node.dead = depth;
 					}
@@ -226,48 +224,45 @@ public class JsonMatcher extends JsonSkimmer {
 	protected void pop () {
 		depth--;
 		path.size -= 2;
-		if (captureAll.notEmpty()) {
-			captureAll.pop();
-			if (captureAll.notEmpty()) return;
-			captured();
-		}
-		boolean process = values.notEmpty();
-		for (int i = 0, n = active.length; i < n; i++) {
-			Node node = active[i];
+		for (Pattern pattern : patterns) {
+			if (pattern.captureAll.notEmpty()) {
+				pattern.captureAll.pop();
+				if (pattern.captureAll.notEmpty()) return;
+				captured();
+			}
+			Node node = pattern.current;
 			while (true) {
 				if (node.pop != depth) {
-					if (process && node.processEach) process(i);
+					if (node.processEach) process(pattern);
 					break;
 				}
-				if (process && (node.processEach || node.processPop)) process(i);
 				node.dead = Integer.MAX_VALUE;
+				if (node.processEach || node.processPop) process(pattern);
 				if (node.prev == null) break;
 				node = node.prev;
-				active[i] = node;
+				pattern.current = node;
 			}
 		}
 	}
 
 	@Override
 	protected void value (@Null JsonToken name, JsonToken value) {
-		if (captureAll.notEmpty()) {
-			captureAllValue(name, value.decode());
-			return;
-		}
-		for (int i = 0, n = active.length; i < n; i++) {
-			Node node = active[i];
-			if (depth <= node.dead) {
-				int capture = node.capture(name);
+		for (Pattern pattern : patterns) {
+			if (pattern.captureAll.notEmpty())
+				captureAllValue(pattern, name, value.decode());
+			else if (depth <= pattern.current.dead) {
+				int capture = pattern.current.capture(name);
 				if (capture != none) {
-					captureValue(node, capture, name, value.decode());
+					captureValue(pattern, capture, name, value.decode());
 					captured();
-					if ((capture & captureProcess) != 0) process(i);
+					if ((capture & captureProcess) != 0) process(pattern);
 				}
 			}
 		}
 	}
 
-	private void captureValue (Node node, int capture, @Null JsonToken name, Object value) {
+	private void captureValue (Pattern pattern, int capture, @Null JsonToken name, Object value) {
+		ObjectMap<String, Object> values = pattern.values;
 		String key = name == null ? "" : name.toString();
 		if ((capture & captureArray) != 0) {
 			Object existing = values.get(key);
@@ -286,34 +281,34 @@ public class JsonMatcher extends JsonSkimmer {
 		if (stoppable && ++captured == total) stop();
 	}
 
-	private void captureAllStart (Node node, int capture, @Null JsonToken name, boolean object) {
+	private void captureAllStart (Pattern pattern, int capture, @Null JsonToken name, boolean object) {
 		Object value;
 		if (object && name == null)
-			value = values;
+			value = pattern.values;
 		else {
 			value = object ? new ObjectMap() : new Array();
-			captureValue(node, capture, name, value);
+			captureValue(pattern, capture, name, value);
 		}
-		captureAll.add(value);
+		pattern.captureAll.add(value);
 	}
 
-	private void captureAllValue (@Null JsonToken name, Object value) {
-		Object parent = captureAll.peek();
+	private void captureAllValue (Pattern pattern, @Null JsonToken name, Object value) {
+		Object parent = pattern.captureAll.peek();
 		if (name == null)
 			((Array)parent).add(value);
 		else
 			((ObjectMap)parent).put(name.toString(), value);
 	}
 
-	private void process (int index) {
+	private void process (Pattern pattern) {
+		ObjectMap<String, Object> values = pattern.values;
+		if (values.isEmpty()) return;
+		rejected = false;
+		processPattern = pattern;
 		try {
-			rejected = false;
-			if (index != -1) {
-				Processor patternProcessor = processors.get(index);
-				if (patternProcessor != null) {
-					patternProcessor.process(values);
-					if (rejected) return;
-				}
+			if (pattern.processor != null) {
+				pattern.processor.process(values);
+				if (rejected) return;
 			}
 			if (processor != null) {
 				processor.process(values);
@@ -322,10 +317,11 @@ public class JsonMatcher extends JsonSkimmer {
 			process(values);
 		} finally {
 			values.clear();
+			processPattern = null;
 		}
 	}
 
-	/** Called with captured values after any processors have been invoked.
+	/** Called for all pattern matches, after any processors have been invoked.
 	 * @param map Reused after this method returns. */
 	protected void process (ObjectMap<String, Object> map) {
 	}
@@ -335,8 +331,8 @@ public class JsonMatcher extends JsonSkimmer {
 	public void reject () {
 		rejected = true;
 		int dead = depth - 1;
-		for (int i = 0, n = active.length; i < n; i++)
-			active[i].dead = dead;
+		for (Pattern pattern : patterns)
+			pattern.current.dead = dead;
 	}
 
 	@Override
@@ -345,8 +341,17 @@ public class JsonMatcher extends JsonSkimmer {
 		super.stop();
 	}
 
+	/** Invalid when not parsing. */
 	public int depth () {
 		return depth;
+	}
+
+	/** Returns the pattern index during a pattern's processor invocation, -1 at other times. */
+	public int pattern () {
+		int i = 0;
+		for (Pattern pattern : patterns)
+			if (pattern == processPattern) return i;
+		return -1;
 	}
 
 	/** Returns the current JSON path using "/" as separator. Anonymous objects use "{}", arrays "[]". Invalid when not parsing. */
@@ -393,7 +398,7 @@ public class JsonMatcher extends JsonSkimmer {
 		private final @Null int[] captureType;
 		@Null Node prev, next;
 		boolean nextZeroPlus;
-		int pop, dead;
+		int pop, dead = Integer.MAX_VALUE;
 
 		Node (String name, boolean processEach, @Null String[] capture, int[] captureType, boolean captureStar, boolean captureAt) {
 			this.name = name;
@@ -417,11 +422,6 @@ public class JsonMatcher extends JsonSkimmer {
 			}
 		}
 
-		void reset () {
-			dead = Integer.MAX_VALUE;
-			if (next != null) next.reset();
-		}
-
 		int capture (@Null JsonToken name) {
 			if (anyCapture != 0) return anyCapture;
 			if (name != null && capture != null) {
@@ -434,6 +434,53 @@ public class JsonMatcher extends JsonSkimmer {
 
 		boolean next (@Null JsonToken name) {
 			return next != null && (next.anyNode || (name != null && name.equalsString(next.name)));
+		}
+
+		private void toString (StringBuilder buffer) {
+			buffer.append(name);
+			if (capture != null) {
+				buffer.append('[');
+				for (int i = 0, last = capture.length - 1; i <= last; i++) {
+					buffer.append(capture[i]);
+					if (i < last) buffer.append(',');
+				}
+				buffer.append(']');
+			}
+			if (next != null) {
+				buffer.append('/');
+				buffer.append(next);
+			}
+		}
+
+		public String toString () { // For debugging only.
+			StringBuilder buffer = new StringBuilder(128);
+			toString(buffer);
+			return buffer.toString();
+		}
+	}
+
+	static class Pattern {
+		final Node root;
+		final Processor processor;
+		final ObjectMap<String, Object> values = new ObjectMap();
+		final Array captureAll = new Array();
+		Node current;
+
+		Pattern (Node root, Processor processor) {
+			this.root = root;
+			this.processor = processor;
+			current = root;
+		}
+
+		public void reset () {
+			Node node = root;
+			do {
+				node.dead = Integer.MAX_VALUE;
+				node = node.next;
+			} while (node != null);
+			values.clear();
+			captureAll.clear();
+			current = root;
 		}
 	}
 
