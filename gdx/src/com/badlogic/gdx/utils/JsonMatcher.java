@@ -188,7 +188,7 @@ public class JsonMatcher extends JsonSkimmer {
 	}
 
 	@Override
-	protected void push (@Null JsonString name, boolean object) {
+	protected void push (@Null JsonToken name, boolean object) {
 		if (name != null)
 			path.add(name.start, name.length);
 		else
@@ -249,7 +249,7 @@ public class JsonMatcher extends JsonSkimmer {
 	}
 
 	@Override
-	protected void value (@Null JsonString name, JsonString value) {
+	protected void value (@Null JsonToken name, JsonToken value) {
 		if (captureAll.notEmpty()) {
 			captureAllValue(name, value.decode());
 			return;
@@ -267,7 +267,7 @@ public class JsonMatcher extends JsonSkimmer {
 		}
 	}
 
-	private void captureValue (Node node, int capture, @Null JsonString name, Object value) {
+	private void captureValue (Node node, int capture, @Null JsonToken name, Object value) {
 		String key = name == null ? "" : name.toString();
 		if ((capture & captureArray) != 0) {
 			Object existing = values.get(key);
@@ -286,7 +286,7 @@ public class JsonMatcher extends JsonSkimmer {
 		if (stoppable && ++captured == total) stop();
 	}
 
-	private void captureAllStart (Node node, int capture, @Null JsonString name, boolean object) {
+	private void captureAllStart (Node node, int capture, @Null JsonToken name, boolean object) {
 		Object value;
 		if (object && name == null)
 			value = values;
@@ -297,7 +297,7 @@ public class JsonMatcher extends JsonSkimmer {
 		captureAll.add(value);
 	}
 
-	private void captureAllValue (@Null JsonString name, Object value) {
+	private void captureAllValue (@Null JsonToken name, Object value) {
 		Object parent = captureAll.peek();
 		if (name == null)
 			((Array)parent).add(value);
@@ -422,7 +422,7 @@ public class JsonMatcher extends JsonSkimmer {
 			if (next != null) next.reset();
 		}
 
-		int capture (@Null JsonString name) {
+		int capture (@Null JsonToken name) {
 			if (anyCapture != 0) return anyCapture;
 			if (name != null && capture != null) {
 				for (int i = 0, n = capture.length; i < n; i++)
@@ -432,7 +432,7 @@ public class JsonMatcher extends JsonSkimmer {
 			return none;
 		}
 
-		boolean next (@Null JsonString name) {
+		boolean next (@Null JsonToken name) {
 			return next != null && (next.anyNode || (name != null && name.equalsString(next.name)));
 		}
 	}

@@ -181,7 +181,7 @@ public class JsonTest extends GdxTest {
 			}
 
 			@Override
-			protected void push (@Null JsonString name, boolean object) {
+			protected void push (@Null JsonToken name, boolean object) {
 				indent();
 				if (object)
 					System.out.println(name != null ? name + ": {" : "{");
@@ -199,7 +199,7 @@ public class JsonTest extends GdxTest {
 			}
 
 			@Override
-			protected void value (JsonString name, JsonString value) {
+			protected void value (JsonToken name, JsonToken value) {
 				indent();
 				System.out.println(name != null ? name + ": " + value : value);
 			}
@@ -213,7 +213,7 @@ public class JsonTest extends GdxTest {
 			float watts;
 
 			@Override
-			protected void push (JsonString name, boolean object) {
+			protected void push (JsonToken name, boolean object) {
 				level++;
 			}
 
@@ -229,7 +229,7 @@ public class JsonTest extends GdxTest {
 			}
 
 			@Override
-			protected void value (JsonString name, JsonString value) {
+			protected void value (JsonToken name, JsonToken value) {
 				if (level == 2) {
 					if (name.equals("eid"))
 						id = value.toString();

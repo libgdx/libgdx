@@ -1049,7 +1049,7 @@ public class JsonMatcherTests {
 		boolean[] stopped = new boolean[1];
 		JsonMatcher matcher = new JsonMatcher() {
 			@Override
-			protected void value (JsonString name, JsonString value) {
+			protected void value (JsonToken name, JsonToken value) {
 				if (notParsedValue != null && name.equals(notParsedValue))
 					fail("Should have stopped before parsing value: " + notParsedValue);
 				super.value(name, value);
