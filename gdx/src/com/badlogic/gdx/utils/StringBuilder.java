@@ -1904,7 +1904,7 @@ public class StringBuilder implements CharSequence, Appendable {
 	 * @throws OutOfMemoryError if the {@code minCapacity} is negative */
 	private static int createPositiveCapacity (int minCapacity) {
 		if (minCapacity < 0) // overflow
-			throw new OutOfMemoryError("Unable to allocate array size: " + Integer.toUnsignedString(minCapacity));
+			throw new OutOfMemoryError("Unable to allocate array size: " + Long.toString(minCapacity & 0xFFFFFFFFL));
 		// This is called when we require buffer expansion to a very big array.
 		// Use the conservative maximum buffer size if possible, otherwise the biggest required.
 		//
