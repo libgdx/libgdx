@@ -341,6 +341,13 @@ public class StringBuilder implements CharSequence, Appendable {
 		return this;
 	}
 
+	/** Appends the specified separator if the builder is not empty, then the specified string. */
+	public StringBuilder append (String str, String separator) {
+		if (length > 0) append(separator);
+		append(str);
+		return this;
+	}
+
 	/** Appends part of a string to this string builder. Appending null will call {@link #appendNull()}.
 	 * @param startIndex the start index, inclusive
 	 * @throws StringIndexOutOfBoundsException if {@code startIndex} is not in the range {@code 0 <= startIndex <= str.length()}
@@ -357,12 +364,6 @@ public class StringBuilder implements CharSequence, Appendable {
 			length += len;
 		}
 		return this;
-	}
-
-	/** Calls {@link String#format(String, Object...)} and appends the result.
-	 * @see String#format(String, Object...) */
-	public StringBuilder append (String format, Object... objs) {
-		return append(String.format(format, objs));
 	}
 
 	/** Appends a string buffer to this string builder. Appending null will call {@link #appendNull()}. */
@@ -592,12 +593,6 @@ public class StringBuilder implements CharSequence, Appendable {
 	 * @param startIndex the start index, inclusive */
 	public StringBuilder appendln (@Null String str, int startIndex, int len) {
 		return append(str, startIndex, len).appendNewLine();
-	}
-
-	/** Calls {@link String#format(String, Object...)} and appends the result.
-	 * @see String#format(String, Object...) */
-	public StringBuilder appendln (String format, Object... objs) {
-		return append(format, objs).appendNewLine();
 	}
 
 	/** Appends a string buffer followed by a new line to this string builder. Appending null will call {@link #appendNull()}. */
@@ -1600,11 +1595,11 @@ public class StringBuilder implements CharSequence, Appendable {
 	/** Resizes the buffer to at least the size specified.
 	 * @throws OutOfMemoryError if the {@code minCapacity} is negative */
 	private void resizeBuffer (int minCapacity) {
-		// Overflow-conscious code treats the min and new capacity as unsigned.
 		int oldCapacity = chars.length;
 		int newCapacity = (oldCapacity >> 1) + oldCapacity + 2;
-		if (Integer.compareUnsigned(newCapacity, minCapacity) < 0) newCapacity = minCapacity;
-		if (Integer.compareUnsigned(newCapacity, MAX_BUFFER_SIZE) > 0) newCapacity = createPositiveCapacity(minCapacity);
+		// Overflow-conscious code treats minCapacity and newCapacity as unsigned.
+		if ((newCapacity ^ 0x80000000) < (minCapacity ^ 0x80000000)) newCapacity = minCapacity;
+		if ((newCapacity ^ 0x80000000) > (MAX_BUFFER_SIZE ^ 0x80000000)) newCapacity = createPositiveCapacity(minCapacity);
 		reallocate(newCapacity);
 	}
 
