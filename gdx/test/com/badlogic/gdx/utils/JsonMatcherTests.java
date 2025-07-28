@@ -921,6 +921,100 @@ public class JsonMatcherTests {
 	}
 
 	@Test
+	public void explicitStop () {
+		JsonMatcher matcher = new JsonMatcher();
+		matcher.addPattern("*[@type]", map -> {
+			if (map.get("type").equals("ENCHARGE")) matcher.stop(); // Stop parsing before any matches.
+		});
+		var maps = new Array<ObjectMap>();
+		matcher.addPattern("*/devices/@[serial_num,percentFull]", map -> {
+			var copy = new OrderedMap();
+			copy.putAll(map);
+			copy.orderedKeys().sort();
+			maps.add(copy);
+		});
+		matcher.parse(json);
+
+		assertEquals(0, maps.size);
+	}
+
+	@Test
+	public void paths () {
+		var paths = new Array();
+		var parents = new Array();
+		var parents2 = new Array();
+		{
+			var matcher = new JsonMatcher();
+			matcher.setProcessor(map -> {
+				paths.add(matcher.path());
+				parents.add(matcher.parent());
+				parents2.add(matcher.parent(2));
+			});
+			matcher.addPattern("*/devices/@[serial_num,percentFull]");
+			matcher.parse(json);
+		}
+		{
+			var matcher = new JsonMatcher();
+			matcher.addPattern("@@[value]", map -> {
+				paths.add(matcher.path());
+				parents.add(matcher.parent());
+				parents2.add(matcher.parent(2));
+			});
+			matcher.parse(json);
+			matcher.parse("{a:{b:{c:{d:{e:{f:{value:deep}}}}}}}");
+		}
+
+		assertEquals(6, paths.size);
+		assertEquals("[]/{}/devices", paths.first());
+		assertEquals("[]/{}/devices", paths.get(1));
+		assertEquals("[]/{}/devices", paths.get(2));
+		assertEquals("[]/{}/devices/{}/child", paths.get(3));
+		assertEquals("[]/{}/devices/{}/child", paths.get(4));
+		assertEquals("{}/a/b/c/d/e/f", paths.get(5));
+
+		assertEquals(6, parents.size);
+		assertEquals("devices", parents.first());
+		assertEquals("devices", parents.get(1));
+		assertEquals("devices", parents.get(2));
+		assertEquals("child", parents.get(3));
+		assertEquals("child", parents.get(4));
+		assertEquals("f", parents.get(5));
+
+		assertEquals(6, parents2.size);
+		assertEquals("[]", parents2.first());
+		assertEquals("[]", parents2.get(1));
+		assertEquals("[]", parents2.get(2));
+		assertEquals("devices", parents2.get(3));
+		assertEquals("devices", parents2.get(4));
+		assertEquals("d", parents2.get(5));
+	}
+
+	@Test
+	public void dataTypes () {
+		JsonMatcher matcher = new JsonMatcher();
+		var maps = new Array<ObjectMap>();
+		matcher.addPattern("*/devices/*[maxCellTemp,temperature,dc_switch_off,admin_state_str,sleep_enabled,device_status,object]");
+		matcher.setProcessor(map -> {
+			var copy = new OrderedMap();
+			copy.putAll(map);
+			copy.orderedKeys().sort();
+			maps.add(copy);
+		});
+		matcher.parse(json);
+
+		assertEquals(1, maps.size);
+		ObjectMap map = maps.first();
+		assertTrue(map.get("maxCellTemp").getClass() == Long.class);
+		assertTrue(map.get("temperature").getClass() == Double.class);
+		assertTrue(map.containsKey("dc_switch_off"));
+		assertTrue(map.get("dc_switch_off", "not this") == null);
+		assertTrue(map.get("admin_state_str").getClass() == String.class);
+		assertTrue(map.get("sleep_enabled").getClass() == Boolean.class);
+		assertTrue(map.get("device_status").getClass() == Array.class);
+		assertTrue(map.get("object").getClass() == ObjectMap.class);
+	}
+
+	@Test
 	public void invalidPatterns () {
 		var matcher = new JsonMatcher();
 		assertThrows(IllegalArgumentException.class, () -> {
@@ -1017,18 +1111,19 @@ public class JsonMatcherTests {
 				"communicating": true,
 				"sleep_enabled": false,
 				"percentFull": 100,
-				"temperature": 31,
+				"temperature": 31.4,
 				"maxCellTemp": 31,
 				"reported_enc_grid_state": "grid-tied",
 				"comm_level_sub_ghz": 5,
 				"comm_level_2_4_ghz": 5,
 				"led_status": 14,
-				"dc_switch_off": false,
+				"dc_switch_off": null,
 				"child": { "value": 1 },
 				"encharge_rev": 1,
 				"encharge_capacity": 3360,
 				"phase": "ph-a",
-				"der_index": 1
+				"der_index": 1,
+				"object": {}
 			},
 			{
 				"part_num": "830-00703-r84",

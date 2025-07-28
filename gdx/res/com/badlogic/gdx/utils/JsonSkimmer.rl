@@ -31,9 +31,9 @@ import com.badlogic.gdx.files.FileHandle;
 public class JsonSkimmer {
 	final JsonString nameString, value;
 	int[] stack = new int[8];
+	protected final StringBuilder buffer = new StringBuilder();
 
 	public JsonSkimmer () {
-		StringBuilder buffer = new StringBuilder();
 		nameString = new JsonString(buffer);
 		value = new JsonString(buffer);
 	}

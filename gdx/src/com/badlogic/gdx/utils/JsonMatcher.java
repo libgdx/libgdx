@@ -2,7 +2,7 @@
 package com.badlogic.gdx.utils;
 
 /** Efficient JSON parser that does minimal parsing to extract values matching specified patterns.
- * <h4>Pattern syntax:</h4>
+ * <h4>Pattern syntax</h4>
  * <ul>
  * <li>{@code /} Path separator.
  * <li>{@code *} Matches any single object or array.
@@ -18,38 +18,46 @@ package com.badlogic.gdx.utils;
  * <li>{@code [@name]} Captures field "name", calls process() right away.
  * </ul>
  * 
- * <h4>Examples:</h4>
+ * <h4>Examples</h4>
  * 
  * <code>{users:[{name:nate},{name:iva}]}</code><br>
- * Process each user name: {@code users/@[name]}<br>
- * <ul>
+ * Process each user name: <code>users/@[name]</code>
+ * <ol>
  * <li>The JSON root is matched implicitly.
  * <li>{@code users} matches the <code>users:[</code> array. The field name and value are matched together.
- * <li>{@code @} matches each object in the array. process() is called when the end of each object is reached.
- * <li>{@code [name]} captures the name field.
- * <li>process() is called with <code>{name=nate}</code> and again with <code>{name=iva}</code>.
- * </ul>
+ * <li>{@code @} matches each object in the array. process() will be called at the end of each object.
+ * <li>{@code [name]} captures the name field and value.
+ * <li>Result: process() is called with <code>{name=nate}</code> and again with <code>{name=iva}</code>.
+ * </ol>
  * <p>
- * <code>{config:{port:value}}</code><br>
- * Get the first port from config found at any depth: <code>**&#47;config[port]</code>
+ * <code>{config:{port:8081}}</code><br>
+ * Get the first port from config found at any depth: <code>**&#47;config[port]</code><br>
+ * Result: process() is called with: <code>{port=8081}</code>
  * <p>
- * Get all device statuses as array: <code>devices/*&#47;status[*[]]</code>
+ * <code>{services:[{status:up},{status:down},{status:failed}]}</code><br>
+ * Get all service statuses in an array: <code>services/*[status[]]</code><br>
+ * Result: process() is called with: <code>{status=[up, down, failed]}</code>
  * <p>
- * Process each id and name: {@code items/@[id,name]}
+ * <code>{items:[{id:123,type:cookies},{id:456,type:cake}]}</code><br>
+ * Process each id and name: <code>items/@[id,type]</code><br>
+ * Result: process() is called with: <code>{id=123,type=cookies}</code> and <code>{id=456,type=cake}</code>
  * 
- * <h4>Arrays:</h4> Arrays are captured as-is:
+ * <h4>Arrays</h4>
+ * 
+ * Arrays are captured as-is:
  * <ul>
  * <li>{@code data[items]} with <code>{data:{items:[1,2,3]}}</code> gives: <code>{items=[1,2,3]}</code>
  * </ul>
- * To collect multiple values into an array, use {@code []}:
+ * To collect multiple values into an array, capture with {@code []} after the name:
  * <ul>
- * <li>{@code *[id]} with <code>{first:{id:1},second:{id:2}}</code> gives: <code>{id=1}</code> (first match)
+ * <li>{@code *[id]} with <code>{first:{id:1},second:{id:2}}</code> gives: <code>{id=1}</code> (parsing stops after first match)
  * <li>{@code *[id[]]} gives: <code>{id=[1, 2]}</code> (all matches in an array)
  * </ul>
  * 
- * <h4>Processing behavior:</h4>
+ * <h4>Processing behavior</h4>
  * <ul>
- * <li>Calling reject() prevents any further matching at the current level or deeper, making for easy filtering.
+ * <li>Calling reject() prevents any further matching at this level or deeper, making for easy filtering.
+ * <li>Calling stop() prevents further matching and stops parsing.
  * <li>Without {@code @} (in any form), {@code [*]}, or {@code []} parsing stops once all specified values are captured.
  * <li>With {@code @} process() is called after the object or array that {@code @} matched.
  * <li>With multiple {@code @} process() is called for each capture, except for captures after the last {@code @}.
@@ -57,6 +65,7 @@ package com.badlogic.gdx.utils;
  * <li>With {@code [@]} process() is called for each object, array, or field.
  * <li>When capturing a whole object or array, other patterns will not match inside it.
  * <li>The key for unnamed values (eg array elements) is empty string ("").
+ * <li>Value types are true, false, Long, Double, Array, ObjectMap, or null.
  * </ul>
  * @author Nathan Sweet */
 public class JsonMatcher extends JsonSkimmer {
@@ -72,6 +81,8 @@ public class JsonMatcher extends JsonSkimmer {
 	final ObjectMap<String, Object> values = new ObjectMap();
 	final Array captureAll = new Array();
 	int depth, captured;
+	char[] chars;
+	final IntArray path = new IntArray();
 
 	public void setProcessor (@Null Processor processor) {
 		this.processor = processor;
@@ -156,7 +167,7 @@ public class JsonMatcher extends JsonSkimmer {
 	}
 
 	@Override
-	public void parse (String json) {
+	public void parse (char[] data, int offset, int length) {
 		int n = roots.size;
 		for (int i = 0; i < n; i++)
 			roots.get(i).reset();
@@ -164,17 +175,24 @@ public class JsonMatcher extends JsonSkimmer {
 		System.arraycopy(roots.items, 0, active, 0, n);
 		depth = 0;
 		captured = 0;
+		chars = data;
 		try {
-			super.parse(json);
+			super.parse(data, offset, length);
 			if (values.notEmpty()) process(-1);
 		} finally {
+			chars = null;
 			values.clear();
 			captureAll.clear();
+			path.clear();
 		}
 	}
 
 	@Override
 	protected void push (@Null JsonString name, boolean object) {
+		if (name != null)
+			path.add(name.start, name.length);
+		else
+			path.add(object ? 0 : 1, 0);
 		if (depth > 0) {
 			if (captureAll.notEmpty()) {
 				Object value = object ? new ObjectMap() : new Array();
@@ -207,6 +225,7 @@ public class JsonMatcher extends JsonSkimmer {
 	@Override
 	protected void pop () {
 		depth--;
+		path.size -= 2;
 		if (captureAll.notEmpty()) {
 			captureAll.pop();
 			if (captureAll.notEmpty()) return;
@@ -306,16 +325,62 @@ public class JsonMatcher extends JsonSkimmer {
 	}
 
 	/** Called with captured values after any processors have been invoked.
-	 * @param map Cleared after returning and reused for subsequent calls. */
+	 * @param map Reused after this method returns. */
 	protected void process (ObjectMap<String, Object> map) {
 	}
 
-	/** When called during processing, no further matches will occur at this level or deeper. */
+	/** When called during processing, no further matches will occur at this level or deeper. Matching is resumed once parsing goes
+	 * below this level. */
 	public void reject () {
 		rejected = true;
 		int dead = depth - 1;
 		for (int i = 0, n = active.length; i < n; i++)
 			active[i].dead = dead;
+	}
+
+	@Override
+	public void stop () {
+		rejected = true;
+		super.stop();
+	}
+
+	public int depth () {
+		return depth;
+	}
+
+	/** Returns the current JSON path using "/" as separator. Anonymous objects use "{}", arrays "[]". Invalid when not parsing. */
+	public String path () {
+		buffer.length = 0;
+		for (int i = 0, n = path.size; i < n; i += 2) {
+			if (i > 0) buffer.append('/');
+			int start = path.get(i), length = path.get(i + 1);
+			if (length == 0)
+				buffer.append(start == 0 ? "{}" : "[]");
+			else
+				buffer.append(chars, start, length);
+		}
+		return buffer.toString();
+	}
+
+	/** Returns the last segment of the JSON path. Invalid when not parsing.
+	 * @see #path() */
+	public String parent () {
+		int n = path.size;
+		if (n == 0) return "";
+		int start = path.get(n - 2), length = path.get(n - 1);
+		if (length == 0) return start == 0 ? "{}" : "[]";
+		return new String(chars, start, length);
+	}
+
+	/** Returns the segment of the JSON path up the specified segments from the end, or "" if there aren't enough segments. Invalid
+	 * when not parsing.
+	 * @see #path() */
+	public String parent (int up) {
+		int n = path.size, i = n - (up << 1);
+		if (i < 0) return "";
+		int start = path.get(i - 2), length = path.get(i - 1);
+		if (length == 0) return start == 0 ? "{}" : "[]";
+		return new String(chars, start, length);
 	}
 
 	static private class Node {
@@ -373,7 +438,7 @@ public class JsonMatcher extends JsonSkimmer {
 
 	static public interface Processor {
 		/** Called with captured values.
-		 * @param map Cleared after returning and reused for subsequent calls. */
+		 * @param map Reused after this method returns. */
 		public void process (ObjectMap<String, Object> map);
 	}
 }
