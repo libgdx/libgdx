@@ -270,10 +270,11 @@ public class JsonMatcher extends JsonSkimmer {
 	private void captureValue (Node node, int capture, @Null JsonString name, Object value) {
 		String key = name == null ? "" : name.toString();
 		if ((capture & captureArray) != 0) {
-			if (values.get(key) instanceof Array array)
-				array.add(value);
+			Object existing = values.get(key);
+			if (existing instanceof Array)
+				((Array)existing).add(value);
 			else {
-				var array = new Array();
+				Array array = new Array();
 				array.add(value);
 				values.put(key, array);
 			}

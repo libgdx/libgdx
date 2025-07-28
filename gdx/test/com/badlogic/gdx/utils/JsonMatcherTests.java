@@ -701,21 +701,20 @@ public class JsonMatcherTests {
 			"{x=1, y=2}");
 
 		test( // Test dead node being revived for a deeper branch elsewhere
-			"""
-				{
-					items: {
-						server1: {
-							config: { // dead here
-								host: [ deadend ]
-							},
-							nested: {
-								config: {
-									port: 8080
-								}
-							}
-						}
-					}
-				}""", //
+			"{\n" // @off
+			+ "	items: {\n"
+			+ "		server1: {\n"
+			+ "			config: { // dead here\n"
+			+ "				host: [ deadend ]\n"
+			+ "			},\n"
+			+ "			nested: {\n"
+			+ "				config: {\n"
+			+ "					port: 8080\n"
+			+ "				}\n"
+			+ "			}\n"
+			+ "		}\n"
+			+ "	}\n"
+			+ "}", // @on
 			"items/**/config[port]", //
 			"{port=8080}");
 	}
@@ -905,9 +904,9 @@ public class JsonMatcherTests {
 		matcher.addPattern("*[@type]", map -> {
 			if (map.get("type").equals("ENCHARGE")) matcher.reject();
 		});
-		var maps = new Array<ObjectMap>();
+		Array<ObjectMap> maps = new Array();
 		matcher.addPattern("*/devices/@[serial_num,percentFull]", map -> {
-			var copy = new OrderedMap();
+			OrderedMap copy = new OrderedMap();
 			copy.putAll(map);
 			copy.orderedKeys().sort();
 			maps.add(copy);
@@ -926,9 +925,9 @@ public class JsonMatcherTests {
 		matcher.addPattern("*[@type]", map -> {
 			if (map.get("type").equals("ENCHARGE")) matcher.stop(); // Stop parsing before any matches.
 		});
-		var maps = new Array<ObjectMap>();
+		Array<ObjectMap> maps = new Array();
 		matcher.addPattern("*/devices/@[serial_num,percentFull]", map -> {
-			var copy = new OrderedMap();
+			OrderedMap copy = new OrderedMap();
 			copy.putAll(map);
 			copy.orderedKeys().sort();
 			maps.add(copy);
@@ -940,11 +939,11 @@ public class JsonMatcherTests {
 
 	@Test
 	public void paths () {
-		var paths = new Array();
-		var parents = new Array();
-		var parents2 = new Array();
+		Array paths = new Array();
+		Array parents = new Array();
+		Array parents2 = new Array();
 		{
-			var matcher = new JsonMatcher();
+			JsonMatcher matcher = new JsonMatcher();
 			matcher.setProcessor(map -> {
 				paths.add(matcher.path());
 				parents.add(matcher.parent());
@@ -954,7 +953,7 @@ public class JsonMatcherTests {
 			matcher.parse(json);
 		}
 		{
-			var matcher = new JsonMatcher();
+			JsonMatcher matcher = new JsonMatcher();
 			matcher.addPattern("@@[value]", map -> {
 				paths.add(matcher.path());
 				parents.add(matcher.parent());
@@ -992,10 +991,10 @@ public class JsonMatcherTests {
 	@Test
 	public void dataTypes () {
 		JsonMatcher matcher = new JsonMatcher();
-		var maps = new Array<ObjectMap>();
+		Array<ObjectMap> maps = new Array();
 		matcher.addPattern("*/devices/*[maxCellTemp,temperature,dc_switch_off,admin_state_str,sleep_enabled,device_status,object]");
 		matcher.setProcessor(map -> {
-			var copy = new OrderedMap();
+			OrderedMap copy = new OrderedMap();
 			copy.putAll(map);
 			copy.orderedKeys().sort();
 			maps.add(copy);
@@ -1016,7 +1015,7 @@ public class JsonMatcherTests {
 
 	@Test
 	public void invalidPatterns () {
-		var matcher = new JsonMatcher();
+		JsonMatcher matcher = new JsonMatcher();
 		assertThrows(IllegalArgumentException.class, () -> {
 			matcher.addPattern("path/to/nowhere");
 		});
@@ -1046,9 +1045,9 @@ public class JsonMatcherTests {
 	}
 
 	static void test (@Null String notParsedValue, String json, String[] patterns, String... expected) {
-		var maps = new Array<ObjectMap>();
-		var stopped = new boolean[1];
-		var matcher = new JsonMatcher() {
+		Array<ObjectMap> maps = new Array();
+		boolean[] stopped = new boolean[1];
+		JsonMatcher matcher = new JsonMatcher() {
 			@Override
 			protected void value (JsonString name, JsonString value) {
 				if (notParsedValue != null && name.equals(notParsedValue))
@@ -1063,7 +1062,7 @@ public class JsonMatcherTests {
 			}
 		};
 		matcher.setProcessor(map -> {
-			var copy = new OrderedMap();
+			OrderedMap copy = new OrderedMap();
 			copy.putAll(map);
 			copy.orderedKeys().sort();
 			maps.add(copy);
@@ -1089,59 +1088,59 @@ public class JsonMatcherTests {
 		}
 	}
 
-	static private final String json = """
-		[{
-		"type": "ENCHARGE",
-		"devices": [
-			{
-				"part_num": "830-00703-r84",
-				"serial_num": "32131444",
-				"installed": 17519017,
-				"device_status": [
-					"envoy.global.ok",
-					"prop.done"
-				],
-				"last_rpt_date": 1753239176,
-				"admin_state": 6,
-				"admin_state_str": "ENCHG_STATE_READY",
-				"created_date": 1751974017,
-				"img_load_date": 1751974017,
-				"img_pnum_running": "2.0.8116_rel/22.33",
-				"bmu_fw_version": "2.1.38",
-				"communicating": true,
-				"sleep_enabled": false,
-				"percentFull": 100,
-				"temperature": 31.4,
-				"maxCellTemp": 31,
-				"reported_enc_grid_state": "grid-tied",
-				"comm_level_sub_ghz": 5,
-				"comm_level_2_4_ghz": 5,
-				"led_status": 14,
-				"dc_switch_off": null,
-				"child": { "value": 1 },
-				"encharge_rev": 1,
-				"encharge_capacity": 3360,
-				"phase": "ph-a",
-				"der_index": 1,
-				"object": {}
-			},
-			{
-				"part_num": "830-00703-r84",
-				"installed": 17518704,
-				"percentFull": 75,
-				"serial_num": "234234211",
-				"child": { "value": 2 },
-				"device_status": [
-					"envoy.global.failure",
-					"prop.waiting"
-				]
-			}
-		]},{
-			"type": "ENPOWER",
-			"devices": [{
-				"serial_num": "9834711",
-			}]
-		}]""";
+	static private final String json = // @off
+		"[{\n"
+		+ "\"type\": \"ENCHARGE\",\n"
+		+ "\"devices\": [\n"
+		+ "	{\n"
+		+ "		\"part_num\": \"830-00703-r84\",\n"
+		+ "		\"serial_num\": \"32131444\",\n"
+		+ "		\"installed\": 17519017,\n"
+		+ "		\"device_status\": [\n"
+		+ "			\"envoy.global.ok\",\n"
+		+ "			\"prop.done\"\n"
+		+ "		],\n"
+		+ "		\"last_rpt_date\": 1753239176,\n"
+		+ "		\"admin_state\": 6,\n"
+		+ "		\"admin_state_str\": \"ENCHG_STATE_READY\",\n"
+		+ "		\"created_date\": 1751974017,\n"
+		+ "		\"img_load_date\": 1751974017,\n"
+		+ "		\"img_pnum_running\": \"2.0.8116_rel/22.33\",\n"
+		+ "		\"bmu_fw_version\": \"2.1.38\",\n"
+		+ "		\"communicating\": true,\n"
+		+ "		\"sleep_enabled\": false,\n"
+		+ "		\"percentFull\": 100,\n"
+		+ "		\"temperature\": 31.4,\n"
+		+ "		\"maxCellTemp\": 31,\n"
+		+ "		\"reported_enc_grid_state\": \"grid-tied\",\n"
+		+ "		\"comm_level_sub_ghz\": 5,\n"
+		+ "		\"comm_level_2_4_ghz\": 5,\n"
+		+ "		\"led_status\": 14,\n"
+		+ "		\"dc_switch_off\": null,\n"
+		+ "		\"child\": { \"value\": 1 },\n"
+		+ "		\"encharge_rev\": 1,\n"
+		+ "		\"encharge_capacity\": 3360,\n"
+		+ "		\"phase\": \"ph-a\",\n"
+		+ "		\"der_index\": 1,\n"
+		+ "		\"object\": {}\n"
+		+ "	},\n"
+		+ "	{\n"
+		+ "		\"part_num\": \"830-00703-r84\",\n"
+		+ "		\"installed\": 17518704,\n"
+		+ "		\"percentFull\": 75,\n"
+		+ "		\"serial_num\": \"234234211\",\n"
+		+ "		\"child\": { \"value\": 2 },\n"
+		+ "		\"device_status\": [\n"
+		+ "			\"envoy.global.failure\",\n"
+		+ "			\"prop.waiting\"\n"
+		+ "		]\n"
+		+ "	}\n"
+		+ "]},{\n"
+		+ "\"type\": \"ENPOWER\",\n"
+		+ "\"devices\": [{\n"
+		+ "	\"serial_num\": \"9834711\",\n"
+		+ "}]\n"
+		+ "}]"; // @on
 
 	@Rule public TestWatcher watcher = new TestWatcher() {
 		protected void failed (Throwable cause, Description desc) {
