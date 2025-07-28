@@ -93,8 +93,8 @@ public class RenderContext {
 		setBlending(enabled, sFactor, dFactor, sFactor, dFactor);
 	}
 
-	public void setBlending(final boolean enabled, final int sRgbFactor, final int dRgbFactor, final int sAlphaFactor,
-							final int dAlphaFactor) {
+	public void setBlending (final boolean enabled, final int sRgbFactor, final int dRgbFactor, final int sAlphaFactor,
+		final int dAlphaFactor) {
 		if (enabled != blending) {
 			blending = enabled;
 			if (enabled)
@@ -102,8 +102,8 @@ public class RenderContext {
 			else
 				Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
-		if (enabled && (blendSourceRgbFactor != sRgbFactor || blendDestRgbFactor != dRgbFactor ||
-				blendSourceAlphaFactor != sAlphaFactor || blendDestAlphaFactor != dAlphaFactor)) {
+		if (enabled && (blendSourceRgbFactor != sRgbFactor || blendDestRgbFactor != dRgbFactor
+			|| blendSourceAlphaFactor != sAlphaFactor || blendDestAlphaFactor != dAlphaFactor)) {
 			Gdx.gl.glBlendFuncSeparate(sRgbFactor, dRgbFactor, sAlphaFactor, dAlphaFactor);
 			blendSourceRgbFactor = sRgbFactor;
 			blendDestRgbFactor = dRgbFactor;
