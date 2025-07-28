@@ -1099,7 +1099,7 @@ public class StringBuilder implements CharSequence, Appendable {
 	 * <p>
 	 * Note: This method can be used to minimise memory reallocations during repeated addition of values by pre-allocating the
 	 * character buffer. The method ignores a negative {@code capacity} argument.
-	 * @throws OutOfMemoryError if the capacity cannot be allocated */
+	 * @throws RuntimeException if the capacity cannot be allocated */
 	public StringBuilder ensureCapacity (int capacity) {
 		if (capacity > 0) ensureCapacityInternal(capacity);
 		return this;
@@ -1107,8 +1107,8 @@ public class StringBuilder implements CharSequence, Appendable {
 
 	/** Ensures that the buffer is at least the size specified. The {@code capacity} argument is treated as an unsigned integer.
 	 * <p>
-	 * This method will raise an {@link OutOfMemoryError} if the capacity is too large for an array, or cannot be allocated.
-	 * @throws OutOfMemoryError if the capacity cannot be allocated */
+	 * This method will raise an {@link RuntimeException} if the capacity is too large for an array, or cannot be allocated.
+	 * @throws RuntimeException if the capacity cannot be allocated */
 	private void ensureCapacityInternal (int capacity) {
 		// Check for overflow of the current buffer.
 		// Assumes capacity is an unsigned integer up to Integer.MAX_VALUE * 2
@@ -1594,7 +1594,7 @@ public class StringBuilder implements CharSequence, Appendable {
 	}
 
 	/** Resizes the buffer to at least the size specified.
-	 * @throws OutOfMemoryError if the {@code minCapacity} is negative */
+	 * @throws RuntimeException if the {@code minCapacity} is negative */
 	private void resizeBuffer (int minCapacity) {
 		int oldCapacity = chars.length;
 		int newCapacity = (oldCapacity >> 1) + oldCapacity + 2;
@@ -1899,12 +1899,12 @@ public class StringBuilder implements CharSequence, Appendable {
 	}
 
 	/** Creates a positive capacity at least as large the minimum required capacity. If the minimum capacity is negative then this
-	 * throws an OutOfMemoryError as no array can be allocated.
+	 * throws an RuntimeException as no array can be allocated.
 	 * @return the capacity
-	 * @throws OutOfMemoryError if the {@code minCapacity} is negative */
+	 * @throws RuntimeException if the {@code minCapacity} is negative */
 	private static int createPositiveCapacity (int minCapacity) {
 		if (minCapacity < 0) // overflow
-			throw new OutOfMemoryError("Unable to allocate array size: " + Long.toString(minCapacity & 0xFFFFFFFFL));
+			throw new RuntimeException("Unable to allocate array size: " + Long.toString(minCapacity & 0xFFFFFFFFL));
 		// This is called when we require buffer expansion to a very big array.
 		// Use the conservative maximum buffer size if possible, otherwise the biggest required.
 		//
