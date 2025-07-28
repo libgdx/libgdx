@@ -55,8 +55,9 @@ import java.util.Objects;
  * <li>writer() - allows a Writer to write directly to the internal buffer
  * </ul>
  * </ul>
- * The aim has been to provide an API that mimics very closely what StringBuffer provides, but with additional methods. It should
- * be noted that some edge cases, with invalid indices or null input, have been altered - see individual methods.
+ * The aim has been to provide an API that mimics very closely what StringBuffer provides, but with additional methods. Some edge
+ * cases have been altered, eg with invalid indices or null input -- see individual methods. The JDK StringBuilder has performance
+ * advantages from intrinsics on most JVMs.
  * @author org.apache.commons.text */
 public class StringBuilder implements CharSequence, Appendable {
 	private static final int CAPACITY = 16;
