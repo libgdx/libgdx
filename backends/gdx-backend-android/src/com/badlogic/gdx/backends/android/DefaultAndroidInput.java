@@ -657,8 +657,35 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		return 0;
 	}
 
+	private int cachedHeight;
+	private boolean cachedVisible;
+
+	private void dispatchHeightAndVisibilityChangesToObserver (boolean visible, int height) {
+		if (observer != null) {
+			boolean visibilityChanged = visible != cachedVisible;
+			boolean heightChanged = height != cachedHeight;
+			if (visibilityChanged || heightChanged) {
+				if (visibilityChanged) {
+					if (visible) {
+						observer.onKeyboardShow(height);
+					} else {
+						observer.onKeyboardHide();
+					}
+				} else if (visible) {
+					// Height changed but visibility didn't, and keyboard is visible
+					observer.onKeyboardShow(height);
+				}
+
+				if (heightChanged) observer.onKeyboardHeightChanged(height);
+
+				cachedVisible = visible;
+				cachedHeight = height;
+			}
+		}
+	}
+
 	@Override
-	public void onKeyboardHeightChanged (int height, int leftInset, int rightInset, int orientation) {
+	public void onKeyboardHeightChanged (boolean visible, int height, int leftInset, int rightInset, int orientation) {
 		KeyboardHeightProvider keyboardHeightProvider = ((AndroidApplication)app).getKeyboardHeightProvider();
 		boolean isStandardHeightProvider = keyboardHeightProvider instanceof StandardKeyboardHeightProvider;
 		if (config.useImmersiveMode && isStandardHeightProvider) {
@@ -666,27 +693,25 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		}
 
 		if (!isNativeInputOpen()) {
-			if (observer != null) observer.onKeyboardHeightChanged(height);
+			dispatchHeightAndVisibilityChangesToObserver(visible, height);
 			// Even if it is not visible, we want smooth animation when we actually start animating for visibility
 			if (relativeLayoutField != null) relativeLayoutField.setY(-height);
 			return;
 		}
 
-		if (height == 0) {
-			// Don't close keyboard on floating keyboards
-			if (!isStandardHeightProvider && (keyboardHeightProvider.getKeyboardLandscapeHeight() != 0
-				|| keyboardHeightProvider.getKeyboardPortraitHeight() != 0)) {
-				closeTextInputField(false);
-			}
+		if (height == 0 && isStandardHeightProvider && getEditTextForNativeInput().isPopupShowing()) {
 			// What should I say at this point, everything is busted on android
-			if (isStandardHeightProvider && getEditTextForNativeInput().isPopupShowing()) {
-				return;
-			}
-			if (observer != null) observer.onKeyboardHeightChanged(0);
-			relativeLayoutField.setY(0);
 			return;
 		}
-		if (observer != null) observer.onKeyboardHeightChanged(height + getEditTextForNativeInput().getHeight());
+
+		if (!visible) {
+			closeTextInputField(false);
+			dispatchHeightAndVisibilityChangesToObserver(false, height);
+			relativeLayoutField.setY(height);
+			return;
+		}
+
+		dispatchHeightAndVisibilityChangesToObserver(true, height + getEditTextForNativeInput().getHeight());
 
 		// @off
 		if ((((Activity)context).getWindow().getAttributes().softInputMode & WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST) != WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING) {
