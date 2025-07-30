@@ -22,12 +22,16 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 	/** The cached portrait height of the keyboard */
 	private static int keyboardPortraitHeight;
 
+	/** The cached visible value of the keyboard */
+	private static boolean cachedVisible;
 	/** The cached inset to the left */
 	private static int cachedInsetLeft;
 	/** The cached inset to the right */
 	private static int cachedInsetRight;
 	/** The cached inset to the bottom */
 	private static int cachedBottomInset;
+	/** The cached orientation of the app */
+	private static int cachedOrientation;
 
 	public AndroidXKeyboardHeightProvider (final Activity activity) {
 		this.activity = activity;
@@ -63,14 +67,16 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 					rightInset = insets.right;
 				}
 
-				if (bottomInset == cachedBottomInset && leftInset == cachedInsetLeft && rightInset == cachedInsetRight)
-					return windowInsets;
+				if (isVisible == cachedVisible && bottomInset == cachedBottomInset && leftInset == cachedInsetLeft
+					&& rightInset == cachedInsetRight && orientation == cachedOrientation) return windowInsets;
 
+				cachedVisible = isVisible;
 				cachedBottomInset = bottomInset;
 				cachedInsetLeft = leftInset;
 				cachedInsetRight = rightInset;
+				cachedOrientation = orientation;
 
-				observer.onKeyboardHeightChanged(bottomInset, leftInset, rightInset, orientation);
+				observer.onKeyboardHeightChanged(isVisible, bottomInset, leftInset, rightInset, orientation);
 
 				return windowInsets;
 			}
