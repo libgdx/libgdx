@@ -113,6 +113,9 @@ public class NativeInputConfiguration {
 		return autoComplete;
 	}
 
+	/**
+	 * Sets a list of autocompletable strings to present the user while typing
+	 */
 	public NativeInputConfiguration setAutoComplete (String[] autoComplete) {
 		this.autoComplete = autoComplete;
 		return this;
