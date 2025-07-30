@@ -31,22 +31,35 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Handler;
-import android.text.*;
+import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
+import android.text.InputType;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
 import android.util.DisplayMetrics;
-import android.view.*;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.View;
 import android.view.View.OnGenericMotionListener;
 import android.view.View.OnKeyListener;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
-
 import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -58,8 +71,9 @@ import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.keyboardheight.StandardKeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.input.NativeInputConfiguration;
-import com.badlogic.gdx.input.TextInputWrapper;
+import com.badlogic.gdx.input.NativeInputConfiguration.NativeInputCloseCallback;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayList;
@@ -149,6 +163,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private boolean justTouched = false;
 	private InputProcessor processor;
 	private final AndroidApplicationConfiguration config;
+	private final View view;
 	protected final Orientation nativeOrientation;
 	private long currentEventTimeStamp = 0;
 	private PredictiveBackHandler predictiveBackHandler;
@@ -161,18 +176,17 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private final ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList<>();
 	private final AndroidMouseHandler mouseHandler;
 
-	public DefaultAndroidInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
-		// we hook into View, for LWPs we call onTouch below directly from
-		// within the AndroidWallpaperEngine#onTouchEvent() method.
-		if (view instanceof View) {
-			View v = (View)view;
-			v.setOnKeyListener(this);
-			v.setOnTouchListener(this);
-			v.setFocusable(true);
-			v.setFocusableInTouchMode(true);
-			v.requestFocus();
-			v.setOnGenericMotionListener(this);
-		}
+	public DefaultAndroidInput (Application activity, Context context, View v, AndroidApplicationConfiguration config) {
+
+		this.view = v;
+
+		view.setOnKeyListener(this);
+		view.setOnTouchListener(this);
+		view.setFocusable(true);
+		view.setFocusableInTouchMode(true);
+		view.requestFocus();
+		view.setOnGenericMotionListener(this);
+
 		this.config = config;
 		this.mouseHandler = new AndroidMouseHandler();
 
@@ -626,15 +640,14 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	private RelativeLayout relativeLayoutField = null;
-	private TextInputWrapper textInputWrapper;
 
 	private int getSoftButtonsBarHeight () {
-		AndroidApplication androidApplication = (AndroidApplication)app;
+		WindowManager windowManager = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
 
 		DisplayMetrics metrics = new DisplayMetrics();
-		androidApplication.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		windowManager.getDefaultDisplay().getMetrics(metrics);
 		int usableHeight = metrics.heightPixels;
-		androidApplication.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+		windowManager.getDefaultDisplay().getRealMetrics(metrics);
 		int realHeight = metrics.heightPixels;
 
 		if (realHeight > usableHeight) {
@@ -644,8 +657,35 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		return 0;
 	}
 
+	private int cachedHeight;
+	private boolean cachedVisible;
+
+	private void dispatchHeightAndVisibilityChangesToObserver (boolean visible, int height) {
+		if (observer != null) {
+			boolean visibilityChanged = visible != cachedVisible;
+			boolean heightChanged = height != cachedHeight;
+			if (visibilityChanged || heightChanged) {
+				if (visibilityChanged) {
+					if (visible) {
+						observer.onKeyboardShow(height);
+					} else {
+						observer.onKeyboardHide();
+					}
+				} else if (visible) {
+					// Height changed but visibility didn't, and keyboard is visible
+					observer.onKeyboardShow(height);
+				}
+
+				if (heightChanged) observer.onKeyboardHeightChanged(height);
+
+				cachedVisible = visible;
+				cachedHeight = height;
+			}
+		}
+	}
+
 	@Override
-	public void onKeyboardHeightChanged (int height, int leftInset, int rightInset, int orientation) {
+	public void onKeyboardHeightChanged (boolean visible, int height, int leftInset, int rightInset, int orientation) {
 		KeyboardHeightProvider keyboardHeightProvider = ((AndroidApplication)app).getKeyboardHeightProvider();
 		boolean isStandardHeightProvider = keyboardHeightProvider instanceof StandardKeyboardHeightProvider;
 		if (config.useImmersiveMode && isStandardHeightProvider) {
@@ -653,37 +693,40 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		}
 
 		if (!isNativeInputOpen()) {
-			if (observer != null) observer.onKeyboardHeightChanged(height);
+			dispatchHeightAndVisibilityChangesToObserver(visible, height);
+			// Even if it is not visible, we want smooth animation when we actually start animating for visibility
+			if (relativeLayoutField != null) relativeLayoutField.setY(-height);
 			return;
 		}
 
-		if (height == 0) {
-			// Don't close keyboard on floating keyboards
-			if (!isStandardHeightProvider && (keyboardHeightProvider.getKeyboardLandscapeHeight() != 0
-				|| keyboardHeightProvider.getKeyboardPortraitHeight() != 0)) {
-				closeTextInputField(false);
-			}
+		if (height == 0 && isStandardHeightProvider && getEditTextForNativeInput().isPopupShowing()) {
 			// What should I say at this point, everything is busted on android
-			if (isStandardHeightProvider && getEditTextForNativeInput().isPopupShowing()) {
-				return;
-			}
-			if (observer != null) observer.onKeyboardHeightChanged(0);
-			relativeLayoutField.setY(0);
 			return;
 		}
-		if (observer != null) observer.onKeyboardHeightChanged(height + getEditTextForNativeInput().getHeight());
-		// This is weird, if I don't do that there is a weird scaling/position error after rotating the 2. time
-		relativeLayoutField.setX(0);
-		relativeLayoutField.setScaleX(1);
-		relativeLayoutField.setY(0);
+
+		if (!visible) {
+			closeTextInputField(false);
+			dispatchHeightAndVisibilityChangesToObserver(false, height);
+			relativeLayoutField.setY(height);
+			return;
+		}
+
+		dispatchHeightAndVisibilityChangesToObserver(true, height + getEditTextForNativeInput().getHeight());
+
 		// @off
 		if ((((Activity)context).getWindow().getAttributes().softInputMode & WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST) != WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING) {
 			height = 0;
 		}
+
+		// This is legit insanity. If we want to animate over `scaleX`, FOR REASONS NO-ONE WILL EVER UNDERSTAND, the keyboard doesn't push the views up if `scaleX` < 1 at start.
+		// Unless you are very familiar with android views and animations, do _not_ touch this code, unless absolutely necessary.
+		FrameLayout.LayoutParams containerParams = (FrameLayout.LayoutParams) relativeLayoutField.getLayoutParams();
+		containerParams.leftMargin = leftInset;
+		containerParams.rightMargin = rightInset;
+		relativeLayoutField.setLayoutParams(containerParams);
+
 		relativeLayoutField.animate()
 				.y(-height)
-				.scaleX(((float) Gdx.graphics.getWidth() - rightInset - leftInset) / Gdx.graphics.getWidth())
-				.x((float) (leftInset - rightInset) / 2)
 				.setDuration(100)
 				.setListener(new Animator.AnimatorListener() {
 					@Override
@@ -708,9 +751,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	private void createDefaultEditText () {
-		// TODO: 07.10.2024 This should probably just get the content/root view instead
-		View view = ((AndroidGraphics)app.getGraphics()).getView();
-		ViewGroup frameLayout = (ViewGroup)view.getParent();
+		FrameLayout frameLayout = view.getRootView().findViewById(android.R.id.content);
 		final RelativeLayout relativeLayout = new RelativeLayout(context);
 		relativeLayout.setGravity(Gravity.BOTTOM);
 		// Why? Why isn't it working without?
@@ -753,7 +794,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 					// This is needed for multiline delete
 					@Override
 					public boolean sendKeyEvent (android.view.KeyEvent event) {
-						if (multiline && event.getAction() == android.view.KeyEvent.ACTION_DOWN) {
+						if (nativeInputConfiguration.isMultiLine() && event.getAction() == android.view.KeyEvent.ACTION_DOWN) {
 							if (event.getKeyCode() == android.view.KeyEvent.KEYCODE_DEL) {
 								super.deleteSurroundingText(1, 0);
 								return true;
@@ -790,28 +831,16 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		return (AutoCompleteTextView)relativeLayoutField.getChildAt(0);
 	}
 
-	private boolean multiline;
+	private NativeInputConfiguration nativeInputConfiguration;
 
 	@Override
 	public void openTextInputField (final NativeInputConfiguration configuration) {
 		configuration.validate();
-		if (isNativeInputOpen()) {
-			if (closeTriggered) {
-				while (closeTriggered) {
-					try {
-						Thread.sleep(1);
-					} catch (InterruptedException e) {
-						return;
-					}
-				}
-			} else {
-				throw new GdxRuntimeException("Can't open keyboard if already open with openTextInputField");
-			}
-		}
+		if (isNativeInputOpen()) throw new GdxRuntimeException("Can't open keyboard if already open with openTextInputField");
+
 		if (onscreenVisible) throw new GdxRuntimeException("Can't open keyboard if already open with setOnscreenKeyboardVisible");
 
-		textInputWrapper = configuration.getTextInputWrapper();
-		multiline = configuration.isMultiLine();
+		this.nativeInputConfiguration = configuration;
 		handle.post(new Runnable() {
 			public void run () {
 				if (relativeLayoutField == null) createDefaultEditText();
@@ -836,7 +865,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				});
 
 				// Needs to be done first, for some reason...
-				if (configuration.getType() != OnscreenKeyboardType.Password) {
+				if (!configuration.isMaskInput()) {
 					editText.setTransformationMethod(null);
 				}
 
@@ -865,7 +894,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				// But, we can't set the correct filters here, because that leads to problems for some apparent reason nobody will
 				// ever understand
 				editText.setFilters(new InputFilter[] {});
-				editText.setText(textInputWrapper.getText());
+				editText.setText(configuration.getTextInputWrapper().getText());
 				editText.setHint(configuration.getPlaceholder());
 
 				InputFilter filter = new InputFilter() {
@@ -898,7 +927,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 					}
 				};
 				InputFilter[] filters = new InputFilter[] {filter};
-				if (configuration.getMaxLength() != null) {
+				if (configuration.getMaxLength() != -1) {
 					filters = new InputFilter[] {filter, new LengthFilter(configuration.getMaxLength())};
 				}
 
@@ -914,10 +943,10 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 				editText.setBackgroundColor(Color.WHITE);
 
-				if (configuration.getType() == OnscreenKeyboardType.Password) {
+				if (configuration.isMaskInput()) {
 					// For some reason this needs to be done last, otherwise it won't work
 					editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
-					if (configuration.isShowPasswordButton()) {
+					if (configuration.isShowUnmaskButton()) {
 						final ImageView imageView = new ImageView(context);
 
 						imageView.setImageResource(com.badlogic.gdx.backends.android.R.drawable.design_ic_visibility);
@@ -955,7 +984,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				}
 
 				// One wonders why here? I don't know!
-				editText.setSelection(textInputWrapper.getSelectionStart(), textInputWrapper.getSelectionEnd());
+				editText.setSelection(configuration.getTextInputWrapper().getSelectionStart(),
+					configuration.getTextInputWrapper().getSelectionEnd());
 
 				relativeLayoutField.setVisibility(View.VISIBLE);
 
@@ -965,64 +995,43 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		});
 	}
 
-	// Due to the lots of threads in android, we need to use this as a lock to wait with openTextInputField until close has
-	// finished
-	boolean closeTriggered = false;
+	@Override
+	public void closeTextInputField (boolean isConfirmative, @Null NativeInputCloseCallback callback) {
+		if (!isNativeInputOpen()) return;
+		handle.post( () -> {
+			if (!isNativeInputOpen()) return;
+			view.requestFocus();
+
+			EditText editText = getEditTextForNativeInput();
+			String text = editText.getText().toString();
+			int selectionStart = editText.getSelectionStart();
+			int selectionEnd = editText.getSelectionEnd();
+			NativeInputConfiguration config = nativeInputConfiguration;
+
+			Gdx.app.postRunnable( () -> {
+				config.getTextInputWrapper().writeResults(text, selectionStart, selectionEnd);
+
+				boolean keepOpen = config.getCloseCallback().onClose(isConfirmative);
+				if (callback != null) keepOpen |= callback.onClose(isConfirmative);
+
+				if (!keepOpen) {
+					handle.post( () -> {
+						InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+						manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+					});
+				}
+			});
+
+			nativeInputConfiguration = null;
+
+			if (relativeLayoutField.getChildCount() > 1) relativeLayoutField.removeViews(1, relativeLayoutField.getChildCount() - 1);
+			relativeLayoutField.setVisibility(View.INVISIBLE);
+		});
+	}
 
 	@Override
-	public void closeTextInputField (final boolean sendReturn) {
-		if (closeTriggered) return;
-		if (!isNativeInputOpen()) return;
-		closeTriggered = true;
-		handle.post(new Runnable() {
-			@Override
-			public void run () {
-				if (!isNativeInputOpen()) {
-					closeTriggered = false;
-					return;
-				}
-				final View view = ((AndroidGraphics)app.getGraphics()).getView();
-				view.requestFocus();
-				EditText editText = getEditTextForNativeInput();
-				final String text = editText.getText().toString();
-				final int selection = editText.getSelectionStart();
-				Gdx.app.postRunnable(new Runnable() {
-					final TextInputWrapper wrapper = textInputWrapper;
-
-					@Override
-					public void run () {
-						wrapper.setText(text);
-						wrapper.setPosition(selection);
-						if (sendReturn) {
-							getInputProcessor().keyDown(Keys.ENTER);
-							getInputProcessor().keyTyped((char)13);
-						}
-
-						// This is getting ridiculous...
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run () {
-								if (wrapper.shouldClose()) {
-									handle.post(new Runnable() {
-										@Override
-										public void run () {
-											InputMethodManager manager = (InputMethodManager)context
-												.getSystemService(Context.INPUT_METHOD_SERVICE);
-											manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-										}
-									});
-								}
-							}
-
-						});
-					}
-				});
-				if (relativeLayoutField.getChildCount() > 1)
-					relativeLayoutField.removeViews(1, relativeLayoutField.getChildCount() - 1);
-				relativeLayoutField.setVisibility(View.INVISIBLE);
-				closeTriggered = false;
-			}
-		});
+	public boolean isTextInputFieldOpened () {
+		return isNativeInputOpen();
 	}
 
 	private KeyboardHeightObserver observer;

@@ -17,6 +17,8 @@
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.input.NativeInputConfiguration;
+import com.badlogic.gdx.input.NativeInputConfiguration.NativeInputCloseCallback;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectIntMap;
 
 /**
@@ -802,11 +804,41 @@ public interface Input {
 	public void openTextInputField (NativeInputConfiguration configuration);
 
 	/** Closes the native input field and applies the result to the input wrapper.
-	 * @param sendReturn Whether a "return" key should be send after processing */
-	public void closeTextInputField (boolean sendReturn);
+	 * @param isConfirmative Whether the closing can be considered confirmative. Will be passed to the
+	 *           {@link NativeInputCloseCallback} */
+	public default void closeTextInputField (boolean isConfirmative) {
+		closeTextInputField(isConfirmative, null);
+	}
+
+	/** Closes the native input field and applies the result to the input wrapper.
+	 * @param isConfirmative Whether the closing can be considered confirmative. Will be passed to the
+	 *           {@link NativeInputCloseCallback}
+	 * @param callback An optional callback to also run, when the close was processed. Will be called on the main thread. Will be
+	 *           called after {@link NativeInputCloseCallback} */
+	public default void closeTextInputField (boolean isConfirmative, @Null NativeInputCloseCallback callback) {
+
+	}
+
+	/** Returns if a native input field is currently open */
+	public default boolean isTextInputFieldOpened () {
+		return false;
+	}
 
 	static interface KeyboardHeightObserver {
+		/** This will be called always with the keyboard height as observed by the operating system. This will include the EditField
+		 * height when {@link Input#openTextInputField} is used. This will be called after
+		 * {@link KeyboardHeightObserver#onKeyboardShow} or {@link KeyboardHeightObserver#onKeyboardHide} */
 		void onKeyboardHeightChanged (int height);
+
+		/** This will be called, if the keyboard is visible and will report the visible height. This will include the EditField
+		 * height when {@link Input#openTextInputField} is used. This may be called multiple times without closing, if the keyboard
+		 * reshapes. On android SDK < 30 and floating keyboards, this will be always called, even if the keyboard got invisible.
+		 * There is no way to track the keyboard visibleness in this specific configuration */
+		void onKeyboardShow (int height);
+
+		/** This will be called, when the keyboard is getting invisible. This method is best-effort on pre-android sdk 30. This
+		 * method will never be called on android SDK < 30 and floating keyboards. */
+		void onKeyboardHide ();
 	}
 
 	/** This will set a keyboard height callback. This will get called, whenever the keyboard height changes. Note: When using
