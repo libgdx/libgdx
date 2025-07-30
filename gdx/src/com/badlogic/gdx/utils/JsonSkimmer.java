@@ -31,12 +31,12 @@ import com.badlogic.gdx.files.FileHandle;
 /** Lightweight event-based JSON parser. All values are provided as strings to reduce work when many values are ignored.
  * @author Nathan Sweet */
 public class JsonSkimmer {
-	final JsonToken nameToken, value;
+	final JsonToken nameString, value;
 	int[] stack = new int[8];
 	protected final StringBuilder buffer = new StringBuilder();
 
 	public JsonSkimmer () {
-		nameToken = new JsonToken(buffer);
+		nameString = new JsonToken(buffer);
 		value = new JsonToken(buffer);
 	}
 
@@ -98,7 +98,7 @@ public class JsonSkimmer {
 
 		int s = 0;
 		boolean unescape = false, unquoted = false;
-		JsonToken nameString = this.nameToken, value = this.value, string = value, name = null;
+		JsonToken nameString = this.nameString, value = this.value, string = value, name = null;
 		nameString.chars = data;
 		value.chars = data;
 		RuntimeException parseRuntimeEx = null;
@@ -531,7 +531,7 @@ public class JsonSkimmer {
 
 	// line 266 "JsonSkimmer.rl"
 
-	private boolean stop;
+	protected boolean stop;
 
 	/** Causes parsing to stop after the current or next object, array, or value. */
 	public void stop () {

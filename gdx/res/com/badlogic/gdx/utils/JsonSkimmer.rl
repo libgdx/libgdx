@@ -29,13 +29,13 @@ import com.badlogic.gdx.files.FileHandle;
 /** Lightweight event-based JSON parser. All values are provided as strings to reduce work when many values are ignored.
  * @author Nathan Sweet */
 public class JsonSkimmer {
-	final JsonString nameString, value;
+	final JsonToken nameString, value;
 	int[] stack = new int[8];
 	protected final StringBuilder buffer = new StringBuilder();
 
 	public JsonSkimmer () {
-		nameString = new JsonString(buffer);
-		value = new JsonString(buffer);
+		nameString = new JsonToken(buffer);
+		value = new JsonToken(buffer);
 	}
 
 	public void parse (String json) {
@@ -96,7 +96,7 @@ public class JsonSkimmer {
 
 		int s = 0;
 		boolean unescape = false, unquoted = false;
-		JsonString nameString = this.nameString, value = this.value, string = value, name = null;
+		JsonToken nameString = this.nameString, value = this.value, string = value, name = null;
 		nameString.chars = data;
 		value.chars = data;
 		RuntimeException parseRuntimeEx = null;
@@ -264,7 +264,7 @@ public class JsonSkimmer {
 
 	%% write data;
 
-	private boolean stop;
+	protected boolean stop;
 
 	/** Causes parsing to stop after the current or next object, array, or value. */
 	public void stop () {
@@ -278,7 +278,7 @@ public class JsonSkimmer {
 	/** Called when an object or array is encountered in the JSON.
 	 * @param name Reused after this method returns.
 	 * @param object True when an object was encountered, else it was an array. */
-	protected void push (@Null JsonString name, boolean object) {
+	protected void push (@Null JsonToken name, boolean object) {
 	}
 
 	/** Called when the end of an object or array is encountered in the JSON. */
@@ -288,17 +288,17 @@ public class JsonSkimmer {
 	/** Called when a value is encountered in the JSON.
 	 * @param name Reused after this method returns.
 	 * @param value Reused after this method returns. */
-	protected void value (@Null JsonString name, JsonString value) {
+	protected void value (@Null JsonToken name, JsonToken value) {
 	}
 
-	static public class JsonString {
+	static public class JsonToken {
 		final StringBuilder buffer;
 		public char[] chars;
 
 		public int start, length;
 		public boolean unquoted, unescape;
 
-		JsonString (StringBuilder buffer) {
+		JsonToken (StringBuilder buffer) {
 			this.buffer = buffer;
 		}
 
