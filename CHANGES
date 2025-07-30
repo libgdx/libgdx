@@ -8,6 +8,7 @@
                         - `NativeInputConfiguration#maxTextLength` is not nullable anymore. "-1" should be used for unset.
                         - `TextInputWrapper#setText/setPosition` have been removed and replaced with `writeResults`
                         - `TextInputWrapper#shouldClose` has been removed and should now be handled over the close callback
+- API Addition: `Input#KeyboardHeightObserver` was extended by `onKeyboardShow` and `onKeyboardHide`. See javadocs for more info.
 - API Addition: `Input#isTextInputFieldOpened` has been added, to check, whether an InputField opened by `openTextInputField` is open
 - Android: The KeyboardHeightObserver will not report duplicate events anymore
 - Android: The KeyboardHeightObserver will now only consider `systemBars`, `ime`, `displayCutout`, `mandatorySystemGestures` for insets.
