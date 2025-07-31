@@ -292,6 +292,12 @@ public class JsonSkimmer {
 	}
 
 	static public class JsonToken {
+		static public final JsonToken empty = new JsonToken(null) {
+			public String toString () {
+				return "";
+			}
+		};
+
 		final StringBuilder buffer;
 		public char[] chars;
 

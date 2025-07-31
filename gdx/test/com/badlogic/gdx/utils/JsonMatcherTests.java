@@ -731,6 +731,49 @@ public class JsonMatcherTests {
 	}
 
 	@Test
+	public void wholeDocument () {
+		test( // Object
+			"{data:{items:[a,b,c]}}", //
+			"", //
+			"{={data={items=[a, b, c]}}}");
+
+		test( // Array
+			"[a,b,{data:[1,2,3]},c]", //
+			"", //
+			"{=[a, b, {data=[1, 2, 3]}, c]}");
+
+		test( // String
+			"string", //
+			"", //
+			"{=string}");
+
+		test( // Long
+			"1234567", //
+			"", //
+			"{=1234567}");
+
+		test( // Double
+			"1234.567", //
+			"", //
+			"{=1234.567}");
+
+		test( // true
+			"true", //
+			"", //
+			"{=true}");
+
+		test( // false
+			"false", //
+			"", //
+			"{=false}");
+
+		test( // null
+			"null", //
+			"", //
+			"{=null}");
+	}
+
+	@Test
 	public void unescaping () {
 		test( // Escaped quotes
 			"{data:\"He said \\\"hello\\\"\"}", //
@@ -1117,37 +1160,79 @@ public class JsonMatcherTests {
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidPattern1 () {
 		JsonMatcher matcher = new JsonMatcher();
-		matcher.addPattern("path/to/nowhere");
+		matcher.addPattern("path/(to),nowhere,/"); // Empty match
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidPattern2 () {
 		JsonMatcher matcher = new JsonMatcher();
-		matcher.addPattern("path()");
+		matcher.addPattern("(other),path()"); // No / before ()
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidPattern3 () {
 		JsonMatcher matcher = new JsonMatcher();
-		matcher.addPattern("path(name");
+		matcher.addPattern("(other),path(name"); // Unmatched (
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidPattern4 () {
 		JsonMatcher matcher = new JsonMatcher();
-		matcher.addPattern("path/name");
+		matcher.addPattern("path/name"); // No capture
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidPattern5 () {
 		JsonMatcher matcher = new JsonMatcher();
-		matcher.addPattern("a//b/c(value)"); // Double slash
+		matcher.addPattern("a//b/c/(value)"); // Double slash
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidPattern6 () {
 		JsonMatcher matcher = new JsonMatcher();
 		matcher.addPattern("a//b/(c)"); // Double slash
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void invalidPattern7 () {
+		JsonMatcher matcher = new JsonMatcher();
+		matcher.addPattern("a/**,b/(c)"); // Match adjacent to **
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void invalidPattern8 () {
+		JsonMatcher matcher = new JsonMatcher();
+		matcher.addPattern("a/[]b/(c)"); // Misplaced []
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void invalidPattern9 () {
+		JsonMatcher matcher = new JsonMatcher();
+		matcher.addPattern("a/@b/(c)"); // Misplaced @
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void invalidPattern10 () {
+		JsonMatcher matcher = new JsonMatcher();
+		matcher.addPattern("a/@b/(c)"); // Misplaced @
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void invalidPattern11 () {
+		JsonMatcher matcher = new JsonMatcher();
+		matcher.addPattern("a/(b/c)"); // Invalid ()
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void invalidPattern12 () {
+		JsonMatcher matcher = new JsonMatcher();
+		matcher.addPattern("/b/(c)"); // Start /
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void invalidPattern13 () {
+		JsonMatcher matcher = new JsonMatcher();
+		matcher.addPattern("a/,/(b)"); // Empty matches
 	}
 
 	static void test (String json, String pattern, String... expected) {
