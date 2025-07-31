@@ -565,8 +565,7 @@ public class CharArray implements CharSequence, Appendable {
 	 * @param end the end index, exclusive */
 	public CharArray append (@Null CharSequence seq, int start, int end) {
 		if (seq == null) return appendNull();
-		if (start < 0 || end < 0 || start > end || end > seq.length()) 
-			throw new IndexOutOfBoundsException();
+		if (start < 0 || end < 0 || start > end || end > seq.length()) throw new IndexOutOfBoundsException();
 		return append(seq.toString(), start, end);
 	}
 
