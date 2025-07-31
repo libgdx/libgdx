@@ -33,11 +33,11 @@ class PatternParser {
 		int cs, p = 0, pe = data.length, eof = pe;
 
 		int s = 0, e = 0, c = -1;
-		boolean escaped = false, quoted = false, star = false, starStar = false, brackets = false, at = false;
+		boolean escaped = false, quoted = false, brackets = false, at = false, keyCapture = false, star = false, starStar = false;
 		Array<Match> matches = new Array(Match[]::new);
 
 		Node root = null, prev = null, backtrack = null;
-		boolean processEach = false, hasCapture= false;
+		boolean processEach = false, hasCapture = false;
 
 		try {
 			%%{
@@ -51,7 +51,7 @@ class PatternParser {
 					String name = new String(data, s, e - s);
 					if (quoted) name = name.substring(1, name.length() - 1);
 					if (escaped) name = name.replace("''", "'");
-					Match match = matcher.newMatch(name, at || processEach, brackets, star, starStar, c >= 0);
+					Match match = matcher.newMatch(name, brackets, at || processEach, c >= 0, keyCapture, star, starStar);
 					matches.add(match);
 
 					// All subsequent matches are processed right away.
@@ -59,15 +59,21 @@ class PatternParser {
 
 					escaped = false;
 					quoted = false;
-					star = false;
-					starStar = false;
 					brackets = false;
 					at = false;
+					keyCapture = false;
+					star = false;
+					starStar = false;
+				}
+				action brackets { brackets = true; }
+				action at { at = true; }
+				action keyCapture {
+					star = true;
+					keyCapture = true;
+					hasCapture = true;
 				}
 				action star { star = true; }
 				action starStar { starStar = true; }
-				action brackets { brackets = true; }
-				action at { at = true; }
 
 				action startCapture { c = matches.size; }
 				action endCapture {
@@ -92,11 +98,12 @@ class PatternParser {
 
 				unquoted = [^*/()[\]@',]+;
 				quoted = "'" ([^'] | "''" %escaped)* "'" %quoted;
-				match = ('**' @starStar | '*' @star | unquoted | quoted) >nameStart %nameEnd '[]'? @brackets '@'? @at %match;
-				captures = ('(' @startCapture match (',' match)* ')' '@'? @atCaptures) %endCapture;
+				name = ("**" @starStar | "*" @star | "()" @keyCapture | unquoted | quoted) >nameStart %nameEnd;
+				match = name "[]"? @brackets "@"? @at %match;
+				captures = ("(" @startCapture match ("," match)* ")" "@"? @atCaptures) %endCapture;
 				matches = captures | match;
-				node = (matches (',' matches)*) %addNode;
-				main := node ('/' node)*;
+				node = (matches ("," matches)*) %addNode;
+				main := node ("/" node)*;
 
 				write init;
 				write exec;

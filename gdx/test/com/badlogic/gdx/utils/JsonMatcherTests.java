@@ -19,7 +19,7 @@ public class JsonMatcherTests {
 		test( // *
 			json, //
 			"*/(type)", //
-			"{type=ENCHARGE}"); // First.
+			"{type=ENCHARGE}"); // First
 
 		test( // @
 			json, //
@@ -196,7 +196,7 @@ public class JsonMatcherTests {
 		test( // * for whole array
 			json, //
 			"*/devices/*/(device_status)", //
-			"{device_status=[envoy.global.ok, prop.done]}"); // 1 match because processing stops.
+			"{device_status=[envoy.global.ok, prop.done]}"); // 1 match because processing stops
 
 		test( // @ for whole arrays
 			json, //
@@ -206,7 +206,7 @@ public class JsonMatcherTests {
 		test( // (*) for single array values
 			json, //
 			"*/devices/*/device_status/(*)", //
-			"{=prop.waiting}"); // Last for (*) since it could match multiple.
+			"{=prop.waiting}"); // Last for (*) since it could match multiple
 
 		test( // (*) for array values
 			json, //
@@ -600,7 +600,7 @@ public class JsonMatcherTests {
 		test( // @ at root with nested collection
 			"[{a:{b:[1,2]}},{a:{b:[3,4]}}]", //
 			"*@/a/b/(*)", //
-			"{=2}", "{=4}"); // Only last.
+			"{=2}", "{=4}"); // Only last
 
 		test( // @ at root with nested collection
 			"[{a:{b:[1,2]}},{a:{b:[3,4]}}]", //
@@ -669,17 +669,17 @@ public class JsonMatcherTests {
 		test( // Pattern that could match same field twice
 			"{a:{x:1},b:{x:2}}", //
 			"*/(x)", //
-			"{x=1}"); // First.
+			"{x=1}"); // First
 
 		test( // Overwriting with non-array collection
 			"{items:[{x:1},{x:2},{x:3}]}", //
 			"items/*/(x)", //
-			"{x=1}"); // First.
+			"{x=1}"); // First
 
 		test( // Complex overwrite scenario
 			"{level1:{name:A,level2:{name:B}},other:{name:C}}", //
 			"*/(name)", //
-			"{name=A}"); // First.
+			"{name=A}"); // First
 
 		test( // Capture 2 values with same field name with array collection
 			"{first:{x:1,second:{x:2}}}", //
@@ -689,12 +689,12 @@ public class JsonMatcherTests {
 		test( // Multiple wildcards matching same structure
 			"{data:{a:{id:1},b:{id:2}}}", //
 			"data/*/(id)", //
-			"{id=1}"); // First.
+			"{id=1}"); // First
 
 		test( // Multiple wildcards matching same structure with array collection
 			"{data:{a:{id:1},b:{id:2}}}", //
 			"data/*/(id[])", //
-			"{id=[1, 2]}"); // First.
+			"{id=[1, 2]}"); // First
 
 		test( // Same field many levels with array collection
 			"{items:[{x:1},{x:2},{x:3}]}", //
@@ -951,6 +951,44 @@ public class JsonMatcherTests {
 	}
 
 	@Test
+	public void keys () {
+		test( // []
+			"{a:1,b:2,c:3}", //
+			"()[]", //
+			"{=[a, b, c]}");
+
+		test( // Nested []
+			"{object:{a:1,b:2,c:3}}", //
+			"object/()[]", //
+			"{=[a, b, c]}");
+
+		test( //
+			"{a:1,b:2,c:3}", //
+			"()", //
+			"{=c}"); // Last
+
+		test( // Nested
+			"{object:{a:1,b:2,c:3}}", //
+			"object/()", //
+			"{=c}");
+
+		test( // Array values (keys are null)
+			"[a,b,c]", //
+			"()[]", //
+			"{=[null, null, null]}");
+
+		test( // * and []
+			"{object:{a:1,b:2,c:3}}", //
+			"*/()[]", //
+			"{=[a, b, c]}");
+
+		test( // ** and []
+			"{object:{a:1,b:2,c:{d:{e:3},f:[1,2,3]}}}", //
+			"**/()[]", //
+			"{=[object, a, b, c, d, e, f, null, null, null]}");
+	}
+
+	@Test
 	public void earlyStop () {
 		test("extra", // Early stop
 			"{first:{id:1},second:{data:ignored},extra:should-not-parse}", new String[] { //
@@ -1043,11 +1081,11 @@ public class JsonMatcherTests {
 			"data@/(info)", // Should still capture
 			"{info=important}");
 
-		rejectAll( // Reject after collecting some values.
+		rejectAll( // Reject after collecting some values
 			"{a:{b:{target:{x:1}},c:{target:{x:2,reject:true}}},d:{target:{x:3}}}", //
 			"**/(reject@)", //
 			"**/(x[])", //
-			"{x=[3]}"); // rejectAll removes first 2 matches.
+			"{x=[3]}"); // rejectAll removes first 2 matches
 	}
 
 	static void rejectAll (String json, String rejectPattern, String pattern, String... expected) {

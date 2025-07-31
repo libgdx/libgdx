@@ -55,12 +55,6 @@ package com.badlogic.gdx.utils;
  * <li><code>*&#47;(id[])</code> gives: <code>{id=[1, 2]}</code> (all matches collected in an array)
  * </ul>
  * 
- * <h4>Escaping</h4> Use special characters <code>/,*@()[]',\</code> by surrounding them with single quotes.
- * <ul>
- * <li>{@code email/'moo@dog.com'} Uses "moo@dog.com" as a literal string.
- * <li>{@code words/'can''t'} Escape single quote with two single quotes.
- * </ul>
- * 
  * <h4>Examples</h4>
  * 
  * <code>{users:[{name:nate},{name:iva}]}</code><br>
@@ -85,7 +79,19 @@ package com.badlogic.gdx.utils;
  * Process each "id" and "type" pair: <code>items@/(id,type)</code><br>
  * Result: processors are called with: <code>{id=123,type=cookies}</code> and <code>{id=456,type=cake}</code>
  * 
- * <h4>Notes</h4>
+ * <h4>Escaping</h4> Use special characters <code>/,*@()[]',\</code> by surrounding them with single quotes.
+ * <ul>
+ * <li>{@code email/'moo@dog.com'} Uses "moo@dog.com" as a literal string.
+ * <li>{@code words/'can''t'} Escape single quote with two single quotes.
+ * </ul>
+ * 
+ * <h4>Keys</h4> Capture keys using {@code ()}.
+ * <ul>
+ * <li>{@code object/()} with <code>{object:{a:1,b:2,c:3}}</code> gives: <code>{=c}</code> (last key overwrites others)
+ * <li>{@code object/()[]} gives: <code>{=[a,b,c]}</code> (all keys collected in an array)
+ * </ul>
+ * 
+ * <h4>Behavior notes</h4>
  * <ul>
  * <li>reject() prevents further matching at this level or deeper, useful for filtering.
  * <li>clear() discards unprocessed captured values.
@@ -100,10 +106,11 @@ public class JsonMatcher extends JsonSkimmer {
 	static private final boolean debug = false;
 
 	static private final int none = 0; // @off
-	static final int match   = 0b0001;
-	static final int process = 0b0010;
-	static final int capture = 0b0100;
-	static final int array   = 0b1000; // @on
+	static final int match   = 0b00001;
+	static final int process = 0b00010;
+	static final int capture = 0b00100;
+	static final int array   = 0b01000;
+	static final int keys    = 0b10000; // @on
 
 	Processor processor;
 	Pattern[] patterns = new Pattern[0];
@@ -188,8 +195,11 @@ public class JsonMatcher extends JsonSkimmer {
 									process(pattern); // Process anything previously captured.
 									if (stop) return;
 								}
-								if ((flags & capture) != 0) { // Capture object or array.
-									captureAllStart(pattern, flags, name, object);
+								if ((flags & capture) != 0) { // Capture key, object, or array.
+									if ((flags & keys) != 0)
+										captureValue(pattern, flags, JsonToken.empty, name == null ? null : name.decode());
+									else
+										captureAllStart(pattern, flags, name, object);
 									break;
 								}
 								// Advance to next node(s).
@@ -270,9 +280,12 @@ public class JsonMatcher extends JsonSkimmer {
 							process(pattern);
 							if (stop) return;
 						}
-						if ((flags & capture) != 0) { // Capture value.
+						if ((flags & capture) != 0) { // Capture key or value.
 							if (debug) debug(pattern, "CAPTURE: " + name + "=" + value + " (" + (captured + 1) + "/" + total + ")");
-							captureValue(pattern, flags, name, value.decode());
+							if ((flags & keys) != 0)
+								captureValue(pattern, flags, JsonToken.empty, name == null ? null : name.decode());
+							else
+								captureValue(pattern, flags, name, value.decode());
 							captured();
 							if ((flags & process) != 0) {
 								process(pattern);
@@ -497,15 +510,21 @@ public class JsonMatcher extends JsonSkimmer {
 	}
 
 	/** @see PatternParser */
-	Match newMatch (String name, boolean at, boolean brackets, boolean star, boolean starStar, boolean insideParens) {
+	Match newMatch (String name, boolean brackets, boolean at, boolean valueCapture, boolean keyCapture, boolean star,
+		boolean starStar) {
+
 		int flags = match;
-		if (insideParens) {
+		if (brackets) {
+			flags |= array;
+			stoppable = false;
+		}
+		if (at) flags |= process;
+		if (valueCapture) {
 			flags |= capture;
 			total++;
 		}
-		if (at) flags |= process;
-		if (brackets) {
-			flags |= array;
+		if (keyCapture) {
+			flags |= keys;
 			stoppable = false;
 		}
 		if ((star || starStar) && (flags & (capture | process)) != 0) stoppable = false;
