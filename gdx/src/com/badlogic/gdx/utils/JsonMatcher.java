@@ -34,7 +34,7 @@ package com.badlogic.gdx.utils;
  * <li>{@code (*)} or {@code (**)} Captures wildcard matches.
  * </ul>
  * 
- * <h4>Process</h4> Use {@code @} after a match to control when your processor receives captured values.
+ * <h4>Process</h4> Use {@code @} after a match to control when processors receive captured values.
  * <ul>
  * <li>{@code devices/(id,name)} Without {@code @} values are processed once at the end and only the first values matched are
  * captured.
@@ -58,8 +58,7 @@ package com.badlogic.gdx.utils;
  * <h4>Escaping</h4> Use special characters <code>/,*@()[]',\</code> by surrounding them with single quotes.
  * <ul>
  * <li>{@code email/'dog@example.com'} Uses "dog@example.com" as a literal string.
- * <li>{@code words/'can\'t'} Escape single quote with backslash.
- * <li>{@code files/'C:\\path'} Escape backslash with double backslash.
+ * <li>{@code words/'can\''t'} Escape single quote with two single quotes.
  * </ul>
  * 
  * <h4>Examples</h4>

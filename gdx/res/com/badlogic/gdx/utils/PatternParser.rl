@@ -28,8 +28,6 @@ import com.badlogic.gdx.utils.JsonMatcher.Processor;
 /** Parses {@link JsonMatcher} patterns.
  * @author Nathan Sweet */
 class PatternParser {
-	private static final java.util.regex.Pattern unescape = java.util.regex.Pattern.compile("\\\\(.)");
-	
 	final JsonMatcher matcher;
 	Pattern pattern;
 	private @Null Node root, prev, backtrack;
@@ -55,7 +53,7 @@ class PatternParser {
 				action match {
 					String name = new String(data, s, e - s);
 					if (quoted) name = name.substring(1, name.length() - 1);
-					if (escaped) name = unescape.matcher(name).replaceAll("$1");
+					if (escaped) name = name.replace("''", "'");
 					Match match = matcher.newMatch(name, at || processEach, brackets, star, starStar, c >= 0);
 					matches.add(match);
 
@@ -95,9 +93,8 @@ class PatternParser {
 					prev = node;
 				}
 
-				unquoted = [^*/()[\]@',\\]+;
-				escaped = ['\\];
-				quoted = '\'' (any - escaped | '\\' escaped %escaped)* '\'' %quoted;
+				unquoted = [^*/()[\]@',]+;
+				quoted = "'" ([^'] | "''" %escaped)* "'" %quoted;
 				match = ('**' @starStar | '*' @star | unquoted | quoted) >nameStart %nameEnd '[]'? @brackets '@'? @at %match;
 				captures = ('(' @startCapture match (',' match)* ')' '@'? @atCaptures) %endCapture;
 				matches = captures | match;

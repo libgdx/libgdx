@@ -869,12 +869,12 @@ public class JsonMatcherTests {
 
 		test( // Escaping inside ''
 			"{da\\\\ta:{it'ems:[a,b,c]}}", //
-			"'da\\\\ta'/('it\\'ems')", //
+			"'da\\ta'/('it''ems')", //
 			"{it'ems=[a, b, c]}");
 
 		test( // Special characters inside ''
 			"{*/()[\\\\]@',\\\\\\\\:{items:[a,b,c]}}", //
-			"'*/()[\\\\]@\\',\\\\\\\\'/(items)", //
+			"'*/()[\\]@'',\\\\'/(items)", //
 			"{items=[a, b, c]}");
 	}
 

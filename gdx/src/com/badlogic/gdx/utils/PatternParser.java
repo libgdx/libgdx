@@ -30,8 +30,6 @@ import com.badlogic.gdx.utils.JsonMatcher.Processor;
 /** Parses {@link JsonMatcher} patterns.
  * @author Nathan Sweet */
 class PatternParser {
-	private static final java.util.regex.Pattern unescape = java.util.regex.Pattern.compile("\\\\(.)");
-
 	final JsonMatcher matcher;
 	Pattern pattern;
 	private @Null Node root, prev, backtrack;
@@ -48,12 +46,12 @@ class PatternParser {
 
 		try {
 
-			// line 50 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+			// line 48 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 			{
 				cs = parser_start;
 			}
 
-			// line 54 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+			// line 52 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 			{
 				int _klen;
 				int _trans = 0;
@@ -132,35 +130,35 @@ class PatternParser {
 							while (_nacts-- > 0) {
 								switch (_parser_actions[_acts++]) {
 								case 0:
-								// line 51 "PatternParser.rl"
+								// line 49 "PatternParser.rl"
 								{
 									s = p;
 								}
 									break;
 								case 1:
-								// line 52 "PatternParser.rl"
+								// line 50 "PatternParser.rl"
 								{
 									e = p;
 								}
 									break;
 								case 2:
-								// line 53 "PatternParser.rl"
+								// line 51 "PatternParser.rl"
 								{
 									escaped = true;
 								}
 									break;
 								case 3:
-								// line 54 "PatternParser.rl"
+								// line 52 "PatternParser.rl"
 								{
 									quoted = true;
 								}
 									break;
 								case 4:
-								// line 55 "PatternParser.rl"
+								// line 53 "PatternParser.rl"
 								{
 									String name = new String(data, s, e - s);
 									if (quoted) name = name.substring(1, name.length() - 1);
-									if (escaped) name = unescape.matcher(name).replaceAll("$1");
+									if (escaped) name = name.replace("''", "'");
 									Match match = matcher.newMatch(name, at || processEach, brackets, star, starStar, c >= 0);
 									matches.add(match);
 
@@ -176,51 +174,51 @@ class PatternParser {
 								}
 									break;
 								case 5:
-								// line 72 "PatternParser.rl"
+								// line 70 "PatternParser.rl"
 								{
 									star = true;
 								}
 									break;
 								case 6:
-								// line 73 "PatternParser.rl"
+								// line 71 "PatternParser.rl"
 								{
 									starStar = true;
 								}
 									break;
 								case 7:
-								// line 74 "PatternParser.rl"
+								// line 72 "PatternParser.rl"
 								{
 									brackets = true;
 								}
 									break;
 								case 8:
-								// line 75 "PatternParser.rl"
+								// line 73 "PatternParser.rl"
 								{
 									at = true;
 								}
 									break;
 								case 9:
-								// line 77 "PatternParser.rl"
+								// line 75 "PatternParser.rl"
 								{
 									c = matches.size;
 								}
 									break;
 								case 10:
-								// line 78 "PatternParser.rl"
+								// line 76 "PatternParser.rl"
 								{
 									c = -1;
 									hasCapture = true;
 								}
 									break;
 								case 11:
-								// line 82 "PatternParser.rl"
+								// line 80 "PatternParser.rl"
 								{
 									for (int i = c, n = matches.size; i < n; i++)
 										matches.get(i).flags |= process;
 								}
 									break;
 								case 12:
-								// line 87 "PatternParser.rl"
+								// line 85 "PatternParser.rl"
 								{
 									Node node = matcher.newNode(matches.toArray(), processEach, backtrack, prev);
 									if (node.starStar) {
@@ -233,7 +231,7 @@ class PatternParser {
 									prev = node;
 								}
 									break;
-								// line 217 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+								// line 215 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 								}
 							}
 						}
@@ -254,23 +252,23 @@ class PatternParser {
 							while (__nacts-- > 0) {
 								switch (_parser_actions[__acts++]) {
 								case 1:
-								// line 52 "PatternParser.rl"
+								// line 50 "PatternParser.rl"
 								{
 									e = p;
 								}
 									break;
 								case 3:
-								// line 54 "PatternParser.rl"
+								// line 52 "PatternParser.rl"
 								{
 									quoted = true;
 								}
 									break;
 								case 4:
-								// line 55 "PatternParser.rl"
+								// line 53 "PatternParser.rl"
 								{
 									String name = new String(data, s, e - s);
 									if (quoted) name = name.substring(1, name.length() - 1);
-									if (escaped) name = unescape.matcher(name).replaceAll("$1");
+									if (escaped) name = name.replace("''", "'");
 									Match match = matcher.newMatch(name, at || processEach, brackets, star, starStar, c >= 0);
 									matches.add(match);
 
@@ -286,14 +284,14 @@ class PatternParser {
 								}
 									break;
 								case 10:
-								// line 78 "PatternParser.rl"
+								// line 76 "PatternParser.rl"
 								{
 									c = -1;
 									hasCapture = true;
 								}
 									break;
 								case 12:
-								// line 87 "PatternParser.rl"
+								// line 85 "PatternParser.rl"
 								{
 									Node node = matcher.newNode(matches.toArray(), processEach, backtrack, prev);
 									if (node.starStar) {
@@ -306,7 +304,7 @@ class PatternParser {
 									prev = node;
 								}
 									break;
-								// line 286 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+								// line 284 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 								}
 							}
 						}
@@ -317,7 +315,7 @@ class PatternParser {
 				}
 			}
 
-			// line 109 "PatternParser.rl"
+			// line 106 "PatternParser.rl"
 
 			if (p < pe) {
 				int start = Math.max(0, p - 32);
@@ -332,7 +330,7 @@ class PatternParser {
 		}
 	}
 
-	// line 311 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+	// line 309 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 	private static byte[] init__parser_actions_0 () {
 		return new byte[] {0, 1, 0, 1, 1, 1, 2, 1, 4, 1, 6, 1, 7, 1, 8, 1, 9, 1, 10, 1, 11, 2, 0, 5, 2, 1, 4, 2, 1, 8, 2, 3, 1, 2,
 			4, 12, 2, 10, 12, 3, 1, 4, 12, 3, 3, 1, 4, 3, 3, 1, 8, 4, 3, 1, 4, 12};
@@ -341,68 +339,67 @@ class PatternParser {
 	private static final byte _parser_actions[] = init__parser_actions_0();
 
 	private static byte[] init__parser_key_offsets_0 () {
-		return new byte[] {0, 0, 9, 10, 12, 14, 16, 25, 34, 36, 37, 40, 42, 46, 48, 50, 55, 59, 67, 69, 72, 76, 79, 81, 86};
+		return new byte[] {0, 0, 9, 10, 11, 12, 21, 29, 31, 32, 35, 36, 41, 42, 47, 51, 58, 60, 63, 68, 71, 73, 78};
 	}
 
 	private static final byte _parser_key_offsets[] = init__parser_key_offsets_0();
 
 	private static char[] init__parser_trans_keys_0 () {
-		return new char[] {39, 40, 41, 42, 44, 47, 64, 91, 93, 93, 39, 92, 39, 92, 39, 92, 39, 42, 44, 47, 64, 40, 41, 91, 93, 41,
-			44, 47, 64, 91, 39, 42, 92, 93, 41, 44, 93, 41, 44, 64, 39, 92, 41, 44, 64, 91, 39, 92, 39, 92, 41, 42, 44, 64, 91, 41,
-			44, 64, 91, 44, 47, 64, 91, 39, 42, 92, 93, 44, 47, 44, 47, 64, 44, 47, 64, 91, 44, 47, 64, 44, 47, 42, 44, 47, 64, 91,
-			44, 47, 64, 91, 0};
+		return new char[] {39, 40, 41, 42, 44, 47, 64, 91, 93, 93, 39, 39, 39, 42, 44, 47, 64, 91, 93, 40, 41, 41, 44, 47, 64, 91,
+			93, 39, 42, 41, 44, 93, 41, 44, 64, 39, 39, 41, 44, 64, 91, 39, 41, 42, 44, 64, 91, 41, 44, 64, 91, 44, 47, 64, 91, 93,
+			39, 42, 44, 47, 44, 47, 64, 39, 44, 47, 64, 91, 44, 47, 64, 44, 47, 42, 44, 47, 64, 91, 44, 47, 64, 91, 0};
 	}
 
 	private static final char _parser_trans_keys[] = init__parser_trans_keys_0();
 
 	private static byte[] init__parser_single_lengths_0 () {
-		return new byte[] {0, 7, 1, 2, 2, 2, 5, 5, 2, 1, 3, 2, 4, 2, 2, 5, 4, 4, 2, 3, 4, 3, 2, 5, 4};
+		return new byte[] {0, 9, 1, 1, 1, 7, 6, 2, 1, 3, 1, 5, 1, 5, 4, 5, 2, 3, 5, 3, 2, 5, 4};
 	}
 
 	private static final byte _parser_single_lengths[] = init__parser_single_lengths_0();
 
 	private static byte[] init__parser_range_lengths_0 () {
-		return new byte[] {0, 1, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0};
+		return new byte[] {0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0};
 	}
 
 	private static final byte _parser_range_lengths[] = init__parser_range_lengths_0();
 
 	private static byte[] init__parser_index_offsets_0 () {
-		return new byte[] {0, 0, 9, 11, 14, 17, 20, 28, 36, 39, 41, 45, 48, 53, 56, 59, 65, 70, 77, 80, 84, 89, 93, 96, 102};
+		return new byte[] {0, 0, 10, 12, 14, 16, 25, 33, 36, 38, 42, 44, 50, 52, 58, 63, 70, 73, 77, 83, 87, 90, 96};
 	}
 
 	private static final byte _parser_index_offsets[] = init__parser_index_offsets_0();
 
 	private static byte[] init__parser_indicies_0 () {
-		return new byte[] {1, 2, 4, 3, 4, 4, 4, 4, 0, 5, 4, 7, 8, 6, 9, 9, 4, 11, 12, 10, 14, 15, 4, 4, 4, 4, 4, 13, 17, 18, 4, 19,
-			20, 4, 4, 16, 21, 22, 4, 23, 4, 21, 22, 24, 4, 26, 27, 25, 28, 29, 30, 31, 4, 32, 32, 4, 34, 35, 33, 17, 36, 18, 19, 20,
-			4, 17, 18, 19, 20, 4, 38, 39, 40, 41, 4, 4, 37, 42, 43, 4, 42, 43, 44, 4, 45, 46, 47, 48, 4, 49, 50, 51, 4, 49, 50, 4,
-			52, 38, 39, 40, 41, 4, 38, 39, 40, 41, 4, 0};
+		return new byte[] {1, 2, 4, 3, 4, 4, 4, 4, 4, 0, 5, 4, 7, 6, 9, 8, 11, 12, 4, 4, 4, 4, 4, 4, 10, 14, 15, 4, 16, 17, 4, 4,
+			13, 18, 19, 4, 20, 4, 18, 19, 21, 4, 23, 22, 24, 25, 26, 27, 28, 4, 30, 29, 14, 31, 15, 16, 17, 4, 14, 15, 16, 17, 4, 33,
+			34, 35, 36, 4, 4, 32, 37, 38, 4, 37, 38, 39, 4, 40, 41, 42, 43, 44, 4, 45, 46, 47, 4, 45, 46, 4, 48, 33, 34, 35, 36, 4,
+			33, 34, 35, 36, 4, 0};
 	}
 
 	private static final byte _parser_indicies[] = init__parser_indicies_0();
 
 	private static byte[] init__parser_trans_targs_0 () {
-		return new byte[] {17, 3, 6, 23, 0, 19, 3, 20, 4, 5, 3, 20, 4, 7, 11, 15, 7, 21, 6, 8, 9, 21, 6, 10, 8, 11, 12, 13, 21, 6,
-			8, 9, 14, 11, 12, 13, 16, 17, 1, 1, 18, 2, 1, 1, 18, 1, 1, 18, 2, 1, 1, 22, 24};
+		return new byte[] {15, 3, 5, 21, 0, 17, 3, 18, 3, 18, 6, 10, 13, 6, 19, 5, 7, 8, 19, 5, 9, 7, 10, 11, 12, 19, 5, 7, 8, 10,
+			11, 14, 15, 1, 1, 16, 2, 1, 1, 16, 4, 1, 1, 16, 2, 1, 1, 20, 22};
 	}
 
 	private static final byte _parser_trans_targs[] = init__parser_trans_targs_0();
 
 	private static byte[] init__parser_trans_actions_0 () {
-		return new byte[] {1, 1, 15, 21, 0, 11, 0, 0, 0, 0, 5, 5, 5, 1, 1, 21, 0, 24, 24, 27, 3, 7, 7, 11, 13, 0, 0, 0, 43, 43, 47,
-			30, 0, 5, 5, 5, 9, 0, 24, 39, 27, 3, 7, 33, 13, 43, 51, 47, 30, 17, 36, 19, 9};
+		return new byte[] {1, 1, 15, 21, 0, 11, 0, 0, 5, 5, 1, 1, 21, 0, 24, 24, 27, 3, 7, 7, 11, 13, 0, 0, 0, 43, 43, 47, 30, 5, 5,
+			9, 0, 24, 39, 27, 3, 7, 33, 13, 0, 43, 51, 47, 30, 17, 36, 19, 9};
 	}
 
 	private static final byte _parser_trans_actions[] = init__parser_trans_actions_0();
 
 	private static byte[] init__parser_eof_actions_0 () {
-		return new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 39, 33, 33, 51, 36, 36, 39, 39};
+		return new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 39, 33, 33, 51, 36, 36, 39, 39};
 	}
 
 	private static final byte _parser_eof_actions[] = init__parser_eof_actions_0();
 
 	static final int parser_start = 1;
 
-	// line 125 "PatternParser.rl"
+	// line 122 "PatternParser.rl"
 }
