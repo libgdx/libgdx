@@ -57,8 +57,8 @@ package com.badlogic.gdx.utils;
  * 
  * <h4>Escaping</h4> Use special characters <code>/,*@()[]',\</code> by surrounding them with single quotes.
  * <ul>
- * <li>{@code email/'dog@example.com'} Uses "dog@example.com" as a literal string.
- * <li>{@code words/'can\''t'} Escape single quote with two single quotes.
+ * <li>{@code email/'moo@dog.com'} Uses "moo@dog.com" as a literal string.
+ * <li>{@code words/'can''t'} Escape single quote with two single quotes.
  * </ul>
  * 
  * <h4>Examples</h4>
@@ -90,7 +90,7 @@ package com.badlogic.gdx.utils;
  * <li>reject() prevents further matching at this level or deeper, useful for filtering.
  * <li>clear() discards unprocessed captured values.
  * <li>end() prevents further matching and ends parsing. stop() does the same but also clears.
- * <li>Without {@code *}, {@code **}, or {@code []} parsing ends once all specified values are captured.
+ * <li>If not capturing or processing {@code *}, {@code **}, or {@code []} parsing ends once all specified values are captured.
  * <li>All captures after {@code **@} are processed right away.
  * <li>The key for unnamed values (eg array items) is empty string ("").
  * <li>Value types are true, false, Long, Double, Array, ObjectMap, or null.
@@ -130,7 +130,7 @@ public class JsonMatcher extends JsonSkimmer {
 		if (chars != null) throw new IllegalStateException();
 		Pattern[] newPatterns = new Pattern[patterns.length + 1];
 		System.arraycopy(patterns, 0, newPatterns, 0, patterns.length);
-		newPatterns[patterns.length] = new PatternParser(this, pattern, processor).pattern;
+		newPatterns[patterns.length] = PatternParser.parse(this, pattern, processor);
 		patterns = newPatterns;
 	}
 
@@ -467,11 +467,12 @@ public class JsonMatcher extends JsonSkimmer {
 	Node newNode (Match[] matches, boolean processEach, Node backtrack, @Null Node prev) {
 		Node node = new Node(matches, processEach, backtrack);
 
-		// Use first node as root.
-		if (prev == null && node.starStar) return node;
-
-		// Implicit root.
-		if (prev == null) prev = new Node(new Match[] {new Match(".", 0, false, false)}, processEach, null);
+		if (prev == null) {
+			// Use first node as root.
+			if (node.starStar) return node;
+			// Implicit root.
+			prev = new Node(new Match[] {new Match(".", 0, false, false)}, processEach, null);
+		}
 
 		prev.next = node;
 		prev.nextStarStar = node.starStar;
@@ -491,7 +492,7 @@ public class JsonMatcher extends JsonSkimmer {
 			flags |= array;
 			stoppable = false;
 		}
-		if ((star || starStar) && (flags & process) != 0) stoppable = false;
+		if ((star || starStar) && (flags & (capture | process)) != 0) stoppable = false;
 		return new Match(name, flags, star, starStar);
 	}
 
@@ -527,7 +528,8 @@ public class JsonMatcher extends JsonSkimmer {
 			current = root;
 		}
 
-		public String toString () { // For debug only.
+		public String toString () {
+			if (debug) return super.toString();
 			return root.toString();
 		}
 	}
@@ -571,7 +573,8 @@ public class JsonMatcher extends JsonSkimmer {
 			}
 		}
 
-		public String toString () { // For debug only.
+		public String toString () {
+			if (debug) return super.toString();
 			StringBuilder buffer = new StringBuilder();
 			toString(buffer);
 			return buffer.toString();
@@ -599,7 +602,8 @@ public class JsonMatcher extends JsonSkimmer {
 			if ((flags & capture) != 0) buffer.append(')');
 		}
 
-		public String toString () { // For debug only.
+		public String toString () {
+			if (debug) return super.toString();
 			StringBuilder buffer = new StringBuilder();
 			toString(buffer);
 			return buffer.toString();

@@ -28,19 +28,16 @@ import com.badlogic.gdx.utils.JsonMatcher.Processor;
 /** Parses {@link JsonMatcher} patterns.
  * @author Nathan Sweet */
 class PatternParser {
-	final JsonMatcher matcher;
-	Pattern pattern;
-	private @Null Node root, prev, backtrack;
-	private boolean processEach, hasCapture;
-
-	PatternParser (JsonMatcher matcher, String text, @Null Processor processor) {
-		this.matcher = matcher;
+	static Pattern parse (JsonMatcher matcher, String text, @Null Processor processor) {
 		char[] data = text.toCharArray();
 		int cs, p = 0, pe = data.length, eof = pe;
 
 		int s = 0, e = 0, c = -1;
 		boolean escaped = false, quoted = false, star = false, starStar = false, brackets = false, at = false;
 		Array<Match> matches = new Array(Match[]::new);
+
+		Node root = null, prev = null, backtrack = null;
+		boolean processEach = false, hasCapture= false;
 
 		try {
 			%%{
@@ -112,7 +109,7 @@ class PatternParser {
 			}
 
 			if (!hasCapture) throw new IllegalArgumentException("A capture is required.");
-			pattern = new Pattern(root, processor);
+			return new Pattern(root, processor);
 		} catch (Exception ex) {
 			throw new IllegalArgumentException("Error parsing pattern: " + text, ex);
 		}

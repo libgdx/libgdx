@@ -30,13 +30,7 @@ import com.badlogic.gdx.utils.JsonMatcher.Processor;
 /** Parses {@link JsonMatcher} patterns.
  * @author Nathan Sweet */
 class PatternParser {
-	final JsonMatcher matcher;
-	Pattern pattern;
-	private @Null Node root, prev, backtrack;
-	private boolean processEach, hasCapture;
-
-	PatternParser (JsonMatcher matcher, String text, @Null Processor processor) {
-		this.matcher = matcher;
+	static Pattern parse (JsonMatcher matcher, String text, @Null Processor processor) {
 		char[] data = text.toCharArray();
 		int cs, p = 0, pe = data.length, eof = pe;
 
@@ -44,14 +38,17 @@ class PatternParser {
 		boolean escaped = false, quoted = false, star = false, starStar = false, brackets = false, at = false;
 		Array<Match> matches = new Array(Match[]::new);
 
+		Node root = null, prev = null, backtrack = null;
+		boolean processEach = false, hasCapture = false;
+
 		try {
 
-			// line 48 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+			// line 45 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 			{
 				cs = parser_start;
 			}
 
-			// line 52 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+			// line 49 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 			{
 				int _klen;
 				int _trans = 0;
@@ -130,31 +127,31 @@ class PatternParser {
 							while (_nacts-- > 0) {
 								switch (_parser_actions[_acts++]) {
 								case 0:
-								// line 49 "PatternParser.rl"
+								// line 46 "PatternParser.rl"
 								{
 									s = p;
 								}
 									break;
 								case 1:
-								// line 50 "PatternParser.rl"
+								// line 47 "PatternParser.rl"
 								{
 									e = p;
 								}
 									break;
 								case 2:
-								// line 51 "PatternParser.rl"
+								// line 48 "PatternParser.rl"
 								{
 									escaped = true;
 								}
 									break;
 								case 3:
-								// line 52 "PatternParser.rl"
+								// line 49 "PatternParser.rl"
 								{
 									quoted = true;
 								}
 									break;
 								case 4:
-								// line 53 "PatternParser.rl"
+								// line 50 "PatternParser.rl"
 								{
 									String name = new String(data, s, e - s);
 									if (quoted) name = name.substring(1, name.length() - 1);
@@ -174,51 +171,51 @@ class PatternParser {
 								}
 									break;
 								case 5:
-								// line 70 "PatternParser.rl"
+								// line 67 "PatternParser.rl"
 								{
 									star = true;
 								}
 									break;
 								case 6:
-								// line 71 "PatternParser.rl"
+								// line 68 "PatternParser.rl"
 								{
 									starStar = true;
 								}
 									break;
 								case 7:
-								// line 72 "PatternParser.rl"
+								// line 69 "PatternParser.rl"
 								{
 									brackets = true;
 								}
 									break;
 								case 8:
-								// line 73 "PatternParser.rl"
+								// line 70 "PatternParser.rl"
 								{
 									at = true;
 								}
 									break;
 								case 9:
-								// line 75 "PatternParser.rl"
+								// line 72 "PatternParser.rl"
 								{
 									c = matches.size;
 								}
 									break;
 								case 10:
-								// line 76 "PatternParser.rl"
+								// line 73 "PatternParser.rl"
 								{
 									c = -1;
 									hasCapture = true;
 								}
 									break;
 								case 11:
-								// line 80 "PatternParser.rl"
+								// line 77 "PatternParser.rl"
 								{
 									for (int i = c, n = matches.size; i < n; i++)
 										matches.get(i).flags |= process;
 								}
 									break;
 								case 12:
-								// line 85 "PatternParser.rl"
+								// line 82 "PatternParser.rl"
 								{
 									Node node = matcher.newNode(matches.toArray(), processEach, backtrack, prev);
 									if (node.starStar) {
@@ -231,7 +228,7 @@ class PatternParser {
 									prev = node;
 								}
 									break;
-								// line 215 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+								// line 212 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 								}
 							}
 						}
@@ -252,19 +249,19 @@ class PatternParser {
 							while (__nacts-- > 0) {
 								switch (_parser_actions[__acts++]) {
 								case 1:
-								// line 50 "PatternParser.rl"
+								// line 47 "PatternParser.rl"
 								{
 									e = p;
 								}
 									break;
 								case 3:
-								// line 52 "PatternParser.rl"
+								// line 49 "PatternParser.rl"
 								{
 									quoted = true;
 								}
 									break;
 								case 4:
-								// line 53 "PatternParser.rl"
+								// line 50 "PatternParser.rl"
 								{
 									String name = new String(data, s, e - s);
 									if (quoted) name = name.substring(1, name.length() - 1);
@@ -284,14 +281,14 @@ class PatternParser {
 								}
 									break;
 								case 10:
-								// line 76 "PatternParser.rl"
+								// line 73 "PatternParser.rl"
 								{
 									c = -1;
 									hasCapture = true;
 								}
 									break;
 								case 12:
-								// line 85 "PatternParser.rl"
+								// line 82 "PatternParser.rl"
 								{
 									Node node = matcher.newNode(matches.toArray(), processEach, backtrack, prev);
 									if (node.starStar) {
@@ -304,7 +301,7 @@ class PatternParser {
 									prev = node;
 								}
 									break;
-								// line 284 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+								// line 281 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 								}
 							}
 						}
@@ -315,7 +312,7 @@ class PatternParser {
 				}
 			}
 
-			// line 106 "PatternParser.rl"
+			// line 103 "PatternParser.rl"
 
 			if (p < pe) {
 				int start = Math.max(0, p - 32);
@@ -324,13 +321,13 @@ class PatternParser {
 			}
 
 			if (!hasCapture) throw new IllegalArgumentException("A capture is required.");
-			pattern = new Pattern(root, processor);
+			return new Pattern(root, processor);
 		} catch (Exception ex) {
 			throw new IllegalArgumentException("Error parsing pattern: " + text, ex);
 		}
 	}
 
-	// line 309 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+	// line 306 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 	private static byte[] init__parser_actions_0 () {
 		return new byte[] {0, 1, 0, 1, 1, 1, 2, 1, 4, 1, 6, 1, 7, 1, 8, 1, 9, 1, 10, 1, 11, 2, 0, 5, 2, 1, 4, 2, 1, 8, 2, 3, 1, 2,
 			4, 12, 2, 10, 12, 3, 1, 4, 12, 3, 3, 1, 4, 3, 3, 1, 8, 4, 3, 1, 4, 12};
@@ -401,5 +398,5 @@ class PatternParser {
 
 	static final int parser_start = 1;
 
-	// line 122 "PatternParser.rl"
+	// line 119 "PatternParser.rl"
 }

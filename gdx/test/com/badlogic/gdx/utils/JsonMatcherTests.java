@@ -206,7 +206,7 @@ public class JsonMatcherTests {
 		test( // (*) for single array values
 			json, //
 			"*/devices/*/device_status/(*)", //
-			"{=envoy.global.ok}"); // Only first for single match.
+			"{=prop.waiting}"); // Last for (*) since it could match multiple.
 
 		test( // (*) for array values
 			json, //
@@ -527,7 +527,7 @@ public class JsonMatcherTests {
 		test( // (*) with nested objects
 			"{data:{a:{deep:1},b:{deep:2}}}", //
 			"data/(*)", //
-			"{a={deep=1}}"); // First
+			"{a={deep=1}, b={deep=2}}");
 
 		test( // (*@) with nested objects
 			"{data:{a:{deep:1},b:{deep:2}}}", //
@@ -615,7 +615,7 @@ public class JsonMatcherTests {
 		test( // ** collecting all with *
 			"{a:1,b:{c:2,d:{e:3}}}", //
 			"**/(*)", //
-			"{a=1}"); // First
+			"{a=1, b={d={e=3}, c=2}}");
 
 		test( // ** collecting all with *@
 			"{a:1,b:{c:2,d:{e:3}}}", //
