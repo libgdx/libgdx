@@ -47,7 +47,6 @@ import com.badlogic.gdx.tests.g3d.shaders.MultiPassShader;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.StringBuilder;
 
 public class ShaderCollectionTest extends BaseG3dHudTest {
 	/** Desktop only: Set this to an absolute path to load the shader files from an alternative location. */
