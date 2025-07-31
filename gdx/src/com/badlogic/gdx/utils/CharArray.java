@@ -460,6 +460,7 @@ public class CharArray implements CharSequence, Appendable {
 	/** Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
 	 * taken. */
 	public void truncate (int newSize) {
+		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (size > newSize) size = newSize;
 	}
 
@@ -489,7 +490,6 @@ public class CharArray implements CharSequence, Appendable {
 
 	/** Appends a char value to this CharArray. */
 	public CharArray append (char value) {
-		char[] items = this.items;
 		require(1);
 		items[size++] = value;
 		return this;
@@ -534,18 +534,19 @@ public class CharArray implements CharSequence, Appendable {
 	}
 
 	/** Appends the contents of a char buffer to this CharArray. Appending null will call {@link #appendNull()}.
-	 * @param startIndex the start index, inclusive */
-	public CharArray append (@Null CharBuffer buf, int startIndex, int len) {
+	 * @param start the start index, inclusive
+	 * @param end the end index, exclusive */
+	public CharArray append (@Null CharBuffer buf, int start, int end) {
 		if (buf == null) return appendNull();
 		if (buf.hasArray()) {
 			int totalLength = buf.remaining();
-			if (startIndex < 0 || startIndex > totalLength) throw new IndexOutOfBoundsException("startIndex must be valid");
-			if (len < 0 || startIndex + len > totalLength) throw new IndexOutOfBoundsException("length must be valid");
+			if (start < 0 || end < 0 || start > end || end > totalLength) throw new IndexOutOfBoundsException();
+			int len = end - start;
 			require(len);
-			System.arraycopy(buf.array(), buf.arrayOffset() + buf.position() + startIndex, items, size, len);
+			System.arraycopy(buf.array(), buf.arrayOffset() + buf.position() + start, items, size, len);
 			size += len;
 		} else
-			append(buf.toString(), startIndex, len);
+			append(buf.toString(), start, end);
 		return this;
 	}
 
@@ -560,13 +561,13 @@ public class CharArray implements CharSequence, Appendable {
 	}
 
 	/** Appends part of a CharSequence to this CharArray. Appending null will call {@link #appendNull()}.
-	 * @param startIndex the start index, inclusive
-	 * @param endIndex the end index, exclusive */
-	public CharArray append (@Null CharSequence seq, int startIndex, int endIndex) {
+	 * @param start the start index, inclusive
+	 * @param end the end index, exclusive */
+	public CharArray append (@Null CharSequence seq, int start, int end) {
 		if (seq == null) return appendNull();
-		if (endIndex <= 0) throw new IndexOutOfBoundsException("endIndex must be valid");
-		if (startIndex >= endIndex) throw new IndexOutOfBoundsException("endIndex must be greater than startIndex");
-		return append(seq.toString(), startIndex, endIndex - startIndex);
+		if (start < 0 || end < 0 || start > end || end > seq.length()) 
+			throw new IndexOutOfBoundsException();
+		return append(seq.toString(), start, end);
 	}
 
 	/** Appends a double value to this CharArray using {@code String.valueOf}. */
@@ -704,17 +705,17 @@ public class CharArray implements CharSequence, Appendable {
 	}
 
 	/** Appends part of a string to this CharArray. Appending null will call {@link #appendNull()}.
-	 * @param startIndex the start index, inclusive
+	 * @param start the start index, inclusive
 	 * @throws IndexOutOfBoundsException if {@code startIndex} is not in the range {@code 0 <= startIndex <= str.length()}
 	 * @throws IndexOutOfBoundsException if {@code len < 0}
 	 * @throws IndexOutOfBoundsException if {@code startIndex + len > str.length()} */
-	public CharArray append (@Null String str, int startIndex, int len) {
+	public CharArray append (@Null String str, int start, int end) {
 		if (str == null) return appendNull();
-		if (startIndex < 0 || startIndex > str.length()) throw new IndexOutOfBoundsException("startIndex must be valid");
-		if (len < 0 || startIndex + len > str.length()) throw new IndexOutOfBoundsException("length must be valid");
+		if (start < 0 || end < 0 || start > end || end > str.length()) throw new IndexOutOfBoundsException();
+		int len = end - start;
 		if (len > 0) {
 			require(len);
-			str.getChars(startIndex, startIndex + len, items, size);
+			str.getChars(start, end, items, size);
 			size += len;
 		}
 		return this;
@@ -730,14 +731,15 @@ public class CharArray implements CharSequence, Appendable {
 	}
 
 	/** Appends part of a string buffer to this CharArray. Appending null will call {@link #appendNull()}.
-	 * @param startIndex the start index, inclusive */
-	public CharArray append (@Null StringBuffer str, int startIndex, int len) {
+	 * @param start the start index, inclusive
+	 * @param end the end index, exclusive */
+	public CharArray append (@Null StringBuffer str, int start, int end) {
 		if (str == null) return appendNull();
-		if (startIndex < 0 || startIndex > str.length()) throw new IndexOutOfBoundsException("startIndex must be valid");
-		if (len < 0 || startIndex + len > str.length()) throw new IndexOutOfBoundsException("length must be valid");
+		if (start < 0 || end < 0 || start > end || end > str.length()) throw new IndexOutOfBoundsException();
+		int len = end - start;
 		if (len > 0) {
 			require(len);
-			str.getChars(startIndex, startIndex + len, items, size);
+			str.getChars(start, end, items, size);
 			size += len;
 		}
 		return this;
@@ -753,14 +755,15 @@ public class CharArray implements CharSequence, Appendable {
 	}
 
 	/** Appends part of a StringBuilder to this CharArray. Appending null will call {@link #appendNull()}.
-	 * @param startIndex the start index, inclusive */
-	public CharArray append (@Null StringBuilder str, int startIndex, int len) {
+	 * @param start the start index, inclusive
+	 * @param end the end index, exclusive */
+	public CharArray append (@Null StringBuilder str, int start, int end) {
 		if (str == null) return appendNull();
-		if (startIndex < 0 || startIndex > str.length()) throw new IndexOutOfBoundsException("startIndex must be valid");
-		if (len < 0 || startIndex + len > str.length()) throw new IndexOutOfBoundsException("length must be valid");
+		if (start < 0 || end < 0 || start > end || end > str.length()) throw new IndexOutOfBoundsException();
+		int len = end - start;
 		if (len > 0) {
 			require(len);
-			str.getChars(startIndex, startIndex + len, items, size);
+			str.getChars(start, end, items, size);
 			size += len;
 		}
 		return this;
@@ -776,14 +779,15 @@ public class CharArray implements CharSequence, Appendable {
 	}
 
 	/** Appends part of a CharArray to this CharArray. Appending null will call {@link #appendNull()}.
-	 * @param startIndex the start index, inclusive */
-	public CharArray append (@Null CharArray str, int startIndex, int len) {
+	 * @param start the start index, inclusive
+	 * @param end the end index, exclusive */
+	public CharArray append (@Null CharArray str, int start, int end) {
 		if (str == null) return appendNull();
-		if (startIndex < 0 || startIndex > str.size) throw new IndexOutOfBoundsException("startIndex must be valid");
-		if (len < 0 || startIndex + len > str.size) throw new IndexOutOfBoundsException("length must be valid");
+		if (start < 0 || end < 0 || start > end || end > str.size) throw new IndexOutOfBoundsException();
+		int len = end - start;
 		if (len > 0) {
 			require(len);
-			str.getChars(startIndex, startIndex + len, items, size);
+			str.getChars(start, end, items, size);
 			size += len;
 		}
 		return this;
@@ -941,9 +945,10 @@ public class CharArray implements CharSequence, Appendable {
 	}
 
 	/** Appends part of a string followed by a new line to this CharArray. Appending null will call {@link #appendNull()}.
-	 * @param startIndex the start index, inclusive */
-	public CharArray appendln (@Null String str, int startIndex, int len) {
-		return append(str, startIndex, len).appendNewLine();
+	 * @param start the start index, inclusive
+	 * @param end the end index, exclusive */
+	public CharArray appendln (@Null String str, int start, int end) {
+		return append(str, start, end).appendNewLine();
 	}
 
 	/** Appends a string buffer followed by a new line to this CharArray. Appending null will call {@link #appendNull()}. */
@@ -952,9 +957,10 @@ public class CharArray implements CharSequence, Appendable {
 	}
 
 	/** Appends part of a string buffer followed by a new line to this CharArray. Appending null will call {@link #appendNull()}.
-	 * @param startIndex the start index, inclusive */
-	public CharArray appendln (@Null StringBuffer str, int startIndex, int len) {
-		return append(str, startIndex, len).appendNewLine();
+	 * @param start the start index, inclusive
+	 * @param end the end index, exclusive */
+	public CharArray appendln (@Null StringBuffer str, int start, int end) {
+		return append(str, start, end).appendNewLine();
 	}
 
 	/** Appends a string builder followed by a new line to this CharArray. Appending null will call {@link #appendNull()}. */
@@ -963,9 +969,10 @@ public class CharArray implements CharSequence, Appendable {
 	}
 
 	/** Appends part of a string builder followed by a new line to this CharArray. Appending null will call {@link #appendNull()}.
-	 * @param startIndex the start index, inclusive */
-	public CharArray appendln (@Null StringBuilder str, int startIndex, int len) {
-		return append(str, startIndex, len).appendNewLine();
+	 * @param start the start index, inclusive
+	 * @param end the end index, exclusive */
+	public CharArray appendln (@Null StringBuilder str, int start, int end) {
+		return append(str, start, end).appendNewLine();
 	}
 
 	/** Appends another CharArray followed by a new line to this CharArray. Appending null will call {@link #appendNull()}. */
@@ -974,9 +981,10 @@ public class CharArray implements CharSequence, Appendable {
 	}
 
 	/** Appends part of a CharArray followed by a new line to this CharArray. Appending null will call {@link #appendNull()}.
-	 * @param startIndex the start index, inclusive */
-	public CharArray appendln (@Null CharArray str, int startIndex, int len) {
-		return append(str, startIndex, len).appendNewLine();
+	 * @param start the start index, inclusive
+	 * @param end the end index, exclusive */
+	public CharArray appendln (@Null CharArray str, int start, int end) {
+		return append(str, start, end).appendNewLine();
 	}
 
 	/** Appends {@code \n}. */
@@ -991,13 +999,13 @@ public class CharArray implements CharSequence, Appendable {
 
 	/** Appends {@code "null"}. */
 	public CharArray appendNull () {
+		require(4);
 		int len = size;
-		size = len + 4;
-		require(size);
 		items[len] = 'n';
 		items[len + 1] = 'u';
 		items[len + 2] = 'l';
 		items[len + 3] = 'l';
+		size = len + 4;
 		return this;
 	}
 
@@ -1527,8 +1535,8 @@ public class CharArray implements CharSequence, Appendable {
 
 	public void insert (int index, char value) {
 		validateIndex(index);
-		char[] items = this.items;
 		require(1);
+		char[] items = this.items;
 		if (ordered)
 			System.arraycopy(items, index, items, index + 1, size - index);
 		else
@@ -2048,7 +2056,7 @@ public class CharArray implements CharSequence, Appendable {
 	/** Validates that an index is in the range {@code 0 <= index <= size}.
 	 * @throws IndexOutOfBoundsException Thrown when the index is not the range {@code 0 <= index <= size}. */
 	protected void validateIndex (int index) {
-		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
+		if (index < 0 || index > size) throw new IndexOutOfBoundsException("index: " + index + ", size: " + size);
 	}
 
 	/** Validates parameters defining a range of this CharArray.
@@ -2057,9 +2065,9 @@ public class CharArray implements CharSequence, Appendable {
 	 * @return A valid end index.
 	 * @throws IndexOutOfBoundsException if the index is invalid */
 	protected int validateRange (int start, int end) {
-		if (start < 0) throw new IndexOutOfBoundsException("start must be >= 0: " + start);
-		if (end > size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
-		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);
+		if (start < 0) throw new IndexOutOfBoundsException("start: " + start);
+		if (end > size) throw new IndexOutOfBoundsException("end: " + end + ", size: " + size);
+		if (start > end) throw new IndexOutOfBoundsException("start: " + start + ", end: " + end);
 		return end;
 	}
 
