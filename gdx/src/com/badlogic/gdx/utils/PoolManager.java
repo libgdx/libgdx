@@ -82,4 +82,11 @@ public class PoolManager {
 		}
 		pool.free(object);
 	}
+
+	/** Clears all contents of the managed pools */
+	public void clear () {
+		for (Pool<?> pool : typePools.values()) {
+			pool.clear();
+		}
+	}
 }
