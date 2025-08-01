@@ -120,9 +120,9 @@ public class Button extends Table implements Disableable, Styleable<Button.Butto
 		this.isChecked = isChecked;
 
 		if (fireEvent) {
-			ChangeEvent changeEvent = poolManager.obtain(ChangeEvent.class);
+			ChangeEvent changeEvent = POOL_MANAGER.obtain(ChangeEvent.class);
 			if (fire(changeEvent)) this.isChecked = !isChecked;
-			poolManager.free(changeEvent);
+			POOL_MANAGER.free(changeEvent);
 		}
 	}
 

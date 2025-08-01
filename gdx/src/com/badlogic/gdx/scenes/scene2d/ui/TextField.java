@@ -643,10 +643,10 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	boolean changeText (String oldText, String newText) {
 		if (newText.equals(oldText)) return false;
 		text = newText;
-		ChangeEvent changeEvent = poolManager.obtain(ChangeEvent.class);
+		ChangeEvent changeEvent = POOL_MANAGER.obtain(ChangeEvent.class);
 		boolean cancelled = fire(changeEvent);
 		if (cancelled) text = oldText;
-		poolManager.free(changeEvent);
+		POOL_MANAGER.free(changeEvent);
 		return !cancelled;
 	}
 

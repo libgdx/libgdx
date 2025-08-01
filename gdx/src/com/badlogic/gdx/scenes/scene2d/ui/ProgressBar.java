@@ -262,9 +262,9 @@ public class ProgressBar extends Widget implements Disableable, Styleable<Progre
 		this.value = value;
 
 		if (programmaticChangeEvents) {
-			ChangeEvent changeEvent = poolManager.obtain(ChangeEvent.class);
+			ChangeEvent changeEvent = POOL_MANAGER.obtain(ChangeEvent.class);
 			boolean cancelled = fire(changeEvent);
-			poolManager.free(changeEvent);
+			POOL_MANAGER.free(changeEvent);
 			if (cancelled) {
 				this.value = oldValue;
 				return false;

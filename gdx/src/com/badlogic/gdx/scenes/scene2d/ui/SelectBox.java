@@ -192,7 +192,7 @@ public class SelectBox<T> extends Widget implements Disableable, Styleable<Selec
 		} else
 			prefHeight = font.getCapHeight() - font.getDescent() * 2;
 
-		Pool<GlyphLayout> layoutPool = poolManager.getPool(GlyphLayout.class);
+		Pool<GlyphLayout> layoutPool = POOL_MANAGER.getPool(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
 		if (selectedPrefWidth) {
 			prefWidth = 0;
@@ -326,7 +326,7 @@ public class SelectBox<T> extends Widget implements Disableable, Styleable<Selec
 	/** Returns the pref width of the select box if the widest item was selected, for use when
 	 * {@link #setSelectedPrefWidth(boolean)} is true. */
 	public float getMaxSelectedPrefWidth () {
-		Pool<GlyphLayout> layoutPool = poolManager.getPool(GlyphLayout.class);
+		Pool<GlyphLayout> layoutPool = POOL_MANAGER.getPool(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
 		float width = 0;
 		for (int i = 0; i < items.size; i++) {
