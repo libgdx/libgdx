@@ -222,11 +222,11 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	 * @return true if the change should be undone. */
 	public boolean fireChangeEvent () {
 		if (actor == null) return false;
-		ChangeEvent changeEvent = actor.getPoolManager().obtain(ChangeEvent.class);
+		ChangeEvent changeEvent = Actor.POOL_MANAGER.obtain(ChangeEvent.class);
 		try {
 			return actor.fire(changeEvent);
 		} finally {
-			actor.getPoolManager().free(changeEvent);
+			Actor.POOL_MANAGER.free(changeEvent);
 		}
 	}
 

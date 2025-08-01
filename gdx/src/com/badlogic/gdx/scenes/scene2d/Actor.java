@@ -57,6 +57,9 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * @author mzechner
  * @author Nathan Sweet */
 public class Actor {
+
+	static public PoolManager POOL_MANAGER = new PoolManager(Rectangle::new, Array::new, GlyphLayout::new, ChangeEvent::new);
+
 	private @Null Stage stage;
 	@Null Group parent;
 	private final DelayedRemovalArray<EventListener> listeners = new DelayedRemovalArray(0);
@@ -73,8 +76,6 @@ public class Actor {
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
 	private @Null Object userObject;
-
-	protected PoolManager poolManager = new PoolManager(Rectangle::new, Array::new, GlyphLayout::new, ChangeEvent::new);
 
 	/** Draws the actor. The batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
@@ -132,7 +133,7 @@ public class Actor {
 		event.setTarget(this);
 
 		// Collect ascendants so event propagation is unaffected by hierarchy changes.
-		Array<Group> ascendants = poolManager.obtain(Array.class);
+		Array<Group> ascendants = POOL_MANAGER.obtain(Array.class);
 		Group parent = this.parent;
 		while (parent != null) {
 			ascendants.add(parent);
@@ -166,7 +167,7 @@ public class Actor {
 			return event.isCancelled();
 		} finally {
 			ascendants.clear();
-			poolManager.free(ascendants);
+			POOL_MANAGER.free(ascendants);
 		}
 	}
 
@@ -838,16 +839,16 @@ public class Actor {
 		tableBounds.y = y;
 		tableBounds.width = width;
 		tableBounds.height = height;
-		Rectangle scissorBounds = poolManager.obtain(Rectangle.class);
+		Rectangle scissorBounds = POOL_MANAGER.obtain(Rectangle.class);
 		stage.calculateScissors(tableBounds, scissorBounds);
 		if (ScissorStack.pushScissors(scissorBounds)) return true;
-		poolManager.free(scissorBounds);
+		POOL_MANAGER.free(scissorBounds);
 		return false;
 	}
 
 	/** Ends clipping begun by {@link #clipBegin(float, float, float, float)}. */
 	public void clipEnd () {
-		poolManager.free(ScissorStack.popScissors());
+		POOL_MANAGER.free(ScissorStack.popScissors());
 	}
 
 	/** Transforms the specified point in screen coordinates to the actor's local coordinate system.
@@ -993,9 +994,5 @@ public class Actor {
 			if (dotIndex != -1) name = name.substring(dotIndex + 1);
 		}
 		return name;
-	}
-
-	public PoolManager getPoolManager () {
-		return poolManager;
 	}
 }

@@ -14,6 +14,9 @@ public class PoolManager {
 
 	}
 
+	/**
+	 * Example: `new PoolManager(MyClass1::new, MyClass2::new);
+	 */
 	public PoolManager (PoolSupplier<?>... poolSuppliers) {
 		for (PoolSupplier<?> poolSupplier : poolSuppliers) {
 			addPool(poolSupplier);
@@ -27,11 +30,12 @@ public class PoolManager {
 	}
 
 	/** Registers a new pool with the given supplier. Will throw an exception, if a pool for the same class is already
-	 * registered */
+	 * registered.
+	 * This can be used like `PoolManager#addPoll(MyClass::new);`*/
 	public <T> void addPool (PoolSupplier<T> poolSupplier) {
 		Class<T> clazz = (Class<T>)poolSupplier.get().getClass();
 		if (typePools.containsKey(clazz)) {
-			throw new GdxRuntimeException("Attempt to add pool with already existing class: " + clazz);
+			throw new GdxRuntimeException("Attempt to add pool with already existing class: " + "register using PoolManager#addPool(" + clazz.getSimpleName() + "::new)");
 		}
 
 		typePools.put(clazz, new DefaultPool<>(poolSupplier));
@@ -41,7 +45,7 @@ public class PoolManager {
 	public <T> void addPool (Pool<T> pool) {
 		T object = pool.obtain();
 		if (typePools.containsKey(object.getClass())) {
-			throw new GdxRuntimeException("Attempt to add pool with already existing class: " + object.getClass());
+			throw new GdxRuntimeException("Attempt to add pool with already existing class: " + object.getClass() + ", register using PoolManager#addPool(" + object.getClass().getSimpleName() + "::new)");
 		}
 
 		typePools.put(object.getClass(), pool);
@@ -52,7 +56,7 @@ public class PoolManager {
 	public <T> Pool<T> getPool (Class<T> clazz) {
 		Pool<T> pool = (Pool<T>)typePools.get(clazz);
 		if (pool == null) {
-			throw new GdxRuntimeException("Attempt to get pool with unknown class: " + clazz);
+			throw new GdxRuntimeException("Attempt to get pool with unknown class: " + clazz + ", register using PoolManager#addPool(" + clazz.getSimpleName() + "::new)");
 		}
 		return pool;
 	}
@@ -62,7 +66,7 @@ public class PoolManager {
 	public <T> T obtain (Class<T> clazz) {
 		Pool<T> pool = (Pool<T>)typePools.get(clazz);
 		if (pool == null) {
-			throw new GdxRuntimeException("Attempt to get pooled object with unknown class: " + clazz);
+			throw new GdxRuntimeException("Attempt to get pooled object with unknown class: " + clazz + ", register using PoolManager#addPool(" + clazz.getSimpleName() + "::new)");
 		}
 		return pool.obtain();
 	}
@@ -72,7 +76,7 @@ public class PoolManager {
 	public <T> void free (T object) {
 		Pool<T> pool = (Pool<T>)typePools.get(object.getClass());
 		if (pool == null) {
-			throw new GdxRuntimeException("Attempt to free pooled object with unknown class: " + object.getClass());
+			throw new GdxRuntimeException("Attempt to free pooled object with unknown class: " + object.getClass() + ", register using PoolManager#addPool(" + object.getClass().getSimpleName() + "::new)");
 		}
 		pool.free(object);
 	}
