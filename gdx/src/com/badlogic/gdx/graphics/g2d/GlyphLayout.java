@@ -22,12 +22,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.DefaultPool;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.badlogic.gdx.utils.Pools;
 
 /** Stores {@link GlyphRun runs} of glyphs for a piece of text. The text may contain newlines and color markup tags.
  * <p>
@@ -45,7 +45,7 @@ import com.badlogic.gdx.utils.Pools;
  * @author Alexander Dorokhov
  * @author Thomas Creutzenberg */
 public class GlyphLayout implements Poolable {
-	static private final Pool<GlyphRun> glyphRunPool = Pools.get(GlyphRun.class);
+	static private final Pool<GlyphRun> glyphRunPool = new DefaultPool<>(GlyphRun::new);
 	static private final IntArray colorStack = new IntArray(4);
 	static private final float epsilon = 0.0001f;
 

@@ -42,7 +42,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
 
 /** A select box (aka a drop-down list) allows a user to choose one of a number of values from a list. When inactive, the selected
  * value is displayed. When activated, it shows the list of values that may be selected.
@@ -193,7 +192,7 @@ public class SelectBox<T> extends Widget implements Disableable, Styleable<Selec
 		} else
 			prefHeight = font.getCapHeight() - font.getDescent() * 2;
 
-		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
+		Pool<GlyphLayout> layoutPool = POOLS.getPool(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
 		if (selectedPrefWidth) {
 			prefWidth = 0;
@@ -327,13 +326,14 @@ public class SelectBox<T> extends Widget implements Disableable, Styleable<Selec
 	/** Returns the pref width of the select box if the widest item was selected, for use when
 	 * {@link #setSelectedPrefWidth(boolean)} is true. */
 	public float getMaxSelectedPrefWidth () {
-		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
+		Pool<GlyphLayout> layoutPool = POOLS.getPool(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
 		float width = 0;
 		for (int i = 0; i < items.size; i++) {
 			layout.setText(style.font, toString(items.get(i)));
 			width = Math.max(layout.width, width);
 		}
+		layoutPool.free(layout);
 		Drawable bg = style.background;
 		if (bg != null) width = Math.max(width + bg.getLeftWidth() + bg.getRightWidth(), bg.getMinWidth());
 		return width;

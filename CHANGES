@@ -1,5 +1,6 @@
 [1.13.6]
 - [BREAKING CHANGE] API: Pools changes in 1.13.5 have been partially reverted. Pools#get/Pools#obtain method return to requiring a Class parameter. Reflection is avoided by using pre-populated Pools for libgdx classes. See https://github.com/libgdx/libgdx/pull/7648
+- [BREAKING CHANGE] API: Pools class is now deprecated and not used internally. Some functionality can be restored by using the new `PoolManager` class
 - API Addition: Added JsonValue#toJson that takes a Writer.
 - API Addition: Added getProgrammaticChangeEvents() to scene2d.ui actors that have setProgrammaticChangeEvents.
 - Fixed crashes when reading the soft buttons bar height on Android.

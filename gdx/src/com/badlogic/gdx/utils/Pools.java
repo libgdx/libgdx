@@ -30,7 +30,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
 import com.badlogic.gdx.utils.DefaultPool.PoolSupplier;
 
 /** Stores a map of {@link Pool}s by type for convenient static access.
+ * @deprecated Use {@link PoolManager} for bundling pools instead
  * @author Nathan Sweet */
+@Deprecated
 public class Pools {
 	static private final ObjectMap<Class<?>, Pool<?>> typePools = new ObjectMap<>();
 	static public boolean WARN_ON_REFLECTION_POOL_CREATION = true;

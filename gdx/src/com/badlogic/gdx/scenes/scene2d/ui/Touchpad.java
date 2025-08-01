@@ -27,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.utils.Pools;
 
 /** An on-screen joystick. The movement area of the joystick is circular, centered on the touchpad, and its size determined by the
  * smaller touchpad dimension.
@@ -109,12 +108,12 @@ public class Touchpad extends Widget implements Styleable<Touchpad.TouchpadStyle
 			}
 		}
 		if (oldPercentX != knobPercent.x || oldPercentY != knobPercent.y) {
-			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			ChangeEvent changeEvent = POOLS.obtain(ChangeEvent.class);
 			if (fire(changeEvent)) {
 				knobPercent.set(oldPercentX, oldPercentY);
 				knobPosition.set(oldPositionX, oldPositionY);
 			}
-			Pools.free(changeEvent);
+			POOLS.free(changeEvent);
 		}
 	}
 

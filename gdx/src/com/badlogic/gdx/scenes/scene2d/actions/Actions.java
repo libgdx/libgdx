@@ -22,17 +22,54 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.utils.DefaultPool.PoolSupplier;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.PoolManager;
 
 /** Static convenience methods for using pooled actions, intended for static import.
  * @author Nathan Sweet */
 public class Actions {
 
+	public static final PoolManager ACTION_POOLS = new PoolManager();
+
+	static {
+		registerAction(AddAction::new);
+		registerAction(AddListenerAction::new);
+		registerAction(AfterAction::new);
+		registerAction(AlphaAction::new);
+		registerAction(ColorAction::new);
+		registerAction(DelayAction::new);
+		registerAction(FloatAction::new);
+		registerAction(IntAction::new);
+		registerAction(LayoutAction::new);
+		registerAction(MoveByAction::new);
+		registerAction(MoveToAction::new);
+		registerAction(ParallelAction::new);
+		registerAction(RemoveAction::new);
+		registerAction(RemoveActorAction::new);
+		registerAction(RemoveListenerAction::new);
+		registerAction(RepeatAction::new);
+		registerAction(RotateByAction::new);
+		registerAction(RotateToAction::new);
+		registerAction(RunnableAction::new);
+		registerAction(ScaleByAction::new);
+		registerAction(ScaleToAction::new);
+		registerAction(SequenceAction::new);
+		registerAction(SizeByAction::new);
+		registerAction(SizeToAction::new);
+		registerAction(TimeScaleAction::new);
+		registerAction(TouchableAction::new);
+		registerAction(VisibleAction::new);
+	}
+
+	static public <T extends Action> void registerAction (PoolSupplier<T> supplier) {
+		ACTION_POOLS.addPool(supplier);
+	}
+
 	/** Returns a new or pooled action of the specified type. */
 	static public <T extends Action> T action (Class<T> type) {
-		Pool<T> pool = Pools.get(type);
+		Pool<T> pool = ACTION_POOLS.getPool(type);
 		T action = pool.obtain();
 		action.setPool(pool);
 		return action;
