@@ -58,7 +58,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * @author Nathan Sweet */
 public class Actor {
 
-	static public PoolManager POOL_MANAGER = new PoolManager(Rectangle::new, Array::new, GlyphLayout::new, ChangeEvent::new);
+	static public PoolManager POOLS = new PoolManager(Rectangle::new, Array::new, GlyphLayout::new, ChangeEvent::new);
 
 	private @Null Stage stage;
 	@Null Group parent;
@@ -133,7 +133,7 @@ public class Actor {
 		event.setTarget(this);
 
 		// Collect ascendants so event propagation is unaffected by hierarchy changes.
-		Array<Group> ascendants = POOL_MANAGER.obtain(Array.class);
+		Array<Group> ascendants = POOLS.obtain(Array.class);
 		Group parent = this.parent;
 		while (parent != null) {
 			ascendants.add(parent);
@@ -167,7 +167,7 @@ public class Actor {
 			return event.isCancelled();
 		} finally {
 			ascendants.clear();
-			POOL_MANAGER.free(ascendants);
+			POOLS.free(ascendants);
 		}
 	}
 
@@ -839,16 +839,16 @@ public class Actor {
 		tableBounds.y = y;
 		tableBounds.width = width;
 		tableBounds.height = height;
-		Rectangle scissorBounds = POOL_MANAGER.obtain(Rectangle.class);
+		Rectangle scissorBounds = POOLS.obtain(Rectangle.class);
 		stage.calculateScissors(tableBounds, scissorBounds);
 		if (ScissorStack.pushScissors(scissorBounds)) return true;
-		POOL_MANAGER.free(scissorBounds);
+		POOLS.free(scissorBounds);
 		return false;
 	}
 
 	/** Ends clipping begun by {@link #clipBegin(float, float, float, float)}. */
 	public void clipEnd () {
-		POOL_MANAGER.free(ScissorStack.popScissors());
+		POOLS.free(ScissorStack.popScissors());
 	}
 
 	/** Transforms the specified point in screen coordinates to the actor's local coordinate system.

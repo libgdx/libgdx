@@ -178,7 +178,7 @@ public class List<T> extends Widget implements Cullable, Styleable<List.ListStyl
 		itemHeight += selectedDrawable.getTopHeight() + selectedDrawable.getBottomHeight();
 
 		prefWidth = 0;
-		Pool<GlyphLayout> layoutPool = POOL_MANAGER.getPool(GlyphLayout.class);
+		Pool<GlyphLayout> layoutPool = POOLS.getPool(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
 		for (int i = 0; i < items.size; i++) {
 			layout.setText(font, toString(items.get(i)));

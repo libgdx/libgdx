@@ -30,25 +30,20 @@ public class PoolManager {
 	/** Registers a new pool with the given supplier. Will throw an exception, if a pool for the same class is already registered.
 	 * This can be used like `PoolManager#addPoll(MyClass::new);` */
 	public <T> void addPool (PoolSupplier<T> poolSupplier) {
-		Class<T> clazz = (Class<T>)poolSupplier.get().getClass();
-		if (typePools.containsKey(clazz)) {
-			throw new GdxRuntimeException("Attempt to add pool with already existing class: " + "register using PoolManager#addPool("
-				+ clazz.getSimpleName() + "::new)");
-		}
-
-		typePools.put(clazz, new DefaultPool<>(poolSupplier));
+		addPool(new DefaultPool<>(poolSupplier));
 	}
 
 	/** Registers the new pool. Will throw an exception, if a pool for the same class is already registered */
 	public <T> void addPool (Pool<T> pool) {
 		T object = pool.obtain();
-		if (typePools.containsKey(object.getClass())) {
-			throw new GdxRuntimeException("Attempt to add pool with already existing class: " + object.getClass()
-				+ ", register using PoolManager#addPool(" + object.getClass().getSimpleName() + "::new)");
-		}
-
-		typePools.put(object.getClass(), pool);
+		Class<T> clazz = (Class<T>)object.getClass();
 		pool.free(object);
+
+		Pool<?> oldPool = typePools.put(clazz, pool);
+		if (oldPool != null) {
+			throw new GdxRuntimeException("Attempt to add pool with already existing class: " + clazz
+				+ ", register using PoolManager#addPool(" + clazz.getSimpleName() + "::new)");
+		}
 	}
 
 	/** Returns the pool registered for the class. Will throw an exception, if no pool for this class is registered */

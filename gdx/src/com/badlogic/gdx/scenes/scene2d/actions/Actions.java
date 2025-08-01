@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.PoolManager;
  * @author Nathan Sweet */
 public class Actions {
 
-	public static final PoolManager ACTION_POOL_MANAGER = new PoolManager();
+	public static final PoolManager ACTION_POOLS = new PoolManager();
 
 	static {
 		registerAction(AddAction::new);
@@ -64,12 +64,12 @@ public class Actions {
 	}
 
 	static public <T extends Action> void registerAction (PoolSupplier<T> supplier) {
-		ACTION_POOL_MANAGER.addPool(supplier);
+		ACTION_POOLS.addPool(supplier);
 	}
 
 	/** Returns a new or pooled action of the specified type. */
 	static public <T extends Action> T action (Class<T> type) {
-		Pool<T> pool = ACTION_POOL_MANAGER.getPool(type);
+		Pool<T> pool = ACTION_POOLS.getPool(type);
 		T action = pool.obtain();
 		action.setPool(pool);
 		return action;
