@@ -2239,7 +2239,7 @@ public class CharArray implements CharSequence, Appendable {
 		public long skip (long n) {
 			if (pos + n > size) n = size - pos;
 			if (n < 0) return 0;
-			pos = Math.addExact(pos, Math.toIntExact(n));
+			pos += (int)n;
 			return n;
 		}
 	}
