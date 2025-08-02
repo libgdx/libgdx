@@ -139,7 +139,7 @@ public class JsonString {
 	}
 
 	public void reset () {
-		buffer.clear();
+		buffer.setLength(0);
 		stack.clear();
 		current = null;
 		named = false;

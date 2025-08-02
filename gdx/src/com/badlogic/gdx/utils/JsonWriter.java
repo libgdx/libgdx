@@ -187,20 +187,18 @@ public class JsonWriter extends Writer {
 			if (value == null) return "null";
 			String string = value.toString();
 			if (value instanceof Number || value instanceof Boolean) return string;
-			StringBuilder buffer = new StringBuilder(string);
-			buffer.replace('\\', "\\\\").replace('\r', "\\r").replace('\n', "\\n").replace('\t', "\\t");
+			StringBuilder buffer = escape(string);
 			if (this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
 				&& !string.contains("//") && !string.contains("/*")) {
 				int length = buffer.length();
 				if (length > 0 && buffer.charAt(length - 1) != ' ' && minimalValuePattern.matcher(buffer).matches())
 					return buffer.toString();
 			}
-			return '"' + buffer.replace('"', "\\\"").toString() + '"';
+			return '"' + buffer.toString().replace("\"", "\\\"") + '"';
 		}
 
 		public String quoteName (String value) {
-			StringBuilder buffer = new StringBuilder(value);
-			buffer.replace('\\', "\\\\").replace('\r', "\\r").replace('\n', "\\n").replace('\t', "\\t");
+			StringBuilder buffer = escape(value);
 			switch (this) {
 			case minimal:
 				if (!value.contains("//") && !value.contains("/*") && minimalNamePattern.matcher(buffer).matches())
@@ -208,7 +206,32 @@ public class JsonWriter extends Writer {
 			case javascript:
 				if (javascriptPattern.matcher(buffer).matches()) return buffer.toString();
 			}
-			return '"' + buffer.replace('"', "\\\"").toString() + '"';
+			return '"' + buffer.toString().replace("\"", "\\\"") + '"';
+		}
+
+		static private StringBuilder escape (String value) {
+			StringBuilder buffer = new StringBuilder(value.length() + 6);
+			String quote;
+			for (int i = 0; i < value.length(); i++) {
+				char c = value.charAt(i);
+				switch (c) {
+				case '\\':
+					buffer.append("\\\\");
+					break;
+				case '\r':
+					buffer.append("\\r");
+					break;
+				case '\n':
+					buffer.append("\\n");
+					break;
+				case '\t':
+					buffer.append("\\t");
+					break;
+				default:
+					buffer.append(c);
+				}
+			}
+			return buffer;
 		}
 	}
 }
