@@ -1016,12 +1016,12 @@ public class JsonMatcherTests {
 		test( //
 			"{a:1,b:2,c:3}", //
 			"()", //
-			"c"); // Last
+			"a"); // First
 
 		test( // Nested
 			"{object:{a:1,b:2,c:3}}", //
 			"object/()", //
-			"c");
+			"a"); // First
 
 		test( // Array values (doesn't have keys)
 			"[a,b,c]", //

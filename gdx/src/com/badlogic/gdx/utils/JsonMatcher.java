@@ -30,7 +30,7 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * <li>{@code **} Matches zero or more objects, arrays, or fields.
  * </ul>
  * 
- * <h4>Capture</h4> Surround any match with parenthesis to capture that value in a map.
+ * <h4>Capture</h4> Surround any match with parenthesis to capture that value.
  * <ul>
  * <li>{@code (name)} Captures field "name".
  * <li>{@code (a),b,(c,d)} Captures multiple fields.
@@ -42,19 +42,20 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * <li>{@code devices/(id,name)} Without {@code @} values are processed once at the end and only the first values matched are
  * captured.
  * <li>{@code devices/(id@,name@)} Process "id" and "name" as soon as each is captured.
+ * <li>{@code devices/(id,name)@} Same as {@code (id@,name@)}.
  * <li>{@code devices@/(id,name)} Process "id" and "name" as a pair for each device.
  * <li>{@code *@/(id,name)} Any match can be annotated to process.
- * <li>{@code **@/(id,name)} All captures after {@code **@} work differently, they are processed as soon as each is captured.
+ * <li>{@code **@/(id,name)} All captures after {@code **@} are processed as soon as each is captured.
  * </ul>
  * 
  * <h4>Arrays</h4> Arrays are captured as-is:
  * <ul>
  * <li>{@code data/(items)} with <code>{data:{items:[1,2,3]}}</code> gives: <code>{items=[1,2,3]}</code>
  * </ul>
- * Use {@code []} in a capture to collect it into an array rather than as a single value.
+ * Use {@code []} in a capture to collect into an array rather than as a single value.
  * <ul>
- * <li><code>*&#47;(id)</code> with <code>{first:{id:1},second:{id:2}}</code> gives: <code>{id=1}</code> (parsing stops after
- * first match)
+ * <li><code>*&#47;(id)</code> with <code>{first:{id:1},second:{id:2}}</code> gives: <code>{id=1}</code> (parsing ends after first
+ * match)
  * <li><code>*&#47;(id[])</code> gives: <code>{id=[1, 2]}</code> (all matches collected in an array)
  * </ul>
  * 
@@ -67,20 +68,21 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * <li>{@code users} matches the <code>users:[</code> array. The field name and value are matched together.
  * <li>{@code @} processes captured values at the end of each array item.
  * <li>{@code (name)} captures the "name" field and value.
- * <li>Result: processors are called with <code>{name=nate}</code> and again with <code>{name=iva}</code>.
+ * <li>Result: Processors are called with <code>nate</code> and again with <code>iva</code>.
  * </ol>
  * <p>
  * <code>{config:{port:8081}}</code><br>
  * Get the first port from "config" found at any depth: <code>**&#47;config/(port)</code><br>
- * Result: processors are called with: <code>{port=8081}</code>
+ * Result: Processors are called with: <code>8081</code>
  * <p>
  * <code>{services:[{status:up},{status:down},{status:failed}]}</code><br>
  * Get all service statuses in an array: <code>services/*&#47;(status[])</code><br>
- * Result: processors are called with: <code>{status=[up, down, failed]}</code>
+ * Result: Processors are called with: <code>[up, down, failed]</code>
  * <p>
  * <code>{items:[{id:123,type:cookies},{id:456,type:cake}]}</code><br>
  * Process each "id" and "type" pair: <code>items@/(id,type)</code><br>
- * Result: processors are called with: <code>{id=123,type=cookies}</code> and <code>{id=456,type=cake}</code>
+ * Result: Since there are multiple captures, processors are called with an object: <code>{id=123,type=cookies}</code> and
+ * <code>{id=456,type=cake}</code>
  * 
  * <h4>Escaping</h4> Use special characters <code>/,*@()[]',\</code> by surrounding them with single quotes.
  * <ul>
@@ -90,8 +92,8 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * 
  * <h4>Keys</h4> Capture keys using {@code ()}.
  * <ul>
- * <li>{@code object/()} with <code>{object:{a:1,b:2,c:3}}</code> gives: <code>{=c}</code> (last key overwrites others)
- * <li>{@code object/()[]} gives: <code>{=[a,b,c]}</code> (all keys collected in an array)
+ * <li>{@code object/()} with <code>{object:{a:1,b:2,c:3}}</code> gives: <code>a</code> (parsing ends after first match)
+ * <li>{@code object/()[]} gives: <code>[a,b,c]</code> (all keys collected in an array)
  * </ul>
  * 
  * <h4>Behavior notes</h4>
@@ -99,9 +101,9 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * <li>reject() prevents further matching at this level or deeper, useful for filtering.
  * <li>clear() discards unprocessed captured values.
  * <li>end() prevents further matching and ends parsing. stop() does the same but also clears.
- * <li>If not capturing or processing {@code *}, {@code **}, or {@code []} parsing ends once all specified values are captured.
- * <li>The key for unnamed values (eg array items) is {@code ""}.
- * <li>A {@code ""} pattern captures the entire root under a {@code ""} key.
+ * <li>If not using {@code *@}, {@code **@}, or {@code []} parsing ends once all specified values are captured.
+ * <li>A single capture before processing provides the value directly, multiple captures provide an object.
+ * <li>A {@code ""} pattern captures the entire JSON document.
  * </ul>
  * @author Nathan Sweet */
 public class JsonMatcher extends JsonSkimmer {
@@ -525,10 +527,7 @@ public class JsonMatcher extends JsonSkimmer {
 			}
 			if (processEach) flags |= single;
 		}
-		if (keyCapture) {
-			flags |= keys;
-			stoppable = false;
-		}
+		if (keyCapture) flags |= keys;
 		if ((star || starStar) && (flags & process) != 0) stoppable = false;
 		return new Match(name, flags, star, starStar);
 	}
