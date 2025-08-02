@@ -84,7 +84,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		set(value);
 	}
 
-	/** Creates a deep copy of the specific value, except {@link #parent()}, {@link #next()}, and {@link #prev()} are not null. */
+	/** Creates a deep copy of the specific value, except {@link #parent()}, {@link #next()}, and {@link #prev()} are null. */
 	public JsonValue (JsonValue value) {
 		this(value, null);
 	}
@@ -1004,10 +1004,23 @@ public class JsonValue implements Iterable<JsonValue> {
 		this.prev = prev;
 	}
 
+	/** Sets the type and value to the specified JsonValue. */
+	public void set (JsonValue value) {
+		type = value.type;
+		stringValue = value.stringValue;
+		doubleValue = value.doubleValue;
+		longValue = value.longValue;
+	}
+
 	/** @param value May be null. */
 	public void set (@Null String value) {
 		stringValue = value;
 		type = value == null ? ValueType.nullValue : ValueType.stringValue;
+	}
+
+	public void setNull () {
+		stringValue = null;
+		type = ValueType.nullValue;
 	}
 
 	/** @param stringValue May be null if the string representation is the string value of the double (eg, no leading zeros). */

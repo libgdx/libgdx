@@ -25,13 +25,15 @@ import java.io.Reader;
 import java.util.Arrays;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonSkimmer.JsonToken.TokenType;
+import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 /** Lightweight event-based JSON parser. All values are provided as strings to reduce work when many values are ignored.
  * @author Nathan Sweet */
 public class JsonSkimmer {
 	final JsonToken nameString, value;
 	int[] stack = new int[8];
-	protected final StringBuilder buffer = new StringBuilder();
+	protected final CharArray buffer = new CharArray();
 
 	public JsonSkimmer () {
 		nameString = new JsonToken(buffer);
@@ -94,8 +96,6 @@ public class JsonSkimmer {
 		int cs, p = offset, pe = length, eof = pe, top = 0;
 		int[] stack = this.stack;
 
-		int s = 0;
-		boolean unescape = false, unquoted = false;
 		JsonToken nameString = this.nameString, value = this.value, string = value, name = null;
 		nameString.chars = data;
 		value.chars = data;
@@ -112,28 +112,6 @@ public class JsonSkimmer {
 				if (top == stack.length) stack = this.stack = Arrays.copyOf(stack, stack.length << 1);
 			}
 
-			action startName {
-				string = nameString; // Parse next string to nameString.
-				name = nameString; // Next element has a name.
-				if (debug) System.out.println("name start");
-			}
-			action string {
-				string.start = s;
-				string.length = p - s;
-				string.unescape = unescape;
-				string.unquoted = unquoted;
-				// s = p;
-			}
-			action endName {
-				string = value;
-			}
-			action endValue {
-				if (debug) System.out.println("value: " + name + "=" + value);
-				value(name, value);
-				if (stop) return;
-				name = null;
-				string = value;
-			}
 			action startObject {
 				if (debug) System.out.println("startObject: " + name);
 				push(name, true);
@@ -171,77 +149,156 @@ public class JsonSkimmer {
 						p++;
 					p++;
 				}
-				if (debug) System.out.println("comment " + new String(data, start - 1, p - (start - 1)));
+				if (debug) System.out.println("comment " + new String(data, start - 1, p - start + 2));
 			}
-			action unquotedChars {
-				if (debug) System.out.println("unquotedChars");
-				s = p;
-				unescape = false;
-				unquoted = true;
-				outer:
-				while (true) {
-					char ch = data[p];
-					switch (ch) {
-					case '\\':
-						unescape = true;
-						break;
-					case '/':
-						if (p + 1 < eof && (data[p + 1] == '/' || data[p + 1] == '*'))
-							break outer;
-						break;
-					case ':':
-						if (string == nameString) break outer;
-						break;
-					case '}':
-					case ']':
-					case ',':
-						if (string != nameString) break outer;
-						break;
-					case '\r':
-					case '\n':
-						break outer;
-					}
-					if (debug) System.out.println("unquotedChar (" + (string == nameString ? "name" : "value") + "): '" + ch + "'");
-					if (++p == eof) break;
-				}
-				p--;
-				while (Character.isSpace(data[p]))
-					p--;
-			}
-			action quotedChars {
-				if (debug) System.out.println("quotedChars");
-				s = ++p;
-				unescape = false;
-				unquoted = false;
+			action unquotedName {
+				if (debug) System.out.println("unquotedName");
+				int start = p;
+				string.start = start;
+				boolean ws = false;
 				outer:
 				while (true) {
 					switch (data[p]) {
 					case '\\':
-						unescape = true;
-						p++;
-						if (debug) System.out.println("quotedChar: '\\'");
+						string.unescape = true;
 						break;
-					case '"':
+					case '/':
+						if (p + 1 == eof) break;
+						char c = data[p + 1];
+						if (c == '/' || c == '*') break outer;
+						break;
+					case ' ':
+					case '\t':
+						ws = true;
+						break;
+					case ':':
+					case '\r':
+					case '\n':
 						break outer;
 					}
-					if (debug) System.out.println("quotedChar: '" + data[p] + "'");
+					if (debug) System.out.println("name char: '" + data[p] + "'");
 					p++;
 					if (p == eof) break;
 				}
 				p--;
+				if (ws) {
+					while (true) {
+						switch (data[p]) {
+						case ' ':
+						case '\t':
+							p--;
+							continue;
+						}
+						break;
+					}
+				}
+				string.length = p - start + 1;
+			}
+			action unquotedValue {
+				if (debug) System.out.println("unquotedValue");
+				int start = p;
+				string.start = start;
+				boolean ws = false;
+				outer:
+				while (true) {
+					switch (data[p]) {
+					case '\\':
+						string.unescape = true;
+						break;
+					case '/':
+						if (p + 1 == eof) break;
+						char c = data[p + 1];
+						if (c == '/' || c == '*') break outer;
+						break;
+					case ' ':
+					case '\t':
+						ws = true;
+						break;
+					case '\r':
+					case '\n':
+					case '}':
+					case ']':
+					case ',':
+						break outer;
+					}
+					if (debug) System.out.println("value char: '" + data[p] + "'");
+					p++;
+					if (p == eof) break;
+				}
+				p--;
+				if (ws) {
+					while (true) {
+						switch (data[p]) {
+						case ' ':
+						case '\t':
+							p--;
+							continue;
+						}
+						break;
+					}
+				}
+				string.length = p - start + 1;
+				string.type = TokenType.other;
+				if (string.length == 4) {
+					if (data[start] == 't' && data[start + 1] == 'r' && data[start + 2] == 'u' && data[start + 3] == 'e')
+						string.type = TokenType.trueValue;
+					else if (data[start] == 'n' && data[start + 1] == 'u' && data[start + 2] == 'l' && data[start + 3] == 'l')
+						string.type = TokenType.nullValue;
+				} else if (string.length == 5) {
+					if (data[start] == 'f' && data[start + 1] == 'a' && data[start + 2] == 'l' && data[start + 3] == 's'
+						&& data[start + 4] == 'e') string.type = TokenType.falseValue;
+				}
+			}
+			action quotedString {
+				if (debug) System.out.println("quotedString");
+				string.start = ++p;
+				outer:
+				while (true) {
+					switch (data[p]) {
+					case '\\':
+						string.unescape = true;
+						p++;
+						break;
+					case '"':
+						break outer;
+					}
+					if (debug) System.out.println("quoted char: '" + data[p] + "'");
+					p++;
+					if (p == eof) break;
+				}
+				string.length = p - string.start;
+			}
+			action startName {
+				name = nameString; // Next element has a name.
+				string = nameString; // Parse next string to nameString.
+				if (debug) System.out.println("name start " + p);
+			}
+			action endName {
+				if (debug) System.out.println("name: " + p + ", " + name);
+				nameString.unescape = false;
+				string = value;
+			}
+			action endValue {
+				if (debug) System.out.println("value: " + name + "=" + value);
+				value(name, value);
+				if (stop) return;
+				value.unescape = false;
+				value.type = TokenType.other;
+				name = null;
+				string = value;
 			}
 
-			comment = ('//' | '/*') @comment;
-			ws = [\r\n\t ] | comment;
+			comment = ("//" | "/*") @comment;
+			ws = [\t \r\n] | comment;
 			ws2 = [\t ] | comment;
-			comma = ',' | ([\r\n] ws* ','?);
-			quotedString = '"' @quotedChars %string '"';
-			nameString = quotedString | ^[":,}/\r\n\t ] >unquotedChars %string;
-			valueString = quotedString | ^[":,{[\]/\r\n\t ] >unquotedChars %string;
-			value = '{' @startObject | '[' @startArray | valueString %endValue;
-			nameValue = nameString >startName %endName ws* ':' ws* value;
-			object := ws* nameValue? ws2* <: (comma ws* nameValue ws2*)** :>> (','? ws* '}' @endObject);
-			array := ws* value? ws2* <: (comma ws* value ws2*)** :>> (','? ws* ']' @endArray);
+			comma = "," | ([\r\n] ws* ","?);
+			quotedString = '"' @quotedString;
+			nameString  = quotedString | (^[":,/\r\n\t }] >unquotedName);
+			valueString = quotedString | (^[":,/\r\n\t {[\]] >unquotedValue);
+			value = "{" @startObject | "[" @startArray | valueString %endValue;
+			nameValue = nameString >startName %endName ws* ":" ws* value;
+			object := ws* nameValue? ws2* <: (comma ws* nameValue ws2*)** :>> (","? ws* "}" @endObject);
+			array := ws* value? ws2* <: (comma ws* value ws2*)** :>> (","? ws* "]" @endArray);
 			main := ws* value ws*;
 
 			write init;
@@ -292,19 +349,14 @@ public class JsonSkimmer {
 	}
 
 	static public class JsonToken {
-		static public final JsonToken empty = new JsonToken(null) {
-			public String toString () {
-				return "";
-			}
-		};
-
-		final StringBuilder buffer;
+		final CharArray buffer;
 		public char[] chars;
 
 		public int start, length;
-		public boolean unquoted, unescape;
+		public boolean unescape;
+		public TokenType type = TokenType.other;
 
-		JsonToken (StringBuilder buffer) {
+		JsonToken (CharArray buffer) {
 			this.buffer = buffer;
 		}
 
@@ -320,61 +372,25 @@ public class JsonSkimmer {
 			return true;
 		}
 
-		/** Allocates an unescaped string. */
+		/** Allocates an unescaped string.
+		 * @return "null" if this token represents null. */
 		public String toString () {
+			if (type == TokenType.nullValue) return "null";
 			return unescape ? unescape() : new String(chars, start, length);
 		}
 
-		/** Returns true, false, null, Long, Double, or String. */
-		public Object decode () {
-			outer:
-			if (unquoted) {
-				int length = this.length;
-				if (length == 4) {
-					if (equals("true")) return Boolean.TRUE;
-					if (equals("null")) return null;
-				} else if (length == 5 && equals("false")) //
-					return Boolean.FALSE;
-				boolean couldBeDouble = false, couldBeLong = true;
-				char[] chars = this.chars;
-				for (int i = start, n = i + length; i < n; i++) {
-					switch (chars[i]) {
-					case '0':
-					case '1':
-					case '2':
-					case '3':
-					case '4':
-					case '5':
-					case '6':
-					case '7':
-					case '8':
-					case '9':
-					case '-':
-					case '+':
-						break;
-					case '.':
-					case 'e':
-					case 'E':
-						couldBeDouble = true;
-						couldBeLong = false;
-						break;
-					default:
-						break outer;
-					}
-				}
-				if (couldBeDouble) {
-					try {
-						return Double.parseDouble(toString());
-					} catch (NumberFormatException ignored) {
-					}
-				} else if (couldBeLong) {
-					try {
-						return Long.parseLong(toString());
-					} catch (NumberFormatException ignored) {
-					}
-				}
+		/** Returns a new JsonValue with {@link ValueType} of null, boolean, or string. */
+		public JsonValue value () {
+			switch (type) {
+			case nullValue:
+				return new JsonValue(ValueType.nullValue);
+			case trueValue:
+				return new JsonValue(true);
+			case falseValue:
+				return new JsonValue(false);
+			default:
+				return new JsonValue(toString());
 			}
-			return toString();
 		}
 
 		private boolean equals (String string) {
@@ -387,7 +403,7 @@ public class JsonSkimmer {
 
 		private String unescape () {
 			char[] chars = this.chars;
-			buffer.length = 0;
+			buffer.size = 0;
 			buffer.ensureCapacity(length + 16);
 			outer:
 			for (int i = start, n = i + length; i < n;) {
@@ -401,12 +417,12 @@ public class JsonSkimmer {
 				switch (c) {
 				case 'u':
 					if (i + 4 > n) throw new SerializationException("Illegal escape sequence: \\u");
-					buffer.length += Character.toChars( //
+					buffer.size += Character.toChars( //
 						(Character.digit(chars[i++], 16) << 12) //
 							| (Character.digit(chars[i++], 16) << 8) //
 							| (Character.digit(chars[i++], 16) << 4) //
 							| Character.digit(chars[i++], 16),
-						buffer.chars, buffer.length);
+						buffer.items, buffer.size);
 					continue outer;
 				case '"':
 				case '\\':
@@ -433,6 +449,10 @@ public class JsonSkimmer {
 				buffer.append(c);
 			}
 			return buffer.toString();
+		}
+
+		static public enum TokenType {
+			nullValue, trueValue, falseValue, other
 		}
 	}
 }

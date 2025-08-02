@@ -156,7 +156,7 @@ class PatternParser {
 									String name = new String(data, s, e - s);
 									if (quoted) name = name.substring(1, name.length() - 1);
 									if (escaped) name = name.replace("''", "'");
-									Match match = matcher.newMatch(name, brackets, at || processEach, c >= 0, keyCapture, star, starStar);
+									Match match = matcher.newMatch(name, brackets, at, processEach, c >= 0, keyCapture, star, starStar);
 									matches.add(match);
 
 									// All subsequent matches are processed right away.
@@ -175,16 +175,17 @@ class PatternParser {
 								// line 68 "PatternParser.rl"
 								{
 									brackets = true;
+									if (c < 0) throw new IllegalArgumentException("[] must be within a capture.");
 								}
 									break;
 								case 6:
-								// line 69 "PatternParser.rl"
+								// line 72 "PatternParser.rl"
 								{
 									at = true;
 								}
 									break;
 								case 7:
-								// line 70 "PatternParser.rl"
+								// line 73 "PatternParser.rl"
 								{
 									star = true;
 									keyCapture = true;
@@ -192,39 +193,39 @@ class PatternParser {
 								}
 									break;
 								case 8:
-								// line 75 "PatternParser.rl"
+								// line 78 "PatternParser.rl"
 								{
 									star = true;
 								}
 									break;
 								case 9:
-								// line 76 "PatternParser.rl"
+								// line 79 "PatternParser.rl"
 								{
 									starStar = true;
 								}
 									break;
 								case 10:
-								// line 78 "PatternParser.rl"
+								// line 81 "PatternParser.rl"
 								{
 									c = matches.size;
 								}
 									break;
 								case 11:
-								// line 79 "PatternParser.rl"
+								// line 82 "PatternParser.rl"
 								{
 									c = -1;
 									hasCapture = true;
 								}
 									break;
 								case 12:
-								// line 83 "PatternParser.rl"
+								// line 86 "PatternParser.rl"
 								{
 									for (int i = c, n = matches.size; i < n; i++)
 										matches.get(i).flags |= process;
 								}
 									break;
 								case 13:
-								// line 88 "PatternParser.rl"
+								// line 91 "PatternParser.rl"
 								{
 									Node node = matcher.newNode(matches.toArray(), processEach, backtrack, prev);
 									if (node.starStar) {
@@ -237,7 +238,7 @@ class PatternParser {
 									prev = node;
 								}
 									break;
-								// line 221 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+								// line 224 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 								}
 							}
 						}
@@ -275,7 +276,7 @@ class PatternParser {
 									String name = new String(data, s, e - s);
 									if (quoted) name = name.substring(1, name.length() - 1);
 									if (escaped) name = name.replace("''", "'");
-									Match match = matcher.newMatch(name, brackets, at || processEach, c >= 0, keyCapture, star, starStar);
+									Match match = matcher.newMatch(name, brackets, at, processEach, c >= 0, keyCapture, star, starStar);
 									matches.add(match);
 
 									// All subsequent matches are processed right away.
@@ -291,14 +292,14 @@ class PatternParser {
 								}
 									break;
 								case 11:
-								// line 79 "PatternParser.rl"
+								// line 82 "PatternParser.rl"
 								{
 									c = -1;
 									hasCapture = true;
 								}
 									break;
 								case 13:
-								// line 88 "PatternParser.rl"
+								// line 91 "PatternParser.rl"
 								{
 									Node node = matcher.newNode(matches.toArray(), processEach, backtrack, prev);
 									if (node.starStar) {
@@ -311,7 +312,7 @@ class PatternParser {
 									prev = node;
 								}
 									break;
-								// line 291 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+								// line 294 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 								}
 							}
 						}
@@ -322,7 +323,7 @@ class PatternParser {
 				}
 			}
 
-			// line 110 "PatternParser.rl"
+			// line 113 "PatternParser.rl"
 
 			if (p < pe) {
 				int start = Math.max(0, p - 32);
@@ -331,13 +332,13 @@ class PatternParser {
 			}
 
 			if (!hasCapture) throw new IllegalArgumentException("A capture is required.");
-			return new Pattern(root, processor);
+			return matcher.newPattern(root, processor);
 		} catch (Exception ex) {
 			throw new IllegalArgumentException("Error parsing pattern: " + text, ex);
 		}
 	}
 
-	// line 316 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
+	// line 319 "../../../../../src/com/badlogic/gdx/utils/PatternParser.java"
 	private static byte[] init__parser_actions_0 () {
 		return new byte[] {0, 1, 0, 1, 1, 1, 2, 1, 4, 1, 5, 1, 6, 1, 7, 1, 9, 1, 11, 1, 12, 2, 0, 8, 2, 1, 4, 2, 1, 6, 2, 3, 1, 2,
 			4, 13, 2, 10, 0, 2, 11, 13, 3, 1, 4, 13, 3, 3, 1, 4, 3, 3, 1, 6, 4, 3, 1, 4, 13};
@@ -409,5 +410,5 @@ class PatternParser {
 
 	static final int parser_start = 1;
 
-	// line 126 "PatternParser.rl"
+	// line 129 "PatternParser.rl"
 }

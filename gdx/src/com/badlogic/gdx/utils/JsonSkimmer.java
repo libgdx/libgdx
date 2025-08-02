@@ -27,13 +27,15 @@ import java.io.Reader;
 import java.util.Arrays;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonSkimmer.JsonToken.TokenType;
+import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 /** Lightweight event-based JSON parser. All values are provided as strings to reduce work when many values are ignored.
  * @author Nathan Sweet */
 public class JsonSkimmer {
 	final JsonToken nameString, value;
 	int[] stack = new int[8];
-	protected final StringBuilder buffer = new StringBuilder();
+	protected final CharArray buffer = new CharArray();
 
 	public JsonSkimmer () {
 		nameString = new JsonToken(buffer);
@@ -96,8 +98,6 @@ public class JsonSkimmer {
 		int cs, p = offset, pe = length, eof = pe, top = 0;
 		int[] stack = this.stack;
 
-		int s = 0;
-		boolean unescape = false, unquoted = false;
 		JsonToken nameString = this.nameString, value = this.value, string = value, name = null;
 		nameString.chars = data;
 		value.chars = data;
@@ -195,40 +195,6 @@ public class JsonSkimmer {
 								case 0:
 								// line 115 "JsonSkimmer.rl"
 								{
-									string = nameString; // Parse next string to nameString.
-									name = nameString; // Next element has a name.
-									if (debug) System.out.println("name start");
-								}
-									break;
-								case 1:
-								// line 120 "JsonSkimmer.rl"
-								{
-									string.start = s;
-									string.length = p - s;
-									string.unescape = unescape;
-									string.unquoted = unquoted;
-									// s = p;
-								}
-									break;
-								case 2:
-								// line 127 "JsonSkimmer.rl"
-								{
-									string = value;
-								}
-									break;
-								case 3:
-								// line 130 "JsonSkimmer.rl"
-								{
-									if (debug) System.out.println("value: " + name + "=" + value);
-									value(name, value);
-									if (stop) return;
-									name = null;
-									string = value;
-								}
-									break;
-								case 4:
-								// line 137 "JsonSkimmer.rl"
-								{
 									if (debug) System.out.println("startObject: " + name);
 									push(name, true);
 									if (stop) return;
@@ -237,15 +203,15 @@ public class JsonSkimmer {
 										if (top == stack.length) stack = this.stack = Arrays.copyOf(stack, stack.length << 1);
 										{
 											stack[top++] = cs;
-											cs = 5;
+											cs = 4;
 											_goto_targ = 2;
 											if (true) continue _goto;
 										}
 									}
 								}
 									break;
-								case 5:
-								// line 144 "JsonSkimmer.rl"
+								case 1:
+								// line 122 "JsonSkimmer.rl"
 								{
 									if (debug) System.out.println("endObject");
 									pop();
@@ -257,8 +223,8 @@ public class JsonSkimmer {
 									}
 								}
 									break;
-								case 6:
-								// line 150 "JsonSkimmer.rl"
+								case 2:
+								// line 128 "JsonSkimmer.rl"
 								{
 									if (debug) System.out.println("startArray: " + name);
 									push(name, false);
@@ -268,15 +234,15 @@ public class JsonSkimmer {
 										if (top == stack.length) stack = this.stack = Arrays.copyOf(stack, stack.length << 1);
 										{
 											stack[top++] = cs;
-											cs = 25;
+											cs = 20;
 											_goto_targ = 2;
 											if (true) continue _goto;
 										}
 									}
 								}
 									break;
-								case 7:
-								// line 157 "JsonSkimmer.rl"
+								case 3:
+								// line 135 "JsonSkimmer.rl"
 								{
 									if (debug) System.out.println("endArray");
 									pop();
@@ -288,8 +254,8 @@ public class JsonSkimmer {
 									}
 								}
 									break;
-								case 8:
-								// line 163 "JsonSkimmer.rl"
+								case 4:
+								// line 141 "JsonSkimmer.rl"
 								{
 									int start = p;
 									if (data[p++] == '/') {
@@ -301,73 +267,165 @@ public class JsonSkimmer {
 											p++;
 										p++;
 									}
-									if (debug) System.out.println("comment " + new String(data, start - 1, p - (start - 1)));
+									if (debug) System.out.println("comment " + new String(data, start - 1, p - start + 2));
 								}
 									break;
-								case 9:
-								// line 176 "JsonSkimmer.rl"
+								case 5:
+								// line 154 "JsonSkimmer.rl"
 								{
-									if (debug) System.out.println("unquotedChars");
-									s = p;
-									unescape = false;
-									unquoted = true;
-									outer:
-									while (true) {
-										char ch = data[p];
-										switch (ch) {
-										case '\\':
-											unescape = true;
-											break;
-										case '/':
-											if (p + 1 < eof && (data[p + 1] == '/' || data[p + 1] == '*')) break outer;
-											break;
-										case ':':
-											if (string == nameString) break outer;
-											break;
-										case '}':
-										case ']':
-										case ',':
-											if (string != nameString) break outer;
-											break;
-										case '\r':
-										case '\n':
-											break outer;
-										}
-										if (debug) System.out
-											.println("unquotedChar (" + (string == nameString ? "name" : "value") + "): '" + ch + "'");
-										if (++p == eof) break;
-									}
-									p--;
-									while (Character.isSpace(data[p]))
-										p--;
-								}
-									break;
-								case 10:
-								// line 211 "JsonSkimmer.rl"
-								{
-									if (debug) System.out.println("quotedChars");
-									s = ++p;
-									unescape = false;
-									unquoted = false;
+									if (debug) System.out.println("unquotedName");
+									int start = p;
+									string.start = start;
+									boolean ws = false;
 									outer:
 									while (true) {
 										switch (data[p]) {
 										case '\\':
-											unescape = true;
-											p++;
-											if (debug) System.out.println("quotedChar: '\\'");
+											string.unescape = true;
 											break;
-										case '"':
+										case '/':
+											if (p + 1 == eof) break;
+											char c = data[p + 1];
+											if (c == '/' || c == '*') break outer;
+											break;
+										case ' ':
+										case '\t':
+											ws = true;
+											break;
+										case ':':
+										case '\r':
+										case '\n':
 											break outer;
 										}
-										if (debug) System.out.println("quotedChar: '" + data[p] + "'");
+										if (debug) System.out.println("name char: '" + data[p] + "'");
 										p++;
 										if (p == eof) break;
 									}
 									p--;
+									if (ws) {
+										while (true) {
+											switch (data[p]) {
+											case ' ':
+											case '\t':
+												p--;
+												continue;
+											}
+											break;
+										}
+									}
+									string.length = p - start + 1;
 								}
 									break;
-								// line 350 "../../../../../src/com/badlogic/gdx/utils/JsonSkimmer.java"
+								case 6:
+								// line 197 "JsonSkimmer.rl"
+								{
+									if (debug) System.out.println("unquotedValue");
+									int start = p;
+									string.start = start;
+									boolean ws = false;
+									outer:
+									while (true) {
+										switch (data[p]) {
+										case '\\':
+											string.unescape = true;
+											break;
+										case '/':
+											if (p + 1 == eof) break;
+											char c = data[p + 1];
+											if (c == '/' || c == '*') break outer;
+											break;
+										case ' ':
+										case '\t':
+											ws = true;
+											break;
+										case '\r':
+										case '\n':
+										case '}':
+										case ']':
+										case ',':
+											break outer;
+										}
+										if (debug) System.out.println("value char: '" + data[p] + "'");
+										p++;
+										if (p == eof) break;
+									}
+									p--;
+									if (ws) {
+										while (true) {
+											switch (data[p]) {
+											case ' ':
+											case '\t':
+												p--;
+												continue;
+											}
+											break;
+										}
+									}
+									string.length = p - start + 1;
+									string.type = TokenType.other;
+									if (string.length == 4) {
+										if (data[start] == 't' && data[start + 1] == 'r' && data[start + 2] == 'u'
+											&& data[start + 3] == 'e')
+											string.type = TokenType.trueValue;
+										else if (data[start] == 'n' && data[start + 1] == 'u' && data[start + 2] == 'l'
+											&& data[start + 3] == 'l') string.type = TokenType.nullValue;
+									} else if (string.length == 5) {
+										if (data[start] == 'f' && data[start + 1] == 'a' && data[start + 2] == 'l' && data[start + 3] == 's'
+											&& data[start + 4] == 'e') string.type = TokenType.falseValue;
+									}
+								}
+									break;
+								case 7:
+								// line 252 "JsonSkimmer.rl"
+								{
+									if (debug) System.out.println("quotedString");
+									string.start = ++p;
+									outer:
+									while (true) {
+										switch (data[p]) {
+										case '\\':
+											string.unescape = true;
+											p++;
+											break;
+										case '"':
+											break outer;
+										}
+										if (debug) System.out.println("quoted char: '" + data[p] + "'");
+										p++;
+										if (p == eof) break;
+									}
+									string.length = p - string.start;
+								}
+									break;
+								case 8:
+								// line 271 "JsonSkimmer.rl"
+								{
+									name = nameString; // Next element has a name.
+									string = nameString; // Parse next string to nameString.
+									if (debug) System.out.println("name start " + p);
+								}
+									break;
+								case 9:
+								// line 276 "JsonSkimmer.rl"
+								{
+									if (debug) System.out.println("name: " + p + ", " + name);
+									nameString.unescape = false;
+									string = value;
+								}
+									break;
+								case 10:
+								// line 281 "JsonSkimmer.rl"
+								{
+									if (debug) System.out.println("value: " + name + "=" + value);
+									value(name, value);
+									if (stop) return;
+									value.unescape = false;
+									value.type = TokenType.other;
+									name = null;
+									string = value;
+								}
+									break;
+								// line 407 "../../../../../src/com/badlogic/gdx/utils/JsonSkimmer.java"
 								}
 							}
 						}
@@ -387,27 +445,19 @@ public class JsonSkimmer {
 							int __nacts = (int)_json_actions[__acts++];
 							while (__nacts-- > 0) {
 								switch (_json_actions[__acts++]) {
-								case 1:
-								// line 120 "JsonSkimmer.rl"
-								{
-									string.start = s;
-									string.length = p - s;
-									string.unescape = unescape;
-									string.unquoted = unquoted;
-									// s = p;
-								}
-									break;
-								case 3:
-								// line 130 "JsonSkimmer.rl"
+								case 10:
+								// line 281 "JsonSkimmer.rl"
 								{
 									if (debug) System.out.println("value: " + name + "=" + value);
 									value(name, value);
 									if (stop) return;
+									value.unescape = false;
+									value.type = TokenType.other;
 									name = null;
 									string = value;
 								}
 									break;
-								// line 391 "../../../../../src/com/badlogic/gdx/utils/JsonSkimmer.java"
+								// line 440 "../../../../../src/com/badlogic/gdx/utils/JsonSkimmer.java"
 								}
 							}
 						}
@@ -418,7 +468,7 @@ public class JsonSkimmer {
 				}
 			}
 
-			// line 249 "JsonSkimmer.rl"
+			// line 306 "JsonSkimmer.rl"
 
 		} catch (RuntimeException ex) {
 			parseRuntimeEx = ex;
@@ -435,101 +485,95 @@ public class JsonSkimmer {
 		if (parseRuntimeEx != null) throw new SerializationException("Error parsing JSON: " + new String(data), parseRuntimeEx);
 	}
 
-	// line 417 "../../../../../src/com/badlogic/gdx/utils/JsonSkimmer.java"
+	// line 466 "../../../../../src/com/badlogic/gdx/utils/JsonSkimmer.java"
 	private static byte[] init__json_actions_0 () {
-		return new byte[] {0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 1, 9, 1, 10, 2, 0, 9, 2, 0, 10, 2, 1, 2, 2, 1, 3, 2,
-			3, 5, 2, 3, 7, 3, 1, 3, 5, 3, 1, 3, 7};
+		return new byte[] {0, 1, 0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 6, 1, 7, 1, 9, 1, 10, 2, 8, 5, 2, 8, 7, 2, 10, 1, 2, 10, 3};
 	}
 
 	private static final byte _json_actions[] = init__json_actions_0();
 
 	private static short[] init__json_key_offsets_0 () {
-		return new short[] {0, 0, 11, 13, 14, 16, 25, 31, 37, 39, 50, 57, 64, 73, 74, 80, 89, 91, 93, 102, 104, 106, 107, 114, 116,
-			118, 129, 136, 143, 154, 155, 162, 173, 175, 177, 188, 190, 192, 194, 199, 204, 209, 209};
+		return new short[] {0, 0, 11, 13, 15, 24, 30, 36, 38, 49, 56, 63, 72, 81, 83, 85, 94, 96, 98, 100, 102, 113, 120, 127, 138,
+			149, 151, 153, 164, 166, 168, 170, 175, 180, 180};
 	}
 
 	private static final short _json_key_offsets[] = init__json_key_offsets_0();
 
 	private static char[] init__json_trans_keys_0 () {
-		return new char[] {13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 34, 42, 47, 13, 32, 34, 44, 47, 58, 125, 9, 10, 13,
-			32, 47, 58, 9, 10, 13, 32, 47, 58, 9, 10, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9, 10, 13, 32, 44, 47, 125,
-			9, 10, 13, 32, 44, 47, 125, 13, 32, 34, 44, 47, 58, 125, 9, 10, 34, 13, 32, 47, 58, 9, 10, 13, 32, 34, 44, 47, 58, 125,
-			9, 10, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42, 47, 34, 9, 10, 13, 32, 44, 47, 125, 42, 47, 42,
-			47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9, 10, 13, 32, 44, 47, 93, 9, 10, 13, 32, 44, 47, 93, 13, 32, 34, 44, 47,
-			58, 91, 93, 123, 9, 10, 34, 9, 10, 13, 32, 44, 47, 93, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 13,
-			32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 42, 47, 13, 32, 47, 9, 10, 13, 32, 47, 9, 10, 13, 32, 47, 9, 10,
-			0};
+		return new char[] {13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 125, 9, 10, 13, 32,
+			47, 58, 9, 10, 13, 32, 47, 58, 9, 10, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9, 10, 13, 32, 44, 47, 125, 9,
+			10, 13, 32, 44, 47, 125, 13, 32, 34, 44, 47, 58, 125, 9, 10, 13, 32, 34, 44, 47, 58, 125, 9, 10, 42, 47, 42, 47, 13, 32,
+			34, 44, 47, 58, 125, 9, 10, 42, 47, 42, 47, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 9, 10, 13, 32,
+			44, 47, 93, 9, 10, 13, 32, 44, 47, 93, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 13, 32, 34, 44, 47, 58, 91, 93, 123,
+			9, 10, 42, 47, 42, 47, 13, 32, 34, 44, 47, 58, 91, 93, 123, 9, 10, 42, 47, 42, 47, 42, 47, 13, 32, 47, 9, 10, 13, 32, 47,
+			9, 10, 0};
 	}
 
 	private static final char _json_trans_keys[] = init__json_trans_keys_0();
 
 	private static byte[] init__json_single_lengths_0 () {
-		return new byte[] {0, 9, 2, 1, 2, 7, 4, 4, 2, 9, 7, 7, 7, 1, 4, 7, 2, 2, 7, 2, 2, 1, 7, 2, 2, 9, 7, 7, 9, 1, 7, 9, 2, 2, 9,
-			2, 2, 2, 3, 3, 3, 0, 0};
+		return new byte[] {0, 9, 2, 2, 7, 4, 4, 2, 9, 7, 7, 7, 7, 2, 2, 7, 2, 2, 2, 2, 9, 7, 7, 9, 9, 2, 2, 9, 2, 2, 2, 3, 3, 0, 0};
 	}
 
 	private static final byte _json_single_lengths[] = init__json_single_lengths_0();
 
 	private static byte[] init__json_range_lengths_0 () {
-		return new byte[] {0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-			0, 0, 0, 1, 1, 1, 0, 0};
+		return new byte[] {0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0};
 	}
 
 	private static final byte _json_range_lengths[] = init__json_range_lengths_0();
 
 	private static short[] init__json_index_offsets_0 () {
-		return new short[] {0, 0, 11, 14, 16, 19, 28, 34, 40, 43, 54, 62, 70, 79, 81, 87, 96, 99, 102, 111, 114, 117, 119, 127, 130,
-			133, 144, 152, 160, 171, 173, 181, 192, 195, 198, 209, 212, 215, 218, 223, 228, 233, 234};
+		return new short[] {0, 0, 11, 14, 17, 26, 32, 38, 41, 52, 60, 68, 77, 86, 89, 92, 101, 104, 107, 110, 113, 124, 132, 140,
+			151, 162, 165, 168, 179, 182, 185, 188, 193, 198, 199};
 	}
 
 	private static final short _json_index_offsets[] = init__json_index_offsets_0();
 
 	private static byte[] init__json_indicies_0 () {
-		return new byte[] {1, 1, 2, 3, 4, 3, 5, 3, 6, 1, 0, 7, 7, 3, 8, 3, 9, 9, 3, 11, 11, 12, 13, 14, 3, 15, 11, 10, 16, 16, 17,
-			18, 16, 3, 19, 19, 20, 21, 19, 3, 22, 22, 3, 21, 21, 24, 3, 25, 3, 26, 3, 27, 21, 23, 28, 29, 29, 28, 30, 31, 32, 3, 33,
-			34, 34, 33, 13, 35, 15, 3, 34, 34, 12, 36, 37, 3, 15, 34, 10, 38, 3, 39, 39, 40, 41, 39, 3, 36, 36, 12, 3, 42, 3, 3, 36,
-			10, 43, 43, 3, 44, 44, 3, 13, 13, 12, 3, 45, 3, 15, 13, 10, 46, 46, 3, 47, 47, 3, 48, 3, 49, 50, 50, 49, 51, 52, 53, 3,
-			54, 54, 3, 55, 55, 3, 57, 57, 58, 59, 60, 3, 61, 62, 63, 57, 56, 64, 65, 65, 64, 66, 67, 68, 3, 69, 70, 70, 69, 59, 71,
-			62, 3, 70, 70, 58, 72, 73, 3, 61, 62, 63, 70, 56, 74, 3, 75, 76, 76, 75, 77, 78, 79, 3, 59, 59, 58, 3, 80, 3, 61, 62, 63,
-			59, 56, 81, 81, 3, 82, 82, 3, 72, 72, 58, 3, 83, 3, 61, 3, 63, 72, 56, 84, 84, 3, 85, 85, 3, 86, 86, 3, 87, 87, 88, 87,
-			3, 89, 89, 90, 89, 3, 91, 91, 92, 91, 3, 3, 3, 0};
+		return new byte[] {1, 1, 2, 3, 4, 3, 5, 3, 6, 1, 0, 7, 7, 3, 8, 8, 3, 10, 10, 11, 12, 13, 3, 14, 10, 9, 15, 15, 16, 17, 15,
+			3, 18, 18, 19, 20, 18, 3, 21, 21, 3, 20, 20, 23, 3, 24, 3, 25, 3, 26, 20, 22, 27, 28, 28, 27, 29, 30, 31, 3, 32, 33, 33,
+			32, 12, 34, 14, 3, 33, 33, 11, 35, 36, 3, 14, 33, 9, 35, 35, 11, 3, 37, 3, 3, 35, 9, 38, 38, 3, 39, 39, 3, 12, 12, 11, 3,
+			40, 3, 14, 12, 9, 41, 41, 3, 42, 42, 3, 43, 43, 3, 44, 44, 3, 46, 46, 47, 48, 49, 3, 50, 51, 52, 46, 45, 53, 54, 54, 53,
+			55, 56, 57, 3, 58, 59, 59, 58, 48, 60, 51, 3, 59, 59, 47, 61, 62, 3, 50, 51, 52, 59, 45, 61, 61, 47, 3, 63, 3, 50, 3, 52,
+			61, 45, 64, 64, 3, 65, 65, 3, 48, 48, 47, 3, 66, 3, 50, 51, 52, 48, 45, 67, 67, 3, 68, 68, 3, 69, 69, 3, 70, 70, 71, 70,
+			3, 72, 72, 73, 72, 3, 3, 3, 0};
 	}
 
 	private static final byte _json_indicies[] = init__json_indicies_0();
 
 	private static byte[] init__json_trans_targs_0 () {
-		return new byte[] {38, 1, 3, 0, 4, 39, 39, 39, 40, 1, 6, 5, 13, 18, 24, 41, 7, 8, 9, 7, 8, 9, 7, 10, 21, 23, 11, 11, 11, 12,
-			18, 20, 41, 11, 12, 20, 15, 17, 14, 7, 8, 9, 16, 15, 12, 19, 18, 11, 22, 11, 12, 18, 20, 41, 9, 5, 26, 25, 29, 31, 37,
-			27, 42, 27, 27, 28, 31, 33, 42, 27, 28, 33, 34, 36, 30, 27, 28, 31, 33, 42, 32, 31, 27, 35, 34, 28, 25, 39, 2, 39, 2, 39,
-			2};
+		return new byte[] {31, 1, 31, 0, 3, 32, 32, 32, 1, 5, 4, 5, 15, 19, 33, 6, 7, 8, 6, 7, 8, 6, 9, 9, 18, 10, 10, 10, 11, 15,
+			17, 33, 10, 11, 17, 12, 14, 13, 12, 11, 16, 15, 10, 8, 4, 21, 20, 21, 27, 30, 22, 34, 22, 22, 23, 27, 29, 34, 22, 23, 29,
+			24, 26, 25, 24, 23, 28, 27, 22, 20, 32, 2, 32, 2};
 	}
 
 	private static final byte _json_trans_targs[] = init__json_trans_targs_0();
 
 	private static byte[] init__json_trans_actions_0 () {
-		return new byte[] {17, 0, 19, 0, 0, 11, 7, 15, 1, 15, 21, 0, 24, 0, 0, 9, 27, 27, 27, 0, 0, 0, 15, 17, 19, 0, 11, 7, 30, 30,
-			30, 30, 39, 0, 0, 0, 0, 0, 1, 3, 3, 3, 0, 15, 15, 0, 15, 15, 1, 5, 5, 5, 5, 33, 15, 15, 17, 0, 19, 0, 0, 11, 13, 7, 30,
-			30, 30, 30, 43, 0, 0, 0, 0, 0, 1, 5, 5, 5, 5, 36, 0, 15, 15, 0, 15, 15, 15, 30, 30, 0, 0, 5, 5};
+		return new byte[] {11, 0, 13, 0, 0, 5, 1, 9, 9, 19, 0, 22, 0, 0, 3, 15, 15, 15, 0, 0, 0, 9, 11, 13, 0, 5, 1, 17, 17, 17, 17,
+			25, 0, 0, 0, 0, 0, 0, 9, 9, 0, 9, 9, 9, 9, 11, 0, 13, 0, 0, 5, 7, 1, 17, 17, 17, 17, 28, 0, 0, 0, 0, 0, 0, 9, 9, 0, 9, 9,
+			9, 17, 17, 0, 0};
 	}
 
 	private static final byte _json_trans_actions[] = init__json_trans_actions_0();
 
 	private static byte[] init__json_eof_actions_0 () {
-		return new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 30, 0, 5, 0, 0};
+		return new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 0, 0,
+			0};
 	}
 
 	private static final byte _json_eof_actions[] = init__json_eof_actions_0();
 
 	static final int json_start = 1;
-	static final int json_first_final = 38;
+	static final int json_first_final = 31;
 	static final int json_error = 0;
 
-	static final int json_en_object = 5;
-	static final int json_en_array = 25;
+	static final int json_en_object = 4;
+	static final int json_en_array = 20;
 	static final int json_en_main = 1;
 
-	// line 266 "JsonSkimmer.rl"
+	// line 323 "JsonSkimmer.rl"
 
 	protected boolean stop;
 
@@ -559,19 +603,14 @@ public class JsonSkimmer {
 	}
 
 	static public class JsonToken {
-		static public final JsonToken empty = new JsonToken(null) {
-			public String toString () {
-				return "";
-			}
-		};
-
-		final StringBuilder buffer;
+		final CharArray buffer;
 		public char[] chars;
 
 		public int start, length;
-		public boolean unquoted, unescape;
+		public boolean unescape;
+		public TokenType type = TokenType.other;
 
-		JsonToken (StringBuilder buffer) {
+		JsonToken (CharArray buffer) {
 			this.buffer = buffer;
 		}
 
@@ -587,61 +626,25 @@ public class JsonSkimmer {
 			return true;
 		}
 
-		/** Allocates an unescaped string. */
+		/** Allocates an unescaped string.
+		 * @return "null" if this token represents null. */
 		public String toString () {
+			if (type == TokenType.nullValue) return "null";
 			return unescape ? unescape() : new String(chars, start, length);
 		}
 
-		/** Returns true, false, null, Long, Double, or String. */
-		public Object decode () {
-			outer:
-			if (unquoted) {
-				int length = this.length;
-				if (length == 4) {
-					if (equals("true")) return Boolean.TRUE;
-					if (equals("null")) return null;
-				} else if (length == 5 && equals("false")) //
-					return Boolean.FALSE;
-				boolean couldBeDouble = false, couldBeLong = true;
-				char[] chars = this.chars;
-				for (int i = start, n = i + length; i < n; i++) {
-					switch (chars[i]) {
-					case '0':
-					case '1':
-					case '2':
-					case '3':
-					case '4':
-					case '5':
-					case '6':
-					case '7':
-					case '8':
-					case '9':
-					case '-':
-					case '+':
-						break;
-					case '.':
-					case 'e':
-					case 'E':
-						couldBeDouble = true;
-						couldBeLong = false;
-						break;
-					default:
-						break outer;
-					}
-				}
-				if (couldBeDouble) {
-					try {
-						return Double.parseDouble(toString());
-					} catch (NumberFormatException ignored) {
-					}
-				} else if (couldBeLong) {
-					try {
-						return Long.parseLong(toString());
-					} catch (NumberFormatException ignored) {
-					}
-				}
+		/** Returns a new JsonValue with {@link ValueType} of null, boolean, or string. */
+		public JsonValue value () {
+			switch (type) {
+			case nullValue:
+				return new JsonValue(ValueType.nullValue);
+			case trueValue:
+				return new JsonValue(true);
+			case falseValue:
+				return new JsonValue(false);
+			default:
+				return new JsonValue(toString());
 			}
-			return toString();
 		}
 
 		private boolean equals (String string) {
@@ -654,7 +657,7 @@ public class JsonSkimmer {
 
 		private String unescape () {
 			char[] chars = this.chars;
-			buffer.length = 0;
+			buffer.size = 0;
 			buffer.ensureCapacity(length + 16);
 			outer:
 			for (int i = start, n = i + length; i < n;) {
@@ -668,12 +671,12 @@ public class JsonSkimmer {
 				switch (c) {
 				case 'u':
 					if (i + 4 > n) throw new SerializationException("Illegal escape sequence: \\u");
-					buffer.length += Character.toChars( //
+					buffer.size += Character.toChars( //
 						(Character.digit(chars[i++], 16) << 12) //
 							| (Character.digit(chars[i++], 16) << 8) //
 							| (Character.digit(chars[i++], 16) << 4) //
 							| Character.digit(chars[i++], 16),
-						buffer.chars, buffer.length);
+						buffer.items, buffer.size);
 					continue outer;
 				case '"':
 				case '\\':
@@ -700,6 +703,10 @@ public class JsonSkimmer {
 				buffer.append(c);
 			}
 			return buffer.toString();
+		}
+
+		static public enum TokenType {
+			nullValue, trueValue, falseValue, other
 		}
 	}
 }

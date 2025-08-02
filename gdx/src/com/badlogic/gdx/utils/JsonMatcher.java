@@ -16,9 +16,12 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.utils.JsonValue.ValueType;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
+
 /** Efficient JSON parser that does minimal parsing to extract values matching specified patterns.
  * 
- * <h4>Match</h4> Match objects, arrays, or fields in the JSON:
+ * <h4>Match</h4> Match objects, arrays, or field names (not field values) in the JSON:
  * <ul>
  * <li>{@code /} Path separator.
  * <li>{@code name} Matches field "name".
@@ -99,30 +102,31 @@ package com.badlogic.gdx.utils;
  * <li>If not capturing or processing {@code *}, {@code **}, or {@code []} parsing ends once all specified values are captured.
  * <li>The key for unnamed values (eg array items) is {@code ""}.
  * <li>A {@code ""} pattern captures the entire root under a {@code ""} key.
- * <li>Value types are true, false, Long, Double, Array, ObjectMap, or null.
  * </ul>
  * @author Nathan Sweet */
 public class JsonMatcher extends JsonSkimmer {
 	static private final boolean debug = false;
 
 	static private final int none = 0; // @off
-	static final int match   = 0b00001;
-	static final int process = 0b00010;
-	static final int capture = 0b00100;
-	static final int array   = 0b01000;
-	static final int keys    = 0b10000; // @on
+	static final int match   = 0b000001;
+	static final int process = 0b000010;
+	static final int capture = 0b000100;
+	static final int array   = 0b001000;
+	static final int keys    = 0b010000;
+	static final int single  = 0b100000; // @on
 
 	Processor processor;
 	Pattern[] patterns = new Pattern[0];
-	private int total;
-	private boolean stoppable = true, rejected;
+	int total;
+	private boolean rejected;
+	boolean stoppable = true;
 
 	int depth, captured;
 	char[] chars;
 	final IntArray path = new IntArray();
 	Pattern processPattern;
 
-	/** This processor is invoked for all pattern matches, after per pattern processors and before {@link #process(ObjectMap)}. */
+	/** This processor is invoked for all pattern matches, after per pattern processors and before {@link #process(JsonValue)}. */
 	public void setProcessor (@Null Processor processor) {
 		this.processor = processor;
 	}
@@ -146,6 +150,7 @@ public class JsonMatcher extends JsonSkimmer {
 			newPattern = PatternParser.parse(this, pattern, processor);
 		newPatterns[patterns.length] = newPattern;
 		patterns = newPatterns;
+		if (debug) System.out.println(newPattern);
 	}
 
 	@Override
@@ -175,12 +180,12 @@ public class JsonMatcher extends JsonSkimmer {
 			path.add(object ? 0 : 1, 0);
 		if (depth == 0) {
 			for (Pattern pattern : patterns)
-				if (pattern.captureRoot) captureAllStart(pattern, capture, JsonToken.empty, object);
+				if (pattern.captureRoot) captureAllStart(pattern, capture, null, object);
 		} else {
 			for (Pattern pattern : patterns) {
 				if (pattern.captureAll) {
 					if (debug) debug(pattern, "current: " + pattern.current + " CAPTURE ALL");
-					Object value = object ? new ObjectMap() : new Array();
+					JsonValue value = new JsonValue(object ? ValueType.object : ValueType.array);
 					captureAllValue(pattern, name, value);
 					pattern.stack.add(value);
 				} else {
@@ -197,7 +202,7 @@ public class JsonMatcher extends JsonSkimmer {
 								}
 								if ((flags & capture) != 0) { // Capture key, object, or array.
 									if ((flags & keys) != 0)
-										captureValue(pattern, flags, JsonToken.empty, name == null ? null : name.decode());
+										captureValue(pattern, flags, null, name.value());
 									else
 										captureAllStart(pattern, flags, name, object);
 									break;
@@ -236,13 +241,14 @@ public class JsonMatcher extends JsonSkimmer {
 		for (Pattern pattern : patterns) {
 			if (pattern.captureAll) {
 				pattern.stack.pop();
-				if (pattern.stack.notEmpty()) return;
+				if (pattern.stack.notEmpty()) break;
 				if (debug) debug(pattern, "CAPTURE ALL END");
 				pattern.captureAll = pattern.captureRoot;
 				captured();
 			}
 			Node node = pattern.current;
-			if (debug) debug(pattern, "current: " + pattern.current + " pop at " + node.pop + ", values: " + pattern.values);
+			if (debug) debug(pattern,
+				"current: " + pattern.current + " pop at " + node.pop + ", captured: " + pattern.capture.toJson(OutputType.minimal));
 			while (true) {
 				if (node.dead == nextDepth) node.dead = Integer.MAX_VALUE; // Reject can set dead at any level.
 				if (node.pop != nextDepth) {
@@ -269,9 +275,10 @@ public class JsonMatcher extends JsonSkimmer {
 	protected void value (@Null JsonToken name, JsonToken value) {
 		if (debug) debug(null, "value: " + name + "=" + value);
 		for (Pattern pattern : patterns) {
-			if (pattern.captureAll)
-				captureAllValue(pattern, name, value.decode());
-			else if (depth <= pattern.current.dead) {
+			if (pattern.captureAll) {
+				pattern.captured = true;
+				captureAllValue(pattern, name, value.value());
+			} else if (depth <= pattern.current.dead) {
 				Node next = pattern.current.next;
 				int flags = next == null ? none : next.match(name);
 				if (flags != none) {
@@ -282,10 +289,10 @@ public class JsonMatcher extends JsonSkimmer {
 						}
 						if ((flags & capture) != 0) { // Capture key or value.
 							if (debug) debug(pattern, "CAPTURE: " + name + "=" + value + " (" + (captured + 1) + "/" + total + ")");
-							if ((flags & keys) != 0)
-								captureValue(pattern, flags, JsonToken.empty, name == null ? null : name.decode());
-							else
-								captureValue(pattern, flags, name, value.decode());
+							if ((flags & keys) != 0) {
+								if (name != null) captureValue(pattern, flags, null, name.value());
+							} else
+								captureValue(pattern, flags, name, value.value());
 							captured();
 							if ((flags & process) != 0) {
 								process(pattern);
@@ -306,20 +313,29 @@ public class JsonMatcher extends JsonSkimmer {
 		}
 	}
 
-	private void captureValue (Pattern pattern, int flags, @Null JsonToken name, Object value) {
-		ObjectMap<String, Object> values = pattern.values;
-		String key = name == null ? "" : name.toString();
-		if ((flags & array) != 0) {
-			Object existing = values.get(key);
-			if (existing instanceof Array)
-				((Array)existing).add(value);
-			else {
-				Array array = new Array();
-				array.add(value);
-				values.put(key, array);
-			}
-		} else
-			values.put(key, value);
+	private void captureValue (Pattern pattern, int flags, @Null JsonToken name, JsonValue value) {
+		JsonValue capture = pattern.capture;
+		if ((flags & single) != 0) {
+			capture.name = name == null ? null : name.toString();
+			if ((flags & array) != 0) {
+				if (!pattern.captured) capture.setType(ValueType.array);
+				capture.addChild(value);
+			} else
+				capture.set(value);
+		} else {
+			String key = name == null ? "" : name.toString();
+			if ((flags & array) != 0) {
+				JsonValue array = capture.get(key);
+				if (array == null) {
+					array = new JsonValue(ValueType.array);
+					capture.addChild(key, array);
+				}
+				array.addChild(value);
+				value.parent = array;
+			} else
+				capture.setChild(key, value);
+		}
+		pattern.captured = true;
 	}
 
 	private void captured () {
@@ -330,55 +346,57 @@ public class JsonMatcher extends JsonSkimmer {
 	}
 
 	private void captureAllStart (Pattern pattern, int flags, @Null JsonToken name, boolean object) {
-		Object value;
-		if (object && name == null)
-			value = pattern.values;
-		else {
-			value = object ? new ObjectMap() : new Array();
-			captureValue(pattern, flags, name, value);
+		ValueType type = object ? ValueType.object : ValueType.array;
+		JsonValue capture;
+		if ((flags & (single | array)) == single) { // single but not array.
+			capture = pattern.capture;
+			capture.setType(type);
+		} else {
+			capture = new JsonValue(type);
+			captureValue(pattern, flags, name, capture);
 		}
-		pattern.stack.add(value);
+		pattern.stack.add(capture);
 		pattern.captureAll = true;
+		pattern.captured = true;
 		if (debug) debug(pattern, "CAPTURE ALL BEGIN");
 	}
 
-	private void captureAllValue (Pattern pattern, @Null JsonToken name, Object value) {
+	private void captureAllValue (Pattern pattern, @Null JsonToken name, JsonValue value) {
 		if (pattern.stack.isEmpty()) // Capturing root with primitive.
-			pattern.values.put("", value);
+			pattern.capture.set(value);
 		else {
-			Object parent = pattern.stack.peek();
+			JsonValue parent = pattern.stack.peek();
 			if (name == null)
-				((Array)parent).add(value);
+				parent.addChild(value);
 			else
-				((ObjectMap)parent).put(name.toString(), value);
+				parent.setChild(name.toString(), value);
 		}
 	}
 
 	private void process (Pattern pattern) {
-		ObjectMap<String, Object> values = pattern.values;
-		if (values.isEmpty()) return;
-		if (debug) debug(pattern, "PROCESS: " + values);
+		if (!pattern.captured) return;
+		JsonValue capture = pattern.capture;
+		if (debug) debug(pattern, "PROCESS: " + capture.toJson(OutputType.minimal));
 		rejected = false;
 		processPattern = pattern;
 		try {
 			if (pattern.processor != null) {
-				pattern.processor.process(values);
+				pattern.processor.process(capture);
 				if (rejected) return;
 			}
 			if (processor != null) {
-				processor.process(values);
+				processor.process(capture);
 				if (rejected) return;
 			}
-			process(values);
+			process(capture);
 		} finally {
-			values.clear();
+			pattern.clearCapture();
 			processPattern = null;
 		}
 	}
 
-	/** Called for all pattern matches, after any processors have been invoked.
-	 * @param map Reused after this method returns. */
-	protected void process (ObjectMap<String, Object> map) {
+	/** Called for all pattern matches, after any processors have been invoked. */
+	protected void process (JsonValue value) {
 	}
 
 	/** 0 when not processing. */
@@ -439,14 +457,14 @@ public class JsonMatcher extends JsonSkimmer {
 	public void clear () {
 		if (processPattern == null) throw new IllegalStateException();
 		if (debug) debug(processPattern, "CLEAR");
-		processPattern.values.clear();
+		processPattern.clearCapture();
 	}
 
 	/** Clears any captured values for the specified pattern. Only valid during processing. */
 	public void clear (int patternIndex) {
 		if (processPattern == null) throw new IllegalStateException();
 		if (debug) debug(patterns[patternIndex], "CLEAR");
-		patterns[patternIndex].values.clear();
+		patterns[patternIndex].clearCapture();
 	}
 
 	/** Clears any captured values for all patterns. Only valid during processing. */
@@ -454,12 +472,12 @@ public class JsonMatcher extends JsonSkimmer {
 		if (processPattern == null) throw new IllegalStateException();
 		if (debug) debug(null, "CLEAR ALL");
 		for (Pattern pattern : patterns)
-			pattern.values.clear();
+			pattern.clearCapture();
 	}
 
 	/** Returns the current JSON path using "/" as separator. Anonymous objects use "{}", arrays "[]". "" when not processing. */
 	public String path () {
-		buffer.length = 0;
+		buffer.size = 0;
 		for (int i = 0, n = path.size; i < n; i += 2) {
 			if (i > 0) buffer.append('/');
 			int start = path.get(i), length = path.get(i + 1);
@@ -493,16 +511,37 @@ public class JsonMatcher extends JsonSkimmer {
 	}
 
 	/** @see PatternParser */
+	Match newMatch (String name, boolean brackets, boolean at, boolean processEach, boolean valueCapture, boolean keyCapture,
+		boolean star, boolean starStar) {
+
+		int flags = match;
+		if (at || processEach) flags |= process;
+		if (valueCapture) {
+			flags |= capture;
+			total++;
+			if (brackets) {
+				flags |= array;
+				stoppable = false;
+			}
+			if (processEach) flags |= single;
+		}
+		if (keyCapture) {
+			flags |= keys;
+			stoppable = false;
+		}
+		if ((star || starStar) && (flags & process) != 0) stoppable = false;
+		return new Match(name, flags, star, starStar);
+	}
+
+	/** @see PatternParser */
 	Node newNode (Match[] matches, boolean processEach, Node backtrack, @Null Node prev) {
 		Node node = new Node(matches, processEach, backtrack);
-
 		if (prev == null) {
 			// Use first node as root.
 			if (node.starStar) return node;
 			// Implicit root.
 			prev = new Node(new Match[] {new Match(".", 0, false, false)}, false, null);
 		}
-
 		prev.next = node;
 		prev.nextStarStar = node.starStar;
 		node.prev = prev;
@@ -510,25 +549,30 @@ public class JsonMatcher extends JsonSkimmer {
 	}
 
 	/** @see PatternParser */
-	Match newMatch (String name, boolean brackets, boolean at, boolean valueCapture, boolean keyCapture, boolean star,
-		boolean starStar) {
+	Pattern newPattern (Node root, Processor processor) {
+		// Mark matches as single if not [] or () and there's 1 capture since @. Captures after **@ are already marked.
+		Node current = root;
+		boolean multi = false;
+		Match lastCapture = null;
+		do {
+			for (Match match : current.matches) {
+				if ((match.flags & (capture | keys)) != 0) {
+					if (lastCapture != null)
+						multi = true;
+					else
+						lastCapture = match;
+				}
+				if ((match.flags & process) != 0) {
+					if (!multi && lastCapture != null) lastCapture.flags |= single;
+					multi = false;
+					lastCapture = null;
+				}
+			}
+			current = current.next;
+		} while (current != null);
+		if (!multi && lastCapture != null) lastCapture.flags |= single;
 
-		int flags = match;
-		if (brackets) {
-			flags |= array;
-			stoppable = false;
-		}
-		if (at) flags |= process;
-		if (valueCapture) {
-			flags |= capture;
-			total++;
-		}
-		if (keyCapture) {
-			flags |= keys;
-			stoppable = false;
-		}
-		if ((star || starStar) && (flags & (capture | process)) != 0) stoppable = false;
-		return new Match(name, flags, star, starStar);
+		return new Pattern(root, processor);
 	}
 
 	private void debug (Pattern pattern, String text) {
@@ -542,9 +586,9 @@ public class JsonMatcher extends JsonSkimmer {
 	static class Pattern {
 		final Node root;
 		final Processor processor;
-		final ObjectMap<String, Object> values = new ObjectMap();
-		boolean captureAll, captureRoot;
-		final Array stack = new Array();
+		final JsonValue capture = new JsonValue(ValueType.object);
+		boolean captured, captureAll, captureRoot;
+		final Array<JsonValue> stack = new Array();
 		Node current;
 
 		Pattern (Node root, Processor processor) {
@@ -553,26 +597,33 @@ public class JsonMatcher extends JsonSkimmer {
 			current = root;
 		}
 
+		void clearCapture () {
+			captured = false;
+			capture.name = null;
+			capture.child = null;
+			capture.setType(ValueType.object);
+		}
+
 		void reset () {
 			Node node = root;
 			do {
 				node.dead = Integer.MAX_VALUE;
 				node = node.next;
 			} while (node != null);
-			values.clear();
+			clearCapture();
 			captureAll = captureRoot;
 			stack.clear();
 			current = root;
 		}
 
 		public String toString () {
-			if (debug) return super.toString();
+			if (!debug) return super.toString();
 			return root.toString();
 		}
 	}
 
 	static class Node {
-		private final Match[] matches;
+		final Match[] matches;
 		final boolean processEach;
 		boolean processPop, starStar, nextStarStar;
 		@Null Node prev, next, backtrack;
@@ -611,7 +662,7 @@ public class JsonMatcher extends JsonSkimmer {
 		}
 
 		public String toString () {
-			if (debug) return super.toString();
+			if (!debug) return super.toString();
 			StringBuilder buffer = new StringBuilder();
 			toString(buffer);
 			return buffer.toString();
@@ -637,10 +688,11 @@ public class JsonMatcher extends JsonSkimmer {
 			if ((flags & array) != 0) buffer.append("[]");
 			if ((flags & process) != 0) buffer.append('@');
 			if ((flags & capture) != 0) buffer.append(')');
+			if ((flags & single) != 0) buffer.append('1');
 		}
 
 		public String toString () {
-			if (debug) return super.toString();
+			if (!debug) return super.toString();
 			StringBuilder buffer = new StringBuilder();
 			toString(buffer);
 			return buffer.toString();
@@ -648,8 +700,7 @@ public class JsonMatcher extends JsonSkimmer {
 	}
 
 	static public interface Processor {
-		/** Called with captured values.
-		 * @param map Reused after this method returns. */
-		public void process (ObjectMap<String, Object> map);
+		/** Called with captured values. */
+		public void process (JsonValue value);
 	}
 }

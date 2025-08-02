@@ -51,7 +51,7 @@ class PatternParser {
 					String name = new String(data, s, e - s);
 					if (quoted) name = name.substring(1, name.length() - 1);
 					if (escaped) name = name.replace("''", "'");
-					Match match = matcher.newMatch(name, brackets, at || processEach, c >= 0, keyCapture, star, starStar);
+					Match match = matcher.newMatch(name, brackets, at, processEach, c >= 0, keyCapture, star, starStar);
 					matches.add(match);
 
 					// All subsequent matches are processed right away.
@@ -65,7 +65,10 @@ class PatternParser {
 					star = false;
 					starStar = false;
 				}
-				action brackets { brackets = true; }
+				action brackets {
+					brackets = true;
+					if (c < 0) throw new IllegalArgumentException("[] must be within a capture.");
+				}
 				action at { at = true; }
 				action keyCapture {
 					star = true;
@@ -99,7 +102,7 @@ class PatternParser {
 				unquoted = [^*/()[\]@',]+;
 				quoted = "'" ([^'] | "''" %escaped)* "'" %quoted;
 				name = ("**" @starStar | "*" @star | "()" @keyCapture | unquoted | quoted) >nameStart %nameEnd;
-				match = name "[]"? @brackets "@"? @at %match;
+				match = (name "[]"? @brackets "@"? @at) %match;
 				captures = ("(" @startCapture match ("," match)* ")" "@"? @atCaptures) %endCapture;
 				matches = captures | match;
 				node = (matches ("," matches)*) %addNode;
@@ -116,7 +119,7 @@ class PatternParser {
 			}
 
 			if (!hasCapture) throw new IllegalArgumentException("A capture is required.");
-			return new Pattern(root, processor);
+			return matcher.newPattern(root, processor);
 		} catch (Exception ex) {
 			throw new IllegalArgumentException("Error parsing pattern: " + text, ex);
 		}
