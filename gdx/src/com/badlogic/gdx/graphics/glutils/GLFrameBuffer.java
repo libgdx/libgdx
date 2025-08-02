@@ -550,10 +550,10 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	}
 
 	protected static class FrameBufferTextureAttachmentSpec {
-		int internalFormat, format, type;
-		boolean isFloat, isGpuOnly;
-		boolean isDepth;
-		boolean isStencil;
+		public int internalFormat, format, type;
+		public boolean isFloat, isGpuOnly;
+		public boolean isDepth;
+		public boolean isStencil;
 
 		public FrameBufferTextureAttachmentSpec (int internalformat, int format, int type) {
 			this.internalFormat = internalformat;
@@ -567,7 +567,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	}
 
 	protected static class FrameBufferRenderBufferAttachmentSpec {
-		int internalFormat;
+		public int internalFormat;
 
 		public FrameBufferRenderBufferAttachmentSpec (int internalFormat) {
 			this.internalFormat = internalFormat;
@@ -575,18 +575,18 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	}
 
 	public static abstract class GLFrameBufferBuilder<U extends GLFrameBuffer<? extends GLTexture>> {
-		protected int width, height, samples;
+		public int width, height, samples;
 
-		protected Array<FrameBufferTextureAttachmentSpec> textureAttachmentSpecs = new Array<FrameBufferTextureAttachmentSpec>();
-		protected Array<FrameBufferRenderBufferAttachmentSpec> colorRenderBufferSpecs = new Array<FrameBufferRenderBufferAttachmentSpec>();
+		public Array<FrameBufferTextureAttachmentSpec> textureAttachmentSpecs = new Array<FrameBufferTextureAttachmentSpec>();
+		public Array<FrameBufferRenderBufferAttachmentSpec> colorRenderBufferSpecs = new Array<FrameBufferRenderBufferAttachmentSpec>();
 
-		protected FrameBufferRenderBufferAttachmentSpec stencilRenderBufferSpec;
-		protected FrameBufferRenderBufferAttachmentSpec depthRenderBufferSpec;
-		protected FrameBufferRenderBufferAttachmentSpec packedStencilDepthRenderBufferSpec;
+		public FrameBufferRenderBufferAttachmentSpec stencilRenderBufferSpec;
+		public FrameBufferRenderBufferAttachmentSpec depthRenderBufferSpec;
+		public FrameBufferRenderBufferAttachmentSpec packedStencilDepthRenderBufferSpec;
 
-		protected boolean hasStencilRenderBuffer;
-		protected boolean hasDepthRenderBuffer;
-		protected boolean hasPackedStencilDepthRenderBuffer;
+		public boolean hasStencilRenderBuffer;
+		public boolean hasDepthRenderBuffer;
+		public boolean hasPackedStencilDepthRenderBuffer;
 
 		public GLFrameBufferBuilder (int width, int height) {
 			this(width, height, 0);
