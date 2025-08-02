@@ -231,9 +231,9 @@ public class JsonTest extends GdxTest {
 			@Override
 			protected void value (JsonToken name, JsonToken value) {
 				if (level == 2) {
-					if (name.equals("eid"))
+					if (name.equalsString("eid"))
 						id = value.toString();
-					else if (name.equals("activePower")) //
+					else if (name.equalsString("activePower")) //
 						watts = Float.parseFloat(value.toString());
 				}
 			}

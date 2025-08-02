@@ -182,7 +182,7 @@ public class JsonMatcher extends JsonSkimmer {
 			path.add(object ? 0 : 1, 0);
 		if (depth == 0) {
 			for (Pattern pattern : patterns)
-				if (pattern.captureRoot) captureAllStart(pattern, capture, null, object);
+				if (pattern.captureRoot) captureAllStart(pattern, single, null, object);
 		} else {
 			for (Pattern pattern : patterns) {
 				if (pattern.captureAll) {
@@ -602,6 +602,7 @@ public class JsonMatcher extends JsonSkimmer {
 			capture.child = null;
 			capture.last = null;
 			capture.setType(ValueType.object);
+			capture.size = 0;
 		}
 
 		void reset () {

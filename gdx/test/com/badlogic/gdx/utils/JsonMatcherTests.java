@@ -776,12 +776,12 @@ public class JsonMatcherTests {
 		test( // Object
 			"{data:{items:[a,b,c]}}", //
 			"", //
-			"{\"\":{data:{items:[a,b,c]}}}");
+			"{data:{items:[a,b,c]}}");
 
 		test( // Array
 			"[a,b,{data:[1,2,3]},c]", //
 			"", //
-			"{\"\":[a,b,{data:[1,2,3]},c]}");
+			"[a,b,{data:[1,2,3]},c]");
 
 		test( // String
 			"string", //
