@@ -28,7 +28,6 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.GL31;
 import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
@@ -143,7 +142,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			depthbufferHandle = gl.glGenRenderbuffer();
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthbufferHandle);
 			if (bufferBuilder.samples > 0) {
-				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples,
+				Gdx.gl30.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples,
 					bufferBuilder.depthRenderBufferSpec.internalFormat, width, height);
 			} else {
 				gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, bufferBuilder.depthRenderBufferSpec.internalFormat, width, height);
@@ -154,7 +153,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			stencilbufferHandle = gl.glGenRenderbuffer();
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, stencilbufferHandle);
 			if (bufferBuilder.samples > 0) {
-				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples,
+				Gdx.gl30.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples,
 					bufferBuilder.stencilRenderBufferSpec.internalFormat, width, height);
 			} else {
 				gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, bufferBuilder.stencilRenderBufferSpec.internalFormat, width, height);
@@ -165,7 +164,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			depthStencilPackedBufferHandle = gl.glGenRenderbuffer();
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthStencilPackedBufferHandle);
 			if (bufferBuilder.samples > 0) {
-				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples,
+				Gdx.gl30.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples,
 					bufferBuilder.packedStencilDepthRenderBufferSpec.internalFormat, width, height);
 			} else {
 				gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, bufferBuilder.packedStencilDepthRenderBufferSpec.internalFormat, width,
@@ -202,7 +201,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			int colorbufferHandle = gl.glGenRenderbuffer();
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, colorbufferHandle);
 			if (bufferBuilder.samples > 0) {
-				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples, colorBufferSpec.internalFormat,
+				Gdx.gl30.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples, colorBufferSpec.internalFormat,
 					width, height);
 			} else {
 				gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, colorBufferSpec.internalFormat, width, height);
@@ -264,7 +263,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			hasDepthStencilPackedBuffer = true;
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthStencilPackedBufferHandle);
 			if (bufferBuilder.samples > 0) {
-				Gdx.gl31.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples, GL_DEPTH24_STENCIL8_OES, width,
+				Gdx.gl30.glRenderbufferStorageMultisample(GL20.GL_RENDERBUFFER, bufferBuilder.samples, GL_DEPTH24_STENCIL8_OES, width,
 					height);
 			} else {
 				gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, width, height);
@@ -302,7 +301,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 				throw new IllegalStateException("Frame buffer couldn't be constructed: missing attachment");
 			if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED)
 				throw new IllegalStateException("Frame buffer couldn't be constructed: unsupported combination of formats");
-			if (result == GL31.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE)
+			if (result == GL30.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE)
 				throw new IllegalStateException("Frame buffer couldn't be constructed: multisample mismatch");
 			throw new IllegalStateException("Frame buffer couldn't be constructed: unknown error " + result);
 		}
@@ -312,8 +311,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 	private void checkValidBuilder () {
 
-		if (bufferBuilder.samples > 0 && !Gdx.graphics.isGL31Available()) {
-			throw new GdxRuntimeException("Framebuffer multisample requires GLES 3.1+");
+		if (bufferBuilder.samples > 0 && !Gdx.graphics.isGL30Available()) {
+			throw new GdxRuntimeException("Framebuffer multisample requires GLES 3.0+");
 		}
 		if (bufferBuilder.samples > 0 && bufferBuilder.textureAttachmentSpecs.size > 0) {
 			throw new GdxRuntimeException("Framebuffer multisample with texture attachments not yet supported");
