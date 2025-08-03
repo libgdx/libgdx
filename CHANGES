@@ -1,6 +1,8 @@
 [1.13.6]
 - [BREAKING CHANGE] API: Pools changes in 1.13.5 have been partially reverted. Pools#get/Pools#obtain method return to requiring a Class parameter. Reflection is avoided by using pre-populated Pools for libgdx classes. See https://github.com/libgdx/libgdx/pull/7648
 - [BREAKING CHANGE] JsonSkimmer API changed to use JsonToken parameters.
+- [BREAKING CHANGE] JsonValue#last added for O(1) append. Code that changes next may also need to change last.
+- [BREAKING CHANGE] JsonValue#get is no longer case insensitive. Use getIgnoreCase().
 - [BREAKING CHANGE] StringBuilder has been deleted, its methods merged with CharArray.
 - API Addition: Added JsonValue#toJson that takes a Writer.
 - API Addition: Added getProgrammaticChangeEvents() to scene2d.ui actors that have setProgrammaticChangeEvents.

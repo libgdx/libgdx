@@ -600,6 +600,7 @@ public class JsonMatcher extends JsonSkimmer {
 			captured = false;
 			capture.name = null;
 			capture.child = null;
+			capture.last = null;
 			capture.setType(ValueType.object);
 		}
 
