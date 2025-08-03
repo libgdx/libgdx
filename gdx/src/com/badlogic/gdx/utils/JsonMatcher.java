@@ -19,7 +19,7 @@ package com.badlogic.gdx.utils;
 import com.badlogic.gdx.utils.JsonValue.ValueType;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
-/** Efficient JSON parser that does minimal parsing to extract values matching specified patterns.
+/** Efficient JSON parser that does minimal parsing to extract values matching specified patterns using a single pass.
  * 
  * <h4>Match</h4> Match objects, arrays, or field names (not field values) in the JSON:
  * <ul>

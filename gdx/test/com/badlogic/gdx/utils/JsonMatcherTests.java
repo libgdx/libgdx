@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.junit.Rule;
@@ -1080,7 +1081,7 @@ public class JsonMatcherTests {
 			Array<JsonValue> values = new Array();
 			JsonMatcher matcher = new JsonMatcher();
 			matcher.addPattern("*/(type@)", value -> {
-				if (value.asString().equals("ENCHARGE")) matcher.rejectAll();
+				if (value.equalsString("ENCHARGE")) matcher.rejectAll();
 			});
 			matcher.addPattern("*/devices/*@/(serial_num,percentFull)", value -> copy(value, values));
 			matcher.parse(json);
@@ -1162,7 +1163,7 @@ public class JsonMatcherTests {
 	public void explicitEnd () {
 		JsonMatcher matcher = new JsonMatcher();
 		matcher.addPattern("*/(type@)", value -> {
-			if (value.asString().equals("ENCHARGE")) matcher.end(); // End parsing before any matches.
+			if (value.equalsString("ENCHARGE")) matcher.end(); // End parsing before any matches.
 		});
 		Array<JsonValue> values = new Array();
 		matcher.addPattern("*/devices/*@/(serial_num,percentFull)", value -> copy(value, values));
@@ -1175,7 +1176,7 @@ public class JsonMatcherTests {
 	public void explicitStop () {
 		JsonMatcher matcher = new JsonMatcher();
 		matcher.addPattern("*/(type@)", value -> {
-			if (value.asString().equals("ENCHARGE")) matcher.stop(); // Stop parsing before any matches.
+			if (value.equalsString("ENCHARGE")) matcher.stop(); // Stop parsing before any matches.
 		});
 		Array<JsonValue> values = new Array();
 		matcher.addPattern("*/devices/*@/(serial_num,percentFull)", value -> copy(value, values));
@@ -1260,22 +1261,66 @@ public class JsonMatcherTests {
 
 	@Test
 	public void filtering () {
-		JsonMatcher matcher = new JsonMatcher();
-		Array<JsonValue> values = new Array();
-		matcher.addPattern("*/(type@)", value -> {
-			if (value.asString().equals("ENPOWER"))
-				matcher.reject(2);
-			else if (value.asString().equals("ENCHARGE"))
-				matcher.reject(1);
-			else
-				fail("Unexpected type: " + value);
-		});
-		matcher.addPattern("*/devices/*@/(serial_num)", value -> copy(value, values));
-		matcher.addPattern("*/devices/*@/(serial_num,percentFull)", value -> copy(value, values));
-		matcher.parse(json);
+		{ // Reject by pattern index.
+			JsonMatcher matcher = new JsonMatcher();
+			Array<JsonValue> values = new Array();
+			int enpower = matcher.addPattern("*/devices/*@/(serial_num)", value -> copy(value, values));
+			int encharge = matcher.addPattern("*/devices/*@/(serial_num,percentFull)", value -> copy(value, values));
+			matcher.addPattern("*/(type@)", value -> {
+				if (value.equalsString("ENPOWER"))
+					matcher.reject(encharge);
+				else if (value.equalsString("ENCHARGE"))
+					matcher.reject(enpower);
+				else
+					fail("Unexpected type: " + value);
+			});
+			matcher.parse(json);
 
-		assertValueCount(3, values);
-		assertEquals("{serial_num:32131444,percentFull:100}, {percentFull:75,serial_num:234234211}, 9834711", toString(values));
+			assertValueCount(3, values);
+			assertEquals("{serial_num:32131444,percentFull:100}, {percentFull:75,serial_num:234234211}, 9834711", toString(values));
+		}
+		{ // Reject current pattern, storing the last encountered type across patterns.
+			JsonMatcher matcher = new JsonMatcher();
+			Array<JsonValue> values = new Array();
+			String[] type = {""};
+			matcher.addPattern("*/(type@)", value -> type[0] = value.asString());
+			matcher.addPattern("*/devices/*@/(serial_num)", value -> {
+				if (type[0].equals("ENPOWER"))
+					copy(value, values);
+				else
+					matcher.reject();
+			});
+			matcher.addPattern("*/devices/*@/(serial_num,percentFull)", value -> {
+				if (type[0].equals("ENCHARGE")) //
+					copy(value, values);
+				else
+					matcher.reject();
+			});
+			matcher.parse(json);
+
+			assertValueCount(3, values);
+			assertEquals("{serial_num:32131444,percentFull:100}, {percentFull:75,serial_num:234234211}, 9834711", toString(values));
+		}
+		{ // Reject current pattern, checking type in the same pattern.
+			JsonMatcher matcher = new JsonMatcher();
+			Array<JsonValue> values = new Array();
+			matcher.addPattern("*/(type@),devices/*@/(serial_num)", value -> {
+				if (value.nameEquals("type")) {
+					if (!value.equalsString("ENPOWER")) matcher.reject();
+				} else
+					copy(value, values);
+			});
+			matcher.addPattern("*/(type@),devices/*@/(serial_num,percentFull)", value -> {
+				if (value.nameEquals("type")) {
+					if (!value.equalsString("ENCHARGE")) matcher.reject();
+				} else
+					copy(value, values);
+			});
+			matcher.parse(json);
+
+			assertValueCount(3, values);
+			assertEquals("{serial_num:32131444,percentFull:100}, {percentFull:75,serial_num:234234211}, 9834711", toString(values));
+		}
 	}
 
 	@Test(expected = IllegalArgumentException.class)

@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
@@ -1084,6 +1085,14 @@ public class JsonValue implements Iterable<JsonValue> {
 	public void set (boolean value) {
 		longValue = value ? 1 : 0;
 		type = ValueType.booleanValue;
+	}
+
+	public boolean equalsString (String value) {
+		return Objects.equals(asString(), value);
+	}
+
+	public boolean nameEquals (String value) {
+		return Objects.equals(name, value);
 	}
 
 	public String toJson (OutputType outputType) {
