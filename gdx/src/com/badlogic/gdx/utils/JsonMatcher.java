@@ -133,13 +133,15 @@ public class JsonMatcher extends JsonSkimmer {
 		this.processor = processor;
 	}
 
-	/** Adds a pattern for value extraction. */
-	public void addPattern (String pattern) {
-		addPattern(pattern, null);
+	/** Adds a pattern for value extraction.
+	 * @return The new pattern's index. */
+	public int addPattern (String pattern) {
+		return addPattern(pattern, null);
 	}
 
-	/** Adds a pattern for value extraction. The processor is invoked only for this pattern's matches. */
-	public void addPattern (String pattern, @Null Processor processor) {
+	/** Adds a pattern for value extraction. The processor is invoked only for this pattern's matches.
+	 * @return The new pattern's index. */
+	public int addPattern (String pattern, @Null Processor processor) {
 		if (chars != null) throw new IllegalStateException();
 		Pattern[] newPatterns = new Pattern[patterns.length + 1];
 		System.arraycopy(patterns, 0, newPatterns, 0, patterns.length);
@@ -153,6 +155,7 @@ public class JsonMatcher extends JsonSkimmer {
 		newPatterns[patterns.length] = newPattern;
 		patterns = newPatterns;
 		if (debug) System.out.println(newPattern);
+		return patterns.length - 1;
 	}
 
 	@Override

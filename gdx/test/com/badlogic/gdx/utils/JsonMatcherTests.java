@@ -1258,6 +1258,26 @@ public class JsonMatcherTests {
 		assertTrue(value.get("object").type() == ValueType.object);
 	}
 
+	@Test
+	public void filtering () {
+		JsonMatcher matcher = new JsonMatcher();
+		Array<JsonValue> values = new Array();
+		matcher.addPattern("*/(type@)", value -> {
+			if (value.asString().equals("ENPOWER"))
+				matcher.reject(2);
+			else if (value.asString().equals("ENCHARGE"))
+				matcher.reject(1);
+			else
+				fail("Unexpected type: " + value);
+		});
+		matcher.addPattern("*/devices/*@/(serial_num)", value -> copy(value, values));
+		matcher.addPattern("*/devices/*@/(serial_num,percentFull)", value -> copy(value, values));
+		matcher.parse(json);
+
+		assertValueCount(3, values);
+		assertEquals("{serial_num:32131444,percentFull:100}, {percentFull:75,serial_num:234234211}, 9834711", toString(values));
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidPattern1 () {
 		JsonMatcher matcher = new JsonMatcher();
