@@ -80,14 +80,14 @@ import com.badlogic.gdx.tests.gles2.GlTexImage2D;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
+import com.badlogic.gdx.tests.gles3.GL30FrameBufferMultisampleMRTTest;
+import com.badlogic.gdx.tests.gles3.GL30FrameBufferMultisampleTest;
 import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.ModelInstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
 import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
 import com.badlogic.gdx.tests.gles3.UniformBufferObjectsTest;
-import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleMRTTest;
-import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleTest;
 import com.badlogic.gdx.tests.gles31.GL31IndirectDrawingIndexedTest;
 import com.badlogic.gdx.tests.gles31.GL31IndirectDrawingNonIndexedTest;
 import com.badlogic.gdx.tests.gles31.GL31ProgramIntrospectionTest;
@@ -173,12 +173,12 @@ public class GdxTests {
 		FullscreenTest.class,
 		Gdx2DTest.class,
 		GestureDetectorTest.class,
+		GL30FrameBufferMultisampleMRTTest.class,
+		GL30FrameBufferMultisampleTest.class,
 		GL30Texture3DTest.class,
 		GLES30Test.class,
 		GL31IndirectDrawingIndexedTest.class,
 		GL31IndirectDrawingNonIndexedTest.class,
-		GL31FrameBufferMultisampleMRTTest.class,
-		GL31FrameBufferMultisampleTest.class,
 		GL31ProgramIntrospectionTest.class,
 		GL32AdvancedBlendingTest.class,
 		GL32DebugControlTest.class,

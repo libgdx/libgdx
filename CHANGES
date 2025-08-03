@@ -3,6 +3,7 @@
 - API Addition: Added JsonValue#toJson that takes a Writer.
 - API Addition: Added getProgrammaticChangeEvents() to scene2d.ui actors that have setProgrammaticChangeEvents.
 - Fixed crashes when reading the soft buttons bar height on Android.
+- Multi sample FBOs can now be used with OpenGL ES 3.0+ instead of OpenGL ES 3.1+
 
 
 [1.13.5]
