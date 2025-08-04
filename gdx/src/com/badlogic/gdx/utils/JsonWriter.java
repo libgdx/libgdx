@@ -25,14 +25,24 @@ import java.util.regex.Pattern;
 /** Builder API for emitting JSON to a {@link Writer}.
  * @author Nathan Sweet */
 public class JsonWriter extends Writer {
-	final Writer writer;
-	private final Array<JsonObject> stack = new Array();
-	private JsonObject current;
+	static private final int none = 0, needsComma = 1, object = '}' << 1, array = ']' << 1, isObject = 0b1000000;
+
+	Writer writer;
+	private final IntArray stack = new IntArray();
+	private int current;
 	private boolean named;
 	private OutputType outputType = OutputType.json;
 	private boolean quoteLongValues = false;
 
 	public JsonWriter (Writer writer) {
+		this.writer = writer;
+	}
+
+	/** A writer must be set before use. */
+	protected JsonWriter () {
+	}
+
+	public void setWriter (Writer writer) {
 		this.writer = writer;
 	}
 
@@ -52,11 +62,11 @@ public class JsonWriter extends Writer {
 	}
 
 	public JsonWriter name (String name) throws IOException {
-		if (current == null || current.array) throw new IllegalStateException("Current item must be an object.");
-		if (!current.needsComma)
-			current.needsComma = true;
-		else
+		if ((current & isObject) == 0) throw new IllegalStateException("Current item must be an object.");
+		if ((current & needsComma) != 0)
 			writer.write(',');
+		else
+			stack.items[stack.size - 1] = current |= needsComma;
 		writer.write(outputType.quoteName(name));
 		writer.write(':');
 		named = true;
@@ -65,13 +75,15 @@ public class JsonWriter extends Writer {
 
 	public JsonWriter object () throws IOException {
 		requireCommaOrName();
-		stack.add(current = new JsonObject(false));
+		writer.write('{');
+		stack.add(current = object);
 		return this;
 	}
 
 	public JsonWriter array () throws IOException {
 		requireCommaOrName();
-		stack.add(current = new JsonObject(true));
+		writer.write('[');
+		stack.add(current = array);
 		return this;
 	}
 
@@ -97,39 +109,42 @@ public class JsonWriter extends Writer {
 	}
 
 	private void requireCommaOrName () throws IOException {
-		if (current == null) return;
-		if (current.array) {
-			if (!current.needsComma)
-				current.needsComma = true;
-			else
-				writer.write(',');
-		} else {
+		if ((current & isObject) != 0) {
 			if (!named) throw new IllegalStateException("Name must be set.");
 			named = false;
+		} else {
+			if ((current & needsComma) != 0)
+				writer.write(',');
+			else if (current != none) //
+				stack.items[stack.size - 1] = current |= needsComma;
 		}
 	}
 
 	public JsonWriter object (String name) throws IOException {
-		return name(name).object();
+		name(name);
+		return object();
 	}
 
 	public JsonWriter array (String name) throws IOException {
-		return name(name).array();
+		name(name);
+		return array();
 	}
 
 	public JsonWriter set (String name, Object value) throws IOException {
-		return name(name).value(value);
+		name(name);
+		return value(value);
 	}
 
 	/** Writes the specified JSON value, without quoting or escaping. */
 	public JsonWriter json (String name, String json) throws IOException {
-		return name(name).json(json);
+		name(name);
+		return json(json);
 	}
 
 	public JsonWriter pop () throws IOException {
 		if (named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
-		stack.pop().close();
-		current = stack.size == 0 ? null : stack.peek();
+		writer.write((char)(current >> 1));
+		current = --stack.size == 0 ? none : stack.items[stack.size - 1];
 		return this;
 	}
 
