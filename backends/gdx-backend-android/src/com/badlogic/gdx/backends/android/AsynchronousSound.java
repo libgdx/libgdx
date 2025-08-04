@@ -120,44 +120,79 @@ public class AsynchronousSound implements Sound {
 
 	@Override
 	public void stop (long soundId) {
-		long realSoundId = getSoundId(soundId);
-		sound.stop(realSoundId);
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.stop(realSoundId);
+			}
+		});
 	}
 
 	@Override
 	public void pause (long soundId) {
-		long realSoundId = getSoundId(soundId);
-		sound.pause(realSoundId);
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.pause(realSoundId);
+			}
+		});
 	}
 
 	@Override
 	public void resume (long soundId) {
-		long realSoundId = getSoundId(soundId);
-		sound.resume(realSoundId);
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.resume(realSoundId);
+			}
+		});
 	}
 
 	@Override
 	public void setLooping (long soundId, boolean looping) {
-		long realSoundId = getSoundId(soundId);
-		sound.setLooping(realSoundId, looping);
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.setLooping(realSoundId, looping);
+			}
+		});
 	}
 
 	@Override
 	public void setPitch (long soundId, float pitch) {
-		long realSoundId = getSoundId(soundId);
-		sound.setPitch(realSoundId, pitch);
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.setPitch(realSoundId, pitch);
+			}
+		});
 	}
 
 	@Override
 	public void setVolume (long soundId, float volume) {
-		long realSoundId = getSoundId(soundId);
-		sound.setVolume(realSoundId, volume);
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.setVolume(realSoundId, volume);
+			}
+		});
 	}
 
 	@Override
 	public void setPan (long soundId, float pan, float volume) {
-		long realSoundId = getSoundId(soundId);
-		sound.setPan(realSoundId, pan, volume);
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.setPan(realSoundId, pan, volume);
+			}
+		});
 	}
 
 	private void saveSoundId (int soundNumber, long soundId) {
