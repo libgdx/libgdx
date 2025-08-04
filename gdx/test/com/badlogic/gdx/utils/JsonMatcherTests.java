@@ -6,7 +6,6 @@ import static org.junit.Assert.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.junit.Rule;
