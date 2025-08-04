@@ -32,7 +32,7 @@ public class JsonWriter extends Writer {
 	private int current;
 	private boolean named;
 	private OutputType outputType = OutputType.json;
-	private boolean quoteLongValues = false;
+	private boolean quoteLongValues;
 
 	public JsonWriter (Writer writer) {
 		this.writer = writer;
@@ -202,32 +202,61 @@ public class JsonWriter extends Writer {
 			if (value == null) return "null";
 			String string = value.toString();
 			if (value instanceof Number || value instanceof Boolean) return string;
-			StringBuilder buffer = escape(string);
+
+			boolean quote = false;
+			outer:
+			for (int i = 0; i < string.length(); i++) {
+				switch (string.charAt(i)) {
+				case '\\':
+				case '\r':
+				case '\n':
+				case '\t':
+					string = escape(string, i);
+					quote = true;
+					break outer;
+				case '"':
+					quote = true;
+				}
+			}
+
 			if (this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
 				&& !string.contains("//") && !string.contains("/*")) {
-				int length = buffer.length();
-				if (length > 0 && buffer.charAt(length - 1) != ' ' && minimalValuePattern.matcher(buffer).matches())
-					return buffer.toString();
+				int length = string.length();
+				if (length > 0 && string.charAt(length - 1) != ' ' && minimalValuePattern.matcher(string).matches()) return string;
 			}
-			return '"' + buffer.toString().replace("\"", "\\\"") + '"';
+			return '"' + (quote ? escapeQuote(string) : string) + '"';
 		}
 
 		public String quoteName (String value) {
-			StringBuilder buffer = escape(value);
+			boolean quote = false;
+			outer:
+			for (int i = 0; i < value.length(); i++) {
+				switch (value.charAt(i)) {
+				case '\\':
+				case '\r':
+				case '\n':
+				case '\t':
+					value = escape(value, i);
+					quote = true;
+					break outer;
+				case '"':
+					quote = true;
+				}
+			}
+
 			switch (this) {
 			case minimal:
-				if (!value.contains("//") && !value.contains("/*") && minimalNamePattern.matcher(buffer).matches())
-					return buffer.toString();
+				if (!value.contains("//") && !value.contains("/*") && minimalNamePattern.matcher(value).matches()) return value;
 			case javascript:
-				if (javascriptPattern.matcher(buffer).matches()) return buffer.toString();
+				if (javascriptPattern.matcher(value).matches()) return value;
 			}
-			return '"' + buffer.toString().replace("\"", "\\\"") + '"';
+			return '"' + (quote ? escapeQuote(value) : value) + '"';
 		}
 
-		static private StringBuilder escape (String value) {
+		static private String escape (String value, int i) {
 			StringBuilder buffer = new StringBuilder(value.length() + 6);
-			String quote;
-			for (int i = 0; i < value.length(); i++) {
+			buffer.append(value, 0, i);
+			for (; i < value.length(); i++) {
 				char c = value.charAt(i);
 				switch (c) {
 				case '\\':
@@ -246,7 +275,19 @@ public class JsonWriter extends Writer {
 					buffer.append(c);
 				}
 			}
-			return buffer;
+			return buffer.toString();
+		}
+
+		static private String escapeQuote (String value) {
+			StringBuilder buffer = new StringBuilder(value.length() + 4);
+			for (int i = 0; i < value.length(); i++) {
+				char c = value.charAt(i);
+				if (c == '"')
+					buffer.append("\\\"");
+				else
+					buffer.append(c);
+			}
+			return buffer.toString();
 		}
 	}
 }

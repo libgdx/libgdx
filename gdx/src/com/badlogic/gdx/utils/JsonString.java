@@ -31,7 +31,7 @@ public class JsonString {
 	private int current;
 	private boolean named;
 	private OutputType outputType = OutputType.json;
-	private boolean quoteLongValues = false;
+	private boolean quoteLongValues;
 
 	public JsonString () {
 		this(64);
