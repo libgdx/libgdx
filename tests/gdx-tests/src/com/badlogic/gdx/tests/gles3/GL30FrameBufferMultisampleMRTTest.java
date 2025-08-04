@@ -69,6 +69,12 @@ public class GL30FrameBufferMultisampleMRTTest extends GdxTest {
 		shader = new ShaderProgram(Gdx.files.internal("data/shaders/shape-renderer-mrt-vert.glsl").readString(),
 			Gdx.files.internal("data/shaders/shape-renderer-mrt-frag.glsl").readString());
 
+		if (shader.isCompiled()) {
+			Gdx.app.log("GL30FrameBufferMultisampleMRTTest", "Shader compiled successfully");
+		} else {
+			Gdx.app.error("GL30FrameBufferMultisampleMRTTest", "Shader compilation failed: " + shader.getLog());
+			Gdx.app.exit();
+		}
 		shapes = new ShapeRenderer(3, shader);
 
 	}
@@ -94,6 +100,7 @@ public class GL30FrameBufferMultisampleMRTTest extends GdxTest {
 		ScreenUtils.clear(Color.CLEAR, true);
 		shapes.getProjectionMatrix().setToOrtho2D(0, 0, 1, 1);
 		shapes.begin(ShapeType.Filled);
+		shapes.setColor(Color.BLUE);
 		shapes.triangle(0.2f, 0.3f, .9f, .9f, .8f, 0.5f);
 		shapes.end();
 		fbo.end();
@@ -104,10 +111,11 @@ public class GL30FrameBufferMultisampleMRTTest extends GdxTest {
 		batch.draw(fbo.getTextureAttachments().get(2), 0, 2, 1, 1, 0, 0, 1, 1);
 		batch.end();
 
-		// render a shape into the multisample FBO, transfer to the other one and display it on the right
+//		// render a shape into the multisample FBO, transfer to the other one and display it on the right
 		fboMS.begin();
 		ScreenUtils.clear(Color.CLEAR, true);
 		shapes.getProjectionMatrix().setToOrtho2D(0, 0, 1, 1);
+		shapes.setColor(Color.GREEN);
 		shapes.begin(ShapeType.Filled);
 		shapes.triangle(0.2f, 0.3f, .9f, .9f, .8f, 0.5f);
 		shapes.end();

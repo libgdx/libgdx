@@ -402,7 +402,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		Gdx.gl20.glViewport(x, y, width, height);
 	}
 
-	static final IntBuffer singleInt = BufferUtils.newIntBuffer(1);
+	private IntBuffer drawBuffersForTransfer;
 
 	/** Transfer pixels from this frame buffer to the destination frame buffer. Usually used when using multisample, it resolves
 	 * samples from this multisample FBO to a non-multisample as destination in order to be used as textures. This is a convenient
@@ -433,6 +433,12 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	 *           buffers in the destination framebuffer. */
 	public void transfer (GLFrameBuffer<T> destination, int copyBits) {
 
+		if (drawBuffersForTransfer == null) {
+			//set it to max color attachments
+			Gdx.gl.glGetIntegerv(GL30.GL_MAX_COLOR_ATTACHMENTS, drawBuffersForTransfer = BufferUtils.newIntBuffer(1));
+			drawBuffersForTransfer = BufferUtils.newIntBuffer(drawBuffersForTransfer.get(0));
+		}
+
 		if (destination.getWidth() != getWidth() || destination.getHeight() != getHeight()) {
 			throw new IllegalArgumentException("source and destination frame buffers must have same size.");
 		}
@@ -440,16 +446,37 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		Gdx.gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferHandle);
 		Gdx.gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, destination.framebufferHandle);
 
+		int totalColorAttachments = 0;
+		for (FrameBufferTextureAttachmentSpec textureAttachmentSpec : destination.bufferBuilder.textureAttachmentSpecs) {
+			if (textureAttachmentSpec.isColorTexture()) {
+				totalColorAttachments++;
+			}
+		}
+
 		int colorBufferIndex = 0;
-		int attachmentIndex = 0;
+		drawBuffersForTransfer.clear();
 		for (FrameBufferTextureAttachmentSpec attachment : destination.bufferBuilder.textureAttachmentSpecs) {
 			if (attachment.isColorTexture()) {
 				Gdx.gl30.glReadBuffer(GL30.GL_COLOR_ATTACHMENT0 + colorBufferIndex);
 
-				singleInt.clear();
-				singleInt.put(GL30.GL_COLOR_ATTACHMENT0 + attachmentIndex);
-				singleInt.flip();
-				Gdx.gl30.glDrawBuffers(1, singleInt);
+				//Webgl doesn't like it when you put a single out of order buffer in for glDrawBuffers
+				//Must be sequential.
+
+				//drawBuffers[COLOR0] is ok
+				//drawBuffers[COLOR1, COLOR2] is ok
+				//drawBuffers[COLOR1] is not ok
+				//drawBuffers[COLOR1, COLOR3] is not ok
+				//drawBuffers[NONE, NONE, COLOR3] is ok
+				for (int i = 0; i < totalColorAttachments; i++) {
+					if (colorBufferIndex == i) {
+						drawBuffersForTransfer.put(GL30.GL_COLOR_ATTACHMENT0 + i);
+					} else {
+						drawBuffersForTransfer.put(GL30.GL_NONE);
+					}
+				}
+				drawBuffersForTransfer.flip();
+
+				Gdx.gl30.glDrawBuffers(drawBuffersForTransfer.limit(), drawBuffersForTransfer);
 
 				Gdx.gl30.glBlitFramebuffer(0, 0, getWidth(), getHeight(), 0, 0, destination.getWidth(), destination.getHeight(),
 					copyBits, GL20.GL_NEAREST);
@@ -457,7 +484,6 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 				copyBits = GL20.GL_COLOR_BUFFER_BIT;
 				colorBufferIndex++;
 			}
-			attachmentIndex++;
 		}
 		// case of depth and/or stencil only
 		if (copyBits != GL20.GL_COLOR_BUFFER_BIT) {
