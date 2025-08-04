@@ -434,7 +434,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	public void transfer (GLFrameBuffer<T> destination, int copyBits) {
 
 		if (drawBuffersForTransfer == null) {
-			//set it to max color attachments
+			// set it to max color attachments
 			Gdx.gl.glGetIntegerv(GL30.GL_MAX_COLOR_ATTACHMENTS, drawBuffersForTransfer = BufferUtils.newIntBuffer(1));
 			drawBuffersForTransfer = BufferUtils.newIntBuffer(drawBuffersForTransfer.get(0));
 		}
@@ -459,14 +459,14 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			if (attachment.isColorTexture()) {
 				Gdx.gl30.glReadBuffer(GL30.GL_COLOR_ATTACHMENT0 + colorBufferIndex);
 
-				//Webgl doesn't like it when you put a single out of order buffer in for glDrawBuffers
-				//Must be sequential.
+				// Webgl doesn't like it when you put a single out of order buffer in for glDrawBuffers
+				// Must be sequential.
 
-				//drawBuffers[COLOR0] is ok
-				//drawBuffers[COLOR1, COLOR2] is ok
-				//drawBuffers[COLOR1] is not ok
-				//drawBuffers[COLOR1, COLOR3] is not ok
-				//drawBuffers[NONE, NONE, COLOR3] is ok
+				// drawBuffers[COLOR0] is ok
+				// drawBuffers[COLOR1, COLOR2] is ok
+				// drawBuffers[COLOR1] is not ok
+				// drawBuffers[COLOR1, COLOR3] is not ok
+				// drawBuffers[NONE, NONE, COLOR3] is ok
 				for (int i = 0; i < totalColorAttachments; i++) {
 					if (colorBufferIndex == i) {
 						drawBuffersForTransfer.put(GL30.GL_COLOR_ATTACHMENT0 + i);
