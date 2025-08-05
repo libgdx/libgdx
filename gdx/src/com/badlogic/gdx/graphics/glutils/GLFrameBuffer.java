@@ -446,7 +446,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		Gdx.gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebufferHandle);
 		Gdx.gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, destination.framebufferHandle);
 
-		if ((copyBits & GL20.GL_COLOR_BUFFER_BIT) == GL20.GL_COLOR_BUFFER_BIT){
+		if ((copyBits & GL20.GL_COLOR_BUFFER_BIT) == GL20.GL_COLOR_BUFFER_BIT) {
 			int totalColorAttachments = 0;
 			for (FrameBufferTextureAttachmentSpec textureAttachmentSpec : destination.bufferBuilder.textureAttachmentSpecs) {
 				if (textureAttachmentSpec.isColorTexture()) {
@@ -460,14 +460,14 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 				if (attachment.isColorTexture()) {
 					Gdx.gl30.glReadBuffer(GL30.GL_COLOR_ATTACHMENT0 + colorBufferIndex);
 
-					//Webgl doesn't like it when you put a single out of order buffer in for glDrawBuffers
-					//Must be sequential.
+					// Webgl doesn't like it when you put a single out of order buffer in for glDrawBuffers
+					// Must be sequential.
 
-					//drawBuffers[COLOR0] is ok
-					//drawBuffers[COLOR1, COLOR2] is ok
-					//drawBuffers[COLOR1] is not ok
-					//drawBuffers[COLOR1, COLOR3] is not ok
-					//drawBuffers[NONE, NONE, COLOR3] is ok
+					// drawBuffers[COLOR0] is ok
+					// drawBuffers[COLOR1, COLOR2] is ok
+					// drawBuffers[COLOR1] is not ok
+					// drawBuffers[COLOR1, COLOR3] is not ok
+					// drawBuffers[NONE, NONE, COLOR3] is ok
 					for (int i = 0; i < totalColorAttachments; i++) {
 						if (colorBufferIndex == i) {
 							drawBuffersForTransfer.put(GL30.GL_COLOR_ATTACHMENT0 + i);
@@ -479,7 +479,8 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 					Gdx.gl30.glDrawBuffers(drawBuffersForTransfer.limit(), drawBuffersForTransfer);
 
-					Gdx.gl30.glBlitFramebuffer(0, 0, getWidth(), getHeight(), 0, 0, destination.getWidth(), destination.getHeight(), copyBits, GL20.GL_NEAREST);
+					Gdx.gl30.glBlitFramebuffer(0, 0, getWidth(), getHeight(), 0, 0, destination.getWidth(), destination.getHeight(),
+						copyBits, GL20.GL_NEAREST);
 
 					copyBits = GL20.GL_COLOR_BUFFER_BIT;
 					colorBufferIndex++;
