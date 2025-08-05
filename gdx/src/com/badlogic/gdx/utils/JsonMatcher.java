@@ -104,6 +104,8 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * <li>If not using {@code *@}, {@code **@}, or {@code []} parsing ends once all specified values are captured.
  * <li>A single capture before processing provides the value directly, multiple captures provide an object.
  * <li>A {@code ""} pattern captures the entire JSON document.
+ * <li>JsonValue types are object, array, null, boolean, or String. Numbers are provided as String, deferring number parsing until
+ * the JsonValue is converted to a number.
  * </ul>
  * @author Nathan Sweet */
 public class JsonMatcher extends JsonSkimmer {
