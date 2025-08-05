@@ -104,8 +104,14 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * <li>If not using {@code *@}, {@code **@}, or {@code []} parsing ends once all specified values are captured.
  * <li>A single capture before processing provides the value directly, multiple captures provide an object.
  * <li>A {@code ""} pattern captures the entire JSON document.
+ * </ul>
+ * 
+ * <h4>JsonValues</h4>
+ * <ul>
+ * <li>JsonValue instances are reused for {@code @} processing, references should not be kept.
+ * <li>JsonValue references can safely be held only by processors called at the end of parsing.
  * <li>JsonValue types are object, array, null, boolean, or String. Numbers are provided as String, deferring number parsing until
- * the JsonValue is converted to a number.
+ * the JsonValue is converted to a number (eg {@link JsonValue#asFloat()}).
  * </ul>
  * @author Nathan Sweet */
 public class JsonMatcher extends JsonSkimmer {
@@ -167,7 +173,7 @@ public class JsonMatcher extends JsonSkimmer {
 		try {
 			super.parse(data, offset, length);
 			for (Pattern pattern : patterns)
-				process(pattern);
+				process(pattern, false);
 		} finally {
 			for (Pattern pattern : patterns)
 				pattern.reset();
@@ -204,7 +210,7 @@ public class JsonMatcher extends JsonSkimmer {
 						if (flags != none) {
 							while (true) {
 								if ((flags & process) != 0) {
-									process(pattern); // Process anything previously captured.
+									process(pattern, true); // Process anything previously captured.
 									if (stop) return;
 								}
 								if ((flags & capture) != 0) { // Capture key, object, or array.
@@ -260,13 +266,13 @@ public class JsonMatcher extends JsonSkimmer {
 				if (node.dead == nextDepth) node.dead = Integer.MAX_VALUE; // Reject can set dead at any level.
 				if (node.pop != nextDepth) {
 					if (node.processEach) {
-						process(pattern);
+						process(pattern, true);
 						if (stop) return;
 					}
 					break;
 				}
 				if (node.processEach || node.processPop) {
-					process(pattern);
+					process(pattern, true);
 					if (stop) return;
 				}
 				if (node.prev == null) break;
@@ -291,7 +297,7 @@ public class JsonMatcher extends JsonSkimmer {
 				if (flags != none) {
 					while (true) {
 						if ((flags & process) != 0) { // Process anything previously captured.
-							process(pattern);
+							process(pattern, true);
 							if (stop) return;
 						}
 						if ((flags & capture) != 0) { // Capture key or value.
@@ -302,7 +308,7 @@ public class JsonMatcher extends JsonSkimmer {
 								captureValue(pattern, flags, name, value.value());
 							captured();
 							if ((flags & process) != 0) {
-								process(pattern);
+								process(pattern, true);
 								if (stop) return;
 							}
 							break;
@@ -380,7 +386,7 @@ public class JsonMatcher extends JsonSkimmer {
 		}
 	}
 
-	private void process (Pattern pattern) {
+	private void process (Pattern pattern, boolean clear) {
 		if (!pattern.captured) return;
 		JsonValue capture = pattern.capture;
 		if (debug) debug(pattern, "PROCESS: " + capture.toJson(OutputType.minimal));
@@ -397,7 +403,10 @@ public class JsonMatcher extends JsonSkimmer {
 			}
 			process(capture);
 		} finally {
-			pattern.clearCapture();
+			if (clear)
+				pattern.clearCapture();
+			else
+				pattern.capture = new JsonValue(ValueType.object); // Processors called at the end of parsing own the value.
 			processPattern = null;
 		}
 	}
@@ -590,7 +599,7 @@ public class JsonMatcher extends JsonSkimmer {
 	static class Pattern {
 		final Node root;
 		final Processor processor;
-		final JsonValue capture = new JsonValue(ValueType.object);
+		JsonValue capture = new JsonValue(ValueType.object);
 		boolean captured, captureAll, captureRoot;
 		final Array<JsonValue> stack = new Array();
 		Node current;
@@ -706,7 +715,8 @@ public class JsonMatcher extends JsonSkimmer {
 	}
 
 	static public interface Processor {
-		/** Called with captured values. */
+		/** Called with captured values.
+		 * @param value This value is reused once this method returns, except when called at the end of parsing. */
 		public void process (JsonValue value);
 	}
 }
