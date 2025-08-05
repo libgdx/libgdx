@@ -50,38 +50,30 @@ public class JsonString {
 		this.outputType = outputType;
 	}
 
-	/** When true, quotes long, double, BigInteger, BigDecimal types to prevent truncation in languages like JavaScript and PHP.
-	 * This is not necessary when using libgdx, which handles these types without truncation. Default is false. */
+	/** When true, long, double, BigInteger, BigDecimal types are output as strings to prevent truncation in languages like
+	 * JavaScript and PHP. This is not necessary when using libgdx, which handles these types without truncation. Default is
+	 * false. */
 	public void setQuoteLongValues (boolean quoteLongValues) {
 		this.quoteLongValues = quoteLongValues;
-	}
-
-	public JsonString name (String name) {
-		if ((current & isObject) == 0) throw new IllegalStateException("Current item must be an object.");
-		if ((current & needsComma) != 0)
-			buffer.append(',');
-		else
-			stack.items[stack.size - 1] = current |= needsComma;
-		buffer.append(outputType.quoteName(name));
-		buffer.append(':');
-		named = true;
-		return this;
 	}
 
 	public JsonString object () {
 		requireCommaOrName();
 		buffer.append('{');
-		stack.add(current = object);
+		stack.add(current);
+		current = object;
 		return this;
 	}
 
 	public JsonString array () {
 		requireCommaOrName();
 		buffer.append('[');
-		stack.add(current = array);
+		stack.add(current);
+		current = array;
 		return this;
 	}
 
+	/** Prefer calling the more specific value() methods. */
 	public JsonString value (@Null Object value) {
 		if (quoteLongValues
 			&& (value instanceof Long || value instanceof Double || value instanceof BigDecimal || value instanceof BigInteger)) {
@@ -96,7 +88,51 @@ public class JsonString {
 		return this;
 	}
 
-	/** Writes the specified JSON value, without quoting or escaping. */
+	public JsonString value (String value) {
+		requireCommaOrName();
+		buffer.append(outputType.quoteValue(value));
+		return this;
+	}
+
+	public JsonString value (boolean value) {
+		requireCommaOrName();
+		buffer.append(value);
+		return this;
+	}
+
+	public JsonString value (int value) {
+		requireCommaOrName();
+		buffer.append(value);
+		return this;
+	}
+
+	public JsonString value (long value) {
+		if (quoteLongValues)
+			value(Long.toString(value));
+		else {
+			requireCommaOrName();
+			buffer.append(value);
+		}
+		return this;
+	}
+
+	public JsonString value (float value) {
+		requireCommaOrName();
+		buffer.append(value);
+		return this;
+	}
+
+	public JsonString value (double value) {
+		if (quoteLongValues)
+			value(Double.toString(value));
+		else {
+			requireCommaOrName();
+			buffer.append(value);
+		}
+		return this;
+	}
+
+	/** Writes the specified JSON string, without quoting or escaping. */
 	public JsonString json (String json) {
 		requireCommaOrName();
 		buffer.append(json);
@@ -111,35 +147,104 @@ public class JsonString {
 			if ((current & needsComma) != 0)
 				buffer.append(',');
 			else if (current != none) //
-				stack.items[stack.size - 1] = current |= needsComma;
+				current |= needsComma;
 		}
 	}
 
+	public JsonString name (String name) {
+		nameValue(name);
+		named = true;
+		return this;
+	}
+
+	private void nameValue (String name) {
+		if ((current & isObject) == 0) throw new IllegalStateException("Current item must be an object.");
+		if ((current & needsComma) != 0)
+			buffer.append(',');
+		else
+			current |= needsComma;
+		buffer.append(outputType.quoteName(name));
+		buffer.append(':');
+	}
+
 	public JsonString object (String name) {
-		name(name);
-		return object();
+		nameValue(name);
+		buffer.append('{');
+		stack.add(current);
+		current = object;
+		return this;
 	}
 
 	public JsonString array (String name) {
-		name(name);
-		return array();
+		nameValue(name);
+		buffer.append('[');
+		stack.add(current);
+		current = array;
+		return this;
 	}
 
+	/** Prefer calling the more specific set() methods. */
 	public JsonString set (String name, Object value) {
 		name(name);
-		return value(value);
+		value(value);
+		return this;
 	}
 
-	/** Writes the specified JSON value, without quoting or escaping. */
+	public JsonString set (String name, String value) {
+		nameValue(name);
+		buffer.append(outputType.quoteValue(value));
+		return this;
+	}
+
+	public JsonString set (String name, boolean value) {
+		nameValue(name);
+		buffer.append(value);
+		return this;
+	}
+
+	public JsonString set (String name, int value) {
+		nameValue(name);
+		buffer.append(value);
+		return this;
+	}
+
+	public JsonString set (String name, long value) {
+		if (quoteLongValues)
+			set(name, Long.toString(value));
+		else {
+			nameValue(name);
+			buffer.append(value);
+		}
+		return this;
+	}
+
+	public JsonString set (String name, float value) {
+		nameValue(name);
+		buffer.append(value);
+		return this;
+	}
+
+	public JsonString set (String name, double value) {
+		if (quoteLongValues)
+			set(name, Double.toString(value));
+		else {
+			nameValue(name);
+			buffer.append(value);
+		}
+		return this;
+	}
+
+	/** Writes the specified JSON string, without quoting or escaping. */
 	public JsonString json (String name, String json) {
-		name(name);
-		return json(json);
+		nameValue(name);
+		buffer.append(json);
+		return this;
 	}
 
 	public JsonString pop () {
 		if (named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
 		buffer.append((char)(current >> 1));
-		current = --stack.size == 0 ? none : stack.items[stack.size - 1];
+		current = stack.size == 0 ? none : stack.items[--stack.size];
 		return this;
 	}
 
