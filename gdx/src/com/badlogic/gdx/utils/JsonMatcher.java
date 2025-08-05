@@ -16,6 +16,10 @@
 
 package com.badlogic.gdx.utils;
 
+import java.io.InputStream;
+import java.io.Reader;
+
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonValue.ValueType;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
@@ -101,9 +105,10 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * <li>reject() prevents further matching at this level or deeper, useful for filtering.
  * <li>clear() discards unprocessed captured values.
  * <li>end() prevents further matching and ends parsing. stop() does the same but also clears.
+ * <li>start() can be overidden to perform setup just before parsing.
  * <li>If not using {@code *@}, {@code **@}, or {@code []} parsing ends once all specified values are captured.
  * <li>A single capture before processing provides the value directly, multiple captures provide an object.
- * <li>A {@code ""} pattern captures the entire JSON document.
+ * <li>parseRoot(), no patterns, or a {@code ""} pattern captures the entire JSON document.
  * </ul>
  * 
  * <h4>JsonValues</h4>
@@ -113,6 +118,23 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * <li>JsonValue types are object, array, null, boolean, or String. Numbers are provided as String, deferring number parsing until
  * the JsonValue is converted to a number (eg {@link JsonValue#asFloat()}).
  * </ul>
+ * 
+ * <h4>var keyword</h4> With Java 10+ {@code var} enables access to anonymous class fields, making value collection easier:
+ * 
+ * <pre>
+ * var matcher = new JsonMatcher("(message,access_token)") {
+ * 	String error, accessToken;
+ * 
+ * 	protected void process (JsonValue value) {
+ * 		error = value.getString("message", null);
+ * 		accessToken = value.getString("access_token", null);
+ * 	}
+ * };
+ * matcher.parse(json);
+ * if (matcher.error != null) fail(matcher.error);
+ * return matcher.accessToken;
+ * </pre>
+ * 
  * @author Nathan Sweet */
 public class JsonMatcher extends JsonSkimmer {
 	static private final boolean debug = false;
@@ -126,7 +148,7 @@ public class JsonMatcher extends JsonSkimmer {
 	static final int single  = 0b100000; // @on
 
 	Processor processor;
-	Pattern[] patterns = new Pattern[0];
+	Pattern[] patterns = new Pattern[0], original, all;
 	int total;
 	private boolean rejected;
 	boolean stoppable = true;
@@ -135,6 +157,14 @@ public class JsonMatcher extends JsonSkimmer {
 	char[] chars;
 	final IntArray path = new IntArray();
 	Pattern processPattern;
+
+	public JsonMatcher () {
+	}
+
+	public JsonMatcher (String... patterns) {
+		for (String pattern : patterns)
+			addPattern(pattern);
+	}
 
 	/** This processor is invoked for all pattern matches, after per pattern processors and before {@link #process(JsonValue)}. */
 	public void setProcessor (@Null Processor processor) {
@@ -166,9 +196,19 @@ public class JsonMatcher extends JsonSkimmer {
 		return patterns.length - 1;
 	}
 
+	/** Called just before parsing is performed. */
+	protected void start () {
+	}
+
 	@Override
 	public void parse (char[] data, int offset, int length) {
 		if (chars != null) throw new IllegalStateException();
+
+		start();
+
+		boolean parseRoot = patterns.length == 0;
+		if (parseRoot) rootStart();
+
 		chars = data;
 		try {
 			super.parse(data, offset, length);
@@ -177,6 +217,7 @@ public class JsonMatcher extends JsonSkimmer {
 		} finally {
 			for (Pattern pattern : patterns)
 				pattern.reset();
+			if (parseRoot) rootEnd();
 			depth = 0;
 			captured = 0;
 			chars = null;
@@ -594,6 +635,77 @@ public class JsonMatcher extends JsonSkimmer {
 		for (int i = 0, n = patterns.length; i < n; i++)
 			if (patterns[i] == pattern) System.out.print("[" + i + "] ");
 		System.out.println(text);
+	}
+
+	private JsonValue rootStart () {
+		original = patterns;
+		if (all == null) {
+			if (patterns.length > 0) patterns = new Pattern[0];
+			addPattern("", null);
+			all = patterns;
+		} else
+			patterns = all;
+		return all[0].capture;
+	}
+
+	private void rootEnd () {
+		patterns = original;
+		original = null;
+	}
+
+	/** Captures and returns the entire JSON document. Any patterns are ignored. */
+	public JsonValue parseRoot (char[] data, int offset, int length) {
+		JsonValue root = rootStart();
+		try {
+			parse(data, offset, length);
+			return root;
+		} finally {
+			rootEnd();
+		}
+	}
+
+	/** Captures and returns the entire JSON document. Any patterns are ignored. */
+	public JsonValue parseRoot (String json) {
+		JsonValue root = rootStart();
+		try {
+			parse(json);
+			return root;
+		} finally {
+			rootEnd();
+		}
+	}
+
+	/** Captures and returns the entire JSON document. Any patterns are ignored. */
+	public JsonValue parseRoot (Reader reader) {
+		JsonValue root = rootStart();
+		try {
+			parse(reader);
+			return root;
+		} finally {
+			rootEnd();
+		}
+	}
+
+	/** Captures and returns the entire JSON document. Any patterns are ignored. */
+	public JsonValue parseRoot (InputStream input) {
+		JsonValue root = rootStart();
+		try {
+			parse(input);
+			return root;
+		} finally {
+			rootEnd();
+		}
+	}
+
+	/** Captures and returns the entire JSON document. Any patterns are ignored. */
+	public JsonValue parseRoot (FileHandle file) {
+		JsonValue root = rootStart();
+		try {
+			parse(file);
+			return root;
+		} finally {
+			rootEnd();
+		}
 	}
 
 	static class Pattern {
