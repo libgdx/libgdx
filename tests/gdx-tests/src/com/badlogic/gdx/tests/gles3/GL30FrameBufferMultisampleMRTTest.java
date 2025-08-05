@@ -121,7 +121,11 @@ public class GL30FrameBufferMultisampleMRTTest extends GdxTest {
 		shapes.end();
 		fboMS.end();
 
-		fboMS.transfer(fbo);
+		fbo.begin();
+		ScreenUtils.clear(Color.CLEAR, true);
+		fbo.end();
+
+		fboMS.transfer(fbo, GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
 		batch.draw(fbo.getTextureAttachments().get(0), 1, 0, 1, 1, 0, 0, 1, 1);
