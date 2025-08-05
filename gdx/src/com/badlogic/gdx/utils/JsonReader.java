@@ -708,8 +708,8 @@ public class JsonReader implements BaseJsonReader {
 		current = elements.size > 0 ? elements.peek() : null;
 	}
 
-	/** Called when a string value is encountered in the JSON. */
-	protected void string (@Null String name, String value) {
+	/** Called when a string or null value is encountered in the JSON. */
+	protected void string (@Null String name, @Null String value) {
 		addChild(name, new JsonValue(value));
 	}
 

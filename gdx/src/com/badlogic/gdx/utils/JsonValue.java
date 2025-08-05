@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
@@ -84,7 +85,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		set(value);
 	}
 
-	/** Creates a deep copy of the specific value, except {@link #parent()}, {@link #next()}, and {@link #prev()} are not null. */
+	/** Creates a deep copy of the specific value, except {@link #parent()}, {@link #next()}, and {@link #prev()} are null. */
 	public JsonValue (JsonValue value) {
 		this(value, null, null);
 	}
@@ -1046,10 +1047,23 @@ public class JsonValue implements Iterable<JsonValue> {
 		this.prev = prev;
 	}
 
+	/** Sets the type and value to the specified JsonValue. */
+	public void set (JsonValue value) {
+		type = value.type;
+		stringValue = value.stringValue;
+		doubleValue = value.doubleValue;
+		longValue = value.longValue;
+	}
+
 	/** @param value May be null. */
 	public void set (@Null String value) {
 		stringValue = value;
 		type = value == null ? ValueType.nullValue : ValueType.stringValue;
+	}
+
+	public void setNull () {
+		stringValue = null;
+		type = ValueType.nullValue;
 	}
 
 	/** @param stringValue May be null if the string representation is the string value of the double (eg, no leading zeros). */
@@ -1071,6 +1085,14 @@ public class JsonValue implements Iterable<JsonValue> {
 	public void set (boolean value) {
 		longValue = value ? 1 : 0;
 		type = ValueType.booleanValue;
+	}
+
+	public boolean equalsString (String value) {
+		return Objects.equals(asString(), value);
+	}
+
+	public boolean nameEquals (String value) {
+		return Objects.equals(name, value);
 	}
 
 	public String toJson (OutputType outputType) {
