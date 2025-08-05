@@ -434,7 +434,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	public void transfer (GLFrameBuffer<T> destination, int copyBits) {
 
 		if (drawBuffersForTransfer == null) {
-			//set it to max color attachments
+			// set it to max color attachments
 			Gdx.gl.glGetIntegerv(GL30.GL_MAX_COLOR_ATTACHMENTS, drawBuffersForTransfer = BufferUtils.newIntBuffer(1));
 			drawBuffersForTransfer = BufferUtils.newIntBuffer(drawBuffersForTransfer.get(0));
 		}
