@@ -195,8 +195,8 @@ public class JsonWriter extends Writer {
 		minimal;
 
 		static private Pattern javascriptPattern = Pattern.compile("^[a-zA-Z_$][a-zA-Z_$0-9]*$");
-		static private Pattern minimalNamePattern = Pattern.compile("^[^:,}/ ][^:]*$");
-		static private Pattern minimalValuePattern = Pattern.compile("^[^:,{\\[\\]/ ][^}\\],]*$");
+		static private Pattern minimalNamePattern = Pattern.compile("^[^\":,}/ ][^:]*$");
+		static private Pattern minimalValuePattern = Pattern.compile("^[^\":,{\\[\\]/ ][^}\\],]*$");
 
 		public String quoteValue (@Null Object value) {
 			if (value == null) return "null";
@@ -219,7 +219,7 @@ public class JsonWriter extends Writer {
 				}
 			}
 
-			if (this == OutputType.minimal && !quote && !string.equals("true") && !string.equals("false") && !string.equals("null")
+			if (this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
 				&& !string.contains("//") && !string.contains("/*")) {
 				int length = string.length();
 				if (length > 0 && string.charAt(length - 1) != ' ' && minimalValuePattern.matcher(string).matches()) return string;
@@ -246,8 +246,7 @@ public class JsonWriter extends Writer {
 
 			switch (this) {
 			case minimal:
-				if (!quote && !value.contains("//") && !value.contains("/*") && minimalNamePattern.matcher(value).matches())
-					return value;
+				if (!value.contains("//") && !value.contains("/*") && minimalNamePattern.matcher(value).matches()) return value;
 			case javascript:
 				if (javascriptPattern.matcher(value).matches()) return value;
 			}
