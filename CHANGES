@@ -8,6 +8,7 @@
 - API Addition: Added getProgrammaticChangeEvents() to scene2d.ui actors that have setProgrammaticChangeEvents.
 - API Addition: Added JsonMatcher, extracts values with pattern matching.
 - Fixed crashes when reading the soft buttons bar height on Android.
+- Multi sample FBOs can now be used with OpenGL ES 3.0+ instead of OpenGL ES 3.1+
 
 [1.13.5]
 - [BREAKING CHANGE] Gradle: snapshot builds are now publishes to https://central.sonatype.com/repository/maven-snapshots/. Update your build scripts and the new repository URL. Some of your other snapshot dependencies might still live on OSSRH, so make sure to keep that repository as well.
