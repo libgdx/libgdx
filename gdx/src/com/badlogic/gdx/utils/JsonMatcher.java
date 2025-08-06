@@ -23,7 +23,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonValue.ValueType;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
-/** Efficient JSON parser that does minimal parsing to extract values matching specified patterns using a single pass.
+/** Efficient JSON parser that extracts values matching specified patterns using a single pass. It conveniently collects values
+ * for processing in batches or at once. Values not collected have minimal overhead, ideal for processing a subset of large JSON.
  * 
  * <h4>Match</h4> Match objects, arrays, or field names (not field values) in the JSON:
  * <ul>
@@ -102,10 +103,11 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * 
  * <h4>Behavior notes</h4>
  * <ul>
- * <li>reject() prevents further matching at this level or deeper, useful for filtering.
+ * <li>When multiple patterns are added they match in parallel, each with independent capture and processing.
+ * <li>reject() prevents further matching at this level or deeper, useful for filtering. A pattern can reject a different pattern.
  * <li>clear() discards unprocessed captured values.
- * <li>end() prevents further matching and ends parsing. stop() does the same but also clears.
  * <li>start() can be overidden to perform setup just before parsing.
+ * <li>end() prevents further matching and ends parsing. stop() does the same but also clears.
  * <li>If not using {@code *@}, {@code **@}, or {@code []} parsing ends once all specified values are captured.
  * <li>A single capture before processing provides the value directly, multiple captures provide an object.
  * <li>parseRoot(), no patterns, or a {@code ""} pattern captures the entire JSON document.
@@ -161,6 +163,7 @@ public class JsonMatcher extends JsonSkimmer {
 	public JsonMatcher () {
 	}
 
+	/** Adds all of the specified patterns. */
 	public JsonMatcher (String... patterns) {
 		for (String pattern : patterns)
 			addPattern(pattern);
