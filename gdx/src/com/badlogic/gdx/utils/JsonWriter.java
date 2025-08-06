@@ -55,38 +55,30 @@ public class JsonWriter extends Writer {
 		this.outputType = outputType;
 	}
 
-	/** When true, quotes long, double, BigInteger, BigDecimal types to prevent truncation in languages like JavaScript and PHP.
-	 * This is not necessary when using libgdx, which handles these types without truncation. Default is false. */
+	/** When true, long, double, BigInteger, BigDecimal types are output as strings to prevent truncation in languages like
+	 * JavaScript and PHP. This is not necessary when using libgdx, which handles these types without truncation. Default is
+	 * false. */
 	public void setQuoteLongValues (boolean quoteLongValues) {
 		this.quoteLongValues = quoteLongValues;
-	}
-
-	public JsonWriter name (String name) throws IOException {
-		if ((current & isObject) == 0) throw new IllegalStateException("Current item must be an object.");
-		if ((current & needsComma) != 0)
-			writer.write(',');
-		else
-			stack.items[stack.size - 1] = current |= needsComma;
-		writer.write(outputType.quoteName(name));
-		writer.write(':');
-		named = true;
-		return this;
 	}
 
 	public JsonWriter object () throws IOException {
 		requireCommaOrName();
 		writer.write('{');
-		stack.add(current = object);
+		stack.add(current);
+		current = object;
 		return this;
 	}
 
 	public JsonWriter array () throws IOException {
 		requireCommaOrName();
 		writer.write('[');
-		stack.add(current = array);
+		stack.add(current);
+		current = array;
 		return this;
 	}
 
+	/** Prefer calling the more specific value() methods. */
 	public JsonWriter value (@Null Object value) throws IOException {
 		if (quoteLongValues
 			&& (value instanceof Long || value instanceof Double || value instanceof BigDecimal || value instanceof BigInteger)) {
@@ -101,7 +93,51 @@ public class JsonWriter extends Writer {
 		return this;
 	}
 
-	/** Writes the specified JSON value, without quoting or escaping. */
+	public JsonWriter value (String value) throws IOException {
+		requireCommaOrName();
+		writer.write(outputType.quoteValue(value));
+		return this;
+	}
+
+	public JsonWriter value (boolean value) throws IOException {
+		requireCommaOrName();
+		writer.write(value ? "true" : "false");
+		return this;
+	}
+
+	public JsonWriter value (int value) throws IOException {
+		requireCommaOrName();
+		writer.write(Integer.toString(value));
+		return this;
+	}
+
+	public JsonWriter value (long value) throws IOException {
+		if (quoteLongValues)
+			value(Long.toString(value));
+		else {
+			requireCommaOrName();
+			writer.write(Long.toString(value));
+		}
+		return this;
+	}
+
+	public JsonWriter value (float value) throws IOException {
+		requireCommaOrName();
+		writer.write(Float.toString(value));
+		return this;
+	}
+
+	public JsonWriter value (double value) throws IOException {
+		if (quoteLongValues)
+			value(Double.toString(value));
+		else {
+			requireCommaOrName();
+			writer.write(Double.toString(value));
+		}
+		return this;
+	}
+
+	/** Writes the specified JSON string, without quoting or escaping. */
 	public JsonWriter json (String json) throws IOException {
 		requireCommaOrName();
 		writer.write(json);
@@ -116,35 +152,104 @@ public class JsonWriter extends Writer {
 			if ((current & needsComma) != 0)
 				writer.write(',');
 			else if (current != none) //
-				stack.items[stack.size - 1] = current |= needsComma;
+				current |= needsComma;
 		}
 	}
 
+	public JsonWriter name (String name) throws IOException {
+		nameValue(name);
+		named = true;
+		return this;
+	}
+
+	private void nameValue (String name) throws IOException {
+		if ((current & isObject) == 0) throw new IllegalStateException("Current item must be an object.");
+		if ((current & needsComma) != 0)
+			writer.write(',');
+		else
+			current |= needsComma;
+		writer.write(outputType.quoteName(name));
+		writer.write(':');
+	}
+
 	public JsonWriter object (String name) throws IOException {
-		name(name);
-		return object();
+		nameValue(name);
+		writer.write('{');
+		stack.add(current);
+		current = object;
+		return this;
 	}
 
 	public JsonWriter array (String name) throws IOException {
-		name(name);
-		return array();
+		nameValue(name);
+		writer.write('[');
+		stack.add(current);
+		current = array;
+		return this;
 	}
 
+	/** Prefer calling the more specific set() methods. */
 	public JsonWriter set (String name, Object value) throws IOException {
 		name(name);
-		return value(value);
+		value(value);
+		return this;
 	}
 
-	/** Writes the specified JSON value, without quoting or escaping. */
+	public JsonWriter set (String name, String value) throws IOException {
+		nameValue(name);
+		writer.write(outputType.quoteValue(value));
+		return this;
+	}
+
+	public JsonWriter set (String name, boolean value) throws IOException {
+		nameValue(name);
+		writer.write(value ? "true" : "false");
+		return this;
+	}
+
+	public JsonWriter set (String name, int value) throws IOException {
+		nameValue(name);
+		writer.write(Integer.toString(value));
+		return this;
+	}
+
+	public JsonWriter set (String name, long value) throws IOException {
+		if (quoteLongValues)
+			set(name, Long.toString(value));
+		else {
+			nameValue(name);
+			writer.write(Long.toString(value));
+		}
+		return this;
+	}
+
+	public JsonWriter set (String name, float value) throws IOException {
+		nameValue(name);
+		writer.write(Float.toString(value));
+		return this;
+	}
+
+	public JsonWriter set (String name, double value) throws IOException {
+		if (quoteLongValues)
+			set(name, Double.toString(value));
+		else {
+			nameValue(name);
+			writer.write(Double.toString(value));
+		}
+		return this;
+	}
+
+	/** Writes the specified JSON string, without quoting or escaping. */
 	public JsonWriter json (String name, String json) throws IOException {
-		name(name);
-		return json(json);
+		nameValue(name);
+		writer.write(json);
+		return this;
 	}
 
 	public JsonWriter pop () throws IOException {
 		if (named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
 		writer.write((char)(current >> 1));
-		current = --stack.size == 0 ? none : stack.items[stack.size - 1];
+		current = stack.size == 0 ? none : stack.items[--stack.size];
 		return this;
 	}
 
@@ -160,20 +265,6 @@ public class JsonWriter extends Writer {
 		while (stack.size > 0)
 			pop();
 		writer.close();
-	}
-
-	private class JsonObject {
-		final boolean array;
-		boolean needsComma;
-
-		JsonObject (boolean array) throws IOException {
-			this.array = array;
-			writer.write(array ? '[' : '{');
-		}
-
-		void close () throws IOException {
-			writer.write(array ? ']' : '}');
-		}
 	}
 
 	static public enum OutputType {
@@ -224,7 +315,7 @@ public class JsonWriter extends Writer {
 				int length = string.length();
 				if (length > 0 && string.charAt(length - 1) != ' ' && minimalValuePattern.matcher(string).matches()) return string;
 			}
-			return '"' + (quote ? escapeQuote(string) : string) + '"';
+			return quote ? escapeQuote(string) : '"' + string + '"';
 		}
 
 		public String quoteName (String value) {
@@ -250,7 +341,7 @@ public class JsonWriter extends Writer {
 			case javascript:
 				if (javascriptPattern.matcher(value).matches()) return value;
 			}
-			return '"' + (quote ? escapeQuote(value) : value) + '"';
+			return quote ? escapeQuote(value) : '"' + value + '"';
 		}
 
 		static private String escape (String value, int i) {
@@ -279,7 +370,8 @@ public class JsonWriter extends Writer {
 		}
 
 		static private String escapeQuote (String value) {
-			StringBuilder buffer = new StringBuilder(value.length() + 4);
+			StringBuilder buffer = new StringBuilder(value.length() + 6);
+			buffer.append('"');
 			for (int i = 0; i < value.length(); i++) {
 				char c = value.charAt(i);
 				if (c == '"')
@@ -287,6 +379,7 @@ public class JsonWriter extends Writer {
 				else
 					buffer.append(c);
 			}
+			buffer.append('"');
 			return buffer.toString();
 		}
 	}
