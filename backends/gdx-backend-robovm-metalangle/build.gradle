@@ -59,7 +59,7 @@ tasks.register('fetchMetalANGLEKit', Download) {
 	doFirst {
 		file("build/tmp").mkdirs();
 	}
-	src 'https://github.com/libgdx/MetalANGLEKit/releases/download/v1.2/metalanglekit.zip'
+	src 'https://github.com/libgdx/MetalANGLEKit/releases/download/v1.2.1/metalanglekit.zip'
 	dest 'build/tmp/MetalANGLEKit.zip'
 	onlyIfModified true
 	useETag "all"
@@ -69,7 +69,7 @@ tasks.register('verifyMetalANGLEKit', Verify) {
 	dependsOn fetchMetalANGLEKit
 	src 'build/tmp/MetalANGLEKit.zip'
 	algorithm 'SHA-256'
-	checksum '91f2b78208a1d8f59c28e2dc4a2d2a122a2cb2e61dcb853baa339386e6faf4a0'
+	checksum 'c7785cbe15eb9e5962677513725c8f0e33039f344235cc7691ee5ac35ff5ea91'
 }
 
 tasks.register('extractMetalANGLEKit', Copy) {
