@@ -989,6 +989,11 @@ public class JsonMatcherTests {
 				"**@/(b)", //
 				"**@/(c)"},
 			"1", "{c:1}");
+
+		test( // Test capturing only the first value when other pattern prevents stopping
+			json, //
+			new String[] {"*/(type)", "*/devices/*/(serial_num[])"}, //
+			new String[] {"ENCHARGE", "[32131444,234234211,9834711]"});
 	}
 
 	@Test
@@ -1182,6 +1187,22 @@ public class JsonMatcherTests {
 		matcher.parse(json);
 
 		assertValueCount(0, values);
+	}
+
+	@Test
+	public void parseValue () {
+		JsonValue root = new JsonMatcher().parseValue(json);
+		assertTrue(root.child.hasChild("devices"));
+
+		root = new JsonMatcher("").parseValue(json);
+		assertTrue(root.child.hasChild("devices"));
+
+		root = new JsonMatcher("*/devices/(*)").parseValue(json);
+		assertEquals(100, root.getInt("percentFull"));
+
+		JsonValue values = new JsonMatcher("*/(devices)", "*/devices/(*)").parseValue(json);
+		assertEquals("devices", values.child.name);
+		assertEquals(100, values.child.next.getInt("percentFull")); // First even though other pattern prevents stopping
 	}
 
 	@Test
@@ -1406,6 +1427,11 @@ public class JsonMatcherTests {
 		matcher.addPattern("a/b[]/(c)"); // [] without capture
 	}
 
+	@Test(expected = IllegalStateException.class)
+	public void invalidPattern15 () {
+		new JsonMatcher("a/b/(c@)").parseValue("{}"); // parseValue disallows @
+	}
+
 	static void test (String json, String pattern, String... expected) {
 		test(null, json, new String[] {pattern}, expected);
 	}
@@ -1443,14 +1469,13 @@ public class JsonMatcherTests {
 			}
 			if (notParsedValue != null && !ended[0]) fail("Should have ended but did not");
 		} catch (AssertionError ex) {
-
 			printResults(matcher, values, json, patterns, expected);
 			throw ex;
 		}
 	}
 
 	static void printResults (JsonMatcher matcher, Array<JsonValue> values, String json, String[] patterns, String... expected) {
-// System.out.println(" JSON: " + json);
+		System.out.println(" JSON: " + json);
 		if (patterns.length == 1)
 			System.out.println(" Pattern: " + patterns[0]);
 		else
