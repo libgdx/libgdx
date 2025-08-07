@@ -151,7 +151,7 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * 
  * @author Nathan Sweet */
 public class JsonMatcher extends JsonSkimmer {
-	static private final boolean debug = true;
+	static private final boolean debug = false;
 
 	static private final int none = 0; // @off
 	static final int match   = 0b000001;
