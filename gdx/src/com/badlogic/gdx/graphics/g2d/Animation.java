@@ -99,7 +99,6 @@ public class Animation<T> {
 				playMode = PlayMode.REVERSED;
 			else if (playMode == PlayMode.LOOP)
                 playMode = PlayMode.NORMAL;
-            // non-loop param takes no effect on LOOP_PINGPONG and LOOP_RANDOM mode
 		}
 
 		T frame = getKeyFrame(stateTime);
