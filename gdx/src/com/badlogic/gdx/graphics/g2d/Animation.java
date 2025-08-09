@@ -97,8 +97,9 @@ public class Animation<T> {
 		} else if (!looping && !(playMode == PlayMode.NORMAL || playMode == PlayMode.REVERSED)) {
 			if (playMode == PlayMode.LOOP_REVERSED)
 				playMode = PlayMode.REVERSED;
-			else if (playMode == PlayMode.LOOP)
+			else if (playMode == PlayMode.LOOP) {
                 playMode = PlayMode.NORMAL;
+            }
 		}
 
 		T frame = getKeyFrame(stateTime);
