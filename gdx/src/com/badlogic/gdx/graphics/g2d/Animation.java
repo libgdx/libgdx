@@ -80,7 +80,7 @@ public class Animation<T> {
 
 	/** Returns a frame based on the so called state time. This is the amount of seconds an object has spent in the state this
 	 * Animation instance represents, e.g. running, jumping and so on. The mode specifies whether the animation is looping or not.
-	 *  But if the animation is set to LOOP_PINGPONG and LOOP_RANDOM mode, non-loop param takes no effect.
+	 * But if the animation is set to LOOP_PINGPONG and LOOP_RANDOM mode, non-loop param takes no effect.
 	 * 
 	 * @param stateTime the time spent in the state represented by this animation.
 	 * @param looping whether the animation is looping or not.
@@ -95,10 +95,11 @@ public class Animation<T> {
 			else
 				playMode = PlayMode.LOOP_REVERSED;
 		} else if (!looping && !(playMode == PlayMode.NORMAL || playMode == PlayMode.REVERSED)) {
-			if (playMode == PlayMode.LOOP_REVERSED)
+			if (playMode == PlayMode.LOOP_REVERSED) {
 				playMode = PlayMode.REVERSED;
-			else if (playMode == PlayMode.LOOP)
+			} else if (playMode == PlayMode.LOOP) {
 				playMode = PlayMode.NORMAL;
+			}
 			// non-loop param takes no effect on LOOP_PINGPONG and LOOP_RANDOM mode
 		}
 
