@@ -23,19 +23,23 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /** Class defining the configuration of an {@link AndroidApplication}. Allows you to disable the use of the accelerometer to save
  * battery among other things.
  * @author mzechner */
 public class AndroidApplicationConfiguration {
 	/** number of bits per color channel **/
-	public int r = 8, g = 8, b = 8, a = 0;
+	public int r = 8, g = 8, b = 8, a = 8;
 
 	/** number of bits for depth and stencil buffer **/
 	public int depth = 16, stencil = 0;
 
 	/** number of samples for CSAA/MSAA, 2 is a good value **/
 	public int numSamples = 0;
+
+	/** whether coverage sampling anti-aliasing is used. in that case you have to clear the coverage buffer as well! */
+	public boolean coverageSampling = false;
 
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;
@@ -66,10 +70,6 @@ public class AndroidApplicationConfiguration {
 	 * Default: {@link SensorManager#SENSOR_DELAY_GAME} (20 ms updates). */
 	public int sensorDelay = SensorManager.SENSOR_DELAY_GAME;
 
-	/** the time in milliseconds to sleep after each event in the touch handler, set this to 16ms to get rid of touch flooding on
-	 * pre Android 2.0 devices. default: 0 **/
-	public int touchSleepTime = 0;
-
 	/** whether to keep the screen on and at full brightness or not while running the application. default: false. Uses
 	 * FLAG_KEEP_SCREEN_ON under the hood. */
 	public boolean useWakelock = false;
@@ -90,12 +90,22 @@ public class AndroidApplicationConfiguration {
 	/** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
 	public boolean useImmersiveMode = true;
 
-	/** Experimental, whether to enable OpenGL ES 3 if supported. If not supported it will fall-back to OpenGL ES 2.0. When GL ES
-	 * 3* is enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. Requires at least Android 4.3 (API
-	 * level 18).
-	 * @deprecated this option is currently experimental and not yet fully supported, expect issues. */
-	@Deprecated public boolean useGL30 = false;
+	/** Whether to enable OpenGL ES 3.0 if supported. If not supported it will fall-back to OpenGL ES 2.0. When GL ES 3* is
+	 * enabled, {@link com.badlogic.gdx.Gdx#gl30} can be used to access its functionality. Requires at least Android 4.3 (API level
+	 * 18). */
+	public boolean useGL30 = false;
 
 	/** The maximum number of threads to use for network requests. Default is {@link Integer#MAX_VALUE}. */
 	public int maxNetThreads = Integer.MAX_VALUE;
+
+	/** set this to true to render under the display cutout. Use the Graphics::getSafeInsetXX to get the safe render space */
+	public boolean renderUnderCutout = false;
+
+	/** The loader used to load native libraries. Override this to use a different loading strategy. */
+	public GdxNativeLoader nativeLoader = new GdxNativeLoader() {
+		@Override
+		public void load () {
+			GdxNativesLoader.load();
+		}
+	};
 }

@@ -41,6 +41,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.OrientedBoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -180,11 +181,14 @@ public class CollisionPlaygroundTest extends GdxTest implements ApplicationListe
 	}
 
 	private void createRandomShape () {
-		int shape = MathUtils.random.nextInt(2);
+		int shape = MathUtils.random.nextInt(3);
 
 		switch (shape) {
 		case 1:
 			shapes.add(new Sphere());
+			break;
+		case 2:
+			shapes.add(new OBB());
 			break;
 		default:
 			shapes.add(new AABB());
@@ -291,6 +295,47 @@ public class CollisionPlaygroundTest extends GdxTest implements ApplicationListe
 			MeshPartBuilder meshPartBuilder = mb.part("sphere", PRIMITIVE_TYPE, VertexAttributes.Usage.Position, material);
 			meshPartBuilder.setVertexTransform(transform);
 			SphereShapeBuilder.build(meshPartBuilder, diameter, diameter, diameter, 16, 16);
+
+			instance = new ModelInstance(mb.end());
+		}
+	}
+
+	class OBB extends Shape {
+		private final OrientedBoundingBox obb;
+
+		@Override
+		public boolean isColliding (Frustum frustum) {
+			return Intersector.intersectFrustumBounds(frustum, obb);
+		}
+
+		@Override
+		public boolean isColliding (Ray ray) {
+			return Intersector.intersectRayOrientedBoundsFast(ray, obb);
+		}
+
+		OBB () {
+			Vector3 position = randomPosition();
+
+			float width = MathUtils.random(0.01f, 1f);
+			float height = MathUtils.random(0.01f, 1f);
+			float depth = MathUtils.random(0.01f, 1f);
+
+			Vector3 min = new Vector3(position.x - width / 2, position.y - height / 2, position.z - depth / 2);
+			Vector3 max = new Vector3(position.x + width / 2, position.y + height / 2, position.z + depth / 2);
+
+			BoundingBox bounds = new BoundingBox(min, max);
+			Matrix4 transform = new Matrix4().rotate(Vector3.Y, MathUtils.random.nextFloat() * 180).rotate(Vector3.X,
+				MathUtils.random.nextFloat() * 180);
+
+			obb = new OrientedBoundingBox(bounds, transform);
+
+			Material material = new Material(ColorAttribute.createDiffuse(COLOR_STANDARD));
+			com.badlogic.gdx.graphics.g3d.utils.ModelBuilder mb = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
+			mb.begin();
+			MeshPartBuilder meshPartBuilder = mb.part("obb", GL20.GL_LINES, VertexAttributes.Usage.Position, material);
+			BoxShapeBuilder.build(meshPartBuilder, obb.getCorner000(new Vector3()), obb.getCorner010(new Vector3()),
+				obb.getCorner100(new Vector3()), obb.getCorner110(new Vector3()), obb.getCorner001(new Vector3()),
+				obb.getCorner011(new Vector3()), obb.getCorner101(new Vector3()), obb.getCorner111(new Vector3()));
 
 			instance = new ModelInstance(mb.end());
 		}

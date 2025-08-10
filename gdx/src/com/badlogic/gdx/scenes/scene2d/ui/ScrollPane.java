@@ -45,7 +45,7 @@ import com.badlogic.gdx.utils.Null;
  * scroll pane is typically sized by ignoring the preferred size in one or both directions.
  * @author mzechner
  * @author Nathan Sweet */
-public class ScrollPane extends WidgetGroup {
+public class ScrollPane extends WidgetGroup implements Styleable<ScrollPane.ScrollPaneStyle> {
 	private ScrollPaneStyle style;
 	private Actor actor;
 
@@ -218,6 +218,7 @@ public class ScrollPane extends WidgetGroup {
 	protected void addScrollListener () {
 		addListener(new InputListener() {
 			public boolean scrolled (InputEvent event, float x, float y, float scrollAmountX, float scrollAmountY) {
+				event.cancel();
 				setScrollbarsVisible(true);
 				if (scrollY || scrollX) {
 					if (scrollY) {
@@ -837,7 +838,7 @@ public class ScrollPane extends WidgetGroup {
 		if (centerHorizontal)
 			amountX = x + (width - actorArea.width) / 2;
 		else
-			amountX = MathUtils.clamp(amountX, x + width - actorArea.width, x);
+			amountX = MathUtils.clamp(amountX, x, x + width - actorArea.width);
 		scrollX(MathUtils.clamp(amountX, 0, maxX));
 
 		float amountY = this.amountY;

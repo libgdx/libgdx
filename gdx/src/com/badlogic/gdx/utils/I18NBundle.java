@@ -19,9 +19,11 @@ package com.badlogic.gdx.utils;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Set;
 
 import com.badlogic.gdx.files.FileHandle;
 
@@ -64,9 +66,6 @@ import com.badlogic.gdx.files.FileHandle;
 public class I18NBundle {
 
 	private static final String DEFAULT_ENCODING = "UTF-8";
-
-	// Locale.ROOT does not exist in Android API level 8
-	private static final Locale ROOT_LOCALE = new Locale("", "", "");
 
 	private static boolean simpleFormatter = false;
 	private static boolean exceptionOnMissingKey = true;
@@ -172,7 +171,7 @@ public class I18NBundle {
 			// Check the loaded bundle (if any)
 			if (bundle != null) {
 				Locale bundleLocale = bundle.getLocale(); // WTH? GWT can't access bundle.locale directly
-				boolean isBaseBundle = bundleLocale.equals(ROOT_LOCALE);
+				boolean isBaseBundle = bundleLocale.equals(Locale.ROOT);
 
 				if (!isBaseBundle || bundleLocale.equals(locale)) {
 					// Found the bundle for the requested locale
@@ -182,7 +181,7 @@ public class I18NBundle {
 					// Found the bundle for the only candidate locale
 					break;
 				}
-				if (isBaseBundle && baseBundle == null) {
+				if (baseBundle == null) {
 					// Store the base bundle and keep on processing the remaining fallback locales
 					baseBundle = bundle;
 				}
@@ -260,17 +259,17 @@ public class I18NBundle {
 		String country = locale.getCountry();
 		String variant = locale.getVariant();
 
-		List<Locale> locales = new ArrayList<Locale>(4);
-		if (variant.length() > 0) {
+		List<Locale> locales = new ArrayList<>(4);
+		if (!variant.isEmpty()) {
 			locales.add(locale);
 		}
-		if (country.length() > 0) {
+		if (!country.isEmpty()) {
 			locales.add(locales.isEmpty() ? locale : new Locale(language, country));
 		}
-		if (language.length() > 0) {
+		if (!language.isEmpty()) {
 			locales.add(locales.isEmpty() ? locale : new Locale(language));
 		}
-		locales.add(ROOT_LOCALE);
+		locales.add(Locale.ROOT);
 		return locales;
 	}
 
@@ -299,7 +298,7 @@ public class I18NBundle {
 		if (candidateIndex != candidateLocales.size() - 1) {
 			// Load recursively the parent having the next candidate locale
 			parent = loadBundleChain(baseFileHandle, encoding, candidateLocales, candidateIndex + 1, baseBundle);
-		} else if (baseBundle != null && targetLocale.equals(ROOT_LOCALE)) {
+		} else if (baseBundle != null && targetLocale.equals(Locale.ROOT)) {
 			return baseBundle;
 		}
 
@@ -357,7 +356,7 @@ public class I18NBundle {
 	// NOTE:
 	// This method can't be private otherwise GWT can't access it from loadBundle()
 	protected void load (Reader reader) throws IOException {
-		properties = new ObjectMap<String, String>();
+		properties = new ObjectMap<>();
 		PropertiesUtils.load(properties, reader);
 	}
 
@@ -380,19 +379,16 @@ public class I18NBundle {
 	 * @exception NullPointerException if <code>baseFileHandle</code> or <code>locale</code> is <code>null</code> */
 	private static FileHandle toFileHandle (FileHandle baseFileHandle, Locale locale) {
 		StringBuilder sb = new StringBuilder(baseFileHandle.name());
-		if (!locale.equals(ROOT_LOCALE)) {
+		if (!locale.equals(Locale.ROOT)) {
 			String language = locale.getLanguage();
 			String country = locale.getCountry();
 			String variant = locale.getVariant();
-			boolean emptyLanguage = "".equals(language);
-			boolean emptyCountry = "".equals(country);
-			boolean emptyVariant = "".equals(variant);
 
-			if (!(emptyLanguage && emptyCountry && emptyVariant)) {
+			if (!(language.isEmpty() && country.isEmpty() && variant.isEmpty())) {
 				sb.append('_');
-				if (!emptyVariant) {
+				if (!variant.isEmpty()) {
 					sb.append(language).append('_').append(country).append('_').append(variant);
-				} else if (!emptyCountry) {
+				} else if (!country.isEmpty()) {
 					sb.append(language).append('_').append(country);
 				} else {
 					sb.append(language);
@@ -435,6 +431,20 @@ public class I18NBundle {
 					throw new MissingResourceException("Can't find bundle key " + key, this.getClass().getName(), key);
 				else
 					return "???" + key + "???";
+			}
+		}
+		return result;
+	}
+
+	/** Gets a key set of loaded properties. Keys will be copied into a new set and returned.
+	 *
+	 * @return a key set of loaded properties. Never null, might be an empty set */
+	public Set<String> keys () {
+		Set<String> result = new LinkedHashSet<>();
+		ObjectMap.Keys<String> keys = properties.keys();
+		if (keys != null) {
+			for (String key : keys) {
+				result.add(key);
 			}
 		}
 		return result;

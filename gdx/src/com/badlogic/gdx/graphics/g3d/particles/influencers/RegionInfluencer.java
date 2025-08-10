@@ -208,7 +208,7 @@ public abstract class RegionInfluencer extends Influencer {
 	public String atlasName;
 
 	public RegionInfluencer (int regionsCount) {
-		this.regions = new Array<AspectTextureRegion>(false, regionsCount, AspectTextureRegion.class);
+		this.regions = new Array<>(false, regionsCount, AspectTextureRegion[]::new);
 	}
 
 	public RegionInfluencer () {
@@ -223,7 +223,7 @@ public abstract class RegionInfluencer extends Influencer {
 	/** All the regions must be defined on the same Texture */
 	public RegionInfluencer (TextureRegion... regions) {
 		setAtlasName(null);
-		this.regions = new Array<AspectTextureRegion>(false, regions.length, AspectTextureRegion.class);
+		this.regions = new Array<>(false, regions.length, AspectTextureRegion[]::new);
 		add(regions);
 	}
 

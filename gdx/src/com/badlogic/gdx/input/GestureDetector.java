@@ -153,11 +153,8 @@ public class GestureDetector extends InputAdapter {
 
 		// handle pinch zoom
 		if (pinching) {
-			if (listener != null) {
-				boolean result = listener.pinch(initialPointer1, initialPointer2, pointer1, pointer2);
-				return listener.zoom(initialPointer1.dst(initialPointer2), pointer1.dst(pointer2)) || result;
-			}
-			return false;
+			boolean result = listener.pinch(initialPointer1, initialPointer2, pointer1, pointer2);
+			return listener.zoom(initialPointer1.dst(initialPointer2), pointer1.dst(pointer2)) || result;
 		}
 
 		// update tracker
@@ -239,6 +236,12 @@ public class GestureDetector extends InputAdapter {
 		return handled;
 	}
 
+	@Override
+	public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {
+		cancel();
+		return super.touchCancelled(screenX, screenY, pointer, button);
+	}
+
 	/** No further gesture events will be triggered for the current touch, if any. */
 	public void cancel () {
 		longPressTask.cancel();
@@ -262,6 +265,7 @@ public class GestureDetector extends InputAdapter {
 	}
 
 	public void reset () {
+		longPressTask.cancel();
 		touchDownTime = 0;
 		panning = false;
 		inTapRectangle = false;

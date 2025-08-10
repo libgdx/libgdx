@@ -2,12 +2,9 @@
 package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.math.Intersector.SplitTriangle;
-
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class IntersectorTest {
 
@@ -182,5 +179,92 @@ public class IntersectorTest {
 		assertEquals(-102.63903f, intersection.x, 0.1f);
 		assertEquals(-57.7337f, intersection.y, 0.1f);
 		assertEquals(100, intersection.z, 0.1f);
+	}
+
+	@Test
+	public void testIsPointInTriangle2D () {
+		assertFalse(Intersector.isPointInTriangle(new Vector2(0.1f, 0), new Vector2(0, 0), new Vector2(1, 1), new Vector2(-1, -1)));
+
+		assertTrue(Intersector.isPointInTriangle(new Vector2(0, 0.1f), new Vector2(-1, 1), new Vector2(1, 1), new Vector2(-1, -2)));
+	}
+
+	@Test
+	public void testIsPointInTriangle3D () {
+		// 2D ---
+		assertFalse(Intersector.isPointInTriangle(new Vector3(0.1f, 0, 0), new Vector3(0, 0, 0), new Vector3(1, 1, 0),
+			new Vector3(-1, -1, 0)));
+
+		assertTrue(Intersector.isPointInTriangle(new Vector3(0, 0.1f, 0), new Vector3(-1, 1, 0), new Vector3(1, 1, 0),
+			new Vector3(-1, -2, 0)));
+
+		// 3D ---
+		assertTrue(Intersector.isPointInTriangle(new Vector3(0.2f, 0, 1.25f), new Vector3(-1, 1, 0), new Vector3(1.4f, 0.99f, 2.5f),
+			new Vector3(-1, -2, 0)));
+		// 1.2f away.
+		assertFalse(Intersector.isPointInTriangle(new Vector3(2.6f, 0, 3.75f), new Vector3(-1, 1, 0),
+			new Vector3(1.4f, 0.99f, 2.5f), new Vector3(-1, -2, 0)));
+		// In an edge.
+		assertTrue(Intersector.isPointInTriangle(new Vector3(0, -0.5f, 0.5f), new Vector3(-1, 1, 0), new Vector3(1, 1, 1),
+			new Vector3(-1, -2, 0)));
+		// Really close to the edge.
+		float epsilon = 0.0000001f; // One more 0 will fail.
+		float almost1 = 1 - epsilon;
+		assertFalse(Intersector.isPointInTriangle(new Vector3(0, -0.5f, 0.5f), new Vector3(-1, 1, 0), new Vector3(almost1, 1, 1),
+			new Vector3(-1, -2, 0)));
+
+		// A really long distance away.
+		assertFalse(Intersector.isPointInTriangle(new Vector3(199f, 1f, 500f), new Vector3(-1, 1, 0), new Vector3(1, 1, 5f),
+			new Vector3(-1, -2, 0)));
+
+		assertFalse(Intersector.isPointInTriangle(new Vector3(-5120.8345f, 8946.126f, -3270.5813f),
+			new Vector3(50.008057f, 22.20586f, 124.62208f), new Vector3(62.282288f, 22.205864f, 109.665924f),
+			new Vector3(70.92052f, 7.205861f, 115.437805f)));
+	}
+
+	@Test
+	public void testIntersectPolygons () {
+		// Corner case with extremely small overlap polygon
+		Polygon intersectionPolygon = new Polygon();
+		assertFalse(
+			Intersector.intersectPolygons(new Polygon(new float[] {3200.1453f, 88.00839f, 3233.9087f, 190.34174f, 3266.2905f, 0.0f}),
+				new Polygon(new float[] {3213.0f, 131.0f, 3214.0f, 131.0f, 3214.0f, 130.0f, 3213.0f, 130.0f}), intersectionPolygon));
+		assertEquals(0, intersectionPolygon.getVertexCount());
+	}
+
+	@Test
+	public void testIntersectPolygonsWithVertexLyingOnEdge () {
+		Polygon p1 = new Polygon(new float[] {1, -1, 2, -1, 2, -2, 1, -2});
+		Polygon p2 = new Polygon(new float[] {0.5f, -1.5f, 1.5f, -1.5f, 1.5f, -2.5f});
+
+		Polygon intersectionPolygon = new Polygon();
+		boolean checkResult = Intersector.intersectPolygons(p1, p2, intersectionPolygon);
+
+		assertTrue(checkResult);
+		assertEquals(4, intersectionPolygon.getVertexCount());
+		assertEquals(new Vector2(1.0f, -2.0f), intersectionPolygon.getVertex(0, new Vector2()));
+		assertEquals(new Vector2(1.0f, -1.5f), intersectionPolygon.getVertex(1, new Vector2()));
+		assertEquals(new Vector2(1.5f, -1.5f), intersectionPolygon.getVertex(2, new Vector2()));
+		assertEquals(new Vector2(1.5f, -2.0f), intersectionPolygon.getVertex(3, new Vector2()));
+	}
+
+	@Test
+	public void testIntersectPolygonsWithTransformationsOnProvidedResultPolygon () {
+		Polygon p1 = new Polygon(new float[] {1, -1, 2, -1, 2, -2, 1, -2});
+		Polygon p2 = new Polygon(new float[] {0.5f, -1.5f, 1.5f, -1.5f, 1.5f, -2.5f});
+		Polygon intersectionPolygon = new Polygon(new float[8]);
+		intersectionPolygon.setScale(5, 5);
+		intersectionPolygon.setOrigin(10, 20);
+		intersectionPolygon.setPosition(-33, -33);
+		intersectionPolygon.setRotation(48);
+
+		boolean checkResult = Intersector.intersectPolygons(p1, p2, intersectionPolygon);
+
+		assertTrue(checkResult);
+		assertArrayEquals(new float[] {1, -2, 1, -1.5f, 1.5f, -1.5f, 1.5f, -2}, intersectionPolygon.getVertices(), 0);
+		assertArrayEquals(new float[] {1, -2, 1, -1.5f, 1.5f, -1.5f, 1.5f, -2}, intersectionPolygon.getTransformedVertices(), 0);
+		// verify that the origin has also been reset
+		intersectionPolygon.setScale(2, 2);
+		assertArrayEquals(new float[] {2 * 1, 2 * -2, 2 * 1, 2 * -1.5f, 2 * 1.5f, 2 * -1.5f, 2 * 1.5f, 2 * -2},
+			intersectionPolygon.getTransformedVertices(), 0);
 	}
 }

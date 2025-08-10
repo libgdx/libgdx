@@ -239,13 +239,13 @@ public class Rectangle implements Serializable, Shape2D {
 	public Rectangle merge (Rectangle rect) {
 		float minX = Math.min(x, rect.x);
 		float maxX = Math.max(x + width, rect.x + rect.width);
-		x = minX;
-		width = maxX - minX;
+		this.x = minX;
+		this.width = maxX - minX;
 
 		float minY = Math.min(y, rect.y);
 		float maxY = Math.max(y + height, rect.y + rect.height);
-		y = minY;
-		height = maxY - minY;
+		this.y = minY;
+		this.height = maxY - minY;
 
 		return this;
 	}

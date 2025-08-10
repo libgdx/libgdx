@@ -24,12 +24,12 @@ import java.nio.ByteBuffer;
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.utils.Os;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.PixelFormat;
 
 import com.badlogic.gdx.Gdx;
@@ -37,6 +37,8 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
+import com.badlogic.gdx.graphics.GL32;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -157,8 +159,28 @@ public class LwjglGraphics extends AbstractGraphics {
 	}
 
 	@Override
+	public boolean isGL31Available () {
+		return false;
+	}
+
+	@Override
+	public boolean isGL32Available () {
+		return false;
+	}
+
+	@Override
 	public GL30 getGL30 () {
 		return gl30;
+	}
+
+	@Override
+	public GL31 getGL31 () {
+		return null;
+	}
+
+	@Override
+	public GL32 getGL32 () {
+		return null;
 	}
 
 	@Override
@@ -171,6 +193,14 @@ public class LwjglGraphics extends AbstractGraphics {
 			Gdx.gl20 = gl20;
 			Gdx.gl30 = gl30;
 		}
+	}
+
+	@Override
+	public void setGL31 (GL31 gl31) {
+	}
+
+	@Override
+	public void setGL32 (GL32 gl32) {
 	}
 
 	public int getFramesPerSecond () {
@@ -213,7 +243,7 @@ public class LwjglGraphics extends AbstractGraphics {
 				DisplayMode bestMode = null;
 				for (DisplayMode mode : getDisplayModes()) {
 					if (mode.width == config.width && mode.height == config.height) {
-						if (bestMode == null || bestMode.refreshRate < this.getDisplayMode().refreshRate) {
+						if (bestMode == null || bestMode.refreshRate < mode.refreshRate) {
 							bestMode = mode;
 						}
 					}
@@ -317,9 +347,9 @@ public class LwjglGraphics extends AbstractGraphics {
 	 * @param enable */
 	public void enableCubeMapSeamless (boolean enable) {
 		if (enable) {
-			gl20.glEnable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+			gl20.glEnable(org.lwjgl.opengl.GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		} else {
-			gl20.glDisable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+			gl20.glDisable(org.lwjgl.opengl.GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		}
 	}
 
@@ -707,7 +737,7 @@ public class LwjglGraphics extends AbstractGraphics {
 
 	@Override
 	public void setCursor (com.badlogic.gdx.graphics.Cursor cursor) {
-		if (canvas != null && SharedLibraryLoader.isMac) {
+		if (canvas != null && SharedLibraryLoader.os == Os.MacOsX) {
 			return;
 		}
 		try {
@@ -719,7 +749,7 @@ public class LwjglGraphics extends AbstractGraphics {
 
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
-		if (canvas != null && SharedLibraryLoader.isMac) {
+		if (canvas != null && SharedLibraryLoader.os == Os.MacOsX) {
 			return;
 		}
 		try {

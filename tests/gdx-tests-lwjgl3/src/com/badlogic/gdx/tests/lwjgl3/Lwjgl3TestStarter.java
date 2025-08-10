@@ -36,6 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.CommandLineOptions;
 import com.badlogic.gdx.tests.utils.GdxTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTests;
+import com.badlogic.gdx.utils.Os;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -55,18 +56,26 @@ public class Lwjgl3TestStarter {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setWindowedMode(640, 480);
 
-		if (options.gl30) {
+		if (options.gl30 || options.gl31 || options.gl32) {
 			ShaderProgram.prependVertexCode = "#version 140\n#define varying out\n#define attribute in\n";
 			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
-
-			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 3, 2);
 		}
 
-		if (options.angle) {
+		if (options.gl32) {
+			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL32, 4, 6);
+		} else if (options.gl31) {
+			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL31, 4, 5);
+		} else if (options.gl30) {
+			if (SharedLibraryLoader.os == Os.MacOsX) {
+				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 3, 2);
+			} else {
+				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 4, 3);
+			}
+		} else if (options.angle) {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 0, 0);
 			// Use CPU sync if ANGLE is enabled on macOS, otherwise the framerate gets halfed
 			// by each new open window.
-			if (SharedLibraryLoader.isMac) {
+			if (SharedLibraryLoader.os == Os.MacOsX) {
 				config.useVsync(false);
 				config.setForegroundFPS(60);
 			}
@@ -142,7 +151,7 @@ public class Lwjgl3TestStarter {
 				});
 			}
 
-			container.add(scroll).expand().fill();
+			container.add(scroll).grow();
 			container.row();
 
 			lastClickedTestButton = (TextButton)table.findActor(prefs.getString("LastTest"));

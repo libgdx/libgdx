@@ -27,6 +27,7 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.utils.Os;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** LWJGL implementation of the {@link Net} API, it could be reused in other Desktop backends since it doesn't depend on LWJGL.
@@ -50,6 +51,11 @@ public class Lwjgl3Net implements Net {
 	}
 
 	@Override
+	public boolean isHttpRequestPending (HttpRequest httpRequest) {
+		return netJavaImpl.isHttpRequestPending(httpRequest);
+	}
+
+	@Override
 	public ServerSocket newServerSocket (Protocol protocol, String ipAddress, int port, ServerSocketHints hints) {
 		return new NetJavaServerSocketImpl(protocol, ipAddress, port, hints);
 	}
@@ -66,7 +72,7 @@ public class Lwjgl3Net implements Net {
 
 	@Override
 	public boolean openURI (String uri) {
-		if (SharedLibraryLoader.isMac) {
+		if (SharedLibraryLoader.os == Os.MacOsX) {
 			try {
 				(new ProcessBuilder("open", (new URI(uri).toString()))).start();
 				return true;
@@ -80,7 +86,7 @@ public class Lwjgl3Net implements Net {
 			} catch (Throwable t) {
 				return false;
 			}
-		} else if (SharedLibraryLoader.isLinux) {
+		} else if (SharedLibraryLoader.os == Os.Linux) {
 			try {
 				(new ProcessBuilder("xdg-open", (new URI(uri).toString()))).start();
 				return true;

@@ -11,12 +11,13 @@ import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Cursor.SystemCursor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
+import com.badlogic.gdx.graphics.GL32;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.utils.Array;
 import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSObject;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.MGLKView;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.MGLKViewController;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.MGLContext;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.MGLRenderingAPI;
 import org.robovm.apple.uikit.UIEdgeInsets;
 import org.robovm.apple.uikit.UIEvent;
+import org.robovm.apple.uikit.UIScreen;
 import org.robovm.objc.annotation.Method;
 import org.robovm.rt.bro.annotation.Pointer;
 
@@ -83,6 +85,8 @@ public class IOSGraphics extends AbstractGraphics {
 	private boolean isContinuous = true;
 
 	private boolean isFrameRequested = true;
+
+	private boolean firstFrame = true;
 
 	IOSApplicationConfiguration config;
 
@@ -147,7 +151,14 @@ public class IOSGraphics extends AbstractGraphics {
 		viewController = app.createUIViewController(this);
 		viewController.setView(view);
 		viewController.setDelegate(viewDelegate);
-		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
+		int preferredFps;
+		int maxSupportedFPS = (int)(UIScreen.getMainScreen().getMaximumFramesPerSecond());
+		if (config.preferredFramesPerSecond == 0) {
+			preferredFps = maxSupportedFPS;
+		} else {
+			preferredFps = Math.min(config.preferredFramesPerSecond, maxSupportedFPS);
+		}
+		viewController.setPreferredFramesPerSecond(preferredFps);
 		this.app = app;
 		this.input = input;
 		int r = 0, g = 0, b = 0, a = 0, depth = 0, stencil = 0, samples = 0;
@@ -227,6 +238,12 @@ public class IOSGraphics extends AbstractGraphics {
 		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
 		// stores the last known viewport and we reset it here...
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
+		// For default framebuffer, we render a dummy frame during initialization before create
+		// Return early so listener does not process
+		if (firstFrame) {
+			firstFrame = false;
+			return;
+		}
 		if (appPaused) {
 			return;
 		}
@@ -300,6 +317,34 @@ public class IOSGraphics extends AbstractGraphics {
 			Gdx.gl20 = gl20;
 			Gdx.gl30 = gl30;
 		}
+	}
+
+	@Override
+	public boolean isGL31Available () {
+		return false;
+	}
+
+	@Override
+	public GL31 getGL31 () {
+		return null;
+	}
+
+	@Override
+	public void setGL31 (GL31 gl31) {
+	}
+
+	@Override
+	public boolean isGL32Available () {
+		return false;
+	}
+
+	@Override
+	public GL32 getGL32 () {
+		return null;
+	}
+
+	@Override
+	public void setGL32 (GL32 gl32) {
 	}
 
 	@Override
@@ -392,7 +437,7 @@ public class IOSGraphics extends AbstractGraphics {
 
 	@Override
 	public DisplayMode getDisplayMode () {
-		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond,
+		return new IOSDisplayMode(getWidth(), getHeight(), (int)(viewController.getPreferredFramesPerSecond()),
 			bufferFormat.r + bufferFormat.g + bufferFormat.b + bufferFormat.a);
 	}
 
@@ -426,18 +471,16 @@ public class IOSGraphics extends AbstractGraphics {
 		safeInsetLeft = 0;
 		safeInsetRight = 0;
 		safeInsetBottom = 0;
-		if (Foundation.getMajorSystemVersion() >= 11) {
-			UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
-			safeInsetTop = (int)edgeInsets.getTop();
-			safeInsetLeft = (int)edgeInsets.getLeft();
-			safeInsetRight = (int)edgeInsets.getRight();
-			safeInsetBottom = (int)edgeInsets.getBottom();
-			if (config.hdpiMode == HdpiMode.Pixels) {
-				safeInsetTop *= app.pixelsPerPoint;
-				safeInsetLeft *= app.pixelsPerPoint;
-				safeInsetRight *= app.pixelsPerPoint;
-				safeInsetBottom *= app.pixelsPerPoint;
-			}
+		UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
+		safeInsetTop = (int)edgeInsets.getTop();
+		safeInsetLeft = (int)edgeInsets.getLeft();
+		safeInsetRight = (int)edgeInsets.getRight();
+		safeInsetBottom = (int)edgeInsets.getBottom();
+		if (config.hdpiMode == HdpiMode.Pixels) {
+			safeInsetTop *= app.pixelsPerPoint;
+			safeInsetLeft *= app.pixelsPerPoint;
+			safeInsetRight *= app.pixelsPerPoint;
+			safeInsetBottom *= app.pixelsPerPoint;
 		}
 	}
 
@@ -487,7 +530,8 @@ public class IOSGraphics extends AbstractGraphics {
 	public void setVSync (boolean vsync) {
 	}
 
-	/** Sets the preferred framerate for the application. Default is 60. Is not generally advised to be used on mobile platforms.
+	/** Overwrites the preferred framerate for the application. Use {@link IOSApplicationConfiguration#preferredFramesPerSecond}
+	 * instead to set it at application startup.
 	 *
 	 * @param fps the preferred fps */
 	@Override

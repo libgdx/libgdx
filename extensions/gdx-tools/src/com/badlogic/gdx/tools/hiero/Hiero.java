@@ -18,29 +18,6 @@ package com.badlogic.gdx.tools.hiero;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.FileDialog;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.LayoutManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,7 +60,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -99,7 +75,6 @@ import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont.RenderType;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ColorEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect.Value;
-import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.DistanceFieldEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.EffectUtil;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.GradientEffect;
@@ -107,6 +82,31 @@ import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineWobbleEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineZigzagEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ShadowEffect;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.FileDialog;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 /** A tool to visualize settings for {@link UnicodeFont} and to export BMFont files for use with {@link BitmapFont}.
  * <p>
@@ -295,8 +295,8 @@ public class Hiero extends JFrame {
 
 		if (unicodeFont == null) {
 			// Load from java.awt.Font (kerning not available!).
-			unicodeFont = new UnicodeFont(Font.decode((String)fontList.getSelectedValue()), fontSize, boldCheckBox.isSelected(),
-				italicCheckBox.isSelected());
+			unicodeFont = new UnicodeFont(new Font((String)fontList.getSelectedValue(), Font.PLAIN, 12), fontSize,
+				boldCheckBox.isSelected(), italicCheckBox.isSelected());
 		}
 
 		unicodeFont.setMono(monoCheckBox.isSelected());
@@ -379,19 +379,19 @@ public class Hiero extends JFrame {
 
 		HieroSettings settings = new HieroSettings(file.getAbsolutePath());
 		fontList.setSelectedValue(settings.getFontName(), true);
-		fontSizeSpinner.setValue(new Integer(settings.getFontSize()));
+		fontSizeSpinner.setValue(settings.getFontSize());
 		boldCheckBox.setSelected(settings.isBold());
 		italicCheckBox.setSelected(settings.isItalic());
 		monoCheckBox.setSelected(settings.isMono());
-		gammaSpinner.setValue(new Float(settings.getGamma()));
-		padTopSpinner.setValue(new Integer(settings.getPaddingTop()));
-		padRightSpinner.setValue(new Integer(settings.getPaddingRight()));
-		padBottomSpinner.setValue(new Integer(settings.getPaddingBottom()));
-		padLeftSpinner.setValue(new Integer(settings.getPaddingLeft()));
-		padAdvanceXSpinner.setValue(new Integer(settings.getPaddingAdvanceX()));
-		padAdvanceYSpinner.setValue(new Integer(settings.getPaddingAdvanceY()));
-		glyphPageWidthCombo.setSelectedItem(new Integer(settings.getGlyphPageWidth()));
-		glyphPageHeightCombo.setSelectedItem(new Integer(settings.getGlyphPageHeight()));
+		gammaSpinner.setValue(settings.getGamma());
+		padTopSpinner.setValue(settings.getPaddingTop());
+		padRightSpinner.setValue(settings.getPaddingRight());
+		padBottomSpinner.setValue(settings.getPaddingBottom());
+		padLeftSpinner.setValue(settings.getPaddingLeft());
+		padAdvanceXSpinner.setValue(settings.getPaddingAdvanceX());
+		padAdvanceYSpinner.setValue(settings.getPaddingAdvanceY());
+		glyphPageWidthCombo.setSelectedItem(settings.getGlyphPageWidth());
+		glyphPageHeightCombo.setSelectedItem(settings.getGlyphPageHeight());
 		if (settings.getRenderType() == RenderType.Native.ordinal())
 			nativeRadio.setSelected(true);
 		else if (settings.getRenderType() == RenderType.FreeType.ordinal())
@@ -918,15 +918,13 @@ public class Hiero extends JFrame {
 						GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
 				}
 				{
-					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(32), new Integer(64),
-						new Integer(128), new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
+					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {32, 64, 128, 256, 512, 1024, 2048}));
 					glyphCachePanel.add(glyphPageWidthCombo, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 					glyphPageWidthCombo.setSelectedIndex(4);
 				}
 				{
-					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(32), new Integer(64),
-						new Integer(128), new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
+					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {32, 64, 128, 256, 512, 1024, 2048}));
 					glyphCachePanel.add(glyphPageHeightCombo, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 					glyphPageHeightCombo.setSelectedIndex(4);

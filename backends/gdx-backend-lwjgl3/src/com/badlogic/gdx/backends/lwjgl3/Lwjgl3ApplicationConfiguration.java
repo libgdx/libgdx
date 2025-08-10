@@ -19,6 +19,8 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.io.PrintStream;
 import java.nio.IntBuffer;
 
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.LifecycleListener;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -36,6 +38,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics.Lwjgl3Monitor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
+import com.badlogic.gdx.math.GridPoint2;
 
 public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	public static PrintStream errorStream = System.err;
@@ -50,7 +53,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	int audioDeviceBufferCount = 9;
 
 	public enum GLEmulation {
-		ANGLE_GLES20, GL20, GL30
+		ANGLE_GLES20, GL20, GL30, GL31, GL32
 	}
 
 	GLEmulation glEmulation = GLEmulation.GL20;
@@ -64,6 +67,9 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 
 	int idleFPS = 60;
 	int foregroundFPS = 0;
+
+	boolean pauseWhenMinimized = true;
+	boolean pauseWhenLostFocus = false;
 
 	String preferencesDirectory = ".prefs/";
 	Files.FileType preferencesFileType = FileType.External;
@@ -98,6 +104,8 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		transparentFramebuffer = config.transparentFramebuffer;
 		idleFPS = config.idleFPS;
 		foregroundFPS = config.foregroundFPS;
+		pauseWhenMinimized = config.pauseWhenMinimized;
+		pauseWhenLostFocus = config.pauseWhenLostFocus;
 		preferencesDirectory = config.preferencesDirectory;
 		preferencesFileType = config.preferencesFileType;
 		hdpiMode = config.hdpiMode;
@@ -182,6 +190,18 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	 * 0. */
 	public void setForegroundFPS (int fps) {
 		this.foregroundFPS = fps;
+	}
+
+	/** Sets whether to pause the application {@link ApplicationListener#pause()} and fire
+	 * {@link LifecycleListener#pause()}/{@link LifecycleListener#resume()} events on when window is minimized/restored. **/
+	public void setPauseWhenMinimized (boolean pauseWhenMinimized) {
+		this.pauseWhenMinimized = pauseWhenMinimized;
+	}
+
+	/** Sets whether to pause the application {@link ApplicationListener#pause()} and fire
+	 * {@link LifecycleListener#pause()}/{@link LifecycleListener#resume()} events on when window loses/gains focus. **/
+	public void setPauseWhenLostFocus (boolean pauseWhenLostFocus) {
+		this.pauseWhenLostFocus = pauseWhenLostFocus;
 	}
 
 	/** Sets the directory where {@link Preferences} will be stored, as well as the file type to be used to store them. Defaults to
@@ -281,5 +301,40 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		int virtualY = tmp2.get(0);
 		String name = GLFW.glfwGetMonitorName(glfwMonitor);
 		return new Lwjgl3Monitor(glfwMonitor, virtualX, virtualY, name);
+	}
+
+	static GridPoint2 calculateCenteredWindowPosition (Lwjgl3Monitor monitor, int newWidth, int newHeight) {
+		IntBuffer tmp = BufferUtils.createIntBuffer(1);
+		IntBuffer tmp2 = BufferUtils.createIntBuffer(1);
+		IntBuffer tmp3 = BufferUtils.createIntBuffer(1);
+		IntBuffer tmp4 = BufferUtils.createIntBuffer(1);
+
+		DisplayMode displayMode = getDisplayMode(monitor);
+
+		GLFW.glfwGetMonitorWorkarea(monitor.monitorHandle, tmp, tmp2, tmp3, tmp4);
+		int workareaWidth = tmp3.get(0);
+		int workareaHeight = tmp4.get(0);
+
+		int minX, minY, maxX, maxY;
+
+		// If the new width is greater than the working area, we have to ignore stuff like the taskbar for centering and use the
+		// whole monitor's size
+		if (newWidth > workareaWidth) {
+			minX = monitor.virtualX;
+			maxX = displayMode.width;
+		} else {
+			minX = tmp.get(0);
+			maxX = workareaWidth;
+		}
+		// The same is true for height
+		if (newHeight > workareaHeight) {
+			minY = monitor.virtualY;
+			maxY = displayMode.height;
+		} else {
+			minY = tmp2.get(0);
+			maxY = workareaHeight;
+		}
+
+		return new GridPoint2(Math.max(minX, minX + (maxX - newWidth) / 2), Math.max(minY, minY + (maxY - newHeight) / 2));
 	}
 }

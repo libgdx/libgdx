@@ -17,8 +17,6 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Files.FileType;
@@ -157,7 +155,7 @@ public class TextureAtlas implements Disposable {
 	 * uses string comparison to find the regions, so the result should be cached rather than calling this method multiple
 	 * times. */
 	public Array<AtlasRegion> findRegions (String name) {
-		Array<AtlasRegion> matched = new Array(AtlasRegion.class);
+		Array<AtlasRegion> matched = new Array<>(AtlasRegion[]::new);
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (region.name.equals(name)) matched.add(new AtlasRegion(region));
@@ -169,7 +167,7 @@ public class TextureAtlas implements Disposable {
 	 * stored rather than calling this method multiple times.
 	 * @see #createSprite(String) */
 	public Array<Sprite> createSprites () {
-		Array sprites = new Array(true, regions.size, Sprite.class);
+		Array sprites = new Array(true, regions.size, Sprite[]::new);
 		for (int i = 0, n = regions.size; i < n; i++)
 			sprites.add(newSprite(regions.get(i)));
 		return sprites;
@@ -203,7 +201,7 @@ public class TextureAtlas implements Disposable {
 	 * than calling this method multiple times.
 	 * @see #createSprite(String) */
 	public Array<Sprite> createSprites (String name) {
-		Array<Sprite> matched = new Array(Sprite.class);
+		Array<Sprite> matched = new Array<>(Sprite[]::new);
 		for (int i = 0, n = regions.size; i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (region.name.equals(name)) matched.add(newSprite(region));
@@ -359,9 +357,10 @@ public class TextureAtlas implements Disposable {
 				}
 			});
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 1024);
+			BufferedReader reader = packFile.reader(1024);
+			String line = null;
 			try {
-				String line = reader.readLine();
+				line = reader.readLine();
 				// Ignore empty lines before first entry.
 				while (line != null && line.trim().length() == 0)
 					line = reader.readLine();
@@ -373,7 +372,8 @@ public class TextureAtlas implements Disposable {
 				}
 				// Page and region entries.
 				Page page = null;
-				Array<Object> names = null, values = null;
+				Array<String> names = null;
+				Array<int[]> values = null;
 				while (true) {
 					if (line == null) break;
 					if (line.trim().length() == 0) {
@@ -381,6 +381,7 @@ public class TextureAtlas implements Disposable {
 						line = reader.readLine();
 					} else if (page == null) {
 						page = new Page();
+						page.name = line;
 						page.textureFile = imagesDir.child(line);
 						while (true) {
 							if (readEntry(entry, line = reader.readLine()) == 0) break;
@@ -420,8 +421,8 @@ public class TextureAtlas implements Disposable {
 							region.originalHeight = region.height;
 						}
 						if (names != null && names.size > 0) {
-							region.names = names.toArray(String.class);
-							region.values = values.toArray(int[].class);
+							region.names = names.toArray(String[]::new);
+							region.values = values.toArray(int[][]::new);
 							names.clear();
 							values.clear();
 						}
@@ -429,7 +430,8 @@ public class TextureAtlas implements Disposable {
 					}
 				}
 			} catch (Exception ex) {
-				throw new GdxRuntimeException("Error reading texture atlas file: " + packFile, ex);
+				throw new GdxRuntimeException(
+					"Error reading texture atlas file: " + packFile + (line == null ? "" : "\nLine: " + line), ex);
 			} finally {
 				StreamUtils.closeQuietly(reader);
 			}
@@ -455,7 +457,7 @@ public class TextureAtlas implements Disposable {
 			return regions;
 		}
 
-		static private int readEntry (String[] entry, @Null String line) throws IOException {
+		static private int readEntry (String[] entry, @Null String line) {
 			if (line == null) return 0;
 			line = line.trim();
 			if (line.length() == 0) return 0;
@@ -479,6 +481,7 @@ public class TextureAtlas implements Disposable {
 		}
 
 		static public class Page {
+			public String name;
 			/** May be null if this page isn't associated with a file. In that case, {@link #texture} must be set. */
 			public @Null FileHandle textureFile;
 			/** May be null if the texture is not yet loaded. */

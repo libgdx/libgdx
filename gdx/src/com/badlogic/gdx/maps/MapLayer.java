@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,17 +16,22 @@
 
 package com.badlogic.gdx.maps;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Map layer containing a set of objects and properties */
 public class MapLayer {
 	private String name = "";
 	private float opacity = 1.0f;
+	private Color tintColor = new Color(Color.WHITE);
+	private Color tempColor = new Color(Color.WHITE);
 	private boolean visible = true;
 	private float offsetX;
 	private float offsetY;
 	private float renderOffsetX;
 	private float renderOffsetY;
+	private float parallaxX = 1;
+	private float parallaxY = 1;
 	private boolean renderOffsetDirty = true;
 	private MapLayer parent;
 	private MapObjects objects = new MapObjects();
@@ -44,12 +49,36 @@ public class MapLayer {
 
 	/** @return layer's opacity */
 	public float getOpacity () {
-		return opacity;
+		if (parent != null)
+			return opacity * parent.getOpacity();
+		else
+			return opacity;
 	}
 
 	/** @param opacity new opacity for the layer */
 	public void setOpacity (float opacity) {
 		this.opacity = opacity;
+	}
+
+	/** Returns a temporary color that is the combination of this layer's tint color and its parent's tint color. The returned
+	 * color is reused internally, so it should not be held onto or modified.
+	 * @return layer's tint color combined with the parent's tint color */
+	public Color getCombinedTintColor () {
+		if (parent != null) {
+			return tempColor.set(tintColor).mul(parent.getCombinedTintColor());
+		} else {
+			return tempColor.set(tintColor);
+		}
+	}
+
+	/** @return layer's tint color */
+	public Color getTintColor () {
+		return tintColor;
+	}
+
+	/** @param tintColor new tint color for the layer */
+	public void setTintColor (Color tintColor) {
+		this.tintColor.set(tintColor);
 	}
 
 	/** @return layer's x offset */
@@ -74,13 +103,31 @@ public class MapLayer {
 		invalidateRenderOffset();
 	}
 
-	/** @return the layer's x render offset, this takes into consideration all parent layers' offsets **/
+	/** @return layer's parallax scrolling factor for x-axis */
+	public float getParallaxX () {
+		return parallaxX;
+	}
+
+	public void setParallaxX (float parallaxX) {
+		this.parallaxX = parallaxX;
+	}
+
+	/** @return layer's parallax scrolling factor for y-axis */
+	public float getParallaxY () {
+		return parallaxY;
+	}
+
+	public void setParallaxY (float parallaxY) {
+		this.parallaxY = parallaxY;
+	}
+
+	/** @return the layer's x render offset, this takes into consideration all parent layers' offsets */
 	public float getRenderOffsetX () {
 		if (renderOffsetDirty) calculateRenderOffsets();
 		return renderOffsetX;
 	}
 
-	/** @return the layer's y render offset, this takes into consideration all parent layers' offsets **/
+	/** @return the layer's y render offset, this takes into consideration all parent layers' offsets */
 	public float getRenderOffsetY () {
 		if (renderOffsetDirty) calculateRenderOffsets();
 		return renderOffsetY;

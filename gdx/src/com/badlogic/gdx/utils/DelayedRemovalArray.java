@@ -42,6 +42,11 @@ public class DelayedRemovalArray<T> extends Array<T> {
 		super(array);
 	}
 
+	public DelayedRemovalArray (boolean ordered, int capacity, ArraySupplier<T[]> arraySupplier) {
+		super(ordered, capacity, arraySupplier);
+	}
+
+	@Deprecated
 	public DelayedRemovalArray (boolean ordered, int capacity, Class arrayType) {
 		super(ordered, capacity, arrayType);
 	}
@@ -54,6 +59,11 @@ public class DelayedRemovalArray<T> extends Array<T> {
 		super(ordered, array, startIndex, count);
 	}
 
+	public DelayedRemovalArray (ArraySupplier<T[]> arraySupplier) {
+		super(arraySupplier);
+	}
+
+	@Deprecated
 	public DelayedRemovalArray (Class arrayType) {
 		super(arrayType);
 	}
@@ -154,6 +164,16 @@ public class DelayedRemovalArray<T> extends Array<T> {
 	public void swap (int first, int second) {
 		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
 		super.swap(first, second);
+	}
+
+	public boolean replaceFirst (@Null T value, boolean identity, T replacement) {
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
+		return super.replaceFirst(value, identity, replacement);
+	}
+
+	public int replaceAll (@Null T value, boolean identity, @Null T replacement) {
+		if (iterating > 0) throw new IllegalStateException("Invalid between begin/end.");
+		return super.replaceAll(value, identity, replacement);
 	}
 
 	public T pop () {

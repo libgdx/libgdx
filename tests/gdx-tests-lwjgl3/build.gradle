@@ -19,25 +19,24 @@ ext {
 }
 sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
 
-if(JavaVersion.current().isJava9Compatible()) {
+if (JavaVersion.current().isJava9Compatible()) {
 	compileJava {
-		options.release = versions.javaLwjgl3
+		options.release = versions.java
 	}
-} else {
-	sourceCompatibility = versions.javaLwjgl3
-	targetCompatibility = versions.javaLwjgl3
 }
+sourceCompatibility = versions.java
+targetCompatibility = versions.java
 
 dependencies {
 	implementation project(":tests:gdx-tests")
 	implementation project(":backends:gdx-backend-lwjgl3")
 	implementation project(":extensions:gdx-lwjgl3-angle")
-	implementation project(":extensions:gdx-lwjgl3-glfw-awt-macos")
 	implementation testnatives.desktop
 }
 
-task launchTestsLwjgl3 (dependsOn: classes, type: JavaExec) {
-	main = mainTestClass
+tasks.register('launchTestsLwjgl3', JavaExec) {
+	dependsOn classes
+	mainClass = mainTestClass
 	classpath = sourceSets.main.runtimeClasspath
 	standardInput = System.in
 	workingDir = new File("../gdx-tests-android/assets")
@@ -47,7 +46,8 @@ configure (launchTestsLwjgl3) {
 	group "LibGDX"
 	description = "Run the Lwjgl3 tests"
 }
-task dist(type: Jar, dependsOn: classes) {
+tasks.register('dist', Jar) {
+	dependsOn classes
 	manifest {
 		attributes 'Main-Class': project.mainTestClass
 	}
@@ -55,5 +55,6 @@ task dist(type: Jar, dependsOn: classes) {
 	from {
 		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
 	}
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	with jar
 }

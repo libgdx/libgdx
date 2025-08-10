@@ -1,69 +1,67 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.maps.tiled;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetLoaderParameters;
-import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.*;
+import com.badlogic.gdx.maps.ImageResolver;
+import com.badlogic.gdx.maps.MapGroupLayer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
+import com.badlogic.gdx.maps.objects.PointMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.objects.TextMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Base64Coder;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.SerializationException;
+import com.badlogic.gdx.utils.StreamUtils;
+import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
-public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> extends AsynchronousAssetLoader<TiledMap, P> {
-
-	public static class Parameters extends AssetLoaderParameters<TiledMap> {
-		/** generate mipmaps? **/
-		public boolean generateMipMaps = false;
-		/** The TextureFilter to use for minification **/
-		public TextureFilter textureMinFilter = TextureFilter.Nearest;
-		/** The TextureFilter to use for magnification **/
-		public TextureFilter textureMagFilter = TextureFilter.Nearest;
-		/** Whether to convert the objects' pixel position and size to the equivalent in tile space. **/
-		public boolean convertObjectToTileSpace = false;
-		/** Whether to flip all Y coordinates so that Y positive is up. All libGDX renderers require flipped Y coordinates, and thus
-		 * flipY set to true. This parameter is included for non-rendering related purposes of TMX files, or custom renderers. */
-		public boolean flipY = true;
-	}
-
-	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
-	protected static final int FLAG_FLIP_VERTICALLY = 0x40000000;
-	protected static final int FLAG_FLIP_DIAGONALLY = 0x20000000;
-	protected static final int MASK_CLEAR = 0xE0000000;
+public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> extends BaseTiledMapLoader<P> {
 
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
-	protected boolean convertObjectToTileSpace;
-	protected boolean flipY = true;
-
-	protected int mapTileWidth;
-	protected int mapTileHeight;
-	protected int mapWidthInPixels;
-	protected int mapHeightInPixels;
-
-	protected TiledMap map;
 
 	public BaseTmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -83,21 +81,22 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		return getDependencyAssetDescriptors(tmxFile, textureParameter);
 	}
 
-	protected abstract Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,
-		TextureLoader.TextureParameter textureParameter);
-
 	/** Loads the map data, given the XML root element
 	 *
 	 * @param tmxFile the Filehandle of the tmx file
 	 * @param parameter
 	 * @param imageResolver
 	 * @return the {@link TiledMap} */
+	@Override
 	protected TiledMap loadTiledMap (FileHandle tmxFile, P parameter, ImageResolver imageResolver) {
 		this.map = new TiledMap();
+		this.idToObject = new IntMap<>();
+		this.runOnEndOfLoadTiled = new Array<>();
 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
 			this.flipY = parameter.flipY;
+			loadProjectFile(parameter.projectFilePath);
 		} else {
 			this.convertObjectToTileSpace = false;
 			this.flipY = true;
@@ -160,6 +159,30 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			Element element = root.getChild(i);
 			loadLayer(map, map.getLayers(), element, tmxFile, imageResolver);
 		}
+
+		// update hierarchical parallax scrolling factors
+		// in Tiled the final parallax scrolling factor of a layer is the multiplication of its factor with all its parents
+		// 1) get top level groups
+		final Array<MapGroupLayer> groups = map.getLayers().getByType(MapGroupLayer.class);
+		while (groups.notEmpty()) {
+			final MapGroupLayer group = groups.first();
+			groups.removeIndex(0);
+
+			for (MapLayer child : group.getLayers()) {
+				child.setParallaxX(child.getParallaxX() * group.getParallaxX());
+				child.setParallaxY(child.getParallaxY() * group.getParallaxY());
+				if (child instanceof MapGroupLayer) {
+					// 2) handle any child groups
+					groups.add((MapGroupLayer)child);
+				}
+			}
+		}
+
+		for (Runnable runnable : runOnEndOfLoadTiled) {
+			runnable.run();
+		}
+		runOnEndOfLoadTiled = null;
+
 		return map;
 	}
 
@@ -271,6 +294,9 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			}
 			if (flipY) y = mapHeightInPixels - y;
 
+			boolean repeatX = element.getIntAttribute("repeatx", 0) == 1;
+			boolean repeatY = element.getIntAttribute("repeaty", 0) == 1;
+
 			TextureRegion texture = null;
 
 			Element image = element.getChildByName("image");
@@ -282,7 +308,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				y -= texture.getRegionHeight();
 			}
 
-			TiledMapImageLayer layer = new TiledMapImageLayer(texture, x, y);
+			TiledMapImageLayer layer = new TiledMapImageLayer(texture, x, y, repeatX, repeatY);
 
 			loadBasicLayerInfo(layer, element);
 
@@ -298,15 +324,23 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 	protected void loadBasicLayerInfo (MapLayer layer, Element element) {
 		String name = element.getAttribute("name", null);
 		float opacity = Float.parseFloat(element.getAttribute("opacity", "1.0"));
+		String tintColor = element.getAttribute("tintcolor", "#ffffffff");
 		boolean visible = element.getIntAttribute("visible", 1) == 1;
 		float offsetX = element.getFloatAttribute("offsetx", 0);
 		float offsetY = element.getFloatAttribute("offsety", 0);
+		float parallaxX = element.getFloatAttribute("parallaxx", 1f);
+		float parallaxY = element.getFloatAttribute("parallaxy", 1f);
 
 		layer.setName(name);
 		layer.setOpacity(opacity);
 		layer.setVisible(visible);
 		layer.setOffsetX(offsetX);
 		layer.setOffsetY(offsetY);
+		layer.setParallaxX(parallaxX);
+		layer.setParallaxY(parallaxY);
+
+		// set layer tint color after converting from #AARRGGBB to #RRGGBBAA
+		layer.setTintColor(Color.valueOf(tiledColorToLibGDXColor(tintColor)));
 	}
 
 	protected void loadObject (TiledMap map, MapLayer layer, Element element) {
@@ -356,6 +390,26 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 					object = new PolylineMapObject(polyline);
 				} else if ((child = element.getChildByName("ellipse")) != null) {
 					object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
+				} else if ((child = element.getChildByName("point")) != null) {
+					object = new PointMapObject(x, flipY ? y - height : y);
+				} else if ((child = element.getChildByName("text")) != null) {
+					TextMapObject textMapObject = new TextMapObject(x, flipY ? y - height : y, width, height, child.getText());
+					textMapObject.setRotation(child.getFloatAttribute("rotation", 0));
+					textMapObject.setFontFamily(child.getAttribute("fontfamily", ""));
+					textMapObject.setPixelSize(child.getIntAttribute("pixelSize", 16));
+					textMapObject.setHorizontalAlign(child.getAttribute("halign", "left"));
+					textMapObject.setVerticalAlign(child.getAttribute("valign", "top"));
+					textMapObject.setBold(child.getIntAttribute("bold", 0) == 1);
+					textMapObject.setItalic(child.getIntAttribute("italic", 0) == 1);
+					textMapObject.setUnderline(child.getIntAttribute("underline", 0) == 1);
+					textMapObject.setStrikeout(child.getIntAttribute("strikeout", 0) == 1);
+					textMapObject.setWrap(child.getIntAttribute("wrap", 0) == 1);
+					// When kerning is true, it won't be added as an attribute, it's true by default
+					textMapObject.setKerning(child.getIntAttribute("kerning", 1) == 1);
+					// Default color is #000000, not added as attribute
+					String textColor = child.getAttribute("color", "#000000");
+					textMapObject.setColor(Color.valueOf(tiledColorToLibGDXColor(textColor)));
+					object = textMapObject;
 				}
 			}
 			if (object == null) {
@@ -408,65 +462,101 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			if (properties != null) {
 				loadProperties(object.getProperties(), properties);
 			}
+
+			// if there is a 'type' (=class) specified, then check if there are any other
+			// class properties available and put their default values into the properties.
+			loadMapPropertiesClassDefaults(type, object.getProperties());
+
+			idToObject.put(id, object);
 			objects.add(object);
 		}
 	}
 
-	protected void loadProperties (MapProperties properties, Element element) {
+	protected void loadProperties (final MapProperties properties, Element element) {
 		if (element == null) return;
 		if (element.getName().equals("properties")) {
 			for (Element property : element.getChildrenByName("property")) {
-				String name = property.getAttribute("name", null);
-				String value = property.getAttribute("value", null);
+				final String name = property.getAttribute("name", null);
+				String value = getPropertyValue(property);
 				String type = property.getAttribute("type", null);
-				if (value == null) {
-					value = property.getText();
+				if ("object".equals(type)) {
+					loadObjectProperty(properties, name, value);
+				} else if ("class".equals(type)) {
+					// A 'class' property is a property which is itself a set of properties
+					MapProperties classProperties = new MapProperties();
+					String className = property.getAttribute("propertytype");
+					classProperties.put("type", className);
+					// the actual properties of a 'class' property are stored as a new properties tag
+					properties.put(name, classProperties);
+					loadClassProperties(className, classProperties, property.getChildByName("properties"));
+				} else {
+					loadBasicProperty(properties, name, value, type);
 				}
-				Object castValue = castProperty(name, value, type);
-				properties.put(name, castValue);
 			}
 		}
 	}
 
-	protected Object castProperty (String name, String value, String type) {
-		if (type == null) {
-			return value;
-		} else if (type.equals("int")) {
-			return Integer.valueOf(value);
-		} else if (type.equals("float")) {
-			return Float.valueOf(value);
-		} else if (type.equals("bool")) {
-			return Boolean.valueOf(value);
-		} else if (type.equals("color")) {
-			// Tiled uses the format #AARRGGBB
-			String opaqueColor = value.substring(3);
-			String alpha = value.substring(1, 3);
-			return Color.valueOf(opaqueColor + alpha);
-		} else {
+	protected void loadClassProperties (String className, MapProperties classProperties, XmlReader.Element classElement) {
+		if (projectClassInfo == null) {
 			throw new GdxRuntimeException(
-				"Wrong type given for property " + name + ", given : " + type + ", supported : string, bool, int, float, color");
+				"No class information loaded to support class properties. Did you set the 'projectFilePath' parameter?");
+		}
+		if (projectClassInfo.isEmpty()) {
+			throw new GdxRuntimeException(
+				"No class information available. Did you set the correct Tiled project path in the 'projectFilePath' parameter?");
+		}
+		Array<ProjectClassMember> projectClassMembers = projectClassInfo.get(className);
+		if (projectClassMembers == null) {
+			throw new GdxRuntimeException("There is no class with name '" + className + "' in given Tiled project file.");
+		}
+
+		for (ProjectClassMember projectClassMember : projectClassMembers) {
+			String propName = projectClassMember.name;
+			XmlReader.Element classProp = classElement == null ? null : getPropertyByName(classElement, propName);
+			switch (projectClassMember.type) {
+			case "object": {
+				String value = classProp == null ? projectClassMember.defaultValue.asString() : getPropertyValue(classProp);
+				loadObjectProperty(classProperties, propName, value);
+				break;
+			}
+			case "class": {
+				// A 'class' property is a property which is itself a set of properties
+				MapProperties nestedClassProperties = new MapProperties();
+				String nestedClassName = projectClassMember.propertyType;
+				nestedClassProperties.put("type", nestedClassName);
+				// the actual properties of a 'class' property are stored as a new properties tag
+				classProperties.put(propName, nestedClassProperties);
+				if (classProp == null) {
+					// no class values overridden -> use default class values
+					loadJsonClassProperties(nestedClassName, nestedClassProperties, projectClassMember.defaultValue);
+				} else {
+					loadClassProperties(nestedClassName, nestedClassProperties, classProp);
+				}
+				break;
+			}
+			default: {
+				String value = classProp == null ? projectClassMember.defaultValue.asString() : getPropertyValue(classProp);
+				loadBasicProperty(classProperties, propName, value, projectClassMember.type);
+				break;
+			}
+			}
 		}
 	}
 
-	protected Cell createTileLayerCell (boolean flipHorizontally, boolean flipVertically, boolean flipDiagonally) {
-		Cell cell = new Cell();
-		if (flipDiagonally) {
-			if (flipHorizontally && flipVertically) {
-				cell.setFlipHorizontally(true);
-				cell.setRotation(Cell.ROTATE_270);
-			} else if (flipHorizontally) {
-				cell.setRotation(Cell.ROTATE_270);
-			} else if (flipVertically) {
-				cell.setRotation(Cell.ROTATE_90);
-			} else {
-				cell.setFlipVertically(true);
-				cell.setRotation(Cell.ROTATE_270);
+	private static String getPropertyValue (Element classProp) {
+		return classProp.getAttribute("value", classProp.getText());
+	}
+
+	protected Element getPropertyByName (Element classElement, String propName) {
+		// we use getChildrenByNameRecursively here because in case of nested classes,
+		// we get an element with a root property (=class) and inside additional property tags for the real
+		// class properties. If we just use getChildrenByName we don't get any children for a nested class.
+		for (Element property : classElement.getChildrenByNameRecursively("property")) {
+			if (propName.equals(property.getAttribute("name"))) {
+				return property;
 			}
-		} else {
-			cell.setFlipHorizontally(flipHorizontally);
-			cell.setFlipVertically(flipVertically);
 		}
-		return cell;
+		return null;
 	}
 
 	static public int[] getTileIds (Element element, int width, int height) {
@@ -522,24 +612,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			}
 		}
 		return ids;
-	}
-
-	protected static int unsignedByteToInt (byte b) {
-		return b & 0xFF;
-	}
-
-	protected static FileHandle getRelativeFileHandle (FileHandle file, String path) {
-		StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
-		FileHandle result = file.parent();
-		while (tokenizer.hasMoreElements()) {
-			String token = tokenizer.nextToken();
-			if (token.equals(".."))
-				result = result.parent();
-			else {
-				result = result.child(token);
-			}
-		}
-		return result;
 	}
 
 	protected void loadTileSet (Element element, FileHandle tmxFile, ImageResolver imageResolver) {
@@ -635,21 +707,26 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 
 	protected void addTileProperties (TiledMapTile tile, Element tileElement) {
 		String terrain = tileElement.getAttribute("terrain", null);
+		MapProperties tileProperties = tile.getProperties();
 		if (terrain != null) {
-			tile.getProperties().put("terrain", terrain);
+			tileProperties.put("terrain", terrain);
 		}
 		String probability = tileElement.getAttribute("probability", null);
 		if (probability != null) {
-			tile.getProperties().put("probability", probability);
+			tileProperties.put("probability", probability);
 		}
 		String type = tileElement.getAttribute("type", null);
 		if (type != null) {
-			tile.getProperties().put("type", type);
+			tileProperties.put("type", type);
 		}
 		Element properties = tileElement.getChildByName("properties");
 		if (properties != null) {
-			loadProperties(tile.getProperties(), properties);
+			loadProperties(tileProperties, properties);
 		}
+
+		// if there is a 'type' (=class) specified, then check if there are any other
+		// class properties available and put their default values into the properties.
+		loadMapPropertiesClassDefaults(type, tileProperties);
 	}
 
 	protected void addTileObjectGroup (TiledMapTile tile, Element tileElement) {
@@ -679,12 +756,4 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		return null;
 	}
 
-	protected void addStaticTiledMapTile (TiledMapTileSet tileSet, TextureRegion textureRegion, int tileId, float offsetX,
-		float offsetY) {
-		TiledMapTile tile = new StaticTiledMapTile(textureRegion);
-		tile.setId(tileId);
-		tile.setOffsetX(offsetX);
-		tile.setOffsetY(flipY ? -offsetY : offsetY);
-		tileSet.putTile(tileId, tile);
-	}
 }

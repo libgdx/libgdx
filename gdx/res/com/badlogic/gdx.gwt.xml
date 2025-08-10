@@ -80,6 +80,8 @@
 		<include name="graphics/FPSLogger.java"/>
 		<include name="graphics/GL20.java"/>
 		<include name="graphics/GL30.java"/>
+		<include name="graphics/GL31.java"/>
+		<include name="graphics/GL32.java"/>
 		<include name="graphics/GLCommon.java"/>
 		<include name="graphics/GLTexture.java"/>
 		<include name="graphics/Mesh.java"/>
@@ -88,8 +90,10 @@
 		<include name="graphics/Pixmap.java"/> <!-- Emulated -->
 		<exclude name="graphics/PixmapIO.java"/> <!-- Reason: No DeflaterOutputStream -->
 		<include name="graphics/Texture.java"/>
-		<exclude name="graphics/TextureArray.java"/> <!-- GLES 3.0 -->
-		<exclude name="graphics/TextureArrayData.java"/> <!-- GLES 3.0 -->
+		<include name="graphics/Texture3D.java"/> <!-- GLES 3.0 -->
+		<include name="graphics/Texture3DData.java"/> <!-- GLES 3.0 -->
+		<include name="graphics/TextureArray.java"/> <!-- GLES 3.0 -->
+		<include name="graphics/TextureArrayData.java"/> <!-- GLES 3.0 -->
 		<exclude name="graphics/TextureData.java"/> <!-- emulated: TextureData.Factory requires ETC1 -->
 		<include name="graphics/VertexAttribute.java"/>
 		<include name="graphics/VertexAttributes.java"/>
@@ -236,10 +240,11 @@
 		<include name="graphics/g3d/utils/shapebuilders/SphereShapeBuilder.java"/>
 
 	<!-- graphics/glutils -->
+		<include name="graphics/glutils/CustomTexture3DData.java"/> <!-- GLES 3.0 -->
 		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
 		<include name="graphics/glutils/ETC1TextureData.java"/>  <!-- Emulated: explodes on construction -->
 		<include name="graphics/glutils/FacedCubemapData.java"/>
-		<exclude name="graphics/glutils/FileTextureArrayData.java"/> <!-- GLES 3.0 -->
+		<include name="graphics/glutils/FileTextureArrayData.java"/> <!-- GLES 3.0 -->
 		<include name="graphics/glutils/FileTextureData.java"/> <!-- Emulated: No PixmapIO -->
 		<include name="graphics/glutils/FloatFrameBuffer.java"/>
 		<include name="graphics/glutils/FloatTextureData.java"/>
@@ -273,12 +278,16 @@
 	<!-- graphics/profiling -->
 		<include name="graphics/profiling/GL20Interceptor.java"/>
 		<include name="graphics/profiling/GL30Interceptor.java"/>
+		<include name="graphics/profiling/GL31Interceptor.java"/>
+		<include name="graphics/profiling/GL32Interceptor.java"/>
 		<include name="graphics/profiling/GLInterceptor.java"/>
 		<include name="graphics/profiling/GLProfiler.java"/>
 		<include name="graphics/profiling/GLErrorListener.java"/> <!-- Emulated -->
 						
 	<!-- input -->
 		<include name="input/GestureDetector.java"/>
+		<include name="input/TextInputWrapper.java"/>
+		<include name="input/NativeInputConfiguration.java"/>
 		<exclude name="input/RemoteInput.java"/> <!-- Reason: Networking -->
 		<exclude name="input/RemoteSender.java"/> <!-- Reason: Networking -->
 		
@@ -296,14 +305,19 @@
 	<!-- maps/objects -->
 		<include name="maps/objects/CircleMapObject.java"/>
 		<include name="maps/objects/EllipseMapObject.java"/>
+		<include name="maps/objects/PointMapObject.java"/>
 		<include name="maps/objects/PolygonMapObject.java"/>
 		<include name="maps/objects/PolylineMapObject.java"/>
 		<include name="maps/objects/RectangleMapObject.java"/>
-		<include name="maps/objects/TextureMapObject.java"/>
-	
+        <include name="maps/objects/TextMapObject.java"/>
+        <include name="maps/objects/TextureMapObject.java"/>
+
 	<!-- maps/tiled -->
 		<include name="maps/tiled/AtlasTmxMapLoader.java"/>
+		<include name="maps/tiled/AtlasTmjMapLoader.java"/>
+		<include name="maps/tiled/BaseTiledMapLoader.java"/>
 		<include name="maps/tiled/BaseTmxMapLoader.java"/>
+		<include name="maps/tiled/BaseTmjMapLoader.java"/>
 		<include name="maps/tiled/TideMapLoader.java"/>
 		<include name="maps/tiled/TiledMap.java"/>
 		<include name="maps/tiled/TiledMapRenderer.java"/>
@@ -314,6 +328,7 @@
 		<include name="maps/tiled/TiledMapImageLayer.java"/>
 		<include name="maps/tiled/TmxMapHelper.java"/>
 		<include name="maps/tiled/TmxMapLoader.java"/>
+		<include name="maps/tiled/TmjMapLoader.java"/>
 		
 	<!-- maps/tiled/renderers -->
 		<include name="maps/tiled/renderers/BatchTiledMapRenderer.java"/>
@@ -364,10 +379,12 @@
 		<include name="math/Vector.java"/>
 		<include name="math/Vector2.java"/>
 		<include name="math/Vector3.java"/>		
+		<include name="math/Vector4.java"/>
 		<include name="math/WindowedMean.java"/>
 				
 	<!-- math/collision -->								
 		<include name="math/collision/BoundingBox.java"/>
+		<include name="math/collision/OrientedBoundingBox.java"/>
 		<include name="math/collision/Ray.java"/>
 		<include name="math/collision/Segment.java"/>
 		<include name="math/collision/Sphere.java"/>		
@@ -397,6 +414,7 @@
 		<include name="utils/Align.java"/>
 		<include name="utils/Array.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/ArrayMap.java"/> <!-- Emulated: Reflection -->
+		<include name="utils/ArraySupplier.java"/>
 		<include name="utils/AtomicQueue.java"/>
 		<include name="utils/Base64Coder.java"/>
 		<include name="utils/BaseJsonReader.java"/>
@@ -415,7 +433,6 @@
 		<include name="utils/Disposable.java"/>
 		<include name="utils/FloatArray.java"/>
 		<include name="utils/FlushablePool.java"/>
-		<exclude name="utils/GdxBuild.java"/> <!-- Reason: Natives -->
 		<exclude name="utils/GdxNativesLoader.java"/> <!-- Reason: Natives -->
 		<include name="utils/GdxRuntimeException.java"/>
 		<include name="utils/I18NBundle.java"/>
@@ -429,6 +446,8 @@
 		<include name="utils/JsonReader.java"/>
 		<include name="utils/JsonValue.java"/>
 		<include name="utils/JsonWriter.java"/>
+		<include name="utils/JsonSkimmer.java"/>
+		<include name="utils/JsonString.java"/>
 		<include name="utils/LittleEndianInputStream.java"/>
 		<include name="utils/Logger.java"/>
 		<include name="utils/LongArray.java"/>
@@ -454,6 +473,7 @@
 		<include name="utils/Queue.java"/>
 		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/>
+		<include name="utils/DefaultPool.java"/>
 		<include name="utils/Scaling.java"/>
 		<include name="utils/ScreenUtils.java"/>
 		<include name="utils/Select.java"/>

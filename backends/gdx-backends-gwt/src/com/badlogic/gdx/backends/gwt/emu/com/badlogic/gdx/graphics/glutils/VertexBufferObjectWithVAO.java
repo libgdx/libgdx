@@ -83,9 +83,17 @@ public class VertexBufferObjectWithVAO implements VertexData {
 		return buffer.capacity() * 4 / attributes.vertexSize;
 	}
 
+	/** @deprecated use {@link #getBuffer(boolean)} instead */
 	@Override
+	@Deprecated
 	public FloatBuffer getBuffer () {
 		isDirty = true;
+		return buffer;
+	}
+
+	@Override
+	public FloatBuffer getBuffer (boolean forWriting) {
+		isDirty |= forWriting;
 		return buffer;
 	}
 
@@ -182,7 +190,7 @@ public class VertexBufferObjectWithVAO implements VertexData {
 	}
 
 	private void unbindAttributes (ShaderProgram shaderProgram) {
-		if (cachedLocations == null) {
+		if (cachedLocations.size == 0) {
 			return;
 		}
 		int numAttributes = attributes.size();

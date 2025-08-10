@@ -181,7 +181,7 @@ public class ScrollPaneScrollBarsTest extends GdxTest {
 		Table[] tables = new Table[] {bottomLeftTable, bottomRightTable, topLeftTable, topRightTable, horizOnlyTopTable,
 			horizOnlyBottomTable, vertOnlyLeftTable, vertOnlyRightTable};
 		for (Table t : tables)
-			t.defaults().expandX().fillX();
+			t.defaults().growX();
 
 		horizOnlyTopTable
 			.add(new Label("HORIZONTAL-ONLY-TOP verify HORIZONTAL scroll bar is on the TOP and properly aligned", skin)).row();
@@ -219,14 +219,14 @@ public class ScrollPaneScrollBarsTest extends GdxTest {
 			vertOnlyRightTable.add(new Image(skin.getDrawable("default-rect"))).height(20).row();
 		}
 
-		bottomLeft.add(bottomLeftScroll).expand().fill().colspan(4);
-		bottomRight.add(bottomRightScroll).expand().fill().colspan(4);
-		topLeft.add(topLeftScroll).expand().fill().colspan(4);
-		topRight.add(topRightScroll).expand().fill().colspan(4);
-		horizOnlyTop.add(horizOnlyTopScroll).expand().fill().colspan(4);
-		horizOnlyBottom.add(horizOnlyBottomScroll).expand().fill().colspan(4);
-		vertOnlyLeft.add(vertOnlyLeftScroll).expand().fill().colspan(4);
-		vertOnlyRight.add(vertOnlyRightScroll).expand().fill().colspan(4);
+		bottomLeft.add(bottomLeftScroll).grow().colspan(4);
+		bottomRight.add(bottomRightScroll).grow().colspan(4);
+		topLeft.add(topLeftScroll).grow().colspan(4);
+		topRight.add(topRightScroll).grow().colspan(4);
+		horizOnlyTop.add(horizOnlyTopScroll).grow().colspan(4);
+		horizOnlyBottom.add(horizOnlyBottomScroll).grow().colspan(4);
+		vertOnlyLeft.add(vertOnlyLeftScroll).grow().colspan(4);
+		vertOnlyRight.add(vertOnlyRightScroll).grow().colspan(4);
 
 		for (ScrollPane pane : scrollPanes) {
 			pane.setFadeScrollBars(doFade);

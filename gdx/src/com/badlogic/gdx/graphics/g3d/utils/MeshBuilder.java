@@ -469,8 +469,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	private int lastIndex = -1;
 
 	@Override
-	public short lastIndex () {
-		return (short)lastIndex;
+	public int lastIndex () {
+		return lastIndex;
 	}
 
 	private final static Vector3 vTmp = new Vector3();
@@ -795,7 +795,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 		ensureIndices(indices.length);
 		for (int i = 0; i < indices.length; ++i)
-			index((short)(indices[i] & 0xFFFF + offset));
+			index((short)((indices[i] & 0xFFFF) + offset));
 	}
 
 	// TODO: The following methods are deprecated and will be removed in a future release

@@ -16,6 +16,18 @@
 
 package com.badlogic.gdx.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.IntSet.IntSetIterator;
 import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
@@ -27,19 +39,6 @@ import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.security.AccessControlException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 /** Reads/writes Java objects to/from JSON, automatically. See the wiki for usage:
  * https://libgdx.com/wiki/utils/reading-and-writing-json
  * @author Nathan Sweet */
@@ -47,6 +46,7 @@ public class Json {
 	static private final boolean debug = false;
 
 	private JsonWriter writer;
+	private JsonReader reader = new JsonReader();
 	private String typeName = "class";
 	private boolean usePrototypes = true;
 	private OutputType outputType;
@@ -211,7 +211,7 @@ public class Json {
 			if (!field.isAccessible()) {
 				try {
 					field.setAccessible(true);
-				} catch (AccessControlException ex) {
+				} catch (RuntimeException ex) {
 					continue;
 				}
 			}
@@ -293,6 +293,15 @@ public class Json {
 
 	public JsonWriter getWriter () {
 		return writer;
+	}
+
+	/** Sets the reader to use when reading JSON */
+	public void setReader (JsonReader reader) {
+		this.reader = reader;
+	}
+
+	public JsonReader getReader () {
+		return reader;
 	}
 
 	/** Writes all fields of the specified object to the current JSON object. */
@@ -771,34 +780,34 @@ public class Json {
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public @Null <T> T fromJson (Class<T> type, Reader reader) {
-		return readValue(type, null, new JsonReader().parse(reader));
+		return readValue(type, null, this.reader.parse(reader));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown.
 	 * @return May be null. */
 	public @Null <T> T fromJson (Class<T> type, Class elementType, Reader reader) {
-		return readValue(type, elementType, new JsonReader().parse(reader));
+		return readValue(type, elementType, this.reader.parse(reader));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public @Null <T> T fromJson (Class<T> type, InputStream input) {
-		return readValue(type, null, new JsonReader().parse(input));
+		return readValue(type, null, this.reader.parse(input));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown.
 	 * @return May be null. */
 	public @Null <T> T fromJson (Class<T> type, Class elementType, InputStream input) {
-		return readValue(type, elementType, new JsonReader().parse(input));
+		return readValue(type, elementType, this.reader.parse(input));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public @Null <T> T fromJson (Class<T> type, FileHandle file) {
 		try {
-			return readValue(type, null, new JsonReader().parse(file));
+			return readValue(type, null, this.reader.parse(file));
 		} catch (Exception ex) {
 			throw new SerializationException("Error reading file: " + file, ex);
 		}
@@ -809,7 +818,7 @@ public class Json {
 	 * @return May be null. */
 	public @Null <T> T fromJson (Class<T> type, Class elementType, FileHandle file) {
 		try {
-			return readValue(type, elementType, new JsonReader().parse(file));
+			return readValue(type, elementType, this.reader.parse(file));
 		} catch (Exception ex) {
 			throw new SerializationException("Error reading file: " + file, ex);
 		}
@@ -818,26 +827,26 @@ public class Json {
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public @Null <T> T fromJson (Class<T> type, char[] data, int offset, int length) {
-		return readValue(type, null, new JsonReader().parse(data, offset, length));
+		return readValue(type, null, this.reader.parse(data, offset, length));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown.
 	 * @return May be null. */
 	public @Null <T> T fromJson (Class<T> type, Class elementType, char[] data, int offset, int length) {
-		return readValue(type, elementType, new JsonReader().parse(data, offset, length));
+		return readValue(type, elementType, this.reader.parse(data, offset, length));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public @Null <T> T fromJson (Class<T> type, String json) {
-		return readValue(type, null, new JsonReader().parse(json));
+		return readValue(type, null, this.reader.parse(json));
 	}
 
 	/** @param type May be null if the type is unknown.
 	 * @return May be null. */
 	public @Null <T> T fromJson (Class<T> type, Class elementType, String json) {
-		return readValue(type, elementType, new JsonReader().parse(json));
+		return readValue(type, elementType, this.reader.parse(json));
 	}
 
 	public void readField (Object object, String name, JsonValue jsonData) {
@@ -1135,6 +1144,7 @@ public class Json {
 				if (type == String.class) return (T)jsonData.asString();
 				if (type == short.class || type == Short.class) return (T)(Short)jsonData.asShort();
 				if (type == byte.class || type == Byte.class) return (T)(Byte)jsonData.asByte();
+				if (type == char.class || type == Character.class) return (T)(Character)jsonData.asChar();
 			} catch (NumberFormatException ignored) {
 			}
 			jsonData = new JsonValue(jsonData.asString());
@@ -1244,7 +1254,7 @@ public class Json {
 	}
 
 	public String prettyPrint (String json, int singleLineColumns) {
-		return new JsonReader().parse(json).prettyPrint(outputType, singleLineColumns);
+		return this.reader.parse(json).prettyPrint(outputType, singleLineColumns);
 	}
 
 	public String prettyPrint (@Null Object object, PrettyPrintSettings settings) {
@@ -1252,7 +1262,7 @@ public class Json {
 	}
 
 	public String prettyPrint (String json, PrettyPrintSettings settings) {
-		return new JsonReader().parse(json).prettyPrint(settings);
+		return this.reader.parse(json).prettyPrint(settings);
 	}
 
 	static private class FieldMetadata {

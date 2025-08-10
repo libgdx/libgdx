@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.g3d.particles.ResourceData.AssetData;
 import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
@@ -104,8 +105,13 @@ public class ParticleEffectLoader
 		}
 
 		// save
-		Json json = new Json();
-		json.toJson(data, parameter.file);
+		Json json = new Json(parameter.jsonOutputType);
+		if (parameter.prettyPrint) {
+			String prettyJson = json.prettyPrint(data);
+			parameter.file.writeString(prettyJson, false);
+		} else {
+			json.toJson(data, parameter.file);
+		}
 	}
 
 	@Override
@@ -157,11 +163,20 @@ public class ParticleEffectLoader
 		/** Required parameters */
 		FileHandle file;
 		AssetManager manager;
+		JsonWriter.OutputType jsonOutputType;
+		boolean prettyPrint;
 
 		public ParticleEffectSaveParameter (FileHandle file, AssetManager manager, Array<ParticleBatch<?>> batches) {
+			this(file, manager, batches, JsonWriter.OutputType.minimal, false);
+		}
+
+		public ParticleEffectSaveParameter (FileHandle file, AssetManager manager, Array<ParticleBatch<?>> batches,
+			JsonWriter.OutputType jsonOutputType, boolean prettyPrint) {
 			this.batches = batches;
 			this.file = file;
 			this.manager = manager;
+			this.jsonOutputType = jsonOutputType;
+			this.prettyPrint = prettyPrint;
 		}
 	}
 

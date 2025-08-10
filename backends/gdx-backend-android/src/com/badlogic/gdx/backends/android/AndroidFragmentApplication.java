@@ -1,12 +1,10 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
@@ -44,8 +42,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	protected boolean firstResume = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<LifecycleListener>(
-		LifecycleListener.class);
+	protected final SnapshotArray<LifecycleListener> lifecycleListeners = new SnapshotArray<>(LifecycleListener[]::new);
 	private final Array<AndroidEventListener> androidEventListeners = new Array<AndroidEventListener>();
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
@@ -86,10 +83,9 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		}
 	}
 
-	@TargetApi(19)
 	@Override
 	public void useImmersiveMode (boolean use) {
-		if (!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
+		if (!use) return;
 
 		View view = this.graphics.getView();
 
@@ -168,7 +164,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		Gdx.net = this.getNet();
 		createWakeLock(config.useWakelock);
 		useImmersiveMode(config.useImmersiveMode);
-		if (config.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT) {
+		if (config.useImmersiveMode) {
 			AndroidVisibilityListener vlistener = new AndroidVisibilityListener();
 			vlistener.createListener(this);
 		}
@@ -447,7 +443,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 
 	@Override
 	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
-		return new DefaultAndroidAudio(context, config);
+		if (!config.disableAudio)
+			return new DefaultAndroidAudio(context, config);
+		else
+			return new DisabledAndroidAudio();
 	}
 
 	@Override

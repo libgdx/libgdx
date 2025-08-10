@@ -9,10 +9,33 @@ import org.junit.Test;
 public class MathUtilsTest {
 
 	@Test
+	public void lerpAngle () {
+		assertEquals(PI / 18f, MathUtils.lerpAngle(PI / 18f, PI / 6f, 0.0f), 0.01f);
+		assertEquals(PI / 9f, MathUtils.lerpAngle(PI / 18f, PI / 6f, 0.5f), 0.01f);
+		assertEquals(PI / 6f, MathUtils.lerpAngle(PI / 18f, PI / 6f, 1.0f), 0.01f);
+
+		// checks both negative c, which should produce a result close to HALF_PI, and
+		// positive c, which should be close to PI + HALF_PI.
+		// intentionally skips where c == 0, because there are two equally-valid results for that case.
+		for (float c = -1f; c <= 1f; c += 0.003f) {
+			assertEquals(PI + Math.copySign(HALF_PI, c) + c, MathUtils.lerpAngle(0, PI2 + PI + c + c, 0.5f), 0.01f);
+			assertEquals(PI + Math.copySign(HALF_PI, c) + c, MathUtils.lerpAngle(PI2 + PI + c + c, 0, 0.5f), 0.01f);
+		}
+	}
+
+	@Test
 	public void lerpAngleDeg () {
 		assertEquals(10, MathUtils.lerpAngleDeg(10, 30, 0.0f), 0.01f);
 		assertEquals(20, MathUtils.lerpAngleDeg(10, 30, 0.5f), 0.01f);
 		assertEquals(30, MathUtils.lerpAngleDeg(10, 30, 1.0f), 0.01f);
+
+		// checks both negative c, which should produce a result close to 90, and
+		// positive c, which should be close to 270.
+		// intentionally skips where c == 0, because there are two equally-valid results for that case.
+		for (float c = -80f; c <= 80f; c += 0.3f) {
+			assertEquals(180f + Math.copySign(90f, c) + c, MathUtils.lerpAngleDeg(0, 540 + c + c, 0.5f), 0.01f);
+			assertEquals(180f + Math.copySign(90f, c) + c, MathUtils.lerpAngleDeg(540 + c + c, 0, 0.5f), 0.01f);
+		}
 	}
 
 	@Test
@@ -72,5 +95,26 @@ public class MathUtilsTest {
 		assertEquals(0f, MathUtils.cosDeg(90f), 0f);
 		assertEquals(-1f, MathUtils.cosDeg(180f), 0f);
 		assertEquals(0f, MathUtils.cosDeg(270f), 0f);
+	}
+
+	@Test
+	public void testTanDeg () {
+		assertEquals(0f, MathUtils.tanDeg(0f), FLOAT_ROUNDING_ERROR);
+		assertEquals(Math.tan(Math.toRadians(45f)), MathUtils.tanDeg(45f), FLOAT_ROUNDING_ERROR);
+// assertEquals(Float.POSITIVE_INFINITY, MathUtils.tanDeg(90f), 0f); // near infinite, maximum error here
+		assertEquals(Math.tan(Math.toRadians(135f)), MathUtils.tanDeg(135f), FLOAT_ROUNDING_ERROR);
+		assertEquals(0f, MathUtils.tanDeg(180f), FLOAT_ROUNDING_ERROR);
+	}
+
+	@Test
+	public void testAtan2Deg360 () {
+		assertEquals(0f, MathUtils.atan2Deg360(0f, 1f), FLOAT_ROUNDING_ERROR);
+		assertEquals(45f, MathUtils.atan2Deg360(1f, 1f), FLOAT_ROUNDING_ERROR);
+		assertEquals(90f, MathUtils.atan2Deg360(1f, 0f), FLOAT_ROUNDING_ERROR);
+		assertEquals(135f, MathUtils.atan2Deg360(1f, -1f), FLOAT_ROUNDING_ERROR);
+		assertEquals(180f, MathUtils.atan2Deg360(0f, -1f), FLOAT_ROUNDING_ERROR);
+		assertEquals(225f, MathUtils.atan2Deg360(-1f, -1f), FLOAT_ROUNDING_ERROR);
+		assertEquals(270f, MathUtils.atan2Deg360(-1f, 0f), FLOAT_ROUNDING_ERROR);
+		assertEquals(315f, MathUtils.atan2Deg360(-1f, 1f), FLOAT_ROUNDING_ERROR);
 	}
 }

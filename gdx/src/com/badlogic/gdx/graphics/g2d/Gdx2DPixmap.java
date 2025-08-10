@@ -95,6 +95,7 @@ public class Gdx2DPixmap implements Disposable {
 	}
 
 	public Gdx2DPixmap (ByteBuffer encodedData, int offset, int len, int requestedFormat) throws IOException {
+		if (!encodedData.isDirect()) throw new IOException("Couldn't load pixmap from non-direct ByteBuffer");
 		pixelPtr = loadByteBuffer(nativeData, encodedData, offset, len);
 		if (pixelPtr == null) throw new IOException("Error loading pixmap: " + getFailureReason());
 
