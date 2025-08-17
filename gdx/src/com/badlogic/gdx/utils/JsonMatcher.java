@@ -430,7 +430,7 @@ public class JsonMatcher extends JsonSkimmer {
 			end();
 		}
 		pattern.captured++;
-		if (pattern.captured >= pattern.total) { // Never match again.
+		if (pattern.captured >= pattern.total) { // Done, never match again.
 			pattern.current.pop = -1;
 			pattern.current.dead = -1;
 			if (debug) debug(pattern, "DONE: " + pattern.current);
@@ -651,6 +651,7 @@ public class JsonMatcher extends JsonSkimmer {
 						multi = true; // Has multiple captures since @.
 					else
 						prevCapture = match;
+					if ((flags & capture) != 0) captures++;
 				}
 				if ((flags & process) != 0) {
 					at = true;
@@ -659,7 +660,6 @@ public class JsonMatcher extends JsonSkimmer {
 					multi = false;
 					prevCapture = null;
 				}
-				if ((flags & capture) != 0) captures++;
 			}
 			current = current.next;
 		} while (current != null);
