@@ -224,14 +224,9 @@ public class BitmapFontWriter {
 
 		// CHARS
 		Array<Glyph> glyphs = new Array<Glyph>(256);
-		for (int i = 0; i < fontData.glyphs.length; i++) {
-			if (fontData.glyphs[i] == null) continue;
-
-			for (int j = 0; j < fontData.glyphs[i].length; j++) {
-				if (fontData.glyphs[i][j] != null) {
-					glyphs.add(fontData.glyphs[i][j]);
-				}
-			}
+		extractGlyphs(fontData.glyphs, glyphs);
+		if (fontData.surrogates != null) {
+			extractGlyphs(fontData.surrogates, glyphs);
 		}
 
 		buf.append(xmlOpen).append("chars count=").append(quote(glyphs.size)).append(xmlClose).append("\n");
@@ -306,6 +301,18 @@ public class BitmapFontWriter {
 		if (charset != null && charset.length() == 0) charset = null;
 
 		outFntFile.writeString(buf.toString(), false, charset);
+	}
+
+	private static void extractGlyphs(final Glyph[][] arr, final Array<Glyph> glyphs) {
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] == null) continue;
+
+			for (int j = 0; j < arr[i].length; j++) {
+				if (arr[i][j] != null) {
+					glyphs.add(arr[i][j]);
+				}
+			}
+		}
 	}
 
 	/** A utility method which writes the given font data to a file.
