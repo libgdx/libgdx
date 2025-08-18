@@ -815,8 +815,8 @@ public class CharArray implements CharSequence, Appendable {
 
 	/** Appends each item in an array to this CharArray without any separators. Each object is appended using
 	 * {@link #append(Object)}. */
-	public <T> CharArray appendAll (T... array) {
-		if (array.length > 0) {
+	public final <T> CharArray appendAll (T... array) {
+		if (array != null) {
 			for (Object element : array)
 				append(element);
 		}
