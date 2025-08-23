@@ -1226,7 +1226,7 @@ public class CharArray implements CharSequence, Appendable {
 	 * <p>
 	 * This method allows you to populate the contents of this CharArray using any standard method that takes a Writer.
 	 * <p>
-	 * To use, simply create a {@code CharArray}, call {@code asWriter}, and populate away. The data is available at any time using
+	 * To use, simply create a {@code CharArray}, call {@code writer()}, and populate away. The data is available at any time using
 	 * the methods of the {@code CharArray}.
 	 * <p>
 	 * The internal character array is shared between this CharArray and the writer. This allows you to intermix calls that append
