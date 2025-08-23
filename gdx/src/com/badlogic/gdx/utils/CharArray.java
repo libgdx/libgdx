@@ -469,9 +469,9 @@ public class CharArray implements CharSequence, Appendable {
 		if (size > newSize) size = newSize;
 	}
 
-	/** Returns a random item from the array, or zero if the array is empty. */
+	/** Returns a random item from the array, or {@code ((char)0)} if the array is empty. */
 	public char random () {
-		if (size == 0) throw new IllegalStateException();
+		if (size == 0) return '\u0000';
 		return items[MathUtils.random(0, size - 1)];
 	}
 
