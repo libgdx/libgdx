@@ -42,7 +42,6 @@ import com.badlogic.gdx.tests.utils.OrthoCamController;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-
 public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 
 	private TiledMap map;

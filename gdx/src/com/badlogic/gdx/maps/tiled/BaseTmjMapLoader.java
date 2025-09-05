@@ -473,10 +473,10 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 
 	}
 
-	/** Method specifically meant to help resolve template object properties and attributes found in objectgroups. Each
-	 * template object links to a specific .tj file. Attributes and properties found in the template are allowed to be
-	 * overwritten by any matching ones found in its parent element. Knowing this, we will merge the two elements together
-	 * with the parent's props taking precedence and then return the merged value.
+	/** Method specifically meant to help resolve template object properties and attributes found in objectgroups. Each template
+	 * object links to a specific .tj file. Attributes and properties found in the template are allowed to be overwritten by any
+	 * matching ones found in its parent element. Knowing this, we will merge the two elements together with the parent's props
+	 * taking precedence and then return the merged value.
 	 * @param map TileMap object
 	 * @param layer MapLayer object
 	 * @param mapElement JsonValue which contains the single json element we are currently parsing
@@ -502,8 +502,8 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return mergeParentElementWithTemplate(mapElement, templateObjectElement);
 	}
 
-	/** JSON TextMapObjects contain object nodes containing specific text related attributes.
-	 * Here we merge them, parent attributes will override those found in templates. */
+	/** JSON TextMapObjects contain object nodes containing specific text related attributes. Here we merge them, parent attributes
+	 * will override those found in templates. */
 	protected JsonValue mergeJsonObject (JsonValue parentObject, JsonValue templateObject) {
 		if (templateObject == null) return parentObject;
 		if (parentObject == null) return templateObject;
@@ -551,8 +551,8 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return clone;
 	}
 
-	/** Merges two properties arrays from a parent and template.
-	 * Matching properties from the parent will override the template's. */
+	/** Merges two properties arrays from a parent and template. Matching properties from the parent will override the
+	 * template's. */
 	protected JsonValue mergeJsonProperties (JsonValue parentProps, JsonValue templateProps) {
 		if (templateProps == null) return parentProps;
 		if (parentProps == null) return templateProps;
