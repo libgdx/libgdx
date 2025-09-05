@@ -48,6 +48,7 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.StreamUtils;
 
@@ -278,11 +279,11 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			}
 
 			for (JsonValue objectElement : element.get("objects")) {
+				JsonValue elementToLoad = objectElement;
 				if (objectElement.has("template")) {
-					loadTemplateObject(map, layer, objectElement, tmjFile);
-				} else {
-					loadObject(map, layer, objectElement);
+					elementToLoad = resolveTemplateObject(map, layer, objectElement, tmjFile);
 				}
+				loadObject(map, layer, elementToLoad);
 			}
 			parentLayers.add(layer);
 		}
@@ -472,16 +473,16 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 
 	}
 
-	/* * Tiled Template Loading Section Starts Below * */
-	/** Method specifically meant to help load template objects found in objectgroups Each template object links to a specific .tj
-	 * file. Attributes and properties found in the template are allowed to be overwritten by any matching ones found in its parent
-	 * element. Knowing this, we will merge the two elements together with the parent's props taking precedence and then pass to
-	 * the loadObject
+	/** Method specifically meant to help resolve template object properties and attributes found in objectgroups. Each
+	 * template object links to a specific .tj file. Attributes and properties found in the template are allowed to be
+	 * overwritten by any matching ones found in its parent element. Knowing this, we will merge the two elements together
+	 * with the parent's props taking precedence and then return the merged value.
 	 * @param map TileMap object
 	 * @param layer MapLayer object
-	 * @param mapElement Element which contains the single xml element we are currently parsing
-	 * @param tmjFile tmjFile */
-	protected void loadTemplateObject (TiledMap map, MapLayer layer, JsonValue mapElement, FileHandle tmjFile) {
+	 * @param mapElement JsonValue which contains the single json element we are currently parsing
+	 * @param tmjFile tmjFile
+	 * @return a merged JsonValue representing the combined JsonValues. */
+	protected JsonValue resolveTemplateObject (TiledMap map, MapLayer layer, JsonValue mapElement, FileHandle tmjFile) {
 		// Get template (.tj) file name from element
 		String tjFileName = mapElement.getString("template");
 		// check for cached tj element
@@ -498,13 +499,11 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		// Get the root object from the template file
 		JsonValue templateObjectElement = templateElement.get("object");
 		// Merge the parent map element with its template element
-		JsonValue merged = mergeParentElementWithTemplate(mapElement, templateObjectElement);
-		// Pass the newly merged element to the loadObject method
-		loadObject(map, layer, merged);
+		return mergeParentElementWithTemplate(mapElement, templateObjectElement);
 	}
 
-	/** JSON TextMapObjects contain object nodes containing specific text related attributes Here we merge them, parent attributes
-	 * will override those found in templates. */
+	/** JSON TextMapObjects contain object nodes containing specific text related attributes.
+	 * Here we merge them, parent attributes will override those found in templates. */
 	protected JsonValue mergeJsonObject (JsonValue parentObject, JsonValue templateObject) {
 		if (templateObject == null) return parentObject;
 		if (parentObject == null) return templateObject;
@@ -552,8 +551,8 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return clone;
 	}
 
-	/** Merges two properties arrays from a parent and template Matching properties from the parent will override the
-	 * template's. */
+	/** Merges two properties arrays from a parent and template.
+	 * Matching properties from the parent will override the template's. */
 	protected JsonValue mergeJsonProperties (JsonValue parentProps, JsonValue templateProps) {
 		if (templateProps == null) return parentProps;
 		if (parentProps == null) return templateProps;

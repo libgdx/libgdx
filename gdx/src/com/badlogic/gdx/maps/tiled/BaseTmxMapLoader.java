@@ -41,14 +41,7 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Base64Coder;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.SerializationException;
-import com.badlogic.gdx.utils.StreamUtils;
-import com.badlogic.gdx.utils.XmlReader;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 import java.io.BufferedInputStream;
@@ -273,13 +266,12 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			}
 
 			for (Element objectElement : element.getChildrenByName("object")) {
+				Element elementToLoad = objectElement;
 				if (objectElement.hasAttribute("template")) {
-					loadTemplateObject(map, layer, objectElement, tmxFile);
-				} else {
-					loadObject(map, layer, objectElement);
+					elementToLoad = resolveTemplateObject(map, layer, objectElement, tmxFile);
 				}
+				loadObject(map, layer, elementToLoad);
 			}
-
 			parentLayers.add(layer);
 		}
 	}
@@ -478,16 +470,16 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		}
 	}
 
-	/* * Tiled Template Loading Section Starts Below * */
-	/** Method specifically meant to help load template objects found in objectgroups Each template object links to a specific .tx
-	 * file. Attributes and properties found in the template are allowed to be overwritten by any matching ones found in its parent
-	 * element. Knowing this, we will merge the two elements together with the parent's props taking precedence and then pass to
-	 * the loadObject
+	/** Method specifically meant to help resolve template object properties and attributes found in objectgroups. Each
+	 * template object links to a specific .tx file. Attributes and properties found in the template are allowed to be
+	 * overwritten by any matching ones found in its parent element. Knowing this, we will merge the two elements together
+	 * with the parent's props taking precedence and then return the merged value.
 	 * @param map TileMap object
 	 * @param layer MapLayer object
 	 * @param mapElement Element which contains the single xml element we are currently parsing
-	 * @param tmxFile tmxFile */
-	protected void loadTemplateObject (TiledMap map, MapLayer layer, Element mapElement, FileHandle tmxFile) {
+	 * @param tmxFile tmxFile
+	 * @return a merged Element representing the combined elements. */
+	protected Element resolveTemplateObject(TiledMap map, MapLayer layer, Element mapElement, FileHandle tmxFile) {
 		// Get template (.tx) file name from element
 		String txFileName = mapElement.getAttribute("template");
 		// check for cached tx element
@@ -505,9 +497,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		// Get the root object from the template file
 		Element templateObjectElement = templateElement.getChildByName("object");
 		// Merge the parent map element with its template element
-		Element mergedObject = mergeParentElementWithTemplate(mapElement, templateObjectElement);
-		// Pass the newly merged element to the loadObject method
-		loadObject(map, layer, mergedObject);
+		return mergeParentElementWithTemplate(mapElement, templateObjectElement);
 	}
 
 	/** Returns a shallow copy of the source element we pass in. */
@@ -527,8 +517,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return copyElement;
 	}
 
-	/** Merges two <properties> tags from a parent and template Matching properties from the parent will override the
-	 * template's. */
+	/** Merges two <properties> tags from a parent and template.
+	 * Matching properties from the parent will override the template's. */
 	protected Element mergeProperties (Element parentProps, Element templateProps) {
 		if (templateProps == null) return parentProps;
 		if (parentProps == null) return templateProps;
@@ -594,7 +584,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			Element mapChild = parent.getChildByName(tag);
 			Element tmplChild = template.getChildByName(tag);
 
-			/** Look for properties tags so we can merge those as well Recursive check if properties is not found. */
+			/** Look for properties tags so we can merge those as well.
+			 * Recursive check if properties is not found. */
 			Element mergedChild = "properties".equals(tag) ? mergeProperties(mapChild, tmplChild)
 				: mergeParentElementWithTemplate(mapChild, tmplChild);
 			merged.addChild(mergedChild);

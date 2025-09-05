@@ -109,7 +109,7 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 		Array<FileHandle> fileHandles = new Array<>();
 
 		// TileSet descriptors
-		for (JsonValue tileSet : root.get("tileSets")) {
+		for (JsonValue tileSet : root.get("tilesets")) {
 			getTileSetDependencyFileHandle(fileHandles, tmjFile, tileSet);
 		}
 
