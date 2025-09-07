@@ -90,6 +90,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	 * @param parameter
 	 * @param imageResolver
 	 * @return the {@link TiledMap} */
+	@Override
 	protected TiledMap loadTiledMap (FileHandle tmjFile, P parameter, ImageResolver imageResolver) {
 		this.map = new TiledMap();
 		this.idToObject = new IntMap<>();
@@ -153,8 +154,10 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 
 		JsonValue tileSets = root.get("tilesets");
 		for (JsonValue element : tileSets) {
-			loadTileSet(element, tmjFile, imageResolver);
-
+			TiledMapTileSet tileSet = loadTileSet(element, tmjFile, imageResolver);
+			if (tileSet != null) {
+				map.getTileSets().addTileSet(tileSet);
+			}
 		}
 		JsonValue layers = root.get("layers");
 
@@ -439,7 +442,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		object.setName(element.getString("name", null));
 		String rotation = element.getString("rotation", null);
 		if (rotation != null) {
-			object.getProperties().put("rotation", Float.parseFloat(rotation));
+			object.getProperties().put("rotation", Float.valueOf(rotation));
 		}
 		String type = element.getString("type", null);
 		if (type != null) {
@@ -690,98 +693,94 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return ids;
 	}
 
-	protected void loadTileSet (JsonValue element, FileHandle tmjFile, ImageResolver imageResolver) {
-		if (element.getString("firstgid") != null) {
-			int firstgid = element.getInt("firstgid", 1);
-			String imageSource = "";
-			int imageWidth = 0;
-			int imageHeight = 0;
-			FileHandle image = null;
+	public TiledMapTileSet loadTileSet (JsonValue rawElement, FileHandle tmjFile, ImageResolver imageResolver) {
+		int firstgid = rawElement.getInt("firstgid", 1);
+		JsonValue element = resolveTilesetElement(rawElement, tmjFile);
 
-			String source = element.getString("source", null);
-			if (source != null) {
-				FileHandle tsj = getRelativeFileHandle(tmjFile, source);
-				try {
-					element = json.parse(tsj);
-					if (element.has("image")) {
-						imageSource = element.getString("image");
-						imageWidth = element.getInt("imagewidth", 0);
-						imageHeight = element.getInt("imageheight", 0);
-						image = getRelativeFileHandle(tsj, imageSource);
-					}
-				} catch (SerializationException e) {
-					throw new GdxRuntimeException("Error parsing external tileSet.");
-				}
-			} else {
-				if (element.has("image")) {
-					imageSource = element.getString("image");
-					imageWidth = element.getInt("imagewidth", 0);
-					imageHeight = element.getInt("imageheight", 0);
-					image = getRelativeFileHandle(tmjFile, imageSource);
-				}
-			}
-			String name = element.getString("name", null);
-			int tilewidth = element.getInt("tilewidth", 0);
-			int tileheight = element.getInt("tileheight", 0);
-			int spacing = element.getInt("spacing", 0);
-			int margin = element.getInt("margin", 0);
+		String name = element.getString("name", null);
+		int tilewidth = element.getInt("tilewidth", 0);
+		int tileheight = element.getInt("tileheight", 0);
+		int spacing = element.getInt("spacing", 0);
+		int margin = element.getInt("margin", 0);
 
-			JsonValue offset = element.get("tileoffset");
-			int offsetX = 0;
-			int offsetY = 0;
-			if (offset != null) {
-				offsetX = offset.getInt("x", 0);
-				offsetY = offset.getInt("y", 0);
-			}
-			TiledMapTileSet tileSet = new TiledMapTileSet();
-
-			// TileSet
-			tileSet.setName(name);
-			final MapProperties tileSetProperties = tileSet.getProperties();
-			JsonValue properties = element.get("properties");
-			if (properties != null) {
-				loadProperties(tileSetProperties, properties);
-			}
-			tileSetProperties.put("firstgid", firstgid);
-
-			// Tiles
-			JsonValue tiles = element.get("tiles");
-
-			if (tiles == null) {
-				tiles = new JsonValue(JsonValue.ValueType.array);
-			}
-
-			addStaticTiles(tmjFile, imageResolver, tileSet, element, tiles, name, firstgid, tilewidth, tileheight, spacing, margin,
-				source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
-
-			Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
-
-			for (JsonValue tileElement : tiles) {
-				int localtid = tileElement.getInt("id", 0);
-				TiledMapTile tile = tileSet.getTile(firstgid + localtid);
-				if (tile != null) {
-					AnimatedTiledMapTile animatedTile = createAnimatedTile(tileSet, tile, tileElement, firstgid);
-					if (animatedTile != null) {
-						animatedTiles.add(animatedTile);
-						tile = animatedTile;
-					}
-					addTileProperties(tile, tileElement);
-					addTileObjectGroup(tile, tileElement);
-				}
-			}
-			// replace original static tiles by animated tiles
-			for (AnimatedTiledMapTile animatedTile : animatedTiles) {
-				tileSet.putTile(animatedTile.getId(), animatedTile);
-			}
-
-			map.getTileSets().addTileSet(tileSet);
-
+		int offsetX = 0, offsetY = 0;
+		JsonValue offset = element.get("tileoffset");
+		if (offset != null) {
+			offsetX = offset.getInt("x", 0);
+			offsetY = offset.getInt("y", 0);
 		}
+
+		FileHandle image = resolveTilesetImage(element, tmjFile);
+		String imageSource = element.getString("image", null);
+		int imageWidth = element.getInt("imagewidth", 0);
+		int imageHeight = element.getInt("imageheight", 0);
+
+		TiledMapTileSet tileSet = new TiledMapTileSet();
+		tileSet.setName(name);
+		final MapProperties tileSetProperties = tileSet.getProperties();
+		tileSetProperties.put("firstgid", firstgid);
+
+		JsonValue properties = element.get("properties");
+		if (properties != null) {
+			loadProperties(tileSetProperties, properties);
+		}
+
+		JsonValue tiles = element.get("tiles");
+		if (tiles == null) tiles = new JsonValue(JsonValue.ValueType.array);
+
+		addStaticTiles(tmjFile, imageResolver, tileSet, element, tiles, name, firstgid, tilewidth, tileheight, spacing, margin,
+			offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
+
+		Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
+		for (JsonValue tileElement : tiles) {
+			int localtid = tileElement.getInt("id", 0);
+			TiledMapTile tile = tileSet.getTile(firstgid + localtid);
+			if (tile != null) {
+				AnimatedTiledMapTile animatedTile = createAnimatedTile(tileSet, tile, tileElement, firstgid);
+				if (animatedTile != null) {
+					animatedTiles.add(animatedTile);
+					tile = animatedTile;
+				}
+				addTileProperties(tile, tileElement);
+				addTileObjectGroup(tile, tileElement);
+			}
+		}
+		for (AnimatedTiledMapTile animatedTile : animatedTiles) {
+			tileSet.putTile(animatedTile.getId(), animatedTile);
+		}
+
+		return tileSet;
+	}
+
+	private JsonValue resolveTilesetElement (JsonValue element, FileHandle tmjFile) {
+		String source = element.getString("source", null);
+		if (source != null) {
+			FileHandle tsj = getRelativeFileHandle(tmjFile, source);
+			try {
+				JsonValue resolved = json.parse(tsj);
+				resolved.addChild("source", new JsonValue(source));
+				return resolved;
+			} catch (SerializationException e) {
+				throw new GdxRuntimeException("Error parsing external tileset: " + source, e);
+			}
+		}
+		return element;
+	}
+
+	private FileHandle resolveTilesetImage (JsonValue element, FileHandle tmjFile) {
+		if (!element.has("image")) return null;
+
+		String imageSource = element.getString("image");
+		String tilesetSource = element.getString("source", null);
+
+		FileHandle base = (tilesetSource != null) ? getRelativeFileHandle(tmjFile, tilesetSource) : tmjFile;
+
+		return getRelativeFileHandle(base, imageSource);
 	}
 
 	protected abstract void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet,
 		JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
-		String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
+		int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
 
 	private void addTileProperties (TiledMapTile tile, JsonValue tileElement) {
 		String terrain = tileElement.getString("terrain", null);
