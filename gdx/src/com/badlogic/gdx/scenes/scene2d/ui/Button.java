@@ -121,7 +121,7 @@ public class Button extends Table implements Disableable, Styleable<Button.Butto
 		this.isChecked = isChecked;
 
 		if (fireEvent) {
-			ChangeEvent changeEvent = Pools.obtain(ChangeEvent::new);
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 			if (fire(changeEvent)) this.isChecked = !isChecked;
 			Pools.free(changeEvent);
 		}
@@ -162,6 +162,10 @@ public class Button extends Table implements Disableable, Styleable<Button.Butto
 	 * fired only when the user clicks the button */
 	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
+	}
+
+	public boolean getProgrammaticChangeEvents () {
+		return programmaticChangeEvents;
 	}
 
 	public void setStyle (ButtonStyle style) {

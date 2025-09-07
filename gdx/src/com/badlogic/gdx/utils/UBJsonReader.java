@@ -106,30 +106,30 @@ public class UBJsonReader implements BaseJsonReader {
 			valueType = din.readByte();
 			type = din.readByte();
 		}
-		long size = -1;
+		int size = -1;
 		if (type == '#') {
-			size = parseSize(din, false, -1);
+			size = (int)parseSize(din, false, -1); // long but more than int isn't supported
 			if (size < 0) throw new GdxRuntimeException("Unrecognized data type");
 			if (size == 0) return result;
 			type = valueType == 0 ? din.readByte() : valueType;
 		}
 		JsonValue prev = null;
-		long c = 0;
+		int c = 0;
 		while (din.available() > 0 && type != ']') {
 			final JsonValue val = parse(din, type);
 			val.parent = result;
 			if (prev != null) {
 				val.prev = prev;
 				prev.next = val;
-				result.size++;
-			} else {
+			} else
 				result.child = val;
-				result.size = 1;
-			}
 			prev = val;
-			if (size > 0 && ++c >= size) break;
+			c++;
+			if (size > 0 && c >= size) break;
 			type = valueType == 0 ? din.readByte() : valueType;
 		}
+		result.size = c;
+		result.last = prev;
 		return result;
 	}
 
@@ -141,15 +141,15 @@ public class UBJsonReader implements BaseJsonReader {
 			valueType = din.readByte();
 			type = din.readByte();
 		}
-		long size = -1;
+		int size = -1;
 		if (type == '#') {
-			size = parseSize(din, false, -1);
+			size = (int)parseSize(din, false, -1); // long but more than int isn't supported
 			if (size < 0) throw new GdxRuntimeException("Unrecognized data type");
 			if (size == 0) return result;
 			type = din.readByte();
 		}
 		JsonValue prev = null;
-		long c = 0;
+		int c = 0;
 		while (din.available() > 0 && type != '}') {
 			final String key = parseString(din, true, type);
 			final JsonValue child = parse(din, valueType == 0 ? din.readByte() : valueType);
@@ -158,15 +158,15 @@ public class UBJsonReader implements BaseJsonReader {
 			if (prev != null) {
 				child.prev = prev;
 				prev.next = child;
-				result.size++;
-			} else {
+			} else
 				result.child = child;
-				result.size = 1;
-			}
 			prev = child;
-			if (size > 0 && ++c >= size) break;
+			c++;
+			if (size > 0 && c >= size) break;
 			type = din.readByte();
 		}
+		result.size = c;
+		result.last = prev;
 		return result;
 	}
 
@@ -174,21 +174,20 @@ public class UBJsonReader implements BaseJsonReader {
 		// FIXME: a/A is currently not following the specs because it lacks strong typed, fixed sized containers,
 		// see: https://github.com/thebuzzmedia/universal-binary-json/issues/27
 		final byte dataType = din.readByte();
-		final long size = blockType == 'A' ? readUInt(din) : (long)readUChar(din);
+		final int size = (int)(blockType == 'A' ? readUInt(din) : readUChar(din)); // long but more than int isn't supported
 		final JsonValue result = new JsonValue(JsonValue.ValueType.array);
 		JsonValue prev = null;
 		for (long i = 0; i < size; i++) {
 			final JsonValue val = parse(din, dataType);
 			val.parent = result;
-			if (prev != null) {
+			if (prev != null)
 				prev.next = val;
-				result.size++;
-			} else {
+			else
 				result.child = val;
-				result.size = 1;
-			}
 			prev = val;
 		}
+		result.size = size;
+		result.last = prev;
 		return result;
 	}
 
