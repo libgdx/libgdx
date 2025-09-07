@@ -31,10 +31,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** @brief synchronous loader for TMJ maps created with the Tiled tool */
-public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> {
-
-	public static class Parameters extends BaseTmjMapLoader.Parameters {
-	}
+public class TmjMapLoader extends BaseTmjMapLoader<BaseTiledMapLoader.Parameters> {
 
 	public TmjMapLoader () {
 		super(new InternalFileHandleResolver());
@@ -54,7 +51,7 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 	 * @param fileName the filename
 	 * @return the TiledMap */
 	public TiledMap load (String fileName) {
-		return load(fileName, new TmjMapLoader.Parameters());
+		return load(fileName, new Parameters());
 	}
 
 	/** Loads the {@link TiledMap} from the given file. The file is resolved via the {@link FileHandleResolver} set in the
@@ -63,7 +60,7 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 	 * @param fileName the filename
 	 * @param parameter specifies whether to use y-up, generate mip maps etc.
 	 * @return the TiledMap */
-	public TiledMap load (String fileName, TmjMapLoader.Parameters parameter) {
+	public TiledMap load (String fileName, Parameters parameter) {
 		FileHandle tmjFile = resolve(fileName);
 
 		this.root = json.parse(tmjFile);
@@ -83,12 +80,12 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, FileHandle tmjFile, BaseTmjMapLoader.Parameters parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle tmjFile, Parameters parameter) {
 		this.map = loadTiledMap(tmjFile, parameter, new ImageResolver.AssetManagerImageResolver(manager));
 	}
 
 	@Override
-	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, BaseTmjMapLoader.Parameters parameter) {
+	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, Parameters parameter) {
 		return map;
 	}
 
