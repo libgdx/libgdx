@@ -92,6 +92,7 @@ import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
 import com.badlogic.gdx.tests.TiledMapObjectLoadingTest;
 import com.badlogic.gdx.tests.TiledMapPropertiesTest;
+import com.badlogic.gdx.tests.TiledMapTemplateObjectLoadingTest;
 import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
@@ -593,6 +594,12 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			@Override
 			public GdxTest instance () {
 				return new TiledMapPropertiesTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			@Override
+			public GdxTest instance () {
+				return new TiledMapTemplateObjectLoadingTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
