@@ -101,7 +101,7 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 				if (length != null) {
 					hexSideLength = 0.5f * length.intValue();
 				} else if (map.getLayers().size() > 0) {
-					TiledMapTileLayer tmtl = (TiledMapTileLayer) map.getLayers().get(0);
+					TiledMapTileLayer tmtl = (TiledMapTileLayer)map.getLayers().get(0);
 					hexSideLength = 0.5f * tmtl.getTileHeight();
 				} else {
 					hexSideLength = 0f;
@@ -413,27 +413,27 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 		}
 	}
 
-	public boolean isStaggerAxisX() {
+	public boolean isStaggerAxisX () {
 		return staggerAxisX;
 	}
 
-	public void setStaggerAxisX(boolean staggerAxisX) {
+	public void setStaggerAxisX (boolean staggerAxisX) {
 		this.staggerAxisX = staggerAxisX;
 	}
 
-	public boolean isStaggerIndexEven() {
+	public boolean isStaggerIndexEven () {
 		return staggerIndexEven;
 	}
 
-	public void setStaggerIndexEven(boolean staggerIndexEven) {
+	public void setStaggerIndexEven (boolean staggerIndexEven) {
 		this.staggerIndexEven = staggerIndexEven;
 	}
 
-	public float getHexSideLength() {
+	public float getHexSideLength () {
 		return hexSideLength;
 	}
 
-	public void setHexSideLength(float hexSideLength) {
+	public void setHexSideLength (float hexSideLength) {
 		this.hexSideLength = hexSideLength;
 	}
 
