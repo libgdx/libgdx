@@ -90,17 +90,21 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 				length = map.getProperties().get("tilewidth", Integer.class);
 				if (length != null) {
 					hexSideLength = 0.5f * length.intValue();
-				} else {
+				} else if (map.getLayers().size() > 0) {
 					TiledMapTileLayer tmtl = (TiledMapTileLayer)map.getLayers().get(0);
 					hexSideLength = 0.5f * tmtl.getTileWidth();
+				} else {
+					hexSideLength = 0f;
 				}
 			} else {
 				length = map.getProperties().get("tileheight", Integer.class);
 				if (length != null) {
 					hexSideLength = 0.5f * length.intValue();
-				} else {
-					TiledMapTileLayer tmtl = (TiledMapTileLayer)map.getLayers().get(0);
+				} else if (map.getLayers().size() > 0) {
+					TiledMapTileLayer tmtl = (TiledMapTileLayer) map.getLayers().get(0);
 					hexSideLength = 0.5f * tmtl.getTileHeight();
+				} else {
+					hexSideLength = 0f;
 				}
 			}
 		}
@@ -407,6 +411,30 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 				}
 			}
 		}
+	}
+
+	public boolean isStaggerAxisX() {
+		return staggerAxisX;
+	}
+
+	public void setStaggerAxisX(boolean staggerAxisX) {
+		this.staggerAxisX = staggerAxisX;
+	}
+
+	public boolean isStaggerIndexEven() {
+		return staggerIndexEven;
+	}
+
+	public void setStaggerIndexEven(boolean staggerIndexEven) {
+		this.staggerIndexEven = staggerIndexEven;
+	}
+
+	public float getHexSideLength() {
+		return hexSideLength;
+	}
+
+	public void setHexSideLength(float hexSideLength) {
+		this.hexSideLength = hexSideLength;
 	}
 
 }
