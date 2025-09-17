@@ -245,8 +245,11 @@ public class AtlasTmjMapLoader extends BaseTmjMapLoader<AtlasTmjMapLoader.AtlasT
 	 * @return The name of the region to pass into an atlas */
 	static String parseRegionName (String name) {
 		if (name.contains("atlas_imagelayer")) {
-			// Extract the name of region from path
-			return new FileHandle(name).name();
+			// Find the last '/' in the path
+			int lastSlash = name.lastIndexOf('/');
+			// If we found a slash, return everything after it which should be our region name
+			// If no slashes found return entire string
+			return (lastSlash >= 0) ? name.substring(lastSlash + 1) : name;
 		} else {
 			return name;
 		}
