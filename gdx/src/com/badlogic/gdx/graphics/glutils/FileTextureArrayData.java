@@ -43,6 +43,13 @@ public class FileTextureArrayData implements TextureArrayData {
 		}
 	}
 
+	public FileTextureArrayData (Pixmap.Format format, boolean useMipMaps, TextureData[] textureDatas) {
+		this.format = format;
+		this.useMipMaps = useMipMaps;
+		this.depth = textureDatas.length;
+		this.textureDatas = textureDatas;
+	}
+
 	@Override
 	public boolean isPrepared () {
 		return prepared;
