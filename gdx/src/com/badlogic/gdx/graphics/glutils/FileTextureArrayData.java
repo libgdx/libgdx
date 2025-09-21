@@ -60,7 +60,7 @@ public class FileTextureArrayData implements TextureArrayData {
 		int width = -1;
 		int height = -1;
 		for (TextureData data : textureDatas) {
-			data.prepare();
+			if (!data.isPrepared()) data.prepare();
 			if (width == -1) {
 				width = data.getWidth();
 				height = data.getHeight();
