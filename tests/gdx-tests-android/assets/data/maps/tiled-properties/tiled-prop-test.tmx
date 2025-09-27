@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="2" height="2" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="3">
+<map version="1.10" tiledversion="1.11.1-99-gec89c545" orientation="orthogonal" renderorder="right-down" width="2" height="2" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="6">
  <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32" tilecount="256" columns="16">
   <image source="../tiled/tiles.png" width="512" height="512"/>
+  <tile id="0" type="testClass">
+   <properties>
+    <property name="classEnumStr" propertytype="enumStr" value="STR1"/>
+    <property name="classInt" type="int" value="2"/>
+   </properties>
+  </tile>
+  <tile id="1" type="testClassNested">
+   <properties>
+    <property name="classClass" type="class" propertytype="testClass">
+     <properties>
+      <property name="classEnumStr" propertytype="enumStr" value="STR1"/>
+      <property name="classInt" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="classInt" type="int" value="2"/>
+   </properties>
+  </tile>
  </tileset>
  <layer id="1" name="tile layer" width="2" height="2">
   <data encoding="csv">
@@ -42,6 +59,13 @@
     <property name="objInt" type="int" value="42"/>
     <property name="objObj" type="object" value="1"/>
     <property name="objStr" value="someTxt"/>
+   </properties>
+  </object>
+  <object id="3" name="Tile Object" gid="1" x="32" y="32" width="32" height="32"/>
+  <object id="4" name="Tile Object Nested" gid="2" x="0" y="64" width="32" height="32"/>
+  <object id="5" name="Test Object 2" type="testClass" x="46" y="46" width="12" height="12">
+   <properties>
+    <property name="classInt" type="int" value="2"/>
    </properties>
   </object>
  </objectgroup>

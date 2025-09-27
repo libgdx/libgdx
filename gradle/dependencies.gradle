@@ -41,7 +41,7 @@ versions.androidxFragment = "1.8.5"
 versions.androidxCore = "1.15.0"
 versions.kotlinBomTests = "2.0.21"
 versions.javaparser = "2.3.0"
-versions.spotless = "6.7.1"
+versions.spotless = "7.0.3"
 
 libraries.compileOnly = [:]
 

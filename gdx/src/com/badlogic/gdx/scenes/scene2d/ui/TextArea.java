@@ -291,7 +291,7 @@ public class TextArea extends TextField {
 			int lineStart = 0;
 			int lastSpace = 0;
 			char lastCharacter;
-			Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout::new);
+			Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
 			GlyphLayout layout = layoutPool.obtain();
 			for (int i = 0; i < text.length(); i++) {
 				lastCharacter = text.charAt(i);

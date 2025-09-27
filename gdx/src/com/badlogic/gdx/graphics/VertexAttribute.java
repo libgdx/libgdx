@@ -155,6 +155,8 @@ public final class VertexAttribute {
 	/** @return How many bytes this attribute uses. */
 	public int getSizeInBytes () {
 		switch (type) {
+		case GL20.GL_UNSIGNED_INT:
+		case GL20.GL_INT:
 		case GL20.GL_FLOAT:
 		case GL20.GL_FIXED:
 			return 4 * numComponents;

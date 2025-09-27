@@ -1270,7 +1270,10 @@ public class Table extends WidgetGroup {
 
 	/** @author Nathan Sweet */
 	static public class DebugRect extends Rectangle {
-		static Pool<DebugRect> pool = Pools.get(DebugRect::new);
+		static {
+			Pools.set(DebugRect::new);
+		}
+		static Pool<DebugRect> pool = Pools.get(DebugRect.class);
 		Color color;
 	}
 

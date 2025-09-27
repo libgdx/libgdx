@@ -4,14 +4,19 @@ on:
   push:
     branches: [ master ]
   workflow_dispatch:
-    branches: [ master ]
+    inputs:
+      release:
+        description: 'Publish release to Maven Central'
+        type: boolean
+        required: true
+        default: false
   release:
     types: [ published ]
 
 jobs:
 
   natives-ios:
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v2
         with:
@@ -29,11 +34,6 @@ jobs:
 
       - name: Build iOS natives
         run: |
-          # See https://github.com/actions/virtual-environments/issues/2557
-          sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
-          sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
-          sudo mv /Applications/Xcode_15.4.0.app /Applications/Xcode.app
-          sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
           ./gradlew jniGen jnigenBuildIOS
           ./backends/gdx-backend-robovm/build-objectal.sh
@@ -50,7 +50,7 @@ jobs:
           path: natives-ios.zip
 
   natives-macos:
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v2
         with:
@@ -68,11 +68,6 @@ jobs:
 
       - name: Build macOS natives
         run: |
-          # See https://github.com/actions/virtual-environments/issues/2557
-          sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
-          sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
-          sudo mv /Applications/Xcode_15.4.0.app /Applications/Xcode.app
-          sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
           ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64
 
@@ -304,7 +299,7 @@ jobs:
           ./gradlew build publish
 
       - name: Import GPG key
-        if: github.event_name == 'release' && github.repository_owner == 'libgdx'
+        if: (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release)) && github.repository_owner == 'libgdx'
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@1c6a9e9d3594f2d743f1b1dd7669ab0dfdffa922
         with:
@@ -312,8 +307,10 @@ jobs:
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Release build deploy
-        if: github.event_name == 'release' && github.repository_owner == 'libgdx'
-        run: ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
+        if: (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release)) && github.repository_owner == 'libgdx'
+        run: |
+          export GRADLE_OPTS="-Xmx8g"
+          ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
 
   build-and-upload-runnables:
     runs-on: ubuntu-22.04

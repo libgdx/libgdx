@@ -1,10 +1,26 @@
-[1.14.0]
+[1.13.6]
+- [BREAKING CHANGE] API: Pools changes in 1.13.5 have been partially reverted. Pools#get/Pools#obtain method return to requiring a Class parameter. Reflection is avoided by using pre-populated Pools for libgdx classes. See https://github.com/libgdx/libgdx/pull/7648
+- [BREAKING CHANGE] JsonSkimmer API changed to use JsonToken parameters.
+- [BREAKING CHANGE] JsonValue#last added for O(1) append. Code that changes next may also need to change last.
+- [BREAKING CHANGE] JsonValue#get is no longer case insensitive. Use getIgnoreCase().
+- [BREAKING CHANGE] StringBuilder has been deleted, its methods merged with CharArray.
+- API Addition: Added JsonValue#toJson that takes a Writer.
+- API Addition: Added getProgrammaticChangeEvents() to scene2d.ui actors that have setProgrammaticChangeEvents.
+- API Addition: Added JsonMatcher, extracts values with pattern matching.
+- API Addition: Added setUniform_iv functions in ShaderProgram to set uniform integer arrays
+- Fixed crashes when reading the soft buttons bar height on Android.
+- Multi sample FBOs can now be used with OpenGL ES 3.0+ instead of OpenGL ES 3.1+
+
+[1.13.5]
+- [BREAKING CHANGE] Gradle: snapshot builds are now publishes to https://central.sonatype.com/repository/maven-snapshots/. Update your build scripts and the new repository URL. Some of your other snapshot dependencies might still live on OSSRH, so make sure to keep that repository as well.
+- [BREAKING CHANGE] Gradle: The `publish` task now uses jreleaser to publish to Maven Central. The RELEASE_REPOSITORY_URL environment variable is no longer interpreted. SNAPSHOT_REPOSITORY_URL works as before.]
 - [BREAKING CHANGE] Android: Updated minSDK to 21. Multidex config is no longer required, please check https://developer.android.com/build/multidex.
 - [BREAKING CHANGE] Android: Proguard config line `boolean getUseDefaultContactFilter();` needs to be added. See https://github.com/libgdx/libgdx/pull/7578.
 - [BREAKING CHANGE] Android: Removed `AndroidApplicationConfiguration#touchSleepTime`.
 - [BREAKING CHANGE] Skin `setEnabled` now only works with actors that implement `Styleable`. Use `setEnabledReflection` for old behavior or add `Styleable` to your actors.
 - [BREAKING CHANGE] LWJGL3: The signature of `OpenALLwjgl3Audio#registerSound/registerMusic` has changed. To migrate just replace `registerMusic("myMusic", MyMusic.class);` with `registerMusic("myMusic", MyMusic::new);`
 - [BREAKING CHANGE] HorizontalGroup and VerticalGroup set transform false by default.
+- [BREAKING CHANGE] Gradle: The `publish` task now uses jreleaser to publish to Maven Central. The RELEASE_REPOSITORY_URL environment variable is no longer interpreted. SNAPSHOT_REPOSITORY_URL works as before.
 - API Addition: Allow option to set Box2D native ContactFilter (World#setContactFilter(null)) for performance improvements.
 - API Addition: Added BooleanArray#replaceFirst and BooleanArray#replaceAll
 - API Addition: Added ByteArray#replaceFirst and ByteArray#replaceAll
@@ -133,11 +149,11 @@
 - API Change: Remove usage of deprecated tag on GL30
 - Lower GLIBC requirements to 2.17 in order to support older Linux systems
 - Fix: Fix setCursor releasing the caught cursor on the LWJGL 3 backend.
-- Fix crash in ParticleEditor and Flame 
+- Fix crash in ParticleEditor and Flame
 - Fix bitwise precedence in ModelBatch#addMesh (float[] vertices, short[] indices)
 - Improve the default font's compatibility with GL30
 - Fix potential IndexOutOfBoundsException on AsynchronousAndroidSound
-- API Addition: GwtGL20 & GwtGL30#glGetFramebufferAttachmentParameteriv 
+- API Addition: GwtGL20 & GwtGL30#glGetFramebufferAttachmentParameteriv
 - Fix Tiled classes not being registered in the reflection cache
 - Fix: Change androidx.fragment dependency to compileOnly
 - Fix borderless fullscreen when taskbar is on the left/top
@@ -149,7 +165,7 @@
 - [BREAKING CHANGE] iOS: `hideHomeIndicator` set to `false` by default (was `true`).
 - [BREAKING CHANGE] iOS: `screenEdgesDeferringSystemGestures` set to `UIRectEdge.All` by default (was `UIRectEdge.None`).
 - [BREAKING CHANGE] iOS: preferred FPS is now uncapped by default, see #6717
-- [BREAKING CHANGE] iOS: `ApplicationListener.create` and first `resize` are now called within `UIApplicationDelegate.didFinishLaunching`. Allows for earlier rendering and prevents black screen frames after launch screen. NOTE: App will get terminated if this method is blocked for more than 10-20 sec. 
+- [BREAKING CHANGE] iOS: `ApplicationListener.create` and first `resize` are now called within `UIApplicationDelegate.didFinishLaunching`. Allows for earlier rendering and prevents black screen frames after launch screen. NOTE: App will get terminated if this method is blocked for more than 10-20 sec.
 - [BREAKING CHANGE] Actor#localToAscendantCoordinates throws an exception if the specified actor is not an ascendant.
 - [BREAKING CHANGE] WidgetGroup#hit first validates the layout.
 - [BREAKING CHANGE] Cell getters return object wrapper instead of primitives.
@@ -269,7 +285,7 @@
 - API Addition: Emulate Timer#isEmpty on GWT
 - API Addition: Bits add copy constructor public Bits (Bits bitsToCpy)
 - API Addition: Added List#drawSelection().
-- API Addition: GwtApplicationConfiguration#xrCompatible 
+- API Addition: GwtApplicationConfiguration#xrCompatible
 - API Fix: setSystemCursor() now works on Android
 - API Fix: getDisplayMode() is now more accurate on Android and GWT.
 - API Addition: JsonValue#iterator(String) to more easily iterate a child that may not exist.
@@ -299,7 +315,7 @@
 - API Addition: Desktop Sound now returns number of channels and sample rate.
 
 [1.9.14]
-- [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class 
+- [BREAKING CHANGE] iOS: IOSUIViewController has been moved to its own separate class
 - [BREAKING CHANGE] API Change: G3D AnimationDesc#update now returns -1 (instead of 0) if animation not finished.
 - [BREAKING CHANGE] InputEventQueue no longer implements InputProcessor, pass InputProcessor to #drain.
 - [BREAKING CHANGE] HeadlessApplicationConfiguration#renderInterval was changed to #updatesPerSecond
@@ -379,7 +395,7 @@
 - API Addition: Added Intersector#intersectPlanes to calculate the point intersected by three planes, see https://github.com/libgdx/libgdx/pull/6217
 - API Addition: Added alternative Android Audio implementation for performant sound. See https://github.com/libgdx/libgdx/pull/6243.
 - API Addition: Expose SpriteBatch and PolygonSpriteBatch setupMatrices() as protected.
-- API Addition: New parameter OnscreenKeyboardType for Input.setOnscreenKeyboardVisible and Input.getTextInput 
+- API Addition: New parameter OnscreenKeyboardType for Input.setOnscreenKeyboardVisible and Input.getTextInput
 
 [1.9.11]
 - Update to MobiVM 2.3.8
@@ -416,7 +432,7 @@
 - Fixed: The behaving of TextFields and TextAreas new line and focus traversal works like intended on all platforms now.
 - API Change: Changed Base64Coder#encodeString() to use UTF-8 instead of the platform default encoding. See #6061
 - Fixed: SphereShapeBuilder poles are now merged which removes lighting artifacts, see #6068 for more information.
-- API Change: Matrix3#setToRotation(Vector3, float float) now rotates counter-clockwise about the axis provided. This also changes Matrix3:setToRotation(Vector3, float) and the 3d particles will rotate counter-clockwise as well. 
+- API Change: Matrix3#setToRotation(Vector3, float float) now rotates counter-clockwise about the axis provided. This also changes Matrix3:setToRotation(Vector3, float) and the 3d particles will rotate counter-clockwise as well.
 - API Change: TexturePacker uses a dash when naming atlas page image files if the name ends with a digit or a digit + 'x'.
 - API Addition: Added Skin#setScale to control the size of drawables from the skin. This enables scaling a UI and using different sized images to match, without affecting layout.
 - API Change: Moved adding touch focus from Actor#notify to InputListener#handle (see #6082). Code that overrides InputListener#handle or otherwise handles InputEvent.Type.touchDown events must now call Stage#addTouchFocus to get touchDragged and touchUp events.
@@ -473,7 +489,7 @@
 - API Change: gdx-tools no longer bundles dependencies to be compatible with java 9
 - Skin JSON files can now use the simple names of classes, i.e. "BitmapFont" rather than "com.badlogic.gdx.graphics.g2d.BitmapFont". Custom classes can be added by overriding Skin.getJsonLoader() and calling json.setClassTag().
 - Skin supports cascading styles in JSON. Use the "parent" property to tag another style by name to use its values as defaults. See https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests-android/assets/data/uiskin.json for example.
-- SkinLoader can be used on subclasses of Skin by overriding generateSkin(). 
+- SkinLoader can be used on subclasses of Skin by overriding generateSkin().
 - API addition: Tree indentation can be customized.
 - Fixed GlyphLayout not respecting BitmapFontData#down.
 - API Addition: Added faceIndex paramter to #FreeTypeFontGenerator(FileHandle, int).
@@ -515,11 +531,11 @@
 - Update to Lwjgl 3.1.3
 - Update to MOE 1.4.0
 - API Change: GLFrameBuffer has been refactored https://github.com/libgdx/libgdx/pull/4882. Create standard FrameBuffers with static methods. Customized FBOS with FrameBufferBuilder
-- API addition: Tiled group layer support 
+- API addition: Tiled group layer support
 - Fix Tiled properties, offset parsing for image layers
 - API addition: Added utility methods for Vector equals with epsilon
 - Fix Animation backing array type
-- Fix Mesh copying with 0 indices 
+- Fix Mesh copying with 0 indices
 - Fix restoration of pooled particle effects scale
 - Fix loss of controller listeners on reconnect
 - Added basic kotlin project generation support in the setup tool
@@ -602,7 +618,7 @@
 - API Change: Lwjgl3WindowListener -> filesDropped(String[] files) adds drag'n drop support for the lwjgl3 backend
 - Added isComplete() to ParticleEffect to make it easier to know when all the emitters are done, behaves the same as in the 2D API.
 - API Change: renamed Lwjgl3WindowListener.windowIsClosing() to closeRequested() to better communicate its intent.
-- Add IndexData.updateIndices method to increase performance when used with IndexBufferObjectSubData. 
+- Add IndexData.updateIndices method to increase performance when used with IndexBufferObjectSubData.
 - Added FlushablePool
 - Added ShapeCache see https://github.com/libgdx/libgdx/pull/3953
 - API Change: moved shape builder logic out of MeshBuilder, see: https://github.com/libgdx/libgdx/pull/3996
@@ -654,10 +670,10 @@
 - Added Graphics#getBackBufferWidth and Graphics#getBackBufferHeight for HDPI handling
 - API Change: Added HdpiUtils. Instead of calling GL20#glViewport and GL20#glScissor yourself
   please use HdpiUtils instead. It will ensure that you handle HDPI monitors correctly when
-  using those OpenGL functions. On HDPI monitors, the size reported by Gdx.graphics 
+  using those OpenGL functions. On HDPI monitors, the size reported by Gdx.graphics
   getWidth/getHeight is in logical coordinates as dictated by the operating system, usually half
   the HDPI resolution. The OpenGL drawing surface works in backbuffer coordinates at the full
-  HDPI resolution. If you pass logical coordinates to glViewport and glScissor, you only 
+  HDPI resolution. If you pass logical coordinates to glViewport and glScissor, you only
   affect a quarter of the real backbuffer size. Use HdpiUtils instead, it will do the right thing, while letting you continue to work in logical (aka returned by Gdx.graphics.getWidth/getHeight) coordinates.
 - API Change: Graphis#getDesktopDisplayMode() has been renamed to Graphics#getDisplayMode() and
   returns the current display mode of the monitor the window is shown on (primary monitor on
@@ -665,11 +681,11 @@
 - API Change: Graphics#getDisplayModes() return the display modes of the monitor the monitor
   the window is shown on (primary monitor on all backends except LWJGL3 which supports real
   multi-monitor setups).
-- API Change: Graphics#setDisplayMode(DisplayMode) has been renamed to 
-  Graphics#setFullscreenMode(). If the window is in windowed mode, it will be switched 
+- API Change: Graphics#setDisplayMode(DisplayMode) has been renamed to
+  Graphics#setFullscreenMode(). If the window is in windowed mode, it will be switched
   to fullscreen mode on the monitor from which the DisplayMode stems from.
-- API Change: Graphics#setDisplayMode(int, int, boolean) has been renamed to 
-  Graphics#setWindowedMode(int, int). This will NOT allow you to switch to fullscreen anymore, 
+- API Change: Graphics#setDisplayMode(int, int, boolean) has been renamed to
+  Graphics#setWindowedMode(int, int). This will NOT allow you to switch to fullscreen anymore,
   use Graphics#setFullscreenMode() instead. If the window is in fullscreen mode, it will be
   switched to windowed mode on the monitor the window was in fullscreen mode on.
  - API Addition: Graphics#Monitor, represents a monitor connected to the machine the app is
@@ -678,7 +694,7 @@
  - API Addition: Graphics#getPrimaryMonitor() returns the primary monitor you usually want
   to work with.
  - API Addition: Graphics#getMonitor() returns the monitor your app's window is shown on,
-  which may not be the primary monitor in >= 2 monitor systems. All backends except the 
+  which may not be the primary monitor in >= 2 monitor systems. All backends except the
   LWJGL3 backend will report only the primary monitor.
  - API Addition: Graphics#getMonitors() returns all monitors connected to the system. All
   backends except the LWJGL3 backend will only report the primary monitor.
@@ -808,7 +824,7 @@ right place. Note that cursors only work on the LWJGL, LWJGL3 and GWT backends. 
 - Added support for border and shadow with FreeTypeFontGenerator - see https://github.com/libgdx/libgdx/pull/2774
 - Now unknown markup colors are silently ignored and considered as normal text.
 - Updated freetype from version 2.4.10 to 2.5.5
-- Added 3rd party extensions to setup application, see 
+- Added 3rd party extensions to setup application, see
 - Updated to RoboVM 1.0.0-beta-04
 - Updated to GWT 2.6.1, sadly GWT 2.7.0 isn't production ready yet.
 
@@ -822,7 +838,7 @@ right place. Note that cursors only work on the LWJGL, LWJGL3 and GWT backends. 
 - Updated RoboVM to 1.0.0-beta-03
 
 [1.5.2]
-- Fixed issue #2433 with color markup and alpha animation. 
+- Fixed issue #2433 with color markup and alpha animation.
 - Fixed natives loading for LWJGL on Mac OS X
 
 [1.5.1]
@@ -845,7 +861,7 @@ right place. Note that cursors only work on the LWJGL, LWJGL3 and GWT backends. 
 
 [1.5.0]
 - API Addition: IOSInput now uses CMCoreMotion for accelerometer and magnetometer
-- API Addition: Added getter for UITextField on IOS for keyboard customization 
+- API Addition: Added getter for UITextField on IOS for keyboard customization
 - API Addition: Added ability to save PixmapPackers to atlas files. See PixmapPackerIO.
 - API Addition: Added HttpRequestHeader and HttpResponseHeader with constants for HTTP headers.
 - API Addition: HttpRequest is now poolable.
@@ -854,7 +870,7 @@ right place. Note that cursors only work on the LWJGL, LWJGL3 and GWT backends. 
 - API Change: BatchTiledMapRenderer *SpriteBatch fields and methods renamed to *Batch
 - API Change: ScrollPane#scrollToCenter -> ScrollPane#scrollTo; see optional boolean arguments centerHorizontal and centerVertical (scrollToCenter centered vertically only).
 - API Change: Changed Input#getTextInput to accept both text and hint, removed Input#getPlaceholderTextInput.
-- Bug Fix: Fixed potential NPE with immersive mode in the Android fragment backend. 
+- Bug Fix: Fixed potential NPE with immersive mode in the Android fragment backend.
 - iOS backend now supports sound ids, thanks Tomski!
 
 
@@ -869,13 +885,13 @@ right place. Note that cursors only work on the LWJGL, LWJGL3 and GWT backends. 
 - Added color markup support for scene2d label and window title.
 - API Change: removed default constructor of DecalBatch, removed DefaultGroupStrategy
 - Updated to latests RoboVM release, 1.0.0-alpha-04, please update your RoboVM plugins/installations
-- Reduced I18NBundle loading times on Android and bypassed unclosed stream on iOS. 
+- Reduced I18NBundle loading times on Android and bypassed unclosed stream on iOS.
 - Removed the gdx-ai extension from the libGDX repository. Now it lives in its own repository under the libGDX umbrella, see https://github.com/libgdx/gdx-ai
 - API Addition: Added randomSign and randomTriangular methods to MathUtils.
 - API Addition: Decal has now a getter for the Color.
 - API Addition: now I18NBundle can be set so that no exception is thrown when the key can not be found.
 - API Addition: added annotation support in reflection layer, thanks code-disaster! https://github.com/libgdx/libgdx/pull/2215
-- API Addition: shapes like Rect, Circle etc. now implement Shape2D interface so you can put them all into a single collection https://github.com/libgdx/libgdx/pull/2178 
+- API Addition: shapes like Rect, Circle etc. now implement Shape2D interface so you can put them all into a single collection https://github.com/libgdx/libgdx/pull/2178
 - API Addition: bitmap fonts can now be loaded from an atlas via AssetManager/BitmapFontLoader, see https://github.com/libgdx/libgdx/pull/2110
 - API Change: updated to RoboVM 1.0.0-SNAPSHOT for now until the next alpha is released.
 - API Change: Table now uses padding from its background drawable by default. https://github.com/libgdx/libgdx/issues/2322

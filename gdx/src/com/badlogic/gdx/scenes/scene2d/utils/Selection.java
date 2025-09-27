@@ -223,7 +223,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	 * @return true if the change should be undone. */
 	public boolean fireChangeEvent () {
 		if (actor == null) return false;
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent::new);
+		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 		try {
 			return actor.fire(changeEvent);
 		} finally {
@@ -298,6 +298,10 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	/** If false, only {@link #choose(Object)} will fire a change event. Default is true. */
 	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
+	}
+
+	public boolean getProgrammaticChangeEvents () {
+		return programmaticChangeEvents;
 	}
 
 	public String toString () {

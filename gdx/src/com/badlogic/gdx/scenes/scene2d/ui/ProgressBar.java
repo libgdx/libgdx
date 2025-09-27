@@ -263,7 +263,7 @@ public class ProgressBar extends Widget implements Disableable, Styleable<Progre
 		this.value = value;
 
 		if (programmaticChangeEvents) {
-			ChangeEvent changeEvent = Pools.obtain(ChangeEvent::new);
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 			boolean cancelled = fire(changeEvent);
 			Pools.free(changeEvent);
 			if (cancelled) {
@@ -377,6 +377,10 @@ public class ProgressBar extends Widget implements Disableable, Styleable<Progre
 	 * the slider. */
 	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
+	}
+
+	public boolean getProgrammaticChangeEvents () {
+		return programmaticChangeEvents;
 	}
 
 	/** The style for a progress bar, see {@link ProgressBar}.

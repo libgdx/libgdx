@@ -629,7 +629,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private TextInputWrapper textInputWrapper;
 
 	private int getSoftButtonsBarHeight () {
-		AndroidApplication androidApplication = (AndroidApplication)Gdx.app;
+		AndroidApplication androidApplication = (AndroidApplication)app;
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		androidApplication.getWindowManager().getDefaultDisplay().getMetrics(metrics);
