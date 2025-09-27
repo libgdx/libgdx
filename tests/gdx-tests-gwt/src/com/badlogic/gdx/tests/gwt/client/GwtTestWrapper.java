@@ -89,7 +89,8 @@ import com.badlogic.gdx.tests.TextAreaTest3;
 import com.badlogic.gdx.tests.TextButtonTest;
 import com.badlogic.gdx.tests.TextInputDialogTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
-import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
+import com.badlogic.gdx.tests.TiledMapGWTAtlasAssetManagerTest;
+import com.badlogic.gdx.tests.TiledMapJsonObjectLoadingTest;
 import com.badlogic.gdx.tests.TiledMapObjectLoadingTest;
 import com.badlogic.gdx.tests.TiledMapPropertiesTest;
 import com.badlogic.gdx.tests.TiledMapTemplateObjectLoadingTest;
@@ -581,6 +582,16 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		});
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
+				return new TiledMapGWTAtlasAssetManagerTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TiledMapJsonObjectLoadingTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
 				return new TiledMapObjectLoadingTest();
 			}
 		});
@@ -625,11 +636,6 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new ReflectionTest();
-			}
-		});
-		tests.add(new GwtInstancer() {
-			public GdxTest instance () {
-				return new TiledMapAtlasAssetManagerTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
