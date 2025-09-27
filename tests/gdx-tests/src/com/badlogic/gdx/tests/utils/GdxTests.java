@@ -326,6 +326,7 @@ public class GdxTests {
 		TiledMapJsonAtlasAssetManagerTest.class,
 		TiledMapJsonFormatTest.class,
 		TiledMapJsonObjectLoadingTest.class,
+		TiledMapUniversalLoaderTest.class,
 		TimerTest.class,
 		TimeUtilsTest.class,
 		TouchpadTest.class,
