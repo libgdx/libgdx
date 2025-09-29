@@ -382,14 +382,18 @@
 		<include name="math/Vector3.java"/>		
 		<include name="math/Vector4.java"/>
 		<include name="math/WindowedMean.java"/>
-				
-	<!-- math/collision -->								
+
+	<!-- math/collision -->
 		<include name="math/collision/BoundingBox.java"/>
 		<include name="math/collision/OrientedBoundingBox.java"/>
 		<include name="math/collision/Ray.java"/>
 		<include name="math/collision/Segment.java"/>
-		<include name="math/collision/Sphere.java"/>		
-		
+		<include name="math/collision/Sphere.java"/>
+
+	<!-- math/collision -->
+		<include name="math/noise/Noise.java"/>
+		<include name="math/noise/FastNoiseLite.java"/>
+
 	<!-- net -->
 		<include name="net/HttpParametersUtils.java"/>
 		<include name="net/HttpStatus.java"/>
