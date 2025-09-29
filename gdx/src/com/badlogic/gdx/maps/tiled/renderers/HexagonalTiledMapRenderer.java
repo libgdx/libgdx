@@ -90,17 +90,21 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 				length = map.getProperties().get("tilewidth", Integer.class);
 				if (length != null) {
 					hexSideLength = 0.5f * length.intValue();
-				} else {
+				} else if (map.getLayers().size() > 0) {
 					TiledMapTileLayer tmtl = (TiledMapTileLayer)map.getLayers().get(0);
 					hexSideLength = 0.5f * tmtl.getTileWidth();
+				} else {
+					hexSideLength = 0f;
 				}
 			} else {
 				length = map.getProperties().get("tileheight", Integer.class);
 				if (length != null) {
 					hexSideLength = 0.5f * length.intValue();
-				} else {
+				} else if (map.getLayers().size() > 0) {
 					TiledMapTileLayer tmtl = (TiledMapTileLayer)map.getLayers().get(0);
 					hexSideLength = 0.5f * tmtl.getTileHeight();
+				} else {
+					hexSideLength = 0f;
 				}
 			}
 		}
@@ -128,13 +132,13 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 			final float tileWidthUpperCorner = (layerTileWidth + layerHexLength) / 2;
 			final float layerTileHeight50 = layerTileHeight * 0.50f;
 
-			final int row1 = Math.max(0, (int)((viewBounds.y - layerTileHeight50 - layerOffsetX) / layerTileHeight));
+			final int row1 = Math.max(0, (int)((viewBounds.y - layerTileHeight50 - layerOffsetY) / layerTileHeight));
 			final int row2 = Math.min(layerHeight,
-				(int)((viewBounds.y + viewBounds.height + layerTileHeight - layerOffsetX) / layerTileHeight));
+				(int)((viewBounds.y + viewBounds.height + layerTileHeight - layerOffsetY) / layerTileHeight));
 
-			final int col1 = Math.max(0, (int)(((viewBounds.x - tileWidthLowerCorner - layerOffsetY) / tileWidthUpperCorner)));
+			final int col1 = Math.max(0, (int)(((viewBounds.x - tileWidthLowerCorner - layerOffsetX) / tileWidthUpperCorner)));
 			final int col2 = Math.min(layerWidth,
-				(int)((viewBounds.x + viewBounds.width + tileWidthUpperCorner - layerOffsetY) / tileWidthUpperCorner));
+				(int)((viewBounds.x + viewBounds.width + tileWidthUpperCorner - layerOffsetX) / tileWidthUpperCorner));
 
 			// depending on the stagger index either draw all even before the odd or vice versa
 			final int colA = (staggerIndexEven == (col1 % 2 == 0)) ? col1 + 1 : col1;
@@ -155,13 +159,13 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 			final float tileHeightUpperCorner = (layerTileHeight + layerHexLength) / 2;
 			final float layerTileWidth50 = layerTileWidth * 0.50f;
 
-			final int row1 = Math.max(0, (int)(((viewBounds.y - tileHeightLowerCorner - layerOffsetX) / tileHeightUpperCorner)));
+			final int row1 = Math.max(0, (int)(((viewBounds.y - tileHeightLowerCorner - layerOffsetY) / tileHeightUpperCorner)));
 			final int row2 = Math.min(layerHeight,
-				(int)((viewBounds.y + viewBounds.height + tileHeightUpperCorner - layerOffsetX) / tileHeightUpperCorner));
+				(int)((viewBounds.y + viewBounds.height + tileHeightUpperCorner - layerOffsetY) / tileHeightUpperCorner));
 
-			final int col1 = Math.max(0, (int)(((viewBounds.x - layerTileWidth50 - layerOffsetY) / layerTileWidth)));
+			final int col1 = Math.max(0, (int)(((viewBounds.x - layerTileWidth50 - layerOffsetX) / layerTileWidth)));
 			final int col2 = Math.min(layerWidth,
-				(int)((viewBounds.x + viewBounds.width + layerTileWidth - layerOffsetY) / layerTileWidth));
+				(int)((viewBounds.x + viewBounds.width + layerTileWidth - layerOffsetX) / layerTileWidth));
 
 			float shiftX = 0;
 			for (int row = row2 - 1; row >= row1; row--) {
@@ -407,6 +411,30 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 				}
 			}
 		}
+	}
+
+	public boolean isStaggerAxisX () {
+		return staggerAxisX;
+	}
+
+	public void setStaggerAxisX (boolean staggerAxisX) {
+		this.staggerAxisX = staggerAxisX;
+	}
+
+	public boolean isStaggerIndexEven () {
+		return staggerIndexEven;
+	}
+
+	public void setStaggerIndexEven (boolean staggerIndexEven) {
+		this.staggerIndexEven = staggerIndexEven;
+	}
+
+	public float getHexSideLength () {
+		return hexSideLength;
+	}
+
+	public void setHexSideLength (float hexSideLength) {
+		this.hexSideLength = hexSideLength;
 	}
 
 }

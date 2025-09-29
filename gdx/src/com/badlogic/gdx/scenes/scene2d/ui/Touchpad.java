@@ -109,7 +109,7 @@ public class Touchpad extends Widget implements Styleable<Touchpad.TouchpadStyle
 			}
 		}
 		if (oldPercentX != knobPercent.x || oldPercentY != knobPercent.y) {
-			ChangeEvent changeEvent = Pools.obtain(ChangeEvent::new);
+			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 			if (fire(changeEvent)) {
 				knobPercent.set(oldPercentX, oldPercentY);
 				knobPosition.set(oldPositionX, oldPositionY);

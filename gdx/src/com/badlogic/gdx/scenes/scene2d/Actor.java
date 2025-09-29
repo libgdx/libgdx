@@ -128,7 +128,7 @@ public class Actor {
 		event.setTarget(this);
 
 		// Collect ascendants so event propagation is unaffected by hierarchy changes.
-		Array<Group> ascendants = Pools.obtain(Array::new);
+		Array<Group> ascendants = Pools.obtain(Array.class);
 		Group parent = this.parent;
 		while (parent != null) {
 			ascendants.add(parent);
@@ -834,7 +834,7 @@ public class Actor {
 		tableBounds.y = y;
 		tableBounds.width = width;
 		tableBounds.height = height;
-		Rectangle scissorBounds = Pools.obtain(Rectangle::new);
+		Rectangle scissorBounds = Pools.obtain(Rectangle.class);
 		stage.calculateScissors(tableBounds, scissorBounds);
 		if (ScissorStack.pushScissors(scissorBounds)) return true;
 		Pools.free(scissorBounds);

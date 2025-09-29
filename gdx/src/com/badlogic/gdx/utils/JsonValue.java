@@ -21,6 +21,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
@@ -50,7 +51,7 @@ public class JsonValue implements Iterable<JsonValue> {
 
 	public String name;
 	/** May be null. */
-	public JsonValue child, parent;
+	public JsonValue child, last, parent;
 	/** May be null. When changing this field the parent {@link #size()} may need to be changed. */
 	public JsonValue next, prev;
 	public int size;
@@ -84,30 +85,32 @@ public class JsonValue implements Iterable<JsonValue> {
 		set(value);
 	}
 
-	/** Creates a deep copy of the specific value, except {@link #parent()}, {@link #next()}, and {@link #prev()} are not null. */
+	/** Creates a deep copy of the specific value, except {@link #parent()}, {@link #next()}, and {@link #prev()} are null. */
 	public JsonValue (JsonValue value) {
-		this(value, null);
+		this(value, null, null);
 	}
 
-	private JsonValue (JsonValue value, @Null JsonValue parent) {
-		type = value.type;
-		stringValue = value.stringValue;
-		doubleValue = value.doubleValue;
-		longValue = value.longValue;
-		name = value.name;
+	private JsonValue (JsonValue other, @Null JsonValue otherLast, @Null JsonValue parent) {
+		type = other.type;
+		stringValue = other.stringValue;
+		doubleValue = other.doubleValue;
+		longValue = other.longValue;
+		name = other.name;
 		this.parent = parent;
-		if (value.child != null) child = new JsonValue(value.child, this);
-		if (parent != null && value.next != null) {
-			next = new JsonValue(value.next, parent);
+		if (other.child != null) child = new JsonValue(other.child, other.last, this);
+		if (other == otherLast) parent.last = this;
+		if (parent != null && other.next != null) {
+			next = new JsonValue(other.next, otherLast, parent);
 			next.prev = this;
 		}
-		size = value.size;
+		size = other.size;
 	}
 
 	/** Returns the child at the specified index. This requires walking the linked list to the specified entry, see
 	 * {@link JsonValue} for how to iterate efficiently.
 	 * @return May be null. */
 	public @Null JsonValue get (int index) {
+		if (index == size - 1) return last;
 		JsonValue current = child;
 		while (current != null && index > 0) {
 			index--;
@@ -119,6 +122,15 @@ public class JsonValue implements Iterable<JsonValue> {
 	/** Returns the child with the specified name.
 	 * @return May be null. */
 	public @Null JsonValue get (String name) {
+		JsonValue current = child;
+		while (current != null && (current.name == null || !current.name.equals(name)))
+			current = current.next;
+		return current;
+	}
+
+	/** Returns the child with the specified name, ignoring case.
+	 * @return May be null. */
+	public @Null JsonValue getIgnoreCase (String name) {
 		JsonValue current = child;
 		while (current != null && (current.name == null || !current.name.equalsIgnoreCase(name)))
 			current = current.next;
@@ -164,6 +176,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	public @Null JsonValue remove (int index) {
 		JsonValue child = get(index);
 		if (child == null) return null;
+		if (last == child) last = child.prev;
 		if (child.prev == null) {
 			this.child = child.next;
 			if (this.child != null) this.child.prev = null;
@@ -180,6 +193,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	public @Null JsonValue remove (String name) {
 		JsonValue child = get(name);
 		if (child == null) return null;
+		if (last == child) last = child.prev;
 		if (child.prev == null) {
 			this.child = child.next;
 			if (this.child != null) this.child.prev = null;
@@ -194,6 +208,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	/** Removes this value from its parent. */
 	public void remove () {
 		if (parent == null) throw new IllegalStateException();
+		if (parent.last == this) parent.last = prev;
 		if (prev == null) {
 			parent.child = next;
 			if (parent.child != null) parent.child.prev = null;
@@ -920,6 +935,12 @@ public class JsonValue implements Iterable<JsonValue> {
 		return child;
 	}
 
+	/** Returns the last child for this object or array.
+	 * @return May be null. */
+	public @Null JsonValue last () {
+		return last;
+	}
+
 	/** Sets the name of the specified value and replaces an existing child with the same name, else adds it after the last
 	 * child. */
 	public void setChild (String name, JsonValue value) {
@@ -935,22 +956,28 @@ public class JsonValue implements Iterable<JsonValue> {
 		JsonValue current = child;
 		while (current != null) {
 			if (current.name.equals(name)) {
-				if (current.prev != null)
-					current.prev.next = value;
-				else
-					child = value;
-				value.prev = current.prev;
-				value.next = current.next;
-				if (current.next != null) current.next.prev = value;
-				value.parent = this;
-				current.prev = null;
-				current.next = null;
-				current.parent = null;
+				current.replace(value);
 				return;
 			}
 			current = current.next;
 		}
 		addChild(value);
+	}
+
+	/** Replaces this value in its parent with the specified value. */
+	public void replace (JsonValue value) {
+		if (parent.last == this) parent.last = value;
+		if (prev != null)
+			prev.next = value;
+		else
+			parent.child = value;
+		value.prev = prev;
+		value.next = next;
+		if (next != null) next.prev = value;
+		value.parent = parent;
+		prev = null;
+		next = null;
+		parent = null;
 	}
 
 	/** Sets the name of the specified value and adds it after the last child. */
@@ -967,15 +994,31 @@ public class JsonValue implements Iterable<JsonValue> {
 			throw new IllegalStateException("An object child requires a name: " + value);
 		value.parent = this;
 		value.next = null;
-		JsonValue current = child;
-		if (current == null) {
+		if (child == null) {
 			value.prev = null;
 			child = value;
 		} else {
-			while (current.next != null)
-				current = current.next;
-			current.next = value;
-			value.prev = current;
+			last.next = value;
+			value.prev = last;
+		}
+		last = value;
+		size++;
+	}
+
+	/** Adds the specified value as the first child.
+	 * @throws IllegalStateException if this is an object and the specified child's name is null. */
+	public void addChildFirst (JsonValue value) {
+		if (type == ValueType.object && value.name == null)
+			throw new IllegalStateException("An object child requires a name: " + value);
+		value.parent = this;
+		value.next = child;
+		value.prev = null;
+		if (child == null) {
+			child = value;
+			last = value;
+		} else {
+			child.prev = value;
+			child = value;
 		}
 		size++;
 	}
@@ -986,7 +1029,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		return next;
 	}
 
-	/** Sets the next sibling of this value. Does not change the parent {@link #size()}.
+	/** Sets the next sibling of this value. Does not change other fields.
 	 * @param next May be null. */
 	public void setNext (@Null JsonValue next) {
 		this.next = next;
@@ -998,16 +1041,29 @@ public class JsonValue implements Iterable<JsonValue> {
 		return prev;
 	}
 
-	/** Sets the next sibling of this value. Does not change the parent {@link #size()}.
+	/** Sets the next sibling of this value. Does not change other fields.
 	 * @param prev May be null. */
 	public void setPrev (@Null JsonValue prev) {
 		this.prev = prev;
+	}
+
+	/** Sets the type and value to the specified JsonValue. */
+	public void set (JsonValue value) {
+		type = value.type;
+		stringValue = value.stringValue;
+		doubleValue = value.doubleValue;
+		longValue = value.longValue;
 	}
 
 	/** @param value May be null. */
 	public void set (@Null String value) {
 		stringValue = value;
 		type = value == null ? ValueType.nullValue : ValueType.stringValue;
+	}
+
+	public void setNull () {
+		stringValue = null;
+		type = ValueType.nullValue;
 	}
 
 	/** @param stringValue May be null if the string representation is the string value of the double (eg, no leading zeros). */
@@ -1029,6 +1085,14 @@ public class JsonValue implements Iterable<JsonValue> {
 	public void set (boolean value) {
 		longValue = value ? 1 : 0;
 		type = ValueType.booleanValue;
+	}
+
+	public boolean equalsString (String value) {
+		return Objects.equals(asString(), value);
+	}
+
+	public boolean nameEquals (String value) {
+		return Objects.equals(name, value);
 	}
 
 	public String toJson (OutputType outputType) {
@@ -1291,14 +1355,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		}
 
 		public void remove () {
-			if (current.prev == null) {
-				child = current.next;
-				if (child != null) child.prev = null;
-			} else {
-				current.prev.next = current.next;
-				if (current.next != null) current.next.prev = current.prev;
-			}
-			size--;
+			current.remove();
 		}
 
 		public Iterator<JsonValue> iterator () {

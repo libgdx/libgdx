@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.maps.tiled;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
@@ -55,6 +56,8 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		public boolean flipY = true;
 		/** Path to Tiled project file. Needed when using class properties. */
 		public String projectFilePath = null;
+		/** force texture filters? **/
+		public boolean forceTextureFilters = false;
 	}
 
 	/** Representation of a single Tiled class property. A property has:
@@ -313,6 +316,37 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		String alpha = tiledColor.length() == 9 ? tiledColor.substring(1, 3) : "ff";
 		String color = tiledColor.length() == 9 ? tiledColor.substring(3) : tiledColor.substring(1);
 		return color + alpha;
+	}
+
+	protected void loadMapPropertiesClassDefaults (String className, MapProperties mapProperties) {
+		if (projectClassInfo == null) {
+			Gdx.app.log("TiledMapLoader", "WARN: There is at least one property of type class or an object with a class defined. "
+				+ "Use the 'projectFilePath' parameter to correctly load the default values of a class.");
+			// to avoid spamming the warning message we can set an empty ObjectMap as projectClassInfo
+			this.projectClassInfo = new ObjectMap<>();
+			return;
+		}
+		if (className == null || !projectClassInfo.containsKey(className)) {
+			return;
+		}
+
+		Array<ProjectClassMember> classMembers = projectClassInfo.get(className);
+		for (ProjectClassMember classMember : classMembers) {
+			String propName = classMember.name;
+			if (mapProperties.containsKey(propName)) {
+				// value already specified -> no need to load the default value
+				continue;
+			}
+
+			// Properties of the type 'class' are already correctly loaded before in loadProperties and can
+			// therefore be ignored here. They are already excluded via the 'containsKey' check above.
+			String value = classMember.defaultValue.asString();
+			if ("object".equals(classMember.type)) {
+				loadObjectProperty(mapProperties, propName, value);
+			} else {
+				loadBasicProperty(mapProperties, propName, value, classMember.type);
+			}
+		}
 	}
 
 }

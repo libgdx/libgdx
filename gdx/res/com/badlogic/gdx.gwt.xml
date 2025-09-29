@@ -320,6 +320,7 @@
 		<include name="maps/tiled/BaseTmjMapLoader.java"/>
 		<include name="maps/tiled/TideMapLoader.java"/>
 		<include name="maps/tiled/TiledMap.java"/>
+		<include name="maps/tiled/TiledMapLoader.java"/>
 		<include name="maps/tiled/TiledMapRenderer.java"/>
 		<include name="maps/tiled/TiledMapTile.java"/>
 		<include name="maps/tiled/TiledMapTileLayer.java"/>
