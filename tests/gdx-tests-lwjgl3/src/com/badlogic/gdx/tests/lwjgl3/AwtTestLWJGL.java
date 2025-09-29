@@ -10,8 +10,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.utils.Os;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -58,9 +56,8 @@ public class AwtTestLWJGL {
 			}
 		});
 
-		if (SharedLibraryLoader.os == Os.MacOsX) {
-			Lwjgl3ApplicationConfiguration.useGlfwAsync();
-		}
+		Lwjgl3ApplicationConfiguration.useGlfwAsync();
+
 
 		if (!glfwInit()) {
 			System.out.println("Couldn't initialize GLFW");
