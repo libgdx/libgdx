@@ -18,29 +18,6 @@ package com.badlogic.gdx.tools.hiero;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.FileDialog;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.LayoutManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,7 +60,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -99,7 +75,6 @@ import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont.RenderType;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ColorEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect.Value;
-import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.DistanceFieldEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.EffectUtil;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.GradientEffect;
@@ -107,6 +82,31 @@ import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineWobbleEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineZigzagEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ShadowEffect;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.FileDialog;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 /** A tool to visualize settings for {@link UnicodeFont} and to export BMFont files for use with {@link BitmapFont}.
  * <p>
