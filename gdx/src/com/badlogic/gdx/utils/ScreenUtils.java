@@ -66,7 +66,7 @@ public final class ScreenUtils {
 	 * @param clearDepth Clears the depth buffer if true.
 	 * @param applyAntialiasing applies multi-sampling for antialiasing if true. */
 	public static void clear (float r, float g, float b, float a, boolean clearDepth, boolean applyAntialiasing) {
-		((AbstractGraphics) Gdx.graphics).clear(r, g, b, a, clearDepth, applyAntialiasing);
+		((AbstractGraphics)Gdx.graphics).clear(r, g, b, a, clearDepth, applyAntialiasing);
 	}
 
 	/** Returns the current framebuffer contents as a {@link TextureRegion} with a width and height equal to the current screen
