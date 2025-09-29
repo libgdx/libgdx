@@ -19,6 +19,7 @@ package com.badlogic.gdx.utils;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
+import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -65,11 +66,7 @@ public final class ScreenUtils {
 	 * @param clearDepth Clears the depth buffer if true.
 	 * @param applyAntialiasing applies multi-sampling for antialiasing if true. */
 	public static void clear (float r, float g, float b, float a, boolean clearDepth, boolean applyAntialiasing) {
-		Gdx.gl.glClearColor(r, g, b, a);
-		int mask = GL20.GL_COLOR_BUFFER_BIT;
-		if (clearDepth) mask = mask | GL20.GL_DEPTH_BUFFER_BIT;
-		if (applyAntialiasing && Gdx.graphics.getBufferFormat().coverageSampling) mask = mask | GL20.GL_COVERAGE_BUFFER_BIT_NV;
-		Gdx.gl.glClear(mask);
+		((AbstractGraphics) Gdx.graphics).clear(r, g, b, a, clearDepth, applyAntialiasing);
 	}
 
 	/** Returns the current framebuffer contents as a {@link TextureRegion} with a width and height equal to the current screen
