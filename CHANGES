@@ -1,5 +1,15 @@
 [1.13.6]
+- [BREAKING CHANGE] API: Pools changes in 1.13.5 have been partially reverted. Pools#get/Pools#obtain method return to requiring a Class parameter. Reflection is avoided by using pre-populated Pools for libgdx classes. See https://github.com/libgdx/libgdx/pull/7648
+- [BREAKING CHANGE] JsonSkimmer API changed to use JsonToken parameters.
+- [BREAKING CHANGE] JsonValue#last added for O(1) append. Code that changes next may also need to change last.
+- [BREAKING CHANGE] JsonValue#get is no longer case insensitive. Use getIgnoreCase().
+- [BREAKING CHANGE] StringBuilder has been deleted, its methods merged with CharArray.
 - API Addition: Added JsonValue#toJson that takes a Writer.
+- API Addition: Added getProgrammaticChangeEvents() to scene2d.ui actors that have setProgrammaticChangeEvents.
+- API Addition: Added JsonMatcher, extracts values with pattern matching.
+- API Addition: Added setUniform_iv functions in ShaderProgram to set uniform integer arrays
+- Fixed crashes when reading the soft buttons bar height on Android.
+- Multi sample FBOs can now be used with OpenGL ES 3.0+ instead of OpenGL ES 3.1+
 
 [1.13.5]
 - [BREAKING CHANGE] Gradle: snapshot builds are now publishes to https://central.sonatype.com/repository/maven-snapshots/. Update your build scripts and the new repository URL. Some of your other snapshot dependencies might still live on OSSRH, so make sure to keep that repository as well.

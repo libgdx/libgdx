@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TmjMapLoader;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -124,19 +126,65 @@ public class TiledMapPropertiesTest extends GdxTest {
 		nestedProps.put("classEnumStr", "STR2");
 		expectedProps.put("classClass", nestedProps);
 		verifyProperty("objClassNested", expectedProps, objProps.get("objClassDefaults", MapProperties.class));
+		// verify an object linked to a tile with a class
+		TiledMapTileMapObject tileMapObj = (TiledMapTileMapObject)tiledMap.getLayers().get("object layer").getObjects()
+			.get("Tile Object");
+		TiledMapTile tile = tileMapObj.getTile();
+		MapProperties tileProps = tile.getProperties();
+		expectedProps = new MapProperties();
+		expectedProps.put("type", "testClass");
+		expectedProps.put("classColor", Color.GREEN);
+		expectedProps.put("classEnumStr", "STR1");
+		expectedProps.put("classInt", 2);
+		expectedProps.put("classObj", null);
+		expectedProps.put("classStr", "");
+		verifyProperty("tileProps", expectedProps, tileProps);
+		// verify an object linked to a tile with a nested class
+		tileMapObj = (TiledMapTileMapObject)tiledMap.getLayers().get("object layer").getObjects().get("Tile Object Nested");
+		tile = tileMapObj.getTile();
+		tileProps = tile.getProperties();
+		expectedProps = new MapProperties();
+		expectedProps.put("type", "testClassNested");
+		expectedProps.put("classInt", 2);
+		nestedProps = new MapProperties();
+		nestedProps.put("type", "testClass");
+		nestedProps.put("classColor", Color.GREEN);
+		nestedProps.put("classEnumStr", "STR1");
+		nestedProps.put("classInt", 1);
+		nestedProps.put("classObj", null);
+		nestedProps.put("classStr", "");
+		expectedProps.put("classClass", nestedProps);
+		verifyProperty("tilePropsNested", expectedProps, tileProps);
+		// verify an object with a class
+		mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Test Object 2");
+		objProps = mapObj.getProperties();
+		expectedProps = new MapProperties();
+		expectedProps.put("type", "testClass");
+		expectedProps.put("classColor", Color.GREEN);
+		expectedProps.put("classEnumStr", "STR2");
+		expectedProps.put("classInt", 2);
+		expectedProps.put("classObj", null);
+		expectedProps.put("classStr", "");
+		objProps.remove("x");
+		objProps.remove("y");
+		objProps.remove("id");
+		objProps.remove("width");
+		objProps.remove("height");
+		objProps.remove("rotation");
+		verifyProperty("classObjProps", expectedProps, objProps);
 	}
 
 	private <T> void verifyProperty (String propName, T expected, T actual) {
 		if (expected instanceof Float) {
 			// floats are verified with a specific tolerance
 			if (!MathUtils.isEqual((Float)expected, (Float)actual, 0.01f)) {
-				throw new GdxRuntimeException(propName + " does not match: expected=" + expected + ", actual=" + actual);
+				throw new GdxRuntimeException(propName + " does not match:\nexpected=" + expected + ",\n  actual=" + actual);
 			}
 			return;
 		}
 
 		if (!Objects.equals(expected, actual)) {
-			throw new GdxRuntimeException(propName + " does not match: expected=" + expected + ", actual=" + actual);
+			throw new GdxRuntimeException(propName + " does not match:\nexpected=" + expected + ",\n  actual=" + actual);
 		}
 	}
 

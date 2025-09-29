@@ -383,6 +383,58 @@ public class ShaderProgram implements Disposable {
 		gl.glUniform4i(location, value1, value2, value3, value4);
 	}
 
+	public void setUniform1iv (String name, int[] values, int offset, int length) {
+		GL20 gl = Gdx.gl20;
+		checkManaged();
+		int location = fetchUniformLocation(name);
+		gl.glUniform1iv(location, length, values, offset);
+	}
+
+	public void setUniform1iv (int location, int[] values, int offset, int length) {
+		GL20 gl = Gdx.gl20;
+		checkManaged();
+		gl.glUniform1iv(location, length, values, offset);
+	}
+
+	public void setUniform2iv (String name, int[] values, int offset, int length) {
+		GL20 gl = Gdx.gl20;
+		checkManaged();
+		int location = fetchUniformLocation(name);
+		gl.glUniform2iv(location, length / 2, values, offset);
+	}
+
+	public void setUniform2iv (int location, int[] values, int offset, int length) {
+		GL20 gl = Gdx.gl20;
+		checkManaged();
+		gl.glUniform2iv(location, length / 2, values, offset);
+	}
+
+	public void setUniform3iv (String name, int[] values, int offset, int length) {
+		GL20 gl = Gdx.gl20;
+		checkManaged();
+		int location = fetchUniformLocation(name);
+		gl.glUniform3iv(location, length / 3, values, offset);
+	}
+
+	public void setUniform3iv (int location, int[] values, int offset, int length) {
+		GL20 gl = Gdx.gl20;
+		checkManaged();
+		gl.glUniform3iv(location, length / 3, values, offset);
+	}
+
+	public void setUniform4iv (String name, int[] values, int offset, int length) {
+		GL20 gl = Gdx.gl20;
+		checkManaged();
+		int location = fetchUniformLocation(name);
+		gl.glUniform4iv(location, length / 4, values, offset);
+	}
+
+	public void setUniform4iv (int location, int[] values, int offset, int length) {
+		GL20 gl = Gdx.gl20;
+		checkManaged();
+		gl.glUniform4iv(location, length / 4, values, offset);
+	}
+
 	/** Sets the uniform with the given name. The {@link ShaderProgram} must be bound for this to work.
 	 *
 	 * @param name the name of the uniform
