@@ -21,6 +21,8 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.utils.Os;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -236,12 +238,15 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	}
 
 	/** Whether to use the "glfw_async" library.
+	 * This method only does something on mac operating system.
 	 *
 	 * This means you do not have to set the JVM argument "-XstartOnFirstThread"
 	 *
 	 * @see <a href= "https://libgdx.com/news/2021/07/devlog-7-lwjgl3#do-i-need-to-do-anything-else"> Documentation</a> */
 	public static void useGlfwAsync () {
-		Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
+		if (SharedLibraryLoader.os == Os.MacOsX) {
+			Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
+		}
 	}
 
 	/** @return the currently active {@link DisplayMode} of the primary monitor */
