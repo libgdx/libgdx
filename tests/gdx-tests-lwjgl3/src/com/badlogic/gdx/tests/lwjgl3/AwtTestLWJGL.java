@@ -58,7 +58,6 @@ public class AwtTestLWJGL {
 
 		Lwjgl3ApplicationConfiguration.useGlfwAsync();
 
-
 		if (!glfwInit()) {
 			System.out.println("Couldn't initialize GLFW");
 			System.exit(-1);
