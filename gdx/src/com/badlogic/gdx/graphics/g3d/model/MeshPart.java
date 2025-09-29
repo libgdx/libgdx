@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g3d.model;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.glutils.InstanceData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -151,6 +152,13 @@ public class MeshPart {
 	 * @param autoBind overrides the autoBind member of the Mesh */
 	public void render (ShaderProgram shader, boolean autoBind) {
 		mesh.render(shader, primitiveType, offset, size, autoBind);
+	}
+
+	/** Renders the mesh part using the specified shader, must be called after {@link ShaderProgram#bind()}.
+	 * @param shader the shader to be used
+	 * @param autoBind overrides the autoBind member of the Mesh */
+	public void render (ShaderProgram shader, boolean autoBind, InstanceData instances) {
+		mesh.render(shader, primitiveType, offset, size, autoBind, instances);
 	}
 
 	/** Renders the mesh part using the specified shader, must be called after {@link ShaderProgram#bind()}.
