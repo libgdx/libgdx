@@ -3,81 +3,99 @@ package com.badlogic.gdx.backends.android;
 
 import android.os.Handler;
 import com.badlogic.gdx.audio.Sound;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AsynchronousSound implements Sound {
 
 	private final Sound sound;
 	private final Handler handler;
+	private final AtomicInteger playedSoundsCounter = new AtomicInteger();
+	private final int soundIdsCountToSave;
+	private final long[] soundIds;
 
-	public AsynchronousSound (Sound sound, Handler handler) {
+	public AsynchronousSound (Sound sound, Handler handler, int soundIdsCountToSave) {
 		this.sound = sound;
 		this.handler = handler;
+		this.soundIdsCountToSave = soundIdsCountToSave;
+		this.soundIds = new long[soundIdsCountToSave];
 	}
 
 	@Override
 	public long play () {
+		final int soundNumber = playedSoundsCounter.getAndIncrement();
 		handler.post(new Runnable() {
 			@Override
 			public void run () {
-				sound.play();
+				long soundId = sound.play();
+				saveSoundId(soundNumber, soundId);
 			}
 		});
-		return 0;
+		return soundNumber;
 	}
 
 	@Override
 	public long play (final float volume) {
+		final int soundNumber = playedSoundsCounter.getAndIncrement();
 		handler.post(new Runnable() {
 			@Override
 			public void run () {
-				sound.play(volume);
+				long soundId = sound.play(volume);
+				saveSoundId(soundNumber, soundId);
 			}
 		});
-		return 0;
+		return soundNumber;
 	}
 
 	@Override
 	public long play (final float volume, final float pitch, final float pan) {
+		final int soundNumber = playedSoundsCounter.getAndIncrement();
 		handler.post(new Runnable() {
 			@Override
 			public void run () {
-				sound.play(volume, pitch, pan);
+				long soundId = sound.play(volume, pitch, pan);
+				saveSoundId(soundNumber, soundId);
 			}
 		});
-		return 0;
+		return soundNumber;
 	}
 
 	@Override
 	public long loop () {
+		final int soundNumber = playedSoundsCounter.getAndIncrement();
 		handler.post(new Runnable() {
 			@Override
 			public void run () {
-				sound.loop();
+				long soundId = sound.loop();
+				saveSoundId(soundNumber, soundId);
 			}
 		});
-		return 0;
+		return soundNumber;
 	}
 
 	@Override
 	public long loop (final float volume) {
+		final int soundNumber = playedSoundsCounter.getAndIncrement();
 		handler.post(new Runnable() {
 			@Override
 			public void run () {
-				sound.loop(volume);
+				long soundId = sound.loop(volume);
+				saveSoundId(soundNumber, soundId);
 			}
 		});
-		return 0;
+		return soundNumber;
 	}
 
 	@Override
 	public long loop (final float volume, final float pitch, final float pan) {
+		final int soundNumber = playedSoundsCounter.getAndIncrement();
 		handler.post(new Runnable() {
 			@Override
 			public void run () {
-				sound.loop(volume, pitch, pan);
+				long soundId = sound.loop(volume, pitch, pan);
+				saveSoundId(soundNumber, soundId);
 			}
 		});
-		return 0;
+		return soundNumber;
 	}
 
 	@Override
@@ -107,36 +125,86 @@ public class AsynchronousSound implements Sound {
 
 	@Override
 	public void stop (long soundId) {
-		throw new UnsupportedOperationException("Asynchronous audio doesn't support sound id based operations.");
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.stop(realSoundId);
+			}
+		});
 	}
 
 	@Override
 	public void pause (long soundId) {
-		throw new UnsupportedOperationException("Asynchronous audio doesn't support sound id based operations.");
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.pause(realSoundId);
+			}
+		});
 	}
 
 	@Override
 	public void resume (long soundId) {
-		throw new UnsupportedOperationException("Asynchronous audio doesn't support sound id based operations.");
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.resume(realSoundId);
+			}
+		});
 	}
 
 	@Override
 	public void setLooping (long soundId, boolean looping) {
-		throw new UnsupportedOperationException("Asynchronous audio doesn't support sound id based operations.");
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.setLooping(realSoundId, looping);
+			}
+		});
 	}
 
 	@Override
 	public void setPitch (long soundId, float pitch) {
-		throw new UnsupportedOperationException("Asynchronous audio doesn't support sound id based operations.");
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.setPitch(realSoundId, pitch);
+			}
+		});
 	}
 
 	@Override
 	public void setVolume (long soundId, float volume) {
-		throw new UnsupportedOperationException("Asynchronous audio doesn't support sound id based operations.");
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.setVolume(realSoundId, volume);
+			}
+		});
 	}
 
 	@Override
 	public void setPan (long soundId, float pan, float volume) {
-		throw new UnsupportedOperationException("Asynchronous audio doesn't support sound id based operations.");
+		handler.post(new Runnable() {
+			@Override
+			public void run () {
+				long realSoundId = getSoundId(soundId);
+				sound.setPan(realSoundId, pan, volume);
+			}
+		});
+	}
+
+	private void saveSoundId (int soundNumber, long soundId) {
+		soundIds[soundNumber % soundIdsCountToSave] = soundId;
+	}
+
+	private long getSoundId (long soundId) {
+		return soundIds[(int)soundId % soundIdsCountToSave];
 	}
 }
