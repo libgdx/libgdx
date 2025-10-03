@@ -296,7 +296,7 @@ public class CharArray implements CharSequence, Appendable {
 		return -1;
 	}
 
-	/** Removes the first occurence of the specified value. */
+	/** Removes the first occurrence of the specified value. */
 	public boolean removeValue (char value) {
 		char[] items = this.items;
 		for (int i = 0, n = size; i < n; i++) {
@@ -437,7 +437,7 @@ public class CharArray implements CharSequence, Appendable {
 		if ((newCapacity ^ 0x80000000) < (minCapacity ^ 0x80000000)) newCapacity = minCapacity;
 		if ((newCapacity ^ 0x80000000) > (MAX_BUFFER_SIZE ^ 0x80000000)) {
 			if (minCapacity < 0) // Overflow.
-				throw new RuntimeException("Unable to allocate array size: " + Long.toString(minCapacity & 0xFFFFFFFFL));
+				throw new RuntimeException("Unable to allocate array size: " + (minCapacity & 0xFFFFFFFFL));
 			newCapacity = Math.max(minCapacity, MAX_BUFFER_SIZE);
 		}
 		resize(newCapacity);
@@ -469,9 +469,9 @@ public class CharArray implements CharSequence, Appendable {
 		if (size > newSize) size = newSize;
 	}
 
-	/** Returns a random item from the array, or zero if the array is empty. */
+	/** Returns a random item from the array, or {@code ((char)0)} if the array is empty. */
 	public char random () {
-		if (size == 0) throw new IllegalStateException();
+		if (size == 0) return '\u0000';
 		return items[MathUtils.random(0, size - 1)];
 	}
 
@@ -815,8 +815,8 @@ public class CharArray implements CharSequence, Appendable {
 
 	/** Appends each item in an array to this CharArray without any separators. Each object is appended using
 	 * {@link #append(Object)}. */
-	public <T> CharArray appendAll (T... array) {
-		if (array.length > 0) {
+	public final <T> CharArray appendAll (T... array) {
+		if (array != null) {
 			for (Object element : array)
 				append(element);
 		}
@@ -1116,16 +1116,16 @@ public class CharArray implements CharSequence, Appendable {
 	 * This method is for example useful for constructing queries
 	 * 
 	 * <pre>
-	* CharArray whereClause = new CharArray();
-	* if (searchCommand.getPriority() != null) {
-	*  whereClause.appendSeparator(" and", " where");
-	*  whereClause.append(" priority = ?")
-	* }
-	* if (searchCommand.getComponent() != null) {
-	*  whereClause.appendSeparator(" and", " where");
-	*  whereClause.append(" component = ?")
-	* }
-	* selectClause.append(whereClause)
+	 * CharArray whereClause = new CharArray();
+	 * if (searchCommand.getPriority() != null) {
+	 *  whereClause.appendSeparator(" and", " where");
+	 *  whereClause.append(" priority = ?")
+	 * }
+	 * if (searchCommand.getComponent() != null) {
+	 *  whereClause.appendSeparator(" and", " where");
+	 *  whereClause.append(" component = ?")
+	 * }
+	 * selectClause.append(whereClause)
 	 * </pre>
 	 * 
 	 * @param standard the separator if this CharArray is not empty, null means no separator
@@ -1226,11 +1226,11 @@ public class CharArray implements CharSequence, Appendable {
 	 * <p>
 	 * This method allows you to populate the contents of this CharArray using any standard method that takes a Writer.
 	 * <p>
-	 * To use, simply create a {@code CharArray}, call {@code asWriter}, and populate away. The data is available at any time using
+	 * To use, simply create a {@code CharArray}, call {@code writer()}, and populate away. The data is available at any time using
 	 * the methods of the {@code CharArray}.
 	 * <p>
 	 * The internal character array is shared between this CharArray and the writer. This allows you to intermix calls that append
-	 * to this CharArray and write using the writer and the changes will be occur correctly. Note however, that no synchronization
+	 * to this CharArray and write using the writer and the changes will occur correctly. Note however, that no synchronization
 	 * occurs, so you must perform all operations with this CharArray and the writer in one thread.
 	 * <p>
 	 * The returned writer ignores the close and flush methods.
@@ -1678,7 +1678,7 @@ public class CharArray implements CharSequence, Appendable {
 	/** Extracts the leftmost characters from this CharArray without throwing an exception.
 	 * <p>
 	 * This method extracts the left {@code length} characters from this CharArray. If this many characters are not available, the
-	 * whole CharArray is returned. Thus the returned string may be shorter than the length requested.
+	 * whole CharArray is returned. Thus, the returned string may be shorter than the length requested.
 	 * @param length the number of characters to extract, negative returns empty string
 	 * @return The new string */
 	public String leftString (int length) {
@@ -1702,7 +1702,7 @@ public class CharArray implements CharSequence, Appendable {
 	 * This method extracts {@code length} characters from this CharArray at the specified index. If the index is negative it is
 	 * treated as zero. If the index is greater than this CharArray size, it is treated as this CharArray size. If the length is
 	 * negative, the empty string is returned. If insufficient characters are available in this CharArray, as much as possible is
-	 * returned. Thus the returned string may be shorter than the length requested.
+	 * returned. Thus, the returned string may be shorter than the length requested.
 	 * @param index the index to start at, negative means zero
 	 * @param length the number of characters to extract, negative returns empty string
 	 * @return The new string */
@@ -1917,7 +1917,7 @@ public class CharArray implements CharSequence, Appendable {
 	/** Extracts the rightmost characters from this CharArray without throwing an exception.
 	 * <p>
 	 * This method extracts the right {@code length} characters from this CharArray. If this many characters are not available, the
-	 * whole CharArray is returned. Thus the returned string may be shorter than the length requested.
+	 * whole CharArray is returned. Thus, the returned string may be shorter than the length requested.
 	 * @param length the number of characters to extract, negative returns empty string
 	 * @return The new string */
 	public String rightString (int length) {
@@ -2071,10 +2071,10 @@ public class CharArray implements CharSequence, Appendable {
 		return end;
 	}
 
-	/** Tests the contents of this CharArray against another to see if they contain the same character content.
-	 * @param obj the object to check, null returns false
+	/** Tests the contents of this CharArray against another to see if they contain the same character content. Returns false if
+	 * either array is unordered.
+	 * @param object the object to check, null returns false
 	 * @return true if the CharArrays contain the same characters in the same order */
-	/** Returns false if either array is unordered. */
 	public boolean equals (Object object) {
 		if (this == object) return true;
 		if (!ordered) return false;
@@ -2095,7 +2095,7 @@ public class CharArray implements CharSequence, Appendable {
 	 * @return true if the CharArrays contain the same characters in the same order */
 	public boolean equals (CharArray other) {
 		if (this == other) return true;
-		if ((other == null) || (size != other.size)) return false;
+		if (other == null) return false;
 		int length = this.size;
 		if (length != other.size) return false;
 		char[] chars = this.items, chars2 = other.items;
