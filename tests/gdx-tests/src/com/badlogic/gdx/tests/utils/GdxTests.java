@@ -133,6 +133,7 @@ public class GdxTests {
 		BitmapFontDistanceFieldTest.class,
 		BitmapFontFlipTest.class,
 		BitmapFontMetricsTest.class,
+		BitmapFontUnicodeTest.class,
 		BitmapFontTest.class,
 		BitmapFontAtlasRegionTest.class,
 		BlitTest.class,
