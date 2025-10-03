@@ -237,7 +237,7 @@ public class JsonValue implements Iterable<JsonValue> {
 
 	/** Returns this value as a string.
 	 * @return May be null if this value is null.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public @Null String asString () {
 		switch (type) {
 		case stringValue:
@@ -255,7 +255,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a float.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public float asFloat () {
 		switch (type) {
 		case stringValue:
@@ -271,7 +271,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a double.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public double asDouble () {
 		switch (type) {
 		case stringValue:
@@ -287,7 +287,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a long.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public long asLong () {
 		switch (type) {
 		case stringValue:
@@ -303,7 +303,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as an int.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public int asInt () {
 		switch (type) {
 		case stringValue:
@@ -319,7 +319,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a boolean.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public boolean asBoolean () {
 		switch (type) {
 		case stringValue:
@@ -335,7 +335,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a byte.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public byte asByte () {
 		switch (type) {
 		case stringValue:
@@ -351,7 +351,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a short.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public short asShort () {
 		switch (type) {
 		case stringValue:
@@ -367,7 +367,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a char.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public char asChar () {
 		switch (type) {
 		case stringValue:
