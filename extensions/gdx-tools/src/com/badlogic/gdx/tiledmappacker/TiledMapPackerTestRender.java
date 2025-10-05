@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.AtlasTmjMapLoader;
 import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
+import com.badlogic.gdx.maps.tiled.BaseTiledMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -69,9 +70,9 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 	private final float WORLD_HEIGHT = 8;
 	private final float PIXELS_PER_METER = 32;
 	private final float UNIT_SCALE = 1f / PIXELS_PER_METER;
-	private AtlasTmxMapLoader.AtlasTiledMapLoaderParameters params;
+	private BaseTiledMapLoader.Parameters params;
 	private AtlasTmxMapLoader atlasTmxMapLoader;
-	private AtlasTmjMapLoader.AtlasTiledMapLoaderParameters paramsTmj;
+	private BaseTiledMapLoader.Parameters paramsTmj;
 	private AtlasTmjMapLoader atlasTmjMapLoader;
 	private TiledMap map;
 	private Viewport viewport;
@@ -88,7 +89,7 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 		switch (TEST_MAP_TYPE) {
 		case DEFAULT_TMX_MAP:
 			atlasTmxMapLoader = new AtlasTmxMapLoader(new InternalFileHandleResolver());
-			params = new AtlasTmxMapLoader.AtlasTiledMapLoaderParameters();
+			params = new BaseTiledMapLoader.Parameters();
 			params.generateMipMaps = false;
 			params.convertObjectToTileSpace = false;
 			params.flipY = true;
@@ -99,7 +100,7 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 			break;
 		case DEFAULT_TMJ_MAP:
 			atlasTmjMapLoader = new AtlasTmjMapLoader(new InternalFileHandleResolver());
-			paramsTmj = new AtlasTmjMapLoader.AtlasTiledMapLoaderParameters();
+			paramsTmj = new BaseTiledMapLoader.Parameters();
 			paramsTmj.generateMipMaps = false;
 			paramsTmj.convertObjectToTileSpace = false;
 			paramsTmj.flipY = true;
@@ -110,7 +111,7 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 			break;
 		case DEFAULT_TMX_IMGLAYER_MAP:
 			atlasTmxMapLoader = new AtlasTmxMapLoader(new InternalFileHandleResolver());
-			params = new AtlasTmxMapLoader.AtlasTiledMapLoaderParameters();
+			params = new BaseTiledMapLoader.Parameters();
 			params.generateMipMaps = false;
 			params.convertObjectToTileSpace = false;
 			params.flipY = true;
@@ -121,7 +122,7 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 			break;
 		case DEFAULT_TMX_IMGLAYERS_COLLECTION_TILESET:
 			atlasTmxMapLoader = new AtlasTmxMapLoader(new InternalFileHandleResolver());
-			params = new AtlasTmxMapLoader.AtlasTiledMapLoaderParameters();
+			params = new BaseTiledMapLoader.Parameters();
 			params.generateMipMaps = false;
 			params.convertObjectToTileSpace = false;
 			params.flipY = true;
@@ -132,7 +133,7 @@ public class TiledMapPackerTestRender extends ApplicationAdapter {
 			break;
 		case DEFAULT_TMJ_IMGLAYER_WITH_PROPS_MAP:
 			atlasTmjMapLoader = new AtlasTmjMapLoader(new InternalFileHandleResolver());
-			paramsTmj = new AtlasTmjMapLoader.AtlasTiledMapLoaderParameters();
+			paramsTmj = new BaseTiledMapLoader.Parameters();
 			paramsTmj.generateMipMaps = false;
 			paramsTmj.convertObjectToTileSpace = false;
 			paramsTmj.flipY = true;

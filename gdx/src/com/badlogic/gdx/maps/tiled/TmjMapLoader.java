@@ -31,10 +31,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** @brief synchronous loader for TMJ maps created with the Tiled tool */
-public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> {
-
-	public static class Parameters extends BaseTmjMapLoader.Parameters {
-	}
+public class TmjMapLoader extends BaseTmjMapLoader<BaseTiledMapLoader.Parameters> {
 
 	public TmjMapLoader () {
 		super(new InternalFileHandleResolver());
@@ -54,7 +51,7 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 	 * @param fileName the filename
 	 * @return the TiledMap */
 	public TiledMap load (String fileName) {
-		return load(fileName, new TmjMapLoader.Parameters());
+		return load(fileName, new Parameters());
 	}
 
 	/** Loads the {@link TiledMap} from the given file. The file is resolved via the {@link FileHandleResolver} set in the
@@ -63,7 +60,7 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 	 * @param fileName the filename
 	 * @param parameter specifies whether to use y-up, generate mip maps etc.
 	 * @return the TiledMap */
-	public TiledMap load (String fileName, TmjMapLoader.Parameters parameter) {
+	public TiledMap load (String fileName, Parameters parameter) {
 		FileHandle tmjFile = resolve(fileName);
 
 		this.root = json.parse(tmjFile);
@@ -83,12 +80,12 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, FileHandle tmjFile, BaseTmjMapLoader.Parameters parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle tmjFile, Parameters parameter) {
 		this.map = loadTiledMap(tmjFile, parameter, new ImageResolver.AssetManagerImageResolver(manager));
 	}
 
 	@Override
-	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, BaseTmjMapLoader.Parameters parameter) {
+	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, Parameters parameter) {
 		return map;
 	}
 
@@ -109,7 +106,7 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 		Array<FileHandle> fileHandles = new Array<>();
 
 		// TileSet descriptors
-		for (JsonValue tileSet : root.get("tileSets")) {
+		for (JsonValue tileSet : root.get("tilesets")) {
 			getTileSetDependencyFileHandle(fileHandles, tmjFile, tileSet);
 		}
 
@@ -146,37 +143,25 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTmjMapLoader.Parameters> 
 
 	protected Array<FileHandle> getTileSetDependencyFileHandle (Array<FileHandle> fileHandles, FileHandle tmjFile,
 		JsonValue tileSet) {
+		FileHandle tsjFile;
 		String source = tileSet.getString("source", null);
 		if (source != null) {
-			FileHandle tsxFile = getRelativeFileHandle(tmjFile, source);
-			tileSet = json.parse(tsxFile);
-			if (tileSet.has("image")) {
-				String imageSource = tileSet.getString("image");
-				FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
-				fileHandles.add(image);
-			} else {
-				JsonValue tiles = tileSet.get("tiles");
-				if (tiles != null) {
-					for (JsonValue tile : tiles) {
-						String imageSource = tile.getString("image");
-						FileHandle image = getRelativeFileHandle(tsxFile, imageSource);
-						fileHandles.add(image);
-					}
-				}
-			}
+			tsjFile = getRelativeFileHandle(tmjFile, source);
+			tileSet = json.parse(tsjFile);
 		} else {
-			if (tileSet.has("image")) {
-				String imageSource = tileSet.getString("image");
-				FileHandle image = getRelativeFileHandle(tmjFile, imageSource);
-				fileHandles.add(image);
-			} else {
-				JsonValue tiles = tileSet.get("tiles");
-				if (tiles != null) {
-					for (JsonValue tile : tiles) {
-						String imageSource = tile.getString("image");
-						FileHandle image = getRelativeFileHandle(tmjFile, imageSource);
-						fileHandles.add(image);
-					}
+			tsjFile = tmjFile;
+		}
+		if (tileSet.has("image")) {
+			String imageSource = tileSet.getString("image");
+			FileHandle image = getRelativeFileHandle(tsjFile, imageSource);
+			fileHandles.add(image);
+		} else {
+			JsonValue tiles = tileSet.get("tiles");
+			if (tiles != null) {
+				for (JsonValue tile : tiles) {
+					String imageSource = tile.getString("image");
+					FileHandle image = getRelativeFileHandle(tsjFile, imageSource);
+					fileHandles.add(image);
 				}
 			}
 		}
