@@ -21,28 +21,27 @@ ext {
     gdxnatives = [:]
 }
 
-versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 7
-versions.javaLwjgl3 = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
-versions.robovm = "2.3.21"
+versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
+versions.robovm = "2.3.23"
 versions.gwt = "2.11.0"
 versions.gwtPlugin = "1.1.29"
 versions.jsinteropAnnotations = "2.0.2"
 versions.gretty = "3.1.0"
 versions.jglwf = "1.1"
 versions.lwjgl = "2.9.3"
-versions.lwjgl3 = "3.3.4"
+versions.lwjgl3 = "3.3.3"
 versions.jlayer = "1.0.1-gdx"
 versions.jorbis = "0.0.17"
 versions.junit = "4.13.2"
-versions.androidPlugin = "8.1.2"
-versions.multiDex = "2.0.1"
-versions.androidCompileSdk = 33
-versions.androidTargetSdk = 33
-versions.androidMinSdk = 19
-versions.androidBuildTools = "33.0.2"
-versions.androidFragment = "1.5.7"
+versions.androidPlugin = "8.7.3"
+versions.androidCompileSdk = 35
+versions.androidTargetSdk = 35
+versions.androidMinSdk = 21
+versions.androidxFragment = "1.8.5"
+versions.androidxCore = "1.15.0"
+versions.kotlinBomTests = "2.0.21"
 versions.javaparser = "2.3.0"
-versions.spotless = "6.7.1"
+versions.spotless = "7.0.3"
 
 libraries.compileOnly = [:]
 
@@ -57,7 +56,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows",
@@ -66,7 +65,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows",
@@ -75,7 +74,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows",
@@ -84,7 +83,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows",
@@ -93,7 +92,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows",
@@ -102,7 +101,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
@@ -116,7 +115,7 @@ libraries.lwjgl3GLES = [
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-arm32",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-arm64",
-        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-riscv64",
+//        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-linux-riscv64",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-macos",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-windows",
@@ -130,8 +129,12 @@ libraries.robovm = [
         "com.mobidevelop.robovm:robovm-cocoatouch:${versions.robovm}"
 ]
 
+libraries.android = [
+        "androidx.core:core:${versions.androidxCore}",
+]
+
 libraries.compileOnly.android = [
-        "androidx.fragment:fragment:${versions.androidFragment}"
+        "androidx.fragment:fragment:${versions.androidxFragment}"
 ]
 
 libraries.gwt = [

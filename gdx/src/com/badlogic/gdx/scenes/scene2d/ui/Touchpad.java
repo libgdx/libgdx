@@ -37,7 +37,7 @@ import com.badlogic.gdx.utils.Pools;
  * {@link ChangeEvent} is fired when the touchpad knob is moved. Cancelling the event will move the knob to where it was
  * previously.
  * @author Josh Street */
-public class Touchpad extends Widget {
+public class Touchpad extends Widget implements Styleable<Touchpad.TouchpadStyle> {
 	private TouchpadStyle style;
 	boolean touched;
 	boolean resetOnTouchUp = true;

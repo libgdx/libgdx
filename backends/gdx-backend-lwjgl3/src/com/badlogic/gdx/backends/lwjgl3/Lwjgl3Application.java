@@ -516,9 +516,24 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 			GLFW.glfwWindowHint(GLFW.GLFW_REFRESH_RATE, config.fullscreenMode.refreshRate);
 			windowHandle = GLFW.glfwCreateWindow(config.fullscreenMode.width, config.fullscreenMode.height, config.title,
 				config.fullscreenMode.getMonitor(), sharedContextWindow);
+
+			// On Ubuntu >= 22.04 with Nvidia GPU drivers and X11 display server there's a bug with EGL Context API
+			// If the windows creation has failed for this reason try to create it again with the native context
+			if (windowHandle == 0 && config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) {
+				GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_CREATION_API, GLFW.GLFW_NATIVE_CONTEXT_API);
+				windowHandle = GLFW.glfwCreateWindow(config.fullscreenMode.width, config.fullscreenMode.height, config.title,
+					config.fullscreenMode.getMonitor(), sharedContextWindow);
+			}
 		} else {
 			GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, config.windowDecorated ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 			windowHandle = GLFW.glfwCreateWindow(config.windowWidth, config.windowHeight, config.title, 0, sharedContextWindow);
+
+			// On Ubuntu >= 22.04 with Nvidia GPU drivers and X11 display server there's a bug with EGL Context API
+			// If the windows creation has failed for this reason try to create it again with the native context
+			if (windowHandle == 0 && config.glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20) {
+				GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_CREATION_API, GLFW.GLFW_NATIVE_CONTEXT_API);
+				windowHandle = GLFW.glfwCreateWindow(config.windowWidth, config.windowHeight, config.title, 0, sharedContextWindow);
+			}
 		}
 		if (windowHandle == 0) {
 			throw new GdxRuntimeException("Couldn't create window");
@@ -526,22 +541,24 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 		Lwjgl3Window.setSizeLimits(windowHandle, config.windowMinWidth, config.windowMinHeight, config.windowMaxWidth,
 			config.windowMaxHeight);
 		if (config.fullscreenMode == null) {
-			if (config.windowX == -1 && config.windowY == -1) { // i.e., center the window
-				int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
-				int windowHeight = Math.max(config.windowHeight, config.windowMinHeight);
-				if (config.windowMaxWidth > -1) windowWidth = Math.min(windowWidth, config.windowMaxWidth);
-				if (config.windowMaxHeight > -1) windowHeight = Math.min(windowHeight, config.windowMaxHeight);
+			if (GLFW.glfwGetPlatform() != GLFW.GLFW_PLATFORM_WAYLAND) {
+				if (config.windowX == -1 && config.windowY == -1) { // i.e., center the window
+					int windowWidth = Math.max(config.windowWidth, config.windowMinWidth);
+					int windowHeight = Math.max(config.windowHeight, config.windowMinHeight);
+					if (config.windowMaxWidth > -1) windowWidth = Math.min(windowWidth, config.windowMaxWidth);
+					if (config.windowMaxHeight > -1) windowHeight = Math.min(windowHeight, config.windowMaxHeight);
 
-				long monitorHandle = GLFW.glfwGetPrimaryMonitor();
-				if (config.windowMaximized && config.maximizedMonitor != null) {
-					monitorHandle = config.maximizedMonitor.monitorHandle;
+					long monitorHandle = GLFW.glfwGetPrimaryMonitor();
+					if (config.windowMaximized && config.maximizedMonitor != null) {
+						monitorHandle = config.maximizedMonitor.monitorHandle;
+					}
+
+					GridPoint2 newPos = Lwjgl3ApplicationConfiguration.calculateCenteredWindowPosition(
+						Lwjgl3ApplicationConfiguration.toLwjgl3Monitor(monitorHandle), windowWidth, windowHeight);
+					GLFW.glfwSetWindowPos(windowHandle, newPos.x, newPos.y);
+				} else {
+					GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 				}
-
-				GridPoint2 newPos = Lwjgl3ApplicationConfiguration.calculateCenteredWindowPosition(
-					Lwjgl3ApplicationConfiguration.toLwjgl3Monitor(monitorHandle), windowWidth, windowHeight);
-				GLFW.glfwSetWindowPos(windowHandle, newPos.x, newPos.y);
-			} else {
-				GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 			}
 
 			if (config.windowMaximized) {

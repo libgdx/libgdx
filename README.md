@@ -1,4 +1,5 @@
-![libGDX Logo](libgdx_logo.svg)
+![libGDX Logo](libgdx_logo.svg#gh-light-mode-only)
+![libGDX Logo](libgdx_logo_dark.svg#gh-dark-mode-only)
 
 [![GitHub Actions Build Status](https://img.shields.io/github/actions/workflow/status/libgdx/libgdx/build-publish.yml?branch=master&label=GitHub%20Actions)](https://github.com/libgdx/libgdx/actions?query=workflow%3A%22Build+and+Publish%22)
 

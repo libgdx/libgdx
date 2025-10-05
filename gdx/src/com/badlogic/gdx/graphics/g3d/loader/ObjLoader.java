@@ -267,7 +267,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			part.primitiveType = GL20.GL_TRIANGLES;
 			ModelMesh mesh = new ModelMesh();
 			mesh.id = meshId;
-			mesh.attributes = attributes.toArray(VertexAttribute.class);
+			mesh.attributes = attributes.toArray(VertexAttribute[]::new);
 			mesh.vertices = finalVerts;
 			mesh.parts = new ModelMeshPart[] {part};
 			data.nodes.add(node);

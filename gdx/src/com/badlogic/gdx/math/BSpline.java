@@ -190,14 +190,16 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		this.degree = degree;
 		this.continuous = continuous;
 		this.spanCount = continuous ? controlPoints.length : controlPoints.length - degree;
+		// We use knots.size instead of storing another variable in each BSpline.
+		int knotCount = continuous ? controlPoints.length : controlPoints.length - 1;
 		if (knots == null)
-			knots = new Array<T>(spanCount);
+			knots = new Array<T>(knotCount);
 		else {
 			knots.clear();
-			knots.ensureCapacity(spanCount);
+			knots.ensureCapacity(knotCount);
 		}
-		for (int i = 0; i < spanCount; i++)
-			knots.add(calculate(controlPoints[0].cpy(), continuous ? i : (int)(i + 0.5f * degree), 0f, controlPoints, degree,
+		for (int i = 0; i < knotCount; i++)
+			knots.add(calculate(controlPoints[0].cpy(), continuous ? i : i + (int)(0.5f * degree), 0f, controlPoints, degree,
 				continuous, tmp));
 		return this;
 	}
@@ -237,12 +239,13 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 
 	/** @return The span closest to the specified value, restricting to the specified spans. */
 	public int nearest (final T in, int start, final int count) {
+		int knotCount = knots.size;
 		while (start < 0)
-			start += spanCount;
-		int result = start % spanCount;
+			start += knotCount;
+		int result = start % knotCount;
 		float dst = in.dst2(knots.get(result));
 		for (int i = 1; i < count; i++) {
-			final int idx = (start + i) % spanCount;
+			final int idx = (start + i) % knotCount;
 			final float d = in.dst2(knots.get(idx));
 			if (d < dst) {
 				dst = d;
@@ -264,8 +267,8 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	public float approximate (final T in, final int near) {
 		int n = near;
 		final T nearest = knots.get(n);
-		final T previous = knots.get(n > 0 ? n - 1 : spanCount - 1);
-		final T next = knots.get((n + 1) % spanCount);
+		final T previous = knots.get(n > 0 ? n - 1 : knots.size - 1);
+		final T next = knots.get((n + 1) % knots.size);
 		final float dstPrev2 = in.dst2(previous);
 		final float dstNext2 = in.dst2(next);
 		T P1, P2, P3;
@@ -277,9 +280,9 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 			P1 = previous;
 			P2 = nearest;
 			P3 = in;
-			n = n > 0 ? n - 1 : spanCount - 1;
+			n = n > 0 ? n - 1 : knots.size - 1;
 		}
-		float L1Sqr = P1.dst2(P2);
+		float L1Sqr = P1.dst2(P2) + 1E-10f; // arbitrary epsilon value to avoid division by 0
 		float L2Sqr = P3.dst2(P2);
 		float L3Sqr = P3.dst2(P1);
 		float L1 = (float)Math.sqrt(L1Sqr);

@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.android;
 import android.content.res.AssetFileDescriptor;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
+import com.badlogic.gdx.Gdx;
 
 import java.io.EOFException;
 import java.io.File;
@@ -114,22 +115,19 @@ public class ZipResourceFile {
 
 		public long mOffset = -1;
 
-		public void setOffsetFromFile (RandomAccessFile f, ByteBuffer buf) throws IOException {
+		public void setOffsetFromFile (RandomAccessFile f, ByteBuffer buf) {
 			long localHdrOffset = mLocalHdrOffset;
 			try {
 				f.seek(localHdrOffset);
 				f.readFully(buf.array());
 				if (buf.getInt(0) != kLFHSignature) {
-					Log.w(LOG_TAG, "didn't find signature at start of lfh");
-					throw new IOException();
+					throw new IOException("didn't find signature at start of lfh");
 				}
 				int nameLen = buf.getShort(kLFHNameLen) & 0xFFFF;
 				int extraLen = buf.getShort(kLFHExtraLen) & 0xFFFF;
 				mOffset = localHdrOffset + kLFHLen + nameLen + extraLen;
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
+			} catch (IOException e) {
+				Gdx.app.error("ZipResourceFile", "Error reading from file", e);
 			}
 		}
 
@@ -154,8 +152,7 @@ public class ZipResourceFile {
 					pfd = ParcelFileDescriptor.open(mFile, ParcelFileDescriptor.MODE_READ_ONLY);
 					return new AssetFileDescriptor(pfd, getOffset(), mUncompressedLength);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Gdx.app.error("ZipResourceFile", "Error reading from file", e);
 				}
 			}
 			return null;
@@ -171,7 +168,7 @@ public class ZipResourceFile {
 
 	}
 
-	private HashMap<String, ZipEntryRO> mHashMap = new HashMap<String, ZipEntryRO>();
+	private final HashMap<String, ZipEntryRO> mHashMap = new HashMap<String, ZipEntryRO>();
 
 	/* for reading compressed files */
 	public HashMap<File, ZipFile> mZipFiles = new HashMap<File, ZipFile>();
@@ -205,7 +202,7 @@ public class ZipResourceFile {
 	 * as the MediaPlayer. It also allows for the class to be used in a content provider that can feed video players. The file must
 	 * be stored (non-compressed) in the Zip file for this to work.
 	 *
-	 * @param assetPath
+	 * @param assetPath the asset's path
 	 * @return the asset file descriptor for the file, or null if the file isn't present or is stored compressed */
 	public AssetFileDescriptor getAssetFileDescriptor (String assetPath) {
 		ZipEntryRO entry = mHashMap.get(assetPath);
@@ -218,7 +215,7 @@ public class ZipResourceFile {
 	/** getInputStream returns an AssetFileDescriptor.AutoCloseInputStream associated with the asset that is contained in the Zip
 	 * file, or a standard ZipInputStream if necessary to uncompress the file
 	 *
-	 * @param assetPath
+	 * @param assetPath the asset's path
 	 * @return an input stream for the named asset path, or null if not found
 	 * @throws IOException */
 	public InputStream getInputStream (String assetPath) throws IOException {
@@ -228,7 +225,7 @@ public class ZipResourceFile {
 				return entry.getAssetFileDescriptor().createInputStream();
 			} else {
 				ZipFile zf = mZipFiles.get(entry.getZipFile());
-				/** read compressed files **/
+				// read compressed files
 				if (null == zf) {
 					zf = new ZipFile(entry.getZipFile(), ZipFile.OPEN_READ);
 					mZipFiles.put(entry.getZipFile(), zf);

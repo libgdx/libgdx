@@ -42,6 +42,7 @@ public class Vector4 implements Serializable, Vector<Vector4> {
 	public final static Vector4 Z = new Vector4(0, 0, 1, 0);
 	public final static Vector4 W = new Vector4(0, 0, 0, 1);
 	public final static Vector4 Zero = new Vector4(0, 0, 0, 0);
+	public final static Vector4 One = new Vector4(1, 1, 1, 1);
 
 	/** Constructs a vector at (0,0,0,0) */
 	public Vector4 () {

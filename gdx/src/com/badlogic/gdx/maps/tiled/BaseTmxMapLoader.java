@@ -1,20 +1,40 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.maps.tiled;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetLoaderParameters;
-import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.*;
+import com.badlogic.gdx.maps.ImageResolver;
+import com.badlogic.gdx.maps.MapGroupLayer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.EllipseMapObject;
+import com.badlogic.gdx.maps.objects.PointMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.objects.TextMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
@@ -28,44 +48,15 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
-public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> extends AsynchronousAssetLoader<TiledMap, P> {
-
-	public static class Parameters extends AssetLoaderParameters<TiledMap> {
-		/** generate mipmaps? **/
-		public boolean generateMipMaps = false;
-		/** The TextureFilter to use for minification **/
-		public TextureFilter textureMinFilter = TextureFilter.Nearest;
-		/** The TextureFilter to use for magnification **/
-		public TextureFilter textureMagFilter = TextureFilter.Nearest;
-		/** Whether to convert the objects' pixel position and size to the equivalent in tile space. **/
-		public boolean convertObjectToTileSpace = false;
-		/** Whether to flip all Y coordinates so that Y positive is up. All libGDX renderers require flipped Y coordinates, and thus
-		 * flipY set to true. This parameter is included for non-rendering related purposes of TMX files, or custom renderers. */
-		public boolean flipY = true;
-	}
-
-	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
-	protected static final int FLAG_FLIP_VERTICALLY = 0x40000000;
-	protected static final int FLAG_FLIP_DIAGONALLY = 0x20000000;
-	protected static final int MASK_CLEAR = 0xE0000000;
+public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> extends BaseTiledMapLoader<P> {
 
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
-	protected boolean convertObjectToTileSpace;
-	protected boolean flipY = true;
 
-	protected int mapTileWidth;
-	protected int mapTileHeight;
-	protected int mapWidthInPixels;
-	protected int mapHeightInPixels;
-
-	protected TiledMap map;
-	protected IntMap<MapObject> idToObject;
-	protected Array<Runnable> runOnEndOfLoadTiled;
+	protected ObjectMap<String, Element> templateCache;
 
 	public BaseTmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -85,32 +76,23 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		return getDependencyAssetDescriptors(tmxFile, textureParameter);
 	}
 
-	/** Gets a map of the object ids to the {@link MapObject} instances. Returns null if
-	 * {@link #loadTiledMap(FileHandle, Parameters, ImageResolver)} has not been called yet.
-	 *
-	 * @return the map of the ids to {@link MapObject}, or null if {@link #loadTiledMap(FileHandle, Parameters, ImageResolver)}
-	 *         method has not been called yet. */
-	public @Null IntMap<MapObject> getIdToObject () {
-		return idToObject;
-	}
-
-	protected abstract Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,
-		TextureLoader.TextureParameter textureParameter);
-
 	/** Loads the map data, given the XML root element
 	 *
 	 * @param tmxFile the Filehandle of the tmx file
 	 * @param parameter
 	 * @param imageResolver
 	 * @return the {@link TiledMap} */
+	@Override
 	protected TiledMap loadTiledMap (FileHandle tmxFile, P parameter, ImageResolver imageResolver) {
 		this.map = new TiledMap();
 		this.idToObject = new IntMap<>();
 		this.runOnEndOfLoadTiled = new Array<>();
+		this.templateCache = new ObjectMap<>();
 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
 			this.flipY = parameter.flipY;
+			loadProjectFile(parameter.projectFilePath);
 		} else {
 			this.convertObjectToTileSpace = false;
 			this.flipY = true;
@@ -208,7 +190,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		} else if (name.equals("layer")) {
 			loadTileLayer(map, parentLayers, element);
 		} else if (name.equals("objectgroup")) {
-			loadObjectGroup(map, parentLayers, element);
+			loadObjectGroup(map, parentLayers, element, tmxFile);
 		} else if (name.equals("imagelayer")) {
 			loadImageLayer(map, parentLayers, element, tmxFile, imageResolver);
 		}
@@ -274,7 +256,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		}
 	}
 
-	protected void loadObjectGroup (TiledMap map, MapLayers parentLayers, Element element) {
+	protected void loadObjectGroup (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile) {
 		if (element.getName().equals("objectgroup")) {
 			MapLayer layer = new MapLayer();
 			loadBasicLayerInfo(layer, element);
@@ -284,9 +266,12 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			}
 
 			for (Element objectElement : element.getChildrenByName("object")) {
-				loadObject(map, layer, objectElement);
+				Element elementToLoad = objectElement;
+				if (objectElement.hasAttribute("template")) {
+					elementToLoad = resolveTemplateObject(map, layer, objectElement, tmxFile);
+				}
+				loadObject(map, layer, elementToLoad);
 			}
-
 			parentLayers.add(layer);
 		}
 	}
@@ -308,6 +293,9 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			}
 			if (flipY) y = mapHeightInPixels - y;
 
+			boolean repeatX = element.getIntAttribute("repeatx", 0) == 1;
+			boolean repeatY = element.getIntAttribute("repeaty", 0) == 1;
+
 			TextureRegion texture = null;
 
 			Element image = element.getChildByName("image");
@@ -319,7 +307,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 				y -= texture.getRegionHeight();
 			}
 
-			TiledMapImageLayer layer = new TiledMapImageLayer(texture, x, y);
+			TiledMapImageLayer layer = new TiledMapImageLayer(texture, x, y, repeatX, repeatY);
 
 			loadBasicLayerInfo(layer, element);
 
@@ -335,6 +323,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 	protected void loadBasicLayerInfo (MapLayer layer, Element element) {
 		String name = element.getAttribute("name", null);
 		float opacity = Float.parseFloat(element.getAttribute("opacity", "1.0"));
+		String tintColor = element.getAttribute("tintcolor", "#ffffffff");
 		boolean visible = element.getIntAttribute("visible", 1) == 1;
 		float offsetX = element.getFloatAttribute("offsetx", 0);
 		float offsetY = element.getFloatAttribute("offsety", 0);
@@ -348,6 +337,9 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		layer.setOffsetY(offsetY);
 		layer.setParallaxX(parallaxX);
 		layer.setParallaxY(parallaxY);
+
+		// set layer tint color after converting from #AARRGGBB to #RRGGBBAA
+		layer.setTintColor(Color.valueOf(tiledColorToLibGDXColor(tintColor)));
 	}
 
 	protected void loadObject (TiledMap map, MapLayer layer, Element element) {
@@ -397,6 +389,25 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 					object = new PolylineMapObject(polyline);
 				} else if ((child = element.getChildByName("ellipse")) != null) {
 					object = new EllipseMapObject(x, flipY ? y - height : y, width, height);
+				} else if ((child = element.getChildByName("point")) != null) {
+					object = new PointMapObject(x, flipY ? y - height : y);
+				} else if ((child = element.getChildByName("text")) != null) {
+					TextMapObject textMapObject = new TextMapObject(x, flipY ? y - height : y, width, height, child.getText());
+					textMapObject.setFontFamily(child.getAttribute("fontfamily", ""));
+					textMapObject.setPixelSize(child.getIntAttribute("pixelSize", 16));
+					textMapObject.setHorizontalAlign(child.getAttribute("halign", "left"));
+					textMapObject.setVerticalAlign(child.getAttribute("valign", "top"));
+					textMapObject.setBold(child.getIntAttribute("bold", 0) == 1);
+					textMapObject.setItalic(child.getIntAttribute("italic", 0) == 1);
+					textMapObject.setUnderline(child.getIntAttribute("underline", 0) == 1);
+					textMapObject.setStrikeout(child.getIntAttribute("strikeout", 0) == 1);
+					textMapObject.setWrap(child.getIntAttribute("wrap", 0) == 1);
+					// When kerning is true, it won't be added as an attribute, it's true by default
+					textMapObject.setKerning(child.getIntAttribute("kerning", 1) == 1);
+					// Default color is #000000, not added as attribute
+					String textColor = child.getAttribute("color", "#000000");
+					textMapObject.setColor(Color.valueOf(tiledColorToLibGDXColor(textColor)));
+					object = textMapObject;
 				}
 			}
 			if (object == null) {
@@ -449,87 +460,224 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			if (properties != null) {
 				loadProperties(object.getProperties(), properties);
 			}
+
+			// if there is a 'type' (=class) specified, then check if there are any other
+			// class properties available and put their default values into the properties.
+			loadMapPropertiesClassDefaults(type, object.getProperties());
+
 			idToObject.put(id, object);
 			objects.add(object);
 		}
 	}
+
+	/** Method specifically meant to help resolve template object properties and attributes found in objectgroups. Each template
+	 * object links to a specific .tx file. Attributes and properties found in the template are allowed to be overwritten by any
+	 * matching ones found in its parent element. Knowing this, we will merge the two elements together with the parent's props
+	 * taking precedence and then return the merged value.
+	 * @param map TileMap object
+	 * @param layer MapLayer object
+	 * @param mapElement Element which contains the single xml element we are currently parsing
+	 * @param tmxFile tmxFile
+	 * @return a merged Element representing the combined elements. */
+	protected Element resolveTemplateObject (TiledMap map, MapLayer layer, Element mapElement, FileHandle tmxFile) {
+		// Get template (.tx) file name from element
+		String txFileName = mapElement.getAttribute("template");
+		// check for cached tx element
+		Element templateElement = templateCache.get(txFileName);
+		if (templateElement == null) {
+			FileHandle templateFile = getRelativeFileHandle(tmxFile, txFileName);
+			// parse the .tx template file
+			try {
+				templateElement = xml.parse(templateFile);
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Error parsing template file: " + txFileName, e);
+			}
+			templateCache.put(txFileName, templateElement);
+		}
+		// Get the root object from the template file
+		Element templateObjectElement = templateElement.getChildByName("object");
+		// Merge the parent map element with its template element
+		return mergeParentElementWithTemplate(mapElement, templateObjectElement);
+	}
+
+	/** Returns a shallow copy of the source element we pass in. */
+	protected Element cloneElementShallow (Element sourceElement) {
+		// New element for our copy
+		Element copyElement = new Element(sourceElement.getName(), null);
+		// Get list of attributes from the source element
+		ObjectMap<String, String> attrs = sourceElement.getAttributes();
+		if (attrs != null) {
+			// Place those entries in our new copied element
+			for (ObjectMap.Entry<String, String> entry : attrs.entries()) {
+				copyElement.setAttribute(entry.key, entry.value);
+			}
+		}
+		// Checking for text
+		if (sourceElement.getText() != null) copyElement.setText(sourceElement.getText());
+		return copyElement;
+	}
+
+	/** Merges two <properties> tags from a parent and template. Matching properties from the parent will override the
+	 * template's. */
+	protected Element mergeProperties (Element parentProps, Element templateProps) {
+		if (templateProps == null) return parentProps;
+		if (parentProps == null) return templateProps;
+		// Create a new merged properties element which will contain a combination of parent and template properties.
+		Element merged = new Element("properties", null);
+		// Set properties from template
+		for (Element property : templateProps.getChildrenByName("property")) {
+			merged.addChild(cloneElementShallow(property));
+		}
+		// Set properties from the parent, matching ones from template will be overridden
+		for (Element property : parentProps.getChildrenByName("property")) {
+			String name = property.getAttribute("name", null);
+			// Find & remove a duplicate by name, if any
+			// Remove existing with same name (if any)
+			Element existing = null;
+			for (int i = 0; i < merged.getChildCount(); i++) {
+				Element child = merged.getChild(i);
+				if ("property".equals(child.getName()) && name.equals(child.getAttribute("name", null))) {
+					existing = child;
+					break;
+				}
+			}
+			if (existing != null) merged.removeChild(existing);
+			merged.addChild(cloneElementShallow(property));
+		}
+		return merged;
+	}
+
+	/** Recursively merges a “parent” (map) object element with its referenced template object element. Attributes and properties
+	 * found in the template are allowed to be overwritten by any matching ones found in its parent element. The returned element
+	 * is a new detached tree (parent = null) so it can be handed straight to the loadObject() method without issues. */
+	protected Element mergeParentElementWithTemplate (Element parent, Element template) {
+		if (template == null) return parent;
+		if (parent == null) return template;
+		// Create a new merged element which will contain a combination of parent and template attributes, properties etc...
+		Element merged = new Element(template.getName(), null);
+		// Set attributes from template
+		if (template.getAttributes() != null) {
+			for (ObjectMap.Entry<String, String> a : template.getAttributes().entries()) {
+				merged.setAttribute(a.key, a.value);
+			}
+		}
+		// Set attributes from the parent, matching ones from template will be overridden
+		if (parent.getAttributes() != null) {
+			for (ObjectMap.Entry<String, String> a : parent.getAttributes().entries()) {
+				merged.setAttribute(a.key, a.value);
+			}
+		}
+		// Specifically added for TextMapObjects since they are unique compared to other objects.
+		String txt = (parent.getText() != null && parent.getText().length() > 0) ? parent.getText() : template.getText();
+		if (txt != null) {
+			merged.setText(txt);
+		}
+		// Handle Child Elements
+		// Collect all child tag names that appear in either element
+		ObjectSet<String> tagNames = new ObjectSet<>();
+		for (int i = 0; i < template.getChildCount(); i++)
+			tagNames.add(template.getChild(i).getName());
+		for (int i = 0; i < parent.getChildCount(); i++)
+			tagNames.add(parent.getChild(i).getName());
+
+		for (String tag : tagNames) {
+			Element mapChild = parent.getChildByName(tag);
+			Element tmplChild = template.getChildByName(tag);
+
+			/** Look for properties tags so we can merge those as well. Recursive check if properties is not found. */
+			Element mergedChild = "properties".equals(tag) ? mergeProperties(mapChild, tmplChild)
+				: mergeParentElementWithTemplate(mapChild, tmplChild);
+			merged.addChild(mergedChild);
+		}
+		return merged;
+	}
+	/* * End of Tiled Template Loading Section * */
 
 	protected void loadProperties (final MapProperties properties, Element element) {
 		if (element == null) return;
 		if (element.getName().equals("properties")) {
 			for (Element property : element.getChildrenByName("property")) {
 				final String name = property.getAttribute("name", null);
-				String value = property.getAttribute("value", null);
+				String value = getPropertyValue(property);
 				String type = property.getAttribute("type", null);
-				if (value == null) {
-					value = property.getText();
-				}
-				if (type != null && type.equals("object")) {
-					// Wait until the end of [loadTiledMap] to fetch the object
-					try {
-						// Value should be the id of the object being pointed to
-						final int id = Integer.parseInt(value);
-						// Create [Runnable] to fetch object and add it to props
-						Runnable fetch = new Runnable() {
-							@Override
-							public void run () {
-								MapObject object = idToObject.get(id);
-								properties.put(name, object);
-							}
-						};
-						// [Runnable] should not run until the end of [loadTiledMap]
-						runOnEndOfLoadTiled.add(fetch);
-					} catch (Exception exception) {
-						throw new GdxRuntimeException(
-							"Error parsing property [\" + name + \"] of type \"object\" with value: [" + value + "]", exception);
-					}
+				if ("object".equals(type)) {
+					loadObjectProperty(properties, name, value);
+				} else if ("class".equals(type)) {
+					// A 'class' property is a property which is itself a set of properties
+					MapProperties classProperties = new MapProperties();
+					String className = property.getAttribute("propertytype");
+					classProperties.put("type", className);
+					// the actual properties of a 'class' property are stored as a new properties tag
+					properties.put(name, classProperties);
+					loadClassProperties(className, classProperties, property.getChildByName("properties"));
 				} else {
-					Object castValue = castProperty(name, value, type);
-					properties.put(name, castValue);
+					loadBasicProperty(properties, name, value, type);
 				}
 			}
 		}
 	}
 
-	protected Object castProperty (String name, String value, String type) {
-		if (type == null) {
-			return value;
-		} else if (type.equals("int")) {
-			return Integer.valueOf(value);
-		} else if (type.equals("float")) {
-			return Float.valueOf(value);
-		} else if (type.equals("bool")) {
-			return Boolean.valueOf(value);
-		} else if (type.equals("color")) {
-			// Tiled uses the format #AARRGGBB
-			String opaqueColor = value.substring(3);
-			String alpha = value.substring(1, 3);
-			return Color.valueOf(opaqueColor + alpha);
-		} else {
+	protected void loadClassProperties (String className, MapProperties classProperties, XmlReader.Element classElement) {
+		if (projectClassInfo == null) {
 			throw new GdxRuntimeException(
-				"Wrong type given for property " + name + ", given : " + type + ", supported : string, bool, int, float, color");
+				"No class information loaded to support class properties. Did you set the 'projectFilePath' parameter?");
+		}
+		if (projectClassInfo.isEmpty()) {
+			throw new GdxRuntimeException(
+				"No class information available. Did you set the correct Tiled project path in the 'projectFilePath' parameter?");
+		}
+		Array<ProjectClassMember> projectClassMembers = projectClassInfo.get(className);
+		if (projectClassMembers == null) {
+			throw new GdxRuntimeException("There is no class with name '" + className + "' in given Tiled project file.");
+		}
+
+		for (ProjectClassMember projectClassMember : projectClassMembers) {
+			String propName = projectClassMember.name;
+			XmlReader.Element classProp = classElement == null ? null : getPropertyByName(classElement, propName);
+			switch (projectClassMember.type) {
+			case "object": {
+				String value = classProp == null ? projectClassMember.defaultValue.asString() : getPropertyValue(classProp);
+				loadObjectProperty(classProperties, propName, value);
+				break;
+			}
+			case "class": {
+				// A 'class' property is a property which is itself a set of properties
+				MapProperties nestedClassProperties = new MapProperties();
+				String nestedClassName = projectClassMember.propertyType;
+				nestedClassProperties.put("type", nestedClassName);
+				// the actual properties of a 'class' property are stored as a new properties tag
+				classProperties.put(propName, nestedClassProperties);
+				if (classProp == null) {
+					// no class values overridden -> use default class values
+					loadJsonClassProperties(nestedClassName, nestedClassProperties, projectClassMember.defaultValue);
+				} else {
+					loadClassProperties(nestedClassName, nestedClassProperties, classProp);
+				}
+				break;
+			}
+			default: {
+				String value = classProp == null ? projectClassMember.defaultValue.asString() : getPropertyValue(classProp);
+				loadBasicProperty(classProperties, propName, value, projectClassMember.type);
+				break;
+			}
+			}
 		}
 	}
 
-	protected Cell createTileLayerCell (boolean flipHorizontally, boolean flipVertically, boolean flipDiagonally) {
-		Cell cell = new Cell();
-		if (flipDiagonally) {
-			if (flipHorizontally && flipVertically) {
-				cell.setFlipHorizontally(true);
-				cell.setRotation(Cell.ROTATE_270);
-			} else if (flipHorizontally) {
-				cell.setRotation(Cell.ROTATE_270);
-			} else if (flipVertically) {
-				cell.setRotation(Cell.ROTATE_90);
-			} else {
-				cell.setFlipVertically(true);
-				cell.setRotation(Cell.ROTATE_270);
+	private static String getPropertyValue (Element classProp) {
+		return classProp.getAttribute("value", classProp.getText());
+	}
+
+	protected Element getPropertyByName (Element classElement, String propName) {
+		// we use getChildrenByNameRecursively here because in case of nested classes,
+		// we get an element with a root property (=class) and inside additional property tags for the real
+		// class properties. If we just use getChildrenByName we don't get any children for a nested class.
+		for (Element property : classElement.getChildrenByNameRecursively("property")) {
+			if (propName.equals(property.getAttribute("name"))) {
+				return property;
 			}
-		} else {
-			cell.setFlipHorizontally(flipHorizontally);
-			cell.setFlipVertically(flipVertically);
 		}
-		return cell;
+		return null;
 	}
 
 	static public int[] getTileIds (Element element, int width, int height) {
@@ -585,24 +733,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 			}
 		}
 		return ids;
-	}
-
-	protected static int unsignedByteToInt (byte b) {
-		return b & 0xFF;
-	}
-
-	protected static FileHandle getRelativeFileHandle (FileHandle file, String path) {
-		StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
-		FileHandle result = file.parent();
-		while (tokenizer.hasMoreElements()) {
-			String token = tokenizer.nextToken();
-			if (token.equals(".."))
-				result = result.parent();
-			else {
-				result = result.child(token);
-			}
-		}
-		return result;
 	}
 
 	protected void loadTileSet (Element element, FileHandle tmxFile, ImageResolver imageResolver) {
@@ -698,21 +828,26 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 
 	protected void addTileProperties (TiledMapTile tile, Element tileElement) {
 		String terrain = tileElement.getAttribute("terrain", null);
+		MapProperties tileProperties = tile.getProperties();
 		if (terrain != null) {
-			tile.getProperties().put("terrain", terrain);
+			tileProperties.put("terrain", terrain);
 		}
 		String probability = tileElement.getAttribute("probability", null);
 		if (probability != null) {
-			tile.getProperties().put("probability", probability);
+			tileProperties.put("probability", probability);
 		}
 		String type = tileElement.getAttribute("type", null);
 		if (type != null) {
-			tile.getProperties().put("type", type);
+			tileProperties.put("type", type);
 		}
 		Element properties = tileElement.getChildByName("properties");
 		if (properties != null) {
-			loadProperties(tile.getProperties(), properties);
+			loadProperties(tileProperties, properties);
 		}
+
+		// if there is a 'type' (=class) specified, then check if there are any other
+		// class properties available and put their default values into the properties.
+		loadMapPropertiesClassDefaults(type, tileProperties);
 	}
 
 	protected void addTileObjectGroup (TiledMapTile tile, Element tileElement) {
@@ -742,12 +877,4 @@ public abstract class BaseTmxMapLoader<P extends BaseTmxMapLoader.Parameters> ex
 		return null;
 	}
 
-	protected void addStaticTiledMapTile (TiledMapTileSet tileSet, TextureRegion textureRegion, int tileId, float offsetX,
-		float offsetY) {
-		TiledMapTile tile = new StaticTiledMapTile(textureRegion);
-		tile.setId(tileId);
-		tile.setOffsetX(offsetX);
-		tile.setOffsetY(flipY ? -offsetY : offsetY);
-		tileSet.putTile(tileId, tile);
-	}
 }

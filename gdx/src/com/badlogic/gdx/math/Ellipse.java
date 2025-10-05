@@ -46,8 +46,8 @@ public class Ellipse implements Serializable, Shape2D {
 
 	/** Constructs a new ellipse
 	 * 
-	 * @param x X coordinate
-	 * @param y Y coordinate
+	 * @param x X coordinate of the center of the ellipse
+	 * @param y Y coordinate of the center of the ellipse
 	 * @param width the width of the ellipse
 	 * @param height the height of the ellipse */
 	public Ellipse (float x, float y, float width, float height) {
@@ -59,7 +59,7 @@ public class Ellipse implements Serializable, Shape2D {
 
 	/** Constructs a new ellipse
 	 * 
-	 * @param position Position vector
+	 * @param position Position vector of the center of the ellipse
 	 * @param width the width of the ellipse
 	 * @param height the height of the ellipse */
 	public Ellipse (Vector2 position, float width, float height) {
@@ -71,7 +71,7 @@ public class Ellipse implements Serializable, Shape2D {
 
 	/** Constructs a new ellipse
 	 * 
-	 * @param position Position vector
+	 * @param position Position vector of the center of the ellipse
 	 * @param size Size vector */
 	public Ellipse (Vector2 position, Vector2 size) {
 		this.x = position.x;
@@ -114,8 +114,8 @@ public class Ellipse implements Serializable, Shape2D {
 
 	/** Sets a new position and size for this ellipse.
 	 * 
-	 * @param x X coordinate
-	 * @param y Y coordinate
+	 * @param x X coordinate of the center of the ellipse
+	 * @param y Y coordinate of the center of the ellipse
 	 * @param width the width of the ellipse
 	 * @param height the height of the ellipse */
 	public void set (float x, float y, float width, float height) {
@@ -150,7 +150,7 @@ public class Ellipse implements Serializable, Shape2D {
 	}
 
 	/** Sets the x and y-coordinates of ellipse center from a {@link Vector2}.
-	 * @param position The position vector
+	 * @param position The position vector of the center of the ellipse
 	 * @return this ellipse for chaining */
 	public Ellipse setPosition (Vector2 position) {
 		this.x = position.x;
@@ -160,8 +160,8 @@ public class Ellipse implements Serializable, Shape2D {
 	}
 
 	/** Sets the x and y-coordinates of ellipse center
-	 * @param x The x-coordinate
-	 * @param y The y-coordinate
+	 * @param x The x-coordinate of the center of the ellipse
+	 * @param y The y-coordinate of the center of the ellipse
 	 * @return this ellipse for chaining */
 	public Ellipse setPosition (float x, float y) {
 		this.x = x;
@@ -200,6 +200,12 @@ public class Ellipse implements Serializable, Shape2D {
 			// We can use the simpler approximation, then
 			return (float)(MathUtils.PI2 * Math.sqrt((a * a + b * b) / 2));
 		}
+	}
+
+	/** Returns a {@link String} representation of this {@link Ellipse} of the form {@code [x,y,width,height]}. */
+	@Override
+	public String toString () {
+		return "[" + x + "," + y + "," + width + "," + height + "]";
 	}
 
 	@Override

@@ -17,9 +17,11 @@
 package com.badlogic.gdx.utils;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
@@ -49,7 +51,7 @@ public class JsonValue implements Iterable<JsonValue> {
 
 	public String name;
 	/** May be null. */
-	public JsonValue child, parent;
+	public JsonValue child, last, parent;
 	/** May be null. When changing this field the parent {@link #size()} may need to be changed. */
 	public JsonValue next, prev;
 	public int size;
@@ -83,10 +85,32 @@ public class JsonValue implements Iterable<JsonValue> {
 		set(value);
 	}
 
+	/** Creates a deep copy of the specific value, except {@link #parent()}, {@link #next()}, and {@link #prev()} are null. */
+	public JsonValue (JsonValue value) {
+		this(value, null, null);
+	}
+
+	private JsonValue (JsonValue other, @Null JsonValue otherLast, @Null JsonValue parent) {
+		type = other.type;
+		stringValue = other.stringValue;
+		doubleValue = other.doubleValue;
+		longValue = other.longValue;
+		name = other.name;
+		this.parent = parent;
+		if (other.child != null) child = new JsonValue(other.child, other.last, this);
+		if (other == otherLast) parent.last = this;
+		if (parent != null && other.next != null) {
+			next = new JsonValue(other.next, otherLast, parent);
+			next.prev = this;
+		}
+		size = other.size;
+	}
+
 	/** Returns the child at the specified index. This requires walking the linked list to the specified entry, see
 	 * {@link JsonValue} for how to iterate efficiently.
 	 * @return May be null. */
 	public @Null JsonValue get (int index) {
+		if (index == size - 1) return last;
 		JsonValue current = child;
 		while (current != null && index > 0) {
 			index--;
@@ -98,6 +122,15 @@ public class JsonValue implements Iterable<JsonValue> {
 	/** Returns the child with the specified name.
 	 * @return May be null. */
 	public @Null JsonValue get (String name) {
+		JsonValue current = child;
+		while (current != null && (current.name == null || !current.name.equals(name)))
+			current = current.next;
+		return current;
+	}
+
+	/** Returns the child with the specified name, ignoring case.
+	 * @return May be null. */
+	public @Null JsonValue getIgnoreCase (String name) {
 		JsonValue current = child;
 		while (current != null && (current.name == null || !current.name.equalsIgnoreCase(name)))
 			current = current.next;
@@ -143,6 +176,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	public @Null JsonValue remove (int index) {
 		JsonValue child = get(index);
 		if (child == null) return null;
+		if (last == child) last = child.prev;
 		if (child.prev == null) {
 			this.child = child.next;
 			if (this.child != null) this.child.prev = null;
@@ -159,6 +193,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	public @Null JsonValue remove (String name) {
 		JsonValue child = get(name);
 		if (child == null) return null;
+		if (last == child) last = child.prev;
 		if (child.prev == null) {
 			this.child = child.next;
 			if (this.child != null) this.child.prev = null;
@@ -173,6 +208,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	/** Removes this value from its parent. */
 	public void remove () {
 		if (parent == null) throw new IllegalStateException();
+		if (parent.last == this) parent.last = prev;
 		if (prev == null) {
 			parent.child = next;
 			if (parent.child != null) parent.child.prev = null;
@@ -201,7 +237,7 @@ public class JsonValue implements Iterable<JsonValue> {
 
 	/** Returns this value as a string.
 	 * @return May be null if this value is null.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public @Null String asString () {
 		switch (type) {
 		case stringValue:
@@ -219,7 +255,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a float.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public float asFloat () {
 		switch (type) {
 		case stringValue:
@@ -235,7 +271,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a double.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public double asDouble () {
 		switch (type) {
 		case stringValue:
@@ -251,7 +287,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a long.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public long asLong () {
 		switch (type) {
 		case stringValue:
@@ -267,7 +303,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as an int.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public int asInt () {
 		switch (type) {
 		case stringValue:
@@ -283,7 +319,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a boolean.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public boolean asBoolean () {
 		switch (type) {
 		case stringValue:
@@ -299,7 +335,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a byte.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public byte asByte () {
 		switch (type) {
 		case stringValue:
@@ -315,7 +351,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a short.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public short asShort () {
 		switch (type) {
 		case stringValue:
@@ -331,7 +367,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** Returns this value as a char.
-	 * @throws IllegalStateException if this an array or object. */
+	 * @throws IllegalStateException if this is an array or object. */
 	public char asChar () {
 		switch (type) {
 		case stringValue:
@@ -899,6 +935,51 @@ public class JsonValue implements Iterable<JsonValue> {
 		return child;
 	}
 
+	/** Returns the last child for this object or array.
+	 * @return May be null. */
+	public @Null JsonValue last () {
+		return last;
+	}
+
+	/** Sets the name of the specified value and replaces an existing child with the same name, else adds it after the last
+	 * child. */
+	public void setChild (String name, JsonValue value) {
+		if (name == null) throw new IllegalArgumentException("name cannot be null.");
+		value.name = name;
+		setChild(value);
+	}
+
+	/** Replaces an existing child with the same name as the specified value, else adds it after the last child. */
+	public void setChild (JsonValue value) {
+		String name = value.name;
+		if (name == null) throw new IllegalStateException("An object child requires a name: " + value);
+		JsonValue current = child;
+		while (current != null) {
+			if (current.name.equals(name)) {
+				current.replace(value);
+				return;
+			}
+			current = current.next;
+		}
+		addChild(value);
+	}
+
+	/** Replaces this value in its parent with the specified value. */
+	public void replace (JsonValue value) {
+		if (parent.last == this) parent.last = value;
+		if (prev != null)
+			prev.next = value;
+		else
+			parent.child = value;
+		value.prev = prev;
+		value.next = next;
+		if (next != null) next.prev = value;
+		value.parent = parent;
+		prev = null;
+		next = null;
+		parent = null;
+	}
+
 	/** Sets the name of the specified value and adds it after the last child. */
 	public void addChild (String name, JsonValue value) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
@@ -913,21 +994,33 @@ public class JsonValue implements Iterable<JsonValue> {
 			throw new IllegalStateException("An object child requires a name: " + value);
 		value.parent = this;
 		value.next = null;
-		size++;
-		JsonValue current = child;
-		if (current == null) {
+		if (child == null) {
 			value.prev = null;
 			child = value;
 		} else {
-			while (true) {
-				if (current.next == null) {
-					current.next = value;
-					value.prev = current;
-					return;
-				}
-				current = current.next;
-			}
+			last.next = value;
+			value.prev = last;
 		}
+		last = value;
+		size++;
+	}
+
+	/** Adds the specified value as the first child.
+	 * @throws IllegalStateException if this is an object and the specified child's name is null. */
+	public void addChildFirst (JsonValue value) {
+		if (type == ValueType.object && value.name == null)
+			throw new IllegalStateException("An object child requires a name: " + value);
+		value.parent = this;
+		value.next = child;
+		value.prev = null;
+		if (child == null) {
+			child = value;
+			last = value;
+		} else {
+			child.prev = value;
+			child = value;
+		}
+		size++;
 	}
 
 	/** Returns the next sibling of this value.
@@ -936,7 +1029,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		return next;
 	}
 
-	/** Sets the next sibling of this value. Does not change the parent {@link #size()}.
+	/** Sets the next sibling of this value. Does not change other fields.
 	 * @param next May be null. */
 	public void setNext (@Null JsonValue next) {
 		this.next = next;
@@ -948,16 +1041,29 @@ public class JsonValue implements Iterable<JsonValue> {
 		return prev;
 	}
 
-	/** Sets the next sibling of this value. Does not change the parent {@link #size()}.
+	/** Sets the next sibling of this value. Does not change other fields.
 	 * @param prev May be null. */
 	public void setPrev (@Null JsonValue prev) {
 		this.prev = prev;
+	}
+
+	/** Sets the type and value to the specified JsonValue. */
+	public void set (JsonValue value) {
+		type = value.type;
+		stringValue = value.stringValue;
+		doubleValue = value.doubleValue;
+		longValue = value.longValue;
 	}
 
 	/** @param value May be null. */
 	public void set (@Null String value) {
 		stringValue = value;
 		type = value == null ? ValueType.nullValue : ValueType.stringValue;
+	}
+
+	public void setNull () {
+		stringValue = null;
+		type = ValueType.nullValue;
 	}
 
 	/** @param stringValue May be null if the string representation is the string value of the double (eg, no leading zeros). */
@@ -981,61 +1087,56 @@ public class JsonValue implements Iterable<JsonValue> {
 		type = ValueType.booleanValue;
 	}
 
-	public String toJson (OutputType outputType) {
-		if (isValue()) return asString();
-		StringBuilder buffer = new StringBuilder(512);
-		json(this, buffer, outputType);
-		return buffer.toString();
+	public boolean equalsString (String value) {
+		return Objects.equals(asString(), value);
 	}
 
-	private void json (JsonValue object, StringBuilder buffer, OutputType outputType) {
-		if (object.isObject()) {
-			if (object.child == null)
-				buffer.append("{}");
-			else {
-				int start = buffer.length();
-				while (true) {
-					buffer.append('{');
-					int i = 0;
-					for (JsonValue child = object.child; child != null; child = child.next) {
-						buffer.append(outputType.quoteName(child.name));
-						buffer.append(':');
-						json(child, buffer, outputType);
-						if (child.next != null) buffer.append(',');
-					}
-					break;
-				}
-				buffer.append('}');
+	public boolean nameEquals (String value) {
+		return Objects.equals(name, value);
+	}
+
+	public String toJson (OutputType outputType) {
+		if (isValue()) return asString();
+		StringWriter writer = new StringWriter(512);
+		try {
+			toJson(outputType, writer);
+		} catch (IOException ex) {
+			throw new GdxRuntimeException(ex);
+		}
+		return writer.toString();
+	}
+
+	public void toJson (OutputType outputType, Writer writer) throws IOException {
+		if (isObject()) {
+			writer.write('{');
+			for (JsonValue child = this.child; child != null; child = child.next) {
+				writer.write(outputType.quoteName(child.name));
+				writer.write(':');
+				child.toJson(outputType, writer);
+				if (child.next != null) writer.write(',');
 			}
-		} else if (object.isArray()) {
-			if (object.child == null)
-				buffer.append("[]");
-			else {
-				int start = buffer.length();
-				while (true) {
-					buffer.append('[');
-					for (JsonValue child = object.child; child != null; child = child.next) {
-						json(child, buffer, outputType);
-						if (child.next != null) buffer.append(',');
-					}
-					break;
-				}
-				buffer.append(']');
+			writer.write('}');
+		} else if (isArray()) {
+			writer.write('[');
+			for (JsonValue child = this.child; child != null; child = child.next) {
+				child.toJson(outputType, writer);
+				if (child.next != null) writer.write(',');
 			}
-		} else if (object.isString()) {
-			buffer.append(outputType.quoteValue(object.asString()));
-		} else if (object.isDouble()) {
-			double doubleValue = object.asDouble();
-			long longValue = object.asLong();
-			buffer.append(doubleValue == longValue ? longValue : doubleValue);
-		} else if (object.isLong()) {
-			buffer.append(object.asLong());
-		} else if (object.isBoolean()) {
-			buffer.append(object.asBoolean());
-		} else if (object.isNull()) {
-			buffer.append("null");
+			writer.write(']');
+		} else if (isString()) {
+			writer.write(outputType.quoteValue(asString()));
+		} else if (isDouble()) {
+			double doubleValue = asDouble();
+			long longValue = asLong();
+			writer.write(doubleValue == longValue ? Long.toString(longValue) : Double.toString(doubleValue));
+		} else if (isLong()) {
+			writer.write(Long.toString(asLong()));
+		} else if (isBoolean()) {
+			writer.write(asBoolean() ? "true" : "false");
+		} else if (isNull()) {
+			writer.write("null");
 		} else
-			throw new SerializationException("Unknown object type: " + object);
+			throw new SerializationException("Unknown object type: " + this);
 	}
 
 	/** Iterates the children of this array or object. */
@@ -1096,7 +1197,6 @@ public class JsonValue implements Iterable<JsonValue> {
 				outer:
 				while (true) {
 					buffer.append(newLines ? "{\n" : "{ ");
-					int i = 0;
 					for (JsonValue child = object.child; child != null; child = child.next) {
 						if (newLines) indent(indent, buffer);
 						buffer.append(outputType.quoteName(child.name));
@@ -1169,50 +1269,50 @@ public class JsonValue implements Iterable<JsonValue> {
 		OutputType outputType = settings.outputType;
 		if (object.isObject()) {
 			if (object.child == null)
-				writer.append("{}");
+				writer.write("{}");
 			else {
 				boolean newLines = !isFlat(object) || object.size > 6;
-				writer.append(newLines ? "{\n" : "{ ");
+				writer.write(newLines ? "{\n" : "{ ");
 				int i = 0;
 				for (JsonValue child = object.child; child != null; child = child.next) {
 					if (newLines) indent(indent, writer);
-					writer.append(outputType.quoteName(child.name));
-					writer.append(": ");
+					writer.write(outputType.quoteName(child.name));
+					writer.write(": ");
 					prettyPrint(child, writer, indent + 1, settings);
-					if ((!newLines || outputType != OutputType.minimal) && child.next != null) writer.append(',');
-					writer.append(newLines ? '\n' : ' ');
+					if ((!newLines || outputType != OutputType.minimal) && child.next != null) writer.write(',');
+					writer.write(newLines ? '\n' : ' ');
 				}
 				if (newLines) indent(indent - 1, writer);
-				writer.append('}');
+				writer.write('}');
 			}
 		} else if (object.isArray()) {
 			if (object.child == null)
-				writer.append("[]");
+				writer.write("[]");
 			else {
 				boolean newLines = !isFlat(object);
-				writer.append(newLines ? "[\n" : "[ ");
+				writer.write(newLines ? "[\n" : "[ ");
 				int i = 0;
 				for (JsonValue child = object.child; child != null; child = child.next) {
 					if (newLines) indent(indent, writer);
 					prettyPrint(child, writer, indent + 1, settings);
-					if ((!newLines || outputType != OutputType.minimal) && child.next != null) writer.append(',');
-					writer.append(newLines ? '\n' : ' ');
+					if ((!newLines || outputType != OutputType.minimal) && child.next != null) writer.write(',');
+					writer.write(newLines ? '\n' : ' ');
 				}
 				if (newLines) indent(indent - 1, writer);
-				writer.append(']');
+				writer.write(']');
 			}
 		} else if (object.isString()) {
-			writer.append(outputType.quoteValue(object.asString()));
+			writer.write(outputType.quoteValue(object.asString()));
 		} else if (object.isDouble()) {
 			double doubleValue = object.asDouble();
 			long longValue = object.asLong();
-			writer.append(Double.toString(doubleValue == longValue ? longValue : doubleValue));
+			writer.write(Double.toString(doubleValue == longValue ? longValue : doubleValue));
 		} else if (object.isLong()) {
-			writer.append(Long.toString(object.asLong()));
+			writer.write(Long.toString(object.asLong()));
 		} else if (object.isBoolean()) {
-			writer.append(Boolean.toString(object.asBoolean()));
+			writer.write(Boolean.toString(object.asBoolean()));
 		} else if (object.isNull()) {
-			writer.append("null");
+			writer.write("null");
 		} else
 			throw new SerializationException("Unknown object type: " + object);
 	}
@@ -1234,9 +1334,9 @@ public class JsonValue implements Iterable<JsonValue> {
 			buffer.append('\t');
 	}
 
-	static private void indent (int count, Writer buffer) throws IOException {
+	static private void indent (int count, Writer writer) throws IOException {
 		for (int i = 0; i < count; i++)
-			buffer.append('\t');
+			writer.write('\t');
 	}
 
 	public class JsonIterator implements Iterator<JsonValue>, Iterable<JsonValue> {
@@ -1255,14 +1355,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		}
 
 		public void remove () {
-			if (current.prev == null) {
-				child = current.next;
-				if (child != null) child.prev = null;
-			} else {
-				current.prev.next = current.next;
-				if (current.next != null) current.next.prev = current.prev;
-			}
-			size--;
+			current.remove();
 		}
 
 		public Iterator<JsonValue> iterator () {

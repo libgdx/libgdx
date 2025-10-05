@@ -190,6 +190,37 @@ public class IntArray {
 		items[second] = firstValue;
 	}
 
+	/** Returns true if the specified value was replaced successfully with the replacement
+	 * @param value the int to be replaced
+	 * @param replacement the first value will be replaced by this replacement if found
+	 * @return if value was found and replaced */
+	public boolean replaceFirst (int value, int replacement) {
+		int[] items = this.items;
+		for (int i = 0, n = size; i < n; i++) {
+			if (items[i] == value) {
+				items[i] = replacement;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Returns the number of replacements done.
+	 * @param value the int to be replaced
+	 * @param replacement all occurrences of value will be replaced by this replacement
+	 * @return the number of replacements done */
+	public int replaceAll (int value, int replacement) {
+		int[] items = this.items;
+		int replacements = 0;
+		for (int i = 0, n = size; i < n; i++) {
+			if (items[i] == value) {
+				items[i] = replacement;
+				replacements++;
+			}
+		}
+		return replacements;
+	}
+
 	public boolean contains (int value) {
 		int i = size - 1;
 		int[] items = this.items;
@@ -251,7 +282,7 @@ public class IntArray {
 		size = n - count;
 	}
 
-	/** Removes from this array all of elements contained in the specified array.
+	/** Removes from this array the first instance of each element contained in the specified array.
 	 * @return true if this array was modified. */
 	public boolean removeAll (IntArray array) {
 		int size = this.size;
@@ -362,6 +393,7 @@ public class IntArray {
 	/** Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
 	 * taken. */
 	public void truncate (int newSize) {
+		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (size > newSize) size = newSize;
 	}
 

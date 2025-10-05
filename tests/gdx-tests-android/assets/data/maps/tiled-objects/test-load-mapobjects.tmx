@@ -1,32 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="32" tileheight="32" nextobjectid="18">
+<map version="1.9" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="39">
  <tileset firstgid="1" name="Test" tilewidth="256" tileheight="256" tilecount="3" columns="0">
   <tile id="0">
-   <image width="32" height="32" source="Start.bmp"/>
+   <image source="Start.bmp" width="32" height="32"/>
    <animation>
     <frame tileid="0" duration="500"/>
     <frame tileid="1" duration="500"/>
    </animation>
   </tile>
   <tile id="1">
-   <image width="32" height="32" source="../../badlogicsmall.jpg"/>
+   <image source="../../badlogicsmall.jpg" width="32" height="32"/>
   </tile>
   <tile id="2">
-   <image width="256" height="256" source="../../badlogic.jpg"/>
+   <image source="../../badlogic.jpg" width="256" height="256"/>
   </tile>
  </tileset>
- <objectgroup name="Objects">
+ <objectgroup id="1" name="Objects">
   <object id="3" name="Ellipse" x="59.3333" y="335" width="130" height="87">
    <ellipse/>
   </object>
   <object id="5" name="Polygon" x="238.667" y="351.333">
    <polygon points="0,0 78,-4 32,73"/>
   </object>
-  <object id="9" name="Rectangle" x="340" y="341.333" width="118.667" height="100"/>
+  <object id="9" name="Rectangle" x="340" y="341.333" width="118.667" height="100" rotation="4"/>
   <object id="12" name="Texture" gid="3" x="128" y="298.667" width="256" height="33.667"/>
-  <object id="14" gid="1073741825" x="384" y="256" width="64" height="32"/>
+  <object id="14" gid="1" x="384" y="256" width="64" height="32"/>
   <object id="17" name="Polyline" x="364" y="155">
    <polyline points="0,0 29,-60 57,4 91,-63"/>
+  </object>
+  <object id="28" x="128" y="224" width="254.846" height="19">
+   <text wrap="1" color="#ff0000">Tiled Text Object 1</text>
+  </object>
+  <object id="32" x="128" y="246" width="254.846" height="19">
+   <text wrap="1" halign="right">Tiled Text Object 2</text>
+  </object>
+  <object id="33" x="84.1092" y="261.507" width="50.0583" height="75.4086">
+   <text wrap="1" color="#ffff00" halign="center">Tiled Text Object 3</text>
+  </object>
+  <object id="18" name="Point" x="333.265" y="218.203">
+     <point/>
   </object>
  </objectgroup>
 </map>

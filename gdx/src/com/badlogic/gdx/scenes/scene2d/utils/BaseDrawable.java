@@ -75,13 +75,6 @@ public class BaseDrawable implements Drawable {
 		this.bottomHeight = bottomHeight;
 	}
 
-	public void setPadding (float topHeight, float leftWidth, float bottomHeight, float rightWidth) {
-		setTopHeight(topHeight);
-		setLeftWidth(leftWidth);
-		setBottomHeight(bottomHeight);
-		setRightWidth(rightWidth);
-	}
-
 	public float getMinWidth () {
 		return minWidth;
 	}
@@ -96,11 +89,6 @@ public class BaseDrawable implements Drawable {
 
 	public void setMinHeight (float minHeight) {
 		this.minHeight = minHeight;
-	}
-
-	public void setMinSize (float minWidth, float minHeight) {
-		setMinWidth(minWidth);
-		setMinHeight(minHeight);
 	}
 
 	public @Null String getName () {

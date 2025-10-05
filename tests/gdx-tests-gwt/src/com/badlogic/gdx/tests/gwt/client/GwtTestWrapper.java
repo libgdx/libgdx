@@ -77,6 +77,7 @@ import com.badlogic.gdx.tests.SimpleStageCullingTest;
 import com.badlogic.gdx.tests.SortedSpriteTest;
 import com.badlogic.gdx.tests.SoundTest;
 import com.badlogic.gdx.tests.SpriteBatchShaderTest;
+import com.badlogic.gdx.tests.SpriteBatchPerformanceTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
@@ -88,8 +89,11 @@ import com.badlogic.gdx.tests.TextAreaTest3;
 import com.badlogic.gdx.tests.TextButtonTest;
 import com.badlogic.gdx.tests.TextInputDialogTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
-import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
+import com.badlogic.gdx.tests.TiledMapGWTAtlasAssetManagerTest;
+import com.badlogic.gdx.tests.TiledMapJsonObjectLoadingTest;
 import com.badlogic.gdx.tests.TiledMapObjectLoadingTest;
+import com.badlogic.gdx.tests.TiledMapPropertiesTest;
+import com.badlogic.gdx.tests.TiledMapTemplateObjectLoadingTest;
 import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
@@ -98,13 +102,11 @@ import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.MultipleRenderTargetTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
+import com.badlogic.gdx.tests.g3d.ShadowMappingTextureTest;
 import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.gles2.GlTexImage2D;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
-import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
-import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
-import com.badlogic.gdx.tests.gles3.UniformBufferObjectsTest;
-import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
+import com.badlogic.gdx.tests.gles3.*;
 import com.badlogic.gdx.tests.gwt.GwtInputTest;
 import com.badlogic.gdx.tests.gwt.GwtWindowModeTest;
 import com.badlogic.gdx.tests.math.CollisionPlaygroundTest;
@@ -489,6 +491,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		});
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
+				return new ShadowMappingTextureTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
 				return new ShapeRendererTest();
 			}
 		});
@@ -515,6 +522,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new SpriteBatchShaderTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new SpriteBatchPerformanceTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
@@ -570,6 +582,16 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		});
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
+				return new TiledMapGWTAtlasAssetManagerTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TiledMapJsonObjectLoadingTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
 				return new TiledMapObjectLoadingTest();
 			}
 		});
@@ -577,6 +599,18 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			@Override
 			public GdxTest instance () {
 				return new TiledMapObjectPropertyTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			@Override
+			public GdxTest instance () {
+				return new TiledMapPropertiesTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			@Override
+			public GdxTest instance () {
+				return new TiledMapTemplateObjectLoadingTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
@@ -602,11 +636,6 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new ReflectionTest();
-			}
-		});
-		tests.add(new GwtInstancer() {
-			public GdxTest instance () {
-				return new TiledMapAtlasAssetManagerTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
@@ -656,6 +685,16 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			tests.add(new GwtInstancer() {
 				public GdxTest instance () {
 					return new FloatTextureTest();
+				}
+			});
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new GL30FrameBufferMultisampleMRTTest();
+				}
+			});
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new GL30FrameBufferMultisampleTest();
 				}
 			});
 			tests.add(new GwtInstancer() {

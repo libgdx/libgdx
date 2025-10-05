@@ -53,7 +53,7 @@ import com.badlogic.gdx.utils.Pools;
  * {@link SelectBoxStyle#background}.
  * @author mzechner
  * @author Nathan Sweet */
-public class SelectBox<T> extends Widget implements Disableable {
+public class SelectBox<T> extends Widget implements Disableable, Styleable<SelectBox.SelectBoxStyle> {
 	static final Vector2 temp = new Vector2();
 
 	SelectBoxStyle style;

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.android;
 
 import android.animation.Animator;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -62,6 +63,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /** An implementation of the {@link Input} interface for Android.
@@ -113,9 +115,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 	public static final int NUM_TOUCHES = 20;
 
-	ArrayList<OnKeyListener> keyListeners = new ArrayList();
-	ArrayList<KeyEvent> keyEvents = new ArrayList();
-	ArrayList<TouchEvent> touchEvents = new ArrayList();
+	ArrayList<OnKeyListener> keyListeners = new ArrayList<>();
+	ArrayList<KeyEvent> keyEvents = new ArrayList<>();
+	ArrayList<TouchEvent> touchEvents = new ArrayList<>();
 	int[] touchX = new int[NUM_TOUCHES];
 	int[] touchY = new int[NUM_TOUCHES];
 	int[] deltaX = new int[NUM_TOUCHES];
@@ -125,17 +127,16 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	int[] realId = new int[NUM_TOUCHES];
 	float[] pressure = new float[NUM_TOUCHES];
 	final boolean hasMultitouch;
-	private boolean[] justPressedButtons = new boolean[NUM_TOUCHES];
+	private final boolean[] justPressedButtons = new boolean[NUM_TOUCHES];
 	private SensorManager manager;
 	public boolean accelerometerAvailable = false;
 	protected final float[] accelerometerValues = new float[3];
 	public boolean gyroscopeAvailable = false;
 	protected final float[] gyroscopeValues = new float[3];
-	private Handler handle;
+	private final Handler handle;
 	final Application app;
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
-	private int sleepTime = 0;
 	protected final AndroidHaptics haptics;
 	private boolean compassAvailable = false;
 	private boolean rotationVectorAvailable = false;
@@ -157,12 +158,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private SensorEventListener compassListener;
 	private SensorEventListener rotationVectorListener;
 
-	private final ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList();
+	private final ArrayList<OnGenericMotionListener> genericMotionListeners = new ArrayList<>();
 	private final AndroidMouseHandler mouseHandler;
 
 	public DefaultAndroidInput (Application activity, Context context, Object view, AndroidApplicationConfiguration config) {
 		// we hook into View, for LWPs we call onTouch below directly from
-		// within the AndroidLivewallpaperEngine#onTouchEvent() method.
+		// within the AndroidWallpaperEngine#onTouchEvent() method.
 		if (view instanceof View) {
 			View v = (View)view;
 			v.setOnKeyListener(this);
@@ -180,7 +181,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		handle = new Handler();
 		this.app = activity;
 		this.context = context;
-		this.sleepTime = config.touchSleepTime;
 		touchHandler = new AndroidTouchHandler();
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
@@ -248,7 +248,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				alert.setTitle(title);
 				final EditText input = new EditText(context);
 				if (keyboardType != OnscreenKeyboardType.Default) {
-					input.setInputType(getAndroidInputType(keyboardType));
+					input.setInputType(getAndroidInputType(keyboardType, false));
 				}
 				input.setHint(hint);
 				input.setText(text);
@@ -293,7 +293,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		});
 	}
 
-	public static int getAndroidInputType (OnscreenKeyboardType type) {
+	public static int getAndroidInputType (OnscreenKeyboardType type, boolean defaultDisableAutocorrection) {
 		int inputType;
 		switch (type) {
 		case NumberPad:
@@ -312,7 +312,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
 			break;
 		default:
-			inputType = InputType.TYPE_CLASS_TEXT;
+			if (defaultDisableAutocorrection) {
+				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+					| InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+			} else {
+				inputType = InputType.TYPE_CLASS_TEXT;
+			}
 			break;
 		}
 		return inputType;
@@ -397,15 +402,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		synchronized (this) {
 			if (justTouched) {
 				justTouched = false;
-				for (int i = 0; i < justPressedButtons.length; i++) {
-					justPressedButtons[i] = false;
-				}
+				Arrays.fill(justPressedButtons, false);
 			}
 			if (keyJustPressed) {
 				keyJustPressed = false;
-				for (int i = 0; i < justPressedKeys.length; i++) {
-					justPressedKeys[i] = false;
-				}
+				Arrays.fill(justPressedKeys, false);
 			}
 
 			if (processor != null) {
@@ -485,6 +486,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 	boolean requestFocus = true;
 
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public boolean onTouch (View view, MotionEvent event) {
 		if (requestFocus && view != null) {
@@ -496,50 +498,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		// synchronized in handler.postTouchEvent()
 		touchHandler.onTouch(event, this);
 
-		if (sleepTime != 0) {
-			try {
-				Thread.sleep(sleepTime);
-			} catch (InterruptedException e) {
-			}
-		}
 		return true;
 	}
-
-// TODO Seems unused. Delete when confirmed.
-// /** Called in {@link AndroidLiveWallpaperService} on tap
-// * @param x
-// * @param y */
-// public void onTap (int x, int y) {
-// postTap(x, y);
-// }
-//
-// /** Called in {@link AndroidLiveWallpaperService} on drop
-// * @param x
-// * @param y */
-// public void onDrop (int x, int y) {
-// postTap(x, y);
-// }
-//
-// protected void postTap (int x, int y) {
-// synchronized (this) {
-// TouchEvent event = usedTouchEvents.obtain();
-// event.timeStamp = System.nanoTime();
-// event.pointer = 0;
-// event.x = x;
-// event.y = y;
-// event.type = TouchEvent.TOUCH_DOWN;
-// touchEvents.add(event);
-//
-// event = usedTouchEvents.obtain();
-// event.timeStamp = System.nanoTime();
-// event.pointer = 0;
-// event.x = x;
-// event.y = y;
-// event.type = TouchEvent.TOUCH_UP;
-// touchEvents.add(event);
-// }
-// Gdx.app.getGraphics().requestRendering();
-// }
 
 	@Override
 	public boolean onKey (View v, int keyCode, android.view.KeyEvent e) {
@@ -669,14 +629,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	private TextInputWrapper textInputWrapper;
 
 	private int getSoftButtonsBarHeight () {
-		AndroidApplication androidApplication = (AndroidApplication)Gdx.app;
+		AndroidApplication androidApplication = (AndroidApplication)app;
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		androidApplication.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		int usableHeight = metrics.heightPixels;
-		int sdkVersion = android.os.Build.VERSION.SDK_INT;
-		if (sdkVersion < 17) return usableHeight;
-
 		androidApplication.getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
 		int realHeight = metrics.heightPixels;
 
@@ -883,7 +840,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 					editText.setTransformationMethod(null);
 				}
 
-				editText.setInputType(getAndroidInputType(configuration.getType()));
+				editText.setInputType(getAndroidInputType(configuration.getType(), false));
 
 				if (configuration.isPreventCorrection()) {
 					editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -1030,7 +987,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				final String text = editText.getText().toString();
 				final int selection = editText.getSelectionStart();
 				Gdx.app.postRunnable(new Runnable() {
-					TextInputWrapper wrapper = textInputWrapper;
+					final TextInputWrapper wrapper = textInputWrapper;
 
 					@Override
 					public void run () {
@@ -1139,7 +1096,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	 * <a href= "http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[],
 	 * float[], float[])" >SensorManager#getRotationMatrix(float[], float[], float[], float[])</a>. Does not manipulate the matrix
 	 * if the platform does not have an accelerometer and compass, or a rotation vector sensor.
-	 * @param matrix */
+	 * @param matrix the device's rotation matrix */
 	public void getRotationMatrix (float[] matrix) {
 		if (rotationVectorAvailable)
 			SensorManager.getRotationMatrixFromVector(matrix, rotationVectorValues);
@@ -1317,7 +1274,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < len; i++) {
-			sb.append(i + ":" + realId[i] + " ");
+			sb.append(i).append(":").append(realId[i]).append(" ");
 		}
 		Gdx.app.log("AndroidInput", "Pointer ID lookup failed: " + pointerId + ", " + sb.toString());
 		return -1;

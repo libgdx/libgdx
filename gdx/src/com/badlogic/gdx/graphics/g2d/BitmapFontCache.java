@@ -556,6 +556,10 @@ public class BitmapFontCache {
 		return integer;
 	}
 
+	public int getPageCount () {
+		return pageVertices.length;
+	}
+
 	public float[] getVertices () {
 		return getVertices(0);
 	}
