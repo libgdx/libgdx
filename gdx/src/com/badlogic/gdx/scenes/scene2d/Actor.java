@@ -21,19 +21,21 @@ import static com.badlogic.gdx.utils.Align.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.PoolManager;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** 2D scene graph node. An actor has a position, rectangular size, origin, scale, rotation, Z index, and color. The position
@@ -55,6 +57,9 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * @author mzechner
  * @author Nathan Sweet */
 public class Actor {
+
+	static public PoolManager POOLS = new PoolManager(Rectangle::new, Array::new, GlyphLayout::new, ChangeEvent::new);
+
 	private @Null Stage stage;
 	@Null Group parent;
 	private final DelayedRemovalArray<EventListener> listeners = new DelayedRemovalArray(0);
@@ -128,7 +133,7 @@ public class Actor {
 		event.setTarget(this);
 
 		// Collect ascendants so event propagation is unaffected by hierarchy changes.
-		Array<Group> ascendants = Pools.obtain(Array.class);
+		Array<Group> ascendants = POOLS.obtain(Array.class);
 		Group parent = this.parent;
 		while (parent != null) {
 			ascendants.add(parent);
@@ -162,7 +167,7 @@ public class Actor {
 			return event.isCancelled();
 		} finally {
 			ascendants.clear();
-			Pools.free(ascendants);
+			POOLS.free(ascendants);
 		}
 	}
 
@@ -834,16 +839,16 @@ public class Actor {
 		tableBounds.y = y;
 		tableBounds.width = width;
 		tableBounds.height = height;
-		Rectangle scissorBounds = Pools.obtain(Rectangle.class);
+		Rectangle scissorBounds = POOLS.obtain(Rectangle.class);
 		stage.calculateScissors(tableBounds, scissorBounds);
 		if (ScissorStack.pushScissors(scissorBounds)) return true;
-		Pools.free(scissorBounds);
+		POOLS.free(scissorBounds);
 		return false;
 	}
 
 	/** Ends clipping begun by {@link #clipBegin(float, float, float, float)}. */
 	public void clipEnd () {
-		Pools.free(ScissorStack.popScissors());
+		POOLS.free(ScissorStack.popScissors());
 	}
 
 	/** Transforms the specified point in screen coordinates to the actor's local coordinate system.
