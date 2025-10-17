@@ -56,6 +56,11 @@ public class PoolManager {
 		return pool;
 	}
 
+    /** Returns the pool registered for the class. Will return null, if no pool for this class is registered */
+    public <T> Pool<T> getPoolOrNull (Class<T> clazz) {
+        return (Pool<T>)typePools.get(clazz);
+    }
+
 	/** Returns a new pooled object for the class. Will throw an exception, if no pool for this class is registered. Free with
 	 * {@link PoolManager#free} */
 	public <T> T obtain (Class<T> clazz) {
@@ -66,6 +71,16 @@ public class PoolManager {
 		}
 		return pool.obtain();
 	}
+
+    /** Returns a new pooled object for the class. Will return null, if no pool for this class is registered. Free with
+     * {@link PoolManager#free} */
+    public <T> T obtainOrNull (Class<T> clazz) {
+        Pool<T> pool = (Pool<T>)typePools.get(clazz);
+        if (pool == null) {
+            return null;
+        }
+        return pool.obtain();
+    }
 
 	/** Frees a pooled object. Will throw an exception, if no pool for this class is registered. It is unchecked, whether the
 	 * object was obtained by the registered pool. */
