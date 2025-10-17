@@ -71,9 +71,10 @@ public class Actions {
 	/** Returns a new or pooled action of the specified type. */
 	static public <T extends Action> T action (Class<T> type) {
 		Pool<T> pool = ACTION_POOLS.getPoolOrNull(type);
-        if (pool == null) {
-            throw new GdxRuntimeException("No action pool registered for type " + type + ". Register it with Actions#registerAction.");
-        }
+		if (pool == null) {
+			throw new GdxRuntimeException(
+				"No action pool registered for type " + type + ". Register it with Actions#registerAction.");
+		}
 		T action = pool.obtain();
 		action.setPool(pool);
 		return action;
