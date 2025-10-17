@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.PoolManager;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
@@ -67,6 +67,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** True if any actor has ever had debug enabled. */
 	static boolean debug;
 
+	protected PoolManager pools = new PoolManager(InputEvent::new, FocusEvent::new, TouchFocus::new);
 	private Viewport viewport;
 	private final Batch batch;
 	private boolean ownsBatch;
@@ -219,7 +220,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 		// Exit overLast.
 		if (overLast != null) {
-			InputEvent event = Pools.obtain(InputEvent.class);
+			InputEvent event = pools.obtain(InputEvent.class);
 			event.setType(InputEvent.Type.exit);
 			event.setStage(this);
 			event.setStageX(tempCoords.x);
@@ -227,12 +228,12 @@ public class Stage extends InputAdapter implements Disposable {
 			event.setPointer(pointer);
 			event.setRelatedActor(over);
 			overLast.fire(event);
-			Pools.free(event);
+			pools.free(event);
 		}
 
 		// Enter over.
 		if (over != null) {
-			InputEvent event = Pools.obtain(InputEvent.class);
+			InputEvent event = pools.obtain(InputEvent.class);
 			event.setType(InputEvent.Type.enter);
 			event.setStage(this);
 			event.setStageX(tempCoords.x);
@@ -240,14 +241,14 @@ public class Stage extends InputAdapter implements Disposable {
 			event.setPointer(pointer);
 			event.setRelatedActor(overLast);
 			over.fire(event);
-			Pools.free(event);
+			pools.free(event);
 		}
 		return over;
 	}
 
 	private void fireExit (Actor actor, int screenX, int screenY, int pointer) {
 		screenToStageCoordinates(tempCoords.set(screenX, screenY));
-		InputEvent event = Pools.obtain(InputEvent.class);
+		InputEvent event = pools.obtain(InputEvent.class);
 		event.setType(InputEvent.Type.exit);
 		event.setStage(this);
 		event.setStageX(tempCoords.x);
@@ -255,7 +256,7 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setPointer(pointer);
 		event.setRelatedActor(actor);
 		actor.fire(event);
-		Pools.free(event);
+		pools.free(event);
 	}
 
 	/** Applies a touch down event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the
@@ -269,7 +270,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
-		InputEvent event = Pools.obtain(InputEvent.class);
+		InputEvent event = pools.obtain(InputEvent.class);
 		event.setType(Type.touchDown);
 		event.setStage(this);
 		event.setStageX(tempCoords.x);
@@ -284,7 +285,7 @@ public class Stage extends InputAdapter implements Disposable {
 			target.fire(event);
 
 		boolean handled = event.isHandled();
-		Pools.free(event);
+		pools.free(event);
 		return handled;
 	}
 
@@ -300,7 +301,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
-		InputEvent event = Pools.obtain(InputEvent.class);
+		InputEvent event = pools.obtain(InputEvent.class);
 		event.setType(Type.touchDragged);
 		event.setStage(this);
 		event.setStageX(tempCoords.x);
@@ -320,7 +321,7 @@ public class Stage extends InputAdapter implements Disposable {
 		touchFocuses.end();
 
 		boolean handled = event.isHandled();
-		Pools.free(event);
+		pools.free(event);
 		return handled;
 	}
 
@@ -335,7 +336,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
-		InputEvent event = Pools.obtain(InputEvent.class);
+		InputEvent event = pools.obtain(InputEvent.class);
 		event.setType(Type.touchUp);
 		event.setStage(this);
 		event.setStageX(tempCoords.x);
@@ -352,12 +353,12 @@ public class Stage extends InputAdapter implements Disposable {
 			event.setTarget(focus.target);
 			event.setListenerActor(focus.listenerActor);
 			if (focus.listener.handle(event)) event.handle();
-			Pools.free(focus);
+			pools.free(focus);
 		}
 		touchFocuses.end();
 
 		boolean handled = event.isHandled();
-		Pools.free(event);
+		pools.free(event);
 		return handled;
 	}
 
@@ -376,7 +377,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 		screenToStageCoordinates(tempCoords.set(screenX, screenY));
 
-		InputEvent event = Pools.obtain(InputEvent.class);
+		InputEvent event = pools.obtain(InputEvent.class);
 		event.setType(Type.mouseMoved);
 		event.setStage(this);
 		event.setStageX(tempCoords.x);
@@ -387,7 +388,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 		target.fire(event);
 		boolean handled = event.isHandled();
-		Pools.free(event);
+		pools.free(event);
 		return handled;
 	}
 
@@ -398,7 +399,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 		screenToStageCoordinates(tempCoords.set(mouseScreenX, mouseScreenY));
 
-		InputEvent event = Pools.obtain(InputEvent.class);
+		InputEvent event = pools.obtain(InputEvent.class);
 		event.setType(InputEvent.Type.scrolled);
 		event.setStage(this);
 		event.setStageX(tempCoords.x);
@@ -407,7 +408,7 @@ public class Stage extends InputAdapter implements Disposable {
 		event.setScrollAmountY(amountY);
 		target.fire(event);
 		boolean handled = event.isHandled();
-		Pools.free(event);
+		pools.free(event);
 		return handled;
 	}
 
@@ -415,13 +416,13 @@ public class Stage extends InputAdapter implements Disposable {
 	 * true if the event was {@link Event#handle() handled}. */
 	public boolean keyDown (int keyCode) {
 		Actor target = keyboardFocus == null ? root : keyboardFocus;
-		InputEvent event = Pools.obtain(InputEvent.class);
+		InputEvent event = pools.obtain(InputEvent.class);
 		event.setType(InputEvent.Type.keyDown);
 		event.setStage(this);
 		event.setKeyCode(keyCode);
 		target.fire(event);
 		boolean handled = event.isHandled();
-		Pools.free(event);
+		pools.free(event);
 		return handled;
 	}
 
@@ -429,13 +430,13 @@ public class Stage extends InputAdapter implements Disposable {
 	 * if the event was {@link Event#handle() handled}. */
 	public boolean keyUp (int keyCode) {
 		Actor target = keyboardFocus == null ? root : keyboardFocus;
-		InputEvent event = Pools.obtain(InputEvent.class);
+		InputEvent event = pools.obtain(InputEvent.class);
 		event.setType(InputEvent.Type.keyUp);
 		event.setStage(this);
 		event.setKeyCode(keyCode);
 		target.fire(event);
 		boolean handled = event.isHandled();
-		Pools.free(event);
+		pools.free(event);
 		return handled;
 	}
 
@@ -443,13 +444,13 @@ public class Stage extends InputAdapter implements Disposable {
 	 * true if the event was {@link Event#handle() handled}. */
 	public boolean keyTyped (char character) {
 		Actor target = keyboardFocus == null ? root : keyboardFocus;
-		InputEvent event = Pools.obtain(InputEvent.class);
+		InputEvent event = pools.obtain(InputEvent.class);
 		event.setType(InputEvent.Type.keyTyped);
 		event.setStage(this);
 		event.setCharacter(character);
 		target.fire(event);
 		boolean handled = event.isHandled();
-		Pools.free(event);
+		pools.free(event);
 		return handled;
 	}
 
@@ -458,7 +459,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * touchDown}. The specified actors will be used as the {@link Event#getListenerActor() listener actor} and
 	 * {@link Event#getTarget() target} for the touchDragged and touchUp events. */
 	public void addTouchFocus (EventListener listener, Actor listenerActor, Actor target, int pointer, int button) {
-		TouchFocus focus = Pools.obtain(TouchFocus.class);
+		TouchFocus focus = pools.obtain(TouchFocus.class);
 		focus.listenerActor = listenerActor;
 		focus.target = target;
 		focus.listener = listener;
@@ -476,7 +477,7 @@ public class Stage extends InputAdapter implements Disposable {
 			if (focus.listener == listener && focus.listenerActor == listenerActor && focus.target == target
 				&& focus.pointer == pointer && focus.button == button) {
 				touchFocuses.removeIndex(i);
-				Pools.free(focus);
+				pools.free(focus);
 			}
 		}
 	}
@@ -495,7 +496,7 @@ public class Stage extends InputAdapter implements Disposable {
 			if (!touchFocuses.removeValue(focus, true)) continue; // Touch focus already gone.
 
 			if (event == null) {
-				event = Pools.obtain(InputEvent.class);
+				event = pools.obtain(InputEvent.class);
 				event.setType(InputEvent.Type.touchUp);
 				event.setStage(this);
 				event.setStageX(Integer.MIN_VALUE);
@@ -511,7 +512,7 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 		touchFocuses.end();
 
-		if (event != null) Pools.free(event);
+		if (event != null) pools.free(event);
 	}
 
 	/** Removes all touch focus listeners, sending a touchUp event to each listener. Listeners typically expect to receive a
@@ -524,7 +525,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Cancels touch focus for all listeners except the specified listener.
 	 * @see #cancelTouchFocus() */
 	public void cancelTouchFocusExcept (@Null EventListener exceptListener, @Null Actor exceptActor) {
-		InputEvent event = Pools.obtain(InputEvent.class);
+		InputEvent event = pools.obtain(InputEvent.class);
 		event.setType(InputEvent.Type.touchUp);
 		event.setStage(this);
 		event.setStageX(Integer.MIN_VALUE);
@@ -547,7 +548,7 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 		touchFocuses.end();
 
-		Pools.free(event);
+		pools.free(event);
 	}
 
 	/** Adds an actor to the root of the stage.
@@ -634,7 +635,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return true if the unfocus and focus events were not cancelled by a {@link FocusListener}. */
 	public boolean setKeyboardFocus (@Null Actor actor) {
 		if (keyboardFocus == actor) return true;
-		FocusEvent event = Pools.obtain(FocusEvent.class);
+		FocusEvent event = pools.obtain(FocusEvent.class);
 		event.setStage(this);
 		event.setType(FocusEvent.Type.keyboard);
 		Actor oldKeyboardFocus = keyboardFocus;
@@ -654,7 +655,7 @@ public class Stage extends InputAdapter implements Disposable {
 				if (!success) keyboardFocus = oldKeyboardFocus;
 			}
 		}
-		Pools.free(event);
+		pools.free(event);
 		return success;
 	}
 
@@ -669,7 +670,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return true if the unfocus and focus events were not cancelled by a {@link FocusListener}. */
 	public boolean setScrollFocus (@Null Actor actor) {
 		if (scrollFocus == actor) return true;
-		FocusEvent event = Pools.obtain(FocusEvent.class);
+		FocusEvent event = pools.obtain(FocusEvent.class);
 		event.setStage(this);
 		event.setType(FocusEvent.Type.scroll);
 		Actor oldScrollFocus = scrollFocus;
@@ -689,7 +690,7 @@ public class Stage extends InputAdapter implements Disposable {
 				if (!success) scrollFocus = oldScrollFocus;
 			}
 		}
-		Pools.free(event);
+		pools.free(event);
 		return success;
 	}
 

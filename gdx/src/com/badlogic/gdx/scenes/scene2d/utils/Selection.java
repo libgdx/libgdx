@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.OrderedSet;
-import com.badlogic.gdx.utils.Pools;
 
 import java.util.Iterator;
 
@@ -223,11 +222,11 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	 * @return true if the change should be undone. */
 	public boolean fireChangeEvent () {
 		if (actor == null) return false;
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+		ChangeEvent changeEvent = Actor.POOLS.obtain(ChangeEvent.class);
 		try {
 			return actor.fire(changeEvent);
 		} finally {
-			Pools.free(changeEvent);
+			Actor.POOLS.free(changeEvent);
 		}
 	}
 

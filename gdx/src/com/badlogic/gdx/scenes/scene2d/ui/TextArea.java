@@ -28,7 +28,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
 
 /** A text input field with multiple lines. */
 public class TextArea extends TextField {
@@ -291,7 +290,7 @@ public class TextArea extends TextField {
 			int lineStart = 0;
 			int lastSpace = 0;
 			char lastCharacter;
-			Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
+			Pool<GlyphLayout> layoutPool = POOLS.getPool(GlyphLayout.class);
 			GlyphLayout layout = layoutPool.obtain();
 			for (int i = 0; i < text.length(); i++) {
 				lastCharacter = text.charAt(i);

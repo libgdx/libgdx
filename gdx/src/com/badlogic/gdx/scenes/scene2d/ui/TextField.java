@@ -42,7 +42,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -644,10 +643,10 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	boolean changeText (String oldText, String newText) {
 		if (newText.equals(oldText)) return false;
 		text = newText;
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+		ChangeEvent changeEvent = POOLS.obtain(ChangeEvent.class);
 		boolean cancelled = fire(changeEvent);
 		if (cancelled) text = oldText;
-		Pools.free(changeEvent);
+		POOLS.free(changeEvent);
 		return !cancelled;
 	}
 

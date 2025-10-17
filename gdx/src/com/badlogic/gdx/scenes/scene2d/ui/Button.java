@@ -28,7 +28,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.utils.Pools;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
  * checked. Each time a button is clicked, the checked state is toggled. Being a table, a button can contain any other actors.<br>
@@ -121,9 +120,9 @@ public class Button extends Table implements Disableable, Styleable<Button.Butto
 		this.isChecked = isChecked;
 
 		if (fireEvent) {
-			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+			ChangeEvent changeEvent = POOLS.obtain(ChangeEvent.class);
 			if (fire(changeEvent)) this.isChecked = !isChecked;
-			Pools.free(changeEvent);
+			POOLS.free(changeEvent);
 		}
 	}
 
