@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.DefaultPool.PoolSupplier;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.PoolManager;
@@ -69,7 +70,11 @@ public class Actions {
 
 	/** Returns a new or pooled action of the specified type. */
 	static public <T extends Action> T action (Class<T> type) {
-		Pool<T> pool = ACTION_POOLS.getPool(type);
+		Pool<T> pool = ACTION_POOLS.getPoolOrNull(type);
+		if (pool == null) {
+			throw new GdxRuntimeException(
+				"No action pool registered for type " + type + ". Register it with Actions#registerAction.");
+		}
 		T action = pool.obtain();
 		action.setPool(pool);
 		return action;
