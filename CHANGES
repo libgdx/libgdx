@@ -1,3 +1,5 @@
+[1.14.1]
+
 [1.14.0]
 - [BREAKING CHANGE] API: Pools changes in 1.13.5 have been partially reverted. Pools#get/Pools#obtain method return to requiring a Class parameter. Reflection is avoided by using pre-populated Pools for libgdx classes. See https://github.com/libgdx/libgdx/pull/7648 and https://github.com/libgdx/libgdx/pull/7678
 - [BREAKING CHANGE] `JsonSkimmer` API changed to use JsonToken parameters.
