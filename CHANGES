@@ -11,8 +11,24 @@
 - API Addition: Added `JsonMatcher`, extracts values with pattern matching.
 - API Addition: Added `setUniform_iv` functions in `ShaderProgram` to set uniform integer arrays
 - API Deprecation: Pools class is now deprecated and not used internally. Some functionality can be restored by using the new `PoolManager` class.
-- Fixed crashes when reading the soft buttons bar height on Android.
-- Multi sample FBOs can now be used with OpenGL ES 3.0+ instead of OpenGL ES 3.1+
+- API Fix: Fixed crashes when reading the soft buttons bar height on Android.
+- API Addition: Multi sample FBOs can now be used with OpenGL ES 3.0+ instead of OpenGL ES 3.1+
+- API Addition: Lwjgl3ApplicationConfiguration#useGlfwAsync
+- API Addition: A Universal Tiled Map Loader
+- API Fix: Allow Creation of HexagonTiledMapRenderer with empty TiledMap
+- API Fix: Fixed a GWT incompatibility issue in the AtlasTmxMapLoader and AtlasTmjMapLoader 
+- API Addition: Add a constructor taking a TextureData array to FileTextureArrayData
+- API Fix: fix wrong x, y layer offset in HexagonalTiledMapRenderer
+- API Addition: Added Template Object Support for TiledMaps
+- API Addition: Added glBlendFuncSeparate support in RenderContext
+- API Addition: VAO byte calculation add support for int and uint
+- API Addition: Add Vector.One static fields for convenience
+- API Addition: Extract AndroidGraphics#createGraphics method so a custom instance can be created
+- API Addition: Class support in Tiled
+- API Addition: Update freetype to v2.13.3
+- API Fix: Replace deprecated methods on AndroidAudioDevice and AndroidCursor
+- API Fix: Fixed JsonValue#setChild failing when child is null.
+- Various javadoc improvements
 
 [1.13.5]
 - [BREAKING CHANGE] Gradle: snapshot builds are now publishes to https://central.sonatype.com/repository/maven-snapshots/. Update your build scripts and the new repository URL. Some of your other snapshot dependencies might still live on OSSRH, so make sure to keep that repository as well.
