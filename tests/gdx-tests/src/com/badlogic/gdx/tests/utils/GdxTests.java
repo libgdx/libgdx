@@ -83,6 +83,7 @@ import com.badlogic.gdx.tests.gles2.VertexArrayTest;
 import com.badlogic.gdx.tests.gles3.GL30FrameBufferMultisampleMRTTest;
 import com.badlogic.gdx.tests.gles3.GL30FrameBufferMultisampleTest;
 import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
+import com.badlogic.gdx.tests.gles3.InstancedRenderingSpriteTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.ModelInstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
@@ -200,6 +201,7 @@ public class GdxTests {
 		IndexBufferObjectShaderTest.class,
 		InputTest.class,
 		InstancedRenderingTest.class,
+        InstancedRenderingSpriteTest.class,
 		IntegerBitmapFontTest.class,
 		InterpolationTest.class,
 		IntersectorOverlapConvexPolygonsTest.class,
