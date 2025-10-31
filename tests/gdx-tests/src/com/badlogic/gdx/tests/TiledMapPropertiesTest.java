@@ -179,28 +179,28 @@ public class TiledMapPropertiesTest extends GdxTest {
 		objProps.remove("rotation");
 		verifyProperty("classObjProps", expectedProps, objProps);
 
-        // verify an object with a project class that has another class property (=nested classes) but
-        // without overriding any values -> class default values should be loaded
-        mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Tile Object Nested (defaults only)");
-        objProps = mapObj.getProperties();
-        expectedProps = new MapProperties();
-        expectedProps.put("type", "testClassNested");
-        expectedProps.put("classInt", 0);
-        nestedProps = new MapProperties();
-        nestedProps.put("type", "testClass");
-        nestedProps.put("classColor", Color.GREEN);
-        nestedProps.put("classEnumStr", "STR2");
-        nestedProps.put("classInt", 2);
-        nestedProps.put("classObj", null);
-        nestedProps.put("classStr", "");
-        expectedProps.put("classClass", nestedProps);
-        objProps.remove("x");
-        objProps.remove("y");
-        objProps.remove("id");
-        objProps.remove("width");
-        objProps.remove("height");
-        objProps.remove("rotation");
-        verifyProperty("classObjProps", expectedProps, objProps);
+		// verify an object with a project class that has another class property (=nested classes) but
+		// without overriding any values -> class default values should be loaded
+		mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Tile Object Nested (defaults only)");
+		objProps = mapObj.getProperties();
+		expectedProps = new MapProperties();
+		expectedProps.put("type", "testClassNested");
+		expectedProps.put("classInt", 0);
+		nestedProps = new MapProperties();
+		nestedProps.put("type", "testClass");
+		nestedProps.put("classColor", Color.GREEN);
+		nestedProps.put("classEnumStr", "STR2");
+		nestedProps.put("classInt", 2);
+		nestedProps.put("classObj", null);
+		nestedProps.put("classStr", "");
+		expectedProps.put("classClass", nestedProps);
+		objProps.remove("x");
+		objProps.remove("y");
+		objProps.remove("id");
+		objProps.remove("width");
+		objProps.remove("height");
+		objProps.remove("rotation");
+		verifyProperty("classObjProps", expectedProps, objProps);
 
 	}
 

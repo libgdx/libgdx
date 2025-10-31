@@ -338,19 +338,19 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 				continue;
 			}
 
-            if ("class".equals(classMember.type)) {
-                // Load default class values.
-                // This happens e.g. if a user has a "project class" that has another class property (=nested classes)
-                // and assigns it as a "class" to an object/tile without overruling any of its values.
-                // In that case we need to load the default values of the class
-                // which are stored inside the 'projectClassInfo' field.
-                MapProperties nestedClassProperties = new MapProperties();
-                String nestedClassName = classMember.propertyType;
-                nestedClassProperties.put("type", nestedClassName);
-                mapProperties.put(propName, nestedClassProperties);
-                loadJsonClassProperties(classMember.propertyType, nestedClassProperties, classMember.defaultValue);
-                continue;
-            }
+			if ("class".equals(classMember.type)) {
+				// Load default class values.
+				// This happens e.g. if a user has a "project class" that has another class property (=nested classes)
+				// and assigns it as a "class" to an object/tile without overruling any of its values.
+				// In that case we need to load the default values of the class
+				// which are stored inside the 'projectClassInfo' field.
+				MapProperties nestedClassProperties = new MapProperties();
+				String nestedClassName = classMember.propertyType;
+				nestedClassProperties.put("type", nestedClassName);
+				mapProperties.put(propName, nestedClassProperties);
+				loadJsonClassProperties(classMember.propertyType, nestedClassProperties, classMember.defaultValue);
+				continue;
+			}
 
 			String value = classMember.defaultValue.asString();
 			if ("object".equals(classMember.type)) {
