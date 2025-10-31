@@ -172,6 +172,18 @@
                  "width":12,
                  "x":46,
                  "y":46
+                },
+            
+                {
+                 "height":9.22428765182186,
+                 "id":6,
+                 "name":"Tile Object Nested (defaults only)",
+                 "rotation":0,
+                 "type":"testClassNested",
+                 "visible":true,
+                 "width":9.63887028340081,
+                 "x":34.3319818623482,
+                 "y":35.1870464574899
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -180,10 +192,10 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":6,
+ "nextobjectid":7,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.1-99-gec89c545",
+ "tiledversion":"1.11.2",
  "tileheight":32,
  "tilesets":[
         {
