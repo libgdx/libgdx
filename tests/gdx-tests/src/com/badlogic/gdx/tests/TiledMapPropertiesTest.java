@@ -202,18 +202,18 @@ public class TiledMapPropertiesTest extends GdxTest {
 		objProps.remove("rotation");
 		verifyProperty("classObjProps", expectedProps, objProps);
 
-        // verify that class with just a string also works
-        mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Tile Object No Class");
-        objProps = mapObj.getProperties();
-        expectedProps = new MapProperties();
-        expectedProps.put("type", "NonExistingClass");
-        objProps.remove("x");
-        objProps.remove("y");
-        objProps.remove("id");
-        objProps.remove("width");
-        objProps.remove("height");
-        objProps.remove("rotation");
-        verifyProperty("classObjProps", expectedProps, objProps);
+		// verify that class with just a string also works
+		mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Tile Object No Class");
+		objProps = mapObj.getProperties();
+		expectedProps = new MapProperties();
+		expectedProps.put("type", "NonExistingClass");
+		objProps.remove("x");
+		objProps.remove("y");
+		objProps.remove("id");
+		objProps.remove("width");
+		objProps.remove("height");
+		objProps.remove("rotation");
+		verifyProperty("classObjProps", expectedProps, objProps);
 	}
 
 	private <T> void verifyProperty (String propName, T expected, T actual) {
