@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="2" height="2" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="7">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="2" height="2" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="8">
  <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32" tilecount="256" columns="16">
   <image source="../tiled/tiles.png" width="512" height="512"/>
   <tile id="0" type="testClass">
@@ -69,5 +69,6 @@
    </properties>
   </object>
   <object id="6" name="Tile Object Nested (defaults only)" type="testClassNested" x="34.2024" y="34.047" width="8.23968" height="9.84615"/>
+  <object id="7" name="Tile Object No Class" type="NonExistingClass" x="48.5053" y="33.7879" width="9.63887" height="9.22429"/>
  </objectgroup>
 </map>

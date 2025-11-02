@@ -184,6 +184,17 @@
                  "width":9.63887028340081,
                  "x":34.3319818623482,
                  "y":35.1870464574899
+                }, 
+                {
+                 "height":9.22429,
+                 "id":7,
+                 "name":"Tile Object No Class",
+                 "rotation":0,
+                 "type":"NonExistingClass",
+                 "visible":true,
+                 "width":9.63887,
+                 "x":47.1578929352227,
+                 "y":34.7206485222672
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -192,7 +203,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":7,
+ "nextobjectid":8,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
