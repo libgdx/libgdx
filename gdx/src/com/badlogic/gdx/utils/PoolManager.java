@@ -40,12 +40,10 @@ public class PoolManager {
 		return (Pool<T>)typePools.get(clazz);
 	}
 
-    /**
-     * Whether a pool for this class is already registered
-     */
-    public boolean hasPool(Class<?> clazz) {
-        return typePools.containsKey(clazz);
-    }
+	/** Whether a pool for this class is already registered */
+	public boolean hasPool (Class<?> clazz) {
+		return typePools.containsKey(clazz);
+	}
 
 	/** Returns a new pooled object for the class. Will throw an exception, if no pool for this class is registered. Free with
 	 * {@link PoolManager#free} */

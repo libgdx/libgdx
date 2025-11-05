@@ -60,12 +60,12 @@ public class Actor {
 
 	static public PoolManager POOLS = new PoolManager();
 
-    static {
-        POOLS.addPool(Rectangle.class, Rectangle::new);
-        POOLS.addPool(Array.class, Array::new);
-        POOLS.addPool(GlyphLayout.class, GlyphLayout::new);
-        POOLS.addPool(ChangeEvent.class, ChangeEvent::new);
-    }
+	static {
+		POOLS.addPool(Rectangle.class, Rectangle::new);
+		POOLS.addPool(Array.class, Array::new);
+		POOLS.addPool(GlyphLayout.class, GlyphLayout::new);
+		POOLS.addPool(ChangeEvent.class, ChangeEvent::new);
+	}
 
 	private @Null Stage stage;
 	@Null Group parent;

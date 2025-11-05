@@ -111,9 +111,9 @@ public class Stage extends InputAdapter implements Disposable {
 		this.viewport = viewport;
 		this.batch = batch;
 
-        this.pools.addPool(InputEvent.class, InputEvent::new);
-        this.pools.addPool(FocusEvent.class, FocusEvent::new);
-        this.pools.addPool(TouchFocus.class, TouchFocus::new);
+		this.pools.addPool(InputEvent.class, InputEvent::new);
+		this.pools.addPool(FocusEvent.class, FocusEvent::new);
+		this.pools.addPool(TouchFocus.class, TouchFocus::new);
 
 		root = new Group();
 		root.setStage(this);
