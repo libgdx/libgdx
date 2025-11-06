@@ -67,7 +67,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** True if any actor has ever had debug enabled. */
 	static boolean debug;
 
-	protected PoolManager pools = new PoolManager(InputEvent::new, FocusEvent::new, TouchFocus::new);
+	protected PoolManager pools = new PoolManager();
 	private Viewport viewport;
 	private final Batch batch;
 	private boolean ownsBatch;
@@ -110,6 +110,10 @@ public class Stage extends InputAdapter implements Disposable {
 		if (batch == null) throw new IllegalArgumentException("batch cannot be null.");
 		this.viewport = viewport;
 		this.batch = batch;
+
+		this.pools.addPool(InputEvent.class, InputEvent::new);
+		this.pools.addPool(FocusEvent.class, FocusEvent::new);
+		this.pools.addPool(TouchFocus.class, TouchFocus::new);
 
 		root = new Group();
 		root.setStage(this);
