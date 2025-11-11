@@ -58,7 +58,14 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * @author Nathan Sweet */
 public class Actor {
 
-	static public PoolManager POOLS = new PoolManager(Rectangle::new, Array::new, GlyphLayout::new, ChangeEvent::new);
+	static public PoolManager POOLS = new PoolManager();
+
+	static {
+		POOLS.addPool(Rectangle.class, Rectangle::new);
+		POOLS.addPool(Array.class, Array::new);
+		POOLS.addPool(GlyphLayout.class, GlyphLayout::new);
+		POOLS.addPool(ChangeEvent.class, ChangeEvent::new);
+	}
 
 	private @Null Stage stage;
 	@Null Group parent;
