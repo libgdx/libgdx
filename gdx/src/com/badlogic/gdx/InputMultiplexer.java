@@ -47,10 +47,8 @@ public class InputMultiplexer implements InputProcessor {
 		processors.add(processor);
 	}
 
-	/** 
-	 * Removes the given processor, using identity comparison (==)
-	 * @returns true if the processor was found and removed, false otherwise 
-	 */
+	/** Removes the given processor, using identity comparison (==)
+	 * @returns true if the processor was found and removed, false otherwise */
 	public boolean removeProcessor (InputProcessor processor) {
 		return processors.removeValue(processor, true);
 	}
