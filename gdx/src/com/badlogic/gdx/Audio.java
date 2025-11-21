@@ -21,6 +21,7 @@ import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Null;
 
@@ -38,7 +39,7 @@ import com.badlogic.gdx.utils.Null;
  * </p>
  * 
  * @author mzechner */
-public interface Audio {
+public interface Audio extends Disposable {
 	/** Creates a new {@link AudioDevice} either in mono or stereo mode. The AudioDevice has to be disposed via its
 	 * {@link AudioDevice#dispose()} method when it is no longer used.
 	 * 
@@ -101,6 +102,4 @@ public interface Audio {
 	 * @return A array of available output devices */
 	public String[] getAvailableOutputDevices ();
 
-	/** Frees all resources associated with object. Needs to be called when the audio is no longer needed. */
-	void dispose ();
 }
