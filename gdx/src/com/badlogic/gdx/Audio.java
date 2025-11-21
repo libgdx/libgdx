@@ -100,4 +100,7 @@ public interface Audio {
 	 *
 	 * @return A array of available output devices */
 	public String[] getAvailableOutputDevices ();
+
+	/** Frees all resources associated with object. Needs to be called when the audio is no longer needed. */
+	void dispose ();
 }

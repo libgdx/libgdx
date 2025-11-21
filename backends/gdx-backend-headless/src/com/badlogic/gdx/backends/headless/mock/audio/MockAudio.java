@@ -56,4 +56,9 @@ public class MockAudio implements Audio {
 	public String[] getAvailableOutputDevices () {
 		return new String[0];
 	}
+
+	@Override
+	public void dispose () {
+
+	}
 }
