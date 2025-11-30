@@ -150,7 +150,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		boolean isContinuous = graphics.isContinuousRendering();
 		graphics.setContinuousRendering(true);
 		graphics.pause();
-        audio.pause();
+		audio.pause();
 
 		input.onDreamingStopped();
 
@@ -160,7 +160,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 		graphics.onPauseGLSurfaceView();
 
-        audio.dispose();
+		audio.dispose();
 		super.onDreamingStopped();
 	}
 
@@ -183,7 +183,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 			graphics.resume();
 		} else
 			firstResume = false;
-        audio.resume();
+		audio.resume();
 		super.onDreamingStarted();
 	}
 

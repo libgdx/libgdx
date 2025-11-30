@@ -166,7 +166,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		// calls to setContinuousRendering(false) from other thread (ex: GLThread)
 		// will be ignored at this point...
 		graphics.pause();
-        audio.pause();
+		audio.pause();
 		input.onPause();
 
 		// davebaol & mobidevelop:
@@ -175,7 +175,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		if (isRemoving() || isAnyParentFragmentRemoving() || getActivity().isFinishing()) {
 			graphics.clearManagedCaches();
 			graphics.destroy();
-            audio.dispose();
+			audio.dispose();
 		}
 
 		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
@@ -205,7 +205,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			graphics.resume();
 		} else
 			firstResume = false;
-        audio.resume();
+		audio.resume();
 		super.onResume();
 	}
 

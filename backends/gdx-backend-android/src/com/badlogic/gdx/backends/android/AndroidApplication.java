@@ -227,7 +227,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
 		graphics.setContinuousRendering(isContinuous);
 		graphics.onPauseGLSurfaceView();
-        audio.pause();
+		audio.pause();
 		super.onPause();
 		keyboardHeightProvider.setKeyboardHeightObserver(null);
 	}
@@ -252,7 +252,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		} else
 			firstResume = false;
 
-        audio.resume();
+		audio.resume();
 		super.onResume();
 		keyboardHeightProvider.setKeyboardHeightObserver((DefaultAndroidInput)Gdx.input);
 		((AndroidGraphics)getGraphics()).getView().post(new Runnable() {
@@ -265,7 +265,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@Override
 	protected void onDestroy () {
-        audio.dispose();
+		audio.dispose();
 		keyboardHeightProvider.close();
 		super.onDestroy();
 	}
