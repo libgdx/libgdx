@@ -265,7 +265,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@Override
 	protected void onDestroy () {
-		audio.dispose();
+        if (audio != null) {
+            audio.dispose();
+        }
 		keyboardHeightProvider.close();
 		super.onDestroy();
 	}
