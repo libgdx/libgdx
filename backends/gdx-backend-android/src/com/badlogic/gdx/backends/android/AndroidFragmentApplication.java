@@ -137,25 +137,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		this.handler = new Handler();
 		this.clipboard = new AndroidClipboard(getActivity());
 
-		// Add a specialized audio lifecycle listener
-		addLifecycleListener(new LifecycleListener() {
-
-			@Override
-			public void resume () {
-				audio.resume();
-			}
-
-			@Override
-			public void pause () {
-				audio.pause();
-			}
-
-			@Override
-			public void dispose () {
-				audio.dispose();
-			}
-		});
-
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -185,7 +166,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		// calls to setContinuousRendering(false) from other thread (ex: GLThread)
 		// will be ignored at this point...
 		graphics.pause();
-
+        audio.pause();
 		input.onPause();
 
 		// davebaol & mobidevelop:
@@ -194,6 +175,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		if (isRemoving() || isAnyParentFragmentRemoving() || getActivity().isFinishing()) {
 			graphics.clearManagedCaches();
 			graphics.destroy();
+            audio.dispose();
 		}
 
 		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
@@ -223,6 +205,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			graphics.resume();
 		} else
 			firstResume = false;
+        audio.resume();
 		super.onResume();
 	}
 
