@@ -249,7 +249,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		if (!firstResume) {
 			graphics.resume();
-            audio.resume();
+			audio.resume();
 		} else
 			firstResume = false;
 
