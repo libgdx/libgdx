@@ -249,10 +249,10 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		if (!firstResume) {
 			graphics.resume();
+            audio.resume();
 		} else
 			firstResume = false;
 
-		audio.resume();
 		super.onResume();
 		keyboardHeightProvider.setKeyboardHeightObserver((DefaultAndroidInput)Gdx.input);
 		((AndroidGraphics)getGraphics()).getView().post(new Runnable() {
