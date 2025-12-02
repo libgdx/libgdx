@@ -21,3 +21,11 @@ body:
       attributes:
           label: Additional Information
           description: Give us some additional information on the feature request like proposed solutions, links, screenshots, etc
+
+#### Please select the affected platforms
+- [ ] Android
+- [ ] iOS
+- [ ] HTML/GWT
+- [ ] Windows
+- [ ] Linux
+- [ ] macOS
