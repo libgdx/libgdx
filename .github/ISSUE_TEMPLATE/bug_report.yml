@@ -42,7 +42,18 @@ body:
       attributes:
           label: Stack trace
           render: shell
-
+    - type: checkboxes
+      id: affected_platforms
+      attributes:
+          label: "Affected platforms"
+          description: "Select all platforms where the issue occurs."
+          options:
+           - label: "Android"
+           - label: "iOS"
+           - label: "HTML/GWT"
+           - label: "Windows"
+           - label: "Linux"
+           - label: "macOS"
     - type: textarea
       id: context
       attributes:
