@@ -10,6 +10,7 @@
 - API Addition: `Input#isTextInputFieldOpened` has been added, to check, whether an InputField opened by `openTextInputField` is open
 - Android: The KeyboardHeightObserver will not report duplicate events anymore
 - Android: The KeyboardHeightObserver will now only consider `systemBars`, `ime`, `displayCutout`, `mandatorySystemGestures` for insets.
+- Android: Added missing soundId based API implementations to AsynchronousSound.
 
 [1.14.0]
 - [BREAKING CHANGE] API: Pools changes in 1.13.5 have been partially reverted. Pools#get/Pools#obtain method return to requiring a Class parameter. Reflection is avoided by using pre-populated Pools for libgdx classes. See https://github.com/libgdx/libgdx/pull/7648 and https://github.com/libgdx/libgdx/pull/7678
