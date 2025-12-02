@@ -35,7 +35,10 @@ public class IOSUIViewController extends GLKViewController {
 
 	@Method(selector = "keyboardWillHide")
 	public void keyboardWillHide (NSNotification notification) {
-		if (observer != null) observer.onKeyboardHeightChanged(0);
+		if (observer != null) {
+			observer.onKeyboardHide();
+			observer.onKeyboardHeightChanged(0);
+		}
 	}
 
 	@Method(selector = "keyboardWillShow")
@@ -47,24 +50,13 @@ public class IOSUIViewController extends GLKViewController {
 		NSDictionary<NSString, ?> userInfo = (NSDictionary<NSString, ?>)notification.getUserInfo();
 		CGRect keyboardEndFrame = ((NSValue)userInfo.get(UIKeyboardAnimation.Keys.FrameEnd())).rectValue();
 
-		UIView textField = null;
-		// No lambdas :(
-		// Also, we might need to verify the UITextField to, that it matches the one defined in DefaultIOSInput
-		for (UIView e : getView().getSubviews()) {
-			if (e instanceof UITextView || e instanceof UITextField) {
-				if (e.isFirstResponder() && !e.isHidden()) {
-					textField = e;
-					break;
-				} else {
-					if (observer != null)
-						observer.onKeyboardHeightChanged((int)(keyboardEndFrame.getSize().getHeight() * heightScale));
-					return;
-				}
+		UIView textField = graphics.input.getActiveKeyboardTextField();
+		if (textField == null || !textField.isFirstResponder() || textField.isHidden()) {
+			if (observer != null) {
+				int kbHeight = (int)(keyboardEndFrame.getSize().getHeight() * heightScale);
+				observer.onKeyboardShow(kbHeight);
+				observer.onKeyboardHeightChanged(kbHeight);
 			}
-		}
-
-		if (textField == null) {
-			if (observer != null) observer.onKeyboardHeightChanged((int)(keyboardEndFrame.getSize().getHeight() * heightScale));
 			return;
 		}
 
@@ -81,8 +73,11 @@ public class IOSUIViewController extends GLKViewController {
 		}
 
 		CGRect newFrame = textField.getFrame();
-		if (observer != null) observer
-			.onKeyboardHeightChanged((int)((keyboardEndFrame.getSize().getHeight() + newFrame.getSize().getHeight()) * heightScale));
+		if (observer != null) {
+			int kbHeight = (int)((keyboardEndFrame.getSize().getHeight() + newFrame.getSize().getHeight()) * heightScale);
+			observer.onKeyboardShow(kbHeight);
+			observer.onKeyboardHeightChanged(kbHeight);
+		}
 		keyboardEndFrame = textField.convertRectToView(keyboardEndFrame, null);
 		newFrame.setOrigin(new CGPoint(getView().getSafeAreaInsets().getLeft(),
 			getView().getBounds().getSize().getHeight() - keyboardEndFrame.getSize().getHeight() - newFrame.getSize().getHeight()));
