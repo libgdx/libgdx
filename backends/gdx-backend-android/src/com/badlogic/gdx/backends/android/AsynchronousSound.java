@@ -129,7 +129,9 @@ public class AsynchronousSound implements Sound {
 			@Override
 			public void run () {
 				long realSoundId = getSoundId(soundId);
-				sound.stop(realSoundId);
+                if (realSoundId != -1) {
+                    sound.stop(realSoundId);
+                }
 			}
 		});
 	}
@@ -140,7 +142,9 @@ public class AsynchronousSound implements Sound {
 			@Override
 			public void run () {
 				long realSoundId = getSoundId(soundId);
-				sound.pause(realSoundId);
+                if (realSoundId != -1) {
+                    sound.pause(realSoundId);
+                }
 			}
 		});
 	}
@@ -151,7 +155,9 @@ public class AsynchronousSound implements Sound {
 			@Override
 			public void run () {
 				long realSoundId = getSoundId(soundId);
-				sound.resume(realSoundId);
+                if (realSoundId != -1) {
+                    sound.resume(realSoundId);
+                }
 			}
 		});
 	}
@@ -162,7 +168,9 @@ public class AsynchronousSound implements Sound {
 			@Override
 			public void run () {
 				long realSoundId = getSoundId(soundId);
-				sound.setLooping(realSoundId, looping);
+                if (realSoundId != -1) {
+                    sound.setLooping(realSoundId, looping);
+                }
 			}
 		});
 	}
@@ -173,7 +181,9 @@ public class AsynchronousSound implements Sound {
 			@Override
 			public void run () {
 				long realSoundId = getSoundId(soundId);
-				sound.setPitch(realSoundId, pitch);
+                if (realSoundId != -1) {
+                    sound.setPitch(realSoundId, pitch);
+                }
 			}
 		});
 	}
@@ -184,7 +194,9 @@ public class AsynchronousSound implements Sound {
 			@Override
 			public void run () {
 				long realSoundId = getSoundId(soundId);
-				sound.setVolume(realSoundId, volume);
+                if (realSoundId != -1) {
+                    sound.setVolume(realSoundId, volume);
+                }
 			}
 		});
 	}
@@ -195,7 +207,9 @@ public class AsynchronousSound implements Sound {
 			@Override
 			public void run () {
 				long realSoundId = getSoundId(soundId);
-				sound.setPan(realSoundId, pan, volume);
+                if (realSoundId != -1) {
+                    sound.setPan(realSoundId, pan, volume);
+                }
 			}
 		});
 	}
