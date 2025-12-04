@@ -520,6 +520,7 @@ public class XmlReader {
 		public void addChild (Element element) {
 			if (children == null) children = new Array(8);
 			children.add(element);
+			if (element != null) element.parent = this;
 		}
 
 		public String getText () {
@@ -531,21 +532,30 @@ public class XmlReader {
 		}
 
 		public void removeChild (int index) {
-			if (children != null) children.removeIndex(index);
+			if (children != null) {
+				Element removedChild = children.removeIndex(index);
+				if (removedChild != null) removedChild.parent = null;
+			}
 		}
 
 		public void removeChild (Element child) {
-			if (children != null) children.removeValue(child, true);
+			if (children != null) {
+				boolean removeSuccess = children.removeValue(child, true);
+				if (removeSuccess) child.parent = null;
+			}
 		}
 
 		public void remove () {
 			parent.removeChild(this);
+			parent = null;
 		}
 
 		public void replaceChild (Element child, Element replacement) {
 			if (children == null) throw new GdxRuntimeException("Element has no children: " + name);
 			if (!children.replaceFirst(child, true, replacement)) {
 				throw new GdxRuntimeException("Element '" + name + "' does not contain child: " + child);
+			} else {
+				if (child != null) child.parent = null;
 			}
 		}
 
