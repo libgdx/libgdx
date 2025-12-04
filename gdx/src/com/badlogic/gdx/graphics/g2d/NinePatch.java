@@ -84,13 +84,17 @@ public class NinePatch {
 		}
 		if (middleHeight > 0) {
 			if (left > 0) patches[MIDDLE_LEFT] = new TextureRegion(region, 0, sign * top, left, sign * middleHeight);
-			if (middleWidth > 0) patches[MIDDLE_CENTER] = new TextureRegion(region, left, sign * top, middleWidth, sign * middleHeight);
-			if (right > 0) patches[MIDDLE_RIGHT] = new TextureRegion(region, left + middleWidth, sign * top, right, sign * middleHeight);
+			if (middleWidth > 0)
+				patches[MIDDLE_CENTER] = new TextureRegion(region, left, sign * top, middleWidth, sign * middleHeight);
+			if (right > 0)
+				patches[MIDDLE_RIGHT] = new TextureRegion(region, left + middleWidth, sign * top, right, sign * middleHeight);
 		}
 		if (bottom > 0) {
 			if (left > 0) patches[BOTTOM_LEFT] = new TextureRegion(region, 0, sign * (top + middleHeight), left, sign * bottom);
-			if (middleWidth > 0) patches[BOTTOM_CENTER] = new TextureRegion(region, left, sign * (top + middleHeight), middleWidth, sign * bottom);
-			if (right > 0) patches[BOTTOM_RIGHT] = new TextureRegion(region, left + middleWidth, sign * (top + middleHeight), right, sign * bottom);
+			if (middleWidth > 0)
+				patches[BOTTOM_CENTER] = new TextureRegion(region, left, sign * (top + middleHeight), middleWidth, sign * bottom);
+			if (right > 0) patches[BOTTOM_RIGHT] = new TextureRegion(region, left + middleWidth, sign * (top + middleHeight), right,
+				sign * bottom);
 		}
 
 		// If split only vertical, move splits from right to center.
