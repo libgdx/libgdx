@@ -25,6 +25,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
+import com.badlogic.gdx.input.NativeInputConfiguration;
+import com.badlogic.gdx.input.TextInputWrapper;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -69,6 +71,8 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	static protected final char DELETE = 127;
 	static protected final char BULLET = 149;
 
+	static public OnscreenKeyboard DEFAULT_ONSCREEN_KEYBOARD = new DefaultOnscreenKeyboard();
+
 	static private final Vector2 tmp1 = new Vector2();
 	static private final Vector2 tmp2 = new Vector2();
 	static private final Vector2 tmp3 = new Vector2();
@@ -90,7 +94,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	InputListener inputListener;
 	@Null TextFieldListener listener;
 	@Null TextFieldFilter filter;
-	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+	OnscreenKeyboard keyboard = DEFAULT_ONSCREEN_KEYBOARD;
 	boolean focusTraversal = true, onlyFontChars = true, disabled;
 	private int textHAlign = Align.left;
 	private float selectionX, selectionWidth;
@@ -106,6 +110,9 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	float renderOffset;
 	protected int visibleTextStart, visibleTextEnd;
 	private int maxLength;
+	private String[] autocompleteOptions;
+	private Input.OnscreenKeyboardType keyboardType = Input.OnscreenKeyboardType.Default;
+	private boolean preventAutoCorrection;
 
 	boolean focused;
 	boolean cursorOn;
@@ -204,6 +211,23 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 
 	public int getMaxLength () {
 		return this.maxLength;
+	}
+
+	/** A list of possible strings that are valid to autocomplete Currently only has an effect on mobile with
+	 * {@link NativeOnscreenKeyboard} */
+	public void setAutocompleteOptions (String[] autocompleteOptions) {
+		this.autocompleteOptions = autocompleteOptions;
+	}
+
+	/** Which {@link Input.OnscreenKeyboardType} to use. Mainly used for mobile, will also be referenced for password masking */
+	public void setKeyboardType (Input.OnscreenKeyboardType keyboardType) {
+		this.keyboardType = keyboardType;
+	}
+
+	/** Whether if auto correction is provided by the system, it should be surpressed Will be considered true, if
+	 * {@link Input.OnscreenKeyboardType} is `Password` */
+	public void setPreventAutoCorrection (boolean preventAutoCorrection) {
+		this.preventAutoCorrection = preventAutoCorrection;
 	}
 
 	/** When false, text set by {@link #setText(String)} may contain characters not in the font, a space will be displayed instead.
@@ -520,10 +544,11 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 
 	/** Sets the {@link Stage#setKeyboardFocus(Actor) keyboard focus} to the next TextField. If no next text field is found, the
 	 * onscreen keyboard is hidden. Does nothing if the text field is not in a stage.
-	 * @param up If true, the text field with the same or next smallest y coordinate is found, else the next highest. */
-	public void next (boolean up) {
+	 * @param up If true, the text field with the same or next smallest y coordinate is found, else the next highest.
+	 * @return The textfield, the focus has been transferred too */
+	public TextField next (boolean up) {
 		Stage stage = getStage();
-		if (stage == null) return;
+		if (stage == null) return null;
 		TextField current = this;
 		Vector2 currentCoords = current.getParent().localToStageCoordinates(tmp2.set(current.getX(), current.getY()));
 		Vector2 bestCoords = tmp1;
@@ -537,12 +562,11 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 				textField = current.findNextTextField(stage.getActors(), null, bestCoords, currentCoords, up);
 			}
 			if (textField == null) {
-				Gdx.input.setOnscreenKeyboardVisible(false);
-				break;
+				return null;
 			}
 			if (stage.setKeyboardFocus(textField)) {
 				textField.selectAll();
-				break;
+				return textField;
 			}
 			current = textField;
 			currentCoords.set(bestCoords);
@@ -830,15 +854,113 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	/** An interface for onscreen keyboards. Can invoke the default keyboard or render your own keyboard!
 	 * @author mzechner */
 	static public interface OnscreenKeyboard {
-		public void show (boolean visible);
+		public void show (TextField textField);
+
+		public void close ();
 	}
 
 	/** The default {@link OnscreenKeyboard} used by all {@link TextField} instances. Just uses
 	 * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
 	 * @author mzechner */
 	static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
-		public void show (boolean visible) {
-			Gdx.input.setOnscreenKeyboardVisible(visible);
+		public void show (TextField textField) {
+			Gdx.input.setOnscreenKeyboardVisible(true);
+		}
+
+		public void close () {
+			Gdx.input.setOnscreenKeyboardVisible(false);
+		}
+	}
+
+	/** An advanced {@link OnscreenKeyboard} utilising {@link Input#openTextInputField}. Might overlap your actual rendering, so
+	 * use with care! This is mutually exclusive with using the {@link DefaultOnscreenKeyboard} or
+	 * {@link Input#setOnscreenKeyboardVisible(boolean)} API */
+	static public class NativeOnscreenKeyboard implements OnscreenKeyboard {
+
+		public void close () {
+			Gdx.input.closeTextInputField(false);
+		}
+
+		public void show (TextField textField) {
+			if (Gdx.input.isTextInputFieldOpened()) {
+				Gdx.input.closeTextInputField(false, (confirmativeAction -> {
+					openNativeInputField(textField);
+					return true;
+				}));
+				return;
+			}
+
+			openNativeInputField(textField);
+		}
+
+		private void openNativeInputField (TextField textField) {
+			NativeInputConfiguration configuration = new NativeInputConfiguration();
+			// If we are in password mode, assume that the user want to show password keyboard
+			Input.OnscreenKeyboardType resolvedType = textField.passwordMode
+				&& textField.keyboardType == Input.OnscreenKeyboardType.Default ? Input.OnscreenKeyboardType.Password
+					: textField.keyboardType;
+
+			configuration.setType(resolvedType).setMaskInput(textField.passwordMode).setShowUnmaskButton(textField.passwordMode)
+				.setMaxLength(textField.maxLength <= 0 ? -1 : textField.maxLength).setMultiLine(textField.writeEnters)
+				.setPreventCorrection(textField.preventAutoCorrection || resolvedType == Input.OnscreenKeyboardType.Password)
+				.setPlaceholder(textField.messageText == null ? "" : textField.messageText)
+				.setAutoComplete(textField.autocompleteOptions);
+
+			if (textField.filter != null) {
+				configuration.setValidator(toCheck -> {
+					for (int i = 0; i < toCheck.length(); i++) {
+						if (!textField.filter.acceptChar(textField, toCheck.charAt(i))) return false;
+					}
+					return true;
+				});
+			}
+
+			configuration.setCloseCallback(confirmativeAction -> {
+				if (confirmativeAction) {
+					// Do we want to somehow dismuss keyboard focus?
+					TextField focused = textField.next(false);
+					if (focused != null) {
+						focused.getOnscreenKeyboard().show(focused);
+						return true;
+					}
+				}
+
+				return false;
+			});
+
+			configuration.setTextInputWrapper(new TextInputWrapper() {
+				@Override
+				public String getText () {
+					return textField.getText();
+				}
+
+				@Override
+				public int getSelectionStart () {
+					return textField.getSelectionStart();
+				}
+
+				@Override
+				public int getSelectionEnd () {
+					return textField.getCursorPosition();
+				}
+
+				@Override
+				public void writeResults (String text, int selectionStart, int selectionEnd) {
+					if (textField.preventAutoCorrection) {
+						text = text.trim();
+						selectionStart = Math.min(selectionStart, text.length());
+						selectionEnd = Math.min(selectionEnd, text.length());
+					}
+					textField.setText(text);
+					if (selectionStart == selectionEnd) {
+						textField.setCursorPosition(selectionEnd);
+					} else {
+						textField.setSelection(selectionStart, selectionEnd);
+					}
+				}
+			});
+
+			Gdx.input.openTextInputField(configuration);
 		}
 	}
 
@@ -862,7 +984,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			selectionStart = cursor;
 			Stage stage = getStage();
 			if (stage != null) stage.setKeyboardFocus(TextField.this);
-			keyboard.show(true);
+			keyboard.show(TextField.this);
 			hasSelection = true;
 			return true;
 		}
@@ -1051,9 +1173,10 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
-			if (checkFocusTraversal(character))
-				next(UIUtils.shift());
-			else {
+			if (checkFocusTraversal(character)) {
+				TextField transferred = next(UIUtils.shift());
+				if (transferred == null) keyboard.close();
+			} else {
 				boolean enter = character == CARRIAGE_RETURN || character == NEWLINE;
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
