@@ -8,6 +8,11 @@
                         - `TextInputWrapper#shouldClose` has been removed and should now be handled over the close callback
 - API Addition: `Input#KeyboardHeightObserver` was extended by `onKeyboardShow` and `onKeyboardHide`. See javadocs for more info.
 - API Addition: `Input#isTextInputFieldOpened` has been added, to check, whether an InputField opened by `openTextInputField` is open
+- API Addition: Added support for the native input API in scene2d. It can be enabled via `TextField#DEFAULT_ONSCREEN_KEYBOARD = new NativeOnscreenKeyboard()` on startup. This only affects mobile platforms.
+- API Addition: Added multiple NativeInput exclusive options to `TextField`
+                - `setAutocompleteOptions` will set a list of autocomplete options to the user on mobile
+                - `setKeyboardType` will set the keyboard type shown to users
+                - `preventAutoCorrection` will disable auto correct for the textfield
 - Android: The KeyboardHeightObserver will not report duplicate events anymore
 - Android: The KeyboardHeightObserver will now only consider `systemBars`, `ime`, `displayCutout`, `mandatorySystemGestures` for insets.
 - Android: Added missing soundId based API implementations to AsynchronousSound.
