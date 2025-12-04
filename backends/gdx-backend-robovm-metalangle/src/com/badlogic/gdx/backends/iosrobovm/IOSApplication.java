@@ -254,7 +254,7 @@ public class IOSApplication implements Application {
 
 	final void willTerminate (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "disposed");
-		audio.willTerminate();
+		audio.dispose();
 		graphics.makeCurrent();
 		Array<LifecycleListener> listeners = lifecycleListeners;
 		synchronized (listeners) {

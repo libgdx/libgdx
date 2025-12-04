@@ -12,6 +12,4 @@ public interface IOSAudio extends Audio {
 	public void willEnterForeground ();
 
 	public void willResignActive ();
-
-	public void willTerminate ();
 }

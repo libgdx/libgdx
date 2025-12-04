@@ -25,5 +25,4 @@ public interface IOSAudio extends Audio {
 
 	public void willResignActive ();
 
-	public void willTerminate ();
 }

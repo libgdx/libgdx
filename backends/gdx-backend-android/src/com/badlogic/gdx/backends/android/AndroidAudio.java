@@ -2,9 +2,8 @@
 package com.badlogic.gdx.backends.android;
 
 import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.utils.Disposable;
 
-public interface AndroidAudio extends Audio, Disposable {
+public interface AndroidAudio extends Audio {
 
 	/** Pauses all playing sounds and musics **/
 	void pause ();
