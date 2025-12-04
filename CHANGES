@@ -6,6 +6,7 @@
                         - `NativeInputConfiguration#maxTextLength` is not nullable anymore. "-1" should be used for unset.
                         - `TextInputWrapper#setText/setPosition` have been removed and replaced with `writeResults`
                         - `TextInputWrapper#shouldClose` has been removed and should now be handled over the close callback
+- [BREAKING CHANGE] API: `TextField.OnscreenKeyboard` has been refactored. `OnscreenKeyboard#show(boolean)` has been split of in `OnscreenKeyboard#show(TextField)` and `OnscreenKeyboard#close()`.
 - API Addition: `Input#KeyboardHeightObserver` was extended by `onKeyboardShow` and `onKeyboardHide`. See javadocs for more info.
 - API Addition: `Input#isTextInputFieldOpened` has been added, to check, whether an InputField opened by `openTextInputField` is open
 - API Addition: Added support for the native input API in scene2d. It can be enabled via `TextField#DEFAULT_ONSCREEN_KEYBOARD = new NativeOnscreenKeyboard()` on startup. This only affects mobile platforms.
