@@ -37,7 +37,7 @@ body:
       attributes:
           label: version
           description: Version of libGDX and/or relevant dependencies
-      placeholder: |
+          placeholder: |
                Please provide the version(s) affected
 
     - type: textarea
