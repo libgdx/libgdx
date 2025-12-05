@@ -1,8 +1,5 @@
 name: 🐞 Bug Report
 description: Report a bug
-labels:
-    - kind/bug
-    - status/needs-triage
 
 body:
     - type: markdown
@@ -27,9 +24,9 @@ body:
           label: Reproduction
           description: Steps to reproduce the behavior.
           placeholder: |
-              1. Go to ...
-              2. Click on ...
-              3. See error
+              Even if you think your issue is trivial to reproduce, please supply a [SSCCE](http://sscce.org/) that demonstrates your issue. This saves time on our end, and makes it much more likely that your issue will be fixed.
+              You can find barebones templates [here](https://libgdx.com/wiki/articles/getting-help)_
+
 
     - type: textarea
       id: expected-behavior
