@@ -12,8 +12,6 @@ body:
       attributes:
           label: Description
           description: Give us a brief description of the feature or enhancement you would like
-      validations:
-          required: true
 
     - type: textarea
       id: additional-information
