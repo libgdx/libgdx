@@ -22,7 +22,7 @@ body:
           label: Reproduction
           description: Steps to reproduce the behavior.
           placeholder: |
-              Even if you think your issue is trivial to reproduce, please supply a [SSCCE](http://sscce.org/) that demonstrates your issue. This saves time on our end, and makes it much more likely that your issue will be fixed.
+              Even if you think your issue is trivial to reproduce, please supply a [SSCCE](https://sscce.org/) that demonstrates your issue. This saves time on our end, and makes it much more likely that your issue will be fixed.
               You can find barebones templates [here](https://libgdx.com/wiki/articles/getting-help)
 
     - type: input
