@@ -1,4 +1,4 @@
-name: 🐞 Bug Report
+name: Bug Report
 description: Report a bug
 
 body:
@@ -7,7 +7,6 @@ body:
           value: |
               ## First of all
               1. Please search for [existing issues](https://github.com/libgdx/libgdx/issues?q=is%3Aissue) about this problem first.
-              2. Remember to be friendly.
 
     - type: textarea
       id: description
@@ -25,20 +24,27 @@ body:
           description: Steps to reproduce the behavior.
           placeholder: |
               Even if you think your issue is trivial to reproduce, please supply a [SSCCE](http://sscce.org/) that demonstrates your issue. This saves time on our end, and makes it much more likely that your issue will be fixed.
-              You can find barebones templates [here](https://libgdx.com/wiki/articles/getting-help)_
-
+              You can find barebones templates [here](https://libgdx.com/wiki/articles/getting-help)
 
     - type: textarea
       id: expected-behavior
       attributes:
           label: Expected behavior
           description: A clear description of what you expected to happen.
+    
+    - type: textarea
+      id: version
+      attributes:
+          label: Version of libGDX and/or relevant dependencies
+     placeholder: |
+               Please provide the version(s) affected
 
     - type: textarea
       id: logs
       attributes:
           label: Stack trace
           render: shell
+        
     - type: checkboxes
       id: affected_platforms
       attributes:
