@@ -51,8 +51,3 @@ body:
            - label: "Windows"
            - label: "Linux"
            - label: "macOS"
-    - type: textarea
-      id: context
-      attributes:
-          label: Additional context
-          description: Add any other context about the problem here.
