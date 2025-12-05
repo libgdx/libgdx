@@ -5,7 +5,7 @@ body:
     - type: markdown
       attributes:
           value: |
-              Please make sure this feature request hasn't been already submitted by someone by looking through other open/closed issues
+              Please make sure this feature request hasn't been already submitted by someone by looking through other [open/closed issues](https://github.com/libgdx/libgdx/issues?q=is%3Aissue)
 
     - type: textarea
       id: description
