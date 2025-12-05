@@ -31,7 +31,7 @@ body:
           label: Expected behavior
           description: A clear description of what you expected to happen.
     
-    - type: textarea
+    - type: input
       id: version
       attributes:
           label: version
