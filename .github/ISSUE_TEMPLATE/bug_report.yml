@@ -14,8 +14,7 @@ body:
           label: Describe the bug
           description: A clear description of what the bug is. Include screenshots if applicable.
           placeholder: Bug description
-      validations:
-          required: true
+      
 
     - type: textarea
       id: reproduction
