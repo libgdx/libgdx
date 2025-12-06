@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="20" height="45" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="57">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="20" height="45" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="69">
  <tileset firstgid="1" source="templateTileset.tsx"/>
+ <tileset firstgid="5" source="grass.tsx"/>
  <objectgroup id="1" name="Objects">
   <object id="33" template="template objects/Ellipse.tx" x="37.3376" y="242.902"/>
   <object id="34" template="template objects/Ellipse.tx" x="37.34" y="472.673">
    <properties>
     <property name="BoolProp" type="bool" value="false"/>
-    <property name="Overridden" type="bool" value="true"/>
+    <property name="Overridden" type="bool" value="false"/>
     <property name="StringProp" value="Overridden String"/>
    </properties>
   </object>
@@ -67,6 +68,14 @@
     <property name="StringProp" value="Text Should Be Right Aligned and Blue"/>
    </properties>
    <text wrap="1" color="#0000ff" halign="right">Text Object</text>
+  </object>
+  <object id="67" template="template objects/Grass.tx" x="237.935" y="1151.15"/>
+  <object id="68" template="template objects/Grass.tx" x="239.957" y="1326.74">
+   <properties>
+    <property name="ColorProp" type="color" value="#ff00aa00"/>
+    <property name="IntProp" type="int" value="1111"/>
+    <property name="StringProp" value="Green Grass"/>
+   </properties>
   </object>
  </objectgroup>
 </map>
