@@ -175,9 +175,11 @@ public class Hiero extends JFrame {
 
 	public Hiero (String[] args) {
 		super("Hiero v5 - Bitmap Font Tool");
-		Splash splash = new Splash(this, "/splash.jpg", 2000);
+		// Having the splash screen prevents this from being launched without building a JAR runnable first.
+		// Does it really add anything?
+// Splash splash = new Splash(this, "/splash.jpg", 2000);
 		initialize();
-		splash.close();
+// splash.close();
 
 		rendererCanvas = new LwjglCanvas(new Renderer());
 		gamePanel.add(rendererCanvas.getCanvas());
@@ -309,9 +311,9 @@ public class Hiero extends JFrame {
 		unicodeFont.setPaddingAdvanceY(((Number)padAdvanceYSpinner.getValue()).intValue());
 		unicodeFont.setGlyphPageWidth(((Number)glyphPageWidthCombo.getSelectedItem()).intValue());
 		unicodeFont.setGlyphPageHeight(((Number)glyphPageHeightCombo.getSelectedItem()).intValue());
-		if (nativeRadio.isSelected())
+		if (isNative)
 			unicodeFont.setRenderType(RenderType.Native);
-		else if (freeTypeRadio.isSelected()) {
+		else if (isFreeType) {
 			try {
 				unicodeFont.setRenderType(RenderType.FreeType);
 			} catch (GdxRuntimeException ex) {
@@ -1470,9 +1472,6 @@ public class Hiero extends JFrame {
 				if (offset > 0) offset = 0;
 				unicodeFont.drawString(10, 12, sampleText, Color.WHITE, 0, sampleText.length());
 			} else {
-				// GL11.glColor4f(renderingBackgroundColor.r, renderingBackgroundColor.g, renderingBackgroundColor.b,
-				// renderingBackgroundColor.a);
-				// fillRect(0, 0, unicodeFont.getGlyphPageWidth() + 2, unicodeFont.getGlyphPageHeight() + 2);
 				int index = glyphPageCombo.getSelectedIndex();
 				List pages = unicodeFont.getGlyphPages();
 				if (index >= 0 && index < pages.size()) {

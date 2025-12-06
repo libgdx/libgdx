@@ -80,6 +80,7 @@ public class GlyphPage {
 		texture.bind();
 
 		int loadedCount = 0;
+		int totalX = 0;
 		for (Iterator iter = glyphs.iterator(); iter.hasNext();) {
 			Glyph glyph = (Glyph)iter.next();
 			int width = Math.min(MAX_GLYPH_SIZE, glyph.getWidth());
@@ -113,7 +114,8 @@ public class GlyphPage {
 				}
 				if (bestRow == null) continue;
 
-				if (renderGlyph(glyph, bestRow.x, bestRow.y, width, height)) bestRow.x += width;
+				if (renderGlyph(glyph, bestRow.x, bestRow.y, width, height)) totalX = Math.max(totalX, bestRow.x += width);
+				// store our longest row's width in totalX
 			}
 
 			iter.remove();
@@ -122,6 +124,9 @@ public class GlyphPage {
 
 		}
 
+		// if we couldn't write anything or wrote only whitespace with 0 width, then this is treated
+		// as loading nothing at all. This is handled as an ignorable problem in UnicodeFont.
+		if (totalX == 0) return 0;
 		return loadedCount;
 	}
 
