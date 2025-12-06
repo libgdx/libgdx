@@ -212,7 +212,6 @@ public class UnicodeFont {
 
 		for (Iterator iter = queuedGlyphs.iterator(); iter.hasNext();) {
 			Glyph glyph = (Glyph)iter.next();
-			int codePoint = glyph.getCodePoint();
 
 			// Only load the first missing glyph.
 			if (glyph.isMissing()) {
@@ -229,7 +228,11 @@ public class UnicodeFont {
 		// Add to existing pages.
 		for (Iterator iter = glyphPages.iterator(); iter.hasNext();) {
 			GlyphPage glyphPage = (GlyphPage)iter.next();
-			maxGlyphsToLoad -= glyphPage.loadGlyphs(queuedGlyphs, maxGlyphsToLoad);
+			int loadedGlyphs = glyphPage.loadGlyphs(queuedGlyphs, maxGlyphsToLoad);
+			if (loadedGlyphs <= 0) {
+				continue;
+			}
+			maxGlyphsToLoad -= loadedGlyphs;
 			if (maxGlyphsToLoad == 0 || queuedGlyphs.isEmpty()) return true;
 		}
 
@@ -237,7 +240,11 @@ public class UnicodeFont {
 		while (!queuedGlyphs.isEmpty()) {
 			GlyphPage glyphPage = new GlyphPage(this, glyphPageWidth, glyphPageHeight);
 			glyphPages.add(glyphPage);
-			maxGlyphsToLoad -= glyphPage.loadGlyphs(queuedGlyphs, maxGlyphsToLoad);
+			int loadedGlyphs = glyphPage.loadGlyphs(queuedGlyphs, maxGlyphsToLoad);
+			if (loadedGlyphs <= 0) {
+				return false;
+			}
+			maxGlyphsToLoad -= loadedGlyphs;
 			if (maxGlyphsToLoad == 0) return true;
 		}
 
