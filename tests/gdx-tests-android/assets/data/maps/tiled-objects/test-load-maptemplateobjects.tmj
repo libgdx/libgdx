@@ -243,6 +243,34 @@
                  "template":"template objects\/Point.tj",
                  "x":96,
                  "y":1312
+                },
+                {
+                 "id":70,
+                 "template":"template objects\/Grass.tj",
+                 "x":237.94,
+                 "y":1151.15
+                },
+                {
+                 "id":72,
+                 "properties":[
+                        {
+                         "name":"ColorProp",
+                         "type":"color",
+                         "value":"#ff00aa00"
+                        },
+                        {
+                         "name":"IntProp",
+                         "type":"int",
+                         "value":1111
+                        },
+                        {
+                         "name":"StringProp",
+                         "type":"string",
+                         "value":"Green Grass"
+                        }],
+                 "template":"template objects\/Grass.tj",
+                 "x":239.96,
+                 "y":1326.74
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -251,7 +279,7 @@
          "y":0
         }],
  "nextlayerid":2,
- "nextobjectid":66,
+ "nextobjectid":73,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
@@ -260,6 +288,10 @@
         {
          "firstgid":1,
          "source":"templateTileset.tsj"
+        },
+        {
+         "firstgid":5,
+         "source":"grass.tsj"
         }],
  "tilewidth":32,
  "type":"map",

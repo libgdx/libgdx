@@ -65,6 +65,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	protected JsonValue root;
 
 	protected ObjectMap<String, JsonValue> templateCache;
+	protected ObjectMap<String, Integer> tilesetPathsToGIDs;
 
 	public BaseTmjMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -95,6 +96,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		this.idToObject = new IntMap<>();
 		this.runOnEndOfLoadTiled = new Array<>();
 		this.templateCache = new ObjectMap<>();
+		this.tilesetPathsToGIDs = new ObjectMap<>();
 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
@@ -281,7 +283,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			for (JsonValue objectElement : element.get("objects")) {
 				JsonValue elementToLoad = objectElement;
 				if (objectElement.has("template")) {
-					elementToLoad = resolveTemplateObject(map, layer, objectElement, tmjFile);
+					elementToLoad = resolveTemplateObject(objectElement, tmjFile);
 				}
 				loadObject(map, layer, elementToLoad);
 			}
@@ -477,20 +479,23 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	 * object links to a specific .tj file. Attributes and properties found in the template are allowed to be overwritten by any
 	 * matching ones found in its parent element. Knowing this, we will merge the two elements together with the parent's props
 	 * taking precedence and then return the merged value.
-	 * @param map TileMap object
-	 * @param layer MapLayer object
 	 * @param mapElement JsonValue which contains the single json element we are currently parsing
 	 * @param tmjFile tmjFile
 	 * @return a merged JsonValue representing the combined JsonValues. */
-	protected JsonValue resolveTemplateObject (TiledMap map, MapLayer layer, JsonValue mapElement, FileHandle tmjFile) {
+	protected JsonValue resolveTemplateObject (JsonValue mapElement, FileHandle tmjFile) {
 		// Get template (.tj) file name from element
 		String tjFileName = mapElement.getString("template");
+
+		// Template's own tileset declaration. We will need this to figure out how the template's
+		// local gids map to the map's global gids.
+		FileHandle templateFile = getRelativeFileHandle(tmjFile, tjFileName);
+
 		// check for cached tj element
 		JsonValue templateElement = templateCache.get(tjFileName);
 		if (templateElement == null) {
 			// parse the .tj template file
 			try {
-				templateElement = json.parse(getRelativeFileHandle(tmjFile, tjFileName));
+				templateElement = json.parse(templateFile);
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Error parsing template file: " + tjFileName, e);
 			}
@@ -498,6 +503,32 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		}
 		// Get the root object from the template file
 		JsonValue templateObjectElement = templateElement.get("object");
+
+		// Calculate the GID shift or keep as 0 if not required
+		int addGID = 0;
+		// Get the template tileset source path if any
+		JsonValue templateTilesetSource = templateElement.get("tileset");
+		if (templateTilesetSource != null) {
+			// Resolve the tileset path relative to the TEMPLATE file, because the
+			// "source" in the template is stored relative to the template's location.
+			String tilesetPath = getRelativeFileHandle(templateFile, templateTilesetSource.getString("source")).path();
+			addGID = tilesetPathsToGIDs.get(tilesetPath, 0) - 1;
+		}
+
+		// Inject the GID into the object instance in the map
+		if (templateObjectElement.has("gid")) {
+			if (!mapElement.has("gid")) {
+				// read gid from the template
+				int templateGid = templateObjectElement.getInt("gid");
+				int finalGid = templateGid + addGID;
+
+				// create a JsonValue for the gid and attach it to the map object
+				JsonValue gidValue = new JsonValue(finalGid);
+				gidValue.setName("gid");
+				mapElement.addChild(gidValue);
+			}
+		}
+
 		// Merge the parent map element with its template element
 		return mergeParentElementWithTemplate(mapElement, templateObjectElement);
 	}
@@ -701,6 +732,9 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			String source = element.getString("source", null);
 			if (source != null) {
 				FileHandle tsj = getRelativeFileHandle(tmjFile, source);
+				if (tilesetPathsToGIDs != null) {
+					tilesetPathsToGIDs.put(tsj.path(), firstgid);
+				}
 				try {
 					element = json.parse(tsj);
 					if (element.has("image")) {

@@ -41,7 +41,16 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Base64Coder;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.SerializationException;
+import com.badlogic.gdx.utils.StreamUtils;
+import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 import java.io.BufferedInputStream;
@@ -57,6 +66,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	protected Element root;
 
 	protected ObjectMap<String, Element> templateCache;
+	protected ObjectMap<String, Integer> tilesetPathsToGIDs;
 
 	public BaseTmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -88,6 +98,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		this.idToObject = new IntMap<>();
 		this.runOnEndOfLoadTiled = new Array<>();
 		this.templateCache = new ObjectMap<>();
+		this.tilesetPathsToGIDs = new ObjectMap<>();
 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
@@ -268,7 +279,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			for (Element objectElement : element.getChildrenByName("object")) {
 				Element elementToLoad = objectElement;
 				if (objectElement.hasAttribute("template")) {
-					elementToLoad = resolveTemplateObject(map, layer, objectElement, tmxFile);
+					elementToLoad = resolveTemplateObject(objectElement, tmxFile);
 				}
 				loadObject(map, layer, elementToLoad);
 			}
@@ -474,18 +485,20 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	 * object links to a specific .tx file. Attributes and properties found in the template are allowed to be overwritten by any
 	 * matching ones found in its parent element. Knowing this, we will merge the two elements together with the parent's props
 	 * taking precedence and then return the merged value.
-	 * @param map TileMap object
-	 * @param layer MapLayer object
 	 * @param mapElement Element which contains the single xml element we are currently parsing
 	 * @param tmxFile tmxFile
 	 * @return a merged Element representing the combined elements. */
-	protected Element resolveTemplateObject (TiledMap map, MapLayer layer, Element mapElement, FileHandle tmxFile) {
+	protected Element resolveTemplateObject (Element mapElement, FileHandle tmxFile) {
 		// Get template (.tx) file name from element
 		String txFileName = mapElement.getAttribute("template");
+
+		// Template's own tileset declaration. We will need this to figure out how the template's
+		// local gids map to the map's global gids.
+		FileHandle templateFile = getRelativeFileHandle(tmxFile, txFileName);
+
 		// check for cached tx element
 		Element templateElement = templateCache.get(txFileName);
 		if (templateElement == null) {
-			FileHandle templateFile = getRelativeFileHandle(tmxFile, txFileName);
 			// parse the .tx template file
 			try {
 				templateElement = xml.parse(templateFile);
@@ -496,6 +509,24 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		}
 		// Get the root object from the template file
 		Element templateObjectElement = templateElement.getChildByName("object");
+
+		// Calculate the GID shift or keep as 0 if not required
+		int addGID = 0;
+		// Get the template tileset source path if any
+		Element templateTilesetSource = templateElement.getChildByName("tileset");
+		if (templateTilesetSource != null) {
+			// Resolve the tileset path relative to the TEMPLATE file, because the
+			// "source" in the template is stored relative to the template's location.
+			String tilesetPath = getRelativeFileHandle(templateFile, templateTilesetSource.getAttribute("source")).path();
+			addGID = tilesetPathsToGIDs.get(tilesetPath, 0) - 1;
+		}
+		// Inject the GID into the object instance in the map
+		if (templateObjectElement.hasAttribute("gid")) {
+			if (!mapElement.hasAttribute("gid")) {
+				mapElement.setAttribute("gid", Integer.toString(templateObjectElement.getIntAttribute("gid") + addGID));
+			}
+		}
+
 		// Merge the parent map element with its template element
 		return mergeParentElementWithTemplate(mapElement, templateObjectElement);
 	}
@@ -735,7 +766,10 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return ids;
 	}
 
+
+
 	protected void loadTileSet (Element element, FileHandle tmxFile, ImageResolver imageResolver) {
+
 		if (element.getName().equals("tileset")) {
 			int firstgid = element.getIntAttribute("firstgid", 1);
 			String imageSource = "";
@@ -746,6 +780,9 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			String source = element.getAttribute("source", null);
 			if (source != null) {
 				FileHandle tsx = getRelativeFileHandle(tmxFile, source);
+				if (tilesetPathsToGIDs != null) {
+					tilesetPathsToGIDs.put(tsx.path(), firstgid);
+				}
 				try {
 					element = xml.parse(tsx);
 					Element imageElement = element.getChildByName("image");
