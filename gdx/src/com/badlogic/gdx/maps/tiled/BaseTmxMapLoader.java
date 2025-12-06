@@ -766,8 +766,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return ids;
 	}
 
-
-
 	protected void loadTileSet (Element element, FileHandle tmxFile, ImageResolver imageResolver) {
 
 		if (element.getName().equals("tileset")) {
