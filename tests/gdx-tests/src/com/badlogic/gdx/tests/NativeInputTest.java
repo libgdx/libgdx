@@ -23,6 +23,7 @@ import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.input.TextInputWrapper;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.NativeOnscreenKeyboard;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -88,6 +89,7 @@ public class NativeInputTest extends GdxTest {
 
 		Label placeHodlerLabel = new Label("Placeholder:", skin);
 		placeHolderField = new TextField(null, skin);
+		placeHolderField.setOnscreenKeyboard(new NativeOnscreenKeyboard());
 		placeHolderField.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
