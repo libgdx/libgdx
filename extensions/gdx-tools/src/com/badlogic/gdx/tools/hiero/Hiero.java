@@ -47,7 +47,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
@@ -63,7 +62,6 @@ import javax.swing.event.ListSelectionListener;
 import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -92,7 +90,6 @@ import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -175,11 +172,7 @@ public class Hiero extends JFrame {
 
 	public Hiero (String[] args) {
 		super("Hiero v5 - Bitmap Font Tool");
-		// Having the splash screen prevents this from being launched without building a JAR runnable first.
-		// Does it really add anything?
-// Splash splash = new Splash(this, "/splash.jpg", 2000);
 		initialize();
-// splash.close();
 
 		rendererCanvas = new LwjglCanvas(new Renderer());
 		gamePanel.add(rendererCanvas.getCanvas());
@@ -1355,51 +1348,10 @@ public class Hiero extends JFrame {
 			if (obj == null) return false;
 			if (getClass() != obj.getClass()) return false;
 			final EffectPanel other = (EffectPanel)obj;
-			if (effect == null) {
-				if (other.effect != null) return false;
-			} else if (!effect.equals(other.effect)) return false;
-			return true;
+			if (effect == null) return other.effect == null;
+			return effect.equals(other.effect);
 		}
 
-	}
-
-	static private class Splash extends JWindow {
-		final int minMillis;
-		final long startTime;
-
-		public Splash (Frame frame, String imageFile, int minMillis) {
-			super(frame);
-			this.minMillis = minMillis;
-			getContentPane().add(new JLabel(new ImageIcon(Splash.class.getResource(imageFile))), BorderLayout.CENTER);
-			pack();
-			setLocationRelativeTo(null);
-			setVisible(true);
-			startTime = System.currentTimeMillis();
-		}
-
-		public void close () {
-			final long endTime = System.currentTimeMillis();
-			new Thread(new Runnable() {
-				public void run () {
-					if (endTime - startTime < minMillis) {
-						addMouseListener(new MouseAdapter() {
-							public void mousePressed (MouseEvent evt) {
-								dispose();
-							}
-						});
-						try {
-							Thread.sleep(minMillis - (endTime - startTime));
-						} catch (InterruptedException ignored) {
-						}
-					}
-					EventQueue.invokeLater(new Runnable() {
-						public void run () {
-							dispose();
-						}
-					});
-				}
-			}, "Splash").start();
-		}
 	}
 
 	class Renderer extends ApplicationAdapter {
@@ -1423,9 +1375,6 @@ public class Hiero extends JFrame {
 		}
 
 		public void render () {
-			int viewWidth = Gdx.graphics.getWidth();
-			int viewHeight = Gdx.graphics.getHeight();
-
 			if (sampleTextRadio.isSelected()) {
 				GL11.glClearColor(renderingBackgroundColor.r, renderingBackgroundColor.g, renderingBackgroundColor.b,
 					renderingBackgroundColor.a);

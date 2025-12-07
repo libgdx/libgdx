@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont.RenderType;
 
-/** Represents the glyph in a font for a unicode codepoint.
+/** Represents the glyph in a font for a Unicode codepoint.
  * @author Nathan Sweet */
 public class Glyph {
 	private int codePoint;
@@ -74,9 +74,9 @@ public class Glyph {
 				yOffset = (short)(unicodeFont.getAscent() + bounds.y - padTop);
 			}
 
-			// xOffset and xAdvance will be incorrect for unicode characters such as combining marks or non-spacing characters
-			// (eg Pnujabi's "\u0A1C\u0A47") that require the context of surrounding glyphs to determine spacing, but this is the
-			// best we can do with the BMFont format.
+			// xOffset and xAdvance will be incorrect for Unicode characters such as combining marks or non-spacing
+			// characters (e.g. Punjabi's "ਜੇ", or "\u0A1C\u0A47") that require the context of surrounding glyphs to
+			// determine spacing, but this is the best we can do with the BMFont format.
 			char[] chars = Character.toChars(codePoint);
 			GlyphVector charVector = unicodeFont.getFont().layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length,
 				Font.LAYOUT_LEFT_TO_RIGHT);
@@ -91,7 +91,7 @@ public class Glyph {
 		}
 	}
 
-	/** The unicode codepoint the glyph represents. */
+	/** The Unicode codepoint the glyph represents. */
 	public int getCodePoint () {
 		return codePoint;
 	}

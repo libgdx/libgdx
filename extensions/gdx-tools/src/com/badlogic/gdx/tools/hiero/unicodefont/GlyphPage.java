@@ -52,9 +52,9 @@ public class GlyphPage {
 	private final UnicodeFont unicodeFont;
 	private final int pageWidth, pageHeight;
 	private final Texture texture;
-	private final List<Glyph> pageGlyphs = new ArrayList(32);
-	private final List<String> hashes = new ArrayList(32);
-	Array<Row> rows = new Array();
+	private final List<Glyph> pageGlyphs = new ArrayList<>(32);
+	private final List<String> hashes = new ArrayList<>(32);
+	Array<Row> rows = new Array<>();
 
 	/** @param pageWidth The width of the backing texture.
 	 * @param pageHeight The height of the backing texture. */
@@ -150,7 +150,6 @@ public class GlyphPage {
 			int fontWidth = fontPixmap.getWidth();
 			int padTop = unicodeFont.getPaddingTop(), padBottom = unicodeFont.getPaddingBottom();
 			int padLeftBytes = unicodeFont.getPaddingLeft() * 4;
-			int padXBytes = padLeftBytes + unicodeFont.getPaddingRight() * 4;
 			int glyphRowBytes = width * 4, fontRowBytes = g.width * 4;
 
 			ByteBuffer fontPixels = fontPixmap.getPixels();
@@ -249,15 +248,16 @@ public class GlyphPage {
 
 	static public final int MAX_GLYPH_SIZE = 256;
 
-	static private ByteBuffer scratchByteBuffer = ByteBuffer.allocateDirect(MAX_GLYPH_SIZE * MAX_GLYPH_SIZE * 4);
+	static private final ByteBuffer scratchByteBuffer = ByteBuffer.allocateDirect(MAX_GLYPH_SIZE * MAX_GLYPH_SIZE * 4);
 
 	static {
 		scratchByteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 	}
 
-	static private IntBuffer scratchIntBuffer = scratchByteBuffer.asIntBuffer();
+	static private final IntBuffer scratchIntBuffer = scratchByteBuffer.asIntBuffer();
 
-	static private BufferedImage scratchImage = new BufferedImage(MAX_GLYPH_SIZE, MAX_GLYPH_SIZE, BufferedImage.TYPE_INT_ARGB);
+	static private final BufferedImage scratchImage = new BufferedImage(MAX_GLYPH_SIZE, MAX_GLYPH_SIZE,
+		BufferedImage.TYPE_INT_ARGB);
 	static Graphics2D scratchGraphics = (Graphics2D)scratchImage.getGraphics();
 
 	static {

@@ -57,7 +57,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * for display. However, it is best to load the glyphs that are known to be needed at startup.
  * @author Nathan Sweet */
 public class UnicodeFont {
-	static private final int DISPLAY_LIST_CACHE_SIZE = 200;
 	static private final int MAX_GLYPH_CODE = 0x10FFFF;
 	static private final int PAGE_SIZE = 512;
 	static private final int PAGES = MAX_GLYPH_CODE / PAGE_SIZE;
@@ -67,9 +66,9 @@ public class UnicodeFont {
 	private String ttfFileRef;
 	private int ascent, descent, leading, spaceWidth;
 	private final Glyph[][] glyphs = new Glyph[PAGES][];
-	private final List<GlyphPage> glyphPages = new ArrayList();
-	private final List<Glyph> queuedGlyphs = new ArrayList(256);
-	private final List<Effect> effects = new ArrayList();
+	private final List<GlyphPage> glyphPages = new ArrayList<>();
+	private final List<Glyph> queuedGlyphs = new ArrayList<>(256);
+	private final List<Effect> effects = new ArrayList<>();
 	private int paddingTop, paddingLeft, paddingBottom, paddingRight, paddingAdvanceX, paddingAdvanceY;
 	private Glyph missingGlyph;
 	private int glyphPageWidth = 512, glyphPageHeight = 512;
@@ -320,7 +319,7 @@ public class UnicodeFont {
 		char[] chars = text.substring(0, endIndex).toCharArray();
 		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
 
-		int maxWidth = 0, totalHeight = 0, lines = 0;
+		int maxWidth = 0, totalHeight = 0;
 		int extraX = 0, extraY = ascent;
 		boolean startNewLine = false;
 		Texture lastBind = null;
@@ -373,7 +372,6 @@ public class UnicodeFont {
 			if (codePoint == '\n') {
 				startNewLine = true; // Mac gives -1 for bounds.x of '\n', so use the bounds.x of the next glyph.
 				extraY += getLineHeight();
-				lines++;
 				totalHeight = 0;
 			} else if (renderType == RenderType.Native) offsetX += bounds.width;
 		}
@@ -705,7 +703,7 @@ public class UnicodeFont {
 		}
 	};
 
-	static public enum RenderType {
+	public enum RenderType {
 		Java, Native, FreeType
 	}
 }
