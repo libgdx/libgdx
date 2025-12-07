@@ -342,6 +342,7 @@ public class XmlReader {
 		public void replaceChild (Element child, Element replacement) {
 			if (child == null) throw new IllegalArgumentException("child cannot be null.");
 			if (replacement == null) throw new IllegalArgumentException("replacement cannot be null.");
+			if (children == null) throw new GdxRuntimeException("Element has no children: " + name);
 			if (!children.replaceFirst(child, true, replacement)) {
 				throw new GdxRuntimeException("Element '" + name + "' does not contain child: " + child);
 			} else {
