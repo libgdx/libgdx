@@ -1,0 +1,14 @@
+{ "columns":1,
+ "image":"grass_1.png",
+ "imageheight":48,
+ "imagewidth":64,
+ "margin":0,
+ "name":"grass",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.11.2",
+ "tileheight":48,
+ "tilewidth":64,
+ "type":"tileset",
+ "version":"1.10"
+}
