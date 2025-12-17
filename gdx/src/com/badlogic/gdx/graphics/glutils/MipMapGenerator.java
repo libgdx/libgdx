@@ -87,7 +87,7 @@ public class MipMapGenerator {
 		int height = pixmap.getHeight() / 2;
 		int level = 1;
 
-        //Since we are building the entire chain anyway
+		// Since we are building the entire chain anyway
 		while (true) {
 			Pixmap tmp = new Pixmap(width, height, pixmap.getFormat());
 			tmp.setBlending(Blending.None);
@@ -101,12 +101,12 @@ public class MipMapGenerator {
 			width = pixmap.getWidth() / 2;
 			height = pixmap.getHeight() / 2;
 
-            //Break when we have exhausted all levels
-            if (width == 0 && height == 0) {
-                break;
-            }
-            if (width == 0) width = 1;
-            if (height == 0) height = 1;
+			// Break when we have exhausted all levels
+			if (width == 0 && height == 0) {
+				break;
+			}
+			if (width == 0) width = 1;
+			if (height == 0) height = 1;
 
 			level++;
 		}
