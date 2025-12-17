@@ -75,6 +75,7 @@
     <property name="ColorProp" type="color" value="#ff00aa00"/>
     <property name="IntProp" type="int" value="1111"/>
     <property name="StringProp" value="Green Grass"/>
+    <property name="Overridden" type="bool" value="true"/>
    </properties>
   </object>
  </objectgroup>
