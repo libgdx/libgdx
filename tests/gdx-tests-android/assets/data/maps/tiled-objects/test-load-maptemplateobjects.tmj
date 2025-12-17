@@ -264,6 +264,11 @@
                          "value":1111
                         },
                         {
+                         "name":"Overridden",
+                         "type":"bool",
+                          "value":true
+                        },
+                        {
                          "name":"StringProp",
                          "type":"string",
                          "value":"Green Grass"
