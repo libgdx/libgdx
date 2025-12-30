@@ -542,7 +542,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		return minIndex;
 	}
 
-	void undo(boolean fireChangeEvent) {
+	void undo (boolean fireChangeEvent) {
 		String oldText = text;
 		if (fireChangeEvent)
 			changeText(text, undoText);
