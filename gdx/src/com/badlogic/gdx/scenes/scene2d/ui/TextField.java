@@ -542,6 +542,16 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		return minIndex;
 	}
 
+	void undo(boolean fireChangeEvent) {
+		String oldText = text;
+		if (fireChangeEvent)
+			changeText(text, undoText);
+		else
+			text = undoText;
+		undoText = oldText;
+		updateDisplayText();
+	}
+
 	/** Sets the {@link Stage#setKeyboardFocus(Actor) keyboard focus} to the next TextField. If no next text field is found, the
 	 * onscreen keyboard is hidden. Does nothing if the text field is not in a stage.
 	 * @param up If true, the text field with the same or next smallest y coordinate is found, else the next highest.
@@ -1046,10 +1056,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 					selectAll();
 					return true;
 				case Keys.Z:
-					String oldText = text;
-					setText(undoText);
-					undoText = oldText;
-					updateDisplayText();
+					undo(true);
 					return true;
 				default:
 					handled = false;
