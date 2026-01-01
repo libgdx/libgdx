@@ -542,14 +542,28 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		return minIndex;
 	}
 
+	/** Restores the previous text state. */
+	public void undo () {
+		undo(programmaticChangeEvents);
+	}
+
+	/** Restores the previous text state.
+	 * @param fireChangeEvent If true, a {@link ChangeEvent} will be fired. */
 	void undo (boolean fireChangeEvent) {
+		if (undoText.equals(text)) return;
 		String oldText = text;
-		if (fireChangeEvent)
-			changeText(text, undoText);
-		else
+		if (fireChangeEvent) {
+			if (changeText(oldText, undoText)) {
+				undoText = oldText;
+				updateDisplayText();
+			}
+		} else {
 			text = undoText;
-		undoText = oldText;
-		updateDisplayText();
+			undoText = oldText;
+			updateDisplayText();
+		}
+		cursor = MathUtils.clamp(cursor, 0, text.length());
+		clearSelection();
 	}
 
 	/** Sets the {@link Stage#setKeyboardFocus(Actor) keyboard focus} to the next TextField. If no next text field is found, the
