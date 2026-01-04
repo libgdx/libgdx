@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,10 +28,7 @@ import com.badlogic.gdx.utils.IntSet.IntSetIterator;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.dom.client.CanvasElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Touch;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.event.dom.client.KeyCodes;
 
 public class DefaultGwtInput extends AbstractInput implements GwtInput {
@@ -404,8 +401,8 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	public native Orientation getNativeOrientation () /*-{
 		if ("screen" in $wnd) {
 			var type = $wnd.screen.msOrientation
-				|| $wnd.screen.mozOrientation
-				|| ($wnd.screen.orientation || {}).type;
+					|| $wnd.screen.mozOrientation
+					|| ($wnd.screen.orientation || {}).type;
 			// https://www.w3.org/TR/screen-orientation/#reading-the-screen-orientation
 			switch (this.@com.badlogic.gdx.backends.gwt.GwtInput::getRotation()()) {
 				case 0:
@@ -620,6 +617,53 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 		return $wnd;
 	}-*/;
 
+	private native void installCaptureListeners (CanvasElement target) /*-{
+		var tabEvent = {
+			key: '\t',
+			code: 'Tab',
+			keyCode: 9,
+			charCode: 9,
+			which: 9,
+			bubbles: true,
+			cancelable: true,
+			isTrusted: false,
+			view: $wnd
+		};
+
+		var backspaceEvent = {
+			key: '\b',
+			code: 'Backspace',
+			keyCode: 8,
+			charCode: 8,
+			which: 8,
+			bubbles: true,
+			cancelable: true,
+			isTrusted: false,
+			view: $wnd
+		};
+
+		$wnd.addEventListener('keydown', function (e) {
+			if (e.repeat === undefined) { // skip browsers that don't support e.repeat
+				this.@com.badlogic.gdx.backends.gwt.DefaultGwtInput::handleEvent(*)(e);
+				return;
+			}
+			if (e.key === "Tab" || e.key === "Backspace") {
+				var event;
+				switch (e.key) {
+					case "Backspace":
+						event = backspaceEvent;
+						break;
+					case "Tab":
+						event = tabEvent;
+						break;
+				}
+				if (!e.repeat)
+					this.@com.badlogic.gdx.backends.gwt.DefaultGwtInput::handleEvent(*)(e);
+				target.dispatchEvent(new KeyboardEvent('keypress', event));
+			}
+		}, true)
+	}-*/;
+
 	private void hookEvents () {
 		addEventListener(canvas, "mousedown", this, true);
 		addEventListener(Document.get(), "mousedown", this, true);
@@ -638,6 +682,7 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 		addEventListener(canvas, "touchcancel", this, true);
 		addEventListener(canvas, "touchend", this, true);
 
+		installCaptureListeners(canvas);
 	}
 
 	private int getButton (int button) {
@@ -731,23 +776,33 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 				if (isCatchKey(code)) {
 					e.preventDefault();
 				}
-				if (code == Keys.BACKSPACE) {
+				if (!pressedKeys[code]) {
+					pressedKeySet.add(code);
+					pressedKeyCount++;
+					pressedKeys[code] = true;
+					keyJustPressed = true;
+					justPressedKeys[code] = true;
 					if (processor != null) {
 						processor.keyDown(code);
-						processor.keyTyped('\b');
-					}
-				} else {
-					if (!pressedKeys[code]) {
-						pressedKeySet.add(code);
-						pressedKeyCount++;
-						pressedKeys[code] = true;
-						keyJustPressed = true;
-						justPressedKeys[code] = true;
-						if (processor != null) {
-							processor.keyDown(code);
-						}
 					}
 				}
+// if (code == Keys.BACKSPACE) {
+// if (processor != null) {
+// processor.keyDown(code);
+// processor.keyTyped('\b');
+// }
+// } else {
+// if (!pressedKeys[code]) {
+// pressedKeySet.add(code);
+// pressedKeyCount++;
+// pressedKeys[code] = true;
+// keyJustPressed = true;
+// justPressedKeys[code] = true;
+// if (processor != null) {
+// processor.keyDown(code);
+// }
+// }
+// }
 			}
 
 			if (e.getType().equals("keypress")) {
@@ -756,9 +811,10 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 				// usually, browsers don't send a keypress event for tab, so we emulate it in
 				// keyup event. Just in case this changes in the future, we sort this out here
 				// to avoid sending the event twice.
-				if (c != '\t') {
-					if (processor != null) processor.keyTyped(c);
-				}
+				if (processor != null) processor.keyTyped(c);
+// if (c != '\t') {
+// if (processor != null) processor.keyTyped(c);
+// }
 			}
 
 			if (e.getType().equals("keyup")) {
@@ -767,11 +823,11 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 				if (isCatchKey(code)) {
 					e.preventDefault();
 				}
-				if (processor != null && code == Keys.TAB) {
-					// js does not raise keypress event for tab, so emulate this here for
-					// platform-independant behaviour
-					processor.keyTyped('\t');
-				}
+// if (processor != null && code == Keys.TAB) {
+// // js does not raise keypress event for tab, so emulate this here for
+// // platform-independant behaviour
+// processor.keyTyped('\t');
+// }
 				if (pressedKeys[code]) {
 					pressedKeySet.remove(code);
 					pressedKeyCount--;
