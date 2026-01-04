@@ -18,8 +18,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -30,6 +28,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class TextFieldTest extends GdxTest {
 	private Stage stage;
 	private Skin skin;
+	private TextField textField;
+	private Label statusLabel;
 	private boolean cancelled = false;
 
 	@Override
@@ -38,7 +38,7 @@ public class TextFieldTest extends GdxTest {
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		final TextField textField = new TextField("0123456789ABCDEFGHIJ", skin);
+		textField = new TextField("0123456789ABCDEFGHIJ", skin);
 		textField.setBounds(20, 20, 300, 30);
 
 		textField.addListener(new ChangeListener() {
@@ -63,7 +63,7 @@ public class TextFieldTest extends GdxTest {
 			}
 		});
 
-		final Label statusLabel = new Label("", skin);
+		statusLabel = new Label("", skin);
 
 		table.add(cancelToggle).left().row();
 		table.add(new Label("--- Status ---", skin)).padTop(10).row();
@@ -71,32 +71,19 @@ public class TextFieldTest extends GdxTest {
 
 		stage.addActor(textField);
 		stage.addActor(table);
-
-		stage.getRoot().addCaptureListener(new InputListener() {
-			@Override
-			public boolean mouseMoved (InputEvent event, float x, float y) {
-				updateStatus(textField, statusLabel);
-				return false;
-			}
-
-			@Override
-			public boolean keyTyped (InputEvent event, char character) {
-				updateStatus(textField, statusLabel);
-				return false;
-			}
-		});
 	}
 
-	private void updateStatus (TextField textField, Label label) {
+	private void updateStatus () {
 		String info = "Cursor: " + textField.getCursorPosition() + "\n" + "Selection: " + textField.getSelectionStart() + "\n"
 			+ "Text Len: " + textField.getText().length();
-		label.setText(info);
+		statusLabel.setText(info);
 	}
 
 	@Override
 	public void render () {
 		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 		stage.act(Gdx.graphics.getDeltaTime());
+		updateStatus();
 		stage.draw();
 	}
 

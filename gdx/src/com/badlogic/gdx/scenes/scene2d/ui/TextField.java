@@ -1207,7 +1207,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 						text = insert(cursor++, insertion, text);
 					}
 					String tempUndoText = undoText;
-					if (changeText(oldText, text)) {
+					if (text.equals(oldText) || changeText(oldText, text)) {
 						long time = System.currentTimeMillis();
 						if (time - 750 > lastChangeTime) undoText = oldText;
 						lastChangeTime = time;
