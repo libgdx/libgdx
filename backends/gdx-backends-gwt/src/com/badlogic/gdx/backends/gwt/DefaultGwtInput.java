@@ -618,6 +618,8 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	}-*/;
 
 	private native void installCaptureListeners (CanvasElement target) /*-{
+		var self = this;
+
 		var tabEvent = {
 			key: '\t',
 			code: 'Tab',
@@ -644,7 +646,7 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 
 		$wnd.addEventListener('keydown', function (e) {
 			if (e.repeat === undefined) { // skip browsers that don't support e.repeat
-				this.@com.badlogic.gdx.backends.gwt.DefaultGwtInput::handleEvent(*)(e);
+				self.@com.badlogic.gdx.backends.gwt.DefaultGwtInput::handleEvent(*)(e);
 				return;
 			}
 			if (e.key === "Tab" || e.key === "Backspace") {
@@ -658,7 +660,7 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 						break;
 				}
 				if (!e.repeat)
-					this.@com.badlogic.gdx.backends.gwt.DefaultGwtInput::handleEvent(*)(e);
+					self.@com.badlogic.gdx.backends.gwt.DefaultGwtInput::handleEvent(*)(e);
 				target.dispatchEvent(new KeyboardEvent('keypress', event));
 			}
 		}, true)
