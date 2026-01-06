@@ -788,35 +788,15 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 						processor.keyDown(code);
 					}
 				}
-// if (code == Keys.BACKSPACE) {
-// if (processor != null) {
-// processor.keyDown(code);
-// processor.keyTyped('\b');
-// }
-// } else {
-// if (!pressedKeys[code]) {
-// pressedKeySet.add(code);
-// pressedKeyCount++;
-// pressedKeys[code] = true;
-// keyJustPressed = true;
-// justPressedKeys[code] = true;
-// if (processor != null) {
-// processor.keyDown(code);
-// }
-// }
-// }
 			}
 
 			if (e.getType().equals("keypress")) {
 				// Gdx.app.log("DefaultGwtInput", "keypress");
 				char c = (char)e.getCharCode();
-				// usually, browsers don't send a keypress event for tab, so we emulate it in
-				// keyup event. Just in case this changes in the future, we sort this out here
-				// to avoid sending the event twice.
+				// usually, browsers don't send a keypress event for tab and backspace.
+				// but the capture listener creates those events, so here just handle
+				// them as normal keys.
 				if (processor != null) processor.keyTyped(c);
-// if (c != '\t') {
-// if (processor != null) processor.keyTyped(c);
-// }
 			}
 
 			if (e.getType().equals("keyup")) {
@@ -825,11 +805,6 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 				if (isCatchKey(code)) {
 					e.preventDefault();
 				}
-// if (processor != null && code == Keys.TAB) {
-// // js does not raise keypress event for tab, so emulate this here for
-// // platform-independant behaviour
-// processor.keyTyped('\t');
-// }
 				if (pressedKeys[code]) {
 					pressedKeySet.remove(code);
 					pressedKeyCount--;
