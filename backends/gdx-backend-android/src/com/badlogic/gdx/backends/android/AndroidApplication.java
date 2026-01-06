@@ -248,11 +248,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		input.onPause();
 
-		if (isFinishing()) {
-			graphics.clearManagedCaches();
-			graphics.destroy();
-		}
-
 		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
 		graphics.setContinuousRendering(isContinuous);
 
@@ -300,6 +295,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	protected void onDestroy () {
 		keyboardHeightProvider.close();
+		graphics.clearManagedCaches();
+		graphics.destroy();
 		super.onDestroy();
 	}
 
