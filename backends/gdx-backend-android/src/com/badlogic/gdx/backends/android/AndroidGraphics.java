@@ -25,6 +25,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.WindowMetrics;
 import android.view.DisplayCutout;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
@@ -151,8 +152,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	}
 
 	protected void updatePpi () {
-		DisplayMetrics metrics = new DisplayMetrics();
-		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		DisplayMetrics metrics = app.getContext().getResources().getDisplayMetrics();
 
 		ppiX = metrics.xdpi;
 		ppiY = metrics.ydpi;
@@ -337,9 +337,15 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 		logManagedCachesStatus();
 
-		Display display = app.getWindowManager().getDefaultDisplay();
-		this.width = display.getWidth();
-		this.height = display.getHeight();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			WindowMetrics windowMetrics = app.getWindowManager().getCurrentWindowMetrics();
+			this.width = windowMetrics.getBounds().width();
+			this.height = windowMetrics.getBounds().height();
+		} else {
+			Display display = app.getWindowManager().getDefaultDisplay();
+			this.width = display.getWidth();
+			this.height = display.getHeight();
+		}
 		this.lastFrameTime = System.nanoTime();
 
 		gl.glViewport(0, 0, this.width, this.height);
@@ -820,3 +826,6 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		}
 	}
 }
+
+
+---SHA: 742f5b361f127b486b978c6bb132d65443e0f19a
