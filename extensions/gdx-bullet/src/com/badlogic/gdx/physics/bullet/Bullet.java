@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.jnigen.loader.SharedLibraryLoader;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -29,7 +30,6 @@ import com.badlogic.gdx.physics.bullet.linearmath.LinearMathConstants;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class Bullet {
 	/** The version of the Bullet library used by this wrapper. */

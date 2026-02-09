@@ -19,10 +19,14 @@ buildscript {
 	repositories {
 		mavenCentral()
 		gradlePluginPortal()
+		maven {
+			url "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+		maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
 	}
 	dependencies {
 		classpath "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
-		classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.5.2"
+		classpath "com.badlogicgames.jnigen:jnigen-gradle:3.1.2-SNAPSHOT"
 		classpath 'org.jreleaser:jreleaser-gradle-plugin:1.18.0'
 	}
 }
@@ -53,7 +57,7 @@ ext {
 }
 
 allprojects {
-	group = 'com.badlogicgames.gdx'
+	group = project.getProperty("group") ? project.getProperty("group") : "com.badlogicgames.gdx"
 	version = project.getProperty('version') + (isReleaseBuild() ? "" : "-SNAPSHOT")
 
 	buildscript {
@@ -65,6 +69,9 @@ allprojects {
 			maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 			maven { url "https://oss.sonatype.org/content/repositories/releases/" }
 			maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
+		}
+		dependencies {
+			classpath "com.badlogicgames.jnigen:jnigen-gradle:3.1.2-SNAPSHOT"
 		}
 	}
 
@@ -209,11 +216,36 @@ tasks.register('fetchGdxNativesZIP', Download) {
 	useETag "all"
 }
 
-tasks.register('fetchNatives', Copy) {
+tasks.register("unzipNatives", Copy) {
 	dependsOn fetchGdxNativesZIP
 	from zipTree("build/natives.zip")
 	into "."
 	doNotTrackState("Don't track state")
+}
+
+tasks.register('fetchNatives') {
+	dependsOn unzipNatives
+}
+
+
+//Hook up jnigen tasks to fetch natives task.
+//Once natives have been unzipped, jnigen can package these up into jars
+//We then can depend on them as artifact references for test dependencies
+project.afterEvaluate {
+	subprojects {
+		afterEvaluate { project ->
+			if (project.plugins.hasPlugin("com.badlogicgames.jnigen.jnigen-gradle")) {
+				[
+					project.tasks.jnigenPackageAllAndroid,
+					project.tasks.jnigenPackageAllIOS,
+					project.tasks.jnigenPackageAllDesktop
+				].forEach { packageTask ->
+					fetchNatives.dependsOn(packageTask)
+					packageTask.mustRunAfter(unzipNatives)
+				}
+			}
+		}
+	}
 }
 
 apply from: rootProject.file('publish.gradle')

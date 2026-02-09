@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.backends.lwjgl.audio.LwjglAudio;
+import com.badlogic.gdx.jnigen.commons.HostDetection;
+import com.badlogic.gdx.jnigen.commons.Os;
 import com.badlogic.gdx.utils.*;
 import org.lwjgl.opengl.AWTGLCanvas;
 import org.lwjgl.opengl.Display;
@@ -93,7 +95,7 @@ public class LwjglCanvas implements LwjglApplicationBase {
 				scaleX = (float)transform.getScaleX();
 				scaleY = (float)transform.getScaleY();
 
-				if (SharedLibraryLoader.os == Os.MacOsX) {
+				if (HostDetection.os == Os.MacOsX) {
 					EventQueue.invokeLater(new Runnable() {
 						public void run () {
 							create();
