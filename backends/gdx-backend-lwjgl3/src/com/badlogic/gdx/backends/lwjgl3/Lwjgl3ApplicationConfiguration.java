@@ -171,18 +171,21 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.b = b;
 		this.a = a;
 	}
+
 	/** Sets the bit of depth.
 	 * 
-	 * @param depth depth bits (default 16)*/
+	 * @param depth depth bits (default 16) */
 	public void setDepthBits (int depth) {
 		this.depth = depth;
 	}
+
 	/** Sets the bit of stencil buffer.
 	 * 
 	 * @param stencil stencil bits (default 0) */
 	public void setStencilBits (int stencil) {
 		this.stencil = stencil;
 	}
+
 	/** Sets the bit of multi-sampling.
 	 * 
 	 * @param samples MSAA samples (default 0) */
@@ -192,33 +195,38 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 
 	/** @return bit of color depth r */
 	public int getRGBA_RBit () {
-        return this.r;
+		return this.r;
 	}
+
 	/** @return bit of color depth g */
 	public int getRGBA_GBit () {
-        return this.g;
+		return this.g;
 	}
+
 	/** @return bit of color depth b */
 	public int getRGBA_BBit () {
-        return this.b;
+		return this.b;
 	}
+
 	/** @return bit of color depth a */
 	public int getRGBA_ABit () {
-        return this.a;
+		return this.a;
 	}
+
 	/** @return bit of depth */
 	public int getDepthBits (int depth) {
 		return this.depth;
 	}
+
 	/** @return bit of stencil buffer */
 	public int getStencilBits (int stencil) {
 		return this.stencil;
 	}
+
 	/** @return bit of multi-sampling */
 	public int getSamplesBits (int samples) {
 		return this.samples;
 	}
-	
 
 	/** Set transparent window hint. Results may vary on different OS and GPUs. Usage with the ANGLE backend is less consistent.
 	 * @param transparentFramebuffer */
