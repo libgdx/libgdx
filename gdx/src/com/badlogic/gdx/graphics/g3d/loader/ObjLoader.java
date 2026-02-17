@@ -179,9 +179,16 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 					mtl.load(file.parent().child(tokens[1]));
 				} else if (tokens[0].equals("usemtl")) {
 					if (tokens.length == 1)
-						activeGroup.materialName = "default";
-					else
-						activeGroup.materialName = tokens[1].replace('.', '_');
+						activeGroup = setActiveGroup("default");
+					else {
+                        String mat_name = tokens[1].replace('.', '_');
+                        if (activeGroup.materialName.equals("default"))
+                            activeGroup.materialName = tokens[1].replace('.', '_');
+                        else {
+                            activeGroup = setActiveGroup(mat_name);
+                            activeGroup.materialName=mat_name;
+                        }
+                    }
 				}
 			}
 			reader.close();
