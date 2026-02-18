@@ -191,7 +191,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.a = a;
 	}
 
-	/** Sets the bit depth of depth.
+	/** Sets the bit depth of depth buffer.
 	 * 
 	 * @param depth depth bits (default 16) */
 	public void setDepthBits (int depth) {
