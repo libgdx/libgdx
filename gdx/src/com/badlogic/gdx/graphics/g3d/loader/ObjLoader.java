@@ -183,7 +183,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 						activeGroup = setActiveGroup("default");
 					else {
 						String mat_name = tokens[1].replace('.', '_');
-						activeGroup = setActiveGroup(activeObject+"_"+mat_name);
+						activeGroup = setActiveGroup(activeObject + "_" + mat_name);
 						activeGroup.materialName = mat_name;
 					}
 				}
