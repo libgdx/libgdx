@@ -159,6 +159,25 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.gles30ContextMinorVersion = gles3MinorVersion;
 	}
 
+	/** Sets the bit depth of the color, depth and stencil buffer as well as multi-sampling.
+	 *
+	 * @param r red bits (default 8)
+	 * @param g green bits (default 8)
+	 * @param b blue bits (default 8)
+	 * @param a alpha bits (default 8)
+	 * @param depth depth bits (default 16)
+	 * @param stencil stencil bits (default 0)
+	 * @param samples MSAA samples (default 0) */
+	public void setBackBufferConfig (int r, int g, int b, int a, int depth, int stencil, int samples) {
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.a = a;
+		this.depth = depth;
+		this.stencil = stencil;
+		this.samples = samples;
+	}
+
 	/** Sets the bit depth of the color.
 	 * 
 	 * @param r red bits (default 8)
