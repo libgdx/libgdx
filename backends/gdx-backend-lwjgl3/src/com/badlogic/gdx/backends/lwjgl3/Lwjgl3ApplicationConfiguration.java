@@ -212,11 +212,6 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.samples = samples;
 	}
 
-	/** @return array with bit depths of red, green, blue, alpha, depth buffer, stencil buffer and number of MSAA samples */
-	public int[] getBackBufferConfig () {
-		return new int[] {this.r, this.g, this.b, this.a, this.depth, this.stencil, this.samples};
-	}
-
 	/** Set transparent window hint. Results may vary on different OS and GPUs. Usage with the ANGLE backend is less consistent.
 	 * @param transparentFramebuffer */
 	public void setTransparentFramebuffer (boolean transparentFramebuffer) {
@@ -228,20 +223,10 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.idleFPS = fps;
 	}
 
-	/** @return polling rate during idle time in non-continuous rendering mode. */
-	public int getIdleFPS () {
-		return this.idleFPS;
-	}
-
 	/** Sets the target framerate for the application. The CPU sleeps as needed. Must be positive. Use 0 to never sleep. Default is
 	 * 0. */
 	public void setForegroundFPS (int fps) {
 		this.foregroundFPS = fps;
-	}
-
-	/** @return foreground framerate of the application. */
-	public int getForegroundFPS () {
-		return this.foregroundFPS;
 	}
 
 	/** Sets whether to pause the application {@link ApplicationListener#pause()} and fire
