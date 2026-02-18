@@ -191,14 +191,14 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.a = a;
 	}
 
-	/** Sets the bit of depth.
+	/** Sets the bit depth of depth.
 	 * 
 	 * @param depth depth bits (default 16) */
 	public void setDepthBits (int depth) {
 		this.depth = depth;
 	}
 
-	/** Sets the bit of stencil buffer.
+	/** Sets the bit depth of stencil buffer.
 	 * 
 	 * @param stencil stencil bits (default 0) */
 	public void setStencilBits (int stencil) {
