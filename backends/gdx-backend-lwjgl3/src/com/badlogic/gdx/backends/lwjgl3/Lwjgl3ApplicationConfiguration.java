@@ -178,7 +178,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.samples = samples;
 	}
 
-	/** Sets the bit depth of the color.
+	/** Sets the bit depth of the color buffer.
 	 * 
 	 * @param r red bits (default 8)
 	 * @param g green bits (default 8)
