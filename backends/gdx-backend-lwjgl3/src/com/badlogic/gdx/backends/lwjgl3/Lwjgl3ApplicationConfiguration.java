@@ -243,10 +243,20 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.idleFPS = fps;
 	}
 
+	/** @return polling rate during idle time in non-continuous rendering mode. */
+	public int getIdleFPS () {
+		return this.idleFPS;
+	}
+
 	/** Sets the target framerate for the application. The CPU sleeps as needed. Must be positive. Use 0 to never sleep. Default is
 	 * 0. */
 	public void setForegroundFPS (int fps) {
 		this.foregroundFPS = fps;
+	}
+
+	/** @return foreground framerate of the application. */
+	public int getForegroundFPS  () {
+		return this.foregroundFPS;
 	}
 
 	/** Sets whether to pause the application {@link ApplicationListener#pause()} and fire
