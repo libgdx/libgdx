@@ -212,24 +212,9 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.samples = samples;
 	}
 
-	/** @return number of red bits */
-	public int getRGBA_RBit () {
-		return this.r;
-	}
-
-	/** @return number of green bits */
-	public int getRGBA_GBit () {
-		return this.g;
-	}
-
-	/** @return number of blue bits */
-	public int getRGBA_BBit () {
-		return this.b;
-	}
-
-	/** @return number of alpha bits */
-	public int getRGBA_ABit () {
-		return this.a;
+	/** @return array with numbers of red, green, blue and alpha bits */
+	public int[] getRGBABits () {
+		return new int[]{this.r,this.g,this.b,this.a};
 	}
 
 	/** @return number of depth bits */
