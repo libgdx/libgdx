@@ -205,7 +205,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.stencil = stencil;
 	}
 
-	/** Sets the bit of multi-sampling.
+	/** Sets the multi-sampling samples value.
 	 * 
 	 * @param samples MSAA samples (default 0) */
 	public void setSamples (int samples) {
