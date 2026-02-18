@@ -208,7 +208,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	/** Sets the bit of multi-sampling.
 	 * 
 	 * @param samples MSAA samples (default 0) */
-	public void setSamplesBits (int samples) {
+	public void setSamples (int samples) {
 		this.samples = samples;
 	}
 
