@@ -212,24 +212,9 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.samples = samples;
 	}
 
-	/** @return array with bit depths of red, green, blue and alpha */
-	public int[] getRGBABits () {
-		return new int[]{this.r,this.g,this.b,this.a};
-	}
-
-	/** @return bit depth of depth */
-	public int getDepthBits (int depth) {
-		return this.depth;
-	}
-
-	/** @return bit depth of stencil buffer */
-	public int getStencilBits (int stencil) {
-		return this.stencil;
-	}
-
-	/** @return number of MSAA samples */
-	public int getSamples (int samples) {
-		return this.samples;
+	/** @return array with bit depths of red, green, blue, alpha, depth buffer, stencil buffer and number of MSAA samples */
+	public int[] getBackBufferConfig () {
+		return new int[]{this.r,this.g,this.b,this.a,this.depth,this.stencil,this.samples};
 	}
 
 	/** Set transparent window hint. Results may vary on different OS and GPUs. Usage with the ANGLE backend is less consistent.
