@@ -214,7 +214,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 
 	/** @return array with bit depths of red, green, blue, alpha, depth buffer, stencil buffer and number of MSAA samples */
 	public int[] getBackBufferConfig () {
-		return new int[]{this.r,this.g,this.b,this.a,this.depth,this.stencil,this.samples};
+		return new int[] {this.r, this.g, this.b, this.a, this.depth, this.stencil, this.samples};
 	}
 
 	/** Set transparent window hint. Results may vary on different OS and GPUs. Usage with the ANGLE backend is less consistent.
@@ -240,7 +240,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	}
 
 	/** @return foreground framerate of the application. */
-	public int getForegroundFPS  () {
+	public int getForegroundFPS () {
 		return this.foregroundFPS;
 	}
 
