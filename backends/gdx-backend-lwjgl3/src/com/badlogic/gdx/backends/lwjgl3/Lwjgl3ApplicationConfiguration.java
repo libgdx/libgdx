@@ -212,37 +212,37 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.samples = samples;
 	}
 
-	/** @return bit of color depth r */
+	/** @return bits of color depth r */
 	public int getRGBA_RBit () {
 		return this.r;
 	}
 
-	/** @return bit of color depth g */
+	/** @return bits of color depth g */
 	public int getRGBA_GBit () {
 		return this.g;
 	}
 
-	/** @return bit of color depth b */
+	/** @return bits of color depth b */
 	public int getRGBA_BBit () {
 		return this.b;
 	}
 
-	/** @return bit of color depth a */
+	/** @return bits of color depth a */
 	public int getRGBA_ABit () {
 		return this.a;
 	}
 
-	/** @return bit of depth */
+	/** @return bits of depth */
 	public int getDepthBits (int depth) {
 		return this.depth;
 	}
 
-	/** @return bit of stencil buffer */
+	/** @return bits of stencil buffer */
 	public int getStencilBits (int stencil) {
 		return this.stencil;
 	}
 
-	/** @return bit of multi-sampling */
+	/** @return bits of multi-sampling */
 	public int getSamplesBits (int samples) {
 		return this.samples;
 	}
