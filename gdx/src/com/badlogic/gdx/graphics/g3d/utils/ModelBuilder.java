@@ -40,11 +40,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author Xoppa */
 public class ModelBuilder {
 	/** The model currently being build */
-	private Model model;
+	protected Model model;
 	/** The node currently being build */
-	private Node node;
+	protected Node node;
 	/** The mesh builders created between begin and end */
-	private Array<MeshBuilder> builders = new Array<MeshBuilder>();
+	protected Array<MeshBuilder> builders = new Array<MeshBuilder>();
 
 	private Matrix4 tmpTransform = new Matrix4();
 
