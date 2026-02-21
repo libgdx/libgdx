@@ -302,6 +302,7 @@ public class MaxRectsPacker implements Packer {
 		private final Array<Rect> usedRectangles = new Array<>();
 		private final Array<Rect> freeRectangles = new Array<>();
 		private final Array<Rect> rectanglesToCheckWhenPruning = new Array<>();
+		private RTree rTree = new RTree();
 
 		public void init (int width, int height) {
 			binWidth = width;
@@ -309,6 +310,7 @@ public class MaxRectsPacker implements Packer {
 
 			usedRectangles.clear();
 			freeRectangles.clear();
+
 			Rect n = new Rect();
 			n.x = 0;
 			n.y = 0;
@@ -344,6 +346,7 @@ public class MaxRectsPacker implements Packer {
 			bestNode.rotated = newNode.rotated;
 
 			usedRectangles.add(bestNode);
+			rTree.insert(bestNode);
 			return bestNode;
 		}
 
@@ -411,6 +414,7 @@ public class MaxRectsPacker implements Packer {
 			pruneFreeList();
 
 			usedRectangles.add(node);
+			rTree.insert(node);
 		}
 
 		private Rect scoreRect (Rect rect, FreeRectChoiceHeuristic method) {
@@ -640,13 +644,16 @@ public class MaxRectsPacker implements Packer {
 			if (x == 0 || x + width == binWidth) score += height;
 			if (y == 0 || y + height == binHeight) score += width;
 
-			Array<Rect> usedRectangles = this.usedRectangles;
-			for (int i = 0, n = usedRectangles.size; i < n; i++) {
-				Rect rect = usedRectangles.get(i);
-				if (rect.x == x + width || rect.x + rect.width == x)
-					score += commonIntervalLength(rect.y, rect.y + rect.height, y, y + height);
-				if (rect.y == y + height || rect.y + rect.height == y)
-					score += commonIntervalLength(rect.x, rect.x + rect.width, x, x + width);
+			Array<Rect> candidates = rTree.retrieve(x, y, width, height);
+
+			for (int i = 0, n = candidates.size; i < n; i++) {
+				Rect Rect = candidates.get(i);
+				if (Rect.x == x + width || Rect.x + Rect.width == x) {
+					score += commonIntervalLength(Rect.y, Rect.y + Rect.height, y, y + height);
+				}
+				if (Rect.y == y + height || Rect.y + Rect.height == y) {
+					score += commonIntervalLength(Rect.x, Rect.x + Rect.width, x, x + width);
+				}
 			}
 			return score;
 		}
@@ -781,4 +788,258 @@ public class MaxRectsPacker implements Packer {
 		/** CP: Choosest the placement where the rectangle touches other rects as much as possible. */
 		ContactPointRule
 	};
+
+	/** Specialized R-Tree with 2 entries per node. */
+	static class RTree {
+		private Node root;
+
+		public RTree () {
+			this.root = new Node(true);
+		}
+
+		/** Insert a rectangle into the R-tree. */
+		public void insert (Rect rect) {
+			Node leaf = chooseLeaf(root, rect);
+			addEntryToNode(leaf, rect);
+			leaf.mbr = combine(leaf.mbr, rect);
+
+			if (leaf.entryCount > 2) {
+				splitNode(leaf);
+			}
+
+			adjustTree(leaf);
+		}
+
+		/** Retrieve (search) for all rectangles that might intersect the given query.
+		 * @return all intersecting rectangles */
+		public Array<Rect> retrieve (int queryX, int queryY, int queryWidth, int queryHeight) {
+			Array<Rect> results = new Array<>();
+			Rect query = new Rect();
+			query.x = queryX;
+			query.y = queryY;
+			query.width = queryWidth;
+			query.height = queryHeight;
+			search(root, query, results);
+			return results;
+		}
+
+		private static class Node {
+			boolean isLeaf;
+			Rect mbr;
+
+			Rect[] entries = new Rect[3];
+			int entryCount = 0;
+
+			Node[] children = null;
+			int childCount = 0;
+
+			Node (boolean leaf) {
+				this.isLeaf = leaf;
+				if (!leaf) {
+					children = new Node[3];
+				}
+			}
+		}
+
+		private Node chooseLeaf (Node node, Rect rect) {
+			if (node.isLeaf) {
+				return node;
+			}
+			float minEnlargement = Float.MAX_VALUE;
+			Node bestChild = null;
+
+			for (int i = 0; i < node.entryCount; i++) {
+				Rect childMBR = node.entries[i];
+				float currentArea = area(childMBR);
+				Rect combinedMBR = combine(childMBR, rect);
+				float enlargedArea = area(combinedMBR);
+				float enlargement = enlargedArea - currentArea;
+				if (enlargement < minEnlargement) {
+					minEnlargement = enlargement;
+					bestChild = node.children[i];
+				}
+			}
+			return chooseLeaf(bestChild, rect);
+		}
+
+		private void addEntryToNode (Node node, Rect rect) {
+			node.entries[node.entryCount] = rect;
+			node.entryCount++;
+		}
+
+		private void addChildToNode (Node parent, Node child) {
+			parent.children[parent.childCount] = child;
+			parent.entries[parent.childCount] = child.mbr;
+			parent.childCount++;
+			parent.entryCount = parent.childCount;
+			parent.mbr = computeMBR(parent);
+		}
+
+		private void splitNode (Node node) {
+			Node newNode = new Node(node.isLeaf);
+
+			Rect[] all = new Rect[3];
+			System.arraycopy(node.entries, 0, all, 0, 3);
+
+			node.entryCount = 0;
+
+			int[] seeds = pickSeeds(all);
+			int s1 = seeds[0];
+			int s2 = seeds[1];
+
+			addEntryToNode(node, all[s1]);
+			addEntryToNode(newNode, all[s2]);
+
+			for (int i = 0; i < 3; i++) {
+				if (i == s1 || i == s2) continue;
+				float enlargeA = area(combine(node.mbr, all[i])) - area(node.mbr);
+				float enlargeB = area(combine(newNode.mbr, all[i])) - area(newNode.mbr);
+				if (enlargeA < enlargeB) {
+					addEntryToNode(node, all[i]);
+					node.mbr = combine(node.mbr, all[i]);
+				} else {
+					addEntryToNode(newNode, all[i]);
+					newNode.mbr = combine(newNode.mbr, all[i]);
+				}
+			}
+
+			if (!node.isLeaf) {
+				Node[] childAll = new Node[3];
+				System.arraycopy(node.children, 0, childAll, 0, 3);
+				node.childCount = 0;
+
+				for (int i = 0; i < 3; i++) {
+					if (childAll[i] == null) continue;
+					float enlargeA = area(combine(node.mbr, childAll[i].mbr)) - area(node.mbr);
+					float enlargeB = area(combine(newNode.mbr, childAll[i].mbr)) - area(newNode.mbr);
+					if (enlargeA < enlargeB) {
+						addChildToNode(node, childAll[i]);
+					} else {
+						addChildToNode(newNode, childAll[i]);
+					}
+				}
+			}
+
+			node.mbr = computeMBR(node);
+			newNode.mbr = computeMBR(newNode);
+
+			if (node == root) {
+				Node newRoot = new Node(false);
+				addChildToNode(newRoot, node);
+				addChildToNode(newRoot, newNode);
+				root = newRoot;
+			}
+		}
+
+		private int[] pickSeeds (Rect[] all) {
+			float maxWaste = -1;
+			int idx1 = 0, idx2 = 1;
+			for (int i = 0; i < 3; i++) {
+				for (int j = i + 1; j < 3; j++) {
+					float areaCombined = area(combine(all[i], all[j]));
+					float areaI = area(all[i]);
+					float areaJ = area(all[j]);
+					float waste = areaCombined - (areaI + areaJ);
+					if (waste > maxWaste) {
+						maxWaste = waste;
+						idx1 = i;
+						idx2 = j;
+					}
+				}
+			}
+			return new int[] {idx1, idx2};
+		}
+
+		private void adjustTree (Node node) {
+			if (node == root) {
+				return;
+			}
+			Node parent = findParent(root, node);
+
+			for (int i = 0; i < parent.childCount; i++) {
+				if (parent.children[i] == node) {
+					parent.entries[i] = node.mbr;
+					break;
+				}
+			}
+			parent.mbr = computeMBR(parent);
+
+			if ((parent.isLeaf && parent.entryCount > 2) || (!parent.isLeaf && parent.childCount > 2)) {
+				splitNode(parent);
+			}
+
+			adjustTree(parent);
+		}
+
+		private Node findParent (Node current, Node target) {
+			if (current == target || current.isLeaf) {
+				return null;
+			}
+			for (int i = 0; i < current.childCount; i++) {
+				if (current.children[i] == target) {
+					return current;
+				}
+				Node maybe = findParent(current.children[i], target);
+				if (maybe != null) {
+					return maybe;
+				}
+			}
+			return null;
+		}
+
+		private void search (Node node, Rect query, Array<Rect> results) {
+			if (!intersects(node.mbr, query)) {
+				return;
+			}
+
+			if (node.isLeaf) {
+				for (int i = 0; i < node.entryCount; i++) {
+					Rect r = node.entries[i];
+					if (intersects(r, query)) {
+						results.add(r);
+					}
+				}
+			} else {
+				for (int i = 0; i < node.childCount; i++) {
+					search(node.children[i], query, results);
+				}
+			}
+		}
+
+		/* Helpers */
+
+		private static boolean intersects (Rect a, Rect b) {
+			if (a == null || b == null) return false;
+			return !(a.x + a.width < b.x || a.x > b.x + b.width || a.y + a.height < b.y || a.y > b.y + b.height);
+		}
+
+		private static int area (Rect r) {
+			if (r == null) return 0;
+			return r.width * r.height;
+		}
+
+		private static Rect combine (Rect a, Rect b) {
+			if (a == null) return b;
+			if (b == null) return a;
+			int minX = Math.min(a.x, b.x);
+			int minY = Math.min(a.y, b.y);
+			int maxX = Math.max(a.x + a.width, b.x + b.width);
+			int maxY = Math.max(a.y + a.height, b.y + b.height);
+			Rect combination = new Rect();
+			combination.x = minX;
+			combination.y = minY;
+			combination.width = maxX - minX;
+			combination.height = maxY - minY;
+			return combination;
+		}
+
+		private static Rect computeMBR (Node node) {
+			Rect m = null;
+			for (int i = 0; i < node.entryCount; i++) {
+				m = combine(m, node.entries[i]);
+			}
+			return m;
+		}
+	}
+
 }
