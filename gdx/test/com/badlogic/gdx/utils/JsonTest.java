@@ -37,4 +37,24 @@ public class JsonTest {
 		value = json.fromJson(null, JsonValue.class, "{\"key2\":\"value2\"}");
 		assertEquals("value2", value.getString("key2"));
 	}
+
+	@Test
+	public void testCharArrayCurlyBrace() {
+		Json json = new Json();
+		// Each of these will get quoted correctly in any libGDX version
+		{
+			CharArray workingBrackets = CharArray.with('[', ']', '(', ')', '{');
+			String data = json.toJson(workingBrackets);
+			CharArray workingBrackets2 = json.fromJson(CharArray.class, data);
+			assertEquals(workingBrackets, workingBrackets2);
+		}
+		// Closing curly brace does not get quoted by libGDX 1.14.0, though only with minimal output type
+		{
+			CharArray curlyBrace = CharArray.with('}');
+			String data = json.toJson(curlyBrace);
+			CharArray curlyBrace2 = json.fromJson(CharArray.class, data);
+			assertEquals(curlyBrace, curlyBrace2);
+		}
+	}
+
 }
