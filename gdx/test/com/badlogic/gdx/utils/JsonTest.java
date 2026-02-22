@@ -71,12 +71,47 @@ public class JsonTest {
 	@Test
 	public void testIntArrray () {
 		Json json = new Json();
-		IntArray ascii = new IntArray(128);
+		IntArray numbers = new IntArray(128);
 		for (int c = 32; c <= 126; c++) {
-			ascii.add(c);
+			numbers.add(c);
 		}
-		String data = json.toJson(ascii);
-		IntArray ascii2 = json.fromJson(IntArray.class, data);
-		assertEquals(ascii, ascii2);
+		String data = json.toJson(numbers);
+		// Nothing in an IntArray should be quoted.
+		assertFalse(data.contains("\""));
+		IntArray numbers2 = json.fromJson(IntArray.class, data);
+		assertEquals(numbers, numbers2);
+	}
+
+	@Test
+	public void testFloatArrray () {
+		Json json = new Json();
+		FloatArray numbers = new FloatArray(128);
+		for (int c = 32; c <= 126; c++) {
+			numbers.add(c * 0.1f);
+		}
+		String data = json.toJson(numbers);
+		// Nothing in a FloatArray should be quoted.
+		assertFalse(data.contains("\""));
+		FloatArray numbers2 = json.fromJson(FloatArray.class, data);
+		assertEquals(numbers, numbers2);
+	}
+
+	@Test
+	public void testLongArrray () {
+		Json json = new Json();
+		boolean quoting = false;
+		for (int i = 0; i < 2; i++) {
+			json.setQuoteLongValues(quoting);
+			LongArray numbers = new LongArray(128);
+			for (int c = 32; c <= 126; c++) {
+				numbers.add(c * 1234567890L);
+			}
+			String data = json.toJson(numbers);
+			// A LongArray should only contain quotes if json.setQuoteLongValues(true) was called.
+			assertEquals(quoting, data.contains("\""));
+			LongArray numbers2 = json.fromJson(LongArray.class, data);
+			assertEquals(numbers, numbers2);
+			quoting = !quoting;
+		}
 	}
 }
