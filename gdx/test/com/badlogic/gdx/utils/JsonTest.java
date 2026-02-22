@@ -55,6 +55,28 @@ public class JsonTest {
 			CharArray curlyBrace2 = json.fromJson(CharArray.class, data);
 			assertEquals(curlyBrace, curlyBrace2);
 		}
+		// This fails in 1.14.0 because the chars '0' through '9' get interpreted as the JSON Number type, which
+		// means they become the char values from (char)(0), also called NUL, through (char)(9).
+		{
+			CharArray ascii = new CharArray(128);
+			for (char c = ' '; c <= '~'; c++) {
+				ascii.add(c);
+			}
+			String data = json.toJson(ascii);
+			CharArray ascii2 = json.fromJson(CharArray.class, data);
+			assertEquals(ascii, ascii2);
+		}
 	}
 
+	@Test
+	public void testIntArrray () {
+		Json json = new Json();
+		IntArray ascii = new IntArray(128);
+		for (int c = 32; c <= 126; c++) {
+			ascii.add(c);
+		}
+		String data = json.toJson(ascii);
+		IntArray ascii2 = json.fromJson(IntArray.class, data);
+		assertEquals(ascii, ascii2);
+	}
 }
