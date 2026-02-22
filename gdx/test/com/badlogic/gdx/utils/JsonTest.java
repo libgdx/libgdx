@@ -63,7 +63,19 @@ public class JsonTest {
 				ascii.add(c);
 			}
 			String data = json.toJson(ascii);
+			// data.length() is 313 here.
 			CharArray ascii2 = json.fromJson(CharArray.class, data);
+			assertEquals(ascii, ascii2);
+		}
+		// An alternative approach, storing a CharArray as a String and creating one using its String constructor.
+		{
+			CharArray ascii = new CharArray(128);
+			for (char c = ' '; c <= '~'; c++) {
+				ascii.add(c);
+			}
+			String data = json.toJson(ascii.toString());
+			// data.length() is 99 here.
+			CharArray ascii2 = new CharArray(json.fromJson(String.class, data));
 			assertEquals(ascii, ascii2);
 		}
 	}
