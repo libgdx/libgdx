@@ -39,7 +39,7 @@ public class JsonTest {
 	}
 
 	@Test
-	public void testCharArrayCurlyBrace() {
+	public void testCharArrayCurlyBrace () {
 		Json json = new Json();
 		// Each of these will get quoted correctly in any libGDX version
 		{
