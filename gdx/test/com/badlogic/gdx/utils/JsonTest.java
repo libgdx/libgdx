@@ -25,8 +25,11 @@ public class JsonTest {
 	@Test
 	public void testCharFromNumber () {
 		Json json = new Json();
-		char value = json.fromJson(char.class, "90");
-		assertEquals('Z', value);
+		// Behavior here changed because minimal syntax doesn't distinguish between a bare String containing a digit
+		// and a JSON Number. Any numbers that aren't digits 0-9 won't be converted to chars like they did before,
+		// which simply would cast the numerical value to char.
+		char value = json.fromJson(char.class, "9");
+		assertEquals('9', value);
 	}
 
 	@Test
@@ -63,7 +66,7 @@ public class JsonTest {
 				ascii.add(c);
 			}
 			String data = json.toJson(ascii);
-			// data.length() is 313 here.
+			// data.length() is 293 here.
 			CharArray ascii2 = json.fromJson(CharArray.class, data);
 			assertEquals(ascii, ascii2);
 		}
@@ -111,19 +114,14 @@ public class JsonTest {
 	@Test
 	public void testLongArrray () {
 		Json json = new Json();
-		boolean quoting = false;
-		for (int i = 0; i < 2; i++) {
-			json.setQuoteLongValues(quoting);
-			LongArray numbers = new LongArray(128);
-			for (int c = 32; c <= 126; c++) {
-				numbers.add(c * 1234567890L);
-			}
-			String data = json.toJson(numbers);
-			// A LongArray should only contain quotes if json.setQuoteLongValues(true) was called.
-			assertEquals(quoting, data.contains("\""));
-			LongArray numbers2 = json.fromJson(LongArray.class, data);
-			assertEquals(numbers, numbers2);
-			quoting = !quoting;
+		LongArray numbers = new LongArray(128);
+		for (int c = 32; c <= 126; c++) {
+			numbers.add(c * 1234567890L);
 		}
+		String data = json.toJson(numbers);
+		// Nothing in a LongArray should be quoted.
+		assertEquals(false, data.contains("\""));
+		LongArray numbers2 = json.fromJson(LongArray.class, data);
+		assertEquals(numbers, numbers2);
 	}
 }

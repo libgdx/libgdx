@@ -373,11 +373,11 @@ public class JsonValue implements Iterable<JsonValue> {
 		case stringValue:
 			return stringValue.length() == 0 ? 0 : stringValue.charAt(0);
 		case doubleValue:
-			return (char)doubleValue;
+			return (char)(doubleValue + '0');
 		case longValue:
-			return (char)longValue;
+			return (char)(longValue + '0');
 		case booleanValue:
-			return longValue != 0 ? (char)1 : 0;
+			return longValue != 0 ? '1' : '0';
 		}
 		throw new IllegalStateException("Value cannot be converted to char: " + type);
 	}
