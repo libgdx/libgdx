@@ -576,6 +576,10 @@ public class GwtGraphics extends AbstractGraphics {
 	public void setForegroundFPS (int fps) {
 	}
 
+	@Override
+	public void setBackgroundFPS (int fps) {
+	}
+
 	/** See https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio for more information
 	 *
 	 * @return value indicating the ratio of the display's resolution in physical pixels to the resolution in CSS pixels. A value
