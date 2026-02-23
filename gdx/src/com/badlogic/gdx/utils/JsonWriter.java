@@ -313,7 +313,8 @@ public class JsonWriter extends Writer {
 			if (this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
 				&& !string.contains("//") && !string.contains("/*")) {
 				int length = string.length();
-				if (length > 0 && string.charAt(length - 1) != ' ' && minimalValuePattern.matcher(string).matches()) return string;
+				if (length > 0 && string.charAt(length - 1) != ' ' && !(value instanceof Character)
+					&& minimalValuePattern.matcher(string).matches()) return string;
 			}
 			return quote ? escapeQuote(string) : '"' + string + '"';
 		}

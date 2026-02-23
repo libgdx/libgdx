@@ -25,11 +25,8 @@ public class JsonTest {
 	@Test
 	public void testCharFromNumber () {
 		Json json = new Json();
-		// Behavior here changed because minimal syntax doesn't distinguish between a bare String containing a digit
-		// and a JSON Number. Any numbers that aren't digits 0-9 won't be converted to chars like they did before,
-		// which simply would cast the numerical value to char.
-		char value = json.fromJson(char.class, "9");
-		assertEquals('9', value);
+		char value = json.fromJson(char.class, "90");
+		assertEquals('Z', value);
 	}
 
 	@Test
