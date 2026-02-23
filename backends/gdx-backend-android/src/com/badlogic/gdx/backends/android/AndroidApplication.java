@@ -60,8 +60,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected int logLevel = LOG_INFO;
 	protected ApplicationLogger applicationLogger;
 	protected boolean useImmersiveMode = false;
-	private int wasFocusChanged = -1;
-	private boolean isWaitingForAudio = false;
 	private KeyboardHeightProvider keyboardHeightProvider;
 
 	protected boolean renderUnderCutout = false;
@@ -130,25 +128,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		this.clipboard = new AndroidClipboard(this);
 		this.renderUnderCutout = config.renderUnderCutout;
 
-		// Add a specialized audio lifecycle listener
-		addLifecycleListener(new LifecycleListener() {
-
-			@Override
-			public void resume () {
-				// No need to resume audio here
-			}
-
-			@Override
-			public void pause () {
-				audio.pause();
-			}
-
-			@Override
-			public void dispose () {
-				audio.dispose();
-			}
-		});
-
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -212,15 +191,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public void onWindowFocusChanged (boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		useImmersiveMode(this.useImmersiveMode);
-		if (hasFocus) {
-			this.wasFocusChanged = 1;
-			if (this.isWaitingForAudio) {
-				this.audio.resume();
-				this.isWaitingForAudio = false;
-			}
-		} else {
-			this.wasFocusChanged = 0;
-		}
 	}
 
 	@Override
@@ -255,9 +225,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		AndroidGraphics.enforceContinuousRendering = isContinuousEnforced;
 		graphics.setContinuousRendering(isContinuous);
-
 		graphics.onPauseGLSurfaceView();
-
+		audio.pause();
 		super.onPause();
 		keyboardHeightProvider.setKeyboardHeightObserver(null);
 	}
@@ -279,14 +248,10 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		if (!firstResume) {
 			graphics.resume();
+			audio.resume();
 		} else
 			firstResume = false;
 
-		this.isWaitingForAudio = true;
-		if (this.wasFocusChanged == 1 || this.wasFocusChanged == -1) {
-			this.audio.resume();
-			this.isWaitingForAudio = false;
-		}
 		super.onResume();
 		keyboardHeightProvider.setKeyboardHeightObserver((DefaultAndroidInput)Gdx.input);
 		((AndroidGraphics)getGraphics()).getView().post(new Runnable() {
@@ -299,6 +264,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@Override
 	protected void onDestroy () {
+		if (audio != null) {
+			audio.dispose();
+		}
 		keyboardHeightProvider.close();
 		super.onDestroy();
 	}

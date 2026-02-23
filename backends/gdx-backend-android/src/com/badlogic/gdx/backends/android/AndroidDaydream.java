@@ -114,26 +114,6 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		this.handler = new Handler();
 		this.clipboard = new AndroidClipboard(this);
 
-		// Add a specialized audio lifecycle listener
-		addLifecycleListener(new LifecycleListener() {
-
-			@Override
-			public void resume () {
-				audio.resume();
-			}
-
-			@Override
-			public void pause () {
-				audio.pause();
-			}
-
-			@Override
-			public void dispose () {
-				audio.dispose();
-				audio = null;
-			}
-		});
-
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -170,6 +150,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		boolean isContinuous = graphics.isContinuousRendering();
 		graphics.setContinuousRendering(true);
 		graphics.pause();
+		audio.pause();
 
 		input.onDreamingStopped();
 
@@ -179,6 +160,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 		graphics.onPauseGLSurfaceView();
 
+		audio.dispose();
 		super.onDreamingStopped();
 	}
 
@@ -201,6 +183,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 			graphics.resume();
 		} else
 			firstResume = false;
+		audio.resume();
 		super.onDreamingStarted();
 	}
 
