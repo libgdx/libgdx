@@ -17,6 +17,7 @@ import javax.swing.JSeparator;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
 import com.badlogic.gdx.utils.Array;
 
 /** @author Inferno */
@@ -192,12 +193,13 @@ public class RegionPickerPanel extends JPanel {
 		repaint();
 	}
 
-	public void setTexture (Texture texture) {
+	public void setTexture (Texture texture, RegionInfluencer influencer) {
 		texturePanel.clearSelection();
 		texturePanel.setTexture(texture);
 		CustomCardLayout cardLayout = (CustomCardLayout)content.getLayout();
 		cardLayout.show(content, "texture");
 		showGenerationPanel(true);
+		initializeComponentsByTexture(texture, influencer);
 		content.revalidate();
 		content.repaint();
 		revalidate();
@@ -206,6 +208,24 @@ public class RegionPickerPanel extends JPanel {
 
 	private void showGenerationPanel (boolean isShown) {
 		generationPanel.setVisible(isShown);
+	}
+
+	private void initializeComponentsByTexture (Texture texture, RegionInfluencer influencer) {
+		rowSlider.setValue(getRowNumber(texture, influencer.regions.first()));
+		columnSlider.setValue(getColumnNumber(texture, influencer.regions.first()));
+		generateRegions((GenerationMode)generateBox.getSelectedItem());
+
+		texturePanel.select(influencer.regions);
+		texturePanel.revalidate();
+		texturePanel.repaint();
+	}
+
+	private int getRowNumber (Texture texture, RegionInfluencer.AspectTextureRegion atr) {
+		return texture.getHeight() / new TextureRegion(texture, atr.u, atr.v, atr.u2, atr.v2).getRegionHeight();
+	}
+
+	private int getColumnNumber (Texture texture, RegionInfluencer.AspectTextureRegion atr) {
+		return texture.getWidth() / new TextureRegion(texture, atr.u, atr.v, atr.u2, atr.v2).getRegionWidth();
 	}
 
 }
