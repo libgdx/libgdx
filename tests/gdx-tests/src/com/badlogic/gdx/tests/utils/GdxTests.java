@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.conformance.AudioSoundAndMusicIsolationTest;
@@ -417,5 +418,10 @@ public class GdxTests {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static void resetContext () {
+		ShaderProgram.prependFragmentCode = "";
+		ShaderProgram.prependVertexCode = "";
 	}
 }
