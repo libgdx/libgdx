@@ -557,6 +557,7 @@ public final class Intersector {
 	 * If the origin of the ray is inside the box, this method returns true and the intersection point is set to the origin of the
 	 * ray, accordingly to the definition above.
 	 * </p>
+	 *
 	 * @param intersection The intersection point (optional)
 	 * @return Whether an intersection is present. */
 	public static boolean intersectRayBounds (Ray ray, BoundingBox box, Vector3 intersection) {
@@ -564,94 +565,97 @@ public final class Intersector {
 			if (intersection != null) intersection.set(ray.origin);
 			return true;
 		}
-		float lowest = 0, t;
-		boolean hit = false;
+		float tmin = 0;
+		float tmax = Float.MAX_VALUE;
 
-		// min x
-		if (ray.origin.x <= box.min.x && ray.direction.x > 0) {
-			t = (box.min.x - ray.origin.x) / ray.direction.x;
-			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.y >= box.min.y && v2.y <= box.max.y && v2.z >= box.min.z && v2.z <= box.max.z && (!hit || t < lowest)) {
-					hit = true;
-					lowest = t;
-				}
+		Vector3 p = ray.origin;
+		Vector3 d = ray.direction;
+
+		// Calculate x
+		if (Math.abs(d.x) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			if (p.x < box.min.x || p.x > box.max.x) {
+				return false;
+			}
+		} else {
+			float ood = 1f / d.x;
+			float t1 = (box.min.x - p.x) * ood;
+			float t2 = (box.max.x - p.x) * ood;
+
+			if (t1 > t2) {
+				float temp = t1;
+				t1 = t2;
+				t2 = temp;
+			}
+
+			if (t1 > tmin) {
+				tmin = t1;
+			}
+			if (t2 < tmax) {
+				tmax = t2;
+			}
+			if (tmin > tmax) {
+				return false;
 			}
 		}
-		// max x
-		if (ray.origin.x >= box.max.x && ray.direction.x < 0) {
-			t = (box.max.x - ray.origin.x) / ray.direction.x;
-			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.y >= box.min.y && v2.y <= box.max.y && v2.z >= box.min.z && v2.z <= box.max.z && (!hit || t < lowest)) {
-					hit = true;
-					lowest = t;
-				}
+
+		// Calculate y
+		if (Math.abs(d.y) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			if (p.y < box.min.y || p.y > box.max.y) {
+				return false;
+			}
+		} else {
+			float ood = 1f / d.y;
+			float t1 = (box.min.y - p.y) * ood;
+			float t2 = (box.max.y - p.y) * ood;
+
+			if (t1 > t2) {
+				float temp = t1;
+				t1 = t2;
+				t2 = temp;
+			}
+
+			if (t1 > tmin) {
+				tmin = t1;
+			}
+			if (t2 < tmax) {
+				tmax = t2;
+			}
+			if (tmin > tmax) {
+				return false;
 			}
 		}
-		// min y
-		if (ray.origin.y <= box.min.y && ray.direction.y > 0) {
-			t = (box.min.y - ray.origin.y) / ray.direction.y;
-			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.x >= box.min.x && v2.x <= box.max.x && v2.z >= box.min.z && v2.z <= box.max.z && (!hit || t < lowest)) {
-					hit = true;
-					lowest = t;
-				}
+
+		// Calculate z
+		if (Math.abs(d.z) < MathUtils.FLOAT_ROUNDING_ERROR) {
+			if (p.z < box.min.z || p.z > box.max.z) {
+				return false;
+			}
+		} else {
+			float ood = 1f / d.z;
+			float t1 = (box.min.z - p.z) * ood;
+			float t2 = (box.max.z - p.z) * ood;
+
+			if (t1 > t2) {
+				float temp = t1;
+				t1 = t2;
+				t2 = temp;
+			}
+
+			if (t1 > tmin) {
+				tmin = t1;
+			}
+			if (t2 < tmax) {
+				tmax = t2;
+			}
+			if (tmin > tmax) {
+				return false;
 			}
 		}
-		// max y
-		if (ray.origin.y >= box.max.y && ray.direction.y < 0) {
-			t = (box.max.y - ray.origin.y) / ray.direction.y;
-			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.x >= box.min.x && v2.x <= box.max.x && v2.z >= box.min.z && v2.z <= box.max.z && (!hit || t < lowest)) {
-					hit = true;
-					lowest = t;
-				}
-			}
+
+		if (intersection != null) {
+			intersection.set(d).scl(tmin).add(p);
 		}
-		// min z
-		if (ray.origin.z <= box.min.z && ray.direction.z > 0) {
-			t = (box.min.z - ray.origin.z) / ray.direction.z;
-			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.x >= box.min.x && v2.x <= box.max.x && v2.y >= box.min.y && v2.y <= box.max.y && (!hit || t < lowest)) {
-					hit = true;
-					lowest = t;
-				}
-			}
-		}
-		// max z
-		if (ray.origin.z >= box.max.z && ray.direction.z < 0) {
-			t = (box.max.z - ray.origin.z) / ray.direction.z;
-			if (t >= 0) {
-				v2.set(ray.direction).scl(t).add(ray.origin);
-				if (v2.x >= box.min.x && v2.x <= box.max.x && v2.y >= box.min.y && v2.y <= box.max.y && (!hit || t < lowest)) {
-					hit = true;
-					lowest = t;
-				}
-			}
-		}
-		if (hit && intersection != null) {
-			intersection.set(ray.direction).scl(lowest).add(ray.origin);
-			if (intersection.x < box.min.x) {
-				intersection.x = box.min.x;
-			} else if (intersection.x > box.max.x) {
-				intersection.x = box.max.x;
-			}
-			if (intersection.y < box.min.y) {
-				intersection.y = box.min.y;
-			} else if (intersection.y > box.max.y) {
-				intersection.y = box.max.y;
-			}
-			if (intersection.z < box.min.z) {
-				intersection.z = box.min.z;
-			} else if (intersection.z > box.max.z) {
-				intersection.z = box.max.z;
-			}
-		}
-		return hit;
+		return true;
 	}
 
 	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
