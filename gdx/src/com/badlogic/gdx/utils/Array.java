@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.reflect.ArrayReflection;
  * @author Nathan Sweet */
 public class Array<T> implements Iterable<T> {
 	/** Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
-	 * if the {@link Array#Array(boolean, int, Class)} constructor was used. */
+	 * if the {@link Array#Array(boolean, int, ArraySupplier)} constructor was used. */
 	public T[] items;
 
 	public int size;
@@ -584,8 +584,8 @@ public class Array<T> implements Iterable<T> {
 		return items[MathUtils.random(0, size - 1)];
 	}
 
-	/** Returns the items as an array. Note the array is typed, so the {@link #Array(Class)} constructor must have been used.
-	 * Otherwise use {@link #toArray(ArraySupplier)} to specify the array type. */
+	/** Returns the items as an array. Note the array is typed, so the {@link #Array(ArraySupplier)} constructor must have been
+	 * used. Otherwise use {@link #toArray(ArraySupplier)} to specify the array type. */
 	public T[] toArray () {
 		return Arrays.copyOf(items, size);
 	}
