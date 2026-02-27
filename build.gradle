@@ -150,12 +150,14 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
 					}
 				}
 			}
-			jdt {
-				file {
-					withProperties { properties ->
-						def libgdxJdtProperties = new Properties()
-						libgdxJdtProperties.load(new FileInputStream(".settings/org.eclipse.jdt.libgdx.prefs"))
-						properties.putAll(libgdxJdtProperties)
+			if (plugins.hasPlugin("java") || plugins.hasPlugin("java-library")) {
+				jdt {
+					file {
+						withProperties { properties ->
+							def libgdxJdtProperties = new Properties()
+							libgdxJdtProperties.load(new FileInputStream(".settings/org.eclipse.jdt.libgdx.prefs"))
+							properties.putAll(libgdxJdtProperties)
+						}
 					}
 				}
 			}
@@ -166,10 +168,12 @@ configure(subprojects - project(":backends") - project(":extensions") - project(
 			}
 		}
 		//Set all projects to use UTF-8 file encoding for all files
-		eclipseJdt.doLast {
-			File f = new File(projectDir, '.settings/org.eclipse.core.resources.prefs')
-			f.write('eclipse.preferences.version=1\n')
-			f.append('encoding/<project>=UTF-8')
+		if (tasks.findByName("eclipseJdt") != null) {
+			eclipseJdt.doLast {
+				File f = new File(projectDir, '.settings/org.eclipse.core.resources.prefs')
+				f.write('eclipse.preferences.version=1\n')
+				f.append('encoding/<project>=UTF-8')
+			}
 		}
 	}
 }
