@@ -515,9 +515,9 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		content = buffer.toString();
 
 		if (hasSelection) cursor = delete(fireChangeEvent);
-		if (fireChangeEvent)
-			changeText(text, insert(cursor, content, text));
-		else
+		if (fireChangeEvent) {
+			if (!changeText(text, insert(cursor, content, text))) return;
+		} else
 			text = insert(cursor, content, text);
 		updateDisplayText();
 		cursor += content.length();
@@ -535,9 +535,9 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		int maxIndex = Math.max(from, to);
 		String newText = (minIndex > 0 ? text.substring(0, minIndex) : "")
 			+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
-		if (fireChangeEvent)
-			changeText(text, newText);
-		else
+		if (fireChangeEvent) {
+			if (!changeText(text, newText)) return to;
+		} else
 			text = newText;
 		clearSelection();
 		return minIndex;
@@ -1208,12 +1208,12 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 						text = insert(cursor++, insertion, text);
 					}
 					String tempUndoText = undoText;
-					if (changeText(oldText, text)) {
+					if (text.equals(oldText) || changeText(oldText, text)) {
 						long time = System.currentTimeMillis();
 						if (time - 750 > lastChangeTime) undoText = oldText;
 						lastChangeTime = time;
 						updateDisplayText();
-					} else if (!text.equals(oldText)) // Keep cursor movement if the text is the same.
+					} else // Keep cursor movement if the change is canceled.
 						cursor = oldCursor;
 				}
 			}
