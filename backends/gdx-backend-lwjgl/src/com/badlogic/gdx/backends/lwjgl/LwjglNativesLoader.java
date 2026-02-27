@@ -16,12 +16,14 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import static com.badlogic.gdx.utils.SharedLibraryLoader.*;
-
+import com.badlogic.gdx.jnigen.loader.SharedLibraryLoader;
 import com.badlogic.gdx.utils.*;
 
 import java.io.File;
 import java.lang.reflect.Method;
+
+import static com.badlogic.gdx.jnigen.commons.HostDetection.bitness;
+import static com.badlogic.gdx.jnigen.commons.HostDetection.os;
 
 public final class LwjglNativesLoader {
 	static public boolean load = true;

@@ -24,7 +24,8 @@ import java.nio.ByteBuffer;
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
-import com.badlogic.gdx.utils.Os;
+import com.badlogic.gdx.jnigen.commons.HostDetection;
+import com.badlogic.gdx.jnigen.commons.Os;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ContextAttribs;
@@ -44,7 +45,6 @@ import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
@@ -737,7 +737,7 @@ public class LwjglGraphics extends AbstractGraphics {
 
 	@Override
 	public void setCursor (com.badlogic.gdx.graphics.Cursor cursor) {
-		if (canvas != null && SharedLibraryLoader.os == Os.MacOsX) {
+		if (canvas != null && HostDetection.os == Os.MacOsX) {
 			return;
 		}
 		try {
@@ -749,7 +749,7 @@ public class LwjglGraphics extends AbstractGraphics {
 
 	@Override
 	public void setSystemCursor (SystemCursor systemCursor) {
-		if (canvas != null && SharedLibraryLoader.os == Os.MacOsX) {
+		if (canvas != null && HostDetection.os == Os.MacOsX) {
 			return;
 		}
 		try {
