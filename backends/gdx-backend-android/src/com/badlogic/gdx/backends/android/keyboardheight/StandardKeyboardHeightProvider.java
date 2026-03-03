@@ -104,6 +104,8 @@ public class StandardKeyboardHeightProvider extends PopupWindow implements Keybo
 	@Override
 	public void start () {
 		parentView = activity.findViewById(android.R.id.content);
+		// We do this, to not dispatch changes that are not changes on first run
+		cachedOrientation = activity.getResources().getConfiguration().orientation;
 		if (!isShowing() && parentView.getWindowToken() != null) {
 			setBackgroundDrawable(new ColorDrawable(0));
 			showAtLocation(parentView, Gravity.NO_GRAVITY, 0, 0);
