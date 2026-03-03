@@ -307,36 +307,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		});
 	}
 
-	public static int getAndroidInputType (OnscreenKeyboardType type, boolean defaultDisableAutocorrection) {
-		int inputType;
-		switch (type) {
-		case NumberPad:
-			inputType = InputType.TYPE_CLASS_NUMBER;
-			break;
-		case PhonePad:
-			inputType = InputType.TYPE_CLASS_PHONE;
-			break;
-		case Email:
-			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
-			break;
-		case Password:
-			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
-			break;
-		case URI:
-			inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
-			break;
-		default:
-			if (defaultDisableAutocorrection) {
-				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-					| InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
-			} else {
-				inputType = InputType.TYPE_CLASS_TEXT;
-			}
-			break;
-		}
-		return inputType;
-	}
-
 	@Override
 	public int getMaxPointers () {
 		return NUM_TOUCHES;
@@ -607,36 +577,71 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		return isCatchKey(keyCode);
 	}
 
+	private boolean onscreenVisible = false;
+
 	@Override
 	public void setOnscreenKeyboardVisible (final boolean visible) {
 		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
 	}
 
-	private boolean onscreenVisible = false;
-
 	@Override
 	public void setOnscreenKeyboardVisible (final boolean visible, final OnscreenKeyboardType type) {
 		if (isNativeInputOpen()) throw new GdxRuntimeException("Can't open keyboard if already open");
 		onscreenVisible = visible;
-		handle.post(new Runnable() {
-			public void run () {
-				InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-				if (visible) {
-					View view = ((AndroidGraphics)app.getGraphics()).getView();
-					OnscreenKeyboardType tmp = type == null ? OnscreenKeyboardType.Default : type;
-					if (((GLSurfaceView20)view).onscreenKeyboardType != tmp) {
-						((GLSurfaceView20)view).onscreenKeyboardType = tmp;
-						manager.restartInput(view);
-					}
+		handle.post( () -> {
+			int inputType;
+			if (!visible) {
+				inputType = InputType.TYPE_NULL;
+			} else {
+				inputType = getAndroidInputType(type, true);
+			}
 
-					view.setFocusable(true);
-					view.setFocusableInTouchMode(true);
-					manager.showSoftInput(((AndroidGraphics)app.getGraphics()).getView(), 0);
-				} else {
-					manager.hideSoftInputFromWindow(((AndroidGraphics)app.getGraphics()).getView().getWindowToken(), 0);
-				}
+			InputMethodManager manager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+			GLSurfaceView20 view = (GLSurfaceView20)(((AndroidGraphics)app.getGraphics()).getView());
+
+			if (view.inputType != inputType) {
+				view.inputType = inputType;
+				manager.restartInput(view);
+			}
+
+			if (visible) {
+				view.setFocusable(true);
+				view.setFocusableInTouchMode(true);
+				manager.showSoftInput(view, 0);
+			} else {
+				manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
 			}
 		});
+	}
+
+	/** @param type The type of the onscreen keyboard to show.
+	 * @param defaultDisablesAutocorrection If true the default input type should disable autocorrection.
+	 *
+	 * @return The Android input type for the given onscreen keyboard type. */
+	protected int getAndroidInputType (@Null OnscreenKeyboardType type, boolean defaultDisablesAutocorrection) {
+		if (type == null) {
+			type = OnscreenKeyboardType.Default;
+		}
+
+		switch (type) {
+		case NumberPad:
+			return InputType.TYPE_CLASS_NUMBER;
+		case PhonePad:
+			return InputType.TYPE_CLASS_PHONE;
+		case Email:
+			return InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+		case Password:
+			return InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
+		case URI:
+			return InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI;
+		default:
+			if (defaultDisablesAutocorrection) {
+				return InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+					| InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+			} else {
+				return InputType.TYPE_CLASS_TEXT;
+			}
+		}
 	}
 
 	private RelativeLayout relativeLayoutField = null;
@@ -690,6 +695,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		boolean isStandardHeightProvider = keyboardHeightProvider instanceof StandardKeyboardHeightProvider;
 		if (config.useImmersiveMode && isStandardHeightProvider) {
 			height += getSoftButtonsBarHeight();
+		}
+
+		if (onscreenVisible && height == 0) {
+			// The keyboard was closed by the system, not through `setOnscreenKeyboardVisible`.
+			// We need to actively close it to keep the input state consistent.
+			setOnscreenKeyboardVisible(false);
 		}
 
 		if (!isNativeInputOpen()) {
