@@ -202,9 +202,16 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@TargetApi(Build.VERSION_CODES.P)
 	private void setLayoutInDisplayCutoutMode (boolean render) {
-		if (render && getVersion() >= Build.VERSION_CODES.P) {
-			WindowManager.LayoutParams lp = getWindow().getAttributes();
+		if (!render || Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+			return;
+		}
+		WindowManager.LayoutParams lp = getWindow().getAttributes();
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+			// Use SHORT_EDGES only for Android 9 (API 28) and 10 (API 29)
 			lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+		} else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+			// Use ALWAYS for Android 11 through 14 (it's already default on 15+ and not recommended to be set).
+			lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 		}
 	}
 
