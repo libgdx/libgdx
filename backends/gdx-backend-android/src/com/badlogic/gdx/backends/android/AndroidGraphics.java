@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.android;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
@@ -151,8 +152,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	}
 
 	protected void updatePpi () {
-		DisplayMetrics metrics = new DisplayMetrics();
-		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		DisplayMetrics metrics = app.getResources().getDisplayMetrics();
 
 		ppiX = metrics.xdpi;
 		ppiY = metrics.ydpi;
@@ -337,9 +337,16 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 		logManagedCachesStatus();
 
-		Display display = app.getWindowManager().getDefaultDisplay();
-		this.width = display.getWidth();
-		this.height = display.getHeight();
+		Display display;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			display = app.getDisplay();
+		} else {
+			display = app.getWindowManager().getDefaultDisplay();
+		}
+		Point size = new Point();
+		display.getSize(size);
+		this.width = size.x;
+		this.height = size.y;
 		this.lastFrameTime = System.nanoTime();
 
 		gl.glViewport(0, 0, this.width, this.height);
