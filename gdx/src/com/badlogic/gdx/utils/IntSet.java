@@ -142,34 +142,38 @@ public class IntSet {
 		return true;
 	}
 
-	public void addAll (IntArray array) {
-		addAll(array.items, 0, array.size);
+	public boolean addAll (IntArray array) {
+		return addAll(array.items, 0, array.size);
 	}
 
-	public void addAll (IntArray array, int offset, int length) {
+	public boolean addAll (IntArray array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll(array.items, offset, length);
+		return addAll(array.items, offset, length);
 	}
 
-	public void addAll (int... array) {
-		addAll(array, 0, array.length);
+	public boolean addAll (int... array) {
+		return addAll(array, 0, array.length);
 	}
 
-	public void addAll (int[] array, int offset, int length) {
+	public boolean addAll (int[] array, int offset, int length) {
 		ensureCapacity(length);
+		int oldSize = size;
 		for (int i = offset, n = i + length; i < n; i++)
 			add(array[i]);
+		return oldSize != size;
 	}
 
-	public void addAll (IntSet set) {
+	public boolean addAll (IntSet set) {
 		ensureCapacity(set.size);
+		int oldSize = size;
 		if (set.hasZeroValue) add(0);
 		int[] keyTable = set.keyTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			int key = keyTable[i];
 			if (key != 0) add(key);
 		}
+		return oldSize != size;
 	}
 
 	/** Skips checks for existing keys, doesn't increment size, doesn't need to handle key 0. */

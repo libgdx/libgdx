@@ -138,14 +138,14 @@ public class ObjectSet<T> implements Iterable<T> {
 		return true;
 	}
 
-	public void addAll (Array<? extends T> array) {
-		addAll(array.items, 0, array.size);
+	public boolean addAll (Array<? extends T> array) {
+		return addAll(array.items, 0, array.size);
 	}
 
-	public void addAll (Array<? extends T> array, int offset, int length) {
+	public boolean addAll (Array<? extends T> array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll(array.items, offset, length);
+		return addAll(array.items, offset, length);
 	}
 
 	public boolean addAll (T... array) {
@@ -160,13 +160,15 @@ public class ObjectSet<T> implements Iterable<T> {
 		return oldSize != size;
 	}
 
-	public void addAll (ObjectSet<T> set) {
+	public boolean addAll (ObjectSet<T> set) {
 		ensureCapacity(set.size);
+		int oldSize = size;
 		T[] keyTable = set.keyTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			T key = keyTable[i];
 			if (key != null) add(key);
 		}
+		return oldSize != size;
 	}
 
 	/** Skips checks for existing keys, doesn't increment size. */

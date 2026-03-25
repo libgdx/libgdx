@@ -142,34 +142,38 @@ public class LongSet {
 		return true;
 	}
 
-	public void addAll (LongArray array) {
-		addAll(array.items, 0, array.size);
+	public boolean addAll (LongArray array) {
+		return addAll(array.items, 0, array.size);
 	}
 
-	public void addAll (LongArray array, int offset, int length) {
+	public boolean addAll (LongArray array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll(array.items, offset, length);
+		return addAll(array.items, offset, length);
 	}
 
-	public void addAll (long... array) {
-		addAll(array, 0, array.length);
+	public boolean addAll (long... array) {
+		return addAll(array, 0, array.length);
 	}
 
-	public void addAll (long[] array, int offset, int length) {
+	public boolean addAll (long[] array, int offset, int length) {
 		ensureCapacity(length);
+		int oldSize = size;
 		for (int i = offset, n = i + length; i < n; i++)
 			add(array[i]);
+		return oldSize != size;
 	}
 
-	public void addAll (LongSet set) {
+	public boolean addAll (LongSet set) {
 		ensureCapacity(set.size);
+		int oldSize = size;
 		if (set.hasZeroValue) add(0);
 		long[] keyTable = set.keyTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			long key = keyTable[i];
 			if (key != 0) add(key);
 		}
+		return oldSize != size;
 	}
 
 	/** Skips checks for existing keys, doesn't increment size, doesn't need to handle key 0. */
