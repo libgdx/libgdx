@@ -36,6 +36,7 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.LongArray;
 import com.badlogic.gdx.utils.LongMap;
+import com.badlogic.gdx.utils.LongSet;
 import com.badlogic.gdx.utils.ObjectFloatMap;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -643,6 +644,7 @@ public class CollectionsTest extends GdxTest {
 		testSet(ObjectSet.class, values);
 		testSet(OrderedSet.class, values);
 		testSet(IntSet.class, intValues);
+		testSet(LongSet.class, longValues);
 
 		testSet(ObjectSet.class, problemValues);
 		testSet(OrderedSet.class, problemValues);
