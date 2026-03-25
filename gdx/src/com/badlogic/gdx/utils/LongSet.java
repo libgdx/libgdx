@@ -112,7 +112,7 @@ public class LongSet {
 	 * Fibonacci numbers, if keys provide poor or incorrect hashcodes, or to simplify hashing if keys provide high quality
 	 * hashcodes and don't need Fibonacci hashing: {@code return item.hashCode() & mask;} */
 	protected int place (long item) {
-		return (int)(item * 0x9E3779B97F4A7C15L >>> shift);
+		return (int)((item ^ item >>> 32) * 0x9E3779B97F4A7C15L >>> shift);
 	}
 
 	/** Returns the index of the key if already present, else -(index + 1) for the next empty index. This can be overridden in this
