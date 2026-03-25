@@ -358,7 +358,7 @@ public class IntSet {
 	}
 
 	static public IntSet with (int... array) {
-		IntSet set = new IntSet();
+		IntSet set = new IntSet(array.length);
 		set.addAll(array);
 		return set;
 	}

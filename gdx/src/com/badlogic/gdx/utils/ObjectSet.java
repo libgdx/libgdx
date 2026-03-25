@@ -348,7 +348,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	static public <T> ObjectSet<T> with (T... array) {
-		ObjectSet<T> set = new ObjectSet<T>();
+		ObjectSet<T> set = new ObjectSet<T>(array.length);
 		set.addAll(array);
 		return set;
 	}

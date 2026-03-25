@@ -358,7 +358,7 @@ public class LongSet {
 	}
 
 	static public LongSet with (long... array) {
-		LongSet set = new LongSet();
+		LongSet set = new LongSet(array.length);
 		set.addAll(array);
 		return set;
 	}
