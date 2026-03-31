@@ -114,6 +114,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 
 		// Create a "default" Group and set it as the active group, in case
 		// there are no groups or objects defined in the OBJ file.
+		String activeObject = "default";
 		Group activeGroup = new Group("default");
 		groups.add(activeGroup);
 
@@ -172,16 +173,19 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 					// as the active group, while group_b will simply be
 					// ignored.
 					if (tokens.length > 1)
-						activeGroup = setActiveGroup(tokens[1]);
+						activeObject = tokens[1];
 					else
-						activeGroup = setActiveGroup("default");
+						activeObject = "default";
 				} else if (tokens[0].equals("mtllib")) {
 					mtl.load(file.parent().child(tokens[1]));
 				} else if (tokens[0].equals("usemtl")) {
 					if (tokens.length == 1)
-						activeGroup.materialName = "default";
-					else
-						activeGroup.materialName = tokens[1].replace('.', '_');
+						activeGroup = setActiveGroup("default");
+					else {
+						String mat_name = tokens[1].replace('.', '_');
+						activeGroup = setActiveGroup(activeObject + "_" + mat_name);
+						activeGroup.materialName = mat_name;
+					}
 				}
 			}
 			reader.close();
