@@ -328,7 +328,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		default:
 			if (defaultDisableAutocorrection) {
 				inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-					| InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+					| InputType.TYPE_TEXT_VARIATION_URI;
 			} else {
 				inputType = InputType.TYPE_CLASS_TEXT;
 			}
