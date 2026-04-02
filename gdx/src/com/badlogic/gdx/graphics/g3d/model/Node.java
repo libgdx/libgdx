@@ -29,8 +29,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * child nodes. Optionally a node can specify a {@link MeshPart} and a {@link Material} to be applied to the mesh part.
  * @author badlogic */
 public class Node {
-	/** the id, may be null, FIXME is this unique? **/
-	public String id;
+	/** The node's id; must not be null, and defaults to an empty String **/
+	public String id = "";
 	/** Whether this node should inherit the transformation of its parent node, defaults to true. When this flag is false the value
 	 * of {@link #globalTransform} will be the same as the value of {@link #localTransform} causing the transform to be independent
 	 * of its parent transform. */
