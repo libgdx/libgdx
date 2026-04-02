@@ -443,8 +443,8 @@ public class ParticleEmitter {
 			particle.angleSin = MathUtils.sinDeg(angle);
 		}
 
-		float spriteWidth = sprite.getWidth();
-		float spriteHeight = sprite.getHeight();
+		float spriteWidth = sprite.getPackedWidth();
+		float spriteHeight = sprite.getPackedHeight();
 
 		particle.xScale = xScaleValue.newLowValue() / spriteWidth;
 		particle.xScaleDiff = xScaleValue.newHighValue() / spriteWidth;
@@ -643,9 +643,9 @@ public class ParticleEmitter {
 				float prevSpriteWidth = particle.getWidth();
 				float prevSpriteHeight = particle.getHeight();
 				particle.setRegion(sprite);
-				particle.setSize(sprite.getWidth(), sprite.getHeight());
-				particle.setOrigin(sprite.getOriginX(), sprite.getOriginY());
-				particle.translate((prevSpriteWidth - sprite.getWidth()) * 0.5f, (prevSpriteHeight - sprite.getHeight()) * 0.5f);
+				particle.setSize(sprite.getPackedWidth(), sprite.getPackedHeight());
+				particle.setOrigin(sprite.getPackedWidth() / 2, sprite.getPackedHeight() / 2);
+				particle.translate((prevSpriteWidth - sprite.getPackedWidth()) * 0.5f, (prevSpriteHeight - sprite.getPackedHeight()) * 0.5f);
 				particle.frame = frame;
 			}
 		}
@@ -698,7 +698,7 @@ public class ParticleEmitter {
 				break;
 			}
 			particle.setRegion(sprite);
-			particle.setOrigin(sprite.getOriginX(), sprite.getOriginY());
+			particle.setOrigin(sprite.getPackedWidth() / 2, sprite.getPackedHeight() / 2);
 		}
 	}
 
