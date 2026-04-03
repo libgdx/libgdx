@@ -1416,12 +1416,14 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		private final OnBackInvokedCallback callback = new OnBackInvokedCallback() {
 			@Override
 			public void onBackInvoked () {
-				KeyEvent event = new KeyEvent();
-				event.timeStamp = System.nanoTime();
-				event.type = KeyEvent.KEY_DOWN;
-				event.keyCode = Keys.BACK;
-				event.keyChar = 0;
-				keyEvents.add(event);
+				synchronized (DefaultAndroidInput.this) {
+					KeyEvent event = new KeyEvent();
+					event.timeStamp = System.nanoTime();
+					event.type = KeyEvent.KEY_DOWN;
+					event.keyCode = Keys.BACK;
+					event.keyChar = 0;
+					keyEvents.add(event);
+				}
 			}
 		};
 
