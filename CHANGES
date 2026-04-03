@@ -19,6 +19,7 @@
 - Android: Added missing soundId based API implementations to AsynchronousSound.
 - API Change: ObjectSet, IntSet, OrderedSet addAll methods return boolean.
 - API Addition: Added LongSet.
+- iOS: Update to MobiVM 2.3.24
 
 [1.14.0]
 - [BREAKING CHANGE] API: Pools changes in 1.13.5 have been partially reverted. Pools#get/Pools#obtain method return to requiring a Class parameter. Reflection is avoided by using pre-populated Pools for libgdx classes. See https://github.com/libgdx/libgdx/pull/7648 and https://github.com/libgdx/libgdx/pull/7678
