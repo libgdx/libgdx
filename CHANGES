@@ -19,6 +19,7 @@
 - Android: Added missing soundId based API implementations to AsynchronousSound.
 - API Change: ObjectSet, IntSet, OrderedSet addAll methods return boolean.
 - API Addition: Added LongSet.
+- API Addition: Added scene2d.ui ScrollPane#smoothScroll() to control smooth scroll speed.
 - API Addition: Added Justify text options to GlyphLayout (#7609)
 
 [1.14.0]
