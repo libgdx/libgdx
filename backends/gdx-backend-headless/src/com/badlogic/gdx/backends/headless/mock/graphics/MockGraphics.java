@@ -259,6 +259,7 @@ public class MockGraphics extends AbstractGraphics {
 
 	public void updateTime () {
 		long time = System.nanoTime();
+		if (lastTime == -1 || lastTime > time) lastTime = time;
 		deltaTime = (time - lastTime) / 1000000000.0f;
 		lastTime = time;
 
