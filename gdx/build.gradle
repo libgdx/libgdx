@@ -1,3 +1,5 @@
+import com.badlogic.gdx.jnigen.commons.HostDetection
+
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  *
@@ -85,7 +87,7 @@ task validateIOSHeader {
 
 dependencies {
 	testImplementation libraries.junit
-	api "com.badlogicgames.gdx:gdx-jnigen-loader:2.5.2"
+	api "com.badlogicgames.jnigen:jnigen-loader:3.1.2-SNAPSHOT"
 }
 
 test {
@@ -97,30 +99,71 @@ test {
 
 processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+apply plugin: "com.badlogicgames.jnigen.jnigen-gradle"
 jnigen {
 	sharedLibName = "gdx"
-	temporaryDir = "../target/native"
+	multiThreadedCompile = true
+
 	all {
-		cppExcludes = ["iosgl/**"]
+		headerDirs = [
+			"jni",
+			"jni/etc1",
+			"jni/gdx2d"
+		]
+		cIncludes = ["jni/gdx2d/*.c"]
+		cppIncludes = ["jni/etc1/*.cpp"]
 	}
-	add(Windows, x32)
-	add(Windows, x64)
-	add(Linux, x64)
-	add(Linux, x32, ARM)
-	add(Linux, x64, ARM)
-	add(Linux, x64, RISCV)
-	add(Android) {
-		linkerFlags += " -llog"
+
+	//Little hack to avoid duplicate builds. Only register MSVC on windows host
+	//Other hosts will ignore MSVC and build with mingw
+	def isPackaging = project.hasProperty("packaging")
+
+	if (isPackaging) {
+		addWindows(x64, ARM, MSVC)
+		addWindows(x32, x86)
+		addWindows(x64, x86)
+	} else {
+		if (HostDetection.os === Windows) {
+			addWindows(x64, ARM, MSVC)
+		} else {
+			addWindows(x32, x86)
+			addWindows(x64, x86)
+		}
 	}
-	add(MacOsX, x64)
-	add(MacOsX, x64, ARM)
-	add(IOS) {
-		headerDirs = ["iosgl"]
-		cppExcludes = []
-		linkerFlags += " -undefined dynamic_lookup "
+
+
+	addLinux(x64, x86)
+	addLinux(x32, ARM)
+	addLinux(x64, ARM)
+	addLinux(x64, RISCV)
+	addAndroid() {
+		linkerFlags += ["-llog"]
+	}
+	addMac(x64, x86)
+	addMac(x64, ARM)
+	addIOS() {
+		headerDirs += ["jni/iosgl"]
+		cppIncludes = ["jni/iosgl/*.cpp"]
+		linkerFlags += [
+			"-undefined",
+			"dynamic_lookup"
+		]
 	}
 	robovm {
-		extraXCFramework("libs/ObjectAL.xcframework")
+		extraXCFramework("../../libs/ios32/ObjectAL.xcframework")
+	}
+}
+
+artifacts {
+	[
+		jnigenPackageAllAndroid,
+		jnigenPackageAllIOS,
+		jnigenPackageAllDesktop
+	].forEach {packageTask ->
+		packageTask.getOutputs().getFiles().each { file ->
+			archives(file) {
+				builtBy(packageTask)
+			}
+		}
 	}
 }

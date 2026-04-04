@@ -1,3 +1,5 @@
+import com.badlogic.gdx.jnigen.commons.HostDetection
+
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  *
@@ -14,21 +16,57 @@
  * limitations under the License.
  ******************************************************************************/
 
-apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
+apply plugin: "com.badlogicgames.jnigen.jnigen-gradle"
 jnigen {
 	sharedLibName = "gdx-box2d"
-	add(Windows, x32)
-	add(Windows, x64)
-	add(Linux, x64)
-	add(Linux, x32, ARM)
-	add(Linux, x64, ARM)
-	add(Linux, x64, RISCV)
-	add(MacOsX, x64)
-	add(MacOsX, x64, ARM)
-	add(Android)
-	add(IOS)
+	multiThreadedCompile = true
+
+	all {
+		cppIncludes = ["jni/Box2D/**/*.cpp"]
+		headerDirs = ["jni"]
+	}
+
+	//Little hack to avoid duplicate builds. Only register MSVC on windows host
+	//Other hosts will ignore MSVC and build with mingw
+	def isPackaging = project.hasProperty("packaging")
+
+	if (isPackaging) {
+		addWindows(x64, ARM, MSVC)
+		addWindows(x32, x86)
+		addWindows(x64, x86)
+	} else {
+		if (HostDetection.os === Windows) {
+			addWindows(x64, ARM, MSVC)
+		} else {
+			addWindows(x32, x86)
+			addWindows(x64, x86)
+		}
+	}
+
+	addLinux(x64, x86)
+	addLinux(x32, ARM)
+	addLinux(x64, ARM)
+	addLinux(x64, RISCV)
+	addMac(x64, x86)
+	addMac(x64, ARM)
+	addAndroid()
+	addIOS()
 
 	robovm {
 		forceLinkClasses "com.badlogic.gdx.physics.box2d.*"
+	}
+}
+
+artifacts {
+	[
+		jnigenPackageAllAndroid,
+		jnigenPackageAllIOS,
+		jnigenPackageAllDesktop
+	].forEach {packageTask ->
+		packageTask.getOutputs().getFiles().each { file ->
+			archives(file) {
+				builtBy(packageTask)
+			}
+		}
 	}
 }

@@ -31,7 +31,11 @@ dependencies {
 	implementation project(":tests:gdx-tests")
 	implementation project(":backends:gdx-backend-lwjgl3")
 	implementation project(":extensions:gdx-lwjgl3-angle")
-	implementation testnatives.desktop
+
+	implementation project(path: ":gdx", configuration: "archives")
+	implementation project(path: ":extensions:gdx-box2d-parent:gdx-box2d", configuration: "archives")
+	implementation project(path: ":extensions:gdx-bullet", configuration: "archives")
+	implementation project(path: ":extensions:gdx-freetype", configuration: "archives")
 }
 
 tasks.register('launchTestsLwjgl3', JavaExec) {
