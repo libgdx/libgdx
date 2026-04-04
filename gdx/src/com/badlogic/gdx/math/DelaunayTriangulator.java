@@ -16,15 +16,12 @@
 
 package com.badlogic.gdx.math;
 
-import com.badlogic.gdx.utils.BooleanArray;
-import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.ShortArray;
+import com.badlogic.gdx.utils.*;
 
 /** Delaunay triangulation. Adapted from Paul Bourke's triangulate: http://paulbourke.net/papers/triangulate/
  * @author Nathan Sweet */
 public class DelaunayTriangulator {
-	static private final float EPSILON = 0.000001f;
+	static private final float EPSILON = Float.MIN_VALUE;
 	static private final int INSIDE = 0;
 	static private final int COMPLETE = 1;
 	static private final int INCOMPLETE = 2;
@@ -84,18 +81,16 @@ public class DelaunayTriangulator {
 			if (value < ymin) ymin = value;
 			if (value > ymax) ymax = value;
 		}
-		float dx = xmax - xmin, dy = ymax - ymin;
-		float dmax = (dx > dy ? dx : dy) * 20f;
-		float xmid = (xmax + xmin) / 2f, ymid = (ymax + ymin) / 2f;
-
 		// Setup the super triangle, which contains all points.
+		float deltax = 100 * nextUp(Math.max(Math.abs(xmin), Math.abs(xmax)));
+		float deltay = 100 * nextUp(Math.max(Math.abs(ymin), Math.abs(ymax)));
 		float[] superTriangle = this.superTriangle;
-		superTriangle[0] = xmid - dmax;
-		superTriangle[1] = ymid - dmax;
-		superTriangle[2] = xmid;
-		superTriangle[3] = ymid + dmax;
-		superTriangle[4] = xmid + dmax;
-		superTriangle[5] = ymid - dmax;
+		superTriangle[0] = xmin - deltax;
+		superTriangle[1] = ymin - deltay;
+		superTriangle[2] = xmax + deltax;
+		superTriangle[3] = ymin;
+		superTriangle[4] = xmin;
+		superTriangle[5] = ymax + deltay;
 
 		IntArray edges = this.edges;
 		edges.ensureCapacity(count / 2);
@@ -218,36 +213,36 @@ public class DelaunayTriangulator {
 	/** Returns INSIDE if point xp,yp is inside the circumcircle made up of the points x1,y1, x2,y2, x3,y3. Returns COMPLETE if xp
 	 * is to the right of the entire circumcircle. Otherwise returns INCOMPLETE. Note: a point on the circumcircle edge is
 	 * considered inside. */
-	private int circumCircle (float xp, float yp, float x1, float y1, float x2, float y2, float x3, float y3) {
-		float xc, yc;
-		float y1y2 = Math.abs(y1 - y2);
-		float y2y3 = Math.abs(y2 - y3);
+	private int circumCircle (double xp, double yp, double x1, double y1, double x2, double y2, double x3, double y3) {
+		double xc, yc;
+		double y1y2 = Math.abs(y1 - y2);
+		double y2y3 = Math.abs(y2 - y3);
 		if (y1y2 < EPSILON) {
 			if (y2y3 < EPSILON) return INCOMPLETE;
-			float m2 = -(x3 - x2) / (y3 - y2);
-			float mx2 = (x2 + x3) / 2f;
-			float my2 = (y2 + y3) / 2f;
+			double m2 = -(x3 - x2) / (y3 - y2);
+			double mx2 = (x2 + x3) / 2f;
+			double my2 = (y2 + y3) / 2f;
 			xc = (x2 + x1) / 2f;
 			yc = m2 * (xc - mx2) + my2;
 		} else {
-			float m1 = -(x2 - x1) / (y2 - y1);
-			float mx1 = (x1 + x2) / 2f;
-			float my1 = (y1 + y2) / 2f;
+			double m1 = -(x2 - x1) / (y2 - y1);
+			double mx1 = (x1 + x2) / 2f;
+			double my1 = (y1 + y2) / 2f;
 			if (y2y3 < EPSILON) {
 				xc = (x3 + x2) / 2f;
 				yc = m1 * (xc - mx1) + my1;
 			} else {
-				float m2 = -(x3 - x2) / (y3 - y2);
-				float mx2 = (x2 + x3) / 2f;
-				float my2 = (y2 + y3) / 2f;
+				double m2 = -(x3 - x2) / (y3 - y2);
+				double mx2 = (x2 + x3) / 2f;
+				double my2 = (y2 + y3) / 2f;
 				xc = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
 				yc = m1 * (xc - mx1) + my1;
 			}
 		}
 
-		float dx = x2 - xc;
-		float dy = y2 - yc;
-		float rsqr = dx * dx + dy * dy;
+		double dx = x2 - xc;
+		double dy = y2 - yc;
+		double rsqr = dx * dx + dy * dy;
 
 		dx = xp - xc;
 		dx *= dx;
@@ -345,5 +340,11 @@ public class DelaunayTriangulator {
 				triangles.removeIndex(i - 2);
 			}
 		}
+	}
+
+	private static float nextUp (float f) {
+		final int intBits = NumberUtils.floatToRawIntBits(f + 0.0f);
+		final int sign = intBits >= 0 ? 1 : -1;
+		return Float.intBitsToFloat(intBits + sign);
 	}
 }
