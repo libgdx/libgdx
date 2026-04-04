@@ -1,0 +1,175 @@
+{
+"compressionlevel": -1,
+"height": 2,
+"infinite": false,
+"layers": [
+	{
+		"data": [ 0, 1073741838, 14, 0 ],
+		"height": 2,
+		"id": 1,
+		"name": "tile layer",
+		"opacity": 1,
+		"type": "tilelayer",
+		"visible": true,
+		"width": 2,
+		"x": 0,
+		"y": 0
+	},
+	{
+		"id": 3,
+		"image": "atlas_imagelayer_badlogicsmall_823091196941502x",
+		"name": "Image Layer 1",
+		"offsetx": 32,
+		"offsety": 32,
+		"opacity": 1,
+		"type": "imagelayer",
+		"visible": true,
+		"x": 0,
+		"y": 0
+	},
+	{
+		"draworder": "topdown",
+		"id": 2,
+		"name": "object layer",
+		"objects": [
+			{
+				"height": 0,
+				"id": 1,
+				"name": "Test Object",
+				"properties": [
+					{
+						"name": "objBool",
+						"type": "bool",
+						"value": true
+					},
+					{
+						"name": "objClass",
+						"propertytype": "testClass",
+						"type": "class",
+						"value": {
+							"classInt": 43,
+							"classStr": "txt"
+						}
+					},
+					{
+						"name": "objClassDefaults",
+						"propertytype": "testClassDefaults",
+						"type": "class",
+						"value": {}
+					},
+					{
+						"name": "objClassNested",
+						"propertytype": "testClassNested",
+						"type": "class",
+						"value": {
+							"classClass": {
+								"classColor": "#ff0000ff",
+								"classObj": 1,
+								"classStr": "txt2"
+							},
+							"classInt": 45
+						}
+					},
+					{
+						"name": "objColor",
+						"type": "color",
+						"value": "#ffff0000"
+					},
+					{
+						"name": "objEnumNum",
+						"propertytype": "enumNum",
+						"type": "int",
+						"value": 1
+					},
+					{
+						"name": "objEnumNumMulti",
+						"propertytype": "enumNumMulti",
+						"type": "int",
+						"value": 3
+					},
+					{
+						"name": "objEnumStr",
+						"propertytype": "enumStr",
+						"type": "string",
+						"value": "STR2"
+					},
+					{
+						"name": "objEnumStrMulti",
+						"propertytype": "enumStrMulti",
+						"type": "string",
+						"value": "STR1,STR2"
+					},
+					{
+						"name": "objFile",
+						"type": "file",
+						"value": "tiled-prop-test.tiled-project"
+					},
+					{
+						"name": "objFloat",
+						"type": "float",
+						"value": 4.2
+					},
+					{
+						"name": "objInt",
+						"type": "int",
+						"value": 42
+					},
+					{
+						"name": "objObj",
+						"type": "object",
+						"value": 1
+					},
+					{
+						"name": "objStr",
+						"type": "string",
+						"value": "someTxt"
+					}
+				],
+				"rotation": 0,
+				"type": "",
+				"visible": true,
+				"width": 0,
+				"x": 14.7998,
+				"y": 15.5955
+			}
+		],
+		"opacity": 1,
+		"type": "objectgroup",
+		"visible": true,
+		"x": 0,
+		"y": 0
+	}
+],
+"nextlayerid": 4,
+"nextobjectid": 3,
+"orientation": "orthogonal",
+"renderorder": "right-down",
+"tiledversion": "1.11.0",
+"tileheight": 32,
+"tilesets": [
+	{
+		"columns": 16,
+		"firstgid": 1,
+		"image": "../tiled/tiles.png",
+		"imageheight": 512,
+		"imagewidth": 512,
+		"margin": 0,
+		"name": "tiles",
+		"spacing": 0,
+		"tilecount": 256,
+		"tileheight": 32,
+		"tilewidth": 32
+	}
+],
+"tilewidth": 32,
+"type": "map",
+"version": "1.10",
+"width": 2,
+"properties": [
+	{
+		"name": "atlas",
+		"type": "string",
+		"value": "tileset/test_w_imglayer_props.atlas"
+	}
+]
+}

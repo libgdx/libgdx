@@ -34,18 +34,18 @@ public class DynamicsInfluencer extends Influencer {
 	boolean hasAcceleration, has2dAngularVelocity, has3dAngularVelocity;
 
 	public DynamicsInfluencer () {
-		this.velocities = new Array<DynamicsModifier>(true, 3, DynamicsModifier.class);
+		this.velocities = new Array<>(true, 3, DynamicsModifier[]::new);
 	}
 
 	public DynamicsInfluencer (DynamicsModifier... velocities) {
-		this.velocities = new Array<DynamicsModifier>(true, velocities.length, DynamicsModifier.class);
+		this.velocities = new Array<>(true, velocities.length, DynamicsModifier[]::new);
 		for (DynamicsModifier value : velocities) {
 			this.velocities.add((DynamicsModifier)value.copy());
 		}
 	}
 
 	public DynamicsInfluencer (DynamicsInfluencer velocityInfluencer) {
-		this((DynamicsModifier[])velocityInfluencer.velocities.toArray(DynamicsModifier.class));
+		this(velocityInfluencer.velocities.toArray(DynamicsModifier[]::new));
 	}
 
 	@Override

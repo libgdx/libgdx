@@ -57,7 +57,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	protected int shift;
 
 	/** A bitmask used to confine hashcodes to the size of the table. Must be all 1 bits in its low positions, ie a power of two
-	 * minus 1. If {@link #place(Object)} is overriden, this can be used instead of {@link #shift} to isolate usable bits of a
+	 * minus 1. If {@link #place(Object)} is overridden, this can be used instead of {@link #shift} to isolate usable bits of a
 	 * hash. */
 	protected int mask;
 
@@ -108,7 +108,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	 * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
 	 * Skarupke's blog post</a>).
 	 * <p>
-	 * This method can be overriden to customizing hashing. This may be useful eg in the unlikely event that most hashcodes are
+	 * This method can be overridden to customizing hashing. This may be useful eg in the unlikely event that most hashcodes are
 	 * Fibonacci numbers, if keys provide poor or incorrect hashcodes, or to simplify hashing if keys provide high quality
 	 * hashcodes and don't need Fibonacci hashing: {@code return item.hashCode() & mask;} */
 	protected int place (T item) {
@@ -138,14 +138,14 @@ public class ObjectSet<T> implements Iterable<T> {
 		return true;
 	}
 
-	public void addAll (Array<? extends T> array) {
-		addAll(array.items, 0, array.size);
+	public boolean addAll (Array<? extends T> array) {
+		return addAll(array.items, 0, array.size);
 	}
 
-	public void addAll (Array<? extends T> array, int offset, int length) {
+	public boolean addAll (Array<? extends T> array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll(array.items, offset, length);
+		return addAll(array.items, offset, length);
 	}
 
 	public boolean addAll (T... array) {
@@ -160,13 +160,15 @@ public class ObjectSet<T> implements Iterable<T> {
 		return oldSize != size;
 	}
 
-	public void addAll (ObjectSet<T> set) {
+	public boolean addAll (ObjectSet<T> set) {
 		ensureCapacity(set.size);
+		int oldSize = size;
 		T[] keyTable = set.keyTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			T key = keyTable[i];
 			if (key != null) add(key);
 		}
+		return oldSize != size;
 	}
 
 	/** Skips checks for existing keys, doesn't increment size. */
@@ -346,7 +348,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	static public <T> ObjectSet<T> with (T... array) {
-		ObjectSet<T> set = new ObjectSet<T>();
+		ObjectSet<T> set = new ObjectSet<T>(array.length);
 		set.addAll(array);
 		return set;
 	}

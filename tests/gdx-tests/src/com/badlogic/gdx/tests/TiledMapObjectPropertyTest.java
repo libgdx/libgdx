@@ -1,6 +1,8 @@
 
 package com.badlogic.gdx.tests;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,10 +19,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
-import com.badlogic.gdx.utils.StringBuilder;
-import com.badlogic.gdx.utils.*;
-
-import java.util.Iterator;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class TiledMapObjectPropertyTest extends GdxTest {
 
@@ -80,7 +83,7 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 
 				IntMap<MapObject> idToObject = loader.getIdToObject();
 
-				builder.clear();
+				builder.setLength(0);
 				builder.append("\nidToObject: {");
 				for (IntMap.Entry<MapObject> entry : idToObject) {
 					builder.append("\n\t").append(entry.key).append(" -> ").append(entry.value);
@@ -126,7 +129,7 @@ public class TiledMapObjectPropertyTest extends GdxTest {
 					}
 				}
 
-				builder.clear();
+				builder.setLength(0);
 				builder.append("Actual results:\n");
 				for (IntMap.Entry<MapObject> entry : idToObject.entries()) {
 					int id = entry.key;

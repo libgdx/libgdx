@@ -70,7 +70,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 	public ParticleController () {
 		transform = new Matrix4();
 		scale = new Vector3(1, 1, 1);
-		influencers = new Array<Influencer>(true, 3, Influencer.class);
+		influencers = new Array<>(true, 3, Influencer[]::new);
 		setTimeStep(DEFAULT_TIME_STEP);
 	}
 

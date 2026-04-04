@@ -16,18 +16,6 @@
 
 package com.badlogic.gdx.tools.flame;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.EventQueue;
-import java.awt.FileDialog;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.Writer;
 
@@ -113,7 +101,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.StreamUtils;
-import com.badlogic.gdx.utils.StringBuilder;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.FileDialog;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /** @author Inferno */
 public class FlameMain extends JFrame implements AssetErrorListener {
@@ -756,17 +756,17 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 			if (isUpdate) {
 				particleSystem.update(delta);
 				// Update ui
-				stringBuilder.delete(0, stringBuilder.length);
+				stringBuilder.delete(0, stringBuilder.length());
 				stringBuilder.append("Point Sprites : ").append(pointSpriteBatch.getBufferedCount());
 				pointCountLabel.setText(stringBuilder);
-				stringBuilder.delete(0, stringBuilder.length);
+				stringBuilder.delete(0, stringBuilder.length());
 				stringBuilder.append("Billboards : ").append(billboardBatch.getBufferedCount());
 				billboardCountLabel.setText(stringBuilder);
-				stringBuilder.delete(0, stringBuilder.length);
+				stringBuilder.delete(0, stringBuilder.length());
 				stringBuilder.append("Model Instances : ").append(modelInstanceParticleBatch.getBufferedCount());
 				modelInstanceCountLabel.setText(stringBuilder);
 			}
-			stringBuilder.delete(0, stringBuilder.length);
+			stringBuilder.delete(0, stringBuilder.length());
 			stringBuilder.append("FPS : ").append(Gdx.graphics.getFramesPerSecond());
 			fpsLabel.setText(stringBuilder);
 			ui.act(Gdx.graphics.getDeltaTime());

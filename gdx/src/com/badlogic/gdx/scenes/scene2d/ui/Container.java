@@ -26,8 +26,8 @@ public class Container<T extends Actor> extends WidgetGroup {
 	private float fillX, fillY;
 	private int align;
 	private @Null Drawable background;
-	private boolean clip;
-	private boolean round = true;
+	private boolean clip, round = true;
+	private Rectangle actorCulling;
 
 	/** Creates a container with no actor. */
 	public Container () {
@@ -155,7 +155,17 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	public void setCullingArea (Rectangle cullingArea) {
 		super.setCullingArea(cullingArea);
-		if (fillX == 1 && fillY == 1 && actor instanceof Cullable) ((Cullable)actor).setCullingArea(cullingArea);
+		if (actor instanceof Cullable) {
+			if (cullingArea != null) {
+				if (actorCulling == null) actorCulling = new Rectangle();
+				actorCulling.x = cullingArea.x - actor.getX();
+				actorCulling.y = cullingArea.y - actor.getY();
+				actorCulling.width = cullingArea.width;
+				actorCulling.height = cullingArea.height;
+				cullingArea = actorCulling;
+			}
+			((Cullable)actor).setCullingArea(cullingArea);
+		}
 	}
 
 	/** @param actor May be null. */

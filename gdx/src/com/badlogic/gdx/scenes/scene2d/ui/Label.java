@@ -23,21 +23,21 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.CharArray;
 import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.utils.StringBuilder;
 
 /** A text label, with optional word wrapping.
  * <p>
  * The preferred size of the label is determined by the actual text bounds, unless {@link #setWrap(boolean) word wrap} is enabled.
  * @author Nathan Sweet */
-public class Label extends Widget {
+public class Label extends Widget implements Styleable<Label.LabelStyle> {
 	static private final Color tempColor = new Color();
 	static private final GlyphLayout prefSizeLayout = new GlyphLayout();
 
 	private LabelStyle style;
 	private final GlyphLayout layout = new GlyphLayout();
 	private float prefWidth, prefHeight;
-	private final StringBuilder text = new StringBuilder();
+	private final CharArray text = new CharArray();
 	private int intValue = Integer.MIN_VALUE;
 	private BitmapFontCache cache;
 	private int labelAlign = Align.left;
@@ -105,12 +105,12 @@ public class Label extends Widget {
 	/** @param newText If null, "" will be used. */
 	public void setText (@Null CharSequence newText) {
 		if (newText == null) {
-			if (text.length == 0) return;
+			if (text.size == 0) return;
 			text.clear();
-		} else if (newText instanceof StringBuilder) {
+		} else if (newText instanceof CharArray) {
 			if (text.equals(newText)) return;
 			text.clear();
-			text.append((StringBuilder)newText);
+			text.append((CharArray)newText);
 		} else {
 			if (textEquals(newText)) return;
 			text.clear();
@@ -121,15 +121,15 @@ public class Label extends Widget {
 	}
 
 	public boolean textEquals (CharSequence other) {
-		int length = text.length;
-		char[] chars = text.chars;
+		int length = text.size;
+		char[] chars = text.items;
 		if (length != other.length()) return false;
 		for (int i = 0; i < length; i++)
 			if (chars[i] != other.charAt(i)) return false;
 		return true;
 	}
 
-	public StringBuilder getText () {
+	public CharArray getText () {
 		return text;
 	}
 
@@ -193,7 +193,7 @@ public class Label extends Widget {
 		float textWidth, textHeight;
 		if (wrap || text.indexOf("\n") != -1) {
 			// If the text can span multiple lines, determine the text's actual size so it can be aligned within the label.
-			layout.setText(font, text, 0, text.length, Color.WHITE, width, lineAlign, wrap, ellipsis);
+			layout.setText(font, text, 0, text.size, Color.WHITE, width, lineAlign, wrap, ellipsis);
 			textWidth = layout.width;
 			textHeight = layout.height;
 
@@ -219,7 +219,7 @@ public class Label extends Widget {
 		}
 		if (!cache.getFont().isFlipped()) y += textHeight;
 
-		layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+		layout.setText(font, text, 0, text.size, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
 		cache.setText(layout, x, y);
 
 		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);

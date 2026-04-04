@@ -94,7 +94,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	private float density = 1;
 
 	protected final AndroidApplicationConfiguration config;
-	private BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 0, 16, 0, 0, false);
+	private BufferFormat bufferFormat;
 	private boolean isContinuous = true;
 
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
@@ -104,6 +104,8 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy, boolean focusableView) {
+		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples,
+			config.coverageSampling);
 		this.config = config;
 		this.app = application;
 		view = createGLSurfaceView(application, resolutionStrategy);
@@ -425,6 +427,20 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		synchronized (synch) {
 			running = false;
 			destroy = true;
+
+			view.queueEvent(new Runnable() {
+				@Override
+				public void run () {
+					if (!destroy) {
+						// destroy event already picked up by onDrawFrame
+						return;
+					}
+
+					// it's ok to call ApplicationListener's events
+					// from onDrawFrame because it's executing in GL thread
+					onDrawFrame(null);
+				}
+			});
 
 			while (destroy) {
 				try {

@@ -40,7 +40,7 @@ public class SortTest {
 		sortInstance = Sort.instance();
 	}
 
-	private class NullsFirstComparator implements Comparator<Integer> {
+	class NullsFirstComparator implements Comparator<Integer> {
 		@Override
 		public int compare (Integer o1, Integer o2) {
 			if (o1 == null && o2 == null) {

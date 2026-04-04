@@ -446,7 +446,7 @@ public class BitmapFont implements Disposable {
 		public float capHeight = 1;
 		/** The distance from the cap height to the top of the tallest glyph. */
 		public float ascent;
-		/** The distance from the bottom of the glyph that extends the lowest to the baseline. This number is negative. */
+		/** The distance from the baseline to the bottom of the glyph that extends the lowest. This number is negative. */
 		public float descent;
 		/** The distance to move down when \n is encountered. */
 		public float down;

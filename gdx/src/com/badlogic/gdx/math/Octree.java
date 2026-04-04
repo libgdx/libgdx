@@ -274,7 +274,7 @@ public class Octree<T> {
 			} else {
 				for (T geometry : geometries) {
 					// Filter geometries using collider
-					if (collider.intersects(bounds, geometry)) {
+					if (collider.intersects(aabb, geometry)) {
 						result.add(geometry);
 					}
 				}

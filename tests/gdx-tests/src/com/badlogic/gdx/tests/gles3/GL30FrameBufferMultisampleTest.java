@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tests.gles31;
+package com.badlogic.gdx.tests.gles3;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
@@ -29,8 +29,8 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestConfig;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-@GdxTestConfig(requireGL31 = true)
-public class GL31FrameBufferMultisampleTest extends GdxTest {
+@GdxTestConfig(requireGL30 = true)
+public class GL30FrameBufferMultisampleTest extends GdxTest {
 
 	private FrameBuffer fbo;
 	private FrameBuffer fboMS;

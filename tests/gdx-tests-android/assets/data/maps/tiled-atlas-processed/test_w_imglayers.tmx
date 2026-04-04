@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="10" infinite="0" nextlayerid="5" nextobjectid="1" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.0" tileheight="16" tilewidth="16" version="1.11" width="20"><properties><property name="atlas" value="tileset/test_w_imglayers.atlas"/></properties>
+ <tileset columns="16" firstgid="1" name="ts1" tilecount="256" tileheight="16" tilewidth="16">
+  <image height="256" source="tilesets/tileset1.png" width="256"/>
+ </tileset>
+ <tileset columns="16" firstgid="257" name="ts2" tilecount="256" tileheight="32" tilewidth="32">
+  <image height="512" source="tilesets/tileset2.png" width="512"/>
+ </tileset>
+ <imagelayer id="3" name="Image Layer 1" offsetx="63.8514" offsety="-64.2683">
+  <image height="256" source="atlas_imagelayer_badlogic_823091196941500x" width="256"/>
+ </imagelayer>
+ <imagelayer id="4" name="Image Layer 2" offsetx="0.181631" offsety="0.588235">
+  <image height="512" source="atlas_imagelayer_Textures1_823091196941501x" width="64"/>
+ </imagelayer>
+ <layer height="10" id="1" name="Tile Layer 1" width="20">
+  <data compression="zlib" encoding="base64">
+   eJxjYBgFo2D4AC5GBgZuKmAeRoh5ACn1AOU=
+  </data>
+ </layer>
+ <layer height="10" id="2" name="Tile Layer 2" width="20">
+  <data compression="zlib" encoding="base64">
+   eJzlzjkOggAQBVBqFLF2r13Q2r12wxvoDfQI3ACP7CuJ0ZDQEX/ymsnM5AfBfyWkQZOIFjHtiv86dOnRZ8CQUcld9mM+ZsKUGQlzFhX7LVmxZsOWHXtu3Au7+RefOXDkxJkLKVcePEv6vArqkDdo6gzB
+  </data>
+ </layer>
+</map>

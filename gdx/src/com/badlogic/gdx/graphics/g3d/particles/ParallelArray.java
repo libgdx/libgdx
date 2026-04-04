@@ -17,8 +17,11 @@
 package com.badlogic.gdx.graphics.g3d.particles;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArraySupplier;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
+
+import java.util.Arrays;
 
 /** This class represents an group of elements like an array, but the properties of the elements are stored as separate arrays.
  * These arrays are called {@link Channel} and are represented by {@link ChannelDescriptor}. It's not necessary to store primitive
@@ -31,12 +34,22 @@ public class ParallelArray {
 	public static class ChannelDescriptor {
 		public int id;
 		public Class<?> type;
+		public ArraySupplier<?> arraySupplier;
 		public int count;
 
+		@Deprecated
 		public ChannelDescriptor (int id, Class<?> type, int count) {
 			this.id = id;
 			this.type = type;
 			this.count = count;
+			this.arraySupplier = size -> ArrayReflection.newInstance(type, size);
+		}
+
+		public ChannelDescriptor (int id, ArraySupplier<?> arraySupplier, int count) {
+			this.id = id;
+			this.arraySupplier = arraySupplier;
+			this.count = count;
+			this.type = arraySupplier.get(0).getClass().getComponentType();
 		}
 	}
 
@@ -136,12 +149,10 @@ public class ParallelArray {
 
 	@SuppressWarnings("unchecked")
 	public class ObjectChannel<T> extends Channel {
-		Class<T> componentType;
 		public T[] data;
 
-		public ObjectChannel (int id, int strideSize, int size, Class<T> type) {
-			super(id, ArrayReflection.newInstance(type, size * strideSize), strideSize);
-			componentType = type;
+		public ObjectChannel (int id, int strideSize, int size, ArraySupplier<T[]> arraySupplier) {
+			super(id, arraySupplier.get(size * strideSize), strideSize);
 			this.data = (T[])super.data;
 		}
 
@@ -166,9 +177,7 @@ public class ParallelArray {
 
 		@Override
 		public void setCapacity (int requiredCapacity) {
-			T[] newData = (T[])ArrayReflection.newInstance(componentType, strideSize * requiredCapacity);
-			System.arraycopy(data, 0, newData, 0, Math.min(data.length, newData.length));
-			super.data = data = newData;
+			super.data = data = Arrays.copyOf(data, strideSize * requiredCapacity);
 		}
 	}
 
@@ -180,7 +189,7 @@ public class ParallelArray {
 	public int size;
 
 	public ParallelArray (int capacity) {
-		arrays = new Array<Channel>(false, 2, Channel.class);
+		arrays = new Array<>(false, 2, Channel[]::new);
 		this.capacity = capacity;
 		size = 0;
 	}
@@ -211,7 +220,7 @@ public class ParallelArray {
 		} else if (channelDescriptor.type == int.class) {
 			return (T)new IntChannel(channelDescriptor.id, channelDescriptor.count, capacity);
 		} else {
-			return (T)new ObjectChannel(channelDescriptor.id, channelDescriptor.count, capacity, channelDescriptor.type);
+			return (T)new ObjectChannel(channelDescriptor.id, channelDescriptor.count, capacity, channelDescriptor.arraySupplier);
 		}
 	}
 

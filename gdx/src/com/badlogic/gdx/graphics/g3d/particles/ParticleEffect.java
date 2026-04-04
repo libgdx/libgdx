@@ -33,7 +33,7 @@ public class ParticleEffect implements Disposable, ResourceData.Configurable {
 	private BoundingBox bounds;
 
 	public ParticleEffect () {
-		controllers = new Array<ParticleController>(true, 3, ParticleController.class);
+		controllers = new Array<>(true, 3, ParticleController[]::new);
 	}
 
 	public ParticleEffect (ParticleEffect effect) {

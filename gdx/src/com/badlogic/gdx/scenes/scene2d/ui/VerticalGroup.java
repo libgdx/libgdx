@@ -47,6 +47,7 @@ public class VerticalGroup extends WidgetGroup {
 	private float space, wrapSpace, fill, padTop, padLeft, padBottom, padRight;
 
 	public VerticalGroup () {
+		setTransform(false);
 		setTouchable(Touchable.childrenOnly);
 	}
 

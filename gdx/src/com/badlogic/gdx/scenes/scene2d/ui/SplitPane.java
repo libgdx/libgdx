@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.Null;
  * are sized depending on the SplitPane size and the {@link #setSplitAmount(float) split position}.
  * @author mzechner
  * @author Nathan Sweet */
-public class SplitPane extends WidgetGroup {
+public class SplitPane extends WidgetGroup implements Styleable<SplitPane.SplitPaneStyle> {
 	SplitPaneStyle style;
 	private @Null Actor firstWidget, secondWidget;
 	boolean vertical;

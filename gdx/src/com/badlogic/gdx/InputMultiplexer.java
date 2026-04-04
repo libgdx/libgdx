@@ -37,8 +37,9 @@ public class InputMultiplexer implements InputProcessor {
 		processors.insert(index, processor);
 	}
 
-	public void removeProcessor (int index) {
-		processors.removeIndex(index);
+	/** Removes and returns the item at the specified index. */
+	public InputProcessor removeProcessor (int index) {
+		return processors.removeIndex(index);
 	}
 
 	public void addProcessor (InputProcessor processor) {
@@ -46,8 +47,10 @@ public class InputMultiplexer implements InputProcessor {
 		processors.add(processor);
 	}
 
-	public void removeProcessor (InputProcessor processor) {
-		processors.removeValue(processor, true);
+	/** Removes the given processor, using identity comparison (==)
+	 * @returns true if the processor was found and removed, false otherwise */
+	public boolean removeProcessor (InputProcessor processor) {
+		return processors.removeValue(processor, true);
 	}
 
 	/** @return the number of processors in this multiplexer */

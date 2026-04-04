@@ -29,6 +29,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public final static Vector2 X = new Vector2(1, 0);
 	public final static Vector2 Y = new Vector2(0, 1);
 	public final static Vector2 Zero = new Vector2(0, 0);
+	public final static Vector2 One = new Vector2(1, 1);
 
 	/** the x-component of this vector **/
 	public float x;

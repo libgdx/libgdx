@@ -70,7 +70,7 @@ public class RegionInfluencerPanel extends InfluencerPanel<RegionInfluencer> imp
 		if (regions.size == 0) return;
 		value.clear();
 		value.setAtlasName(atlasName);
-		value.add((TextureRegion[])regions.toArray(TextureRegion.class));
+		value.add(regions.toArray(TextureRegion[]::new));
 		editor.setTexture(regions.get(0).getTexture());
 		editor.restart();
 	}

@@ -95,7 +95,12 @@ public class DefaultGwtAudio implements GwtAudio {
 
 	@Override
 	public String[] getAvailableOutputDevices () {
-		return outputDeviceLabelsIds.keys().toArray().toArray(String.class);
+		return outputDeviceLabelsIds.keys().toArray().toArray(String[]::new);
+	}
+
+	@Override
+	public void dispose () {
+
 	}
 
 	private native void getUserMedia () /*-{

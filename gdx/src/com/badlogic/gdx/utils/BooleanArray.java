@@ -229,7 +229,7 @@ public class BooleanArray {
 		size = n - count;
 	}
 
-	/** Removes from this array all of elements contained in the specified array.
+	/** Removes from this array the first instance of each element contained in the specified array.
 	 * @return true if this array was modified. */
 	public boolean removeAll (BooleanArray array) {
 		int size = this.size;
@@ -336,6 +336,7 @@ public class BooleanArray {
 	/** Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
 	 * taken. */
 	public void truncate (int newSize) {
+		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (size > newSize) size = newSize;
 	}
 

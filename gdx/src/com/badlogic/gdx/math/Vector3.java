@@ -37,6 +37,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public final static Vector3 Y = new Vector3(0, 1, 0);
 	public final static Vector3 Z = new Vector3(0, 0, 1);
 	public final static Vector3 Zero = new Vector3(0, 0, 0);
+	public final static Vector3 One = new Vector3(1, 1, 1);
 
 	private final static Matrix4 tmpMat = new Matrix4();
 

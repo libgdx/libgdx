@@ -56,7 +56,7 @@ public class IntSet {
 	protected int shift;
 
 	/** A bitmask used to confine hashcodes to the size of the table. Must be all 1 bits in its low positions, ie a power of two
-	 * minus 1. If {@link #place(int)} is overriden, this can be used instead of {@link #shift} to isolate usable bits of a
+	 * minus 1. If {@link #place(int)} is overridden, this can be used instead of {@link #shift} to isolate usable bits of a
 	 * hash. */
 	protected int mask;
 
@@ -108,15 +108,14 @@ public class IntSet {
 	 * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
 	 * Skarupke's blog post</a>).
 	 * <p>
-	 * This method can be overriden to customizing hashing. This may be useful eg in the unlikely event that most hashcodes are
+	 * This method can be overridden to customizing hashing. This may be useful eg in the unlikely event that most hashcodes are
 	 * Fibonacci numbers, if keys provide poor or incorrect hashcodes, or to simplify hashing if keys provide high quality
-	 * hashcodes and don't need Fibonacci hashing: {@code return item.hashCode() & mask;} */
+	 * hashcodes and don't need Fibonacci hashing. */
 	protected int place (int item) {
 		return (int)(item * 0x9E3779B97F4A7C15L >>> shift);
 	}
 
-	/** Returns the index of the key if already present, else -(index + 1) for the next empty index. This can be overridden in this
-	 * pacakge to compare for equality differently than {@link Object#equals(Object)}. */
+	/** Returns the index of the key if already present, else -(index + 1) for the next empty index. */
 	private int locateKey (int key) {
 		int[] keyTable = this.keyTable;
 		for (int i = place(key);; i = i + 1 & mask) {
@@ -142,34 +141,38 @@ public class IntSet {
 		return true;
 	}
 
-	public void addAll (IntArray array) {
-		addAll(array.items, 0, array.size);
+	public boolean addAll (IntArray array) {
+		return addAll(array.items, 0, array.size);
 	}
 
-	public void addAll (IntArray array, int offset, int length) {
+	public boolean addAll (IntArray array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll(array.items, offset, length);
+		return addAll(array.items, offset, length);
 	}
 
-	public void addAll (int... array) {
-		addAll(array, 0, array.length);
+	public boolean addAll (int... array) {
+		return addAll(array, 0, array.length);
 	}
 
-	public void addAll (int[] array, int offset, int length) {
+	public boolean addAll (int[] array, int offset, int length) {
 		ensureCapacity(length);
+		int oldSize = size;
 		for (int i = offset, n = i + length; i < n; i++)
 			add(array[i]);
+		return oldSize != size;
 	}
 
-	public void addAll (IntSet set) {
+	public boolean addAll (IntSet set) {
 		ensureCapacity(set.size);
+		int oldSize = size;
 		if (set.hasZeroValue) add(0);
 		int[] keyTable = set.keyTable;
 		for (int i = 0, n = keyTable.length; i < n; i++) {
 			int key = keyTable[i];
 			if (key != 0) add(key);
 		}
+		return oldSize != size;
 	}
 
 	/** Skips checks for existing keys, doesn't increment size, doesn't need to handle key 0. */
@@ -355,7 +358,7 @@ public class IntSet {
 	}
 
 	static public IntSet with (int... array) {
-		IntSet set = new IntSet();
+		IntSet set = new IntSet(array.length);
 		set.addAll(array);
 		return set;
 	}

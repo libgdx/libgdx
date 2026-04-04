@@ -4,6 +4,7 @@ package com.badlogic.gdx.backends.iosrobovm;
 import com.badlogic.gdx.Input;
 
 import org.robovm.apple.uikit.UIKey;
+import org.robovm.apple.uikit.UIView;
 
 public interface IOSInput extends Input {
 
@@ -17,4 +18,7 @@ public interface IOSInput extends Input {
 	void processEvents ();
 
 	boolean onKey (UIKey key, boolean down);
+
+	/** Returns the current active input text field */
+	UIView getActiveKeyboardTextField ();
 }

@@ -119,7 +119,7 @@ public abstract class ModelInfluencer extends Influencer {
 	ObjectChannel<ModelInstance> modelChannel;
 
 	public ModelInfluencer () {
-		this.models = new Array<Model>(true, 1, Model.class);
+		this.models = new Array<>(true, 1, Model[]::new);
 	}
 
 	public ModelInfluencer (Model... models) {
@@ -127,7 +127,7 @@ public abstract class ModelInfluencer extends Influencer {
 	}
 
 	public ModelInfluencer (ModelInfluencer influencer) {
-		this((Model[])influencer.models.toArray(Model.class));
+		this(influencer.models.toArray(Model[]::new));
 	}
 
 	@Override

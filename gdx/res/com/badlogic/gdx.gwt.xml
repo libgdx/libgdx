@@ -309,15 +309,18 @@
 		<include name="maps/objects/PolygonMapObject.java"/>
 		<include name="maps/objects/PolylineMapObject.java"/>
 		<include name="maps/objects/RectangleMapObject.java"/>
-		<include name="maps/objects/TextureMapObject.java"/>
+        <include name="maps/objects/TextMapObject.java"/>
+        <include name="maps/objects/TextureMapObject.java"/>
 
 	<!-- maps/tiled -->
 		<include name="maps/tiled/AtlasTmxMapLoader.java"/>
+		<include name="maps/tiled/AtlasTmjMapLoader.java"/>
 		<include name="maps/tiled/BaseTiledMapLoader.java"/>
 		<include name="maps/tiled/BaseTmxMapLoader.java"/>
 		<include name="maps/tiled/BaseTmjMapLoader.java"/>
 		<include name="maps/tiled/TideMapLoader.java"/>
 		<include name="maps/tiled/TiledMap.java"/>
+		<include name="maps/tiled/TiledMapLoader.java"/>
 		<include name="maps/tiled/TiledMapRenderer.java"/>
 		<include name="maps/tiled/TiledMapTile.java"/>
 		<include name="maps/tiled/TiledMapTileLayer.java"/>
@@ -412,6 +415,7 @@
 		<include name="utils/Align.java"/>
 		<include name="utils/Array.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/ArrayMap.java"/> <!-- Emulated: Reflection -->
+		<include name="utils/ArraySupplier.java"/>
 		<include name="utils/AtomicQueue.java"/>
 		<include name="utils/Base64Coder.java"/>
 		<include name="utils/BaseJsonReader.java"/>
@@ -451,6 +455,7 @@
 		<include name="utils/LongArray.java"/>
 		<include name="utils/LongMap.java"/>
 		<include name="utils/LongQueue.java"/>
+		<include name="utils/LongSet.java"/>
 		<include name="utils/NumberUtils.java"/> <!-- Emulated -->
 		<include name="utils/ObjectFloatMap.java"/>
 		<include name="utils/ObjectIntMap.java"/>
@@ -464,6 +469,7 @@
 		<include name="utils/PerformanceCounters.java"/>
 		<include name="utils/Pool.java"/>
 		<include name="utils/PooledLinkedList.java"/>
+		<include name="utils/PoolManager.java"/>
 		<include name="utils/Pools.java"/>
 		<include name="utils/Predicate.java"/>
 		<include name="utils/PropertiesUtils.java"/>

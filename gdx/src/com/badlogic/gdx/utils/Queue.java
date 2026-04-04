@@ -16,10 +16,11 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
+
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
  * wrap back to the beginning, making add and remove at the beginning and end O(1) (unless the backing array needs to resize when
@@ -47,15 +48,21 @@ public class Queue<T> implements Iterable<T> {
 
 	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array. */
 	public Queue (int initialSize) {
-		// noinspection unchecked
-		this.values = (T[])new Object[initialSize];
+		this(initialSize, ArraySupplier.object());
 	}
 
 	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array. This creates
-	 * backing array of the specified type via reflection, which is necessary only when accessing the backing array directly. */
+	 * backing array of the specified type via reflection, which is necessary only when accessing the backing array directly.
+	 * @deprecated Use {@link Queue#Queue(int, ArraySupplier)} instead */
+	@Deprecated
 	public Queue (int initialSize, Class<T> type) {
-		// noinspection unchecked
-		this.values = (T[])ArrayReflection.newInstance(type, initialSize);
+		this(initialSize, size -> (T[])ArrayReflection.newInstance(type, size));
+	}
+
+	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array. This creates
+	 * backing array of the specified type via the supplier, which is necessary only when accessing the backing array directly. */
+	public Queue (int initialSize, ArraySupplier<T[]> arraySupplier) {
+		this.values = arraySupplier.get(initialSize);
 	}
 
 	/** Append given object to the tail. (enqueue to tail) Unless backing array needs resizing, operates in O(1) time.
@@ -112,7 +119,7 @@ public class Queue<T> implements Iterable<T> {
 		final int head = this.head;
 		final int tail = this.tail;
 
-		final T[] newArray = (T[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
+		final T[] newArray = Arrays.copyOf(values, newSize);
 		if (head < tail) {
 			// Continuous
 			System.arraycopy(values, head, newArray, 0, tail - head);

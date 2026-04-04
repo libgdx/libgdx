@@ -547,7 +547,6 @@ public class JsonReader implements BaseJsonReader {
 		JsonValue root = this.root;
 		this.root = null;
 		current = null;
-		lastChild.clear();
 
 		if (!stop) {
 			if (p < pe) {
@@ -571,7 +570,7 @@ public class JsonReader implements BaseJsonReader {
 		return root;
 	}
 
-	// line 553 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
+	// line 552 "../../../../../src/com/badlogic/gdx/utils/JsonReader.java"
 	private static byte[] init__json_actions_0 () {
 		return new byte[] {0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 2, 0, 7, 2, 0, 8, 2, 1, 3, 2, 1, 5};
 	}
@@ -661,10 +660,9 @@ public class JsonReader implements BaseJsonReader {
 	static final int json_en_array = 23;
 	static final int json_en_main = 1;
 
-	// line 349 "JsonReader.rl"
+	// line 348 "JsonReader.rl"
 
 	private final Array<JsonValue> elements = new Array(8);
-	private final Array<JsonValue> lastChild = new Array(8);
 	private JsonValue root, current;
 	private boolean stop;
 
@@ -682,18 +680,9 @@ public class JsonReader implements BaseJsonReader {
 		if (current == null) {
 			current = child;
 			root = child;
-		} else if (current.isArray() || current.isObject()) {
-			child.parent = current;
-			if (current.size == 0)
-				current.child = child;
-			else {
-				JsonValue last = lastChild.pop();
-				last.next = child;
-				child.prev = last;
-			}
-			lastChild.add(child);
-			current.size++;
-		} else
+		} else if (current.isArray() || current.isObject())
+			current.addChild(child);
+		else
 			root = current;
 	}
 
@@ -716,12 +705,11 @@ public class JsonReader implements BaseJsonReader {
 	/** Called when the end of an object or array is encountered in the JSON. */
 	protected void pop () {
 		root = elements.pop();
-		if (current.size > 0) lastChild.pop();
 		current = elements.size > 0 ? elements.peek() : null;
 	}
 
-	/** Called when a string value is encountered in the JSON. */
-	protected void string (@Null String name, String value) {
+	/** Called when a string or null value is encountered in the JSON. */
+	protected void string (@Null String name, @Null String value) {
 		addChild(name, new JsonValue(value));
 	}
 

@@ -76,13 +76,13 @@ public class Mesh implements Disposable {
 	/** list of all meshes **/
 	static final Map<Application, Array<Mesh>> meshes = new HashMap<Application, Array<Mesh>>();
 
-	final VertexData vertices;
-	final IndexData indices;
-	boolean autoBind = true;
-	final boolean isVertexArray;
+	protected final VertexData vertices;
+	protected final IndexData indices;
+	protected boolean autoBind = true;
+	protected final boolean isVertexArray;
 
-	InstanceData instances;
-	boolean isInstanced = false;
+	protected InstanceData instances;
+	protected boolean isInstanced = false;
 
 	protected Mesh (VertexData vertices, IndexData indices, boolean isVertexArray) {
 		this.vertices = vertices;

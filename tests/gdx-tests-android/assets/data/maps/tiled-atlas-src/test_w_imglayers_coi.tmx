@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="20" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="1">
+ <tileset firstgid="1" name="ts1" tilewidth="16" tileheight="16" tilecount="256" columns="16">
+  <image source="tilesets/tileset1.png" width="256" height="256"/>
+ </tileset>
+ <tileset firstgid="257" name="ts2" tilewidth="32" tileheight="32" tilecount="256" columns="16">
+  <image source="tilesets/tileset2.png" width="512" height="512"/>
+ </tileset>
+ <tileset firstgid="513" name="ImageCollectionTS" tilewidth="128" tileheight="128" tilecount="7" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image source="../../particle-ball1.png" width="128" height="128"/>
+   <animation>
+    <frame tileid="0" duration="150"/>
+    <frame tileid="1" duration="150"/>
+    <frame tileid="2" duration="150"/>
+    <frame tileid="3" duration="150"/>
+   </animation>
+  </tile>
+  <tile id="1">
+   <image source="../../particle-ball2.png" width="128" height="128"/>
+  </tile>
+  <tile id="2">
+   <image source="../../particle-ball3.png" width="128" height="128"/>
+  </tile>
+  <tile id="3">
+   <image source="../../particle-ball4.png" width="128" height="128"/>
+  </tile>
+  <tile id="4">
+   <image source="../tiled/super-koalio/koalio-single.png" width="17" height="25"/>
+  </tile>
+  <tile id="6">
+   <image source="../../bobargb8888-32x32.png" width="32" height="32"/>
+  </tile>
+  <tile id="7">
+   <image source="../../bobargb8888-32x32.png" width="32" height="32"/>
+   <animation>
+    <frame tileid="7" duration="125"/>
+    <frame tileid="4" duration="125"/>
+   </animation>
+  </tile>
+ </tileset>
+ <imagelayer id="3" name="Image Layer 1" offsetx="63.8514" offsety="-64.2683">
+  <image source="../../badlogic.jpg" width="256" height="256"/>
+ </imagelayer>
+ <group id="5" name="Group Layer">
+  <imagelayer id="4" name="Image Layer 2" offsetx="0.181631" offsety="0.588235">
+   <image source="../../Textures1.png" width="64" height="512"/>
+  </imagelayer>
+  <layer id="1" name="Tile Layer 1" width="20" height="10">
+   <data encoding="base64" compression="zlib">
+   eJxjYBgFo2D4AC5GBgZuKmAeRoh5ACn1AOU=
+  </data>
+  </layer>
+ </group>
+ <layer id="2" name="Tile Layer 2" width="20" height="10">
+  <data encoding="base64" compression="zlib">
+   eJzlzksOgjAQxvHSxIRERde+cA2+1grKGvFxA7kBHIEbyBE5Cv+Fi0LaNHHhxkl+adpMZz4h/qscKcSQc4QxPEww/XLeDHMssMQKPtaWf5XhPUCIDbbYYY8DXNntHfTuujrihAgxzrggwQu50vvWYEejzktxRYYb7njgiQKlJU/9wdzKnv535RjytFmhDiw=
+  </data>
+ </layer>
+</map>
