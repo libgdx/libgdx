@@ -17,6 +17,7 @@
 - Android: The KeyboardHeightObserver will not report duplicate events anymore
 - Android: The KeyboardHeightObserver will now only consider `systemBars`, `ime`, `displayCutout`, `mandatorySystemGestures` for insets.
 - Android: Added missing soundId based API implementations to AsynchronousSound.
+- Android: Fixed possible app crashes on back button/gesture (see #7775).
 - API Change: ObjectSet, IntSet, OrderedSet addAll methods return boolean.
 - API Addition: Added LongSet.
 
