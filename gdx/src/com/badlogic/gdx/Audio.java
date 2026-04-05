@@ -102,4 +102,10 @@ public interface Audio extends Disposable {
 	 * @return A array of available output devices */
 	public String[] getAvailableOutputDevices ();
 
+	/** Pauses all playing sounds and musics **/
+	void pause ();
+
+	/** Resumes all playing sounds and musics **/
+	void resume ();
+
 }
