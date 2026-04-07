@@ -3,8 +3,8 @@
 
 [![GitHub Actions Build Status](https://img.shields.io/github/actions/workflow/status/libgdx/libgdx/build-publish.yml?branch=master&label=GitHub%20Actions)](https://github.com/libgdx/libgdx/actions?query=workflow%3A%22Build+and+Publish%22)
 
-[![Latest Version](https://img.shields.io/nexus/r/com.badlogicgames.gdx/gdx?nexusVersion=2&server=https%3A%2F%2Foss.sonatype.org&label=Version)](https://search.maven.org/artifact/com.badlogicgames.gdx/gdx)
-[![Snapshots](https://img.shields.io/nexus/s/com.badlogicgames.gdx/gdx?server=https%3A%2F%2Foss.sonatype.org&label=Snapshots)](https://oss.sonatype.org/#nexus-search;gav~com.badlogicgames.gdx~gdx~~~~kw,versionexpand)
+[![Latest Version](https://img.shields.io/maven-central/v/com.badlogicgames.gdx/gdx?label=Version)](https://search.maven.org/artifact/com.badlogicgames.gdx/gdx)
+[![Snapshots](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fcom%2Fbadlogicgames%2Fgdx%2Fgdx%2Fmaven-metadata.xml&label=Snapshots)](https://central.sonatype.com/repository/maven-snapshots/com/badlogicgames/gdx/gdx/maven-metadata.xml)
 
 [![Discord Chat](https://img.shields.io/discord/348229412858101762?logo=discord)](https://libgdx.com/community/discord/)
 

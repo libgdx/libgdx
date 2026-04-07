@@ -208,13 +208,14 @@ public class LwjglGraphics extends AbstractGraphics {
 	}
 
 	void updateTime () {
-		long time;
+		long time = System.nanoTime();
+		if (lastTime == -1 || lastTime > time) lastTime = time;
 		if (resetDeltaTime) {
 			resetDeltaTime = false;
-			time = lastTime;
-		} else
-			time = System.nanoTime();
-		deltaTime = (time - lastTime) / 1000000000.0f;
+			deltaTime = 0;
+		} else {
+			deltaTime = (time - lastTime) / 1000000000.0f;
+		}
 		lastTime = time;
 
 		if (time - frameStart >= 1000000000) {

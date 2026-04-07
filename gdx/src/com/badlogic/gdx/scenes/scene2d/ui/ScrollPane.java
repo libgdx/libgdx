@@ -324,16 +324,16 @@ public class ScrollPane extends WidgetGroup implements Styleable<ScrollPane.Scro
 		) {
 			if (visualAmountX != amountX) {
 				if (visualAmountX < amountX)
-					visualScrollX(Math.min(amountX, visualAmountX + Math.max(200 * delta, (amountX - visualAmountX) * 7 * delta)));
+					visualScrollX(Math.min(amountX, visualAmountX + smoothScroll(amountX - visualAmountX, delta)));
 				else
-					visualScrollX(Math.max(amountX, visualAmountX - Math.max(200 * delta, (visualAmountX - amountX) * 7 * delta)));
+					visualScrollX(Math.max(amountX, visualAmountX - smoothScroll(visualAmountX - amountX, delta)));
 				animating = true;
 			}
 			if (visualAmountY != amountY) {
 				if (visualAmountY < amountY)
-					visualScrollY(Math.min(amountY, visualAmountY + Math.max(200 * delta, (amountY - visualAmountY) * 7 * delta)));
+					visualScrollY(Math.min(amountY, visualAmountY + smoothScroll(amountY - visualAmountY, delta)));
 				else
-					visualScrollY(Math.max(amountY, visualAmountY - Math.max(200 * delta, (visualAmountY - amountY) * 7 * delta)));
+					visualScrollY(Math.max(amountY, visualAmountY - smoothScroll(visualAmountY - amountY, delta)));
 				animating = true;
 			}
 		} else {
@@ -1030,8 +1030,17 @@ public class ScrollPane extends WidgetGroup implements Styleable<ScrollPane.Scro
 		this.scrollBarTouch = scrollBarTouch;
 	}
 
+	/** When true, the visual scroll position is transitioned to the actual position over time using
+	 * {@link #smoothScroll(float, float)}. Default is true. */
 	public void setSmoothScrolling (boolean smoothScrolling) {
 		this.smoothScrolling = smoothScrolling;
+	}
+
+	/** Returns the amount to adjust the visual scroll position each frame.
+	 * @param difference The absolute difference between the visual scroll position and the actual position.
+	 * @param delta Time in seconds since last frame. */
+	protected float smoothScroll (float difference, float delta) {
+		return Math.max(200 * delta, difference * 7 * delta);
 	}
 
 	/** When false (the default), the actor is clipped so it is not drawn under the scrollbars. When true, the actor is clipped to

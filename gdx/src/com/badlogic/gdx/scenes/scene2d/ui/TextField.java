@@ -19,6 +19,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.OnscreenKeyboardType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -219,13 +220,13 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		this.autocompleteOptions = autocompleteOptions;
 	}
 
-	/** Which {@link Input.OnscreenKeyboardType} to use. Mainly used for mobile, will also be referenced for password masking */
+	/** Which {@link OnscreenKeyboardType} to use. Mainly used for mobile, will also be referenced for password masking */
 	public void setKeyboardType (Input.OnscreenKeyboardType keyboardType) {
 		this.keyboardType = keyboardType;
 	}
 
 	/** Whether if auto correction is provided by the system, it should be surpressed Will be considered true, if
-	 * {@link Input.OnscreenKeyboardType} is `Password` */
+	 * {@link OnscreenKeyboardType} is `Password` */
 	public void setPreventAutoCorrection (boolean preventAutoCorrection) {
 		this.preventAutoCorrection = preventAutoCorrection;
 	}
