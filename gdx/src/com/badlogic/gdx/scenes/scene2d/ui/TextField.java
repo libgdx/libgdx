@@ -19,6 +19,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.OnscreenKeyboardType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -111,7 +112,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	protected int visibleTextStart, visibleTextEnd;
 	private int maxLength;
 	private String[] autocompleteOptions;
-	private Input.OnscreenKeyboardType keyboardType = Input.OnscreenKeyboardType.Default;
+	private OnscreenKeyboardType keyboardType = OnscreenKeyboardType.Default;
 	private boolean preventAutoCorrection;
 
 	boolean focused;
@@ -219,13 +220,13 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		this.autocompleteOptions = autocompleteOptions;
 	}
 
-	/** Which {@link Input.OnscreenKeyboardType} to use. Mainly used for mobile, will also be referenced for password masking */
+	/** Which {@link OnscreenKeyboardType} to use. Mainly used for mobile, will also be referenced for password masking */
 	public void setKeyboardType (Input.OnscreenKeyboardType keyboardType) {
 		this.keyboardType = keyboardType;
 	}
 
 	/** Whether if auto correction is provided by the system, it should be surpressed Will be considered true, if
-	 * {@link Input.OnscreenKeyboardType} is `Password` */
+	 * {@link OnscreenKeyboardType} is `Password` */
 	public void setPreventAutoCorrection (boolean preventAutoCorrection) {
 		this.preventAutoCorrection = preventAutoCorrection;
 	}
@@ -490,7 +491,10 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	void cut (boolean fireChangeEvent) {
 		if (hasSelection && !passwordMode) {
 			copy();
+			String oldText = text;
+			int oldCursor = cursor;
 			cursor = delete(fireChangeEvent);
+			if (text.equals(oldText)) cursor = oldCursor; // Change cancelled.
 			updateDisplayText();
 		}
 	}
@@ -513,13 +517,19 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		}
 		content = buffer.toString();
 
+		String oldText = text;
+		int oldCursor = cursor;
 		if (hasSelection) cursor = delete(fireChangeEvent);
+		String textAfterDelete = text;
 		if (fireChangeEvent)
 			changeText(text, insert(cursor, content, text));
 		else
 			text = insert(cursor, content, text);
 		updateDisplayText();
-		cursor += content.length();
+		if (!text.equals(textAfterDelete)) // Insert succeeded.
+			cursor += content.length();
+		else if (text.equals(oldText)) // Change cancelled.
+			cursor = oldCursor;
 	}
 
 	String insert (int position, CharSequence text, String to) {
@@ -552,6 +562,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	void undo (boolean fireChangeEvent) {
 		if (undoText.equals(text)) return;
 		String oldText = text;
+		int oldCursor = cursor;
 		if (fireChangeEvent) {
 			if (changeText(oldText, undoText)) {
 				undoText = oldText;
@@ -562,7 +573,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			undoText = oldText;
 			updateDisplayText();
 		}
-		cursor = MathUtils.clamp(cursor, 0, text.length());
+		cursor = text.equals(oldText) ? oldCursor : Math.min(cursor, text.length());
 		clearSelection();
 	}
 
@@ -920,13 +931,13 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		private void openNativeInputField (TextField textField) {
 			NativeInputConfiguration configuration = new NativeInputConfiguration();
 			// If we are in password mode, assume that the user want to show password keyboard
-			Input.OnscreenKeyboardType resolvedType = textField.passwordMode
-				&& textField.keyboardType == Input.OnscreenKeyboardType.Default ? Input.OnscreenKeyboardType.Password
-					: textField.keyboardType;
+			OnscreenKeyboardType resolvedType = textField.passwordMode && textField.keyboardType == OnscreenKeyboardType.Default
+				? OnscreenKeyboardType.Password
+				: textField.keyboardType;
 
 			configuration.setType(resolvedType).setMaskInput(textField.passwordMode).setShowUnmaskButton(textField.passwordMode)
 				.setMaxLength(textField.maxLength <= 0 ? -1 : textField.maxLength).setMultiLine(textField.writeEnters)
-				.setPreventCorrection(textField.preventAutoCorrection || resolvedType == Input.OnscreenKeyboardType.Password)
+				.setPreventCorrection(textField.preventAutoCorrection || resolvedType == OnscreenKeyboardType.Password)
 				.setPlaceholder(textField.messageText == null ? "" : textField.messageText)
 				.setAutoComplete(textField.autocompleteOptions);
 
