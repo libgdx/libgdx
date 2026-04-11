@@ -491,10 +491,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	void cut (boolean fireChangeEvent) {
 		if (hasSelection && !passwordMode) {
 			copy();
-			String oldText = text;
-			int oldCursor = cursor;
 			cursor = delete(fireChangeEvent);
-			if (text.equals(oldText)) cursor = oldCursor; // Change cancelled.
 			updateDisplayText();
 		}
 	}
@@ -518,21 +515,13 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		content = buffer.toString();
 
 		String oldText = text;
-		int oldCursor = cursor;
 		if (hasSelection) cursor = delete(fireChangeEvent);
-		String textAfterDelete = text;
-		if (fireChangeEvent)
-			changeText(text, insert(cursor, content, text));
-		else
 		if (fireChangeEvent) {
 			if (!changeText(text, insert(cursor, content, text))) return;
 		} else
 			text = insert(cursor, content, text);
+		undoText = oldText;
 		updateDisplayText();
-		if (!text.equals(textAfterDelete)) // Insert succeeded.
-			cursor += content.length();
-		else if (text.equals(oldText)) // Change cancelled.
-			cursor = oldCursor;
 	}
 
 	String insert (int position, CharSequence text, String to) {
@@ -547,10 +536,12 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		int maxIndex = Math.max(from, to);
 		String newText = (minIndex > 0 ? text.substring(0, minIndex) : "")
 			+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
+		String oldText = text;
 		if (fireChangeEvent) {
 			if (!changeText(text, newText)) return to;
 		} else
 			text = newText;
+		undoText = oldText;
 		clearSelection();
 		return minIndex;
 	}
@@ -567,15 +558,11 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		String oldText = text;
 		int oldCursor = cursor;
 		if (fireChangeEvent) {
-			if (changeText(oldText, undoText)) {
-				undoText = oldText;
-				updateDisplayText();
-			}
-		} else {
+			if (!changeText(oldText, undoText)) return;
+		} else
 			text = undoText;
-			undoText = oldText;
-			updateDisplayText();
-		}
+		undoText = oldText;
+		updateDisplayText();
 		cursor = text.equals(oldText) ? oldCursor : Math.min(cursor, text.length());
 		clearSelection();
 	}
