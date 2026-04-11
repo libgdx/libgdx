@@ -520,6 +520,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			if (!changeText(text, insert(cursor, content, text))) return;
 		} else
 			text = insert(cursor, content, text);
+		cursor += content.length();
 		undoText = oldText;
 		updateDisplayText();
 	}
@@ -563,7 +564,11 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			text = undoText;
 		undoText = oldText;
 		updateDisplayText();
-		cursor = text.equals(oldText) ? oldCursor : Math.min(cursor, text.length());
+		int i = 0, n = Math.min(text.length(), oldText.length());
+		while (i < n && text.charAt(i) == oldText.charAt(i))
+			i++;
+		if (i < cursor) cursor = Math.max(i, cursor + text.length() - oldText.length());
+		cursor = Math.min(cursor, text.length());
 		clearSelection();
 	}
 
@@ -1207,6 +1212,8 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 				if (add || remove) {
 					String oldText = text;
 					int oldCursor = cursor;
+					boolean oldHasSelection = hasSelection;
+					int oldSelectionStart = selectionStart;
 					if (remove) {
 						if (hasSelection)
 							cursor = delete(false);
@@ -1234,8 +1241,12 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 						if (time - 750 > lastChangeTime) undoText = oldText;
 						lastChangeTime = time;
 						updateDisplayText();
-					} else // Keep cursor movement if the change is canceled.
+					} else { // Change is canceled.
 						cursor = oldCursor;
+						undoText = tempUndoText;
+						hasSelection = oldHasSelection;
+						selectionStart = oldSelectionStart;
+					}
 				}
 			}
 			if (listener != null) listener.keyTyped(TextField.this, character);
