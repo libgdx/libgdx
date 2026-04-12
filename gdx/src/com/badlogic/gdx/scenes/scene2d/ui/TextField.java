@@ -101,7 +101,8 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	private float selectionX, selectionWidth;
 
 	String undoText = "";
-	int undoCursor = 0;
+	int undoCursor, undoSelectionStart;
+	boolean undoHasSelection;
 	long lastChangeTime;
 
 	boolean passwordMode;
@@ -516,13 +517,17 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		content = buffer.toString();
 
 		String oldText = text;
+		int oldCursor = cursor, oldSelectionStart = selectionStart;
+		boolean oldHasSelection = hasSelection;
 		if (hasSelection) cursor = delete(fireChangeEvent);
 		if (fireChangeEvent) {
 			if (!changeText(text, insert(cursor, content, text))) return;
 		} else
 			text = insert(cursor, content, text);
 		undoText = oldText;
-		undoCursor = cursor;
+		undoCursor = oldCursor;
+		undoHasSelection = oldHasSelection;
+		undoSelectionStart = oldSelectionStart;
 		cursor += content.length();
 		updateDisplayText();
 	}
@@ -545,7 +550,9 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		} else
 			text = newText;
 		undoText = oldText;
-		undoCursor = maxIndex;
+		undoCursor = to;
+		undoHasSelection = true;
+		undoSelectionStart = from;
 		clearSelection();
 		return minIndex;
 	}
@@ -561,15 +568,20 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		if (undoText.equals(text)) return;
 		String oldText = text;
 		int oldCursor = cursor;
+		boolean oldHasSelection = hasSelection;
+		int oldSelectionStart = selectionStart;
 		if (fireChangeEvent) {
 			if (!changeText(oldText, undoText)) return;
 		} else
 			text = undoText;
 		cursor = undoCursor;
+		hasSelection = undoHasSelection;
+		selectionStart = undoSelectionStart;
 		undoText = oldText;
 		undoCursor = oldCursor;
+		undoHasSelection = oldHasSelection;
+		undoSelectionStart = oldSelectionStart;
 		updateDisplayText();
-		clearSelection();
 	}
 
 	/** Sets the {@link Stage#setKeyboardFocus(Actor) keyboard focus} to the next TextField. If no next text field is found, the
@@ -1214,6 +1226,10 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 					int oldCursor = cursor;
 					boolean oldHasSelection = hasSelection;
 					int oldSelectionStart = selectionStart;
+					String oldUndoText = undoText;
+					int oldUndoCursor = undoCursor;
+					boolean oldUndoHasSelection = undoHasSelection;
+					int oldUndoSelectionStart = undoSelectionStart;
 					if (remove) {
 						if (hasSelection)
 							cursor = delete(false);
@@ -1235,18 +1251,26 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 						String insertion = enter ? "\n" : String.valueOf(character);
 						text = insert(cursor++, insertion, text);
 					}
-					if (text.equals(oldText) || changeText(oldText, text)) {
-						long time = System.currentTimeMillis();
-						if (time - 750 > lastChangeTime) {
-							undoText = oldText;
-							undoCursor = oldCursor;
+					undoText = oldUndoText;
+					undoCursor = oldUndoCursor;
+					undoHasSelection = oldUndoHasSelection;
+					undoSelectionStart = oldUndoSelectionStart;
+					if (!text.equals(oldText)) {
+						if (changeText(oldText, text)) {
+							long time = System.currentTimeMillis();
+							if (time - 750 > lastChangeTime) {
+								undoText = oldText;
+								undoCursor = oldCursor;
+								undoHasSelection = oldHasSelection;
+								undoSelectionStart = oldSelectionStart;
+							}
+							lastChangeTime = time;
+							updateDisplayText();
+						} else { // Change is canceled.
+							cursor = oldCursor;
+							hasSelection = oldHasSelection;
+							selectionStart = oldSelectionStart;
 						}
-						lastChangeTime = time;
-						updateDisplayText();
-					} else { // Change is canceled.
-						cursor = oldCursor;
-						hasSelection = oldHasSelection;
-						selectionStart = oldSelectionStart;
 					}
 				}
 			}
