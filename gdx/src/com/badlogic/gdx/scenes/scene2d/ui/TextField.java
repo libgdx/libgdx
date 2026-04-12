@@ -705,6 +705,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		text = "";
 		paste(str, false);
 		if (programmaticChangeEvents) changeText(oldText, text);
+		undo.clear();
 		cursor = 0;
 	}
 
@@ -1362,21 +1363,13 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		/** Saves the current state for redo, moves back, and returns the undo target state. */
 		UndoState undo (String text, int cursor, boolean hasSelection, int selectionStart) {
 			storeCurrent(text, cursor, hasSelection, selectionStart);
-			return states.get(index--);
+			return states.get(--index);
 		}
 
 		/** Saves the current state for undo, moves forward, and returns the redo target state. */
 		UndoState redo (String text, int cursor, boolean hasSelection, int selectionStart) {
 			storeCurrent(text, cursor, hasSelection, selectionStart);
 			return states.get(++index);
-		}
-
-		void cancelUndo () {
-			index++;
-		}
-
-		void cancelRedo () {
-			index--;
 		}
 
 		private void storeCurrent (String text, int cursor, boolean hasSelection, int selectionStart) {
@@ -1391,6 +1384,20 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			state.cursor = cursor;
 			state.hasSelection = hasSelection;
 			state.selectionStart = selectionStart;
+		}
+
+		void cancelUndo () {
+			index++;
+			if (index == states.size - 1) states.removeLast();
+		}
+
+		void cancelRedo () {
+			index--;
+		}
+
+		void clear () {
+			states.clear();
+			index = 0;
 		}
 	}
 
