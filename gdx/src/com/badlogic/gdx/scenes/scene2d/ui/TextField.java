@@ -567,8 +567,8 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		int i = 0, n = Math.min(text.length(), oldText.length());
 		while (i < n && text.charAt(i) == oldText.charAt(i))
 			i++;
-		if (i < cursor) cursor = Math.max(i, cursor + text.length() - oldText.length());
-		cursor = Math.min(cursor, text.length());
+		if (cursor >= i) cursor = cursor + text.length() - oldText.length();
+		cursor = Math.max(0, Math.min(cursor, text.length()));
 		clearSelection();
 	}
 
