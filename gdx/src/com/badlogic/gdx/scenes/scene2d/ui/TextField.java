@@ -45,6 +45,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -80,6 +81,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 
 	static public float keyRepeatInitialTime = 0.4f;
 	static public float keyRepeatTime = 0.1f;
+	static public int undoMax = 10;
 
 	protected String text;
 	protected int cursor, selectionStart;
@@ -99,11 +101,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	boolean focusTraversal = true, onlyFontChars = true, disabled;
 	private int textHAlign = Align.left;
 	private float selectionX, selectionWidth;
-
-	String undoText = "";
-	int undoCursor, undoSelectionStart;
-	boolean undoHasSelection;
-	long lastChangeTime;
+	private final Undo undo = new Undo(undoMax);
 
 	boolean passwordMode;
 	private StringBuilder passwordBuffer;
@@ -493,7 +491,10 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	void cut (boolean fireChangeEvent) {
 		if (hasSelection && !passwordMode) {
 			copy();
+			String oldText = text;
+			int oldCursor = cursor, oldSelectionStart = selectionStart;
 			cursor = delete(fireChangeEvent);
+			if (!text.equals(oldText)) undo.store(oldText, oldCursor, true, oldSelectionStart);
 			updateDisplayText();
 		}
 	}
@@ -524,10 +525,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			if (!changeText(text, insert(cursor, content, text))) return;
 		} else
 			text = insert(cursor, content, text);
-		undoText = oldText;
-		undoCursor = oldCursor;
-		undoHasSelection = oldHasSelection;
-		undoSelectionStart = oldSelectionStart;
+		undo.store(oldText, oldCursor, oldHasSelection, oldSelectionStart);
 		cursor += content.length();
 		updateDisplayText();
 	}
@@ -544,43 +542,53 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		int maxIndex = Math.max(from, to);
 		String newText = (minIndex > 0 ? text.substring(0, minIndex) : "")
 			+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
-		String oldText = text;
 		if (fireChangeEvent) {
 			if (!changeText(text, newText)) return to;
 		} else
 			text = newText;
-		undoText = oldText;
-		undoCursor = to;
-		undoHasSelection = true;
-		undoSelectionStart = from;
 		clearSelection();
 		return minIndex;
 	}
 
-	/** Restores the previous text state. */
+	/** Restores the previous text and selection history state. */
 	public void undo () {
 		undo(programmaticChangeEvents);
 	}
 
-	/** Restores the previous text state.
-	 * @param fireChangeEvent If true, a {@link ChangeEvent} will be fired. */
 	void undo (boolean fireChangeEvent) {
-		if (undoText.equals(text)) return;
-		String oldText = text;
-		int oldCursor = cursor;
-		boolean oldHasSelection = hasSelection;
-		int oldSelectionStart = selectionStart;
+		if (!undo.canUndo(text)) return;
+		UndoState state = undo.undo(text, cursor, hasSelection, selectionStart);
 		if (fireChangeEvent) {
-			if (!changeText(oldText, undoText)) return;
+			if (!changeText(text, state.text)) {
+				undo.cancelUndo();
+				return;
+			}
 		} else
-			text = undoText;
-		cursor = undoCursor;
-		hasSelection = undoHasSelection;
-		selectionStart = undoSelectionStart;
-		undoText = oldText;
-		undoCursor = oldCursor;
-		undoHasSelection = oldHasSelection;
-		undoSelectionStart = oldSelectionStart;
+			text = state.text;
+		cursor = state.cursor;
+		hasSelection = state.hasSelection;
+		selectionStart = state.selectionStart;
+		updateDisplayText();
+	}
+
+	/** Restores the next text and selection history state. */
+	public void redo () {
+		redo(programmaticChangeEvents);
+	}
+
+	void redo (boolean fireChangeEvent) {
+		if (!undo.canRedo(text)) return;
+		UndoState state = undo.redo(text, cursor, hasSelection, selectionStart);
+		if (fireChangeEvent) {
+			if (!changeText(text, state.text)) {
+				undo.cancelRedo();
+				return;
+			}
+		} else
+			text = state.text;
+		cursor = state.cursor;
+		hasSelection = state.hasSelection;
+		selectionStart = state.selectionStart;
 		updateDisplayText();
 	}
 
@@ -1088,7 +1096,13 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 					selectAll();
 					return true;
 				case Keys.Z:
-					undo(true);
+					if (UIUtils.shift())
+						redo(true);
+					else
+						undo(true);
+					return true;
+				case Keys.Y:
+					redo(true);
 					return true;
 				default:
 					handled = false;
@@ -1223,13 +1237,8 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 				boolean remove = backspace || delete;
 				if (add || remove) {
 					String oldText = text;
-					int oldCursor = cursor;
+					int oldCursor = cursor, oldSelectionStart = selectionStart;
 					boolean oldHasSelection = hasSelection;
-					int oldSelectionStart = selectionStart;
-					String oldUndoText = undoText;
-					int oldUndoCursor = undoCursor;
-					boolean oldUndoHasSelection = undoHasSelection;
-					int oldUndoSelectionStart = undoSelectionStart;
 					if (remove) {
 						if (hasSelection)
 							cursor = delete(false);
@@ -1251,22 +1260,11 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 						String insertion = enter ? "\n" : String.valueOf(character);
 						text = insert(cursor++, insertion, text);
 					}
-					undoText = oldUndoText;
-					undoCursor = oldUndoCursor;
-					undoHasSelection = oldUndoHasSelection;
-					undoSelectionStart = oldUndoSelectionStart;
 					if (!text.equals(oldText)) {
 						if (changeText(oldText, text)) {
-							long time = System.currentTimeMillis();
-							if (time - 750 > lastChangeTime) {
-								undoText = oldText;
-								undoCursor = oldCursor;
-								undoHasSelection = oldHasSelection;
-								undoSelectionStart = oldSelectionStart;
-							}
-							lastChangeTime = time;
+							undo.keyTyped(oldText, oldCursor, oldHasSelection, oldSelectionStart);
 							updateDisplayText();
-						} else { // Change is canceled.
+						} else { // Change cancelled.
 							cursor = oldCursor;
 							hasSelection = oldHasSelection;
 							selectionStart = oldSelectionStart;
@@ -1317,5 +1315,88 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			messageFont = style.messageFont;
 			if (style.messageFontColor != null) messageFontColor = new Color(style.messageFontColor);
 		}
+	}
+
+	static class Undo {
+		private final int max;
+		private final Queue<UndoState> states;
+		private int index;
+		private long lastChangeTime;
+
+		Undo (int max) {
+			this.max = max;
+			states = new Queue(max + 1);
+		}
+
+		/** Stores state before an edit, truncating any redo entries. */
+		void store (String text, int cursor, boolean hasSelection, int selectionStart) {
+			while (states.size > index)
+				states.removeLast();
+			if (states.size >= max) {
+				states.removeFirst();
+				index--;
+			}
+			UndoState state = new UndoState();
+			state.text = text;
+			state.cursor = cursor;
+			state.hasSelection = hasSelection;
+			state.selectionStart = selectionStart;
+			states.addLast(state);
+			index = states.size;
+		}
+
+		void keyTyped (String text, int cursor, boolean hasSelection, int selectionStart) {
+			long time = System.currentTimeMillis();
+			if (time - 750 > lastChangeTime) store(text, cursor, hasSelection, selectionStart);
+			lastChangeTime = time;
+		}
+
+		boolean canUndo (String currentText) {
+			return index > 0 && !states.get(index - 1).text.equals(currentText);
+		}
+
+		boolean canRedo (String currentText) {
+			return index < states.size - 1 && !states.get(index + 1).text.equals(currentText);
+		}
+
+		/** Saves the current state for redo, moves back, and returns the undo target state. */
+		UndoState undo (String text, int cursor, boolean hasSelection, int selectionStart) {
+			storeCurrent(text, cursor, hasSelection, selectionStart);
+			return states.get(index--);
+		}
+
+		/** Saves the current state for undo, moves forward, and returns the redo target state. */
+		UndoState redo (String text, int cursor, boolean hasSelection, int selectionStart) {
+			storeCurrent(text, cursor, hasSelection, selectionStart);
+			return states.get(++index);
+		}
+
+		void cancelUndo () {
+			index++;
+		}
+
+		void cancelRedo () {
+			index--;
+		}
+
+		private void storeCurrent (String text, int cursor, boolean hasSelection, int selectionStart) {
+			UndoState state;
+			if (index < states.size)
+				state = states.get(index);
+			else {
+				state = new UndoState();
+				states.addLast(state);
+			}
+			state.text = text;
+			state.cursor = cursor;
+			state.hasSelection = hasSelection;
+			state.selectionStart = selectionStart;
+		}
+	}
+
+	static class UndoState {
+		String text;
+		int cursor, selectionStart;
+		boolean hasSelection;
 	}
 }
