@@ -101,6 +101,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	private float selectionX, selectionWidth;
 
 	String undoText = "";
+	int undoCursor = 0;
 	long lastChangeTime;
 
 	boolean passwordMode;
@@ -520,8 +521,9 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			if (!changeText(text, insert(cursor, content, text))) return;
 		} else
 			text = insert(cursor, content, text);
-		cursor += content.length();
 		undoText = oldText;
+		undoCursor = cursor;
+		cursor += content.length();
 		updateDisplayText();
 	}
 
@@ -543,6 +545,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		} else
 			text = newText;
 		undoText = oldText;
+		undoCursor = maxIndex;
 		clearSelection();
 		return minIndex;
 	}
@@ -562,13 +565,10 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			if (!changeText(oldText, undoText)) return;
 		} else
 			text = undoText;
+		cursor = undoCursor;
 		undoText = oldText;
+		undoCursor = oldCursor;
 		updateDisplayText();
-		int i = 0, n = Math.min(text.length(), oldText.length());
-		while (i < n && text.charAt(i) == oldText.charAt(i))
-			i++;
-		if (cursor >= i) cursor = cursor + text.length() - oldText.length();
-		cursor = Math.max(0, Math.min(cursor, text.length()));
 		clearSelection();
 	}
 
@@ -1235,15 +1235,16 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 						String insertion = enter ? "\n" : String.valueOf(character);
 						text = insert(cursor++, insertion, text);
 					}
-					String tempUndoText = undoText;
 					if (text.equals(oldText) || changeText(oldText, text)) {
 						long time = System.currentTimeMillis();
-						if (time - 750 > lastChangeTime) undoText = oldText;
+						if (time - 750 > lastChangeTime) {
+							undoText = oldText;
+							undoCursor = oldCursor;
+						}
 						lastChangeTime = time;
 						updateDisplayText();
 					} else { // Change is canceled.
 						cursor = oldCursor;
-						undoText = tempUndoText;
 						hasSelection = oldHasSelection;
 						selectionStart = oldSelectionStart;
 					}
