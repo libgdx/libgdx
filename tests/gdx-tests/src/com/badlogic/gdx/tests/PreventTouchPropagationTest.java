@@ -83,7 +83,8 @@ public class PreventTouchPropagationTest extends GdxTest {
                 addFillerLabels(this, skin, 5);
                 add(touchpad).size(ACTOR_DIMENSION);
             }
-        });
+        }, skin);
+        pane.setFadeScrollBars(false);
 
         stage.addActor(new Table() {
             {
