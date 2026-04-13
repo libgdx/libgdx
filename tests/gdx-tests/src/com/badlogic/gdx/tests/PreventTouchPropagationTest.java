@@ -64,8 +64,8 @@ public class PreventTouchPropagationTest extends GdxTest {
             }
         });
 
-        textField = new TextField("What", skin);
-        textArea = new TextArea("Dude", skin);
+        textField = new TextField("This is a long line, and will continue to be long until the line is done.", skin);
+        textArea = new TextArea("The quick brown fox jumps over the lazy dog.", skin);
         slider = new Slider(0, 10, 1, false, skin);
         touchpad = new Touchpad(20, skin);
         //touchpad.setBounds(15, 15, 100, 100);
