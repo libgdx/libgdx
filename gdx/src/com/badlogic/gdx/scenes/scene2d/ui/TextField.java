@@ -95,6 +95,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	protected CharSequence displayText;
 	Clipboard clipboard;
 	InputListener inputListener;
+	boolean preventTouchPropagation;
 	@Null TextFieldListener listener;
 	@Null TextFieldFilter filter;
 	OnscreenKeyboard keyboard = DEFAULT_ONSCREEN_KEYBOARD;
@@ -154,6 +155,17 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 
 	protected InputListener createInputListener () {
 		return new TextFieldClickListener();
+	}
+
+	public boolean isPreventTouchPropagation() {
+		return preventTouchPropagation;
+	}
+
+	/** Prevents internal touchDown events from propagating to parental hierarchy.
+	 * This stops parents from cancelling them (as in the case of {@link ScrollPane},
+	 * which would otherwise lead to unexpected behavior. */
+	public void setPreventTouchPropagation(boolean preventTouchPropagation) {
+		this.preventTouchPropagation = preventTouchPropagation;
 	}
 
 	protected int letterUnderCursor (float x) {
@@ -1037,6 +1049,8 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			if (stage != null) stage.setKeyboardFocus(TextField.this);
 			keyboard.show(TextField.this);
 			hasSelection = true;
+			if (preventTouchPropagation)
+				event.stop();
 			return true;
 		}
 

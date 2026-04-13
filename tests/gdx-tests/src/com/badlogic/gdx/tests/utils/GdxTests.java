@@ -252,6 +252,7 @@ public class GdxTests {
 		PolygonRegionTest.class,
 		PolygonSpriteTest.class,
 		PreferencesTest.class,
+		PreventTouchPropagationTest.class,
 		ProjectTest.class,
 		ProjectiveTextureTest.class,
 		ReflectionTest.class,

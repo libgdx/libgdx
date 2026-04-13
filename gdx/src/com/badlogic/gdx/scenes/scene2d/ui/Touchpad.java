@@ -40,6 +40,7 @@ public class Touchpad extends Widget implements Styleable<Touchpad.TouchpadStyle
 	private TouchpadStyle style;
 	boolean touched;
 	boolean resetOnTouchUp = true;
+	boolean preventTouchPropagation;
 	private float deadzoneRadius;
 	private final Circle knobBounds = new Circle(0, 0, 0);
 	private final Circle touchBounds = new Circle(0, 0, 0);
@@ -72,6 +73,8 @@ public class Touchpad extends Widget implements Styleable<Touchpad.TouchpadStyle
 				if (touched) return false;
 				touched = true;
 				calculatePositionAndValue(x, y, false);
+				if (preventTouchPropagation)
+					event.stop();
 				return true;
 			}
 
@@ -190,6 +193,17 @@ public class Touchpad extends Widget implements Styleable<Touchpad.TouchpadStyle
 	/** @param reset Whether to reset the knob to the center on touch up. */
 	public void setResetOnTouchUp (boolean reset) {
 		this.resetOnTouchUp = reset;
+	}
+
+	public boolean isPreventTouchPropagation() {
+		return preventTouchPropagation;
+	}
+
+	/** Prevents internal touchDown events from propagating to parental hierarchy.
+	 * This stops parents from cancelling them (as in the case of {@link ScrollPane},
+	 * which would otherwise lead to unexpected behavior. */
+	public void setPreventTouchPropagation(boolean preventTouchPropagation) {
+		this.preventTouchPropagation = preventTouchPropagation;
 	}
 
 	/** @param deadzoneRadius The distance in pixels from the center of the touchpad required for the knob to be moved. */

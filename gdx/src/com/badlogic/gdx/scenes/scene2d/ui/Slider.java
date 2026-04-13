@@ -44,6 +44,7 @@ public class Slider extends ProgressBar {
 	private Interpolation visualInterpolationInverse = Interpolation.linear;
 	private float[] snapValues;
 	private float threshold;
+	boolean preventTouchPropagation;
 
 	public Slider (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
@@ -72,6 +73,8 @@ public class Slider extends ProgressBar {
 				if (draggingPointer != -1) return false;
 				draggingPointer = pointer;
 				calculatePositionAndValue(x, y);
+				if (preventTouchPropagation)
+					event.stop();
 				return true;
 			}
 
@@ -239,6 +242,17 @@ public class Slider extends ProgressBar {
 	 * @see #setVisualInterpolation(Interpolation) */
 	public void setVisualPercent (float percent) {
 		setValue(min + (max - min) * visualInterpolationInverse.apply(percent));
+	}
+
+	public boolean isPreventTouchPropagation() {
+		return preventTouchPropagation;
+	}
+
+	/** Prevents internal touchDown events from propagating to parental hierarchy.
+	 * This stops parents from cancelling them (as in the case of {@link ScrollPane},
+	 * which would otherwise lead to unexpected behavior. */
+	public void setPreventTouchPropagation(boolean preventTouchPropagation) {
+		this.preventTouchPropagation = preventTouchPropagation;
 	}
 
 	/** The style for a slider, see {@link Slider}.
