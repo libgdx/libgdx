@@ -73,8 +73,7 @@ public class Touchpad extends Widget implements Styleable<Touchpad.TouchpadStyle
 				if (touched) return false;
 				touched = true;
 				calculatePositionAndValue(x, y, false);
-				if (preventTouchPropagation)
-					event.stop();
+				if (preventTouchPropagation) event.stop();
 				return true;
 			}
 
@@ -195,14 +194,13 @@ public class Touchpad extends Widget implements Styleable<Touchpad.TouchpadStyle
 		this.resetOnTouchUp = reset;
 	}
 
-	public boolean isPreventTouchPropagation() {
+	public boolean isPreventTouchPropagation () {
 		return preventTouchPropagation;
 	}
 
-	/** Prevents internal touchDown events from propagating to parental hierarchy.
-	 * This stops parents from cancelling them (as in the case of {@link ScrollPane},
-	 * which would otherwise lead to unexpected behavior. */
-	public void setPreventTouchPropagation(boolean preventTouchPropagation) {
+	/** Prevents internal touchDown events from propagating to parental hierarchy. This stops parents from cancelling them (as in
+	 * the case of {@link ScrollPane}, which would otherwise lead to unexpected behavior. */
+	public void setPreventTouchPropagation (boolean preventTouchPropagation) {
 		this.preventTouchPropagation = preventTouchPropagation;
 	}
 

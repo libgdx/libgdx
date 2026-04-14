@@ -73,8 +73,7 @@ public class Slider extends ProgressBar {
 				if (draggingPointer != -1) return false;
 				draggingPointer = pointer;
 				calculatePositionAndValue(x, y);
-				if (preventTouchPropagation)
-					event.stop();
+				if (preventTouchPropagation) event.stop();
 				return true;
 			}
 
@@ -244,14 +243,13 @@ public class Slider extends ProgressBar {
 		setValue(min + (max - min) * visualInterpolationInverse.apply(percent));
 	}
 
-	public boolean isPreventTouchPropagation() {
+	public boolean isPreventTouchPropagation () {
 		return preventTouchPropagation;
 	}
 
-	/** Prevents internal touchDown events from propagating to parental hierarchy.
-	 * This stops parents from cancelling them (as in the case of {@link ScrollPane},
-	 * which would otherwise lead to unexpected behavior. */
-	public void setPreventTouchPropagation(boolean preventTouchPropagation) {
+	/** Prevents internal touchDown events from propagating to parental hierarchy. This stops parents from cancelling them (as in
+	 * the case of {@link ScrollPane}, which would otherwise lead to unexpected behavior. */
+	public void setPreventTouchPropagation (boolean preventTouchPropagation) {
 		this.preventTouchPropagation = preventTouchPropagation;
 	}
 

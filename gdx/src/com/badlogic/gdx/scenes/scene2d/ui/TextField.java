@@ -157,14 +157,13 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		return new TextFieldClickListener();
 	}
 
-	public boolean isPreventTouchPropagation() {
+	public boolean isPreventTouchPropagation () {
 		return preventTouchPropagation;
 	}
 
-	/** Prevents internal touchDown events from propagating to parental hierarchy.
-	 * This stops parents from cancelling them (as in the case of {@link ScrollPane},
-	 * which would otherwise lead to unexpected behavior. */
-	public void setPreventTouchPropagation(boolean preventTouchPropagation) {
+	/** Prevents internal touchDown events from propagating to parental hierarchy. This stops parents from cancelling them (as in
+	 * the case of {@link ScrollPane}, which would otherwise lead to unexpected behavior. */
+	public void setPreventTouchPropagation (boolean preventTouchPropagation) {
 		this.preventTouchPropagation = preventTouchPropagation;
 	}
 
@@ -1049,8 +1048,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			if (stage != null) stage.setKeyboardFocus(TextField.this);
 			keyboard.show(TextField.this);
 			hasSelection = true;
-			if (preventTouchPropagation)
-				event.stop();
+			if (preventTouchPropagation) event.stop();
 			return true;
 		}
 
