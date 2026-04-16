@@ -455,6 +455,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	@Override
 	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
 		long time = System.nanoTime();
+		if (lastFrameTime > time) lastFrameTime = time;
 		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {
 			deltaTime = (time - lastFrameTime) / 1000000000.0f;

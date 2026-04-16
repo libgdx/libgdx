@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DefaultPool;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.Justify;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -111,6 +112,20 @@ public class GlyphLayout implements Poolable {
 	 *           Truncate should not be used with text that contains multiple lines. Wrap is ignored if truncate is not null. */
 	public void setText (BitmapFont font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
 		boolean wrap, @Null String truncate) {
+		setText(font, str, start, end, color, targetWidth, halign, wrap, Justify.None, truncate);
+	}
+
+	/** @param color The default color to use for the text (the BitmapFont {@link BitmapFont#getColor() color} is not used). If
+	 *           {@link BitmapFontData#markupEnabled} is true, color markup tags in the specified string may change the color for
+	 *           portions of the text.
+	 * @param halign Horizontal alignment of the text, see {@link Align}.
+	 * @param targetWidth The width used for alignment, line wrapping, and truncation. May be zero if those features are not used.
+	 * @param justify Justification of the text, see {@link Justify}.
+	 * @param truncate If not null and the width of the glyphs exceed targetWidth, the glyphs are truncated and the glyphs for the
+	 *           specified truncate string are placed at the end. Empty string can be used to truncate without adding glyphs.
+	 *           Truncate should not be used with text that contains multiple lines. Wrap is ignored if truncate is not null. */
+	public void setText (BitmapFont font, CharSequence str, int start, int end, Color color, float targetWidth, int halign,
+		boolean wrap, Justify justify, @Null String truncate) {
 
 		reset();
 
@@ -263,7 +278,7 @@ public class GlyphLayout implements Poolable {
 
 		height = fontData.capHeight + Math.abs(y);
 
-		calculateWidths(fontData);
+		calculateWidthsAndJustify(fontData, targetWidth, justify);
 
 		alignRuns(targetWidth, halign);
 
@@ -272,7 +287,7 @@ public class GlyphLayout implements Poolable {
 	}
 
 	/** Calculate run widths and the entire layout width. */
-	private void calculateWidths (BitmapFontData fontData) {
+	private void calculateWidthsAndJustify (BitmapFontData fontData, float targetWidth, Justify justify) {
 		float width = 0;
 		Object[] runsItems = runs.items;
 		for (int i = 0, n = runs.size; i < n; i++) {
@@ -280,17 +295,55 @@ public class GlyphLayout implements Poolable {
 			float[] xAdvances = run.xAdvances.items;
 			float runWidth = run.x + xAdvances[0], max = 0; // run.x is needed to ensure floats are rounded same as above.
 			Object[] glyphs = run.glyphs.items;
-			for (int ii = 0, nn = run.glyphs.size; ii < nn;) {
+			int gaps = 0;
+			for (int ii = 0, nn = run.glyphs.size;;) {
 				Glyph glyph = (Glyph)glyphs[ii];
 				float glyphWidth = getGlyphWidth(glyph, fontData);
 				max = Math.max(max, runWidth + glyphWidth); // A glyph can extend past the right edge of subsequent glyphs.
 				ii++;
 				runWidth += xAdvances[ii];
+				if (ii >= nn) break;
+				// No gap to the right of last glyph.
+				if (justify.matchChar(glyph.id)) gaps++;
 			}
 			run.width = Math.max(runWidth, max) - run.x;
+			justifyRun(run, targetWidth, gaps, justify);
 			width = Math.max(width, run.x + run.width);
 		}
 		this.width = width;
+	}
+
+	private void justifyRun (GlyphRun run, float targetWidth, int gaps, Justify justify) {
+		if (gaps == 0 || !GlyphLayout.shouldJustify(justify, run.wrapState)) return;
+
+		float pad = targetWidth - run.width;
+		if (pad <= 0.0f) return;
+		pad /= gaps;
+
+		float[] xAdvances = run.xAdvances.items;
+		Object[] glyphs = run.glyphs.items;
+		for (int i = 0, n = run.glyphs.size - 1; i < n;) {
+			Glyph glyph = (Glyph)glyphs[i];
+			i++;
+			if (justify.matchChar(glyph.id)) xAdvances[i] += pad;
+		}
+		run.width = targetWidth;
+	}
+
+	private static boolean shouldJustify (Justify justify, WrapState wrapState) {
+		switch (justify) {
+		case WrappedLinesBySpace:
+		case WrappedLinesByGlyph:
+			if (wrapState == WrapState.lastWrapped) return true;
+			// Fall through.
+		case ParagraphBySpace:
+		case ParagraphByGlyph:
+			return wrapState == WrapState.wrapped;
+		case AllLinesBySpace:
+		case AllLinesByGlyph:
+			return true;
+		}
+		return false;
 	}
 
 	/** Align runs to center or right of targetWidth. Requires run.width of runs to be already set */
@@ -363,6 +416,7 @@ public class GlyphLayout implements Poolable {
 	/** Breaks a run into two runs at the specified wrapIndex.
 	 * @return May be null if second run is all whitespace. */
 	private GlyphRun wrap (BitmapFontData fontData, GlyphRun first, int wrapIndex) {
+		first.wrapState = WrapState.wrapped;
 		Array<Glyph> glyphs2 = first.glyphs; // Starts with all the glyphs.
 		int glyphCount = first.glyphs.size;
 		FloatArray xAdvances2 = first.xAdvances; // Starts with all the xadvances.
@@ -382,6 +436,7 @@ public class GlyphLayout implements Poolable {
 		GlyphRun second = null;
 		if (secondStart < glyphCount) {
 			second = glyphRunPool.obtain();
+			second.wrapState = WrapState.lastWrapped;
 
 			Array<Glyph> glyphs1 = second.glyphs; // Starts empty.
 			glyphs1.addAll(glyphs2, 0, firstEnd);
@@ -522,6 +577,10 @@ public class GlyphLayout implements Poolable {
 		return buffer.toString();
 	}
 
+	public enum WrapState {
+		notWrapped, wrapped, lastWrapped
+	}
+
 	/** Stores glyphs and positions for a line of text.
 	 * @author Nathan Sweet */
 	static public class GlyphRun implements Poolable {
@@ -535,6 +594,8 @@ public class GlyphLayout implements Poolable {
 
 		public float x, y, width;
 
+		public WrapState wrapState;
+
 		void appendRun (GlyphRun run) {
 			glyphs.addAll(run.glyphs);
 			// Remove the width of the last glyph. The first xadvance of the appended run has kerning for the last glyph of this run.
@@ -545,6 +606,7 @@ public class GlyphLayout implements Poolable {
 		public void reset () {
 			glyphs.clear();
 			xAdvances.clear();
+			wrapState = WrapState.notWrapped;
 		}
 
 		public String toString () {
@@ -560,6 +622,8 @@ public class GlyphLayout implements Poolable {
 			buffer.append(y);
 			buffer.append(", ");
 			buffer.append(width);
+			buffer.append(", ");
+			buffer.append(wrapState);
 			return buffer.toString();
 		}
 	}
