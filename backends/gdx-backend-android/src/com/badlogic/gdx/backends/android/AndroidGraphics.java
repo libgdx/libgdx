@@ -676,9 +676,11 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 			try {
-				WindowInsets windowInsets = app.getApplicationWindow().getDecorView().getRootWindowInsets();
-				if (windowInsets == null) return;
-				DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+				View decorView = app.getApplicationWindow().getDecorView();
+				android.view.WindowInsets insets = decorView.getRootWindowInsets();
+				if (insets == null) return;
+
+				DisplayCutout displayCutout = insets.getDisplayCutout();
 				if (displayCutout != null) {
 					safeInsetRight = displayCutout.getSafeInsetRight();
 					safeInsetBottom = displayCutout.getSafeInsetBottom();
