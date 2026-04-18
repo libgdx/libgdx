@@ -27,6 +27,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.DisplayCutout;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.WindowManager.LayoutParams;
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
@@ -677,9 +678,8 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 			try {
 				View decorView = app.getApplicationWindow().getDecorView();
-				android.view.WindowInsets insets = decorView.getRootWindowInsets();
+				WindowInsets insets = decorView.getRootWindowInsets();
 				if (insets == null) return;
-
 				DisplayCutout displayCutout = insets.getDisplayCutout();
 				if (displayCutout != null) {
 					safeInsetRight = displayCutout.getSafeInsetRight();
