@@ -282,7 +282,17 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		super.onConfigurationChanged(config);
 		boolean keyboardAvailable = false;
 		if (config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) keyboardAvailable = true;
-		input.setKeyboardAvailable(keyboardAvailable);
+		final boolean finalKeyboardAvailable = keyboardAvailable;
+		if (input != null) {
+			input.setKeyboardAvailable(keyboardAvailable);
+		} else {
+			postRunnable(new Runnable() {
+				@Override
+				public void run () {
+					input.setKeyboardAvailable(finalKeyboardAvailable);
+				}
+			});
+		}
 	}
 
 	@Override
