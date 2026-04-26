@@ -20,6 +20,7 @@
 - Android: Fixed possible app crashes on back button/gesture (see #7775).
 - API Change: ObjectSet, IntSet, OrderedSet addAll methods return boolean.
 - API Addition: Added LongSet.
+- iOS: Update to MobiVM 2.3.24
 - API Addition: Added scene2d.ui ScrollPane#smoothScroll() to control smooth scroll speed.
 - API Addition: Added Justify text options to GlyphLayout (#7609)
 - GeometryUtils fixes and improvements.
