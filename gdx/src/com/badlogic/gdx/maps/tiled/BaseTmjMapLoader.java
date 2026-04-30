@@ -49,6 +49,7 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.StreamUtils;
 
@@ -65,7 +66,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	protected JsonValue root;
 
 	protected ObjectMap<String, JsonValue> templateCache;
-	protected ObjectMap<String, Integer> tilesetPathsToGIDs;
+	protected ObjectIntMap<String> tilesetPathsToGIDs;
 
 	public BaseTmjMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -96,7 +97,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		this.idToObject = new IntMap<>();
 		this.runOnEndOfLoadTiled = new Array<>();
 		this.templateCache = new ObjectMap<>();
-		this.tilesetPathsToGIDs = new ObjectMap<>();
+		this.tilesetPathsToGIDs = new ObjectIntMap<>();
 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;

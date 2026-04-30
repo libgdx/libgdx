@@ -47,6 +47,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.StreamUtils;
@@ -66,7 +67,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	protected Element root;
 
 	protected ObjectMap<String, Element> templateCache;
-	protected ObjectMap<String, Integer> tilesetPathsToGIDs;
+	protected ObjectIntMap<String> tilesetPathsToGIDs;
+
 
 	public BaseTmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -98,7 +100,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		this.idToObject = new IntMap<>();
 		this.runOnEndOfLoadTiled = new Array<>();
 		this.templateCache = new ObjectMap<>();
-		this.tilesetPathsToGIDs = new ObjectMap<>();
+		this.tilesetPathsToGIDs = new ObjectIntMap<>();
 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
