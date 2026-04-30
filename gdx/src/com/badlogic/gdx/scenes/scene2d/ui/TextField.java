@@ -19,12 +19,15 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.OnscreenKeyboardType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
+import com.badlogic.gdx.input.NativeInputConfiguration;
+import com.badlogic.gdx.input.TextInputWrapper;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -42,6 +45,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -69,12 +73,15 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	static protected final char DELETE = 127;
 	static protected final char BULLET = 149;
 
+	static public OnscreenKeyboard DEFAULT_ONSCREEN_KEYBOARD = new DefaultOnscreenKeyboard();
+
 	static private final Vector2 tmp1 = new Vector2();
 	static private final Vector2 tmp2 = new Vector2();
 	static private final Vector2 tmp3 = new Vector2();
 
 	static public float keyRepeatInitialTime = 0.4f;
 	static public float keyRepeatTime = 0.1f;
+	static public int undoMax = 10;
 
 	protected String text;
 	protected int cursor, selectionStart;
@@ -90,13 +97,11 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	InputListener inputListener;
 	@Null TextFieldListener listener;
 	@Null TextFieldFilter filter;
-	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+	OnscreenKeyboard keyboard = DEFAULT_ONSCREEN_KEYBOARD;
 	boolean focusTraversal = true, onlyFontChars = true, disabled;
 	private int textHAlign = Align.left;
 	private float selectionX, selectionWidth;
-
-	String undoText = "";
-	long lastChangeTime;
+	private final Undo undo = new Undo(undoMax);
 
 	boolean passwordMode;
 	private StringBuilder passwordBuffer;
@@ -106,6 +111,9 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	float renderOffset;
 	protected int visibleTextStart, visibleTextEnd;
 	private int maxLength;
+	private String[] autocompleteOptions;
+	private OnscreenKeyboardType keyboardType = OnscreenKeyboardType.Default;
+	private boolean preventAutoCorrection;
 
 	boolean focused;
 	boolean cursorOn;
@@ -204,6 +212,23 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 
 	public int getMaxLength () {
 		return this.maxLength;
+	}
+
+	/** A list of possible strings that are valid to autocomplete Currently only has an effect on mobile with
+	 * {@link NativeOnscreenKeyboard} */
+	public void setAutocompleteOptions (String[] autocompleteOptions) {
+		this.autocompleteOptions = autocompleteOptions;
+	}
+
+	/** Which {@link OnscreenKeyboardType} to use. Mainly used for mobile, will also be referenced for password masking */
+	public void setKeyboardType (Input.OnscreenKeyboardType keyboardType) {
+		this.keyboardType = keyboardType;
+	}
+
+	/** Whether if auto correction is provided by the system, it should be surpressed Will be considered true, if
+	 * {@link OnscreenKeyboardType} is `Password` */
+	public void setPreventAutoCorrection (boolean preventAutoCorrection) {
+		this.preventAutoCorrection = preventAutoCorrection;
 	}
 
 	/** When false, text set by {@link #setText(String)} may contain characters not in the font, a space will be displayed instead.
@@ -466,7 +491,10 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	void cut (boolean fireChangeEvent) {
 		if (hasSelection && !passwordMode) {
 			copy();
+			String oldText = text;
+			int oldCursor = cursor, oldSelectionStart = selectionStart;
 			cursor = delete(fireChangeEvent);
+			if (!text.equals(oldText)) undo.store(oldText, oldCursor, true, oldSelectionStart);
 			updateDisplayText();
 		}
 	}
@@ -489,13 +517,17 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		}
 		content = buffer.toString();
 
+		String oldText = text;
+		int oldCursor = cursor, oldSelectionStart = selectionStart;
+		boolean oldHasSelection = hasSelection;
 		if (hasSelection) cursor = delete(fireChangeEvent);
-		if (fireChangeEvent)
-			changeText(text, insert(cursor, content, text));
-		else
+		if (fireChangeEvent) {
+			if (!changeText(text, insert(cursor, content, text))) return;
+		} else
 			text = insert(cursor, content, text);
-		updateDisplayText();
+		undo.store(oldText, oldCursor, oldHasSelection, oldSelectionStart);
 		cursor += content.length();
+		updateDisplayText();
 	}
 
 	String insert (int position, CharSequence text, String to) {
@@ -510,20 +542,63 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		int maxIndex = Math.max(from, to);
 		String newText = (minIndex > 0 ? text.substring(0, minIndex) : "")
 			+ (maxIndex < text.length() ? text.substring(maxIndex, text.length()) : "");
-		if (fireChangeEvent)
-			changeText(text, newText);
-		else
+		if (fireChangeEvent) {
+			if (!changeText(text, newText)) return to;
+		} else
 			text = newText;
 		clearSelection();
 		return minIndex;
 	}
 
+	/** Restores the previous text and selection history state. */
+	public void undo () {
+		undo(programmaticChangeEvents);
+	}
+
+	void undo (boolean fireChangeEvent) {
+		if (!undo.canUndo(text)) return;
+		UndoState state = undo.undo(text, cursor, hasSelection, selectionStart);
+		if (fireChangeEvent) {
+			if (!changeText(text, state.text)) {
+				undo.cancelUndo();
+				return;
+			}
+		} else
+			text = state.text;
+		cursor = state.cursor;
+		hasSelection = state.hasSelection;
+		selectionStart = state.selectionStart;
+		updateDisplayText();
+	}
+
+	/** Restores the next text and selection history state. */
+	public void redo () {
+		redo(programmaticChangeEvents);
+	}
+
+	void redo (boolean fireChangeEvent) {
+		if (!undo.canRedo(text)) return;
+		UndoState state = undo.redo(text, cursor, hasSelection, selectionStart);
+		if (fireChangeEvent) {
+			if (!changeText(text, state.text)) {
+				undo.cancelRedo();
+				return;
+			}
+		} else
+			text = state.text;
+		cursor = state.cursor;
+		hasSelection = state.hasSelection;
+		selectionStart = state.selectionStart;
+		updateDisplayText();
+	}
+
 	/** Sets the {@link Stage#setKeyboardFocus(Actor) keyboard focus} to the next TextField. If no next text field is found, the
 	 * onscreen keyboard is hidden. Does nothing if the text field is not in a stage.
-	 * @param up If true, the text field with the same or next smallest y coordinate is found, else the next highest. */
-	public void next (boolean up) {
+	 * @param up If true, the text field with the same or next smallest y coordinate is found, else the next highest.
+	 * @return The textfield, the focus has been transferred too */
+	public TextField next (boolean up) {
 		Stage stage = getStage();
-		if (stage == null) return;
+		if (stage == null) return null;
 		TextField current = this;
 		Vector2 currentCoords = current.getParent().localToStageCoordinates(tmp2.set(current.getX(), current.getY()));
 		Vector2 bestCoords = tmp1;
@@ -537,12 +612,11 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 				textField = current.findNextTextField(stage.getActors(), null, bestCoords, currentCoords, up);
 			}
 			if (textField == null) {
-				Gdx.input.setOnscreenKeyboardVisible(false);
-				break;
+				return null;
 			}
 			if (stage.setKeyboardFocus(textField)) {
 				textField.selectAll();
-				break;
+				return textField;
 			}
 			current = textField;
 			currentCoords.set(bestCoords);
@@ -631,6 +705,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		text = "";
 		paste(str, false);
 		if (programmaticChangeEvents) changeText(oldText, text);
+		undo.clear();
 		cursor = 0;
 	}
 
@@ -830,15 +905,113 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	/** An interface for onscreen keyboards. Can invoke the default keyboard or render your own keyboard!
 	 * @author mzechner */
 	static public interface OnscreenKeyboard {
-		public void show (boolean visible);
+		public void show (TextField textField);
+
+		public void close ();
 	}
 
 	/** The default {@link OnscreenKeyboard} used by all {@link TextField} instances. Just uses
 	 * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
 	 * @author mzechner */
 	static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
-		public void show (boolean visible) {
-			Gdx.input.setOnscreenKeyboardVisible(visible);
+		public void show (TextField textField) {
+			Gdx.input.setOnscreenKeyboardVisible(true);
+		}
+
+		public void close () {
+			Gdx.input.setOnscreenKeyboardVisible(false);
+		}
+	}
+
+	/** An advanced {@link OnscreenKeyboard} utilising {@link Input#openTextInputField}. Might overlap your actual rendering, so
+	 * use with care! This is mutually exclusive with using the {@link DefaultOnscreenKeyboard} or
+	 * {@link Input#setOnscreenKeyboardVisible(boolean)} API */
+	static public class NativeOnscreenKeyboard implements OnscreenKeyboard {
+
+		public void close () {
+			Gdx.input.closeTextInputField(false);
+		}
+
+		public void show (TextField textField) {
+			if (Gdx.input.isTextInputFieldOpened()) {
+				Gdx.input.closeTextInputField(false, (confirmativeAction -> {
+					openNativeInputField(textField);
+					return true;
+				}));
+				return;
+			}
+
+			openNativeInputField(textField);
+		}
+
+		private void openNativeInputField (TextField textField) {
+			NativeInputConfiguration configuration = new NativeInputConfiguration();
+			// If we are in password mode, assume that the user want to show password keyboard
+			OnscreenKeyboardType resolvedType = textField.passwordMode && textField.keyboardType == OnscreenKeyboardType.Default
+				? OnscreenKeyboardType.Password
+				: textField.keyboardType;
+
+			configuration.setType(resolvedType).setMaskInput(textField.passwordMode).setShowUnmaskButton(textField.passwordMode)
+				.setMaxLength(textField.maxLength <= 0 ? -1 : textField.maxLength).setMultiLine(textField.writeEnters)
+				.setPreventCorrection(textField.preventAutoCorrection || resolvedType == OnscreenKeyboardType.Password)
+				.setPlaceholder(textField.messageText == null ? "" : textField.messageText)
+				.setAutoComplete(textField.autocompleteOptions);
+
+			if (textField.filter != null) {
+				configuration.setValidator(toCheck -> {
+					for (int i = 0; i < toCheck.length(); i++) {
+						if (!textField.filter.acceptChar(textField, toCheck.charAt(i))) return false;
+					}
+					return true;
+				});
+			}
+
+			configuration.setCloseCallback(confirmativeAction -> {
+				if (confirmativeAction) {
+					// Do we want to somehow dismuss keyboard focus?
+					TextField focused = textField.next(false);
+					if (focused != null) {
+						focused.getOnscreenKeyboard().show(focused);
+						return true;
+					}
+				}
+
+				return false;
+			});
+
+			configuration.setTextInputWrapper(new TextInputWrapper() {
+				@Override
+				public String getText () {
+					return textField.getText();
+				}
+
+				@Override
+				public int getSelectionStart () {
+					return textField.getSelectionStart();
+				}
+
+				@Override
+				public int getSelectionEnd () {
+					return textField.getCursorPosition();
+				}
+
+				@Override
+				public void writeResults (String text, int selectionStart, int selectionEnd) {
+					if (textField.preventAutoCorrection) {
+						text = text.trim();
+						selectionStart = Math.min(selectionStart, text.length());
+						selectionEnd = Math.min(selectionEnd, text.length());
+					}
+					textField.setText(text);
+					if (selectionStart == selectionEnd) {
+						textField.setCursorPosition(selectionEnd);
+					} else {
+						textField.setSelection(selectionStart, selectionEnd);
+					}
+				}
+			});
+
+			Gdx.input.openTextInputField(configuration);
 		}
 	}
 
@@ -862,7 +1035,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			selectionStart = cursor;
 			Stage stage = getStage();
 			if (stage != null) stage.setKeyboardFocus(TextField.this);
-			keyboard.show(true);
+			keyboard.show(TextField.this);
 			hasSelection = true;
 			return true;
 		}
@@ -924,10 +1097,13 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 					selectAll();
 					return true;
 				case Keys.Z:
-					String oldText = text;
-					setText(undoText);
-					undoText = oldText;
-					updateDisplayText();
+					if (UIUtils.shift())
+						redo(true);
+					else
+						undo(true);
+					return true;
+				case Keys.Y:
+					redo(true);
 					return true;
 				default:
 					handled = false;
@@ -1051,9 +1227,10 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 
 			if (UIUtils.isMac && Gdx.input.isKeyPressed(Keys.SYM)) return true;
 
-			if (checkFocusTraversal(character))
-				next(UIUtils.shift());
-			else {
+			if (checkFocusTraversal(character)) {
+				TextField transferred = next(UIUtils.shift());
+				if (transferred == null) keyboard.close();
+			} else {
 				boolean enter = character == CARRIAGE_RETURN || character == NEWLINE;
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;
@@ -1061,7 +1238,8 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 				boolean remove = backspace || delete;
 				if (add || remove) {
 					String oldText = text;
-					int oldCursor = cursor;
+					int oldCursor = cursor, oldSelectionStart = selectionStart;
+					boolean oldHasSelection = hasSelection;
 					if (remove) {
 						if (hasSelection)
 							cursor = delete(false);
@@ -1083,14 +1261,16 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 						String insertion = enter ? "\n" : String.valueOf(character);
 						text = insert(cursor++, insertion, text);
 					}
-					String tempUndoText = undoText;
-					if (changeText(oldText, text)) {
-						long time = System.currentTimeMillis();
-						if (time - 750 > lastChangeTime) undoText = oldText;
-						lastChangeTime = time;
-						updateDisplayText();
-					} else if (!text.equals(oldText)) // Keep cursor movement if the text is the same.
-						cursor = oldCursor;
+					if (!text.equals(oldText)) {
+						if (changeText(oldText, text)) {
+							undo.keyTyped(oldText, oldCursor, oldHasSelection, oldSelectionStart);
+							updateDisplayText();
+						} else { // Change cancelled.
+							cursor = oldCursor;
+							hasSelection = oldHasSelection;
+							selectionStart = oldSelectionStart;
+						}
+					}
 				}
 			}
 			if (listener != null) listener.keyTyped(TextField.this, character);
@@ -1136,5 +1316,94 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			messageFont = style.messageFont;
 			if (style.messageFontColor != null) messageFontColor = new Color(style.messageFontColor);
 		}
+	}
+
+	static class Undo {
+		private final int max;
+		private final Queue<UndoState> states;
+		private int index;
+		private long lastChangeTime;
+
+		Undo (int max) {
+			this.max = max;
+			states = new Queue(max + 1);
+		}
+
+		/** Stores state before an edit, truncating any redo entries. */
+		void store (String text, int cursor, boolean hasSelection, int selectionStart) {
+			while (states.size > index)
+				states.removeLast();
+			if (states.size >= max) {
+				states.removeFirst();
+				index--;
+			}
+			UndoState state = new UndoState();
+			state.text = text;
+			state.cursor = cursor;
+			state.hasSelection = hasSelection;
+			state.selectionStart = selectionStart;
+			states.addLast(state);
+			index = states.size;
+		}
+
+		void keyTyped (String text, int cursor, boolean hasSelection, int selectionStart) {
+			long time = System.currentTimeMillis();
+			if (time - 750 > lastChangeTime) store(text, cursor, hasSelection, selectionStart);
+			lastChangeTime = time;
+		}
+
+		boolean canUndo (String currentText) {
+			return index > 0 && !states.get(index - 1).text.equals(currentText);
+		}
+
+		boolean canRedo (String currentText) {
+			return index < states.size - 1 && !states.get(index + 1).text.equals(currentText);
+		}
+
+		/** Saves the current state for redo, moves back, and returns the undo target state. */
+		UndoState undo (String text, int cursor, boolean hasSelection, int selectionStart) {
+			storeCurrent(text, cursor, hasSelection, selectionStart);
+			return states.get(--index);
+		}
+
+		/** Saves the current state for undo, moves forward, and returns the redo target state. */
+		UndoState redo (String text, int cursor, boolean hasSelection, int selectionStart) {
+			storeCurrent(text, cursor, hasSelection, selectionStart);
+			return states.get(++index);
+		}
+
+		private void storeCurrent (String text, int cursor, boolean hasSelection, int selectionStart) {
+			UndoState state;
+			if (index < states.size)
+				state = states.get(index);
+			else {
+				state = new UndoState();
+				states.addLast(state);
+			}
+			state.text = text;
+			state.cursor = cursor;
+			state.hasSelection = hasSelection;
+			state.selectionStart = selectionStart;
+		}
+
+		void cancelUndo () {
+			index++;
+			if (index == states.size - 1) states.removeLast();
+		}
+
+		void cancelRedo () {
+			index--;
+		}
+
+		void clear () {
+			states.clear();
+			index = 0;
+		}
+	}
+
+	static class UndoState {
+		String text;
+		int cursor, selectionStart;
+		boolean hasSelection;
 	}
 }

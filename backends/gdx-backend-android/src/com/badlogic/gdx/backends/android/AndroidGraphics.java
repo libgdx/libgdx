@@ -27,6 +27,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.DisplayCutout;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.WindowManager.LayoutParams;
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
@@ -455,6 +456,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	@Override
 	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
 		long time = System.nanoTime();
+		if (lastFrameTime > time) lastFrameTime = time;
 		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {
 			deltaTime = (time - lastFrameTime) / 1000000000.0f;
@@ -675,7 +677,10 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 			try {
-				DisplayCutout displayCutout = app.getApplicationWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
+				View decorView = app.getApplicationWindow().getDecorView();
+				WindowInsets insets = decorView.getRootWindowInsets();
+				if (insets == null) return;
+				DisplayCutout displayCutout = insets.getDisplayCutout();
 				if (displayCutout != null) {
 					safeInsetRight = displayCutout.getSafeInsetRight();
 					safeInsetBottom = displayCutout.getSafeInsetBottom();

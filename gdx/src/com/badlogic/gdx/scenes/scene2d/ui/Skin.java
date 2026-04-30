@@ -484,8 +484,8 @@ public class Skin implements Disposable {
 				return super.readValue(type, elementType, jsonData);
 			}
 
-			protected boolean ignoreUnknownField (Class type, String fieldName) {
-				return fieldName.equals(parentFieldName);
+			protected boolean ignoreUnknownField (Object object, JsonValue value) {
+				return value.name.equals(parentFieldName);
 			}
 
 			public void readFields (Object object, JsonValue jsonMap) {

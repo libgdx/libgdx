@@ -40,6 +40,9 @@ public class AndroidXKeyboardHeightProvider implements KeyboardHeightProvider {
 	@Override
 	public void start () {
 		this.view = activity.findViewById(android.R.id.content);
+		// We do this, to not dispatch changes that are not changes on first run
+		cachedOrientation = activity.getResources().getConfiguration().orientation;
+
 		ViewCompat.setOnApplyWindowInsetsListener(view, new OnApplyWindowInsetsListener() {
 			@NotNull
 			@Override

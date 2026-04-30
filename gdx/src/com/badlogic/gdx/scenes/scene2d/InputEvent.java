@@ -65,8 +65,8 @@ public class InputEvent extends Event {
 		this.type = type;
 	}
 
-	/** The pointer index for the event. The first touch is index 0, second touch is index 1, etc. Always -1 on desktop. Valid for:
-	 * touchDown, touchDragged, touchUp, enter, and exit. */
+	/** The pointer index for the event. The first touch is index 0, second touch is index 1, etc. On desktop it is always 0 for a
+	 * touch, but -1 for enter/exit without a touch. Valid for: touchDown, touchDragged, touchUp, enter, and exit. */
 	public int getPointer () {
 		return pointer;
 	}
