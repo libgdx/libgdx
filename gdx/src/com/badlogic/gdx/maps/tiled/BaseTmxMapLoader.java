@@ -69,7 +69,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	protected ObjectMap<String, Element> templateCache;
 	protected ObjectIntMap<String> tilesetPathsToGIDs;
 
-
 	public BaseTmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
