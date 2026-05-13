@@ -38,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IdentityMap;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
 import com.badlogic.gdx.utils.JsonValue;
@@ -56,7 +57,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
  * See the <a href="https://libgdx.com/wiki/graphics/2d/scene2d/skin">documentation</a> for more.
  * @author Nathan Sweet */
 public class Skin implements Disposable {
-	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
+	IdentityMap<Class, ObjectMap<String, Object>> resources = new IdentityMap();
 	TextureAtlas atlas;
 	float scale = 1;
 
@@ -484,8 +485,8 @@ public class Skin implements Disposable {
 				return super.readValue(type, elementType, jsonData);
 			}
 
-			protected boolean ignoreUnknownField (Class type, String fieldName) {
-				return fieldName.equals(parentFieldName);
+			protected boolean ignoreUnknownField (Object object, JsonValue value) {
+				return value.name.equals(parentFieldName);
 			}
 
 			public void readFields (Object object, JsonValue jsonMap) {

@@ -438,6 +438,7 @@
 		<include name="utils/GdxRuntimeException.java"/>
 		<include name="utils/I18NBundle.java"/>
 		<include name="utils/IdentityMap.java"/>
+		<include name="utils/IdentitySet.java"/>
 		<include name="utils/IntArray.java"/>
 		<include name="utils/IntFloatMap.java"/>
 		<include name="utils/IntIntMap.java"/>
