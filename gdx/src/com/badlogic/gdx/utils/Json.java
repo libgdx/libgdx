@@ -899,7 +899,7 @@ public class Json {
 			FieldMetadata metadata = fields.get(child.name().replace(" ", "_"));
 			if (metadata == null) {
 				if (child.name.equals(typeName)) continue;
-				if (ignoreUnknownFields || ignoreUnknownField(type, child.name)) {
+				if (ignoreUnknownFields || ignoreUnknownField(object, child)) {
 					if (debug) System.out.println("Ignoring unknown field: " + child.name + " (" + type.getName() + ")");
 					continue;
 				} else {
@@ -930,11 +930,11 @@ public class Json {
 
 	/** Called for each unknown field name encountered by {@link #readFields(Object, JsonValue)} when {@link #ignoreUnknownFields}
 	 * is false to determine whether the unknown field name should be ignored.
-	 * @param type The object type being read.
-	 * @param fieldName A field name encountered in the JSON for which there is no matching class field.
+	 * @param object The object whose fields are being read.
+	 * @param value The JsonValue with the field name for which there is no matching class field.
 	 * @return true if the field name should be ignored and an exception won't be thrown by
 	 *         {@link #readFields(Object, JsonValue)}. */
-	protected boolean ignoreUnknownField (Class type, String fieldName) {
+	protected boolean ignoreUnknownField (Object object, JsonValue value) {
 		return false;
 	}
 

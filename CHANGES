@@ -7,6 +7,7 @@
                         - `TextInputWrapper#setText/setPosition` have been removed and replaced with `writeResults`
                         - `TextInputWrapper#shouldClose` has been removed and should now be handled over the close callback
 - [BREAKING CHANGE] API: `TextField.OnscreenKeyboard` has been refactored. `OnscreenKeyboard#show(boolean)` has been split of in `OnscreenKeyboard#show(TextField)` and `OnscreenKeyboard#close()`.
+- [BREAKING CHANGE] API: `Json#ignoreUnknownField()` parameters changed to provide more information. Use `object.getClass()` and `value.name` for the old values.
 - API Addition: `Input#KeyboardHeightObserver` was extended by `onKeyboardShow` and `onKeyboardHide`. See javadocs for more info.
 - API Addition: `Input#isTextInputFieldOpened` has been added, to check, whether an InputField opened by `openTextInputField` is open
 - API Addition: Added support for the native input API in scene2d. It can be enabled via `TextField#DEFAULT_ONSCREEN_KEYBOARD = new NativeOnscreenKeyboard()` on startup. This only affects mobile platforms.
@@ -24,6 +25,7 @@
 - API Addition: Added scene2d.ui ScrollPane#smoothScroll() to control smooth scroll speed.
 - API Addition: Added Justify text options to GlyphLayout (#7609)
 - GeometryUtils fixes and improvements.
+- API Addition: IdentitySet
 
 [1.14.0]
 - [BREAKING CHANGE] API: Pools changes in 1.13.5 have been partially reverted. Pools#get/Pools#obtain method return to requiring a Class parameter. Reflection is avoided by using pre-populated Pools for libgdx classes. See https://github.com/libgdx/libgdx/pull/7648 and https://github.com/libgdx/libgdx/pull/7678
