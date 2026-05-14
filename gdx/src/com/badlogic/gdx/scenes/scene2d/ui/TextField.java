@@ -472,7 +472,9 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		visibleTextStart = Math.min(visibleTextStart, glyphPositions.size - 1);
 		visibleTextEnd = MathUtils.clamp(visibleTextEnd, visibleTextStart, glyphPositions.size - 1);
 
-		if (selectionStart > newDisplayText.length()) selectionStart = textLength;
+		if (cursor > textLength) cursor = textLength;
+		if (selectionStart > textLength) selectionStart = textLength;
+		if (selectionStart == cursor) hasSelection = false;
 	}
 
 	/** Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField. */
