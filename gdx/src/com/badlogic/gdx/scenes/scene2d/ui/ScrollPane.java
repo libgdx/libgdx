@@ -43,6 +43,10 @@ import com.badlogic.gdx.utils.Null;
  * <p>
  * The scroll pane's preferred size is that of the child actor. At this size, the child actor will not need to scroll, so the
  * scroll pane is typically sized by ignoring the preferred size in one or both directions.
+ * <p>
+ * If the scroll pane contains widgets that respond to drag, a listener that calls {@link Event#stop()} in
+ * {@link InputListener#touchDown(InputEvent, float, float, int, int) touchDown} can be added to the widgets to prevent the scroll
+ * pane from panning when {@link #setScrollBarTouch(boolean)} is true.
  * @author mzechner
  * @author Nathan Sweet */
 public class ScrollPane extends WidgetGroup implements Styleable<ScrollPane.ScrollPaneStyle> {
