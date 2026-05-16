@@ -13,15 +13,15 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class DisabledIOSAudio implements IOSAudio {
 
 	@Override
-	public void didBecomeActive () {
-	}
-
-	@Override
 	public void willEnterForeground () {
 	}
 
 	@Override
-	public void willResignActive () {
+	public void pause () {
+	}
+
+	@Override
+	public void resume () {
 	}
 
 	@Override
