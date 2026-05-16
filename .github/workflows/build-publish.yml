@@ -15,77 +15,6 @@ on:
 
 jobs:
 
-  natives-ios:
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          submodules: 'recursive'
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Build iOS natives
-        run: |
-          /usr/bin/xcodebuild -version
-          ./gradlew jniGen jnigenBuildIOS
-          ./backends/gdx-backend-robovm/build-objectal.sh
-
-      - name: Pack artifacts
-        run: |
-          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*.xcframework"  | grep "libs" > native-files-list
-          zip -r natives-ios -@ < native-files-list
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: natives-ios.zip
-          path: natives-ios.zip
-
-  natives-macos:
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          submodules: 'recursive'
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Build macOS natives
-        run: |
-          /usr/bin/xcodebuild -version
-          ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64
-
-      - name: Pack artifacts
-        run: |
-          # Needed starting with Xcode 15 to run multiple instances of the same app
-          find . -name "*.dylib" | grep "libs" | while read dylib; do
-            codesign -s - -f "$dylib"
-          done
-          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
-          zip natives-macos -@ < native-files-list
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: natives-macos.zip
-          path: natives-macos.zip
-
   natives-linux:
     runs-on: ubuntu-22.04
     steps:
@@ -104,7 +33,7 @@ jobs:
           name: natives-linux.zip
           path: natives-linux.zip
 
-  natives-windows:
+  natives-windows-cross:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
@@ -128,18 +57,19 @@ jobs:
 
       - name: Build Windows natives
         run: |
-          ./gradlew jniGen jnigenBuildWindows64 jnigenBuildWindows
+          ./gradlew jniGen jnigenBuildAllWindows --info 
 
       - name: Pack artifacts
         run: |
           find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
-          zip natives-windows -@ < native-files-list
+          zip natives-windows-cross -@ < native-files-list
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: natives-windows.zip
-          path: natives-windows.zip
+          name: natives-windows-cross.zip
+          path: natives-windows-cross.zip
+
 
   natives-android:
     runs-on: ubuntu-22.04
@@ -167,7 +97,7 @@ jobs:
 
       - name: Build Android natives
         run: |
-          ./gradlew jniGen jnigenBuildAndroid
+          ./gradlew jniGen jnigenBuildAllAndroid 
 
       - name: Pack artifacts
         run: |
@@ -180,15 +110,20 @@ jobs:
           name: natives-android.zip
           path: natives-android.zip
 
-  pack-natives:
-    runs-on: ubuntu-22.04
-    needs: [natives-macos, natives-linux, natives-windows, natives-ios, natives-android]
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_EC2_METADATA_DISABLED: true
+
+  natives-mac:
+    runs-on: macos-14
     steps:
-      - uses: actions/checkout@v2
+      - name: Setup Xcode SDK
+        run: |
+          # See https://github.com/actions/virtual-environments/issues/2557
+          sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
+          sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
+          sudo mv /Applications/Xcode_15.4.0.app /Applications/Xcode.app
+          sudo xcode-select -switch /Applications/Xcode.app
+          /usr/bin/xcodebuild -version
+
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: 'recursive'
@@ -199,49 +134,164 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
 
-      - name: Download natives-ios artifact
-        uses: actions/download-artifact@v4
+      - name: Initialize jnigen
+        run: ./gradlew jnigen
+      - name: Build natives
+        run: |
+          ./gradlew jnigenBuildAllIOS jnigenBuildAllMacOsX
+          ./backends/gdx-backend-robovm/build-objectal.sh
+
+      - name: Pack artifacts
+        run: |
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*.xcframework" | grep "libs" > native-files-list
+          zip natives-mac -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: natives-ios.zip
+          name: natives-mac.zip
+          path: natives-mac.zip
 
-      - name: Download natives-macos artifact
-        uses: actions/download-artifact@v4
+  natives-windows-msvc:
+    runs-on: windows-latest
+    steps:
+      - name: Add VCVarsall To path
+        shell: pwsh
+        run: |
+          echo "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+
+      - uses: actions/checkout@v4
         with:
-          name: natives-macos.zip
+          fetch-depth: 0
+          submodules: 'recursive'
 
-      - name: Download natives-linux artifact
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+
+      - name: Initialize jnigen
+        run: ./gradlew jnigen
+      - name: Build natives
+        run: ./gradlew jnigenBuildAllWindows
+
+      - name: Choco install Zip
+        run: choco install zip
+
+      - name: Pack artifacts
+        shell: bash
+        run: |
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" | grep "libs" > native-files-list
+          zip natives-windows-msvc -@ < native-files-list
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: natives-windows-msvc.zip
+          path: natives-windows-msvc.zip
+
+
+  package:
+    runs-on: ubuntu-latest
+    needs: [natives-android, natives-linux, natives-mac, natives-windows-cross, natives-windows-msvc]
+    env:
+      ORG_GRADLE_PROJECT_MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+      ORG_GRADLE_PROJECT_MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Download Artifacts from linux
+        if: success() && needs.natives-linux.result == 'success'
         uses: actions/download-artifact@v4
         with:
           name: natives-linux.zip
+      - name: Unzip artifacts
+        run: unzip -o natives-linux.zip
 
-      - name: Download natives-windows artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: natives-windows.zip
-
-      - name: Download natives-android artifact
+      - name: Download Artifacts from android
+        if: success() && needs.natives-android.result == 'success'
         uses: actions/download-artifact@v4
         with:
           name: natives-android.zip
+      - name: Unzip artifacts
+        run: unzip -o natives-android.zip
 
-      - name: Unpack natives
-        run: |
-          unzip -o natives-ios.zip
-          unzip -o natives-macos.zip
-          unzip -o natives-linux.zip
-          unzip -o natives-windows.zip
-          unzip -o natives-android.zip
+      - name: Download Artifacts from mac
+        if: success() && needs.natives-mac.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: natives-mac.zip
+      - name: Unzip artifacts
+        run: unzip -o natives-mac.zip
 
-      - name: Pack desktop natives
+      - name: Download Artifacts from windows cross
+        if: success() && needs.natives-windows-cross.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: natives-windows-cross.zip
+      - name: Unzip artifacts
+        run: unzip -o natives-windows-cross.zip
+
+      - name: Download Artifacts from windows msvc
+        if: success() && needs.natives-windows-msvc.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: natives-windows-msvc.zip
+      - name: Unzip artifacts
+        run: unzip -o natives-windows-msvc.zip
+
+      - name: Fetch External natives
+        run: ./gradlew fetchExternalNatives
+
+      - name: Package All
+        run: ./gradlew jnigenPackageAll --info -Ppackaging
+
+      - name: Snapshot build deploy
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'libgdx'
         run: |
-          ./gradlew jniGen
-          ant -f gdx/jni/build.xml pack-natives
-          ant -f extensions/gdx-box2d/gdx-box2d/jni/build.xml pack-natives
-          ant -f extensions/gdx-freetype/jni/build.xml pack-natives
-          ant -f extensions/gdx-bullet/jni/build.xml pack-natives
+          ./gradlew publish -Ppackaging
+
+      - name: Import GPG key
+        if: (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release)) && github.repository_owner == 'libgdx'
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@1c6a9e9d3594f2d743f1b1dd7669ab0dfdffa922
+        with:
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Release build deploy
+        if: (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release)) && github.repository_owner == 'libgdx'
+        run: |
+          export GRADLE_OPTS="-Xmx8g"
+          ./gradlew publish -Ppackaging -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
+
+
+
+      - name: Build Runnables
+        run: |
+          ./gradlew buildRunnables build
+
+      - name: Upload Runnable artifacts to S3
+        if: env.AWS_ACCESS_KEY_ID != null
+        run: |
+          aws s3 cp ./extensions/gdx-tools/build/libs/ s3://libgdx-nightlies/libgdx-runnables/ --recursive
+
 
       - name: Pack natives
         run: |
@@ -258,88 +308,3 @@ jobs:
         if: env.AWS_ACCESS_KEY_ID != null
         run: |
           aws s3 cp natives.zip s3://libgdx-nightlies/libgdx-nightlies/natives.zip
-
-  publish:
-    runs-on: ubuntu-22.04
-    needs: pack-natives
-    env:
-      ORG_GRADLE_PROJECT_MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-      ORG_GRADLE_PROJECT_MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          submodules: 'recursive'
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Download natives artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: natives.zip
-
-      - name: Unpack natives
-        run: |
-          unzip -o natives.zip
-
-      - name: Fetch external natives
-        run: |
-          ./gradlew fetchExternalNatives
-
-      - name: Snapshot build deploy
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'libgdx'
-        run: |
-          ./gradlew build publish
-
-      - name: Import GPG key
-        if: (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release)) && github.repository_owner == 'libgdx'
-        id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@1c6a9e9d3594f2d743f1b1dd7669ab0dfdffa922
-        with:
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: Release build deploy
-        if: (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release)) && github.repository_owner == 'libgdx'
-        run: |
-          export GRADLE_OPTS="-Xmx8g"
-          ./gradlew build publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
-
-  build-and-upload-runnables:
-    runs-on: ubuntu-22.04
-    needs: pack-natives
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_EC2_METADATA_DISABLED: true
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          submodules: 'recursive'
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Build Runnables
-        run: |
-          ./gradlew clean fetchNatives
-          ./gradlew buildRunnables build
-
-      - name: Upload artifacts to S3
-        if: env.AWS_ACCESS_KEY_ID != null
-        run: |
-          aws s3 cp ./extensions/gdx-tools/build/libs/ s3://libgdx-nightlies/libgdx-runnables/ --recursive
