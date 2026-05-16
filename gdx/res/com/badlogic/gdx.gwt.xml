@@ -153,6 +153,7 @@
 		
 	<!-- graphics/g3d/decals -->
 		<include name="graphics/g3d/decals/CameraGroupStrategy.java"/>
+		<include name="graphics/g3d/decals/AlphaTestGroupStrategy.java"/>
 		<include name="graphics/g3d/decals/Decal.java"/>
 		<include name="graphics/g3d/decals/DecalBatch.java"/>
 		<include name="graphics/g3d/decals/DecalMaterial.java"/>
