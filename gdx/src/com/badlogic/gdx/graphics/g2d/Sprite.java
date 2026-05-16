@@ -612,6 +612,20 @@ public class Sprite extends TextureRegion {
 		return height;
 	}
 
+	/** @return the width of the packed region of the sprite. For sprites created from a {@link TextureAtlas} with whitespace
+	 *         stripping, this is the width of the region without the stripped whitespace, as opposed to {@link #getWidth()} which
+	 *         returns the width of the original image. */
+	public float getPackedWidth () {
+		return width;
+	}
+
+	/** @return the height of the packed region of the sprite. For sprites created from a {@link TextureAtlas} with whitespace
+	 *         stripping, this is the height of the region without the stripped whitespace, as opposed to {@link #getHeight()} which
+	 *         returns the height of the original image. */
+	public float getPackedHeight () {
+		return height;
+	}
+
 	/** The origin influences {@link #setPosition(float, float)}, {@link #setRotation(float)} and the expansion direction of
 	 * scaling {@link #setScale(float, float)} */
 	public float getOriginX () {
