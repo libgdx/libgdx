@@ -788,10 +788,10 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		String source = element.getString("source", null);
 		if (source != null) {
 			FileHandle tsj = getRelativeFileHandle(tmjFile, source);
-            if (tilesetPathsToGIDs != null) {
-                int firstgid = element.getInt("firstgid", 1);
-                tilesetPathsToGIDs.put(tsj.path(), firstgid);
-            }
+			if (tilesetPathsToGIDs != null) {
+				int firstgid = element.getInt("firstgid", 1);
+				tilesetPathsToGIDs.put(tsj.path(), firstgid);
+			}
 			try {
 				JsonValue resolved = json.parse(tsj);
 				resolved.addChild("source", new JsonValue(source));

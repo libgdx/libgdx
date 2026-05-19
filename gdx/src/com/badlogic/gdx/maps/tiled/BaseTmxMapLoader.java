@@ -832,10 +832,10 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		String source = tilesetElement.getAttribute("source", null);
 		if (source != null) {
 			FileHandle tsx = getRelativeFileHandle(tmxFile, source);
-            if (tilesetPathsToGIDs != null) {
-                int firstgid = tilesetElement.getIntAttribute("firstgid", 1);
-                tilesetPathsToGIDs.put(tsx.path(), firstgid);
-            }
+			if (tilesetPathsToGIDs != null) {
+				int firstgid = tilesetElement.getIntAttribute("firstgid", 1);
+				tilesetPathsToGIDs.put(tsx.path(), firstgid);
+			}
 			try {
 				Element tsxElement = xml.parse(tsx);
 				tsxElement.setAttribute("source", source);
