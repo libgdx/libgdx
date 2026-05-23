@@ -1,3 +1,5 @@
+[1.14.2]
+
 [1.14.1]
 - [BREAKING CHANGE] iOS: Removed IOSAudio#willTerminate to be replaced by new Audio#dispose.
 - [BREAKING CHANGE] API: The `open/closeTextInputField` API has undergone a bigger rewrite:
