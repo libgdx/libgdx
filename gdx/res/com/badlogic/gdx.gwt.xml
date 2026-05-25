@@ -377,6 +377,7 @@
 		<include name="math/RandomXS128.java"/>
 		<include name="math/Rectangle.java"/>
 		<include name="math/Shape2D.java"/>
+		<include name="math/ShewchukExactPredicates.java"/>
 		<include name="math/Vector.java"/>
 		<include name="math/Vector2.java"/>
 		<include name="math/Vector3.java"/>		
