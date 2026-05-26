@@ -10,15 +10,8 @@ package com.badlogic.gdx.math;
  *
  * <p>
  * <strong>Not thread-safe.</strong> Each instance lazily allocates and reuses internal scratch buffers; once every predicate has
- * been exercised an instance retains roughly 284&nbsp;KiB of them (dominated by insphere). Use the shared {@link #instance} from
- * a single thread, or give each thread its own instance. */
+ * been exercised an instance retains roughly 284&nbsp;KiB of them (dominated by insphere). */
 public class ShewchukExactPredicates {
-
-	/** Shared instance for single-threaded use; not thread-safe (see class doc). */
-	public static final ShewchukExactPredicates instance = new ShewchukExactPredicates();
-
-	public ShewchukExactPredicates () {
-	}
 
 	// ---- constants --------------------------------------------------------
 
