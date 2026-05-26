@@ -36,7 +36,7 @@ public abstract class DelaunayTriangulatorTest {
 	private static final float MAX_X = MAX;
 	private static final float MAX_Y = MAX;
 	private static final int NUM_OF_TESTS = 1000;
-	private static final RandomXS128 rnd = new RandomXS128();
+	private static final RandomXS128 rnd = new RandomXS128(123456789);
 
 	private static double nextBigRadius () {
 		final float min = MAX / 100;
