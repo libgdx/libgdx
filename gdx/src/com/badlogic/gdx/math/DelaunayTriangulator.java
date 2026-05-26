@@ -179,15 +179,15 @@ public class DelaunayTriangulator {
 		boolean s1 = p1 >= end, s2 = p2 >= end, s3 = p3 >= end;
 		int superCount = (s1 ? 1 : 0) + (s2 ? 1 : 0) + (s3 ? 1 : 0);
 
-		// No ghost-verticies -> normal circumcircle calc
+		// No ghost-vertices -> normal circumcircle calc
 		if (superCount == 0) {
 			return circumCircleReal(xp, yp, points[p1], points[p1 + 1], points[p2], points[p2 + 1], points[p3], points[p3 + 1]);
 		}
 
-		// All ghost-verticies -> trivially inside
+		// All ghost-vertices -> trivially inside
 		if (superCount == 3) return INSIDE;
 
-		// One ghost-verticies -> form half-space of both real verticies and check, if p is on the same side as ghost verticie
+		// One ghost-vertices -> form half-space of both real vertices and check, if p is on the same side as ghost vertex
 		if (superCount == 1) {
 			int superIdx, realA, realB;
 			if (s1) {
@@ -210,7 +210,7 @@ public class DelaunayTriangulator {
 			// Exact-sign orientation of p against the line (a, b): sign(orient) == sign(cross(b - a, p - a)).
 			double orient = predicates.orient2d(ax, ay, bx, by, xp, yp);
 
-			// Get direction vector of ghost verticie
+			// Get direction vector of ghost vertex
 			double dx, dy;
 			int kind = superIdx - end; // 0 = v_L, 2 = v_R, 4 = v_T
 			if (kind == 0) { // v_L
@@ -251,7 +251,7 @@ public class DelaunayTriangulator {
 			return (orient < 0) == (factor < 0) ? INSIDE : INCOMPLETE;
 		}
 
-		// Two ghost verticies -> form half-space of both ghost verticies and check, if p is between real vert. and the half-space
+		// Two ghost vertices -> form half-space of both ghost vertices and check, if p is between real vert. and the half-space
 		// Could also be written as a same-side-as-ghost half-plane test like the 1-ghost case (constructing a line through q with
 		// direction from the ghost-pair limit),
 		// but the direct limit forms below are simpler and avoid a cross product.
