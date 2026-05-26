@@ -19,7 +19,8 @@ package com.badlogic.gdx.math;
 import com.badlogic.gdx.utils.*;
 
 /** Delaunay triangulation. Adapted from Paul Bourke's triangulate: http://paulbourke.net/papers/triangulate/
- * @author Nathan Sweet */
+ * @author Nathan Sweet
+ * @author Berstanio */
 public class DelaunayTriangulator {
 	static private final int INSIDE = 0;
 	static private final int COMPLETE = 1;
