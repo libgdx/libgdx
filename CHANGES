@@ -1,4 +1,5 @@
 [1.14.2]
+- Fixed stuck over state when ClickListener is cancelled.
 
 [1.14.1]
 - [BREAKING CHANGE] iOS: Removed IOSAudio#willTerminate to be replaced by new Audio#dispose.
