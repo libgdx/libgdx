@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,6 +23,7 @@ import static org.junit.Assert.assertTrue;
  * their own expected signs. */
 public class ShewchukExactPredicatesTest {
 
+	private final Random rnd = new Random(1234);
 	private final ShewchukExactPredicates p = new ShewchukExactPredicates();
 
 	private static void assertNegative (double v, String msg) {
@@ -175,9 +177,9 @@ public class ShewchukExactPredicatesTest {
 
 		double tol = 5.0e-14;
 		for (int i = 0; i < 1000; i++) {
-			double ax = 0.5 + tol * Math.random();
-			double ay = 0.5 + tol * Math.random();
-			double az = 0.5 + tol * Math.random();
+			double ax = 0.5 + tol * rnd.nextDouble();
+			double ay = 0.5 + tol * rnd.nextDouble();
+			double az = 0.5 + tol * rnd.nextDouble();
 			double bb = 12, cc = 24, dd = 48;
 			assertZero(p.orient3d(bb, bb, bb, cc, cc, cc, dd, dd, dd, ax, ay, az), "degenerate");
 			assertZero(p.orient3d(cc, cc, cc, dd, dd, dd, ax, ay, az, bb, bb, bb), "degenerate");
