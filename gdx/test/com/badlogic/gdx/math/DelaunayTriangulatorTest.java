@@ -196,7 +196,23 @@ public abstract class DelaunayTriangulatorTest {
 		ShortArray triangles = new DelaunayTriangulator().computeTriangles(polygon, false);
 		assertTrue("full triangles", triangles.size % 3 == 0);
 		assertDelaunay(polygon, triangles);
+		assertClockwise(polygon, triangles);
 		assertTilesConvexHull(polygon, triangles);
+	}
+
+	public static void assertClockwise (float[] points, ShortArray triangles) {
+		ShewchukExactPredicates pred = new ShewchukExactPredicates();
+		for (int t = 0; t < triangles.size; t += 3) {
+			int a = triangles.get(t);
+			int b = triangles.get(t + 1);
+			int c = triangles.get(t + 2);
+
+			double ax = points[2 * a], ay = points[2 * a + 1];
+			double bx = points[2 * b], by = points[2 * b + 1];
+			double cx = points[2 * c], cy = points[2 * c + 1];
+			double o = pred.orient2d(ax, ay, bx, by, cx, cy);
+			assertTrue("triangle " + a + "," + b + "," + c + " is not clockwise", o < 0);
+		}
 	}
 
 	/** Checks that every input vertex appears in some triangle, no triangle is degenerate, and the empty-circumcircle Delaunay

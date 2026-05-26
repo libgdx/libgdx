@@ -76,10 +76,10 @@ public class DelaunayTriangulator {
 		complete.ensureCapacity(count);
 
 		// Add the super triangle. Vertices are encoded by index only, their coordinates are conceptually at infinity:
-		// end + 0 -> v_L (x = -inf), end + 2 -> v_R (x = +inf), end + 4 -> v_T (y = +inf).
+		// end + 0 -> v_L (x = -inf), end + 2 -> v_R (x = +inf), end + 4 -> v_T (y = +inf). super triangle needs to be CW
 		triangles.add(end);
-		triangles.add(end + 2);
 		triangles.add(end + 4);
+		triangles.add(end + 2);
 		complete.add(false);
 
 		// Include each point one at a time into the existing mesh.
@@ -290,7 +290,7 @@ public class DelaunayTriangulator {
 
 	/** In-circle test for a triangle of three real vertices. */
 	private int circumCircleReal (double xp, double yp, double x1, double y1, double x2, double y2, double x3, double y3) {
-		if (predicates.incircle(x1, y1, x2, y2, x3, y3, xp, yp) > 0) return INSIDE;
+		if (predicates.incircle(x1, y1, x2, y2, x3, y3, xp, yp) < 0) return INSIDE;
 
 		// Not inside. Sweep-line shortcut: the triangle is done once the sweep x passes the rightmost
 		// point of its circumcircle. Only need the circumcentre x and squared radius for that, computed
