@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,7 +40,7 @@ import com.badlogic.gdx.utils.*;
 /** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class.
  * In the {@link Activity#onCreate(Bundle)} method call the {@link #initialize(ApplicationListener)} method specifying the
  * configuration for the GLSurfaceView.
- * 
+ *
  * @author mzechner */
 public class AndroidApplication extends Activity implements AndroidApplicationBase {
 
@@ -68,7 +68,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
-	 * 
+	 *
 	 * @param listener the {@link ApplicationListener} implementing the program logic **/
 	public void initialize (ApplicationListener listener) {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -78,7 +78,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. You can configure other aspects of the application with the rest of the fields in the
 	 * {@link AndroidApplicationConfiguration} instance.
-	 * 
+	 *
 	 * @param listener the {@link ApplicationListener} implementing the program logic
 	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
 	 *           etc.). */
@@ -90,7 +90,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	 * input, render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
 	 * <p>
 	 * Note: you have to add the returned view to your layout!
-	 * 
+	 *
 	 * @param listener the {@link ApplicationListener} implementing the program logic
 	 * @return the GLSurfaceView of the application */
 	public View initializeForView (ApplicationListener listener) {
@@ -103,7 +103,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	 * {@link AndroidApplicationConfiguration} instance.
 	 * <p>
 	 * Note: you have to add the returned view to your layout!
-	 * 
+	 *
 	 * @param listener the {@link ApplicationListener} implementing the program logic
 	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
 	 *           etc.).
@@ -119,8 +119,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 		config.nativeLoader.load();
 		setApplicationLogger(new AndroidApplicationLogger());
-		graphics = new AndroidGraphics(this, config,
-			config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
+		graphics = createGraphics(config);
 		input = createInput(this, this, graphics.view, config);
 		audio = createAudio(this, config);
 		files = createFiles();
@@ -527,6 +526,11 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected AndroidFiles createFiles () {
 		this.getFilesDir(); // workaround for Android bug #10515463
 		return new DefaultAndroidFiles(this.getAssets(), this, true);
+	}
+
+	protected AndroidGraphics createGraphics (AndroidApplicationConfiguration config) {
+		return new AndroidGraphics(this, config,
+			config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
 	}
 
 	public KeyboardHeightProvider getKeyboardHeightProvider () {
