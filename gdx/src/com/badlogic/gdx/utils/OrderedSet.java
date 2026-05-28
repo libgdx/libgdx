@@ -81,13 +81,11 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		return true;
 	}
 
-	public boolean addAll (OrderedSet<T> set) {
+	public void addAll (OrderedSet<T> set) {
 		ensureCapacity(set.size);
-		int oldSize = size;
 		T[] keys = set.items.items;
 		for (int i = 0, n = set.items.size; i < n; i++)
 			add(keys[i]);
-		return oldSize != size;
 	}
 
 	public void ensureCapacity (int additionalCapacity) {
