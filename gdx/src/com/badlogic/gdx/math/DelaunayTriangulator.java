@@ -29,9 +29,9 @@ public class DelaunayTriangulator {
 	private final IntArray quicksortStack = new IntArray();
 	private float[] sortedPoints;
 	private final ShortArray triangles = new ShortArray(false, 16);
+	private final ShortArray completedTriangles = new ShortArray(false, 16);
 	private final ShortArray originalIndices = new ShortArray(false, 0);
 	private final IntArray edges = new IntArray();
-	private final BooleanArray complete = new BooleanArray(false, 16);
 	private final Vector2 centroid = new Vector2();
 	private final ShewchukExactPredicates predicates = new ShewchukExactPredicates();
 
@@ -57,7 +57,11 @@ public class DelaunayTriangulator {
 		ShortArray triangles = this.triangles;
 		triangles.clear();
 		if (count < 6) return triangles;
-		triangles.ensureCapacity(count);
+		int maxMeshSize = (count + 1) * 3;
+		triangles.ensureCapacity(maxMeshSize);
+		ShortArray completedTriangles = this.completedTriangles;
+		completedTriangles.clear();
+		completedTriangles.ensureCapacity(maxMeshSize);
 
 		if (!sorted) {
 			if (sortedPoints == null || sortedPoints.length < count) sortedPoints = new float[count];
@@ -70,18 +74,13 @@ public class DelaunayTriangulator {
 		int end = offset + count;
 
 		IntArray edges = this.edges;
-		edges.ensureCapacity(count / 2);
-
-		BooleanArray complete = this.complete;
-		complete.clear();
-		complete.ensureCapacity(count);
+		edges.ensureCapacity(count);
 
 		// Add the super triangle. Vertices are encoded by index only, their coordinates are conceptually at infinity:
 		// end + 0 -> v_L (x = -inf), end + 2 -> v_R (x = +inf), end + 4 -> v_T (y = +inf). super triangle needs to be CW
 		triangles.add(end);
 		triangles.add(end + 4);
 		triangles.add(end + 2);
-		complete.add(false);
 
 		// Include each point one at a time into the existing mesh.
 		for (int pointIndex = offset; pointIndex < end; pointIndex += 2) {
@@ -89,23 +88,22 @@ public class DelaunayTriangulator {
 
 			// If x,y lies inside the circumcircle of a triangle, the edges are stored and the triangle removed.
 			short[] trianglesArray = triangles.items;
-			boolean[] completeArray = complete.items;
 			for (int triangleIndex = triangles.size - 1; triangleIndex >= 0; triangleIndex -= 3) {
-				int completeIndex = triangleIndex / 3;
-				if (completeArray[completeIndex]) continue;
 				int p1 = trianglesArray[triangleIndex - 2];
 				int p2 = trianglesArray[triangleIndex - 1];
 				int p3 = trianglesArray[triangleIndex];
 				switch (circumCircle(points, end, x, y, p1, p2, p3)) {
 				case COMPLETE:
-					completeArray[completeIndex] = true;
+					completedTriangles.add(p1);
+					completedTriangles.add(p2);
+					completedTriangles.add(p3);
+					triangles.removeRange(triangleIndex - 2, triangleIndex);
 					break;
 				case INSIDE:
 					edges.add(p1, p2, p2, p3);
 					edges.add(p3, p1);
 
 					triangles.removeRange(triangleIndex - 2, triangleIndex);
-					complete.removeIndex(completeIndex);
 					break;
 				}
 			}
@@ -127,40 +125,46 @@ public class DelaunayTriangulator {
 
 				// Form new triangles for the current point. Edges are arranged in clockwise order.
 				triangles.add(p1);
-				triangles.add(edgesArray[i + 1]);
+				triangles.add(p2);
 				triangles.add(pointIndex);
-				complete.add(false);
 			}
 			edges.clear();
 		}
 
-		// Remove triangles with super triangle vertices.
 		short[] trianglesArray = triangles.items;
-		for (int i = triangles.size - 1; i >= 0; i -= 3) {
-			if (trianglesArray[i] >= end || trianglesArray[i - 1] >= end || trianglesArray[i - 2] >= end) {
-				triangles.removeIndex(i);
-				triangles.removeIndex(i - 1);
-				triangles.removeIndex(i - 2);
-			}
+		// Copy remaining triangles that are not super. Per construction does completedTriangles not contain any super vertices
+		for (int remaining = 0; remaining < triangles.size; remaining += 3) {
+			int p1 = trianglesArray[remaining];
+			int p2 = trianglesArray[remaining + 1];
+			int p3 = trianglesArray[remaining + 2];
+
+			if (p1 >= end || p2 >= end || p3 >= end)
+				continue;
+
+			completedTriangles.add(p1);
+			completedTriangles.add(p2);
+			completedTriangles.add(p3);
 		}
+
+		short[] completedTrianglesArray = completedTriangles.items;
 
 		// Convert sorted to unsorted indices.
 		if (!sorted) {
 			short[] originalIndicesArray = originalIndices.items;
-			for (int i = 0, n = triangles.size; i < n; i++)
-				trianglesArray[i] = (short)(originalIndicesArray[trianglesArray[i] / 2] * 2);
+			for (int i = 0, n = completedTriangles.size; i < n; i++)
+				completedTrianglesArray[i] = (short)(originalIndicesArray[completedTrianglesArray[i] / 2] * 2);
 		}
 
 		// Adjust triangles to start from zero and count by 1, not by vertex x,y coordinate pairs.
 		if (offset == 0) {
-			for (int i = 0, n = triangles.size; i < n; i++)
-				trianglesArray[i] = (short)(trianglesArray[i] / 2);
+			for (int i = 0, n = completedTriangles.size; i < n; i++)
+				completedTrianglesArray[i] = (short)(completedTrianglesArray[i] / 2);
 		} else {
-			for (int i = 0, n = triangles.size; i < n; i++)
-				trianglesArray[i] = (short)((trianglesArray[i] - offset) / 2);
+			for (int i = 0, n = completedTriangles.size; i < n; i++)
+				completedTrianglesArray[i] = (short)((completedTrianglesArray[i] - offset) / 2);
 		}
 
-		return triangles;
+		return completedTriangles;
 	}
 
 	/** Returns INSIDE if point xp,yp is inside the circumcircle of the triangle (p1,p2,p3). Returns COMPLETE if xp is to the right
