@@ -138,8 +138,7 @@ public class DelaunayTriangulator {
 			int p2 = trianglesArray[remaining + 1];
 			int p3 = trianglesArray[remaining + 2];
 
-			if (p1 >= end || p2 >= end || p3 >= end)
-				continue;
+			if (p1 >= end || p2 >= end || p3 >= end) continue;
 
 			completedTriangles.add(p1);
 			completedTriangles.add(p2);
