@@ -29,6 +29,30 @@
 - API Addition: Added Justify text options to GlyphLayout (#7609)
 - GeometryUtils fixes and improvements.
 - API Addition: IdentitySet
+- API Addition: Add option to load a standalone tileset file
+- API Fix: Fix NPE in AndroidDaydream#onConfigurationChanged
+- API Change: Use IdentityMap for skin resources
+- API Change: Enforce cursor/selectionStart invariants on text change in TextField
+- API Fix: Calculate cachedOrientation on startup
+- API Fix: Don't set Android LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES cutout mode on Android 35+
+- API Fix: Fix NPE in AndroidGraphics#updateSafeAreaInsets
+- API Fix: Fix TextField and TextArea cursor drift and unreachable logic on event cancellation
+- API Fix: Fix TextField and TextArea undo do not fire ChangeEvent
+- API Addition: Add Justify text option to Label
+- API Fix: Prevent delta time from being negative
+- API Fix: Json can't read back CharArray in some cases.
+- API Change: Make some ModelBuilder-related fields protected
+- API Addition: Introduce separate Lwjgl3ApplicationConfiguration#setRGBABits, #setDepthBits, #setStencilBits and #setSamples
+- API Fix: Fix detection of running in Angle gles compat for glMipMapGeneration
+- API Fix: Properly Update XmlReader.Element's parent field when element is added/removed
+- API Fix: Fix NinePatch created from flipped TextureAtlas
+- API Fix: Fix nested class property defaults loading with Tiled maps
+- API Addition: Added soundId support for AsynchronousSound
+- API Fix: Fix collider bounds check in Octree
+- API Fix: Fix ANR/crash in AndroidGraphics#destroy() due to infinite wait()
+- API Change: Add return values to InputProcessor#removeProcessor
+- API Fix: Make PoolManager compatible with r8 full mode
+- A couple small javadoc improvements
 
 [1.14.0]
 - [BREAKING CHANGE] API: Pools changes in 1.13.5 have been partially reverted. Pools#get/Pools#obtain method return to requiring a Class parameter. Reflection is avoided by using pre-populated Pools for libgdx classes. See https://github.com/libgdx/libgdx/pull/7648 and https://github.com/libgdx/libgdx/pull/7678
