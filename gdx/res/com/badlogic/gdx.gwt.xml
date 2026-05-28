@@ -320,6 +320,7 @@
 		<include name="maps/tiled/BaseTmjMapLoader.java"/>
 		<include name="maps/tiled/TideMapLoader.java"/>
 		<include name="maps/tiled/TiledMap.java"/>
+		<include name="maps/tiled/TiledMapLoader.java"/>
 		<include name="maps/tiled/TiledMapRenderer.java"/>
 		<include name="maps/tiled/TiledMapTile.java"/>
 		<include name="maps/tiled/TiledMapTileLayer.java"/>
@@ -437,6 +438,7 @@
 		<include name="utils/GdxRuntimeException.java"/>
 		<include name="utils/I18NBundle.java"/>
 		<include name="utils/IdentityMap.java"/>
+		<include name="utils/IdentitySet.java"/>
 		<include name="utils/IntArray.java"/>
 		<include name="utils/IntFloatMap.java"/>
 		<include name="utils/IntIntMap.java"/>
@@ -448,11 +450,13 @@
 		<include name="utils/JsonWriter.java"/>
 		<include name="utils/JsonSkimmer.java"/>
 		<include name="utils/JsonString.java"/>
+		<include name="utils/Justify.java"/>
 		<include name="utils/LittleEndianInputStream.java"/>
 		<include name="utils/Logger.java"/>
 		<include name="utils/LongArray.java"/>
 		<include name="utils/LongMap.java"/>
 		<include name="utils/LongQueue.java"/>
+		<include name="utils/LongSet.java"/>
 		<include name="utils/NumberUtils.java"/> <!-- Emulated -->
 		<include name="utils/ObjectFloatMap.java"/>
 		<include name="utils/ObjectIntMap.java"/>
@@ -466,6 +470,7 @@
 		<include name="utils/PerformanceCounters.java"/>
 		<include name="utils/Pool.java"/>
 		<include name="utils/PooledLinkedList.java"/>
+		<include name="utils/PoolManager.java"/>
 		<include name="utils/Pools.java"/>
 		<include name="utils/Predicate.java"/>
 		<include name="utils/PropertiesUtils.java"/>
@@ -490,7 +495,7 @@
 		<include name="utils/TimeUtils.java"/> <!-- Emulated: nanoTime() -->
 		<include name="utils/TimSort.java"/>
 		<include name="utils/UBJsonReader.java"/>
-		<include name="utils/UBJsonWriter.java"/>		
+		<include name="utils/UBJsonWriter.java"/>
 		<include name="utils/XmlReader.java"/>
 		<include name="utils/XmlWriter.java"/>
 

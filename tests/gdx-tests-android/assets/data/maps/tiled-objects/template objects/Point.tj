@@ -1,0 +1,34 @@
+{ "object":
+    {
+     "height":0,
+     "id":52,
+     "name":"",
+     "point":true,
+     "properties":[
+            {
+             "name":"BoolProp",
+             "type":"bool",
+             "value":true
+            }, 
+            {
+             "name":"ColorProp",
+             "type":"color",
+             "value":"#ffff0000"
+            }, 
+            {
+             "name":"IntProp",
+             "type":"int",
+             "value":86
+            }, 
+            {
+             "name":"StringProp",
+             "type":"string",
+             "value":"Template Default"
+            }],
+     "rotation":0,
+     "type":"",
+     "visible":true,
+     "width":0
+    },
+ "type":"template"
+}

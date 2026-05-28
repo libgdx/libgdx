@@ -89,6 +89,7 @@ public class TiledMapPropertiesTest extends GdxTest {
 		verifyProperty("objInt", 42, objProps.get("objInt", Integer.class));
 		verifyProperty("objObj", mapObj, objProps.get("objObj", MapObject.class));
 		verifyProperty("objStr", "someTxt", objProps.get("objStr", String.class));
+
 		// verify class property
 		MapProperties expectedProps = new MapProperties();
 		expectedProps.put("classInt", 43);
@@ -98,6 +99,7 @@ public class TiledMapPropertiesTest extends GdxTest {
 		expectedProps.put("classEnumStr", "STR2");
 		expectedProps.put("classColor", Color.GREEN); // default green color of class definition in project file
 		verifyProperty("objClass", expectedProps, objProps.get("objClass", MapProperties.class));
+
 		// verify nested class property
 		expectedProps = new MapProperties();
 		expectedProps.put("classInt", 45);
@@ -111,6 +113,7 @@ public class TiledMapPropertiesTest extends GdxTest {
 		nestedProps.put("classEnumStr", "STR2");
 		expectedProps.put("classClass", nestedProps);
 		verifyProperty("objClassNested", expectedProps, objProps.get("objClassNested", MapProperties.class));
+
 		// verify class default value loading
 		expectedProps = new MapProperties();
 		expectedProps.put("classStr", "defaultStr");
@@ -126,6 +129,7 @@ public class TiledMapPropertiesTest extends GdxTest {
 		nestedProps.put("classEnumStr", "STR2");
 		expectedProps.put("classClass", nestedProps);
 		verifyProperty("objClassNested", expectedProps, objProps.get("objClassDefaults", MapProperties.class));
+
 		// verify an object linked to a tile with a class
 		TiledMapTileMapObject tileMapObj = (TiledMapTileMapObject)tiledMap.getLayers().get("object layer").getObjects()
 			.get("Tile Object");
@@ -139,6 +143,7 @@ public class TiledMapPropertiesTest extends GdxTest {
 		expectedProps.put("classObj", null);
 		expectedProps.put("classStr", "");
 		verifyProperty("tileProps", expectedProps, tileProps);
+
 		// verify an object linked to a tile with a nested class
 		tileMapObj = (TiledMapTileMapObject)tiledMap.getLayers().get("object layer").getObjects().get("Tile Object Nested");
 		tile = tileMapObj.getTile();
@@ -155,6 +160,7 @@ public class TiledMapPropertiesTest extends GdxTest {
 		nestedProps.put("classStr", "");
 		expectedProps.put("classClass", nestedProps);
 		verifyProperty("tilePropsNested", expectedProps, tileProps);
+
 		// verify an object with a class
 		mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Test Object 2");
 		objProps = mapObj.getProperties();
@@ -165,6 +171,42 @@ public class TiledMapPropertiesTest extends GdxTest {
 		expectedProps.put("classInt", 2);
 		expectedProps.put("classObj", null);
 		expectedProps.put("classStr", "");
+		objProps.remove("x");
+		objProps.remove("y");
+		objProps.remove("id");
+		objProps.remove("width");
+		objProps.remove("height");
+		objProps.remove("rotation");
+		verifyProperty("classObjProps", expectedProps, objProps);
+
+		// verify an object with a project class that has another class property (=nested classes) but
+		// without overriding any values -> class default values should be loaded
+		mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Tile Object Nested (defaults only)");
+		objProps = mapObj.getProperties();
+		expectedProps = new MapProperties();
+		expectedProps.put("type", "testClassNested");
+		expectedProps.put("classInt", 0);
+		nestedProps = new MapProperties();
+		nestedProps.put("type", "testClass");
+		nestedProps.put("classColor", Color.GREEN);
+		nestedProps.put("classEnumStr", "STR2");
+		nestedProps.put("classInt", 2);
+		nestedProps.put("classObj", null);
+		nestedProps.put("classStr", "");
+		expectedProps.put("classClass", nestedProps);
+		objProps.remove("x");
+		objProps.remove("y");
+		objProps.remove("id");
+		objProps.remove("width");
+		objProps.remove("height");
+		objProps.remove("rotation");
+		verifyProperty("classObjProps", expectedProps, objProps);
+
+		// verify that class with just a string also works
+		mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Tile Object No Class");
+		objProps = mapObj.getProperties();
+		expectedProps = new MapProperties();
+		expectedProps.put("type", "NonExistingClass");
 		objProps.remove("x");
 		objProps.remove("y");
 		objProps.remove("id");

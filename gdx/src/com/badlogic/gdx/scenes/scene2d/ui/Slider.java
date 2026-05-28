@@ -27,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.utils.Pools;
 
 /** A slider is a horizontal indicator that allows a user to set a value. The slider has a range (min, max) and a stepping between
  * each value the slider represents.
@@ -82,9 +81,9 @@ public class Slider extends ProgressBar {
 				// The position is invalid when focus is cancelled
 				if (event.isTouchFocusCancel() || !calculatePositionAndValue(x, y)) {
 					// Fire an event on touchUp even if the value didn't change, so listeners can see when a drag ends via isDragging.
-					ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+					ChangeEvent changeEvent = POOLS.obtain(ChangeEvent.class);
 					fire(changeEvent);
-					Pools.free(changeEvent);
+					POOLS.free(changeEvent);
 				}
 			}
 

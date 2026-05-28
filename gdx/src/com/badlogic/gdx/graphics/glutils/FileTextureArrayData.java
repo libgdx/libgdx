@@ -43,6 +43,13 @@ public class FileTextureArrayData implements TextureArrayData {
 		}
 	}
 
+	public FileTextureArrayData (Pixmap.Format format, boolean useMipMaps, TextureData[] textureDatas) {
+		this.format = format;
+		this.useMipMaps = useMipMaps;
+		this.depth = textureDatas.length;
+		this.textureDatas = textureDatas;
+	}
+
 	@Override
 	public boolean isPrepared () {
 		return prepared;
@@ -53,7 +60,7 @@ public class FileTextureArrayData implements TextureArrayData {
 		int width = -1;
 		int height = -1;
 		for (TextureData data : textureDatas) {
-			data.prepare();
+			if (!data.isPrepared()) data.prepare();
 			if (width == -1) {
 				width = data.getWidth();
 				height = data.getHeight();

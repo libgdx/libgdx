@@ -26,10 +26,8 @@ package com.badlogic.gdx.utils;
  * Unordered sets and maps are not designed to provide especially fast iteration. Iteration is faster with OrderedSet and
  * OrderedMap.
  * <p>
- * This implementation uses linear probing with the backward shift algorithm for removal. Hashcodes are rehashed using Fibonacci
- * hashing, instead of the more common power-of-two mask, to better distribute poor hashCodes (see <a href=
- * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
- * Skarupke's blog post</a>). Linear probing continues to work even when all hashCodes collide, just more slowly.
+ * This implementation uses linear probing with the backward shift algorithm for removal. Linear probing continues to work even
+ * when all hashCodes collide, just more slowly.
  * @author Tommy Ettinger
  * @author Nathan Sweet */
 public class IdentityMap<K, V> extends ObjectMap<K, V> {
@@ -57,7 +55,7 @@ public class IdentityMap<K, V> extends ObjectMap<K, V> {
 	}
 
 	protected int place (K item) {
-		return (int)(System.identityHashCode(item) * 0x9E3779B97F4A7C15L >>> shift);
+		return System.identityHashCode(item) >>> shift;
 	}
 
 	int locateKey (K key) {

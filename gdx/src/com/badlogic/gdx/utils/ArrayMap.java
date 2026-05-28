@@ -417,6 +417,7 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	/** Reduces the size of the arrays to the specified size. If the arrays are already smaller than the specified size, no action
 	 * is taken. */
 	public void truncate (int newSize) {
+		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (size <= newSize) return;
 		for (int i = newSize; i < size; i++) {
 			keys[i] = null;

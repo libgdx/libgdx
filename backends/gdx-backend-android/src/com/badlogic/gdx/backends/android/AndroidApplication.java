@@ -179,8 +179,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		setLayoutInDisplayCutoutMode(this.renderUnderCutout);
 
-		// As per the docs, it might work unreliable < 23 https://developer.android.com/jetpack/androidx/releases/core#1.5.0-alpha02
-		// So, I guess since 23 is pretty rare we can use the old API for the users
+		// The docs say it should work below android 30, but it just doesn't
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			keyboardHeightProvider = new AndroidXKeyboardHeightProvider(this);
 		} else {
@@ -203,9 +202,16 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@TargetApi(Build.VERSION_CODES.P)
 	private void setLayoutInDisplayCutoutMode (boolean render) {
-		if (render && getVersion() >= Build.VERSION_CODES.P) {
-			WindowManager.LayoutParams lp = getWindow().getAttributes();
+		if (!render || Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+			return;
+		}
+		WindowManager.LayoutParams lp = getWindow().getAttributes();
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+			// Use SHORT_EDGES only for Android 9 (API 28) and 10 (API 29)
 			lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+		} else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+			// Use ALWAYS for Android 11 through 14 (it's already default on 15+ and not recommended to be set).
+			lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 		}
 	}
 

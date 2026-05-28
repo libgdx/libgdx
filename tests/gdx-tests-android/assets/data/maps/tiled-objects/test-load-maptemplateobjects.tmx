@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="20" height="45" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="57">
+ <tileset firstgid="1" source="templateTileset.tsx"/>
+ <objectgroup id="1" name="Objects">
+  <object id="33" template="template objects/Ellipse.tx" x="37.3376" y="242.902"/>
+  <object id="34" template="template objects/Ellipse.tx" x="37.34" y="472.673">
+   <properties>
+    <property name="BoolProp" type="bool" value="false"/>
+    <property name="Overridden" type="bool" value="true"/>
+    <property name="StringProp" value="Overridden String"/>
+   </properties>
+  </object>
+  <object id="35" template="template objects/Polyline.tx" x="248.559" y="283.985"/>
+  <object id="36" template="template objects/Polyline.tx" x="248.56" y="532.278">
+   <properties>
+    <property name="ColorProp" type="color" value="#ff0055ff"/>
+    <property name="Overridden" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="37" template="template objects/Rectangle.tx" x="450" y="462.391">
+   <properties>
+    <property name="NonTemplateProperty" value="Non Template Property"/>
+    <property name="Overridden" type="bool" value="true"/>
+    <property name="StringProp" value="Overridden String"/>
+   </properties>
+  </object>
+  <object id="38" template="template objects/Rectangle.tx" x="450" y="230.071"/>
+  <object id="39" template="template objects/Polygon.tx" x="450" y="703.135"/>
+  <object id="40" template="template objects/Polygon.tx" x="450" y="935.343">
+   <properties>
+    <property name="IntProp" type="int" value="10"/>
+    <property name="Overridden" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="42" template="template objects/Texture.tx" x="37.34" y="768.077"/>
+  <object id="43" template="template objects/Texture.tx" gid="1073741828" x="37.34" y="982.539">
+   <properties>
+    <property name="Overridden" type="bool" value="true"/>
+    <property name="StringProp" value="Image should be flipped on y"/>
+   </properties>
+  </object>
+  <object id="44" template="template objects/SmallBadlogic.tx" gid="1073741826" x="248.56" y="730.993"/>
+  <object id="45" template="template objects/SmallBadlogic.tx" x="246.56" y="943.906">
+   <properties>
+    <property name="ColorProp" type="color" value="#ffffff00"/>
+    <property name="IntProp" type="int" value="1000"/>
+    <property name="Overridden" type="bool" value="true"/>
+    <property name="StringProp" value="This is overridden"/>
+   </properties>
+  </object>
+  <object id="49" template="template objects/Point.tx" x="96" y="1152"/>
+  <object id="51" template="template objects/Point.tx" x="96" y="1312">
+   <properties>
+    <property name="BoolProp" type="bool" value="false"/>
+    <property name="IntProp" type="int" value="54321"/>
+    <property name="Overridden" type="bool" value="true"/>
+    <property name="StringProp" value="Overridden String"/>
+   </properties>
+  </object>
+  <object id="52" template="template objects/Text.tx" x="384" y="1152"/>
+  <object id="56" template="template objects/Text.tx" x="384" y="1312">
+   <properties>
+    <property name="BoolProp" type="bool" value="false"/>
+    <property name="ColorProp" type="color" value="#ffaa00ff"/>
+    <property name="IntProp" type="int" value="123"/>
+    <property name="Overridden" type="bool" value="true"/>
+    <property name="StringProp" value="Text Should Be Right Aligned and Blue"/>
+   </properties>
+   <text wrap="1" color="#0000ff" halign="right">Text Object</text>
+  </object>
+ </objectgroup>
+</map>

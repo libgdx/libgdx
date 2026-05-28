@@ -16,17 +16,17 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FlushablePool;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
-import com.badlogic.gdx.utils.Pools;
+
+import java.util.Arrays;
 
 /** Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the glyph
  * geometry each frame.
@@ -39,7 +39,12 @@ public class BitmapFontCache {
 	private final BitmapFont font;
 	private boolean integer;
 	private final Array<GlyphLayout> layouts = new Array(1);
-	private final Array<GlyphLayout> pooledLayouts = new Array(0);
+	private final FlushablePool<GlyphLayout> pooledLayouts = new FlushablePool<GlyphLayout>() {
+		@Override
+		protected GlyphLayout newObject () {
+			return new GlyphLayout();
+		}
+	};
 	private int glyphCount;
 	private float x, y;
 	private final Color color = new Color(1, 1, 1, 1);
@@ -303,8 +308,7 @@ public class BitmapFontCache {
 	public void clear () {
 		x = 0;
 		y = 0;
-		Pools.freeAll(pooledLayouts, true);
-		pooledLayouts.clear();
+		pooledLayouts.flush();
 		layouts.clear();
 		for (int i = 0, n = idx.length; i < n; i++) {
 			if (pageGlyphIndices != null) pageGlyphIndices[i].clear();
@@ -518,8 +522,7 @@ public class BitmapFontCache {
 	 * @return The glyph layout for the cached string (the layout's height is the distance from y to the baseline). */
 	public GlyphLayout addText (CharSequence str, float x, float y, int start, int end, float targetWidth, int halign,
 		boolean wrap, String truncate) {
-		GlyphLayout layout = Pools.obtain(GlyphLayout.class);
-		pooledLayouts.add(layout);
+		GlyphLayout layout = pooledLayouts.obtain();
 		layout.setText(font, str, start, end, color, targetWidth, halign, wrap, truncate);
 		addText(layout, x, y);
 		return layout;

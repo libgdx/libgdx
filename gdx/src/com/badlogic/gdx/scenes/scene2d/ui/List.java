@@ -35,7 +35,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
 
 /** A list (aka list box) displays textual items and highlights the currently selected item.
  * <p>
@@ -179,7 +178,7 @@ public class List<T> extends Widget implements Cullable, Styleable<List.ListStyl
 		itemHeight += selectedDrawable.getTopHeight() + selectedDrawable.getBottomHeight();
 
 		prefWidth = 0;
-		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
+		Pool<GlyphLayout> layoutPool = POOLS.getPool(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
 		for (int i = 0; i < items.size; i++) {
 			layout.setText(font, toString(items.get(i)));

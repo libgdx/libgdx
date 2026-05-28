@@ -41,14 +41,7 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Base64Coder;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.SerializationException;
-import com.badlogic.gdx.utils.StreamUtils;
-import com.badlogic.gdx.utils.XmlReader;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 import java.io.BufferedInputStream;
@@ -62,6 +55,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
+
+	protected ObjectMap<String, Element> templateCache;
 
 	public BaseTmxMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -92,6 +87,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		this.map = new TiledMap();
 		this.idToObject = new IntMap<>();
 		this.runOnEndOfLoadTiled = new Array<>();
+		this.templateCache = new ObjectMap<>();
 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
@@ -151,8 +147,11 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 
 		Array<Element> tilesets = root.getChildrenByName("tileset");
 		for (Element element : tilesets) {
-			loadTileSet(element, tmxFile, imageResolver);
+			TiledMapTileSet tileSet = loadTileSet(element, tmxFile, imageResolver);
 			root.removeChild(element);
+			if (tileSet != null) {
+				map.getTileSets().addTileSet(tileSet);
+			}
 		}
 
 		for (int i = 0, j = root.getChildCount(); i < j; i++) {
@@ -194,7 +193,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		} else if (name.equals("layer")) {
 			loadTileLayer(map, parentLayers, element);
 		} else if (name.equals("objectgroup")) {
-			loadObjectGroup(map, parentLayers, element);
+			loadObjectGroup(map, parentLayers, element, tmxFile);
 		} else if (name.equals("imagelayer")) {
 			loadImageLayer(map, parentLayers, element, tmxFile, imageResolver);
 		}
@@ -260,7 +259,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		}
 	}
 
-	protected void loadObjectGroup (TiledMap map, MapLayers parentLayers, Element element) {
+	protected void loadObjectGroup (TiledMap map, MapLayers parentLayers, Element element, FileHandle tmxFile) {
 		if (element.getName().equals("objectgroup")) {
 			MapLayer layer = new MapLayer();
 			loadBasicLayerInfo(layer, element);
@@ -270,9 +269,12 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			}
 
 			for (Element objectElement : element.getChildrenByName("object")) {
-				loadObject(map, layer, objectElement);
+				Element elementToLoad = objectElement;
+				if (objectElement.hasAttribute("template")) {
+					elementToLoad = resolveTemplateObject(map, layer, objectElement, tmxFile);
+				}
+				loadObject(map, layer, elementToLoad);
 			}
-
 			parentLayers.add(layer);
 		}
 	}
@@ -394,7 +396,6 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 					object = new PointMapObject(x, flipY ? y - height : y);
 				} else if ((child = element.getChildByName("text")) != null) {
 					TextMapObject textMapObject = new TextMapObject(x, flipY ? y - height : y, width, height, child.getText());
-					textMapObject.setRotation(child.getFloatAttribute("rotation", 0));
 					textMapObject.setFontFamily(child.getAttribute("fontfamily", ""));
 					textMapObject.setPixelSize(child.getIntAttribute("pixelSize", 16));
 					textMapObject.setHorizontalAlign(child.getAttribute("halign", "left"));
@@ -438,7 +439,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			object.setName(element.getAttribute("name", null));
 			String rotation = element.getAttribute("rotation", null);
 			if (rotation != null) {
-				object.getProperties().put("rotation", Float.parseFloat(rotation));
+				object.getProperties().put("rotation", Float.valueOf(rotation));
 			}
 			String type = element.getAttribute("type", null);
 			if (type != null) {
@@ -471,6 +472,129 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			objects.add(object);
 		}
 	}
+
+	/** Method specifically meant to help resolve template object properties and attributes found in objectgroups. Each template
+	 * object links to a specific .tx file. Attributes and properties found in the template are allowed to be overwritten by any
+	 * matching ones found in its parent element. Knowing this, we will merge the two elements together with the parent's props
+	 * taking precedence and then return the merged value.
+	 * @param map TileMap object
+	 * @param layer MapLayer object
+	 * @param mapElement Element which contains the single xml element we are currently parsing
+	 * @param tmxFile tmxFile
+	 * @return a merged Element representing the combined elements. */
+	protected Element resolveTemplateObject (TiledMap map, MapLayer layer, Element mapElement, FileHandle tmxFile) {
+		// Get template (.tx) file name from element
+		String txFileName = mapElement.getAttribute("template");
+		// check for cached tx element
+		Element templateElement = templateCache.get(txFileName);
+		if (templateElement == null) {
+			FileHandle templateFile = getRelativeFileHandle(tmxFile, txFileName);
+			// parse the .tx template file
+			try {
+				templateElement = xml.parse(templateFile);
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Error parsing template file: " + txFileName, e);
+			}
+			templateCache.put(txFileName, templateElement);
+		}
+		// Get the root object from the template file
+		Element templateObjectElement = templateElement.getChildByName("object");
+		// Merge the parent map element with its template element
+		return mergeParentElementWithTemplate(mapElement, templateObjectElement);
+	}
+
+	/** Returns a shallow copy of the source element we pass in. */
+	protected Element cloneElementShallow (Element sourceElement) {
+		// New element for our copy
+		Element copyElement = new Element(sourceElement.getName(), null);
+		// Get list of attributes from the source element
+		ObjectMap<String, String> attrs = sourceElement.getAttributes();
+		if (attrs != null) {
+			// Place those entries in our new copied element
+			for (ObjectMap.Entry<String, String> entry : attrs.entries()) {
+				copyElement.setAttribute(entry.key, entry.value);
+			}
+		}
+		// Checking for text
+		if (sourceElement.getText() != null) copyElement.setText(sourceElement.getText());
+		return copyElement;
+	}
+
+	/** Merges two <properties> tags from a parent and template. Matching properties from the parent will override the
+	 * template's. */
+	protected Element mergeProperties (Element parentProps, Element templateProps) {
+		if (templateProps == null) return parentProps;
+		if (parentProps == null) return templateProps;
+		// Create a new merged properties element which will contain a combination of parent and template properties.
+		Element merged = new Element("properties", null);
+		// Set properties from template
+		for (Element property : templateProps.getChildrenByName("property")) {
+			merged.addChild(cloneElementShallow(property));
+		}
+		// Set properties from the parent, matching ones from template will be overridden
+		for (Element property : parentProps.getChildrenByName("property")) {
+			String name = property.getAttribute("name", null);
+			// Find & remove a duplicate by name, if any
+			// Remove existing with same name (if any)
+			Element existing = null;
+			for (int i = 0; i < merged.getChildCount(); i++) {
+				Element child = merged.getChild(i);
+				if ("property".equals(child.getName()) && name.equals(child.getAttribute("name", null))) {
+					existing = child;
+					break;
+				}
+			}
+			if (existing != null) merged.removeChild(existing);
+			merged.addChild(cloneElementShallow(property));
+		}
+		return merged;
+	}
+
+	/** Recursively merges a “parent” (map) object element with its referenced template object element. Attributes and properties
+	 * found in the template are allowed to be overwritten by any matching ones found in its parent element. The returned element
+	 * is a new detached tree (parent = null) so it can be handed straight to the loadObject() method without issues. */
+	protected Element mergeParentElementWithTemplate (Element parent, Element template) {
+		if (template == null) return parent;
+		if (parent == null) return template;
+		// Create a new merged element which will contain a combination of parent and template attributes, properties etc...
+		Element merged = new Element(template.getName(), null);
+		// Set attributes from template
+		if (template.getAttributes() != null) {
+			for (ObjectMap.Entry<String, String> a : template.getAttributes().entries()) {
+				merged.setAttribute(a.key, a.value);
+			}
+		}
+		// Set attributes from the parent, matching ones from template will be overridden
+		if (parent.getAttributes() != null) {
+			for (ObjectMap.Entry<String, String> a : parent.getAttributes().entries()) {
+				merged.setAttribute(a.key, a.value);
+			}
+		}
+		// Specifically added for TextMapObjects since they are unique compared to other objects.
+		String txt = (parent.getText() != null && parent.getText().length() > 0) ? parent.getText() : template.getText();
+		if (txt != null) {
+			merged.setText(txt);
+		}
+		// Handle Child Elements
+		// Collect all child tag names that appear in either element
+		ObjectSet<String> tagNames = new ObjectSet<>();
+		for (int i = 0; i < template.getChildCount(); i++)
+			tagNames.add(template.getChild(i).getName());
+		for (int i = 0; i < parent.getChildCount(); i++)
+			tagNames.add(parent.getChild(i).getName());
+
+		for (String tag : tagNames) {
+			Element mapChild = parent.getChildByName(tag);
+			Element tmplChild = template.getChildByName(tag);
+
+			/** Look for properties tags so we can merge those as well. Recursive check if properties is not found. */
+			Element mergedChild = "properties".equals(tag) ? mergeProperties(mapChild, tmplChild)
+				: mergeParentElementWithTemplate(mapChild, tmplChild);
+			merged.addChild(mergedChild);
+		}
+		return merged;
+	}
+	/* * End of Tiled Template Loading Section * */
 
 	protected void loadProperties (final MapProperties properties, Element element) {
 		if (element == null) return;
@@ -614,96 +738,94 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return ids;
 	}
 
-	protected void loadTileSet (Element element, FileHandle tmxFile, ImageResolver imageResolver) {
-		if (element.getName().equals("tileset")) {
-			int firstgid = element.getIntAttribute("firstgid", 1);
-			String imageSource = "";
-			int imageWidth = 0;
-			int imageHeight = 0;
-			FileHandle image = null;
+	public TiledMapTileSet loadTileSet (Element tilesetElementRaw, FileHandle tmxFile, ImageResolver imageResolver) {
+		int firstgid = tilesetElementRaw.getIntAttribute("firstgid", 1);
+		Element tilesetElement = resolveTilesetElement(tilesetElementRaw, tmxFile);
 
-			String source = element.getAttribute("source", null);
-			if (source != null) {
-				FileHandle tsx = getRelativeFileHandle(tmxFile, source);
-				try {
-					element = xml.parse(tsx);
-					Element imageElement = element.getChildByName("image");
-					if (imageElement != null) {
-						imageSource = imageElement.getAttribute("source");
-						imageWidth = imageElement.getIntAttribute("width", 0);
-						imageHeight = imageElement.getIntAttribute("height", 0);
-						image = getRelativeFileHandle(tsx, imageSource);
-					}
-				} catch (SerializationException e) {
-					throw new GdxRuntimeException("Error parsing external tileset.");
-				}
-			} else {
-				Element imageElement = element.getChildByName("image");
-				if (imageElement != null) {
-					imageSource = imageElement.getAttribute("source");
-					imageWidth = imageElement.getIntAttribute("width", 0);
-					imageHeight = imageElement.getIntAttribute("height", 0);
-					image = getRelativeFileHandle(tmxFile, imageSource);
-				}
-			}
-			String name = element.get("name", null);
-			int tilewidth = element.getIntAttribute("tilewidth", 0);
-			int tileheight = element.getIntAttribute("tileheight", 0);
-			int spacing = element.getIntAttribute("spacing", 0);
-			int margin = element.getIntAttribute("margin", 0);
+		String name = tilesetElement.get("name", null);
+		int tilewidth = tilesetElement.getIntAttribute("tilewidth", 0);
+		int tileheight = tilesetElement.getIntAttribute("tileheight", 0);
+		int spacing = tilesetElement.getIntAttribute("spacing", 0);
+		int margin = tilesetElement.getIntAttribute("margin", 0);
 
-			Element offset = element.getChildByName("tileoffset");
-			int offsetX = 0;
-			int offsetY = 0;
-			if (offset != null) {
-				offsetX = offset.getIntAttribute("x", 0);
-				offsetY = offset.getIntAttribute("y", 0);
-			}
-			TiledMapTileSet tileSet = new TiledMapTileSet();
-
-			// TileSet
-			tileSet.setName(name);
-			final MapProperties tileSetProperties = tileSet.getProperties();
-			Element properties = element.getChildByName("properties");
-			if (properties != null) {
-				loadProperties(tileSetProperties, properties);
-			}
-			tileSetProperties.put("firstgid", firstgid);
-
-			// Tiles
-			Array<Element> tileElements = element.getChildrenByName("tile");
-
-			addStaticTiles(tmxFile, imageResolver, tileSet, element, tileElements, name, firstgid, tilewidth, tileheight, spacing,
-				margin, source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
-
-			Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
-
-			for (Element tileElement : tileElements) {
-				int localtid = tileElement.getIntAttribute("id", 0);
-				TiledMapTile tile = tileSet.getTile(firstgid + localtid);
-				if (tile != null) {
-					AnimatedTiledMapTile animatedTile = createAnimatedTile(tileSet, tile, tileElement, firstgid);
-					if (animatedTile != null) {
-						animatedTiles.add(animatedTile);
-						tile = animatedTile;
-					}
-					addTileProperties(tile, tileElement);
-					addTileObjectGroup(tile, tileElement);
-				}
-			}
-
-			// replace original static tiles by animated tiles
-			for (AnimatedTiledMapTile animatedTile : animatedTiles) {
-				tileSet.putTile(animatedTile.getId(), animatedTile);
-			}
-
-			map.getTileSets().addTileSet(tileSet);
+		int offsetX = 0, offsetY = 0;
+		Element offset = tilesetElement.getChildByName("tileoffset");
+		if (offset != null) {
+			offsetX = offset.getIntAttribute("x", 0);
+			offsetY = offset.getIntAttribute("y", 0);
 		}
+
+		FileHandle image = resolveTilesetImage(tilesetElement, tmxFile);
+		Element imageElement = tilesetElement.getChildByName("image");
+		String imageSource = (imageElement != null) ? imageElement.getAttribute("source", null) : null;
+		int imageWidth = (imageElement != null) ? imageElement.getIntAttribute("width", 0) : 0;
+		int imageHeight = (imageElement != null) ? imageElement.getIntAttribute("height", 0) : 0;
+
+		TiledMapTileSet tileSet = new TiledMapTileSet();
+		tileSet.setName(name);
+		tileSet.getProperties().put("firstgid", firstgid);
+
+		Element properties = tilesetElement.getChildByName("properties");
+		if (properties != null) {
+			loadProperties(tileSet.getProperties(), properties);
+		}
+
+		Array<Element> tileElements = tilesetElement.getChildrenByName("tile");
+
+		addStaticTiles(tmxFile, imageResolver, tileSet, tilesetElement, tileElements, name, firstgid, tilewidth, tileheight,
+			spacing, margin, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
+
+		Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
+		for (Element tileElement : tileElements) {
+			int localtid = tileElement.getIntAttribute("id", 0);
+			TiledMapTile tile = tileSet.getTile(firstgid + localtid);
+			if (tile != null) {
+				AnimatedTiledMapTile animatedTile = createAnimatedTile(tileSet, tile, tileElement, firstgid);
+				if (animatedTile != null) {
+					animatedTiles.add(animatedTile);
+					tile = animatedTile;
+				}
+				addTileProperties(tile, tileElement);
+				addTileObjectGroup(tile, tileElement);
+			}
+		}
+		for (AnimatedTiledMapTile animatedTile : animatedTiles) {
+			tileSet.putTile(animatedTile.getId(), animatedTile);
+		}
+
+		return tileSet;
+	}
+
+	private Element resolveTilesetElement (Element tilesetElement, FileHandle tmxFile) {
+		String source = tilesetElement.getAttribute("source", null);
+		if (source != null) {
+			FileHandle tsx = getRelativeFileHandle(tmxFile, source);
+			try {
+				Element tsxElement = xml.parse(tsx);
+				tsxElement.setAttribute("source", source);
+				return tsxElement;
+			} catch (SerializationException e) {
+				throw new GdxRuntimeException("Error parsing external tileset: " + source, e);
+			}
+		}
+		return tilesetElement;
+	}
+
+	private FileHandle resolveTilesetImage (Element tilesetElement, FileHandle tmxFile) {
+		Element imageElement = tilesetElement.getChildByName("image");
+		if (imageElement == null) return null;
+
+		String imageSource = imageElement.getAttribute("source");
+		String tilesetSource = tilesetElement.getAttribute("source", null);
+
+		FileHandle base = (tilesetSource != null) ? getRelativeFileHandle(tmxFile, tilesetSource) : tmxFile;
+
+		return getRelativeFileHandle(base, imageSource);
 	}
 
 	protected abstract void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileset,
 		Element element, Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing,
-		int margin, String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
+		int margin, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
 
 	protected void addTileProperties (TiledMapTile tile, Element tileElement) {
 		String terrain = tileElement.getAttribute("terrain", null);
@@ -742,7 +864,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		int firstgid) {
 		Element animationElement = tileElement.getChildByName("animation");
 		if (animationElement != null) {
-			Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
+			Array<StaticTiledMapTile> staticTiles = new Array<>();
 			IntArray intervals = new IntArray();
 			for (Element frameElement : animationElement.getChildrenByName("frame")) {
 				staticTiles.add((StaticTiledMapTile)tileSet.getTile(firstgid + frameElement.getIntAttribute("tileid")));

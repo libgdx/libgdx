@@ -25,16 +25,16 @@ import java.util.concurrent.TimeUnit;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** Allows asnynchronous execution of {@link AsyncTask} instances on a separate thread. Needs to be disposed via a call to
+/** Allows asynchronous execution of {@link AsyncTask} instances on a separate thread. Needs to be disposed via a call to
  * {@link #dispose()} when no longer used, in which case the executor waits for running tasks to finish. Scheduled but not yet
  * running tasks will not be executed.
  * @author badlogic */
 public class AsyncExecutor implements Disposable {
 	private final ExecutorService executor;
 
-	/** Creates a new AsynchExecutor with the name "AsynchExecutor-Thread". */
+	/** Creates a new AsyncExecutor with the name "AsyncExecutor-Thread". */
 	public AsyncExecutor (int maxConcurrent) {
-		this(maxConcurrent, "AsynchExecutor-Thread");
+		this(maxConcurrent, "AsyncExecutor-Thread");
 	}
 
 	/** Creates a new AsynchExecutor that allows maxConcurrent {@link Runnable} instances to run in parallel.

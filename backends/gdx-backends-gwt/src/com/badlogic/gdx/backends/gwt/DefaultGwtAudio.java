@@ -98,6 +98,11 @@ public class DefaultGwtAudio implements GwtAudio {
 		return outputDeviceLabelsIds.keys().toArray().toArray(String[]::new);
 	}
 
+	@Override
+	public void dispose () {
+
+	}
+
 	private native void getUserMedia () /*-{
 		navigator.mediaDevices.getUserMedia({ audio: true });
 	}-*/;
