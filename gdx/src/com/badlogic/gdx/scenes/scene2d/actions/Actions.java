@@ -22,17 +22,59 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.utils.DefaultPool.PoolSupplier;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.PoolManager;
 
 /** Static convenience methods for using pooled actions, intended for static import.
  * @author Nathan Sweet */
 public class Actions {
 
+	public static final PoolManager ACTION_POOLS = new PoolManager();
+
+	static {
+		registerAction(AddAction.class, AddAction::new);
+		registerAction(AddListenerAction.class, AddListenerAction::new);
+		registerAction(AfterAction.class, AfterAction::new);
+		registerAction(AlphaAction.class, AlphaAction::new);
+		registerAction(ColorAction.class, ColorAction::new);
+		registerAction(DelayAction.class, DelayAction::new);
+		registerAction(FloatAction.class, FloatAction::new);
+		registerAction(IntAction.class, IntAction::new);
+		registerAction(LayoutAction.class, LayoutAction::new);
+		registerAction(MoveByAction.class, MoveByAction::new);
+		registerAction(MoveToAction.class, MoveToAction::new);
+		registerAction(ParallelAction.class, ParallelAction::new);
+		registerAction(RemoveAction.class, RemoveAction::new);
+		registerAction(RemoveActorAction.class, RemoveActorAction::new);
+		registerAction(RemoveListenerAction.class, RemoveListenerAction::new);
+		registerAction(RepeatAction.class, RepeatAction::new);
+		registerAction(RotateByAction.class, RotateByAction::new);
+		registerAction(RotateToAction.class, RotateToAction::new);
+		registerAction(RunnableAction.class, RunnableAction::new);
+		registerAction(ScaleByAction.class, ScaleByAction::new);
+		registerAction(ScaleToAction.class, ScaleToAction::new);
+		registerAction(SequenceAction.class, SequenceAction::new);
+		registerAction(SizeByAction.class, SizeByAction::new);
+		registerAction(SizeToAction.class, SizeToAction::new);
+		registerAction(TimeScaleAction.class, TimeScaleAction::new);
+		registerAction(TouchableAction.class, TouchableAction::new);
+		registerAction(VisibleAction.class, VisibleAction::new);
+	}
+
+	static public <T extends Action> void registerAction (Class<T> poolClass, PoolSupplier<T> supplier) {
+		ACTION_POOLS.addPool(poolClass, supplier);
+	}
+
 	/** Returns a new or pooled action of the specified type. */
 	static public <T extends Action> T action (Class<T> type) {
-		Pool<T> pool = Pools.get(type);
+		Pool<T> pool = ACTION_POOLS.getPoolOrNull(type);
+		if (pool == null) {
+			throw new GdxRuntimeException(
+				"No action pool registered for type " + type + ". Register it with Actions#registerAction.");
+		}
 		T action = pool.obtain();
 		action.setPool(pool);
 		return action;

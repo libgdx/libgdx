@@ -22,7 +22,6 @@ import java.util.Map;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Pools;
 
 /** A builder for {@link HttpRequest}s.
  * 
@@ -50,7 +49,7 @@ public class HttpRequestBuilder {
 			throw new IllegalStateException("A new request has already been started. Call HttpRequestBuilder.build() first.");
 		}
 
-		httpRequest = Pools.obtain(HttpRequest.class);
+		httpRequest = new HttpRequest();
 		httpRequest.setTimeOut(defaultTimeout);
 		return this;
 	}

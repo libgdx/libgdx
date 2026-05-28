@@ -16,7 +16,7 @@ on:
 jobs:
 
   natives-ios:
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v2
         with:
@@ -34,11 +34,6 @@ jobs:
 
       - name: Build iOS natives
         run: |
-          # See https://github.com/actions/virtual-environments/issues/2557
-          sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
-          sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
-          sudo mv /Applications/Xcode_15.4.0.app /Applications/Xcode.app
-          sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
           ./gradlew jniGen jnigenBuildIOS
           ./backends/gdx-backend-robovm/build-objectal.sh
@@ -55,7 +50,7 @@ jobs:
           path: natives-ios.zip
 
   natives-macos:
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v2
         with:
@@ -73,11 +68,6 @@ jobs:
 
       - name: Build macOS natives
         run: |
-          # See https://github.com/actions/virtual-environments/issues/2557
-          sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
-          sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
-          sudo mv /Applications/Xcode_15.4.0.app /Applications/Xcode.app
-          sudo xcode-select -switch /Applications/Xcode.app
           /usr/bin/xcodebuild -version
           ./gradlew jniGen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64
 
