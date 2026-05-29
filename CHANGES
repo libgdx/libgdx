@@ -1,4 +1,5 @@
 [1.14.2]
+- [BREAKING CHANGE] addAll boolean -> void return type in ObjectSet, OrderedSet, IntSet to revert 1.14.1 breaking change. #7805
 - Fixed stuck over state when ClickListener is cancelled.
 
 [1.14.1]
