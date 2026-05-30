@@ -1,6 +1,6 @@
 [1.14.2]
 - Fixed stuck over state when ClickListener is cancelled.
-- Added ShewchukExactPredicates, for floating-error resistent orient2d/incircle/orient3d/insphere tests
+- Added ShewchukExactPredicates, for floating-error resistant orient2d/incircle/orient3d/insphere tests
 - Improved DelaunayTriangulator to handle all non-degenerate inputs using ShewchukExactPredicates
 - Improved performance of DelaunayTriangulator by ~2x on regular inputs
 
