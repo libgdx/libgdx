@@ -54,13 +54,13 @@ public class DelaunayTriangulator {
 	 *         for later calls to the same method. */
 	public ShortArray computeTriangles (float[] points, int offset, int count, boolean sorted) {
 		if (count > 32767) throw new IllegalArgumentException("count must be <= " + 32767);
-		ShortArray triangles = this.triangles;
-		triangles.clear();
-		if (count < 6) return triangles;
-		int maxMeshSize = (count + 1) * 3;
-		triangles.ensureCapacity(maxMeshSize);
 		ShortArray completedTriangles = this.completedTriangles;
 		completedTriangles.clear();
+		if (count < 6) return completedTriangles;
+		ShortArray triangles = this.triangles;
+		triangles.clear();
+		int maxMeshSize = (count + 1) * 3;
+		triangles.ensureCapacity(maxMeshSize);
 		completedTriangles.ensureCapacity(maxMeshSize);
 
 		if (!sorted) {
@@ -77,10 +77,8 @@ public class DelaunayTriangulator {
 		edges.ensureCapacity(count);
 
 		// Add the super triangle. Vertices are encoded by index only, their coordinates are conceptually at infinity:
-		// end + 0 -> v_L (x = -inf), end + 2 -> v_R (x = +inf), end + 4 -> v_T (y = +inf). super triangle needs to be CW
-		triangles.add(end);
-		triangles.add(end + 4);
-		triangles.add(end + 2);
+		// end + 0 -> v_L (x = -inf), end + 2 -> v_R (x = +inf), end + 4 -> v_T (y = +inf). The super triangle needs to be CW.
+		triangles.add((short)end, (short)(end + 4), (short)(end + 2));
 
 		// Include each point one at a time into the existing mesh.
 		for (int pointIndex = offset; pointIndex < end; pointIndex += 2) {
@@ -94,9 +92,7 @@ public class DelaunayTriangulator {
 				int p3 = trianglesArray[triangleIndex];
 				switch (circumCircle(points, end, x, y, p1, p2, p3)) {
 				case COMPLETE:
-					completedTriangles.add(p1);
-					completedTriangles.add(p2);
-					completedTriangles.add(p3);
+					completedTriangles.add((short)p1, (short)p2, (short)p3);
 					triangles.removeRange(triangleIndex - 2, triangleIndex);
 					break;
 				case INSIDE:
@@ -110,7 +106,7 @@ public class DelaunayTriangulator {
 
 			int[] edgesArray = edges.items;
 			for (int i = 0, n = edges.size; i < n; i += 2) {
-				// Skip multiple edges. If all triangles are anticlockwise then all interior edges are opposite pointing in direction.
+				// Skip multiple edges. If all triangles have the same winding then all interior edges point in opposite directions.
 				int p1 = edgesArray[i];
 				if (p1 == -1) continue;
 				int p2 = edgesArray[i + 1];
@@ -124,15 +120,13 @@ public class DelaunayTriangulator {
 				if (skip) continue;
 
 				// Form new triangles for the current point. Edges are arranged in clockwise order.
-				triangles.add(p1);
-				triangles.add(p2);
-				triangles.add(pointIndex);
+				triangles.add((short)p1, (short)p2, (short)pointIndex);
 			}
 			edges.clear();
 		}
 
 		short[] trianglesArray = triangles.items;
-		// Copy remaining triangles that are not super. Per construction does completedTriangles not contain any super vertices
+		// Copy remaining triangles that are not super. By construction, completedTriangles does not contain any super vertices.
 		for (int remaining = 0; remaining < triangles.size; remaining += 3) {
 			int p1 = trianglesArray[remaining];
 			int p2 = trianglesArray[remaining + 1];
@@ -140,26 +134,25 @@ public class DelaunayTriangulator {
 
 			if (p1 >= end || p2 >= end || p3 >= end) continue;
 
-			completedTriangles.add(p1);
-			completedTriangles.add(p2);
-			completedTriangles.add(p3);
+			completedTriangles.add((short)p1, (short)p2, (short)p3);
 		}
 
 		short[] completedTrianglesArray = completedTriangles.items;
+		int n = completedTriangles.size;
 
 		// Convert sorted to unsorted indices.
 		if (!sorted) {
 			short[] originalIndicesArray = originalIndices.items;
-			for (int i = 0, n = completedTriangles.size; i < n; i++)
+			for (int i = 0; i < n; i++)
 				completedTrianglesArray[i] = (short)(originalIndicesArray[completedTrianglesArray[i] / 2] * 2);
 		}
 
 		// Adjust triangles to start from zero and count by 1, not by vertex x,y coordinate pairs.
 		if (offset == 0) {
-			for (int i = 0, n = completedTriangles.size; i < n; i++)
+			for (int i = 0; i < n; i++)
 				completedTrianglesArray[i] = (short)(completedTrianglesArray[i] / 2);
 		} else {
-			for (int i = 0, n = completedTriangles.size; i < n; i++)
+			for (int i = 0; i < n; i++)
 				completedTrianglesArray[i] = (short)((completedTrianglesArray[i] - offset) / 2);
 		}
 
@@ -182,15 +175,15 @@ public class DelaunayTriangulator {
 		boolean s1 = p1 >= end, s2 = p2 >= end, s3 = p3 >= end;
 		int superCount = (s1 ? 1 : 0) + (s2 ? 1 : 0) + (s3 ? 1 : 0);
 
-		// No ghost-vertices -> normal circumcircle calc
+		// No ghost vertices -> normal circumcircle calc
 		if (superCount == 0) {
 			return circumCircleReal(xp, yp, points[p1], points[p1 + 1], points[p2], points[p2 + 1], points[p3], points[p3 + 1]);
 		}
 
-		// All ghost-vertices -> trivially inside
+		// All ghost vertices -> trivially inside
 		if (superCount == 3) return INSIDE;
 
-		// One ghost-vertices -> form half-space of both real vertices and check, if p is on the same side as ghost vertex
+		// One ghost vertex -> form half-space of both real vertices and check, if p is on the same side as ghost vertex
 		if (superCount == 1) {
 			int superIdx, realA, realB;
 			if (s1) {
@@ -323,23 +316,15 @@ public class DelaunayTriangulator {
 		int lower = 0;
 		int upper = count - 1;
 		IntArray stack = quicksortStack;
-		stack.add(lower);
-		stack.add(upper - 1);
+		stack.add(lower, upper - 1);
 		while (stack.size > 0) {
 			upper = stack.pop();
 			lower = stack.pop();
 			if (upper <= lower) continue;
 			int i = quicksortPartition(values, lower, upper, originalIndicesArray);
-			if (i - lower > upper - i) {
-				stack.add(lower);
-				stack.add(i - 2);
-			}
-			stack.add(i + 2);
-			stack.add(upper);
-			if (upper - i >= i - lower) {
-				stack.add(lower);
-				stack.add(i - 2);
-			}
+			if (i - lower > upper - i) stack.add(lower, i - 2);
+			stack.add(i + 2, upper);
+			if (upper - i >= i - lower) stack.add(lower, i - 2);
 		}
 	}
 
