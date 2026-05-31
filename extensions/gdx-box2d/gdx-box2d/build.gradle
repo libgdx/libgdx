@@ -26,22 +26,9 @@ jnigen {
 		headerDirs = ["jni"]
 	}
 
-	//Little hack to avoid duplicate builds. Only register MSVC on windows host
-	//Other hosts will ignore MSVC and build with mingw
-	def isPackaging = project.hasProperty("packaging")
-
-	if (isPackaging) {
-		addWindows(x64, ARM, MSVC)
-		addWindows(x32, x86)
-		addWindows(x64, x86)
-	} else {
-		if (HostDetection.os === Windows) {
-			addWindows(x64, ARM, MSVC)
-		} else {
-			addWindows(x32, x86)
-			addWindows(x64, x86)
-		}
-	}
+	addWindows(x64, ARM, MSVC)
+	addWindows(x32, x86)
+	addWindows(x64, x86)
 
 	addLinux(x64, x86)
 	addLinux(x32, ARM)
