@@ -17,7 +17,6 @@
 package com.badlogic.gdx.backends.lwjgl3.audio;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 import org.lwjgl.stb.STBVorbis;
@@ -82,8 +81,7 @@ public class Ogg {
 					final IntBuffer sampleRateBuffer = stack.mallocInt(1);
 
 					// decode
-					final ShortBuffer decodedData = STBVorbis.stb_vorbis_decode_memory(encodedData, channelsBuffer,
-							sampleRateBuffer);
+					final ShortBuffer decodedData = STBVorbis.stb_vorbis_decode_memory(encodedData, channelsBuffer, sampleRateBuffer);
 					if (decodedData == null) {
 						throw new GdxRuntimeException("Error decoding OGG file: " + file);
 					}
