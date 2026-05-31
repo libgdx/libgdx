@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.libc.LibCStdlib;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -80,13 +81,17 @@ public class Ogg {
 
 				// decode
 				final ShortBuffer decodedData = STBVorbis.stb_vorbis_decode_memory(encodedData, channelsBuffer, sampleRateBuffer);
-				int channels = channelsBuffer.get(0);
-				int sampleRate = sampleRateBuffer.get(0);
 				if (decodedData == null) {
 					throw new GdxRuntimeException("Error decoding OGG file: " + file);
 				}
+				try {
+					int channels = channelsBuffer.get(0);
+					int sampleRate = sampleRateBuffer.get(0);
 
-				setup(decodedData, channels, 16, sampleRate);
+					setup(decodedData, channels, 16, sampleRate);
+				} finally {
+					LibCStdlib.free(decodedData);
+				}
 			}
 		}
 	}
