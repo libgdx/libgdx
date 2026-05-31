@@ -57,7 +57,7 @@ jobs:
 
       - name: Build Windows natives
         run: |
-          ./gradlew jniGen jnigenBuildAllWindows --info 
+          ./gradlew jniGen jnigenBuildWindows_x86_32 jnigenBuildWindows_x86_64
 
       - name: Pack artifacts
         run: |
@@ -69,7 +69,6 @@ jobs:
         with:
           name: natives-windows-cross.zip
           path: natives-windows-cross.zip
-
 
   natives-android:
     runs-on: ubuntu-22.04
@@ -177,7 +176,7 @@ jobs:
       - name: Initialize jnigen
         run: ./gradlew jnigen
       - name: Build natives
-        run: ./gradlew jnigenBuildAllWindows
+        run: ./gradlew jnigenBuildWindows_Arm_64
 
       - name: Choco install Zip
         run: choco install zip
@@ -260,12 +259,12 @@ jobs:
         run: ./gradlew fetchExternalNatives
 
       - name: Package All
-        run: ./gradlew jnigenPackageAll --info -Ppackaging
+        run: ./gradlew jnigenPackageAll
 
       - name: Snapshot build deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'libgdx'
         run: |
-          ./gradlew publish -Ppackaging
+          ./gradlew publish
 
       - name: Import GPG key
         if: (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release)) && github.repository_owner == 'libgdx'
@@ -279,9 +278,7 @@ jobs:
         if: (github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.release)) && github.repository_owner == 'libgdx'
         run: |
           export GRADLE_OPTS="-Xmx8g"
-          ./gradlew publish -Ppackaging -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
-
-
+          ./gradlew publish -PRELEASE -Psigning.gnupg.keyId=${{ secrets.GPG_KEYID }} -Psigning.gnupg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Psigning.gnupg.keyName=${{ secrets.GPG_KEYID }}
 
       - name: Build Runnables
         run: |
