@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.system.libc.LibCStdlib;
 
 import java.nio.ByteBuffer;
@@ -71,27 +72,32 @@ public class Ogg {
 
 			// put the encoded audio data in a ByteBuffer
 			byte[] streamData = file.readBytes();
-			ByteBuffer encodedData = BufferUtils.newByteBuffer(streamData.length);
-			encodedData.put(streamData);
-			encodedData.flip();
+			ByteBuffer encodedData = MemoryUtil.memAlloc(streamData.length);
+			try {
+				encodedData.put(streamData);
+				encodedData.flip();
 
-			try (MemoryStack stack = MemoryStack.stackPush()) {
-				final IntBuffer channelsBuffer = stack.mallocInt(1);
-				final IntBuffer sampleRateBuffer = stack.mallocInt(1);
+				try (MemoryStack stack = MemoryStack.stackPush()) {
+					final IntBuffer channelsBuffer = stack.mallocInt(1);
+					final IntBuffer sampleRateBuffer = stack.mallocInt(1);
 
-				// decode
-				final ShortBuffer decodedData = STBVorbis.stb_vorbis_decode_memory(encodedData, channelsBuffer, sampleRateBuffer);
-				if (decodedData == null) {
-					throw new GdxRuntimeException("Error decoding OGG file: " + file);
+					// decode
+					final ShortBuffer decodedData = STBVorbis.stb_vorbis_decode_memory(encodedData, channelsBuffer,
+							sampleRateBuffer);
+					if (decodedData == null) {
+						throw new GdxRuntimeException("Error decoding OGG file: " + file);
+					}
+					try {
+						int channels = channelsBuffer.get(0);
+						int sampleRate = sampleRateBuffer.get(0);
+
+						setup(decodedData, channels, 16, sampleRate);
+					} finally {
+						LibCStdlib.free(decodedData);
+					}
 				}
-				try {
-					int channels = channelsBuffer.get(0);
-					int sampleRate = sampleRateBuffer.get(0);
-
-					setup(decodedData, channels, 16, sampleRate);
-				} finally {
-					LibCStdlib.free(decodedData);
-				}
+			} finally {
+				MemoryUtil.memFree(encodedData);
 			}
 		}
 	}
