@@ -71,7 +71,11 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	static protected final char NEWLINE = '\n';
 	static protected final char TAB = '\t';
 	static protected final char DELETE = 127;
-	static protected final char BULLET = 149;
+	/** This is the default char used in password fields, a Unicode bullet at code point 0x2022. If you need the
+	 * Windows-1252 codepage for legacy support, you can call {@link #setPasswordCharacter(char)} with the char at code
+	 * point 0x0095. Note that the default BitmapFont constructed with {@link BitmapFont#BitmapFont()} does not contain
+	 * any bullet char, so if you use that, you should call {@code field.setPasswordCharacter('*');} instead. */
+	static protected final char BULLET = '\u2022'; // Unicode bullet character
 
 	static public OnscreenKeyboard DEFAULT_ONSCREEN_KEYBOARD = new DefaultOnscreenKeyboard();
 
@@ -842,8 +846,10 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		return passwordMode;
 	}
 
-	/** Sets the password character for the text field. The character must be present in the {@link BitmapFont}. Default is 149
-	 * (bullet). */
+	/** Sets the password character for the text field. The character must be present in the {@link BitmapFont}.
+	 * Default is Unicode 0x2022 (a bullet).
+	 * Note that the default BitmapFont constructed with {@link BitmapFont#BitmapFont()} does not contain any bullet
+	 * char, so if you use that, you should call {@code field.setPasswordCharacter('*');} instead. */
 	public void setPasswordCharacter (char passwordCharacter) {
 		this.passwordCharacter = passwordCharacter;
 		if (passwordMode) updateDisplayText();
