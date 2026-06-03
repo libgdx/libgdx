@@ -4,6 +4,7 @@
 - Added ShewchukExactPredicates, for floating-error resistant orient2d/incircle/orient3d/insphere tests
 - Improved DelaunayTriangulator to handle all non-degenerate inputs using ShewchukExactPredicates
 - Improved performance of DelaunayTriangulator by ~2x on regular inputs
+- Added putMissing() to maps.
 
 [1.14.1]
 - [BREAKING CHANGE] iOS: Removed IOSAudio#willTerminate to be replaced by new Audio#dispose.

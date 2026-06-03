@@ -158,6 +158,25 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		return null;
 	}
 
+	public @Null V putMissing (long key, @Null V value) {
+		if (key == 0) {
+			V oldValue = zeroValue;
+			if (!hasZeroValue) {
+				zeroValue = value;
+				hasZeroValue = true;
+				size++;
+			}
+			return oldValue;
+		}
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i]; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return null;
+	}
+
 	public void putAll (LongMap<? extends V> map) {
 		ensureCapacity(map.size);
 		if (map.hasZeroValue) put(0, map.zeroValue);

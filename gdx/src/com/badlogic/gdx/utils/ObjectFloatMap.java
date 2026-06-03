@@ -160,6 +160,25 @@ public class ObjectFloatMap<K> implements Iterable<ObjectFloatMap.Entry<K>> {
 		return defaultValue;
 	}
 
+	public void putMissing (K key, float value) {
+		int i = locateKey(key);
+		if (i >= 0) return; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+	}
+
+	public float putMissing (K key, float value, float defaultValue) {
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i]; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
+	}
+
 	public void putAll (ObjectFloatMap<? extends K> map) {
 		ensureCapacity(map.size);
 		K[] keyTable = map.keyTable;

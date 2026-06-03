@@ -182,6 +182,42 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 		return defaultValue;
 	}
 
+	public void putMissing (int key, float value) {
+		if (key == 0) {
+			if (!hasZeroValue) {
+				zeroValue = value;
+				hasZeroValue = true;
+				size++;
+			}
+			return;
+		}
+		int i = locateKey(key);
+		if (i >= 0) return; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+	}
+
+	public float putMissing (int key, float value, float defaultValue) {
+		if (key == 0) {
+			if (!hasZeroValue) {
+				zeroValue = value;
+				hasZeroValue = true;
+				size++;
+				return defaultValue;
+			}
+			return zeroValue;
+		}
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i]; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
+	}
+
 	public void putAll (IntFloatMap map) {
 		ensureCapacity(map.size);
 		if (map.hasZeroValue) put(0, map.zeroValue);

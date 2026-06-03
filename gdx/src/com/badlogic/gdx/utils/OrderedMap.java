@@ -84,6 +84,17 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return null;
 	}
 
+	public @Null V putMissing (K key, @Null V value) {
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i]; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		keys.add(key);
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return null;
+	}
+
 	public <T extends K> void putAll (OrderedMap<T, ? extends V> map) {
 		ensureCapacity(map.size);
 		K[] keys = map.keys.items;
