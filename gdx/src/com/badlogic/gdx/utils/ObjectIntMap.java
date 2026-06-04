@@ -159,6 +159,25 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		return defaultValue;
 	}
 
+	public void putMissing (K key, int value) {
+		int i = locateKey(key);
+		if (i >= 0) return; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+	}
+
+	public int putMissing (K key, int value, int defaultValue) {
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i]; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
+	}
+
 	public void putAll (ObjectIntMap<? extends K> map) {
 		ensureCapacity(map.size);
 		K[] keyTable = map.keyTable;

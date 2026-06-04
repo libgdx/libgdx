@@ -149,6 +149,16 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return null;
 	}
 
+	public @Null V putMissing (K key, @Null V value) {
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i]; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return null;
+	}
+
 	public void putAll (ObjectMap<? extends K, ? extends V> map) {
 		ensureCapacity(map.size);
 		K[] keyTable = map.keyTable;

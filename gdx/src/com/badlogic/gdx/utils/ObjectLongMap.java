@@ -159,6 +159,25 @@ public class ObjectLongMap<K> implements Iterable<ObjectLongMap.Entry<K>> {
 		return defaultValue;
 	}
 
+	public void putMissing (K key, long value) {
+		int i = locateKey(key);
+		if (i >= 0) return; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+	}
+
+	public long putMissing (K key, long value, long defaultValue) {
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i]; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
+	}
+
 	public void putAll (ObjectLongMap<? extends K> map) {
 		ensureCapacity(map.size);
 		K[] keyTable = map.keyTable;
