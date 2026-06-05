@@ -26,6 +26,8 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.jnigen.commons.HostDetection;
+import com.badlogic.gdx.jnigen.commons.Os;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -36,9 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.tests.utils.CommandLineOptions;
 import com.badlogic.gdx.tests.utils.GdxTestWrapper;
 import com.badlogic.gdx.tests.utils.GdxTests;
-import com.badlogic.gdx.utils.Os;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Lwjgl3TestStarter {
@@ -66,7 +66,7 @@ public class Lwjgl3TestStarter {
 		} else if (options.gl31) {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL31, 4, 5);
 		} else if (options.gl30) {
-			if (SharedLibraryLoader.os == Os.MacOsX) {
+			if (HostDetection.os == Os.MacOsX) {
 				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 3, 2);
 			} else {
 				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 4, 3);
@@ -75,7 +75,7 @@ public class Lwjgl3TestStarter {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 0, 0);
 			// Use CPU sync if ANGLE is enabled on macOS, otherwise the framerate gets halfed
 			// by each new open window.
-			if (SharedLibraryLoader.os == Os.MacOsX) {
+			if (HostDetection.os == Os.MacOsX) {
 				config.useVsync(false);
 				config.setForegroundFPS(60);
 			}

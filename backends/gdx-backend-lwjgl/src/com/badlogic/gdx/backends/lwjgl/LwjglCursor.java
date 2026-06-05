@@ -4,20 +4,20 @@ package com.badlogic.gdx.backends.lwjgl;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
-import com.badlogic.gdx.utils.Os;
+import com.badlogic.gdx.jnigen.commons.HostDetection;
+import com.badlogic.gdx.jnigen.commons.Os;
 import org.lwjgl.LWJGLException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class LwjglCursor implements Cursor {
 	org.lwjgl.input.Cursor lwjglCursor = null;
 
 	public LwjglCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
-		if (((LwjglGraphics)Gdx.graphics).canvas != null && SharedLibraryLoader.os == Os.MacOsX) {
+		if (((LwjglGraphics)Gdx.graphics).canvas != null && HostDetection.os == Os.MacOsX) {
 			return;
 		}
 		try {
