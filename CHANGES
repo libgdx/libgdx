@@ -1,10 +1,16 @@
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805
 - Fixed stuck over state when ClickListener is cancelled.
+- Fixed BitmapFontCache.clear() not resetting glyph count.
+- Improved TimSort/ComparableTimSort behavior and cleanup.
 - Added ShewchukExactPredicates, for floating-error resistant orient2d/incircle/orient3d/insphere tests
 - Improved DelaunayTriangulator to handle all non-degenerate inputs using ShewchukExactPredicates
 - Improved performance of DelaunayTriangulator by ~2x on regular inputs
+- LWJGL2: Avoid allocating posted runnable stack traces while holding the runnable lock.
+- API Change: TextField's default password character is now the Unicode bullet (U+2022).
 - Added putMissing() to maps.
+- Tiled: Fixed template object GID handling when using multiple tilesets.
+- LWJGL3: Fixed OGG sound memory leak.
 
 [1.14.1]
 - [BREAKING CHANGE] iOS: Removed IOSAudio#willTerminate to be replaced by new Audio#dispose.
