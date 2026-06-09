@@ -417,6 +417,14 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				return false;
 			}
 
+			// Check if type was promoted
+			if (textView.getKeyboardType() == UIKeyboardType.NumbersAndPunctuation) {
+				if (nativeInputConfiguration.getType() == OnscreenKeyboardType.NumberPad)
+					if (!InputStringValidator.DIGITAL_VALIDATOR.validate(text)) return false;
+				if (nativeInputConfiguration.getType() == OnscreenKeyboardType.PhonePad)
+					if (!InputStringValidator.PHONE_VALIDATOR.validate(text)) return false;
+			}
+
 			if (nativeInputConfiguration.getValidator() == null) return true;
 			return nativeInputConfiguration.getValidator().validate(text);
 		}
@@ -430,6 +438,15 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				&& textField.getText().length() + (text.length() - range.getLength()) > nativeInputConfiguration.getMaxLength()) {
 				return false;
 			}
+
+			// Check if type was promoted
+			if (textField.getKeyboardType() == UIKeyboardType.NumbersAndPunctuation) {
+				if (nativeInputConfiguration.getType() == OnscreenKeyboardType.NumberPad)
+					if (!InputStringValidator.DIGITAL_VALIDATOR.validate(text)) return false;
+				if (nativeInputConfiguration.getType() == OnscreenKeyboardType.PhonePad)
+					if (!InputStringValidator.PHONE_VALIDATOR.validate(text)) return false;
+			}
+
 			if (nativeInputConfiguration.getValidator() == null) return true;
 			return nativeInputConfiguration.getValidator().validate(text);
 		}
@@ -549,10 +566,17 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			configuration.isMultiLine() || (configuration.getType() != OnscreenKeyboardType.Default
 				&& configuration.getType() != OnscreenKeyboardType.Password));
 
+		UIKeyboardType keyboardType = getIosInputType(configuration.getType());
+		// IPad has a very weird small numberpad input. Promote to full keyboard and filter out non-digits
+		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
+			if (keyboardType == UIKeyboardType.NumberPad || keyboardType == UIKeyboardType.PhonePad)
+				keyboardType = UIKeyboardType.NumbersAndPunctuation;
+		}
+
 		softkeyboardActive = true;
 		UITextInput uiTextInput = (UITextInput)textfield;
 		textfield.setHidden(false);
-		uiTextInput.setKeyboardType(getIosInputType(configuration.getType()));
+		uiTextInput.setKeyboardType(keyboardType);
 
 		if (configuration.isPreventCorrection()) {
 			uiTextInput.setAutocorrectionType(UITextAutocorrectionType.No);
