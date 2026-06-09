@@ -31,12 +31,14 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Handler;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -768,6 +770,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 			}
 
 			@Override
+			protected void onSelectionChanged (int selStart, int selEnd) {
+				super.onSelectionChanged(selStart, selEnd);
+				notifyNativeInputChanged(true);
+			}
+
+			@Override
 			public void showDropDown () {
 				int size = 165 * count;
 				if (size > relativeLayout.getHeight() + relativeLayout.getY() - getHeight())
@@ -815,6 +823,21 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 		editText.setLayoutParams(editTextParams);
 
+		editText.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged (CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged (CharSequence s, int start, int before, int count) {
+			}
+
+			@Override
+			public void afterTextChanged (Editable s) {
+				notifyNativeInputChanged(false);
+			}
+		});
+
 		relativeLayout.setVisibility(View.INVISIBLE);
 		relativeLayout.addView(editText);
 		relativeLayout.requestLayout();
@@ -829,6 +852,20 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 	private AutoCompleteTextView getEditTextForNativeInput () {
 		return (AutoCompleteTextView)relativeLayoutField.getChildAt(0);
+	}
+
+	private void notifyNativeInputChanged (boolean selectionOnly) {
+		if (!isNativeInputOpen()) return;
+		NativeInputConfiguration configuration = nativeInputConfiguration;
+		if (configuration == null) return;
+		NativeInputConfiguration.WriteMode writeMode = configuration.getWriteMode();
+		if (writeMode == NativeInputConfiguration.WriteMode.ONLY_FINAL) return;
+		if (selectionOnly && writeMode != NativeInputConfiguration.WriteMode.ALL_UPDATES) return;
+		AutoCompleteTextView editText = getEditTextForNativeInput();
+		String text = editText.getText().toString();
+		int selectionStart = editText.getSelectionStart();
+		int selectionEnd = editText.getSelectionEnd();
+		Gdx.app.postRunnable( () -> configuration.getTextInputWrapper().writeResults(text, selectionStart, selectionEnd));
 	}
 
 	private NativeInputConfiguration nativeInputConfiguration;

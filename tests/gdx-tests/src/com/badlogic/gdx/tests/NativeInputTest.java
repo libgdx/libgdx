@@ -41,6 +41,7 @@ public class NativeInputTest extends GdxTest {
 	private CheckBox noAutocorrectButton;
 	private CheckBox useValidatorButton;
 	private CheckBox useCustomAutocompleteButton;
+	private SelectBox<NativeInputConfiguration.WriteMode> writeModeSelect;
 
 	private TextField placeHolderField;
 	private Slider maxLengthSlider;
@@ -86,6 +87,9 @@ public class NativeInputTest extends GdxTest {
 		noAutocorrectButton = new CheckBox("No Autocorrect", skin);
 		useValidatorButton = new CheckBox("Use validator", skin);
 		useCustomAutocompleteButton = new CheckBox("Custom Autocomplete", skin);
+		writeModeSelect = new SelectBox<>(skin);
+		writeModeSelect.setItems(NativeInputConfiguration.WriteMode.values());
+		writeModeSelect.setSelected(NativeInputConfiguration.WriteMode.ONLY_FINAL);
 
 		Label placeHodlerLabel = new Label("Placeholder:", skin);
 		placeHolderField = new TextField(null, skin);
@@ -132,6 +136,7 @@ public class NativeInputTest extends GdxTest {
 		g2.addActor(multilineButton);
 		g2.addActor(noAutocorrectButton);
 		g2.addActor(useValidatorButton);
+		g2.addActor(writeModeSelect);
 		table.add(g2);
 		table.row();
 
@@ -155,7 +160,8 @@ public class NativeInputTest extends GdxTest {
 		NativeInputConfiguration configuration = new NativeInputConfiguration();
 		configuration.setPreventCorrection(noAutocorrectButton.isChecked()).setMultiLine(multilineButton.isChecked())
 			.setMaskInput(maskInputButton.isChecked()).setShowUnmaskButton(showUnmaskButton.isChecked())
-			.setPlaceholder(placeHolderField.getText()).setType(keyboardTypeSelect.getSelected());
+			.setPlaceholder(placeHolderField.getText()).setType(keyboardTypeSelect.getSelected())
+			.setWriteMode(writeModeSelect.getSelected());
 		if (useCustomAutocompleteButton.isChecked())
 			configuration.setAutoComplete(new String[] {"Hello", "Hillo", "Hellale", "Dog", "Dogfood"});
 		if (maxLengthSlider.getValue() != 0) configuration.setMaxLength((int)maxLengthSlider.getValue());
@@ -180,7 +186,11 @@ public class NativeInputTest extends GdxTest {
 			@Override
 			public void writeResults (String text, int selectionStart, int selectionEnd) {
 				resultArea.setText(text);
-				resultArea.setSelection(selectionStart, selectionEnd);
+				if (selectionStart == selectionEnd) {
+					resultArea.setCursorPosition(selectionEnd);
+				} else {
+					resultArea.setSelection(selectionStart, selectionEnd);
+				}
 			}
 		});
 		try {

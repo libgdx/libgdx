@@ -16,6 +16,7 @@ public class NativeInputConfiguration {
 	private boolean maskInput = false;
 	private boolean showUnmaskButton = false;
 	private String[] autoComplete = null;
+	private WriteMode writeMode = WriteMode.ONLY_FINAL;
 
 	private NativeInputCloseCallback closeCallback = (confirm) -> false;
 
@@ -119,6 +120,19 @@ public class NativeInputConfiguration {
 		return this;
 	}
 
+	public WriteMode getWriteMode () {
+		return writeMode;
+	}
+
+	/** @param writeMode Controls how often {@link TextInputWrapper#writeResults(String, int, int)} is called while the native
+	 *           input is open. See {@link WriteMode}. With anything other than {@link WriteMode#ONLY_FINAL} the backing input
+	 *           field can mirror the in-progress text (and, with {@link WriteMode#ALL_UPDATES}, the caret) live. Finality is still
+	 *           signalled separately via {@link NativeInputCloseCallback}. Defaults to {@link WriteMode#ONLY_FINAL}. */
+	public NativeInputConfiguration setWriteMode (WriteMode writeMode) {
+		this.writeMode = writeMode;
+		return this;
+	}
+
 	public NativeInputCloseCallback getCloseCallback () {
 		return closeCallback;
 	}
@@ -139,10 +153,27 @@ public class NativeInputConfiguration {
 			message = "AutoComplete should only be used with OnscreenKeyboardType.Default";
 		if (autoComplete != null && isMultiLine) message = "AutoComplete shouldn't be used with multiline";
 		if (closeCallback == null) message = "CloseCallback needs to be non null";
+		if (writeMode == null) message = "WriteMode needs to be non null";
 
 		if (message != null) {
 			throw new IllegalArgumentException("NativeInputConfiguration validation failed: " + message);
 		}
+	}
+
+	/** Controls how often {@link TextInputWrapper#writeResults(String, int, int)} is invoked while a native input field is
+	 * open. */
+	public enum WriteMode {
+		/** {@link TextInputWrapper#writeResults(String, int, int)} is called only once, when the native input is closed. This is
+		 * the default. */
+		ONLY_FINAL,
+		/** {@link TextInputWrapper#writeResults(String, int, int)} is additionally called on every text change while the IME
+		 * assembles text. The payload carries the current text together with the caret/selection, so the caret is tracked on each
+		 * keystroke. */
+		TEXT_UPDATES,
+		/** Like {@link #TEXT_UPDATES}, but {@link TextInputWrapper#writeResults(String, int, int)} is also called when only the
+		 * selection/caret changes (e.g. the user taps to move the caret or drag-selects without typing). Does not work on iOS <
+		 * 13. */
+		ALL_UPDATES
 	}
 
 	public interface NativeInputCloseCallback {

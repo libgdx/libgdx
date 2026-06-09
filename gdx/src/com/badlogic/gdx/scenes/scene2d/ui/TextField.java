@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.input.NativeInputConfiguration;
+import com.badlogic.gdx.input.NativeInputConfiguration.WriteMode;
 import com.badlogic.gdx.input.TextInputWrapper;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -980,13 +981,23 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		};
 
 		private final WidgetAdvance widgetAdvance;
+		private final WriteMode writeMode;
 
 		public NativeOnscreenKeyboard () {
-			this(DEFAULT_WIDGET_ADVANCE);
+			this(DEFAULT_WIDGET_ADVANCE, WriteMode.ONLY_FINAL);
+		}
+
+		public NativeOnscreenKeyboard (WriteMode writeMode) {
+			this(DEFAULT_WIDGET_ADVANCE, writeMode);
 		}
 
 		public NativeOnscreenKeyboard (WidgetAdvance onConfirmAdvance) {
+			this(onConfirmAdvance, WriteMode.ONLY_FINAL);
+		}
+
+		public NativeOnscreenKeyboard (WidgetAdvance onConfirmAdvance, WriteMode writeMode) {
 			this.widgetAdvance = onConfirmAdvance;
+			this.writeMode = writeMode;
 		}
 
 		public void close () {
@@ -1017,7 +1028,8 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 					.setMultiLine(textField.isWriteEnters())
 					.setPreventCorrection(textField.shouldPreventAutoCorrection())
 					.setPlaceholder(textField.getMessageText() == null ? "" : textField.getMessageText())
-					.setAutoComplete(textField.getAutocompleteOptions());
+					.setAutoComplete(textField.getAutocompleteOptions())
+					.setWriteMode(writeMode);
 			//@on
 
 			if (textField.getTextFieldFilter() != null) {

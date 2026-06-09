@@ -394,6 +394,12 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				textView
 					.setSelectedTextRange(textView.getTextRange(textView.getBeginningOfDocument(), textView.getBeginningOfDocument()));
 			}
+			notifyNativeInputChanged(false);
+		}
+
+		@Override
+		public void didChangeSelection (UITextView textView) {
+			notifyNativeInputChanged(true);
 		}
 
 		@Override
@@ -433,6 +439,12 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			if (keyboardCloseOnReturn) Gdx.input.closeTextInputField(true);
 			Gdx.graphics.requestRendering();
 			return false;
+		}
+
+		@Override
+		public void textFieldDidChangeSelection (UITextField textField) {
+			// iOS 13+ only
+			notifyNativeInputChanged(true);
 		}
 	};
 
@@ -624,6 +636,16 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			}
 			asTextField.setText(configuration.getTextInputWrapper().getText());
 			asTextField.setDelegate(textDelegate);
+			NativeInputConfiguration.WriteMode writeMode = configuration.getWriteMode();
+			if (writeMode != NativeInputConfiguration.WriteMode.ONLY_FINAL) {
+				asTextField.addTarget(new NSObject() {
+					@Method(selector = "editingChanged")
+					public void editingChanged (UITextField textField) {
+						notifyNativeInputChanged(false);
+					}
+				}, Selector.register("editingChanged"), UIControlEvents.EditingChanged);
+			}
+
 			// Because apple seems to have unreadable placeholder color by default
 			NSAttributedString placeholderString = new NSAttributedString(configuration.getPlaceholder(),
 				new NSDictionary<>(NSAttributedStringAttribute.ForegroundColor.value(), UIColor.lightGray()));
@@ -653,6 +675,31 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			configuration.getTextInputWrapper().getSelectionEnd());
 
 		uiTextInput.setSelectedTextRange(uiTextInput.getTextRange(start, end));
+	}
+
+	private void notifyNativeInputChanged (boolean selectionOnly) {
+		UITextInput uiTextInput = (UITextInput)textfield;
+		if (uiTextInput == null) return;
+		NativeInputConfiguration configuration = nativeInputConfiguration;
+		if (configuration == null) return;
+		NativeInputConfiguration.WriteMode writeMode = configuration.getWriteMode();
+		if (writeMode == NativeInputConfiguration.WriteMode.ONLY_FINAL) return;
+		if (selectionOnly && writeMode != NativeInputConfiguration.WriteMode.ALL_UPDATES) return;
+
+		String text;
+		if (uiTextInput instanceof UITextView) {
+			UITextView textView = (UITextView)uiTextInput;
+			// lightGray text color means the placeholder is showing
+			text = textView.getTextColor().isEqual(UIColor.lightGray()) ? "" : textView.getText();
+		} else {
+			text = ((UITextField)uiTextInput).getText();
+		}
+		long selectionStart = uiTextInput.getOffset(uiTextInput.getBeginningOfDocument(),
+			uiTextInput.getSelectedTextRange().getStart());
+		long selectionEnd = uiTextInput.getOffset(uiTextInput.getBeginningOfDocument(),
+			uiTextInput.getSelectedTextRange().getEnd());
+
+		configuration.getTextInputWrapper().writeResults(text, (int)selectionStart, (int)selectionEnd);
 	}
 
 	@Override
