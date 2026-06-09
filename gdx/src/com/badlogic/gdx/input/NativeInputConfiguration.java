@@ -2,6 +2,7 @@
 package com.badlogic.gdx.input;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.utils.CharArray;
 
 public class NativeInputConfiguration {
 
@@ -144,20 +145,30 @@ public class NativeInputConfiguration {
 	}
 
 	public void validate () {
-		String message = null;
-		if (type == null) message = "OnscreenKeyboardType needs to be non null";
-		if (textInputWrapper == null) message = "TextInputWrapper needs to be non null";
-		if (showUnmaskButton && !maskInput) message = "ShowUnmaskButton only works with MaskInput";
-		if (placeholder == null) message = "Placeholder needs to be non null";
-		if (autoComplete != null && type != Input.OnscreenKeyboardType.Default)
-			message = "AutoComplete should only be used with OnscreenKeyboardType.Default";
-		if (autoComplete != null && isMultiLine) message = "AutoComplete shouldn't be used with multiline";
-		if (closeCallback == null) message = "CloseCallback needs to be non null";
-		if (writeMode == null) message = "WriteMode needs to be non null";
+		CharArray message = new CharArray();
 
-		if (message != null) {
-			throw new IllegalArgumentException("NativeInputConfiguration validation failed: " + message);
+		if (type == null) message.append("OnscreenKeyboardType needs to be non null", "; ");
+		if (textInputWrapper == null) message.append("TextInputWrapper needs to be non null", "; ");
+		if (showUnmaskButton && !maskInput) message.append("ShowUnmaskButton only works with MaskInput", "; ");
+		if (placeholder == null) message.append("Placeholder needs to be non null", "; ");
+		if (autoComplete != null && type != Input.OnscreenKeyboardType.Default)
+			message.append("AutoComplete should only be used with OnscreenKeyboardType.Default", "; ");
+		if (autoComplete != null && isMultiLine) message.append("AutoComplete shouldn't be used with multiline", "; ");
+		if (closeCallback == null) message.append("CloseCallback needs to be non null", "; ");
+		if (writeMode == null) message.append("WriteMode needs to be non null", "; ");
+		if (validator != null) {
+			if (textInputWrapper != null && !validator.validate(textInputWrapper.getText()))
+				message.append("getText() is not valid according to validator", "; ");
+			if (autoComplete != null) {
+				for (String s : autoComplete) {
+					if (!validator.validate(s))
+						message.append("AutoComplete " + s + " is not valid according to validator", "; ");
+				}
+			}
 		}
+
+		if (message.notEmpty())
+			throw new IllegalArgumentException("NativeInputConfiguration validation failed: " + message);
 	}
 
 	/** Controls how often {@link TextInputWrapper#writeResults(String, int, int)} is invoked while a native input field is
