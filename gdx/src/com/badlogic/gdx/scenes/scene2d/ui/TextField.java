@@ -1055,11 +1055,6 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 
 				@Override
 				public void writeResults (String text, int selectionStart, int selectionEnd) {
-					if (textField.shouldPreventAutoCorrection()) {
-						text = text.trim();
-						selectionStart = Math.min(selectionStart, text.length());
-						selectionEnd = Math.min(selectionEnd, text.length());
-					}
 					textField.setText(text);
 					if (selectionStart == selectionEnd) {
 						textField.setCursorPosition(selectionEnd);
