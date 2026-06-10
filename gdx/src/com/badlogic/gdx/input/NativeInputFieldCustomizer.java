@@ -8,7 +8,7 @@ package com.badlogic.gdx.input;
  * The passed object is:
  * <ul>
  * <li>iOS: `UITextField` (single line) or `UITextView` (multiline)</li>
- * <li>Android: {@code android.widget.EditText}</li>
+ * <li>Android: {@code android.widget.AutoCompleteTextView}</li>
  * </ul>
  * The callback is invoked on the platform's UI thread every time the native input field is opened, after libGDX has applied the
  * {@link NativeInputConfiguration} — so customizations win over the defaults. The field's position and size remain managed by
