@@ -312,12 +312,12 @@ public abstract class AbstractTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void closeTextInputField(boolean isConfirmative, NativeInputCloseCallback callback) {
+		public void closeTextInputField (boolean isConfirmative, NativeInputCloseCallback callback) {
 			input.closeTextInputField(isConfirmative, callback);
 		}
 
 		@Override
-		public boolean isTextInputFieldOpened() {
+		public boolean isTextInputFieldOpened () {
 			return input.isTextInputFieldOpened();
 		}
 
