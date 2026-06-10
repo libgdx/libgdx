@@ -3,6 +3,7 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.input.NativeInputConfiguration;
 import org.robovm.apple.uikit.UIKey;
 import org.robovm.apple.uikit.UIView;
 
@@ -22,4 +23,7 @@ public interface IOSInput extends Input {
 
 	/** Returns the current active input text field */
 	UIView getActiveKeyboardTextField ();
+
+	/** Returns the {@link NativeInputConfiguration} if open, null otherwise. */
+	NativeInputConfiguration getNativeInputConfiguration ();
 }

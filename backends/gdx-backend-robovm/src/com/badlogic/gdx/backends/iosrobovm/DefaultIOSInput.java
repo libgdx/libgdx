@@ -689,6 +689,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				}
 			}
 		}
+		if (configuration.getFieldCustomizer() != null) configuration.getFieldCustomizer().customize(textfield);
+
 		textfield.reloadInputViews();
 		textfield.becomeFirstResponder();
 
@@ -815,6 +817,11 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		return textfield;
 	}
 
+	@Override
+	public NativeInputConfiguration getNativeInputConfiguration () {
+		return nativeInputConfiguration;
+	}
+
 	private void createDefaultTextField (boolean isMultiLine, boolean needsDoneToolbar) {
 		CGRect rect = new CGRect();
 		rect.setOrigin(new CGPoint(app.graphics.screenBounds.width, app.graphics.screenBounds.height));
@@ -870,6 +877,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		asTrait.setSpellCheckingType(UITextSpellCheckingType.Yes);
 		textfield.setHidden(true);
 		textfield.setBackgroundColor(UIColor.white());
+		textfield.getLayer().setCornerRadius(10);
 
 		app.getUIViewController().getView().addSubview(textfield);
 	}

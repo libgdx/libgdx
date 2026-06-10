@@ -18,6 +18,8 @@ public class NativeInputConfiguration {
 	private boolean showUnmaskButton = false;
 	private String[] autoComplete = null;
 	private WriteMode writeMode = WriteMode.ONLY_FINAL;
+	private float horizontalInsetFraction = 0.05f;
+	private NativeInputFieldCustomizer fieldCustomizer = null;
 
 	private NativeInputCloseCallback closeCallback = (confirm) -> false;
 
@@ -134,6 +136,31 @@ public class NativeInputConfiguration {
 		return this;
 	}
 
+	public float getHorizontalInsetFraction () {
+		return horizontalInsetFraction;
+	}
+
+	/** @param horizontalInsetFraction How far the native input field is inset from each side of the screen, as a fraction of the
+	 *           screen width. Only applied to sides without a platform safe inset (notch/cutout) - a side that already has a safe
+	 *           inset uses just that, since the keyboard is visually inset there anyway. The iOS 26 floating done button counts as
+	 *           part of the field, so it is placed within the inset bounds next to the field. Set to 0 for an edge-to-edge field.
+	 *           Needs to be inside [0, 0.45]. Defaults to 0.05 (5% per side). */
+	public NativeInputConfiguration setHorizontalInsetFraction (float horizontalInsetFraction) {
+		this.horizontalInsetFraction = horizontalInsetFraction;
+		return this;
+	}
+
+	public NativeInputFieldCustomizer getFieldCustomizer () {
+		return fieldCustomizer;
+	}
+
+	/** @param fieldCustomizer Optional hook to customize the platform's native input field beyond what this configuration exposes.
+	 *           See {@link NativeInputFieldCustomizer}. Inject a platform-specific implementation from your launcher. */
+	public NativeInputConfiguration setFieldCustomizer (NativeInputFieldCustomizer fieldCustomizer) {
+		this.fieldCustomizer = fieldCustomizer;
+		return this;
+	}
+
 	public NativeInputCloseCallback getCloseCallback () {
 		return closeCallback;
 	}
@@ -156,6 +183,8 @@ public class NativeInputConfiguration {
 		if (autoComplete != null && isMultiLine) message.append("AutoComplete shouldn't be used with multiline", "; ");
 		if (closeCallback == null) message.append("CloseCallback needs to be non null", "; ");
 		if (writeMode == null) message.append("WriteMode needs to be non null", "; ");
+		if (horizontalInsetFraction < 0 || horizontalInsetFraction > 0.45f)
+			message.append("HorizontalInsetFraction needs to be in [0, 0.45]", "; ");
 		if (validator != null) {
 			if (textInputWrapper != null && !validator.validate(textInputWrapper.getText()))
 				message.append("getText() is not valid according to validator", "; ");

@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -723,8 +724,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		// This is legit insanity. If we want to animate over `scaleX`, FOR REASONS NO-ONE WILL EVER UNDERSTAND, the keyboard doesn't push the views up if `scaleX` < 1 at start.
 		// Unless you are very familiar with android views and animations, do _not_ touch this code, unless absolutely necessary.
 		FrameLayout.LayoutParams containerParams = (FrameLayout.LayoutParams) relativeLayoutField.getLayoutParams();
-		containerParams.leftMargin = leftInset;
-		containerParams.rightMargin = rightInset;
+
+		int parentWidth = ((View)relativeLayoutField.getParent()).getWidth();
+		int fallbackInset = (int)(parentWidth * nativeInputConfiguration.getHorizontalInsetFraction());
+		containerParams.leftMargin = leftInset > 0 ? leftInset : fallbackInset;
+		containerParams.rightMargin = rightInset > 0 ? rightInset : fallbackInset;
 		relativeLayoutField.setLayoutParams(containerParams);
 
 		relativeLayoutField.animate()
@@ -978,7 +982,12 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 					editText.setAdapter(null);
 				}
 
-				editText.setBackgroundColor(Color.WHITE);
+				float radius = 10 * context.getResources().getDisplayMetrics().density;
+				GradientDrawable background = new GradientDrawable();
+				background.setColor(Color.WHITE);
+				background.setCornerRadius(radius);
+				editText.setBackground(background);
+				editText.setPadding((int)radius, editText.getPaddingTop(), (int)radius, editText.getPaddingBottom());
 
 				if (configuration.isMaskInput()) {
 					// For some reason this needs to be done last, otherwise it won't work
@@ -1023,6 +1032,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				// One wonders why here? I don't know!
 				editText.setSelection(configuration.getTextInputWrapper().getSelectionStart(),
 					configuration.getTextInputWrapper().getSelectionEnd());
+
+				if (configuration.getFieldCustomizer() != null) configuration.getFieldCustomizer().customize(editText);
 
 				relativeLayoutField.setVisibility(View.VISIBLE);
 

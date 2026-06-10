@@ -4,6 +4,7 @@ package com.badlogic.gdx.backends.iosrobovm;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
+import com.badlogic.gdx.input.NativeInputConfiguration;
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.coregraphics.CGSize;
@@ -43,6 +44,7 @@ public class IOSUIViewController extends GLKViewController {
 
 	@Method(selector = "keyboardWillShow")
 	public void keyboardWillShow (NSNotification notification) {
+		NativeInputConfiguration configuration = graphics.input.getNativeInputConfiguration();
 		CGRect screenRect = UIScreen.getMainScreen().getBounds();
 		double screenHeight = screenRect.getSize().getHeight();
 		double heightScale = Gdx.graphics.getHeight() / screenHeight;
@@ -72,12 +74,16 @@ public class IOSUIViewController extends GLKViewController {
 			UIView.setAnimationCurve(UIViewAnimationCurve.valueOf(curve));
 		}
 
+		float insetFraction = configuration != null ? configuration.getHorizontalInsetFraction() : 0;
+		double fallbackInset = getView().getBounds().getSize().getWidth() * insetFraction;
+
 		UIView accessoryView = textField.getInputAccessoryView();
 		if (Foundation.getMajorSystemVersion() >= 26 && accessoryView != null) {
 			CGRect keyboardFrameInView = textField.convertRectToView(keyboardFrameScreen, null);
+			double extraRightShift = getView().getSafeAreaInsets().getRight() > 0 ? 0 : fallbackInset;
 			CGRect accessoryFrame = new CGRect(
-				new CGPoint(keyboardFrameInView.getSize().getWidth() / 2 - accessoryView.getBounds().getSize().getHeight() / 2 - 2,
-					-3),
+				new CGPoint(keyboardFrameInView.getSize().getWidth() / 2 - accessoryView.getBounds().getSize().getHeight() / 2 - 2
+					- extraRightShift, -3),
 				new CGSize(getView().getBounds().getSize().getWidth(), accessoryView.getBounds().getSize().getHeight()));
 			accessoryView.setFrame(accessoryFrame);
 		}
@@ -100,10 +106,13 @@ public class IOSUIViewController extends GLKViewController {
 			specialRightInset = accessoryView.getBounds().getSize().getHeight() + 3;
 		}
 
-		newFrame.setOrigin(new CGPoint(getView().getSafeAreaInsets().getLeft(),
-			getView().getBounds().getSize().getHeight() - keyboardHeight - newFrame.getSize().getHeight()));
-		newFrame.setSize(new CGSize(getView().getBounds().getSize().getWidth() - getView().getSafeAreaInsets().getLeft()
-			- getView().getSafeAreaInsets().getRight() - specialRightInset, newFrame.getSize().getHeight()));
+		double leftInset = getView().getSafeAreaInsets().getLeft() > 0 ? getView().getSafeAreaInsets().getLeft() : fallbackInset;
+		double rightInset = (getView().getSafeAreaInsets().getRight() > 0 ? getView().getSafeAreaInsets().getRight()
+			: fallbackInset) + specialRightInset;
+		newFrame.setOrigin(
+			new CGPoint(leftInset, getView().getBounds().getSize().getHeight() - keyboardHeight - newFrame.getSize().getHeight()));
+		newFrame.setSize(
+			new CGSize(getView().getBounds().getSize().getWidth() - leftInset - rightInset, newFrame.getSize().getHeight()));
 		textField.setFrame(newFrame);
 
 		if (Foundation.getMajorSystemVersion() <= 15) {
