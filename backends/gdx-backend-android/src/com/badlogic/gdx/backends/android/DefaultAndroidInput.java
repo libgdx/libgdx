@@ -1046,8 +1046,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				background.setColor(com.badlogic.gdx.graphics.Color.argb8888(configuration.getBackgroundColor()));
 				background.setCornerRadius(radius);
 				editText.setBackground(background);
-				// Keep text from touching the field edge even with square corners
-				int horizontalPadding = (int)Math.max(radius, 10 * density);
+				int horizontalPadding = (int)(configuration.getTextMargin() * density);
 				editText.setPadding(horizontalPadding, editText.getPaddingTop(), horizontalPadding, editText.getPaddingBottom());
 				editText.setTextColor(com.badlogic.gdx.graphics.Color.argb8888(configuration.getTextColor()));
 				editText.setHintTextColor(com.badlogic.gdx.graphics.Color.argb8888(configuration.getPlaceholderColor()));

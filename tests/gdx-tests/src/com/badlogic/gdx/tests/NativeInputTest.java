@@ -52,6 +52,7 @@ public class NativeInputTest extends GdxTest {
 	private TextField placeHolderField;
 	private Slider maxLengthSlider;
 	private Slider cornerRadiusSlider;
+	private Slider textMarginSlider;
 
 	private TextArea resultArea;
 
@@ -115,6 +116,16 @@ public class NativeInputTest extends GdxTest {
 			autocapitalizations.add(value.name());
 		}
 		autocapitalizationSelect.setItems(autocapitalizations);
+
+		Label textMarginLabel = new Label("10", skin);
+		textMarginSlider = new Slider(0, 30, 1, false, skin);
+		textMarginSlider.setValue(10);
+		textMarginSlider.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				textMarginLabel.setText((int)textMarginSlider.getValue());
+			}
+		});
 
 		Label cornerRadiusLabel = new Label("10", skin);
 		cornerRadiusSlider = new Slider(0, 30, 1, false, skin);
@@ -182,6 +193,8 @@ public class NativeInputTest extends GdxTest {
 		g4.addActor(customColorsButton);
 		g4.addActor(cornerRadiusSlider);
 		g4.addActor(cornerRadiusLabel);
+		g4.addActor(textMarginSlider);
+		g4.addActor(textMarginLabel);
 		table.add(g4);
 		table.row();
 
@@ -207,7 +220,7 @@ public class NativeInputTest extends GdxTest {
 			.setMaskInput(maskInputButton.isChecked()).setShowUnmaskButton(showUnmaskButton.isChecked())
 			.setPlaceholder(placeHolderField.getText()).setType(keyboardTypeSelect.getSelected())
 			.setWriteMode(writeModeSelect.getSelected()).setReturnKeyType(returnKeySelect.getSelected())
-			.setCornerRadius(cornerRadiusSlider.getValue());
+			.setCornerRadius(cornerRadiusSlider.getValue()).setTextMargin(textMarginSlider.getValue());
 		if (contentTypeSelect.getSelectedIndex() != 0)
 			configuration.setContentType(NativeInputConfiguration.ContentType.valueOf(contentTypeSelect.getSelected()));
 		if (autocapitalizationSelect.getSelectedIndex() != 0) configuration

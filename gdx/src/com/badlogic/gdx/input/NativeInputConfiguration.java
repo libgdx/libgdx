@@ -28,6 +28,7 @@ public class NativeInputConfiguration {
 	private ContentType contentType = null;
 	private Autocapitalization autocapitalization = null;
 	private float cornerRadius = 10;
+	private float textMargin = 10;
 
 	private NativeInputCloseCallback closeCallback = (confirm) -> false;
 
@@ -253,6 +254,17 @@ public class NativeInputConfiguration {
 		return this;
 	}
 
+	public float getTextMargin () {
+		return textMargin;
+	}
+
+	/** @param textMargin Horizontal margin between the native input field's edge and its text, in density independent units (pt on
+	 *           iOS, dp on Android). Applied on both sides, independent of the corner radius. Defaults to 10. */
+	public NativeInputConfiguration setTextMargin (float textMargin) {
+		this.textMargin = textMargin;
+		return this;
+	}
+
 	public NativeInputCloseCallback getCloseCallback () {
 		return closeCallback;
 	}
@@ -282,6 +294,7 @@ public class NativeInputConfiguration {
 		if (textColor == null) message.append("TextColor needs to be non null", "; ");
 		if (placeholderColor == null) message.append("PlaceholderColor needs to be non null", "; ");
 		if (cornerRadius < 0) message.append("CornerRadius needs to be >= 0", "; ");
+		if (textMargin < 0) message.append("TextMargin needs to be >= 0", "; ");
 		if (validator != null) {
 			if (textInputWrapper != null && !validator.validate(textInputWrapper.getText()))
 				message.append("getText() is not valid according to validator", "; ");

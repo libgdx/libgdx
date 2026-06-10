@@ -588,7 +588,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			textView.setText(configuration.getTextInputWrapper().getText());
 			textView.setTextColor(toUIColor(configuration.getTextColor()));
 			textView.getTextContainer().setLineFragmentPadding(0);
-			textView.setTextContainerInset(new UIEdgeInsets(8, 10, 8, 10));
+			textView.setTextContainerInset(new UIEdgeInsets(8, configuration.getTextMargin(), 8, configuration.getTextMargin()));
 			createTextViewPlaceholder(textView, configuration);
 			textView.setDelegate(textViewDelegate);
 		} else {
@@ -668,9 +668,9 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			asTextField.setTextColor(toUIColor(configuration.getTextColor()));
 			asTextField.setReturnKeyType(getIosReturnKeyType(configuration.getReturnKeyType()));
 
-			asTextField.setLeftView(new UIView(new CGRect(0, 0, 10, 1)));
+			asTextField.setLeftView(new UIView(new CGRect(0, 0, configuration.getTextMargin(), 1)));
 			asTextField.setLeftViewMode(UITextFieldViewMode.Always);
-			asTextField.setRightView(new UIView(new CGRect(0, 0, 10, 1)));
+			asTextField.setRightView(new UIView(new CGRect(0, 0, configuration.getTextMargin(), 1)));
 			asTextField.setRightViewMode(UITextFieldViewMode.Always);
 
 			// Because apple seems to have unreadable placeholder color by default
