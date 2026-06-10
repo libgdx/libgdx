@@ -161,14 +161,12 @@ public class NativeInputConfiguration {
 				message.append("getText() is not valid according to validator", "; ");
 			if (autoComplete != null) {
 				for (String s : autoComplete) {
-					if (!validator.validate(s))
-						message.append("AutoComplete " + s + " is not valid according to validator", "; ");
+					if (!validator.validate(s)) message.append("AutoComplete " + s + " is not valid according to validator", "; ");
 				}
 			}
 		}
 
-		if (message.notEmpty())
-			throw new IllegalArgumentException("NativeInputConfiguration validation failed: " + message);
+		if (message.notEmpty()) throw new IllegalArgumentException("NativeInputConfiguration validation failed: " + message);
 	}
 
 	/** Controls how often {@link TextInputWrapper#writeResults(String, int, int)} is invoked while a native input field is
