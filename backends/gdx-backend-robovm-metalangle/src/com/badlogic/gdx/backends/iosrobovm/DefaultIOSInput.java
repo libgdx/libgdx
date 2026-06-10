@@ -569,15 +569,14 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		if (textfield != null) throw new GdxRuntimeException("Can't open TextInputField, if KeyBoard is already open");
 		configuration.validate();
 		this.nativeInputConfiguration = configuration;
-		createDefaultTextField(configuration.isMultiLine(),
-			configuration.isMultiLine() || (configuration.getType() != OnscreenKeyboardType.Default
-				&& configuration.getType() != OnscreenKeyboardType.Password));
 		UIKeyboardType keyboardType = getIosInputType(configuration.getType());
 		// IPad has a very weird small numberpad input. Promote to full keyboard and filter out non-digits
 		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
 			if (keyboardType == UIKeyboardType.NumberPad || keyboardType == UIKeyboardType.PhonePad)
 				keyboardType = UIKeyboardType.NumbersAndPunctuation;
 		}
+		createDefaultTextField(configuration.isMultiLine(),
+			configuration.isMultiLine() || keyboardType == UIKeyboardType.NumberPad || keyboardType == UIKeyboardType.PhonePad);
 		softkeyboardActive = true;
 		UITextInput uiTextInput = (UITextInput)textfield;
 		textfield.setHidden(false);
@@ -815,10 +814,11 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		CGRect rect = new CGRect();
 		rect.setOrigin(new CGPoint(app.graphics.screenBounds.width, app.graphics.screenBounds.height));
 		rect.setSize(new CGSize(app.graphics.screenBounds.width, 50));
-		UIToolbar uiToolbar = null;
+		UIView accessoryView = null;
 		if (needsDoneToolbar) {
-			uiToolbar = new UIToolbar(
-				new CGRect(new CGPoint(0, 0), new CGSize(UIScreen.getMainScreen().getBounds().getSize().getWidth(), 35)));
+			int height = Foundation.getMajorSystemVersion() >= 26 ? 44 : 35;
+			UIToolbar uiToolbar = new UIToolbar(
+				new CGRect(new CGPoint(0, 0), new CGSize(UIScreen.getMainScreen().getBounds().getSize().getWidth(), height)));
 			UIBarButtonItem space = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, (NSObject)null, null);
 			UIBarButtonItem doneButton = new UIBarButtonItem(UIBarButtonSystemItem.Done, new NSObject() {
 
@@ -827,12 +827,19 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 					Gdx.input.closeTextInputField(true);
 				}
 			}, Selector.register("doneClicked"));
-			uiToolbar.setItems(new NSArray<>(space, doneButton));
-			uiToolbar.updateConstraintsIfNeeded();
+			if (Foundation.getMajorSystemVersion() >= 26) {
+				uiToolbar.setItems(new NSArray<>(doneButton));
+				uiToolbar.setTranslatesAutoresizingMaskIntoConstraints(true);
+				uiToolbar.setAutoresizingMask(UIViewAutoresizing.FlexibleWidth);
+			} else {
+				uiToolbar.setItems(new NSArray<>(space, doneButton));
+				uiToolbar.updateConstraintsIfNeeded();
+			}
+			accessoryView = uiToolbar;
 		}
 		if (isMultiLine) {
 			UITextView textView = new UITextView(rect);
-			textView.setInputAccessoryView(uiToolbar);
+			textView.setInputAccessoryView(accessoryView);
 			textView.setTextColor(UIColor.black());
 			textView.setReturnKeyType(UIReturnKeyType.Default);
 			textfield = textView;
@@ -840,7 +847,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			UITextField uiTextField = new UITextField(rect);
 			uiTextField.setTextColor(UIColor.black());
 			uiTextField.setReturnKeyType(UIReturnKeyType.Done);
-			uiTextField.setInputAccessoryView(uiToolbar);
+			uiTextField.setInputAccessoryView(accessoryView);
 			textfield = uiTextField;
 		}
 		UITextInputTraits asTrait = (UITextInputTraits)textfield;

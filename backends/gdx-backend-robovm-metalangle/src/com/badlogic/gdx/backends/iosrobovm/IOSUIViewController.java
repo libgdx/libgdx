@@ -51,11 +51,11 @@ public class IOSUIViewController extends MGLKViewController {
 		double screenHeight = screenRect.getSize().getHeight();
 		double heightScale = Gdx.graphics.getHeight() / screenHeight;
 		NSDictionary<NSString, ?> userInfo = (NSDictionary<NSString, ?>)notification.getUserInfo();
-		CGRect keyboardEndFrame = ((NSValue)userInfo.get(UIKeyboardAnimation.Keys.FrameEnd())).rectValue();
+		CGRect keyboardFrameScreen = ((NSValue)userInfo.get(UIKeyboardAnimation.Keys.FrameEnd())).rectValue();
 		UIView textField = graphics.input.getActiveKeyboardTextField();
 		if (textField == null || !textField.isFirstResponder() || textField.isHidden()) {
 			if (observer != null) {
-				int kbHeight = (int)(keyboardEndFrame.getSize().getHeight() * heightScale);
+				int kbHeight = (int)(keyboardFrameScreen.getSize().getHeight() * heightScale);
 				observer.onKeyboardShow(kbHeight);
 				observer.onKeyboardHeightChanged(kbHeight);
 			}
@@ -71,17 +71,35 @@ public class IOSUIViewController extends MGLKViewController {
 			UIView.setAnimationDurationInSeconds(duration);
 			UIView.setAnimationCurve(UIViewAnimationCurve.valueOf(curve));
 		}
+		UIView accessoryView = textField.getInputAccessoryView();
+		if (Foundation.getMajorSystemVersion() >= 26 && accessoryView != null) {
+			CGRect keyboardFrameInView = textField.convertRectToView(keyboardFrameScreen, null);
+			CGRect accessoryFrame = new CGRect(
+				new CGPoint(keyboardFrameInView.getSize().getWidth() / 2 - accessoryView.getBounds().getSize().getHeight() / 2 - 2,
+					-3),
+				new CGSize(getView().getBounds().getSize().getWidth(), accessoryView.getBounds().getSize().getHeight()));
+			accessoryView.setFrame(accessoryFrame);
+		}
 		CGRect newFrame = textField.getFrame();
 		if (observer != null) {
-			int kbHeight = (int)((keyboardEndFrame.getSize().getHeight() + newFrame.getSize().getHeight()) * heightScale);
+			int kbHeight = (int)((keyboardFrameScreen.getSize().getHeight() + newFrame.getSize().getHeight()) * heightScale);
+			if (Foundation.getMajorSystemVersion() >= 26 && accessoryView != null) {
+				kbHeight -= (int)(accessoryView.getBounds().getSize().getHeight() * heightScale);
+			}
 			observer.onKeyboardShow(kbHeight);
 			observer.onKeyboardHeightChanged(kbHeight);
 		}
-		keyboardEndFrame = textField.convertRectToView(keyboardEndFrame, null);
+		CGRect keyboardFrameInTextField = textField.convertRectToView(keyboardFrameScreen, null);
+		double keyboardHeight = keyboardFrameInTextField.getSize().getHeight();
+		double specialRightInset = 0;
+		if (Foundation.getMajorSystemVersion() >= 26 && accessoryView != null) {
+			keyboardHeight -= accessoryView.getBounds().getSize().getHeight();
+			specialRightInset = accessoryView.getBounds().getSize().getHeight() + 3;
+		}
 		newFrame.setOrigin(new CGPoint(getView().getSafeAreaInsets().getLeft(),
-			getView().getBounds().getSize().getHeight() - keyboardEndFrame.getSize().getHeight() - newFrame.getSize().getHeight()));
+			getView().getBounds().getSize().getHeight() - keyboardHeight - newFrame.getSize().getHeight()));
 		newFrame.setSize(new CGSize(getView().getBounds().getSize().getWidth() - getView().getSafeAreaInsets().getLeft()
-			- getView().getSafeAreaInsets().getRight(), newFrame.getSize().getHeight()));
+			- getView().getSafeAreaInsets().getRight() - specialRightInset, newFrame.getSize().getHeight()));
 		textField.setFrame(newFrame);
 		if (Foundation.getMajorSystemVersion() <= 15) {
 			UIView.commitAnimations();
