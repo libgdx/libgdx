@@ -29,11 +29,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class NativeInputTest extends GdxTest {
 
 	private Stage stage;
 	private Skin skin;
+	private Table rootTable;
 
 	private SelectBox<OnscreenKeyboardType> keyboardTypeSelect;
 
@@ -57,11 +59,13 @@ public class NativeInputTest extends GdxTest {
 	private TextArea resultArea;
 
 	public void create () {
-		stage = new Stage();
+		ScreenViewport viewport = new ScreenViewport();
+		viewport.setUnitsPerPixel(1f / Gdx.graphics.getDensity());
+		stage = new Stage(viewport);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		Table table = new Table();
-		table.addListener(new ClickListener() {
+		rootTable = new Table();
+		rootTable.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
 				if (!event.isStopped()) {
@@ -70,15 +74,21 @@ public class NativeInputTest extends GdxTest {
 				super.clicked(event, x, y);
 			}
 		});
-		table.setFillParent(true);
+		rootTable.setFillParent(true);
+
+		InputListener stopTouchDown = new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				event.stop();
+				return false;
+			}
+		};
 
 		keyboardTypeSelect = new SelectBox<>(skin);
 		keyboardTypeSelect.setItems(OnscreenKeyboardType.values());
-		keyboardTypeSelect.setWidth(200);
-		keyboardTypeSelect.setPosition(200, 200);
 
 		Label maxLengthLabel = new Label("--", skin);
 		maxLengthSlider = new Slider(0, 15, 1, false, skin);
+		maxLengthSlider.addListener(stopTouchDown); // Stops touchDown events from propagating to the ScrollPane.
 		maxLengthSlider.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
@@ -120,6 +130,7 @@ public class NativeInputTest extends GdxTest {
 		Label textMarginLabel = new Label("10", skin);
 		textMarginSlider = new Slider(0, 30, 1, false, skin);
 		textMarginSlider.setValue(10);
+		textMarginSlider.addListener(stopTouchDown);
 		textMarginSlider.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
@@ -130,6 +141,7 @@ public class NativeInputTest extends GdxTest {
 		Label cornerRadiusLabel = new Label("10", skin);
 		cornerRadiusSlider = new Slider(0, 30, 1, false, skin);
 		cornerRadiusSlider.setValue(10);
+		cornerRadiusSlider.addListener(stopTouchDown);
 		cornerRadiusSlider.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
@@ -137,7 +149,7 @@ public class NativeInputTest extends GdxTest {
 			}
 		});
 
-		Label placeHodlerLabel = new Label("Placeholder:", skin);
+		Label placeHolderLabel = new Label("Placeholder:", skin);
 		placeHolderField = new TextField(null, skin);
 		placeHolderField.setOnscreenKeyboard(new NativeOnscreenKeyboard());
 		placeHolderField.addListener(new ClickListener() {
@@ -169,49 +181,103 @@ public class NativeInputTest extends GdxTest {
 			}
 		});
 
-		HorizontalGroup g1 = new HorizontalGroup();
-		g1.addActor(keyboardTypeSelect);
-		g1.addActor(maxLengthSlider);
-		g1.addActor(maxLengthLabel);
-		table.add(g1);
-		table.row();
-		HorizontalGroup g2 = new HorizontalGroup();
-		g2.space(5);
-		g2.addActor(maskInputButton);
-		g2.addActor(showUnmaskButton);
-		g2.addActor(multilineButton);
-		g2.addActor(noAutocorrectButton);
-		g2.addActor(useValidatorButton);
-		g2.addActor(writeModeSelect);
-		table.add(g2);
-		table.row();
-		HorizontalGroup g4 = new HorizontalGroup();
-		g4.space(5);
-		g4.addActor(returnKeySelect);
-		g4.addActor(contentTypeSelect);
-		g4.addActor(autocapitalizationSelect);
-		g4.addActor(customColorsButton);
-		g4.addActor(cornerRadiusSlider);
-		g4.addActor(cornerRadiusLabel);
-		g4.addActor(textMarginSlider);
-		g4.addActor(textMarginLabel);
-		table.add(g4);
-		table.row();
+		Table sections = new Table();
+		sections.top().left();
+		sections.defaults().left().pad(3);
 
-		HorizontalGroup g3 = new HorizontalGroup();
-		g3.addActor(placeHodlerLabel);
-		g3.addActor(placeHolderField);
-		table.add(g3);
-		table.row();
-		table.add(useCustomAutocompleteButton);
-		table.row().padTop(15);
-		table.add(openInput);
-		table.row().padTop(15);
-		table.add(resultArea).grow();
+		sections.add(sectionHeader("Keyboard")).colspan(3).padTop(0);
+		sections.row();
+		sections.add(new Label("Type:", skin));
+		sections.add(keyboardTypeSelect).minWidth(220).colspan(2);
+		sections.row();
+		sections.add(new Label("Return key:", skin));
+		sections.add(returnKeySelect).minWidth(220).colspan(2);
+		sections.row();
+		sections.add(new Label("Content type:", skin));
+		sections.add(contentTypeSelect).minWidth(220).colspan(2);
+		sections.row();
+		sections.add(new Label("Capitalization:", skin));
+		sections.add(autocapitalizationSelect).minWidth(220).colspan(2);
+		sections.row();
 
-		stage.addActor(table);
+		sections.add(sectionHeader("Behavior")).colspan(3);
+		sections.row();
+		sections.add(multilineButton).colspan(3);
+		sections.row();
+		sections.add(noAutocorrectButton).colspan(3);
+		sections.row();
+		sections.add(useValidatorButton).colspan(3);
+		sections.row();
+		sections.add(useCustomAutocompleteButton).colspan(3);
+		sections.row();
+		sections.add(new Label("Write mode:", skin));
+		sections.add(writeModeSelect).minWidth(220).colspan(2);
+		sections.row();
+		sections.add(new Label("Max length:", skin));
+		sections.add(maxLengthSlider).minWidth(200).growX();
+		sections.add(maxLengthLabel).minWidth(40);
+		sections.row();
+
+		sections.add(sectionHeader("Password")).colspan(3);
+		sections.row();
+		sections.add(maskInputButton).colspan(3);
+		sections.row();
+		sections.add(showUnmaskButton).colspan(3);
+		sections.row();
+
+		sections.add(sectionHeader("Appearance")).colspan(3);
+		sections.row();
+		sections.add(customColorsButton).colspan(3);
+		sections.row();
+		sections.add(new Label("Corner radius:", skin));
+		sections.add(cornerRadiusSlider).minWidth(200).growX();
+		sections.add(cornerRadiusLabel).minWidth(40);
+		sections.row();
+		sections.add(new Label("Text margin:", skin));
+		sections.add(textMarginSlider).minWidth(200).growX();
+		sections.add(textMarginLabel).minWidth(40);
+		sections.row();
+
+		sections.add(sectionHeader("Placeholder")).colspan(3);
+		sections.row();
+		sections.add(placeHolderLabel);
+		sections.add(placeHolderField).minWidth(220).growX().colspan(2);
+		sections.row();
+
+		ScrollPane scrollPane = new ScrollPane(sections, skin);
+		scrollPane.setScrollingDisabled(true, false);
+		scrollPane.setFadeScrollBars(false);
+
+		rootTable.add(scrollPane).grow().padLeft(10).padRight(10);
+		rootTable.row();
+		rootTable.add(openInput).padTop(10);
+		rootTable.row();
+		rootTable.add(resultArea).growX().height(120).pad(10);
+
+		stage.addActor(rootTable);
+		applySafeInsets();
 
 		Gdx.input.setInputProcessor(stage);
+	}
+
+	private Label sectionHeader (String title) {
+		Label label = new Label(title, skin);
+		label.setColor(Color.SKY);
+		return label;
+	}
+
+	private void applySafeInsets () {
+		float unitsPerPixel = ((ScreenViewport)stage.getViewport()).getUnitsPerPixel();
+		rootTable.padLeft(Gdx.graphics.getSafeInsetLeft() * unitsPerPixel)
+			.padRight(Gdx.graphics.getSafeInsetRight() * unitsPerPixel).padTop(Gdx.graphics.getSafeInsetTop() * unitsPerPixel)
+			.padBottom(Gdx.graphics.getSafeInsetBottom() * unitsPerPixel);
+		rootTable.invalidate();
+	}
+
+	@Override
+	public void resize (int width, int height) {
+		stage.getViewport().update(width, height, true);
+		applySafeInsets();
 	}
 
 	public void openNativeInputField () {
