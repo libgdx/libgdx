@@ -2,6 +2,7 @@
 package com.badlogic.gdx.input;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.CharArray;
 
 public class NativeInputConfiguration {
@@ -20,6 +21,13 @@ public class NativeInputConfiguration {
 	private WriteMode writeMode = WriteMode.ONLY_FINAL;
 	private float horizontalInsetFraction = 0.05f;
 	private NativeInputFieldCustomizer fieldCustomizer = null;
+	private ReturnKeyType returnKeyType = ReturnKeyType.DONE;
+	private Color backgroundColor = new Color(Color.WHITE);
+	private Color textColor = new Color(Color.BLACK);
+	private Color placeholderColor = new Color(Color.LIGHT_GRAY);
+	private ContentType contentType = null;
+	private Autocapitalization autocapitalization = null;
+	private float cornerRadius = 10;
 
 	private NativeInputCloseCallback closeCallback = (confirm) -> false;
 
@@ -161,6 +169,90 @@ public class NativeInputConfiguration {
 		return this;
 	}
 
+	public ReturnKeyType getReturnKeyType () {
+		return returnKeyType;
+	}
+
+	/** @param returnKeyType Which label/action the keyboard's return key should show. This is a visual hint only: the action key
+	 *           confirms the input and closes the field (like Done does by default). Use {@link ReturnKeyType#NEXT} together with
+	 *           the keepOpen mechanism of {@link NativeInputCloseCallback} to advance through multiple fields. Ignored for
+	 *           multiline. Defaults to {@link ReturnKeyType#DONE}. */
+	public NativeInputConfiguration setReturnKeyType (ReturnKeyType returnKeyType) {
+		this.returnKeyType = returnKeyType;
+		return this;
+	}
+
+	public Color getBackgroundColor () {
+		return backgroundColor;
+	}
+
+	/** @param backgroundColor Background color of the native input field. Defaults to white. */
+	public NativeInputConfiguration setBackgroundColor (Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
+		return this;
+	}
+
+	public Color getTextColor () {
+		return textColor;
+	}
+
+	/** @param textColor Text color of the native input field. Defaults to black. */
+	public NativeInputConfiguration setTextColor (Color textColor) {
+		this.textColor = textColor;
+		return this;
+	}
+
+	public Color getPlaceholderColor () {
+		return placeholderColor;
+	}
+
+	/** @param placeholderColor Color of the placeholder text. Defaults to light gray. */
+	public NativeInputConfiguration setPlaceholderColor (Color placeholderColor) {
+		this.placeholderColor = placeholderColor;
+		return this;
+	}
+
+	public ContentType getContentType () {
+		return contentType;
+	}
+
+	/** @param contentType Semantic type of the field's content, enabling platform autofill (password managers, one time codes from
+	 *           SMS/mail/authenticator apps, ...). Silently ignored on platforms/versions without autofill support (Android < 8,
+	 *           {@link ContentType#ONE_TIME_CODE} and {@link ContentType#NEW_PASSWORD} on iOS < 12). Defaults to null (no autofill
+	 *           hint). */
+	public NativeInputConfiguration setContentType (ContentType contentType) {
+		this.contentType = contentType;
+		return this;
+	}
+
+	/** Returns the resolved autocapitalization: the explicitly set value if any, otherwise {@link Autocapitalization#NONE} if
+	 * {@link #setPreventCorrection(boolean)} is set, else {@link Autocapitalization#SENTENCES}. */
+	public Autocapitalization getAutocapitalization () {
+		if (autocapitalization != null) return autocapitalization;
+		return preventCorrection ? Autocapitalization.NONE : Autocapitalization.SENTENCES;
+	}
+
+	/** @param autocapitalization How the keyboard should automatically capitalize typed text. If never set, this resolves to
+	 *           {@link Autocapitalization#NONE} when {@link #setPreventCorrection(boolean)} is set and
+	 *           {@link Autocapitalization#SENTENCES} otherwise. An explicitly set value always wins — autocapitalization and
+	 *           autocorrection are independent platform traits, so e.g. a name field can combine preventCorrection with
+	 *           {@link Autocapitalization#WORDS}. */
+	public NativeInputConfiguration setAutocapitalization (Autocapitalization autocapitalization) {
+		this.autocapitalization = autocapitalization;
+		return this;
+	}
+
+	public float getCornerRadius () {
+		return cornerRadius;
+	}
+
+	/** @param cornerRadius Corner radius of the native input field in density independent units (pt on iOS, dp on Android). Set to
+	 *           0 for square corners. Defaults to 10. */
+	public NativeInputConfiguration setCornerRadius (float cornerRadius) {
+		this.cornerRadius = cornerRadius;
+		return this;
+	}
+
 	public NativeInputCloseCallback getCloseCallback () {
 		return closeCallback;
 	}
@@ -185,6 +277,11 @@ public class NativeInputConfiguration {
 		if (writeMode == null) message.append("WriteMode needs to be non null", "; ");
 		if (horizontalInsetFraction < 0 || horizontalInsetFraction > 0.45f)
 			message.append("HorizontalInsetFraction needs to be in [0, 0.45]", "; ");
+		if (returnKeyType == null) message.append("ReturnKeyType needs to be non null", "; ");
+		if (backgroundColor == null) message.append("BackgroundColor needs to be non null", "; ");
+		if (textColor == null) message.append("TextColor needs to be non null", "; ");
+		if (placeholderColor == null) message.append("PlaceholderColor needs to be non null", "; ");
+		if (cornerRadius < 0) message.append("CornerRadius needs to be >= 0", "; ");
 		if (validator != null) {
 			if (textInputWrapper != null && !validator.validate(textInputWrapper.getText()))
 				message.append("getText() is not valid according to validator", "; ");
@@ -212,6 +309,21 @@ public class NativeInputConfiguration {
 		 * selection/caret changes (e.g. the user taps to move the caret or drag-selects without typing). Does not work on iOS <
 		 * 13. */
 		ALL_UPDATES
+	}
+
+	/** Which label/action the keyboard's return key shows. See {@link #setReturnKeyType(ReturnKeyType)}. */
+	public enum ReturnKeyType {
+		GO, SEARCH, SEND, NEXT, DONE
+	}
+
+	/** Semantic type of the field's content for platform autofill. See {@link #setContentType(ContentType)}. */
+	public enum ContentType {
+		USERNAME, PASSWORD, NEW_PASSWORD, ONE_TIME_CODE, EMAIL, PHONE
+	}
+
+	/** How the keyboard automatically capitalizes typed text. See {@link #setAutocapitalization(Autocapitalization)}. */
+	public enum Autocapitalization {
+		NONE, WORDS, SENTENCES, CHARACTERS
 	}
 
 	public interface NativeInputCloseCallback {

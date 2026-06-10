@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.OnscreenKeyboardType;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.input.TextInputWrapper;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.NativeOnscreenKeyboard;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
 
 public class NativeInputTest extends GdxTest {
 
@@ -41,10 +43,15 @@ public class NativeInputTest extends GdxTest {
 	private CheckBox noAutocorrectButton;
 	private CheckBox useValidatorButton;
 	private CheckBox useCustomAutocompleteButton;
+	private CheckBox customColorsButton;
 	private SelectBox<NativeInputConfiguration.WriteMode> writeModeSelect;
+	private SelectBox<NativeInputConfiguration.ReturnKeyType> returnKeySelect;
+	private SelectBox<String> contentTypeSelect;
+	private SelectBox<String> autocapitalizationSelect;
 
 	private TextField placeHolderField;
 	private Slider maxLengthSlider;
+	private Slider cornerRadiusSlider;
 
 	private TextArea resultArea;
 
@@ -87,9 +94,37 @@ public class NativeInputTest extends GdxTest {
 		noAutocorrectButton = new CheckBox("No Autocorrect", skin);
 		useValidatorButton = new CheckBox("Use validator", skin);
 		useCustomAutocompleteButton = new CheckBox("Custom Autocomplete", skin);
+		customColorsButton = new CheckBox("Custom colors", skin);
 		writeModeSelect = new SelectBox<>(skin);
 		writeModeSelect.setItems(NativeInputConfiguration.WriteMode.values());
 		writeModeSelect.setSelected(NativeInputConfiguration.WriteMode.ONLY_FINAL);
+		returnKeySelect = new SelectBox<>(skin);
+		returnKeySelect.setItems(NativeInputConfiguration.ReturnKeyType.values());
+		returnKeySelect.setSelected(NativeInputConfiguration.ReturnKeyType.DONE);
+		contentTypeSelect = new SelectBox<>(skin);
+		Array<String> contentTypes = new Array<>();
+		contentTypes.add("No content type");
+		for (NativeInputConfiguration.ContentType value : NativeInputConfiguration.ContentType.values()) {
+			contentTypes.add(value.name());
+		}
+		contentTypeSelect.setItems(contentTypes);
+		autocapitalizationSelect = new SelectBox<>(skin);
+		Array<String> autocapitalizations = new Array<>();
+		autocapitalizations.add("Default capitalization");
+		for (NativeInputConfiguration.Autocapitalization value : NativeInputConfiguration.Autocapitalization.values()) {
+			autocapitalizations.add(value.name());
+		}
+		autocapitalizationSelect.setItems(autocapitalizations);
+
+		Label cornerRadiusLabel = new Label("10", skin);
+		cornerRadiusSlider = new Slider(0, 30, 1, false, skin);
+		cornerRadiusSlider.setValue(10);
+		cornerRadiusSlider.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				cornerRadiusLabel.setText((int)cornerRadiusSlider.getValue());
+			}
+		});
 
 		Label placeHodlerLabel = new Label("Placeholder:", skin);
 		placeHolderField = new TextField(null, skin);
@@ -139,6 +174,16 @@ public class NativeInputTest extends GdxTest {
 		g2.addActor(writeModeSelect);
 		table.add(g2);
 		table.row();
+		HorizontalGroup g4 = new HorizontalGroup();
+		g4.space(5);
+		g4.addActor(returnKeySelect);
+		g4.addActor(contentTypeSelect);
+		g4.addActor(autocapitalizationSelect);
+		g4.addActor(customColorsButton);
+		g4.addActor(cornerRadiusSlider);
+		g4.addActor(cornerRadiusLabel);
+		table.add(g4);
+		table.row();
 
 		HorizontalGroup g3 = new HorizontalGroup();
 		g3.addActor(placeHodlerLabel);
@@ -161,7 +206,16 @@ public class NativeInputTest extends GdxTest {
 		configuration.setPreventCorrection(noAutocorrectButton.isChecked()).setMultiLine(multilineButton.isChecked())
 			.setMaskInput(maskInputButton.isChecked()).setShowUnmaskButton(showUnmaskButton.isChecked())
 			.setPlaceholder(placeHolderField.getText()).setType(keyboardTypeSelect.getSelected())
-			.setWriteMode(writeModeSelect.getSelected());
+			.setWriteMode(writeModeSelect.getSelected()).setReturnKeyType(returnKeySelect.getSelected())
+			.setCornerRadius(cornerRadiusSlider.getValue());
+		if (contentTypeSelect.getSelectedIndex() != 0)
+			configuration.setContentType(NativeInputConfiguration.ContentType.valueOf(contentTypeSelect.getSelected()));
+		if (autocapitalizationSelect.getSelectedIndex() != 0) configuration
+			.setAutocapitalization(NativeInputConfiguration.Autocapitalization.valueOf(autocapitalizationSelect.getSelected()));
+		if (customColorsButton.isChecked()) {
+			configuration.setBackgroundColor(new Color(0x202030ff)).setTextColor(new Color(Color.WHITE))
+				.setPlaceholderColor(new Color(Color.ORANGE));
+		}
 		if (useCustomAutocompleteButton.isChecked())
 			configuration.setAutoComplete(new String[] {"Hello", "Hillo", "Hellale", "Dog", "Dogfood"});
 		if (maxLengthSlider.getValue() != 0) configuration.setMaxLength((int)maxLengthSlider.getValue());

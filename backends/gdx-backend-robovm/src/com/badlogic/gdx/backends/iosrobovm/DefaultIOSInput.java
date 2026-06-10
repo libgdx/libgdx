@@ -382,18 +382,14 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	// see: https://web.archive.org/web/20171016192705/http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
 
 	private UIView textfield = null;
+	private UILabel textViewPlaceholderLabel;
 	private UITableView suggestionTable;
 	private NativeInputConfiguration nativeInputConfiguration;
 
 	private final UITextViewDelegate textViewDelegate = new UITextViewDelegateAdapter() {
 		@Override
 		public void didChange (UITextView textView) {
-			if (textView.getText().isEmpty()) {
-				textView.setText(nativeInputConfiguration.getPlaceholder());
-				textView.setTextColor(UIColor.lightGray());
-				textView
-					.setSelectedTextRange(textView.getTextRange(textView.getBeginningOfDocument(), textView.getBeginningOfDocument()));
-			}
+			if (textViewPlaceholderLabel != null) textViewPlaceholderLabel.setHidden(!textView.getText().isEmpty());
 			notifyNativeInputChanged(false);
 		}
 
@@ -404,14 +400,6 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 		@Override
 		public boolean shouldChangeCharacters (UITextView textView, NSRange range, String text) {
-			if (textView.getTextColor().isEqual(UIColor.lightGray())) {
-				if (text.length() != 0) {
-					textView.setText("");
-					textView.setTextColor(UIColor.black());
-				} else {
-					return false;
-				}
-			}
 			if (nativeInputConfiguration.getMaxLength() != -1
 				&& textView.getText().length() + (text.length() - range.getLength()) > nativeInputConfiguration.getMaxLength()) {
 				return false;
@@ -580,21 +568,29 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		if (configuration.isPreventCorrection()) {
 			uiTextInput.setAutocorrectionType(UITextAutocorrectionType.No);
 			uiTextInput.setSpellCheckingType(UITextSpellCheckingType.No);
-			uiTextInput.setAutocapitalizationType(UITextAutocapitalizationType.None);
 		} else {
 			uiTextInput.setAutocorrectionType(UITextAutocorrectionType.Yes);
 			uiTextInput.setSpellCheckingType(UITextSpellCheckingType.Yes);
-			uiTextInput.setAutocapitalizationType(UITextAutocapitalizationType.Sentences);
 		}
 
+		uiTextInput.setAutocapitalizationType(getIosAutocapitalizationType(configuration.getAutocapitalization()));
+
+		if (configuration.getContentType() != null) {
+			UITextContentType contentType = getIosContentType(configuration.getContentType());
+			if (contentType != null) uiTextInput.setTextContentType(contentType);
+		}
+
+		textfield.setBackgroundColor(toUIColor(configuration.getBackgroundColor()));
+		textfield.getLayer().setCornerRadius(configuration.getCornerRadius());
+
 		if (textfield instanceof UITextView) {
-			if (configuration.getTextInputWrapper().getText().isEmpty()) {
-				((UITextView)textfield).setText(configuration.getPlaceholder());
-				((UITextView)textfield).setTextColor(UIColor.lightGray());
-			} else {
-				((UITextView)textfield).setText(configuration.getTextInputWrapper().getText());
-			}
-			((UITextView)textfield).setDelegate(textViewDelegate);
+			UITextView textView = (UITextView)textfield;
+			textView.setText(configuration.getTextInputWrapper().getText());
+			textView.setTextColor(toUIColor(configuration.getTextColor()));
+			textView.getTextContainer().setLineFragmentPadding(0);
+			textView.setTextContainerInset(new UIEdgeInsets(8, 10, 8, 10));
+			createTextViewPlaceholder(textView, configuration);
+			textView.setDelegate(textViewDelegate);
 		} else {
 			final UITextField asTextField = (UITextField)textfield;
 			if (configuration.getAutoComplete() != null) {
@@ -669,9 +665,17 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				}, Selector.register("editingChanged"), UIControlEvents.EditingChanged);
 			}
 
+			asTextField.setTextColor(toUIColor(configuration.getTextColor()));
+			asTextField.setReturnKeyType(getIosReturnKeyType(configuration.getReturnKeyType()));
+
+			asTextField.setLeftView(new UIView(new CGRect(0, 0, 10, 1)));
+			asTextField.setLeftViewMode(UITextFieldViewMode.Always);
+			asTextField.setRightView(new UIView(new CGRect(0, 0, 10, 1)));
+			asTextField.setRightViewMode(UITextFieldViewMode.Always);
+
 			// Because apple seems to have unreadable placeholder color by default
-			NSAttributedString placeholderString = new NSAttributedString(configuration.getPlaceholder(),
-				new NSDictionary<>(NSAttributedStringAttribute.ForegroundColor.value(), UIColor.lightGray()));
+			NSAttributedString placeholderString = new NSAttributedString(configuration.getPlaceholder(), new NSDictionary<>(
+				NSAttributedStringAttribute.ForegroundColor.value(), toUIColor(configuration.getPlaceholderColor())));
 			asTextField.setAttributedPlaceholder(placeholderString);
 
 			if (configuration.isMaskInput()) {
@@ -713,9 +717,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 		String text;
 		if (uiTextInput instanceof UITextView) {
-			UITextView textView = (UITextView)uiTextInput;
-			// lightGray text color means the placeholder is showing
-			text = textView.getTextColor().isEqual(UIColor.lightGray()) ? "" : textView.getText();
+			text = ((UITextView)uiTextInput).getText();
 		} else {
 			text = ((UITextField)uiTextInput).getText();
 		}
@@ -734,12 +736,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		softkeyboardActive = false;
 		String text;
 		if (textfield instanceof UITextView) {
-			UITextView textView = (UITextView)textfield;
-			if (textView.getTextColor().isEqual(UIColor.lightGray())) {
-				text = "";
-			} else {
-				text = ((UITextView)textfield).getText();
-			}
+			text = ((UITextView)textfield).getText();
 		} else {
 			text = ((UITextField)textfield).getText();
 		}
@@ -771,6 +768,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		// We could first move the text field animated down and than delete, but I think it doesn't matter
 		textfield.removeFromSuperview();
 		textfield = null;
+		textViewPlaceholderLabel = null;
 		nativeInputConfiguration = null;
 	}
 
@@ -805,6 +803,84 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			break;
 		}
 		return preferredInputType;
+	}
+
+	private static UIColor toUIColor (com.badlogic.gdx.graphics.Color color) {
+		return new UIColor(color.r, color.g, color.b, color.a);
+	}
+
+	protected UIReturnKeyType getIosReturnKeyType (NativeInputConfiguration.ReturnKeyType returnKeyType) {
+		switch (returnKeyType) {
+		case GO:
+			return UIReturnKeyType.Go;
+		case SEARCH:
+			return UIReturnKeyType.Search;
+		case SEND:
+			return UIReturnKeyType.Send;
+		case NEXT:
+			return UIReturnKeyType.Next;
+		case DONE:
+			return UIReturnKeyType.Done;
+		default:
+			throw new IllegalArgumentException(returnKeyType.name());
+		}
+	}
+
+	protected UITextAutocapitalizationType getIosAutocapitalizationType (
+		NativeInputConfiguration.Autocapitalization autocapitalization) {
+		switch (autocapitalization) {
+		case WORDS:
+			return UITextAutocapitalizationType.Words;
+		case SENTENCES:
+			return UITextAutocapitalizationType.Sentences;
+		case CHARACTERS:
+			return UITextAutocapitalizationType.AllCharacters;
+		case NONE:
+			return UITextAutocapitalizationType.None;
+		default:
+			throw new IllegalArgumentException(autocapitalization.name());
+		}
+	}
+
+	@Null
+	protected UITextContentType getIosContentType (NativeInputConfiguration.ContentType contentType) {
+		switch (contentType) {
+		case USERNAME:
+			return UITextContentType.Username;
+		case PASSWORD:
+			return UITextContentType.Password;
+		case NEW_PASSWORD:
+			return Foundation.getMajorSystemVersion() >= 12 ? UITextContentType.NewPassword : null;
+		case ONE_TIME_CODE:
+			return Foundation.getMajorSystemVersion() >= 12 ? UITextContentType.OneTimeCode : null;
+		case EMAIL:
+			return UITextContentType.EmailAddress;
+		case PHONE:
+			return UITextContentType.TelephoneNumber;
+		default:
+			throw new IllegalArgumentException(contentType.name());
+		}
+	}
+
+	/** UITextView has no native placeholder support, so we layer a UILabel over where the first line of text renders. */
+	protected void createTextViewPlaceholder (UITextView textView, NativeInputConfiguration configuration) {
+		UILabel placeholderLabel = new UILabel();
+		placeholderLabel.setText(configuration.getPlaceholder());
+		placeholderLabel.setTextColor(toUIColor(configuration.getPlaceholderColor()));
+		UIFont font = textView.getFont() != null ? textView.getFont() : UIFont.getSystemFont(UIFont.getSystemFontSize());
+		placeholderLabel.setFont(font);
+		placeholderLabel.setUserInteractionEnabled(false);
+
+		UIEdgeInsets containerInset = textView.getTextContainerInset();
+		double lineFragmentPadding = textView.getTextContainer().getLineFragmentPadding();
+		double x = containerInset.getLeft() + lineFragmentPadding;
+		placeholderLabel.setFrame(new CGRect(x, containerInset.getTop(),
+			textView.getBounds().getSize().getWidth() - x - containerInset.getRight() - lineFragmentPadding, font.getLineHeight()));
+		// The text view is re-framed when the keyboard shows
+		placeholderLabel.setAutoresizingMask(UIViewAutoresizing.FlexibleWidth);
+
+		textView.addSubview(placeholderLabel);
+		textViewPlaceholderLabel = placeholderLabel;
 	}
 
 	/** Set the keyboard to close when the UITextField return key is pressed
@@ -877,7 +953,6 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		asTrait.setSpellCheckingType(UITextSpellCheckingType.Yes);
 		textfield.setHidden(true);
 		textfield.setBackgroundColor(UIColor.white());
-		textfield.getLayer().setCornerRadius(10);
 
 		app.getUIViewController().getView().addSubview(textfield);
 	}

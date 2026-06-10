@@ -340,6 +340,42 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		return inputType;
 	}
 
+	protected int getAndroidImeAction (NativeInputConfiguration.ReturnKeyType returnKeyType) {
+		switch (returnKeyType) {
+		case GO:
+			return EditorInfo.IME_ACTION_GO;
+		case SEARCH:
+			return EditorInfo.IME_ACTION_SEARCH;
+		case SEND:
+			return EditorInfo.IME_ACTION_SEND;
+		case NEXT:
+			return EditorInfo.IME_ACTION_NEXT;
+		case DONE:
+			return EditorInfo.IME_ACTION_DONE;
+		default:
+			throw new IllegalArgumentException(returnKeyType.name());
+		}
+	}
+
+	protected String[] getAndroidAutofillHints (NativeInputConfiguration.ContentType contentType) {
+		switch (contentType) {
+		case USERNAME:
+			return new String[] {View.AUTOFILL_HINT_USERNAME};
+		case PASSWORD:
+			return new String[] {View.AUTOFILL_HINT_PASSWORD};
+		case NEW_PASSWORD:
+			return new String[] {"newPassword"};
+		case ONE_TIME_CODE:
+			return new String[] {"smsOTPCode", "emailOTPCode", "2faAppOTPCode"};
+		case PHONE:
+			return new String[] {View.AUTOFILL_HINT_PHONE, "phoneNumber"};
+		case EMAIL:
+			return new String[] {View.AUTOFILL_HINT_EMAIL_ADDRESS};
+		default:
+			throw new IllegalArgumentException(contentType.name());
+		}
+	}
+
 	@Override
 	public int getMaxPointers () {
 		return NUM_TOUCHES;
@@ -894,10 +930,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 				if (relativeLayoutField.getChildCount() > 1)
 					relativeLayoutField.removeViews(1, relativeLayoutField.getChildCount() - 1);
 
+				final int imeAction = getAndroidImeAction(configuration.getReturnKeyType());
 				editText.setOnEditorActionListener(new OnEditorActionListener() {
 					@Override
 					public boolean onEditorAction (TextView textView, int actionId, android.view.KeyEvent keyEvent) {
-						if (actionId == EditorInfo.IME_ACTION_DONE) {
+						if (actionId == imeAction) {
 							Gdx.input.closeTextInputField(true);
 							return true;
 						}
@@ -914,13 +951,34 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 
 				if (configuration.isPreventCorrection()) {
 					editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-					editText.setInputType(editText.getInputType() & ~InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+					editText.setInputType(editText.getInputType() & ~InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
 				} else {
-					editText.setInputType(
-						editText.getInputType() | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
+					editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
+					editText.setInputType(editText.getInputType() & ~InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 				}
 
-				editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+				// Subtract all capitilisations out first
+				editText.setInputType(editText.getInputType() & ~(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+					| InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS));
+				switch (configuration.getAutocapitalization()) {
+				case SENTENCES:
+					editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+					break;
+				case WORDS:
+					editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+					break;
+				case CHARACTERS:
+					editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+					break;
+				case NONE:
+					break;
+				}
+
+				if (Build.VERSION.SDK_INT >= 26 && configuration.getContentType() != null) {
+					editText.setAutofillHints(getAndroidAutofillHints(configuration.getContentType()));
+				}
+
+				editText.setImeOptions(imeAction);
 				if (configuration.isMultiLine()) {
 					editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 					editText.setImeOptions(editText.getImeOptions() | EditorInfo.IME_FLAG_NO_FULLSCREEN);
@@ -982,12 +1040,17 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 					editText.setAdapter(null);
 				}
 
-				float radius = 10 * context.getResources().getDisplayMetrics().density;
+				float density = context.getResources().getDisplayMetrics().density;
+				float radius = configuration.getCornerRadius() * density;
 				GradientDrawable background = new GradientDrawable();
-				background.setColor(Color.WHITE);
+				background.setColor(com.badlogic.gdx.graphics.Color.argb8888(configuration.getBackgroundColor()));
 				background.setCornerRadius(radius);
 				editText.setBackground(background);
-				editText.setPadding((int)radius, editText.getPaddingTop(), (int)radius, editText.getPaddingBottom());
+				// Keep text from touching the field edge even with square corners
+				int horizontalPadding = (int)Math.max(radius, 10 * density);
+				editText.setPadding(horizontalPadding, editText.getPaddingTop(), horizontalPadding, editText.getPaddingBottom());
+				editText.setTextColor(com.badlogic.gdx.graphics.Color.argb8888(configuration.getTextColor()));
+				editText.setHintTextColor(com.badlogic.gdx.graphics.Color.argb8888(configuration.getPlaceholderColor()));
 
 				if (configuration.isMaskInput()) {
 					// For some reason this needs to be done last, otherwise it won't work
