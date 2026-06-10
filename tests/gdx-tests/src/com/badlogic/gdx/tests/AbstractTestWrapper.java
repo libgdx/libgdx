@@ -25,6 +25,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.input.NativeInputConfiguration;
+import com.badlogic.gdx.input.NativeInputConfiguration.NativeInputCloseCallback;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -308,6 +309,16 @@ public abstract class AbstractTestWrapper extends GdxTest {
 		@Override
 		public void closeTextInputField (boolean sendReturn) {
 			input.closeTextInputField(sendReturn);
+		}
+
+		@Override
+		public void closeTextInputField(boolean isConfirmative, NativeInputCloseCallback callback) {
+			input.closeTextInputField(isConfirmative, callback);
+		}
+
+		@Override
+		public boolean isTextInputFieldOpened() {
+			return input.isTextInputFieldOpened();
 		}
 
 		@Override
