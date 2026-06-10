@@ -36,9 +36,40 @@ public class IOSUIViewController extends GLKViewController {
 
 	@Method(selector = "keyboardWillHide")
 	public void keyboardWillHide (NSNotification notification) {
-		if (observer != null) {
-			observer.onKeyboardHide();
-			observer.onKeyboardHeightChanged(0);
+		UIView view = graphics.input.getActiveKeyboardTextField();
+		if (view == null) {
+			if (observer != null) {
+				observer.onKeyboardHide();
+				observer.onKeyboardHeightChanged(0);
+			}
+
+		} else {
+			// On iPad a keyboard can close because it 1. the close button was pressed and 2. a password auto-fill was requested
+			// We can differentiate them, if in postRunnable the view is still first responder. If it is -> password auto-fill and we
+			// ignore that the keyboard closed
+			// If not, dispatch to observer and request close
+			Gdx.app.postRunnable( () -> {
+				UIView active = graphics.input.getActiveKeyboardTextField();
+				if (view != active) {
+					// Our field was closed meanwhile (own closeTextInputField / setOnscreenKeyboardVisible(false)).
+					// Don't touch `view` — it may be disposed. If it was replaced by a new field, its
+					// keyboardWillShow already fired, so swallow the stale hide.
+					if (active == null && observer != null) {
+						observer.onKeyboardHide();
+						observer.onKeyboardHeightChanged(0);
+					}
+					return;
+				}
+
+				if (view.isFirstResponder()) return;
+
+				if (observer != null) {
+					observer.onKeyboardHide();
+					observer.onKeyboardHeightChanged(0);
+				}
+
+				if (graphics.input.isTextInputFieldOpened()) graphics.input.closeTextInputField(false);
+			});
 		}
 	}
 
