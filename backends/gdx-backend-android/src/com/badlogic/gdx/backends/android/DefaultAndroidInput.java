@@ -87,7 +87,7 @@ import java.util.List;
  *
  * @author mzechner
  * @author jshapcot */
-public class DefaultAndroidInput extends AbstractInput implements AndroidInput, KeyboardHeightObserver {
+public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 
 	static class KeyEvent {
 		static final int KEY_DOWN = 0;

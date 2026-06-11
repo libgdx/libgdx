@@ -295,13 +295,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			this.isWaitingForAudio = false;
 		}
 		super.onResume();
-		keyboardHeightProvider.setKeyboardHeightObserver((DefaultAndroidInput)Gdx.input);
-		((AndroidGraphics)getGraphics()).getView().post(new Runnable() {
-			@Override
-			public void run () {
-				keyboardHeightProvider.start();
-			}
-		});
+		keyboardHeightProvider.setKeyboardHeightObserver(input);
+		graphics.getView().post(() -> keyboardHeightProvider.start());
 	}
 
 	@Override
