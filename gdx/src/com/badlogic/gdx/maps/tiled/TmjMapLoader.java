@@ -225,7 +225,9 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTiledMapLoader.Parameters
 			for (JsonValue tile : tiles) {
 				if (tile.has("image")) {
 					String tileImageSource = tile.getString("image");
-					FileHandle tileImage = getRelativeFileHandle(tmjFile, tileImageSource);
+					String tilesetSource = element.getString("source", null);
+					FileHandle tsxFile = (tilesetSource != null) ? getRelativeFileHandle(tmjFile, tilesetSource) : tmjFile;
+					FileHandle tileImage = getRelativeFileHandle(tsxFile, tileImageSource);
 					TextureRegion texture = imageResolver.getImage(tileImage.path());
 
 					int tileId = firstgid + tile.getInt("id");
