@@ -124,7 +124,7 @@ public class IOSUIViewController extends MGLKViewController {
 		}
 	}
 
-	private void layoutTextFieldAboveKeyboard (UIView textField, CGRect keyboardFrameScreen) {
+	protected void layoutTextFieldAboveKeyboard (UIView textField, CGRect keyboardFrameScreen) {
 		NativeInputConfiguration configuration = graphics.input.getNativeInputConfiguration();
 		float insetFraction = configuration != null ? configuration.getHorizontalInsetFraction() : 0;
 		double fallbackInset = getView().getBounds().getSize().getWidth() * insetFraction;
@@ -151,7 +151,7 @@ public class IOSUIViewController extends MGLKViewController {
 		if (accessoryView != null) accessoryView.setFrame(accessoryView.getFrame());
 	}
 
-	void moveTextFieldToBottom (boolean animated) {
+	protected void moveTextFieldToBottom (boolean animated) {
 		UIView textField = graphics.input.getActiveKeyboardTextField();
 		if (textField == null || graphics.input.getNativeInputConfiguration() == null) return;
 		// Synthetic keyboard frame: the bottom safe area, plus the accessory view that UIKit keeps showing at the bottom of
