@@ -694,7 +694,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		if (configuration.getFieldCustomizer() != null) configuration.getFieldCustomizer().customize(textfield);
 		// Start at the bottom of the screen: keyboardWillShow moves the field above a docked keyboard, but with a hardware
 		// keyboard or an already floating keyboard no notification fires at all and the field stays here
-		app.graphics.viewController.moveTextFieldToBottom(false);
+		app.graphics.viewController.moveTextFieldToBottom();
 		textfield.reloadInputViews();
 		textfield.becomeFirstResponder();
 		UITextPosition start = uiTextInput.getPosition(uiTextInput.getBeginningOfDocument(),

@@ -38,6 +38,11 @@ public class IOSUIViewController extends GLKViewController {
 	@Method(selector = "keyboardWillHide")
 	public void keyboardWillHide (NSNotification notification) {
 		softKeyboardShown = false;
+
+		NSDictionary<NSString, ?> userInfo = (NSDictionary<NSString, ?>)notification.getUserInfo();
+		double duration = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationDuration())).doubleValue();
+		long curve = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationCurve())).longValue();
+
 		UIView view = graphics.input.getActiveKeyboardTextField();
 		if (view == null) {
 			if (observer != null) {
@@ -48,8 +53,10 @@ public class IOSUIViewController extends GLKViewController {
 		} else {
 			// On iPad a keyboard can close because it 1. the close button was pressed and 2. a password auto-fill was requested
 			// We can differentiate them, if in postRunnable the view is still first responder. If it is -> password auto-fill and we
-			// ignore that the keyboard closed
-			// If not, dispatch to observer and request close
+			// ignore that the keyboard closed.
+			// If not, dispatch to observer and request close. But we can already animate-down the view, unrelated if it will hide or
+			// not
+			UIView.animate(duration, 0, new UIViewAnimationOptions(curve << 16), this::moveTextFieldToBottom, null);
 			Gdx.app.postRunnable( () -> {
 				UIView active = graphics.input.getActiveKeyboardTextField();
 				if (view != active) {
@@ -63,12 +70,7 @@ public class IOSUIViewController extends GLKViewController {
 					return;
 				}
 
-				if (view.isFirstResponder()) {
-					// Editing continues without a docked keyboard: floating/split keyboard, hardware keyboard or a transient
-					// hide like the password auto-fill sheet. Don't close, but don't leave the field at its stale position
-					moveTextFieldToBottom(true);
-					return;
-				}
+				if (view.isFirstResponder()) return;
 
 				if (observer != null) {
 					observer.onKeyboardHide();
@@ -89,6 +91,8 @@ public class IOSUIViewController extends GLKViewController {
 
 		NSDictionary<NSString, ?> userInfo = (NSDictionary<NSString, ?>)notification.getUserInfo();
 		CGRect keyboardFrameScreen = ((NSValue)userInfo.get(UIKeyboardAnimation.Keys.FrameEnd())).rectValue();
+		double duration = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationDuration())).doubleValue();
+		long curve = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationCurve())).longValue();
 
 		UIView textField = graphics.input.getActiveKeyboardTextField();
 		if (textField == null || !textField.isFirstResponder() || textField.isHidden()) {
@@ -98,18 +102,6 @@ public class IOSUIViewController extends GLKViewController {
 				observer.onKeyboardHeightChanged(kbHeight);
 			}
 			return;
-		}
-
-		// I haven't found any docs on when keyboardWillShow constructs a implicit animation, so iOS 15 should be fine
-		if (Foundation.getMajorSystemVersion() <= 15) {
-			double duration;
-			long curve;
-			curve = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationCurve())).longValue();
-			duration = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationDuration())).doubleValue();
-
-			UIView.beginAnimations(null, null);
-			UIView.setAnimationDurationInSeconds(duration);
-			UIView.setAnimationCurve(UIViewAnimationCurve.valueOf(curve));
 		}
 
 		UIView accessoryView = textField.getInputAccessoryView();
@@ -123,11 +115,10 @@ public class IOSUIViewController extends GLKViewController {
 			observer.onKeyboardHeightChanged(kbHeight);
 		}
 
-		layoutTextFieldAboveKeyboard(textField, keyboardFrameScreen);
-
-		if (Foundation.getMajorSystemVersion() <= 15) {
-			UIView.commitAnimations();
-		}
+		// The keyboard reports a private animation curve (7) that UIViewAnimationCurve can't represent: shifting the raw
+		// value into the curve bits of UIViewAnimationOptions passes it through to UIKit unchanged
+		UIView.animate(duration, 0, new UIViewAnimationOptions(curve << 16),
+			() -> layoutTextFieldAboveKeyboard(textField, keyboardFrameScreen), null);
 	}
 
 	protected void layoutTextFieldAboveKeyboard (UIView textField, CGRect keyboardFrameScreen) {
@@ -160,7 +151,7 @@ public class IOSUIViewController extends GLKViewController {
 		if (accessoryView != null) accessoryView.setFrame(accessoryView.getFrame());
 	}
 
-	protected void moveTextFieldToBottom (boolean animated) {
+	protected void moveTextFieldToBottom () {
 		UIView textField = graphics.input.getActiveKeyboardTextField();
 		if (textField == null || graphics.input.getNativeInputConfiguration() == null) return;
 
@@ -172,11 +163,7 @@ public class IOSUIViewController extends GLKViewController {
 		CGRect screenRect = UIScreen.getMainScreen().getBounds();
 		CGRect keyboardFrameScreen = new CGRect(new CGPoint(0, screenRect.getSize().getHeight() - height),
 			new CGSize(screenRect.getSize().getWidth(), height));
-		if (animated) {
-			UIView.animate(0.25, () -> layoutTextFieldAboveKeyboard(textField, keyboardFrameScreen));
-		} else {
-			layoutTextFieldAboveKeyboard(textField, keyboardFrameScreen);
-		}
+		layoutTextFieldAboveKeyboard(textField, keyboardFrameScreen);
 	}
 
 	public void injectKeyboardNotification () {
@@ -240,7 +227,7 @@ public class IOSUIViewController extends GLKViewController {
 			// Rotating/resizing without an on-screen keyboard (hardware or floating keyboard) fires no keyboard
 			// notification, so reposition the native input field here; with a docked keyboard keyboardWillShow re-fires
 			// with the new keyboard frame and handles it instead
-			if (!softKeyboardShown) moveTextFieldToBottom(false);
+			if (!softKeyboardShown) moveTextFieldToBottom();
 		}
 
 	}
