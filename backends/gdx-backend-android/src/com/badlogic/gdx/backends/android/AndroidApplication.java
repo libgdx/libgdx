@@ -296,7 +296,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 		super.onResume();
 		keyboardHeightProvider.setKeyboardHeightObserver(input);
-		graphics.getView().post(() -> keyboardHeightProvider.start());
+		graphics.getView().post( () -> keyboardHeightProvider.start());
 	}
 
 	@Override
