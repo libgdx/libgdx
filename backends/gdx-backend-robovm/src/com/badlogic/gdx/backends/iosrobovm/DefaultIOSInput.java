@@ -695,6 +695,10 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		}
 		if (configuration.getFieldCustomizer() != null) configuration.getFieldCustomizer().customize(textfield);
 
+		// Start at the bottom of the screen: keyboardWillShow moves the field above a docked keyboard, but with a hardware
+		// keyboard or an already floating keyboard no notification fires at all and the field stays here
+		app.graphics.viewController.moveTextFieldToBottom(false);
+
 		textfield.reloadInputViews();
 		textfield.becomeFirstResponder();
 
@@ -763,6 +767,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 			suggestionTable.removeFromSuperview();
 			suggestionTable = null;
 		}
+
+		if (textfield.getInputAccessoryView() != null) textfield.getInputAccessoryView().setHidden(true);
 
 		textfield.resignFirstResponder();
 		// We could first move the text field animated down and than delete, but I think it doesn't matter
@@ -903,11 +909,24 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		rect.setOrigin(new CGPoint(app.graphics.screenBounds.width, app.graphics.screenBounds.height));
 		rect.setSize(new CGSize(app.graphics.screenBounds.width, 50));
 
-		UIView accessoryView = null;
+		if (isMultiLine) {
+			UITextView textView = new UITextView(rect);
+			textView.setTextColor(UIColor.black());
+			textView.setReturnKeyType(UIReturnKeyType.Default);
+			textfield = textView;
+		} else {
+			UITextField uiTextField = new UITextField(rect);
+			uiTextField.setTextColor(UIColor.black());
+			uiTextField.setReturnKeyType(UIReturnKeyType.Done);
+			textfield = uiTextField;
+		}
+
 		if (needsDoneToolbar) {
 			int height = Foundation.getMajorSystemVersion() >= 26 ? 44 : 35;
-			UIToolbar uiToolbar = new UIToolbar(
-				new CGRect(new CGPoint(0, 0), new CGSize(UIScreen.getMainScreen().getBounds().getSize().getWidth(), height)));
+			CGRect toolbarFrame = new CGRect(new CGPoint(0, 0),
+				new CGSize(UIScreen.getMainScreen().getBounds().getSize().getWidth(), height));
+			UIToolbar uiToolbar = Foundation.getMajorSystemVersion() >= 26 ? new PinnedFrameToolbar(toolbarFrame, textfield)
+				: new UIToolbar(toolbarFrame);
 
 			UIBarButtonItem space = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, (NSObject)null, null);
 
@@ -927,21 +946,11 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 				uiToolbar.updateConstraintsIfNeeded();
 			}
 
-			accessoryView = uiToolbar;
-		}
-
-		if (isMultiLine) {
-			UITextView textView = new UITextView(rect);
-			textView.setInputAccessoryView(accessoryView);
-			textView.setTextColor(UIColor.black());
-			textView.setReturnKeyType(UIReturnKeyType.Default);
-			textfield = textView;
-		} else {
-			UITextField uiTextField = new UITextField(rect);
-			uiTextField.setTextColor(UIColor.black());
-			uiTextField.setReturnKeyType(UIReturnKeyType.Done);
-			uiTextField.setInputAccessoryView(accessoryView);
-			textfield = uiTextField;
+			if (isMultiLine) {
+				((UITextView)textfield).setInputAccessoryView(uiToolbar);
+			} else {
+				((UITextField)textfield).setInputAccessoryView(uiToolbar);
+			}
 		}
 
 		UITextInputTraits asTrait = (UITextInputTraits)textfield;
@@ -955,6 +964,70 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		textfield.setBackgroundColor(UIColor.white());
 
 		app.getUIViewController().getView().addSubview(textfield);
+	}
+
+	/** Accessory toolbar that derives its own frame from the active text field. UIKit's input hosting system owns the accessory
+	 * view's geometry and rewrites it at unpredictable times during keyboard transitions (re-hosting, dismiss animations,
+	 * dock/float changes), and it hosts the view in containers whose own position differs between docked, floating and
+	 * keyboard-less modes — so neither an externally set frame nor host-relative coordinates stick. `frame` is computed from
+	 * `center` and `bounds`, and UIKit (autolayout in particular) positions views by writing those two directly without ever
+	 * calling `setFrame:` — so all three setters are intercepted. Every geometry write — ours or UIKit's — re-resolves against the
+	 * text field's and the host's current position, placing the toolbar so its centered liquid glass pill sits right of the field,
+	 * vertically centered on its row. */
+	static class PinnedFrameToolbar extends UIToolbar {
+		private final UIView textField;
+
+		PinnedFrameToolbar (CGRect frame, UIView textField) {
+			super(frame);
+			this.textField = textField;
+		}
+
+		private CGRect resolvePinnedFrame () {
+			// textField is still null while the super constructor applies the initial frame
+			if (textField == null || textField.getSuperview() == null || getSuperview() == null) return null;
+			CGRect fieldFrame = textField.getSuperview().convertRectToView(textField.getFrame(), null);
+			double pillSize = getBounds().getSize().getHeight();
+			double width = textField.getSuperview().getBounds().getSize().getWidth();
+			double pillCenterX = fieldFrame.getMaxX() + 3 + pillSize / 2;
+			CGRect windowFrame = new CGRect(new CGPoint(pillCenterX - width / 2, fieldFrame.getMidY() - pillSize / 2),
+				new CGSize(width, pillSize));
+			return getSuperview().convertRectFromView(windowFrame, null);
+		}
+
+		@Override
+		public void setFrame (CGRect frame) {
+			CGRect pinned = resolvePinnedFrame();
+			super.setFrame(pinned != null ? pinned : frame);
+		}
+
+		@Override
+		public void setCenter (CGPoint center) {
+			CGRect pinned = resolvePinnedFrame();
+			super.setCenter(pinned != null ? new CGPoint(pinned.getMidX(), pinned.getMidY()) : center);
+		}
+
+		@Override
+		public void setBounds (CGRect bounds) {
+			CGRect pinned = resolvePinnedFrame();
+			super.setBounds(pinned != null ? new CGRect(bounds.getOrigin(), pinned.getSize()) : bounds);
+		}
+
+		// UIKit may frame the view before hosting it (where the pin can't resolve yet) and never write again — e.g. when
+		// the field opens under an already floating keyboard, which fires no keyboard notifications either. Re-anchor at
+		// the attachment moments themselves
+		@Override
+		public void didMoveToSuperview () {
+			super.didMoveToSuperview();
+			CGRect pinned = resolvePinnedFrame();
+			if (pinned != null) super.setFrame(pinned);
+		}
+
+		@Override
+		public void didMoveToWindow () {
+			super.didMoveToWindow();
+			CGRect pinned = resolvePinnedFrame();
+			if (pinned != null) super.setFrame(pinned);
+		}
 	}
 
 	/** Builds an {@link UIAlertController} with an added {@link UITextField} for inputting text.

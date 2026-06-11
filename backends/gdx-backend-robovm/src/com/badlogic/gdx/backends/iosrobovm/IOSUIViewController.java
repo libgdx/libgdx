@@ -33,9 +33,11 @@ public class IOSUIViewController extends GLKViewController {
 	}
 
 	protected Input.KeyboardHeightObserver observer;
+	private boolean softKeyboardShown;
 
 	@Method(selector = "keyboardWillHide")
 	public void keyboardWillHide (NSNotification notification) {
+		softKeyboardShown = false;
 		UIView view = graphics.input.getActiveKeyboardTextField();
 		if (view == null) {
 			if (observer != null) {
@@ -61,7 +63,12 @@ public class IOSUIViewController extends GLKViewController {
 					return;
 				}
 
-				if (view.isFirstResponder()) return;
+				if (view.isFirstResponder()) {
+					// Editing continues without a docked keyboard: floating/split keyboard, hardware keyboard or a transient
+					// hide like the password auto-fill sheet. Don't close, but don't leave the field at its stale position
+					moveTextFieldToBottom(true);
+					return;
+				}
 
 				if (observer != null) {
 					observer.onKeyboardHide();
@@ -75,7 +82,7 @@ public class IOSUIViewController extends GLKViewController {
 
 	@Method(selector = "keyboardWillShow")
 	public void keyboardWillShow (NSNotification notification) {
-		NativeInputConfiguration configuration = graphics.input.getNativeInputConfiguration();
+		softKeyboardShown = true;
 		CGRect screenRect = UIScreen.getMainScreen().getBounds();
 		double screenHeight = screenRect.getSize().getHeight();
 		double heightScale = Gdx.graphics.getHeight() / screenHeight;
@@ -105,23 +112,10 @@ public class IOSUIViewController extends GLKViewController {
 			UIView.setAnimationCurve(UIViewAnimationCurve.valueOf(curve));
 		}
 
-		float insetFraction = configuration != null ? configuration.getHorizontalInsetFraction() : 0;
-		double fallbackInset = getView().getBounds().getSize().getWidth() * insetFraction;
-
 		UIView accessoryView = textField.getInputAccessoryView();
-		if (Foundation.getMajorSystemVersion() >= 26 && accessoryView != null) {
-			CGRect keyboardFrameInView = textField.convertRectToView(keyboardFrameScreen, null);
-			double extraRightShift = getView().getSafeAreaInsets().getRight() > 0 ? 0 : fallbackInset;
-			CGRect accessoryFrame = new CGRect(
-				new CGPoint(keyboardFrameInView.getSize().getWidth() / 2 - accessoryView.getBounds().getSize().getHeight() / 2 - 2
-					- extraRightShift, -3),
-				new CGSize(getView().getBounds().getSize().getWidth(), accessoryView.getBounds().getSize().getHeight()));
-			accessoryView.setFrame(accessoryFrame);
-		}
-
-		CGRect newFrame = textField.getFrame();
 		if (observer != null) {
-			int kbHeight = (int)((keyboardFrameScreen.getSize().getHeight() + newFrame.getSize().getHeight()) * heightScale);
+			int kbHeight = (int)((keyboardFrameScreen.getSize().getHeight() + textField.getFrame().getSize().getHeight())
+				* heightScale);
 			if (Foundation.getMajorSystemVersion() >= 26 && accessoryView != null) {
 				kbHeight -= (int)(accessoryView.getBounds().getSize().getHeight() * heightScale);
 			}
@@ -129,6 +123,20 @@ public class IOSUIViewController extends GLKViewController {
 			observer.onKeyboardHeightChanged(kbHeight);
 		}
 
+		layoutTextFieldAboveKeyboard(textField, keyboardFrameScreen);
+
+		if (Foundation.getMajorSystemVersion() <= 15) {
+			UIView.commitAnimations();
+		}
+	}
+
+	protected void layoutTextFieldAboveKeyboard (UIView textField, CGRect keyboardFrameScreen) {
+		NativeInputConfiguration configuration = graphics.input.getNativeInputConfiguration();
+		float insetFraction = configuration != null ? configuration.getHorizontalInsetFraction() : 0;
+		double fallbackInset = getView().getBounds().getSize().getWidth() * insetFraction;
+
+		UIView accessoryView = textField.getInputAccessoryView();
+		CGRect newFrame = textField.getFrame();
 		CGRect keyboardFrameInTextField = textField.convertRectToView(keyboardFrameScreen, null);
 		double keyboardHeight = keyboardFrameInTextField.getSize().getHeight();
 		double specialRightInset = 0;
@@ -146,8 +154,28 @@ public class IOSUIViewController extends GLKViewController {
 			new CGSize(getView().getBounds().getSize().getWidth() - leftInset - rightInset, newFrame.getSize().getHeight()));
 		textField.setFrame(newFrame);
 
-		if (Foundation.getMajorSystemVersion() <= 15) {
-			UIView.commitAnimations();
+		// The iOS 26+ toolbar (DefaultIOSInput.PinnedFrameToolbar) derives its real frame from the field on any geometry
+		// write, so a dummy setFrame re-anchors it to the field's new position (and animates along inside an animation
+		// block). For the plain pre-26 toolbar this is a no-op.
+		if (accessoryView != null) accessoryView.setFrame(accessoryView.getFrame());
+	}
+
+	protected void moveTextFieldToBottom (boolean animated) {
+		UIView textField = graphics.input.getActiveKeyboardTextField();
+		if (textField == null || graphics.input.getNativeInputConfiguration() == null) return;
+
+		// Synthetic keyboard frame: the bottom safe area, plus the accessory view that UIKit keeps showing at the bottom of
+		// the screen while no on-screen keyboard is up (e.g. with a hardware keyboard)
+		double height = getView().getSafeAreaInsets().getBottom();
+		UIView accessoryView = textField.getInputAccessoryView();
+		if (accessoryView != null) height += accessoryView.getBounds().getSize().getHeight();
+		CGRect screenRect = UIScreen.getMainScreen().getBounds();
+		CGRect keyboardFrameScreen = new CGRect(new CGPoint(0, screenRect.getSize().getHeight() - height),
+			new CGSize(screenRect.getSize().getWidth(), height));
+		if (animated) {
+			UIView.animate(0.25, () -> layoutTextFieldAboveKeyboard(textField, keyboardFrameScreen));
+		} else {
+			layoutTextFieldAboveKeyboard(textField, keyboardFrameScreen);
 		}
 	}
 
@@ -208,6 +236,11 @@ public class IOSUIViewController extends GLKViewController {
 			} else {
 				app.listener.resize(newBounds.width, newBounds.height);
 			}
+
+			// Rotating/resizing without an on-screen keyboard (hardware or floating keyboard) fires no keyboard
+			// notification, so reposition the native input field here; with a docked keyboard keyboardWillShow re-fires
+			// with the new keyboard frame and handles it instead
+			if (!softKeyboardShown) moveTextFieldToBottom(false);
 		}
 
 	}
