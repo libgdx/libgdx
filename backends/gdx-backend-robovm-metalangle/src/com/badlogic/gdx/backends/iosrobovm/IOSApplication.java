@@ -92,6 +92,8 @@ public class IOSApplication implements Application {
 
 	IOSInput input;
 
+	IOSKeyboardHeightProvider keyboardHeightProvider;
+
 	IOSNet net;
 
 	int logLevel = Application.LOG_DEBUG;
@@ -142,6 +144,9 @@ public class IOSApplication implements Application {
 		Gdx.input = this.input;
 		Gdx.net = this.net;
 		this.input.setupPeripherals();
+		this.keyboardHeightProvider = new IOSKeyboardHeightProvider();
+		this.keyboardHeightProvider.setKeyboardHeightObserver(input);
+		this.keyboardHeightProvider.start();
 		this.uiWindow.setRootViewController(this.graphics.viewController);
 		this.graphics.updateSafeInsets();
 		Gdx.app.debug("IOSApplication", "created");
@@ -284,6 +289,10 @@ public class IOSApplication implements Application {
 	@Override
 	public Input getInput () {
 		return input;
+	}
+
+	public IOSKeyboardHeightProvider getKeyboardHeightProvider () {
+		return keyboardHeightProvider;
 	}
 
 	@Override

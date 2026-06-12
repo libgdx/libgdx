@@ -1,18 +1,10 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
-import com.badlogic.gdx.input.NativeInputConfiguration;
-import org.robovm.apple.coregraphics.CGPoint;
-import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.coregraphics.CGSize;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.uikit.*;
-import org.robovm.objc.Selector;
-import org.robovm.objc.annotation.Method;
 
 public class IOSUIViewController extends GLKViewController {
 	final IOSApplication app;
@@ -29,149 +21,6 @@ public class IOSUIViewController extends GLKViewController {
 		// start GLKViewController even though we may only draw a single frame
 		// (we may be in non-continuous mode)
 		setPaused(false);
-		injectKeyboardNotification();
-	}
-
-	protected Input.KeyboardHeightObserver observer;
-	private boolean softKeyboardShown;
-
-	@Method(selector = "keyboardWillHide")
-	public void keyboardWillHide (NSNotification notification) {
-		softKeyboardShown = false;
-
-		NSDictionary<NSString, ?> userInfo = (NSDictionary<NSString, ?>)notification.getUserInfo();
-		double duration = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationDuration())).doubleValue();
-		long curve = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationCurve())).longValue();
-
-		UIView view = graphics.input.getActiveKeyboardTextField();
-		if (view == null) {
-			if (observer != null) {
-				observer.onKeyboardHide();
-				observer.onKeyboardHeightChanged(0);
-			}
-
-		} else {
-			// On iPad a keyboard can close because it 1. the close button was pressed and 2. a password auto-fill was requested
-			// We can differentiate them, if in postRunnable the view is still first responder. If it is -> password auto-fill and we
-			// ignore that the keyboard closed.
-			// If not, dispatch to observer and request close. But we can already animate-down the view, unrelated if it will hide or
-			// not
-			UIView.animate(duration, 0, new UIViewAnimationOptions(curve << 16), this::moveTextFieldToBottom, null);
-			Gdx.app.postRunnable( () -> {
-				UIView active = graphics.input.getActiveKeyboardTextField();
-				if (view != active) {
-					// Our field was closed meanwhile (own closeTextInputField / setOnscreenKeyboardVisible(false)).
-					// Don't touch `view` — it may be disposed. If it was replaced by a new field, its
-					// keyboardWillShow already fired, so swallow the stale hide.
-					if (active == null && observer != null) {
-						observer.onKeyboardHide();
-						observer.onKeyboardHeightChanged(0);
-					}
-					return;
-				}
-
-				if (view.isFirstResponder()) return;
-
-				if (observer != null) {
-					observer.onKeyboardHide();
-					observer.onKeyboardHeightChanged(0);
-				}
-
-				if (graphics.input.isTextInputFieldOpened()) graphics.input.closeTextInputField(false);
-			});
-		}
-	}
-
-	@Method(selector = "keyboardWillShow")
-	public void keyboardWillShow (NSNotification notification) {
-		softKeyboardShown = true;
-		CGRect screenRect = UIScreen.getMainScreen().getBounds();
-		double screenHeight = screenRect.getSize().getHeight();
-		double heightScale = Gdx.graphics.getHeight() / screenHeight;
-
-		NSDictionary<NSString, ?> userInfo = (NSDictionary<NSString, ?>)notification.getUserInfo();
-		CGRect keyboardFrameScreen = ((NSValue)userInfo.get(UIKeyboardAnimation.Keys.FrameEnd())).rectValue();
-		double duration = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationDuration())).doubleValue();
-		long curve = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationCurve())).longValue();
-
-		UIView textField = graphics.input.getActiveKeyboardTextField();
-		if (textField == null || !textField.isFirstResponder() || textField.isHidden()) {
-			if (observer != null) {
-				int kbHeight = (int)(keyboardFrameScreen.getSize().getHeight() * heightScale);
-				observer.onKeyboardShow(kbHeight);
-				observer.onKeyboardHeightChanged(kbHeight);
-			}
-			return;
-		}
-
-		UIView accessoryView = textField.getInputAccessoryView();
-		if (observer != null) {
-			int kbHeight = (int)((keyboardFrameScreen.getSize().getHeight() + textField.getFrame().getSize().getHeight())
-				* heightScale);
-			if (Foundation.getMajorSystemVersion() >= 26 && accessoryView != null) {
-				kbHeight -= (int)(accessoryView.getBounds().getSize().getHeight() * heightScale);
-			}
-			observer.onKeyboardShow(kbHeight);
-			observer.onKeyboardHeightChanged(kbHeight);
-		}
-
-		// The keyboard reports a private animation curve (7) that UIViewAnimationCurve can't represent: shifting the raw
-		// value into the curve bits of UIViewAnimationOptions passes it through to UIKit unchanged
-		UIView.animate(duration, 0, new UIViewAnimationOptions(curve << 16),
-			() -> layoutTextFieldAboveKeyboard(textField, keyboardFrameScreen), null);
-	}
-
-	protected void layoutTextFieldAboveKeyboard (UIView textField, CGRect keyboardFrameScreen) {
-		NativeInputConfiguration configuration = graphics.input.getNativeInputConfiguration();
-		float insetFraction = configuration != null ? configuration.getHorizontalInsetFraction() : 0;
-		double fallbackInset = getView().getBounds().getSize().getWidth() * insetFraction;
-
-		UIView accessoryView = textField.getInputAccessoryView();
-		CGRect newFrame = textField.getFrame();
-		CGRect keyboardFrameInTextField = textField.convertRectToView(keyboardFrameScreen, null);
-		double keyboardHeight = keyboardFrameInTextField.getSize().getHeight();
-		double specialRightInset = 0;
-		if (Foundation.getMajorSystemVersion() >= 26 && accessoryView != null) {
-			keyboardHeight -= accessoryView.getBounds().getSize().getHeight();
-			specialRightInset = accessoryView.getBounds().getSize().getHeight() + 3;
-		}
-
-		double leftInset = getView().getSafeAreaInsets().getLeft() > 0 ? getView().getSafeAreaInsets().getLeft() : fallbackInset;
-		double rightInset = (getView().getSafeAreaInsets().getRight() > 0 ? getView().getSafeAreaInsets().getRight()
-			: fallbackInset) + specialRightInset;
-		newFrame.setOrigin(
-			new CGPoint(leftInset, getView().getBounds().getSize().getHeight() - keyboardHeight - newFrame.getSize().getHeight()));
-		newFrame.setSize(
-			new CGSize(getView().getBounds().getSize().getWidth() - leftInset - rightInset, newFrame.getSize().getHeight()));
-		textField.setFrame(newFrame);
-
-		// The iOS 26+ toolbar (DefaultIOSInput.PinnedFrameToolbar) derives its real frame from the field on any geometry
-		// write, so a dummy setFrame re-anchors it to the field's new position (and animates along inside an animation
-		// block). For the plain pre-26 toolbar this is a no-op.
-		if (accessoryView != null) accessoryView.setFrame(accessoryView.getFrame());
-	}
-
-	protected void moveTextFieldToBottom () {
-		UIView textField = graphics.input.getActiveKeyboardTextField();
-		if (textField == null || graphics.input.getNativeInputConfiguration() == null) return;
-
-		// Synthetic keyboard frame: the bottom safe area, plus the accessory view that UIKit keeps showing at the bottom of
-		// the screen while no on-screen keyboard is up (e.g. with a hardware keyboard)
-		double height = getView().getSafeAreaInsets().getBottom();
-		UIView accessoryView = textField.getInputAccessoryView();
-		if (accessoryView != null) height += accessoryView.getBounds().getSize().getHeight();
-		CGRect screenRect = UIScreen.getMainScreen().getBounds();
-		CGRect keyboardFrameScreen = new CGRect(new CGPoint(0, screenRect.getSize().getHeight() - height),
-			new CGSize(screenRect.getSize().getWidth(), height));
-		layoutTextFieldAboveKeyboard(textField, keyboardFrameScreen);
-	}
-
-	public void injectKeyboardNotification () {
-		NSNotificationCenter.getDefaultCenter().addObserver(this, Selector.register("keyboardWillShow"),
-			UIWindow.KeyboardWillShowNotification(), null);
-		NSNotificationCenter.getDefaultCenter().addObserver(this, Selector.register("keyboardWillHide"),
-			UIWindow.KeyboardWillHideNotification(), null);
-
 	}
 
 	@Override
@@ -224,10 +73,7 @@ public class IOSUIViewController extends GLKViewController {
 				app.listener.resize(newBounds.width, newBounds.height);
 			}
 
-			// Rotating/resizing without an on-screen keyboard (hardware or floating keyboard) fires no keyboard
-			// notification, so reposition the native input field here; with a docked keyboard keyboardWillShow re-fires
-			// with the new keyboard frame and handles it instead
-			if (!softKeyboardShown) moveTextFieldToBottom();
+			graphics.input.onScreenLayoutChanged();
 		}
 
 	}
