@@ -60,6 +60,7 @@ public class NativeInputTest extends GdxTest {
 
 	private TextField placeHolderField;
 	private Slider maxLengthSlider;
+	private Slider autoCompleteThresholdSlider;
 	private Slider cornerRadiusSlider;
 	private Slider textMarginSlider;
 
@@ -133,6 +134,16 @@ public class NativeInputTest extends GdxTest {
 			autocapitalizations.add(value.name());
 		}
 		autocapitalizationSelect.setItems(autocapitalizations);
+
+		Label autoCompleteThresholdLabel = new Label("0", skin);
+		autoCompleteThresholdSlider = new Slider(0, 5, 1, false, skin);
+		autoCompleteThresholdSlider.addListener(stopTouchDown);
+		autoCompleteThresholdSlider.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				autoCompleteThresholdLabel.setText((int)autoCompleteThresholdSlider.getValue());
+			}
+		});
 
 		Label textMarginLabel = new Label("10", skin);
 		textMarginSlider = new Slider(0, 30, 1, false, skin);
@@ -212,6 +223,8 @@ public class NativeInputTest extends GdxTest {
 		sections.add(useValidatorButton).fill(false, false);
 		sections.row();
 		sections.add(useCustomAutocompleteButton).fill(false, false);
+		sections.row();
+		sections.add(labeled("Autocomplete threshold:", sliderRow(autoCompleteThresholdSlider, autoCompleteThresholdLabel)));
 		sections.row();
 		sections.add(labeled("Write mode:", writeModeSelect));
 		sections.row();
@@ -319,7 +332,8 @@ public class NativeInputTest extends GdxTest {
 				.setPlaceholderColor(new Color(Color.ORANGE));
 		}
 		if (useCustomAutocompleteButton.isChecked())
-			configuration.setAutoComplete(new String[] {"Hello", "Hillo", "Hellale", "Dog", "Dogfood"});
+			configuration.setAutoComplete(new String[] {"Hello", "Hillo", "Hellale", "Dog", "Dogfood"})
+				.setAutoCompleteThreshold((int)autoCompleteThresholdSlider.getValue());
 		if (maxLengthSlider.getValue() != 0) configuration.setMaxLength((int)maxLengthSlider.getValue());
 		if (useValidatorButton.isChecked()) configuration.setValidator(toCheck -> !toCheck.contains("!"));
 

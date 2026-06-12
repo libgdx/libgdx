@@ -210,6 +210,8 @@ public class AndroidNativeInput {
 			ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line,
 				configuration.getAutoComplete());
 			editText.setAdapter(adapter);
+			// AutoCompleteTextView can't suggest before the first typed character, it clamps the threshold to >= 1
+			editText.setThreshold(configuration.getAutoCompleteThreshold());
 		} else {
 			editText.setAdapter(null);
 		}

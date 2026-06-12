@@ -222,9 +222,11 @@ public class IOSNativeInput extends NSObject {
 	@Method(selector = "updateAutoComplete")
 	public void updateAutoComplete (UITextField textField) {
 		autoCompleteAvailable.clear();
-		for (String s : configuration.getAutoComplete()) {
-			if (s.startsWith(textField.getText())) {
-				autoCompleteAvailable.add(s);
+		if (textField.getText().length() >= configuration.getAutoCompleteThreshold()) {
+			for (String s : configuration.getAutoComplete()) {
+				if (s.startsWith(textField.getText())) {
+					autoCompleteAvailable.add(s);
+				}
 			}
 		}
 		suggestionTable.reloadData();
@@ -300,7 +302,6 @@ public class IOSNativeInput extends NSObject {
 				autoCompleteAvailable = new Array<>(configuration.getAutoComplete());
 				suggestionTable.setDataSource(suggestionDataSource);
 				suggestionTable.setDelegate(suggestionDelegate);
-				updateAutoComplete(asTextField);
 
 				asTextField.addTarget(this, Selector.register("updateAutoComplete"), UIControlEvents.EditingChanged);
 				app.getUIViewController().getView().addSubview(suggestionTable);
@@ -324,6 +325,9 @@ public class IOSNativeInput extends NSObject {
 			NSAttributedString placeholderString = new NSAttributedString(configuration.getPlaceholder(), new NSDictionary<>(
 				NSAttributedStringAttribute.ForegroundColor.value(), toUIColor(configuration.getPlaceholderColor())));
 			asTextField.setAttributedPlaceholder(placeholderString);
+
+			// Needs to happen after setText
+			if (configuration.getAutoComplete() != null) updateAutoComplete(asTextField);
 
 			if (configuration.isMaskInput()) {
 				if (configuration.isShowUnmaskButton()) {

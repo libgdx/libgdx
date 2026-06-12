@@ -18,6 +18,7 @@ public class NativeInputConfiguration {
 	private boolean maskInput = false;
 	private boolean showUnmaskButton = false;
 	private String[] autoComplete = null;
+	private int autoCompleteThreshold = 0;
 	private WriteMode writeMode = WriteMode.ONLY_FINAL;
 	private float horizontalInsetFraction = 0.05f;
 	private NativeInputFieldCustomizer fieldCustomizer = null;
@@ -129,6 +130,18 @@ public class NativeInputConfiguration {
 	/** Sets a list of autocompletable strings to present the user while typing */
 	public NativeInputConfiguration setAutoComplete (String[] autoComplete) {
 		this.autoComplete = autoComplete;
+		return this;
+	}
+
+	public int getAutoCompleteThreshold () {
+		return autoCompleteThreshold;
+	}
+
+	/** @param autoCompleteThreshold Minimum number of typed characters before autocomplete suggestions are shown. Defaults to 0
+	 *           (suggest immediately). Android cannot suggest before the first typed character: values below 1 behave as 1
+	 *           there. */
+	public NativeInputConfiguration setAutoCompleteThreshold (int autoCompleteThreshold) {
+		this.autoCompleteThreshold = autoCompleteThreshold;
 		return this;
 	}
 
@@ -285,6 +298,7 @@ public class NativeInputConfiguration {
 		if (autoComplete != null && type != Input.OnscreenKeyboardType.Default)
 			message.append("AutoComplete should only be used with OnscreenKeyboardType.Default", "; ");
 		if (autoComplete != null && isMultiLine) message.append("AutoComplete shouldn't be used with multiline", "; ");
+		if (autoCompleteThreshold < 0) message.append("AutoCompleteThreshold needs to be >= 0", "; ");
 		if (closeCallback == null) message.append("CloseCallback needs to be non null", "; ");
 		if (writeMode == null) message.append("WriteMode needs to be non null", "; ");
 		if (horizontalInsetFraction < 0 || horizontalInsetFraction > 0.45f)
