@@ -33,6 +33,13 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class NativeInputTest extends GdxTest {
 
+	/** The world size of the viewport's short edge: the controls column is designed to fill this width in portrait, so phones
+	 * scale up until it spans the screen. */
+	private static final float TARGET_SHORT_EDGE = 280;
+	/** On large screens (tablets/desktop) filling the short edge would blow the widgets up comically — cap the scale at this
+	 * factor of the density-independent (dp) size instead. */
+	private static final float MAX_DENSITY_SCALE = 1.5f;
+
 	private Stage stage;
 	private Skin skin;
 	private Table rootTable;
@@ -60,7 +67,7 @@ public class NativeInputTest extends GdxTest {
 
 	public void create () {
 		ScreenViewport viewport = new ScreenViewport();
-		viewport.setUnitsPerPixel(1f / Gdx.graphics.getDensity());
+		viewport.setUnitsPerPixel(computeUnitsPerPixel());
 		stage = new Stage(viewport);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
@@ -149,7 +156,6 @@ public class NativeInputTest extends GdxTest {
 			}
 		});
 
-		Label placeHolderLabel = new Label("Placeholder:", skin);
 		placeHolderField = new TextField(null, skin);
 		placeHolderField.setOnscreenKeyboard(new NativeOnscreenKeyboard());
 		placeHolderField.addListener(new ClickListener() {
@@ -181,78 +187,67 @@ public class NativeInputTest extends GdxTest {
 			}
 		});
 
+		// Single full-width column: side-by-side label/control pairs don't survive narrow phone-width worlds
 		Table sections = new Table();
-		sections.top().left();
-		sections.defaults().left().pad(3);
+		sections.top();
+		sections.defaults().growX().left().pad(4);
 
-		sections.add(sectionHeader("Keyboard")).colspan(3).padTop(0);
+		sections.add(sectionHeader("Keyboard")).padTop(0);
 		sections.row();
-		sections.add(new Label("Type:", skin));
-		sections.add(keyboardTypeSelect).minWidth(220).colspan(2);
+		sections.add(labeled("Type:", keyboardTypeSelect));
 		sections.row();
-		sections.add(new Label("Return key:", skin));
-		sections.add(returnKeySelect).minWidth(220).colspan(2);
+		sections.add(labeled("Return key:", returnKeySelect));
 		sections.row();
-		sections.add(new Label("Content type:", skin));
-		sections.add(contentTypeSelect).minWidth(220).colspan(2);
+		sections.add(labeled("Content type:", contentTypeSelect));
 		sections.row();
-		sections.add(new Label("Capitalization:", skin));
-		sections.add(autocapitalizationSelect).minWidth(220).colspan(2);
+		sections.add(labeled("Capitalization:", autocapitalizationSelect));
 		sections.row();
 
-		sections.add(sectionHeader("Behavior")).colspan(3);
+		sections.add(sectionHeader("Behavior"));
 		sections.row();
-		sections.add(multilineButton).colspan(3);
+		sections.add(multilineButton).fill(false, false);
 		sections.row();
-		sections.add(noAutocorrectButton).colspan(3);
+		sections.add(noAutocorrectButton).fill(false, false);
 		sections.row();
-		sections.add(useValidatorButton).colspan(3);
+		sections.add(useValidatorButton).fill(false, false);
 		sections.row();
-		sections.add(useCustomAutocompleteButton).colspan(3);
+		sections.add(useCustomAutocompleteButton).fill(false, false);
 		sections.row();
-		sections.add(new Label("Write mode:", skin));
-		sections.add(writeModeSelect).minWidth(220).colspan(2);
+		sections.add(labeled("Write mode:", writeModeSelect));
 		sections.row();
-		sections.add(new Label("Max length:", skin));
-		sections.add(maxLengthSlider).minWidth(200).growX();
-		sections.add(maxLengthLabel).minWidth(40);
+		sections.add(labeled("Max length:", sliderRow(maxLengthSlider, maxLengthLabel)));
 		sections.row();
 
-		sections.add(sectionHeader("Password")).colspan(3);
+		sections.add(sectionHeader("Password"));
 		sections.row();
-		sections.add(maskInputButton).colspan(3);
+		sections.add(maskInputButton).fill(false, false);
 		sections.row();
-		sections.add(showUnmaskButton).colspan(3);
-		sections.row();
-
-		sections.add(sectionHeader("Appearance")).colspan(3);
-		sections.row();
-		sections.add(customColorsButton).colspan(3);
-		sections.row();
-		sections.add(new Label("Corner radius:", skin));
-		sections.add(cornerRadiusSlider).minWidth(200).growX();
-		sections.add(cornerRadiusLabel).minWidth(40);
-		sections.row();
-		sections.add(new Label("Text margin:", skin));
-		sections.add(textMarginSlider).minWidth(200).growX();
-		sections.add(textMarginLabel).minWidth(40);
+		sections.add(showUnmaskButton).fill(false, false);
 		sections.row();
 
-		sections.add(sectionHeader("Placeholder")).colspan(3);
+		sections.add(sectionHeader("Appearance"));
 		sections.row();
-		sections.add(placeHolderLabel);
-		sections.add(placeHolderField).minWidth(220).growX().colspan(2);
+		sections.add(customColorsButton).fill(false, false);
+		sections.row();
+		sections.add(labeled("Corner radius:", sliderRow(cornerRadiusSlider, cornerRadiusLabel)));
+		sections.row();
+		sections.add(labeled("Text margin:", sliderRow(textMarginSlider, textMarginLabel)));
+		sections.row();
+
+		sections.add(sectionHeader("Placeholder"));
+		sections.row();
+		sections.add(placeHolderField);
 		sections.row();
 
 		ScrollPane scrollPane = new ScrollPane(sections, skin);
 		scrollPane.setScrollingDisabled(true, false);
 		scrollPane.setFadeScrollBars(false);
 
-		rootTable.add(scrollPane).grow().padLeft(10).padRight(10);
+		rootTable.add(scrollPane).grow().padLeft(8).padRight(8);
 		rootTable.row();
-		rootTable.add(openInput).padTop(10);
+		rootTable.add(openInput).growX().padLeft(8).padRight(8).padTop(8);
 		rootTable.row();
-		rootTable.add(resultArea).growX().height(120).pad(10);
+		rootTable.add(resultArea).growX().height(96).pad(8);
 
 		stage.addActor(rootTable);
 		applySafeInsets();
@@ -266,6 +261,33 @@ public class NativeInputTest extends GdxTest {
 		return label;
 	}
 
+	/** Stacks a label on top of its control; full-width rows survive narrow (phone) worlds where side-by-side columns don't. */
+	private Table labeled (String text, Actor control) {
+		Table table = new Table();
+		table.add(new Label(text, skin)).left().padBottom(2);
+		table.row();
+		table.add(control).growX();
+		return table;
+	}
+
+	private Table sliderRow (Slider slider, Label valueLabel) {
+		Table table = new Table();
+		table.add(slider).growX();
+		table.add(valueLabel).width(35).padLeft(8);
+		return table;
+	}
+
+	/** Scales the UI so the controls fill the screen's short edge on phones, capped on big screens so widgets stay a sane physical
+	 * size. */
+	private float computeUnitsPerPixel () {
+		float shortEdge = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// Viewport pixels per dp; the width/backBufferWidth ratio corrects for point-based (HdpiMode.Logical) backends, where
+		// the viewport works in points but getDensity() reports physical pixel density
+		float pixelsPerDp = Gdx.graphics.getDensity() * Gdx.graphics.getWidth() / (float)Gdx.graphics.getBackBufferWidth();
+		float pixelsPerUnit = Math.min(shortEdge / TARGET_SHORT_EDGE, pixelsPerDp * MAX_DENSITY_SCALE);
+		return 1f / pixelsPerUnit;
+	}
+
 	private void applySafeInsets () {
 		float unitsPerPixel = ((ScreenViewport)stage.getViewport()).getUnitsPerPixel();
 		rootTable.padLeft(Gdx.graphics.getSafeInsetLeft() * unitsPerPixel)
@@ -276,6 +298,7 @@ public class NativeInputTest extends GdxTest {
 
 	@Override
 	public void resize (int width, int height) {
+		((ScreenViewport)stage.getViewport()).setUnitsPerPixel(computeUnitsPerPixel());
 		stage.getViewport().update(width, height, true);
 		applySafeInsets();
 	}
