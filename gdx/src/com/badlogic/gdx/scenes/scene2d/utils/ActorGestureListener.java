@@ -23,158 +23,185 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 
-/** Detects tap, long press, fling, pan, zoom, and pinch gestures on an actor. If there is only a need to detect tap, use
- * {@link ClickListener}.
- * @see GestureDetector
+/** A listener that combines {@link GestureDetector} with scene2d event handling for actors. The actor is stored so that the
+ * gesture methods can be called with the actor available, allowing a single listener to be used with multiple actors.
  * @author Nathan Sweet */
 public class ActorGestureListener implements EventListener {
 	static final Vector2 tmpCoords = new Vector2(), tmpCoords2 = new Vector2();
 
-	private final GestureDetector detector;
-	InputEvent event;
-	Actor actor, touchDownTarget;
+	final GestureDetector detector;
+	private Actor actor;
+	private InputEvent event;
+	private Actor touchDownTarget;
 
-	/** @see GestureDetector#GestureDetector(com.badlogic.gdx.input.GestureDetector.GestureListener) */
+	/** Uses the default settings of {@link GestureDetector}. */
 	public ActorGestureListener () {
-		this(20, 0.4f, 1.1f, Integer.MAX_VALUE);
+		this(20, 0.4f, 1.1f, 0.15f);
 	}
 
-	/** @see GestureDetector#GestureDetector(float, float, float, float, com.badlogic.gdx.input.GestureDetector.GestureListener) */
 	public ActorGestureListener (float halfTapSquareSize, float tapCountInterval, float longPressDuration, float maxFlingDelay) {
 		detector = new GestureDetector(halfTapSquareSize, tapCountInterval, longPressDuration, maxFlingDelay, new GestureAdapter() {
-			private final Vector2 initialPointer1 = new Vector2(), initialPointer2 = new Vector2();
-			private final Vector2 pointer1 = new Vector2(), pointer2 = new Vector2();
-
+			@Override
 			public boolean tap (float stageX, float stageY, int count, int button) {
+				if (actor == null) return false;
 				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
-				ActorGestureListener.this.tap(event, tmpCoords.x, tmpCoords.y, count, button);
-				return true;
+				return ActorGestureListener.this.tap(event, tmpCoords.x, tmpCoords.y, count, button);
 			}
 
+			@Override
 			public boolean longPress (float stageX, float stageY) {
+				if (actor == null) return false;
 				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
-				return ActorGestureListener.this.longPress(actor, tmpCoords.x, tmpCoords.y);
+				return ActorGestureListener.this.longPress(event, tmpCoords.x, tmpCoords.y);
 			}
 
+			@Override
 			public boolean fling (float velocityX, float velocityY, int button) {
-				stageToLocalAmount(tmpCoords.set(velocityX, velocityY));
-				ActorGestureListener.this.fling(event, tmpCoords.x, tmpCoords.y, button);
-				return true;
+				if (actor == null) return false;
+				return ActorGestureListener.this.fling(event, velocityX, velocityY, button);
 			}
 
+			@Override
 			public boolean pan (float stageX, float stageY, float deltaX, float deltaY) {
-				stageToLocalAmount(tmpCoords.set(deltaX, deltaY));
-				deltaX = tmpCoords.x;
-				deltaY = tmpCoords.y;
+				if (actor == null) return false;
 				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
-				ActorGestureListener.this.pan(event, tmpCoords.x, tmpCoords.y, deltaX, deltaY);
-				return true;
+				return ActorGestureListener.this.pan(event, tmpCoords.x, tmpCoords.y, deltaX, deltaY);
 			}
 
+			@Override
 			public boolean panStop (float stageX, float stageY, int pointer, int button) {
+				if (actor == null) return false;
 				actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
-				ActorGestureListener.this.panStop(event, tmpCoords.x, tmpCoords.y, pointer, button);
-				return true;
+				return ActorGestureListener.this.panStop(event, tmpCoords.x, tmpCoords.y, pointer, button);
 			}
 
+			@Override
 			public boolean zoom (float initialDistance, float distance) {
-				ActorGestureListener.this.zoom(event, initialDistance, distance);
-				return true;
+				if (actor == null) return false;
+				return ActorGestureListener.this.zoom(event, initialDistance, distance);
 			}
 
-			public boolean pinch (Vector2 stageInitialPointer1, Vector2 stageInitialPointer2, Vector2 stagePointer1,
-				Vector2 stagePointer2) {
-				actor.stageToLocalCoordinates(initialPointer1.set(stageInitialPointer1));
-				actor.stageToLocalCoordinates(initialPointer2.set(stageInitialPointer2));
-				actor.stageToLocalCoordinates(pointer1.set(stagePointer1));
-				actor.stageToLocalCoordinates(pointer2.set(stagePointer2));
-				ActorGestureListener.this.pinch(event, initialPointer1, initialPointer2, pointer1, pointer2);
-				return true;
+			@Override
+			public boolean pinch (Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+				if (actor == null) return false;
+				return ActorGestureListener.this.pinch(event, initialPointer1, initialPointer2, pointer1, pointer2);
 			}
 
-			private void stageToLocalAmount (Vector2 amount) {
-				actor.stageToLocalCoordinates(amount);
-				amount.sub(actor.stageToLocalCoordinates(tmpCoords2.set(0, 0)));
+			@Override
+			public void pinchStop () {
+				ActorGestureListener.this.pinchStop(event);
 			}
 		});
 	}
 
+	@Override
 	public boolean handle (Event e) {
 		if (!(e instanceof InputEvent)) return false;
 		InputEvent event = (InputEvent)e;
+		this.event = event;
 
 		switch (event.getType()) {
 		case touchDown:
 			actor = event.getListenerActor();
-			touchDownTarget = event.getTarget();
+			touchDownTarget = actor;
 			detector.touchDown(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
-			actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
-			touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
-			if (event.getTouchFocus()) event.getStage().addTouchFocus(this, event.getListenerActor(), event.getTarget(),
-				event.getPointer(), event.getButton());
+			touchDown(event, event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
 			return true;
 		case touchUp:
-			boolean touchFocusCancel = event.isTouchFocusCancel();
-			if (touchFocusCancel)
-				detector.reset();
-			else {
-				this.event = event;
-				actor = event.getListenerActor();
-				detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
-				actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
-				touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
-			}
-			this.event = null;
-			actor = null;
+			// Save actor reference before any reentrant calls (e.g., cancelTouchFocus) might set actor to null.
+			Actor touchUpActor = event.getListenerActor();
 			touchDownTarget = null;
-			return !touchFocusCancel;
+			detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
+			if (touchUpActor == null) return false;
+			touchUpActor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
+			touchUp(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
+			actor = null;
+			this.event = null;
+			touchDownTarget = null;
+			return true;
 		case touchDragged:
-			this.event = event;
-			actor = event.getListenerActor();
+			if (actor == null) return false;
 			detector.touchDragged(event.getStageX(), event.getStageY(), event.getPointer());
+			actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
+			touchDragged(event, tmpCoords.x, tmpCoords.y, event.getPointer());
 			return true;
 		}
 		return false;
 	}
 
+	/** Called when a mouse button or finger is pressed on the actor. The coordinates are in the actor's local coordinate system.
+	 * The default implementation does nothing. */
 	public void touchDown (InputEvent event, float x, float y, int pointer, int button) {
 	}
 
+	/** Called when a mouse button or finger is released on the actor. The coordinates are in the actor's local coordinate system.
+	 * The default implementation does nothing. */
 	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	}
 
-	public void tap (InputEvent event, float x, float y, int count, int button) {
+	/** Called when a mouse button or finger is dragged on the actor. The coordinates are in the actor's local coordinate system.
+	 * The default implementation does nothing. */
+	public void touchDragged (InputEvent event, float x, float y, int pointer) {
 	}
 
-	/** If true is returned, additional gestures will not be triggered. No event is provided because this event is triggered by
-	 * time passing, not by an InputEvent. */
-	public boolean longPress (Actor actor, float x, float y) {
+	/** Called when the user taps the actor. The coordinates are in the actor's local coordinate system. The default implementation
+	 * does nothing. */
+	public boolean tap (InputEvent event, float x, float y, int count, int button) {
 		return false;
 	}
 
-	public void fling (InputEvent event, float velocityX, float velocityY, int button) {
+	/** Called when the user long presses the actor. The coordinates are in the actor's local coordinate system. The default
+	 * implementation does nothing. */
+	public boolean longPress (InputEvent event, float x, float y) {
+		return false;
 	}
 
-	/** The delta is the difference in stage coordinates since the last pan. */
-	public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
+	/** Called when the user flings the actor. The default implementation does nothing. */
+	public boolean fling (InputEvent event, float velocityX, float velocityY, int button) {
+		return false;
 	}
 
-	public void panStop (InputEvent event, float x, float y, int pointer, int button) {
+	/** Called when the user pans the actor. The coordinates are in the actor's local coordinate system. The default implementation
+	 * does nothing. */
+	public boolean pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
+		return false;
 	}
 
-	public void zoom (InputEvent event, float initialDistance, float distance) {
+	/** Called when the user stops panning the actor. The coordinates are in the actor's local coordinate system. The default
+	 * implementation does nothing. */
+	public boolean panStop (InputEvent event, float x, float y, int pointer, int button) {
+		return false;
 	}
 
-	public void pinch (InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+	/** Called when the user zooms the actor. The default implementation does nothing. */
+	public boolean zoom (InputEvent event, float initialDistance, float distance) {
+		return false;
+	}
+
+	/** Called when the user pinches the actor. The default implementation does nothing. */
+	public boolean pinch (InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+		return false;
+	}
+
+	/** Called when the user stops pinching the actor. The default implementation does nothing. */
+	public void pinchStop (InputEvent event) {
 	}
 
 	public GestureDetector getGestureDetector () {
 		return detector;
 	}
 
-	public @Null Actor getTouchDownTarget () {
+	public Actor getActor () {
+		return actor;
+	}
+
+	public InputEvent getEvent () {
+		return event;
+	}
+
+	public Actor getTouchDownTarget () {
 		return touchDownTarget;
 	}
 }
