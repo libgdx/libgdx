@@ -122,14 +122,14 @@ public class IOSNativeInput extends NSObject {
 			if (Foundation.getMajorSystemVersion() >= 14) {
 				UIListContentConfiguration contentConfiguration = cell.defaultContentConfiguration();
 				NSAttributedString coloredText = new NSAttributedString(autoCompleteAvailable.get(indexPath.getRow()),
-					new NSDictionary<>(NSAttributedStringAttribute.ForegroundColor.value(), UIColor.white()));
+					new NSDictionary<>(NSAttributedStringAttribute.ForegroundColor.value(), toUIColor(configuration.getTextColor())));
 				contentConfiguration.setAttributedText(coloredText);
 				cell.setContentConfiguration(contentConfiguration);
 			} else {
 				cell.getTextLabel().setText(autoCompleteAvailable.get(indexPath.getRow()));
-				cell.getTextLabel().setTextColor(UIColor.black());
+				cell.getTextLabel().setTextColor(toUIColor(configuration.getTextColor()));
 			}
-			cell.setBackgroundColor(UIColor.white());
+			cell.setBackgroundColor(toUIColor(configuration.getBackgroundColor()));
 			return cell;
 		}
 
@@ -155,8 +155,6 @@ public class IOSNativeInput extends NSObject {
 		this.configuration.validate();
 	}
 
-	/** Positions the field directly above a keyboard of the given height (screen points). Called by {@link DefaultIOSInput} inside
-	 * the keyboard-matched animation block. */
 	protected void layoutTextFieldAboveKeyboard (double keyboardHeight) {
 		UIView textField = textfield;
 		float insetFraction = configuration.getHorizontalInsetFraction();
@@ -184,11 +182,10 @@ public class IOSNativeInput extends NSObject {
 		// dummy setFrame re-anchors it to the field's new position (and animates along inside an animation block). For
 		// the plain pre-26 toolbar this is a no-op.
 		if (accessoryView != null) accessoryView.setFrame(accessoryView.getFrame());
+
+		layoutSuggestionTable();
 	}
 
-	/** Rotating/resizing without an on-screen keyboard (hardware or floating keyboard) fires no keyboard notification, so
-	 * {@link DefaultIOSInput#onScreenLayoutChanged()} repositions the native input field here; with a docked keyboard the keyboard
-	 * notification re-fires with the new keyboard frame and handles it instead. */
 	protected void moveTextFieldToBottom () {
 		UIView textField = textfield;
 		if (textField == null) return;
@@ -201,17 +198,23 @@ public class IOSNativeInput extends NSObject {
 		layoutTextFieldAboveKeyboard(height);
 	}
 
-	/** The bottom-anchored height (in scaled pixels) the laid-out field occupies: its top edge flipped against the root view's
-	 * height. Above a keyboard that is keyboard + field; re-pinned to the bottom it is field + bottom inset — either way including
-	 * whatever adjustments the layout applied (e.g. the iOS 26 accessory). */
+	private void layoutSuggestionTable () {
+		if (suggestionTable == null) return;
+		CGRect textFrame = textfield.getFrame();
+
+		double available = textFrame.getY();
+		suggestionTable.setFrame(new CGRect(textFrame.getX(), 0, textFrame.getWidth(), available));
+		suggestionTable.layoutIfNeeded();
+
+		double height = Math.min(suggestionTable.getContentSize().getHeight(), available);
+		suggestionTable.setFrame(new CGRect(textFrame.getX(), textFrame.getY() - height, textFrame.getWidth(), height));
+	}
+
 	protected int getFieldOccupiedHeight () {
 		UIView rootView = app.getUIViewController().getView();
 		double heightScale = Gdx.graphics.getHeight() / UIScreen.getMainScreen().getBounds().getSize().getHeight();
 		return (int)((rootView.getBounds().getHeight() - textfield.getFrame().getMinY()) * heightScale);
 	}
-
-	// Objective-C selector targets for this session's UIControl events and bar-button actions, registered with `this` as
-	// the target (see class javadoc)
 
 	@Method(selector = "textChanged")
 	public void textChanged (UITextField textField) {
@@ -226,11 +229,8 @@ public class IOSNativeInput extends NSObject {
 				autoCompleteAvailable.add(s);
 			}
 		}
-		int height = (int)(autoCompleteAvailable.size * suggestionTable.getRowHeight());
-		CGRect textFrame = textfield.getFrame();
-		suggestionTable.setFrame(
-			new CGRect(new CGPoint(textFrame.getX(), textFrame.getY() - height), new CGSize(textFrame.getWidth(), height)));
 		suggestionTable.reloadData();
+		layoutSuggestionTable();
 	}
 
 	@Method(selector = "doneClicked")
@@ -249,6 +249,7 @@ public class IOSNativeInput extends NSObject {
 	}
 
 	public void open () {
+		if (textfield != null) throw new IllegalStateException("Double open of IOSNativeInput detected");
 		UIKeyboardType keyboardType = input.getIosInputType(configuration.getType());
 		// IPad has a very weird small numberpad input. Promote to full keyboard and filter out non-digits
 		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
@@ -294,11 +295,14 @@ public class IOSNativeInput extends NSObject {
 				suggestionTable = new UITableView(new CGRect(app.graphics.screenBounds.width, app.graphics.screenBounds.height,
 					app.graphics.screenBounds.width, 50));
 				suggestionTable.setScrollEnabled(true);
-				suggestionTable.setBackgroundColor(UIColor.white());
-				suggestionTable.setRowHeight(40);
+				suggestionTable.setBackgroundColor(toUIColor(configuration.getBackgroundColor()));
+				suggestionTable.getLayer().setCornerRadius(configuration.getCornerRadius());
+				suggestionTable.setRowHeight(UITableView.getAutomaticDimension());
+				suggestionTable.setEstimatedRowHeight(44);
 				autoCompleteAvailable = new Array<>(configuration.getAutoComplete());
 				suggestionTable.setDataSource(suggestionDataSource);
 				suggestionTable.setDelegate(suggestionDelegate);
+				updateAutoComplete(asTextField);
 
 				asTextField.addTarget(this, Selector.register("updateAutoComplete"), UIControlEvents.EditingChanged);
 				app.getUIViewController().getView().addSubview(suggestionTable);
@@ -377,6 +381,7 @@ public class IOSNativeInput extends NSObject {
 
 	/** Closes the native text field and writes back the results. Call exactly once; the session must not be reused afterwards. */
 	public void close (boolean isConfirmative, @Null NativeInputCloseCallback callback) {
+		if (textfield == null) throw new IllegalStateException("Double close of IOSNativeInput detected");
 		UITextInput uiTextInput = (UITextInput)textfield;
 		String text;
 		if (textfield instanceof UITextView) {
