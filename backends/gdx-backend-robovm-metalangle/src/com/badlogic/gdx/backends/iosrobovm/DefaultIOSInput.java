@@ -192,7 +192,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	protected IOSNativeInput createNativeInput (NativeInputConfiguration configuration) {
-		return new IOSNativeInput(app, this, configuration);
+		return new IOSNativeInput(app, configuration);
 	}
 
 	@Override
@@ -525,7 +525,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		this.observer = observer;
 	}
 
-	protected UIKeyboardType getIosInputType (OnscreenKeyboardType type) {
+	protected static UIKeyboardType getIosInputType (OnscreenKeyboardType type) {
 		UIKeyboardType preferredInputType;
 		switch (type) {
 		case NumberPad:

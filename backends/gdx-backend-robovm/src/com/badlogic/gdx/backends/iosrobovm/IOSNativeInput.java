@@ -39,7 +39,6 @@ import org.robovm.objc.annotation.Method;
  * events are handled and dispatched by {@link DefaultIOSInput}, which instructs this session to re-layout or close. */
 public class IOSNativeInput extends NSObject {
 	protected final IOSApplication app;
-	protected final DefaultIOSInput input;
 	protected final NativeInputConfiguration configuration;
 
 	protected UIView textfield = null;
@@ -47,7 +46,7 @@ public class IOSNativeInput extends NSObject {
 	protected UITableView suggestionTable;
 	protected Array<String> autoCompleteAvailable;
 
-	private final UITextViewDelegate textViewDelegate = new UITextViewDelegateAdapter() {
+	protected final UITextViewDelegate textViewDelegate = new UITextViewDelegateAdapter() {
 		@Override
 		public void didChange (UITextView textView) {
 			if (textViewPlaceholderLabel != null) textViewPlaceholderLabel.setHidden(!textView.getText().isEmpty());
@@ -79,7 +78,7 @@ public class IOSNativeInput extends NSObject {
 		}
 	};
 
-	private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
+	protected final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
 
 		@Override
 		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String text) {
@@ -102,7 +101,7 @@ public class IOSNativeInput extends NSObject {
 
 		@Override
 		public boolean shouldReturn (UITextField textField) {
-			if (input.keyboardCloseOnReturn) Gdx.input.closeTextInputField(true);
+			Gdx.input.closeTextInputField(true);
 			Gdx.graphics.requestRendering();
 			return false;
 		}
@@ -114,7 +113,7 @@ public class IOSNativeInput extends NSObject {
 		}
 	};
 
-	private final UITableViewDataSource suggestionDataSource = new UITableViewDataSourceAdapter() {
+	protected final UITableViewDataSource suggestionDataSource = new UITableViewDataSourceAdapter() {
 		@Override
 		public UITableViewCell getCellForRow (UITableView tableView, NSIndexPath indexPath) {
 			UITableViewCell cell = tableView.dequeueReusableCell("suggestion");
@@ -139,7 +138,7 @@ public class IOSNativeInput extends NSObject {
 		}
 	};
 
-	private final UITableViewDelegate suggestionDelegate = new UITableViewDelegateAdapter() {
+	protected final UITableViewDelegate suggestionDelegate = new UITableViewDelegateAdapter() {
 		@Override
 		public void didSelectRow (UITableView tableView, NSIndexPath indexPath) {
 			tableView.deselectRow(indexPath, true);
@@ -148,9 +147,8 @@ public class IOSNativeInput extends NSObject {
 		}
 	};
 
-	public IOSNativeInput (IOSApplication app, DefaultIOSInput input, NativeInputConfiguration configuration) {
+	public IOSNativeInput (IOSApplication app, NativeInputConfiguration configuration) {
 		this.app = app;
-		this.input = input;
 		this.configuration = configuration;
 		this.configuration.validate();
 	}
@@ -198,7 +196,7 @@ public class IOSNativeInput extends NSObject {
 		layoutTextFieldAboveKeyboard(height);
 	}
 
-	private void layoutSuggestionTable () {
+	protected void layoutSuggestionTable () {
 		if (suggestionTable == null) return;
 		CGRect textFrame = textfield.getFrame();
 
@@ -250,7 +248,7 @@ public class IOSNativeInput extends NSObject {
 
 	public void open () {
 		if (textfield != null) throw new IllegalStateException("Double open of IOSNativeInput detected");
-		UIKeyboardType keyboardType = input.getIosInputType(configuration.getType());
+		UIKeyboardType keyboardType = DefaultIOSInput.getIosInputType(configuration.getType());
 		// IPad has a very weird small numberpad input. Promote to full keyboard and filter out non-digits
 		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
 			if (keyboardType == UIKeyboardType.NumberPad || keyboardType == UIKeyboardType.PhonePad)
@@ -341,7 +339,7 @@ public class IOSNativeInput extends NSObject {
 				}
 			}
 		}
-		if (configuration.getFieldCustomizer() != null) configuration.getFieldCustomizer().customize(textfield);
+		if (configuration.getFieldCustomizer() != null) configuration.getFieldCustomizer().customize(this);
 
 		// Start at the bottom of the screen: keyboardWillShow moves the field above a docked keyboard, but with a hardware
 		// keyboard or an already floating keyboard no notification fires at all and the field stays here
@@ -358,7 +356,7 @@ public class IOSNativeInput extends NSObject {
 		uiTextInput.setSelectedTextRange(uiTextInput.getTextRange(start, end));
 	}
 
-	private void notifyNativeInputChanged (boolean selectionOnly) {
+	protected void notifyNativeInputChanged (boolean selectionOnly) {
 		UITextInput uiTextInput = (UITextInput)textfield;
 		if (uiTextInput == null) return;
 		NativeInputConfiguration.WriteMode writeMode = configuration.getWriteMode();
@@ -559,7 +557,7 @@ public class IOSNativeInput extends NSObject {
 	 * calling `setFrame:` — so all three setters are intercepted. Every geometry write — ours or UIKit's — re-resolves against the
 	 * text field's and the host's current position, placing the toolbar so its centered liquid glass pill sits right of the field,
 	 * vertically centered on its row. */
-	static class PinnedFrameToolbar extends UIToolbar {
+	protected static class PinnedFrameToolbar extends UIToolbar {
 		private final UIView textField;
 
 		PinnedFrameToolbar (CGRect frame, UIView textField) {
