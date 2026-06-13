@@ -318,8 +318,8 @@ public class AndroidNativeInput {
 
 		int parentWidth = ((View)relativeLayoutField.getParent()).getWidth();
 		int fallbackInset = (int)(parentWidth * configuration.getHorizontalInsetFraction());
-		containerParams.leftMargin = leftInset > 0 ? leftInset : fallbackInset;
-		containerParams.rightMargin = rightInset > 0 ? rightInset : fallbackInset;
+		containerParams.leftMargin = Math.max(leftInset, fallbackInset);
+		containerParams.rightMargin = Math.max(rightInset, fallbackInset);
 		relativeLayoutField.setLayoutParams(containerParams);
 
 		relativeLayoutField.animate()

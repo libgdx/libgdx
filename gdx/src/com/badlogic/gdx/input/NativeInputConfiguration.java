@@ -163,10 +163,11 @@ public class NativeInputConfiguration {
 	}
 
 	/** @param horizontalInsetFraction How far the native input field is inset from each side of the screen, as a fraction of the
-	 *           screen width. Only applied to sides without a platform safe inset (notch/cutout) - a side that already has a safe
-	 *           inset uses just that, since the keyboard is visually inset there anyway. The iOS 26 floating done button counts as
-	 *           part of the field, so it is placed within the inset bounds next to the field. Set to 0 for an edge-to-edge field.
-	 *           Needs to be inside [0, 0.45]. Defaults to 0.05 (5% per side). */
+	 *           screen width. Acts as a per-side minimum: each side is inset by the larger of this fraction and the platform safe
+	 *           inset (notch/cutout), so a side whose safe inset already exceeds the fraction uses just that. The iOS 26 floating
+	 *           done button counts as part of the field, so it is placed within the inset bounds next to the field. Set to 0 for
+	 *           an edge-to-edge field (subject to the safe insets). Needs to be inside [0, 0.45]. Defaults to 0.05 (5% per
+	 *           side). */
 	public NativeInputConfiguration setHorizontalInsetFraction (float horizontalInsetFraction) {
 		this.horizontalInsetFraction = horizontalInsetFraction;
 		return this;

@@ -63,6 +63,7 @@ public class NativeInputTest extends GdxTest {
 	private Slider autoCompleteThresholdSlider;
 	private Slider cornerRadiusSlider;
 	private Slider textMarginSlider;
+	private Slider horizontalInsetSlider;
 
 	private TextArea resultArea;
 
@@ -167,6 +168,17 @@ public class NativeInputTest extends GdxTest {
 			}
 		});
 
+		Label horizontalInsetLabel = new Label("5", skin);
+		horizontalInsetSlider = new Slider(0, 45, 1, false, skin);
+		horizontalInsetSlider.setValue(5);
+		horizontalInsetSlider.addListener(stopTouchDown);
+		horizontalInsetSlider.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				horizontalInsetLabel.setText((int)horizontalInsetSlider.getValue());
+			}
+		});
+
 		placeHolderField = new TextField(null, skin);
 		placeHolderField.setOnscreenKeyboard(new NativeOnscreenKeyboard());
 		placeHolderField.addListener(new ClickListener() {
@@ -246,6 +258,8 @@ public class NativeInputTest extends GdxTest {
 		sections.row();
 		sections.add(labeled("Text margin:", sliderRow(textMarginSlider, textMarginLabel)));
 		sections.row();
+		sections.add(labeled("Horizontal inset (%):", sliderRow(horizontalInsetSlider, horizontalInsetLabel)));
+		sections.row();
 
 		sections.add(sectionHeader("Placeholder"));
 		sections.row();
@@ -322,7 +336,8 @@ public class NativeInputTest extends GdxTest {
 			.setMaskInput(maskInputButton.isChecked()).setShowUnmaskButton(showUnmaskButton.isChecked())
 			.setPlaceholder(placeHolderField.getText()).setType(keyboardTypeSelect.getSelected())
 			.setWriteMode(writeModeSelect.getSelected()).setReturnKeyType(returnKeySelect.getSelected())
-			.setCornerRadius(cornerRadiusSlider.getValue()).setTextMargin(textMarginSlider.getValue());
+			.setCornerRadius(cornerRadiusSlider.getValue()).setTextMargin(textMarginSlider.getValue())
+			.setHorizontalInsetFraction(horizontalInsetSlider.getValue() / 100f);
 		if (contentTypeSelect.getSelectedIndex() != 0)
 			configuration.setContentType(NativeInputConfiguration.ContentType.valueOf(contentTypeSelect.getSelected()));
 		if (autocapitalizationSelect.getSelectedIndex() != 0) configuration

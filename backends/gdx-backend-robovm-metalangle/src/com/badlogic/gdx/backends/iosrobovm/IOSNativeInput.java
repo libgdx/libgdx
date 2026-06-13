@@ -155,9 +155,8 @@ public class IOSNativeInput extends NSObject {
 			keyboardHeight -= accessoryView.getBounds().getSize().getHeight();
 			specialRightInset = accessoryView.getBounds().getSize().getHeight() + 3;
 		}
-		double leftInset = rootView.getSafeAreaInsets().getLeft() > 0 ? rootView.getSafeAreaInsets().getLeft() : fallbackInset;
-		double rightInset = (rootView.getSafeAreaInsets().getRight() > 0 ? rootView.getSafeAreaInsets().getRight() : fallbackInset)
-			+ specialRightInset;
+		double leftInset = Math.max(rootView.getSafeAreaInsets().getLeft(), fallbackInset);
+		double rightInset = Math.max(rootView.getSafeAreaInsets().getRight(), fallbackInset) + specialRightInset;
 		newFrame.setOrigin(
 			new CGPoint(leftInset, rootView.getBounds().getSize().getHeight() - keyboardHeight - newFrame.getSize().getHeight()));
 		newFrame
