@@ -87,10 +87,6 @@ public class AndroidNativeInput {
 		return relativeLayoutField.getVisibility() == View.VISIBLE;
 	}
 
-	protected AutoCompleteTextView getEditTextForNativeInput () {
-		return textView;
-	}
-
 	protected void setFieldY (float y) {
 		relativeLayoutField.setY(y);
 	}
@@ -368,6 +364,14 @@ public class AndroidNativeInput {
 	@Null
 	public NativeInputConfiguration getConfiguration () {
 		return configuration;
+	}
+
+	public RelativeLayout getRelativeLayoutField() {
+		return relativeLayoutField;
+	}
+
+	public AutoCompleteTextView getTextView() {
+		return textView;
 	}
 
 	protected RelativeLayout createDefaultEditText () {

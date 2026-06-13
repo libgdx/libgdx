@@ -677,7 +677,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 			return;
 		}
 
-		if (height == 0 && isStandardHeightProvider && nativeInput.getEditTextForNativeInput().isPopupShowing()) {
+		if (height == 0 && isStandardHeightProvider && nativeInput.getTextView().isPopupShowing()) {
 			// What should I say at this point, everything is busted on android
 			return;
 		}
@@ -689,7 +689,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 			return;
 		}
 
-		dispatchHeightAndVisibilityChangesToObserver(true, height + nativeInput.getEditTextForNativeInput().getHeight());
+		dispatchHeightAndVisibilityChangesToObserver(true, height + nativeInput.getTextView().getHeight());
 
 		nativeInput.layoutFieldAboveKeyboard(height, leftInset, rightInset);
 	}

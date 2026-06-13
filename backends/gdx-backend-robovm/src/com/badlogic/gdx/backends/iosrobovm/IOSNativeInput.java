@@ -506,6 +506,14 @@ public class IOSNativeInput extends NSObject {
 		return configuration;
 	}
 
+	public UILabel getTextViewPlaceholderLabel() {
+		return textViewPlaceholderLabel;
+	}
+
+	public UITableView getSuggestionTable() {
+		return suggestionTable;
+	}
+
 	protected void createDefaultTextField (boolean isMultiLine, boolean needsDoneToolbar) {
 		CGRect rect = new CGRect();
 		rect.setOrigin(new CGPoint(app.graphics.screenBounds.width, app.graphics.screenBounds.height));
