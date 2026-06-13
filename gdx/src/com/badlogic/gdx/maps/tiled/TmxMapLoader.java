@@ -208,13 +208,13 @@ public class TmxMapLoader extends BaseTmxMapLoader<BaseTiledMapLoader.Parameters
 				}
 			}
 		} else {
+			String tilesetSource = element.getAttribute("source", null);
+			FileHandle tilesetFile = (tilesetSource != null) ? getRelativeFileHandle(tmxFile, tilesetSource) : tmxFile;
 			for (Element tileElement : tileElements) {
 				Element imageElement = tileElement.getChildByName("image");
 				if (imageElement != null) {
 					String tileImageSource = imageElement.getAttribute("source");
-					String tilesetSource = element.getAttribute("source", null);
-					FileHandle tsxFile = (tilesetSource != null) ? getRelativeFileHandle(tmxFile, tilesetSource) : tmxFile;
-					FileHandle tileImage = getRelativeFileHandle(tsxFile, tileImageSource);
+					FileHandle tileImage = getRelativeFileHandle(tilesetFile, tileImageSource);
 					TextureRegion texture = imageResolver.getImage(tileImage.path());
 
 					int tileId = firstgid + tileElement.getIntAttribute("id");

@@ -222,12 +222,12 @@ public class TmjMapLoader extends BaseTmjMapLoader<BaseTiledMapLoader.Parameters
 				}
 			}
 		} else {
+			String tilesetSource = element.getString("source", null);
+			FileHandle tilesetFile = (tilesetSource != null) ? getRelativeFileHandle(tmjFile, tilesetSource) : tmjFile;
 			for (JsonValue tile : tiles) {
 				if (tile.has("image")) {
 					String tileImageSource = tile.getString("image");
-					String tilesetSource = element.getString("source", null);
-					FileHandle tsxFile = (tilesetSource != null) ? getRelativeFileHandle(tmjFile, tilesetSource) : tmjFile;
-					FileHandle tileImage = getRelativeFileHandle(tsxFile, tileImageSource);
+					FileHandle tileImage = getRelativeFileHandle(tilesetFile, tileImageSource);
 					TextureRegion texture = imageResolver.getImage(tileImage.path());
 
 					int tileId = firstgid + tile.getInt("id");
