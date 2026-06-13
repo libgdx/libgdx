@@ -366,11 +366,11 @@ public class AndroidNativeInput {
 		return configuration;
 	}
 
-	public RelativeLayout getRelativeLayoutField() {
+	public RelativeLayout getRelativeLayoutField () {
 		return relativeLayoutField;
 	}
 
-	public AutoCompleteTextView getTextView() {
+	public AutoCompleteTextView getTextView () {
 		return textView;
 	}
 

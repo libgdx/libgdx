@@ -506,11 +506,11 @@ public class IOSNativeInput extends NSObject {
 		return configuration;
 	}
 
-	public UILabel getTextViewPlaceholderLabel() {
+	public UILabel getTextViewPlaceholderLabel () {
 		return textViewPlaceholderLabel;
 	}
 
-	public UITableView getSuggestionTable() {
+	public UITableView getSuggestionTable () {
 		return suggestionTable;
 	}
 
