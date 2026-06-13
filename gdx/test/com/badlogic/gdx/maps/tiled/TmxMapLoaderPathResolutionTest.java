@@ -1,10 +1,10 @@
+
 package com.badlogic.gdx.maps.tiled;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -18,17 +18,17 @@ import static org.junit.Assert.*;
 
 /** Headless regression tests for TMX/TSX tileset path resolution.
  *
- * <p>Verifies that per-tile image paths declared inside a .tsx file are resolved
- * relative to the .tsx file, not the .tmx map file (regression for GitHub #7818). */
+ * <p>
+ * Verifies that per-tile image paths declared inside a .tsx file are resolved relative to the .tsx file, not the .tmx map file
+ * (regression for GitHub #7818). */
 public class TmxMapLoaderPathResolutionTest {
 
-	@Rule
-	public TemporaryFolder tmp = new TemporaryFolder();
+	@Rule public TemporaryFolder tmp = new TemporaryFolder();
 
 	// --- helpers ---
 
-	/** ImageResolver that records every path it is queried for. Returns null textures
-	 * (callers must ensure addStaticTiledMapTile is a no-op). */
+	/** ImageResolver that records every path it is queried for. Returns null textures (callers must ensure addStaticTiledMapTile
+	 * is a no-op). */
 	static class RecordingImageResolver implements ImageResolver {
 		final List<String> requestedPaths = new ArrayList<>();
 
@@ -39,19 +39,18 @@ public class TmxMapLoaderPathResolutionTest {
 		}
 	}
 
-	/** TmxMapLoader that skips actual tile construction so null TextureRegions are safe,
-	 * and skips property loading that requires Gdx.app. */
+	/** TmxMapLoader that skips actual tile construction so null TextureRegions are safe, and skips property loading that requires
+	 * Gdx.app. */
 	static class HeadlessTmxMapLoader extends TmxMapLoader {
 		@Override
-		protected void addStaticTiledMapTile (TiledMapTileSet tileSet, TextureRegion textureRegion, int tileId,
-			float offsetX, float offsetY) {
+		protected void addStaticTiledMapTile (TiledMapTileSet tileSet, TextureRegion textureRegion, int tileId, float offsetX,
+			float offsetY) {
 			// no-op: avoids NPE on null TextureRegion in headless tests
 			tileSet.putTile(tileId, new StaticTiledMapTile((TextureRegion)null));
 		}
 
 		@Override
-		protected void addTileProperties (TiledMapTile tile,
-			com.badlogic.gdx.utils.XmlReader.Element tileElement) {
+		protected void addTileProperties (TiledMapTile tile, com.badlogic.gdx.utils.XmlReader.Element tileElement) {
 			// no-op: avoids Gdx.app.log() call in loadMapPropertiesClassDefaults
 		}
 	}
@@ -69,8 +68,8 @@ public class TmxMapLoaderPathResolutionTest {
 	 *     tile.png          ← correct resolved location
 	 * </pre>
 	 *
-	 * Before the fix, addStaticTiles resolved images relative to maps/ (wrong).
-	 * After the fix, it resolves them relative to ts/ (correct). */
+	 * Before the fix, addStaticTiles resolved images relative to maps/ (wrong). After the fix, it resolves them relative to ts/
+	 * (correct). */
 	@Test
 	public void externalTsxTileImagesResolvedRelativeToTsxFile () throws Exception {
 		// set up directory layout
@@ -122,16 +121,16 @@ public class TmxMapLoaderPathResolutionTest {
 		String resolvedPath = resolver.requestedPaths.get(0).replace(File.separatorChar, '/');
 		String expectedSuffix = "ts/img/tile.png";
 
-		assertTrue("Image path should be resolved relative to the .tsx file (ts/img/tile.png), "
-			+ "but was: " + resolvedPath, resolvedPath.endsWith(expectedSuffix));
+		assertTrue("Image path should be resolved relative to the .tsx file (ts/img/tile.png), " + "but was: " + resolvedPath,
+			resolvedPath.endsWith(expectedSuffix));
 
 		// explicitly verify it was NOT resolved relative to the .tmx file
 		assertFalse("Image path must NOT be resolved relative to the .tmx file (maps/img/tile.png)",
 			resolvedPath.endsWith("maps/img/tile.png"));
 	}
 
-	/** Embedded tileset (no external .tsx) — image path stays relative to the .tmx file.
-	 * This ensures the fallback path is not broken by the fix. */
+	/** Embedded tileset (no external .tsx) — image path stays relative to the .tmx file. This ensures the fallback path is not
+	 * broken by the fix. */
 	@Test
 	public void embeddedTilesetImagesResolvedRelativeToTmxFile () throws Exception {
 		File mapsDir = tmp.newFolder("maps2");
@@ -170,7 +169,7 @@ public class TmxMapLoaderPathResolutionTest {
 		String resolvedPath = resolver.requestedPaths.get(0).replace(File.separatorChar, '/');
 		String expectedSuffix = "maps2/img/tile.png";
 
-		assertTrue("Embedded tileset image should be resolved relative to the .tmx file, "
-			+ "but was: " + resolvedPath, resolvedPath.endsWith(expectedSuffix));
+		assertTrue("Embedded tileset image should be resolved relative to the .tmx file, " + "but was: " + resolvedPath,
+			resolvedPath.endsWith(expectedSuffix));
 	}
 }
