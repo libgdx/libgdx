@@ -582,10 +582,9 @@ public class IOSNativeInput extends NSObject {
 			if (textField == null || textField.getSuperview() == null || getSuperview() == null) return null;
 			CGRect fieldFrame = textField.getSuperview().convertRectToView(textField.getFrame(), null);
 			double pillSize = getBounds().getSize().getHeight();
-			double width = textField.getSuperview().getBounds().getSize().getWidth();
 			double pillCenterX = fieldFrame.getMaxX() + 3 + pillSize / 2;
-			CGRect windowFrame = new CGRect(new CGPoint(pillCenterX - width / 2, fieldFrame.getMidY() - pillSize / 2),
-				new CGSize(width, pillSize));
+			CGRect windowFrame = new CGRect(new CGPoint(pillCenterX - pillSize / 2, fieldFrame.getMidY() - pillSize / 2),
+				new CGSize(pillSize, pillSize));
 			return getSuperview().convertRectFromView(windowFrame, null);
 		}
 
