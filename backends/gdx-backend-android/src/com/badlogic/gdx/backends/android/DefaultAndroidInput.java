@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -671,9 +672,9 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		}
 
 		if (!isNativeInputOpen()) {
-			dispatchHeightAndVisibilityChangesToObserver(visible, height);
 			// Even if it is not visible, we want smooth animation when we actually start animating for visibility
 			if (nativeInput != null) nativeInput.setFieldY(-height);
+			dispatchHeightAndVisibilityChangesToObserver(visible, height);
 			return;
 		}
 
@@ -683,15 +684,26 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput {
 		}
 
 		if (!visible) {
+			Configuration cfg = context.getResources().getConfiguration();
+			boolean hardwareKeyboard = cfg.keyboard != Configuration.KEYBOARD_NOKEYS
+				&& cfg.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO;
+
+			if (hardwareKeyboard) {
+				// A hardware keyboard is connected, keep it open and treat "visible = false" not as a dismiss
+				// This unfortunatly does not work for switching keyboard while input is open, cause `Configuration` is written after
+				// the callback
+				nativeInput.layoutFieldAboveKeyboard(0, leftInset, rightInset);
+				dispatchHeightAndVisibilityChangesToObserver(true, nativeInput.getTextView().getHeight());
+				return;
+			}
 			closeTextInputField(false);
-			dispatchHeightAndVisibilityChangesToObserver(false, height);
 			nativeInput.setFieldY(height);
+			dispatchHeightAndVisibilityChangesToObserver(false, height);
 			return;
 		}
 
-		dispatchHeightAndVisibilityChangesToObserver(true, height + nativeInput.getTextView().getHeight());
-
 		nativeInput.layoutFieldAboveKeyboard(height, leftInset, rightInset);
+		dispatchHeightAndVisibilityChangesToObserver(true, height + nativeInput.getTextView().getHeight());
 	}
 
 	private boolean isNativeInputOpen () {
