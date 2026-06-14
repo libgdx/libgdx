@@ -179,12 +179,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		setLayoutInDisplayCutoutMode(this.renderUnderCutout);
 
-		// The docs say it should work below android 30, but it just doesn't
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-			keyboardHeightProvider = new AndroidXKeyboardHeightProvider(this);
-		} else {
-			keyboardHeightProvider = new StandardKeyboardHeightProvider(this);
-		}
+		keyboardHeightProvider = createKeyboardHeightProvider();
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -532,6 +527,15 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected AndroidGraphics createGraphics (AndroidApplicationConfiguration config) {
 		return new AndroidGraphics(this, config,
 			config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
+	}
+
+	protected KeyboardHeightProvider createKeyboardHeightProvider () {
+		// The docs say it should work below android 30, but it just doesn't
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			return new AndroidXKeyboardHeightProvider(this);
+		} else {
+			return new StandardKeyboardHeightProvider(this);
+		}
 	}
 
 	public KeyboardHeightProvider getKeyboardHeightProvider () {

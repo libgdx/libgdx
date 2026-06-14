@@ -3,6 +3,7 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.Input;
 
+import com.badlogic.gdx.backends.iosrobovm.keyboard.IOSKeyboardHeightProvider;
 import com.badlogic.gdx.input.NativeInputConfiguration;
 import org.robovm.apple.uikit.UIKey;
 import org.robovm.apple.uikit.UIView;

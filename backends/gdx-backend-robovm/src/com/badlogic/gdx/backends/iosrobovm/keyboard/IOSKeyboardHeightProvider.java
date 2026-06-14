@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.iosrobovm;
+package com.badlogic.gdx.backends.iosrobovm.keyboard;
 
 import com.badlogic.gdx.Gdx;
 
@@ -39,16 +39,7 @@ import org.robovm.objc.annotation.Method;
  * parsing and the keyboard-matched animation: the observer is invoked one frame after the notification (via postRunnable) inside
  * a UIView animation block using the keyboard's own duration and curve, so any UIView property writes the observer performs
  * animate alongside the keyboard. */
-public class IOSKeyboardHeightProvider extends NSObject {
-
-	/** The observer that will be notified when the keyboard height changes. */
-	public interface IOSKeyboardObserver {
-		/** Pushed on the frame after the keyboard notification, inside a UIView animation block matching the keyboard's own
-		 * transition.
-		 * @param opened whether an on-screen keyboard is on screen
-		 * @param height keyboard height in screen points; 0 when closed */
-		void onKeyboardHeightChanged (boolean opened, double height);
-	}
+public class IOSKeyboardHeightProvider extends NSObject implements KeyboardHeightProvider {
 
 	private IOSKeyboardObserver observer;
 	private boolean started;

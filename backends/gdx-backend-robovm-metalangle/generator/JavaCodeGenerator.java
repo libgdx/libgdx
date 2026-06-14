@@ -148,6 +148,7 @@ public class JavaCodeGenerator {
 		cu.accept(visitor, null);
 
 		File out = new File("src", f.getCanonicalPath().substring(BASE_PROJECT_SRC.getCanonicalPath().length()));
+		out.getParentFile().mkdirs();
 		try (FileWriter writer = new FileWriter(out)) {
 			if (LEXICAL_PRESERVING_PRINTER)
 				LexicalPreservingPrinter.print(cu, writer);
