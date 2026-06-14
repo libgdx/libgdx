@@ -173,9 +173,8 @@ public class ANGLELoader {
 		}
 		return false;
 	}
-	
-	public static boolean isCompatible()
-	{
+
+	public static boolean isCompatible () {
 		String osDir = "";
 		String arch = isARM ? (is64Bit ? "arm64" : "arm32") : (is64Bit ? "x64" : "x86");
 		String ext = "";
@@ -197,13 +196,13 @@ public class ANGLELoader {
 		String eglSource = dir + "/libEGL" + ext;
 		String glesSource = dir + "/libGLESv2" + ext;
 
-		return ANGLELoader.class.getClassLoader().getResource(eglSource) != null && ANGLELoader.class.getClassLoader().getResource(glesSource) != null;
+		return ANGLELoader.class.getClassLoader().getResource(eglSource) != null
+			&& ANGLELoader.class.getClassLoader().getResource(glesSource) != null;
 	}
 
 	private static InputStream readFile (String path) {
 		InputStream input = ANGLELoader.class.getClassLoader().getResourceAsStream(path);
-		if(input == null)
-			throw new GdxRuntimeException("Unable to read file for extraction: " + path);
+		if (input == null) throw new GdxRuntimeException("Unable to read file for extraction: " + path);
 		return input;
 	}
 
@@ -228,8 +227,7 @@ public class ANGLELoader {
 
 		String eglSource = dir + "/libEGL" + ext;
 		String glesSource = dir + "/libGLESv2" + ext;
-		String crc = crc(readFile(eglSource))
-			+ crc(readFile(glesSource));
+		String crc = crc(readFile(eglSource)) + crc(readFile(glesSource));
 		egl = getExtractedFile(crc, new File(eglSource).getName());
 		gles = getExtractedFile(crc, new File(glesSource).getName());
 
