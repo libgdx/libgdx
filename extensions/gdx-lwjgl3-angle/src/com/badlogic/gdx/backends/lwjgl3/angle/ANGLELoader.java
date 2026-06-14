@@ -16,13 +16,18 @@
 
 package com.badlogic.gdx.backends.lwjgl3.angle;
 
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.UUID;
 import java.util.zip.CRC32;
+
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ANGLELoader {
 	static public boolean isWindows = System.getProperty("os.name").contains("Windows");
@@ -82,7 +87,7 @@ public class ANGLELoader {
 
 			try {
 				out = new FileOutputStream(outFile);
-				in = ANGLELoader.class.getResourceAsStream("/" + sourcePath);
+				in = readFile(sourcePath);
 				byte[] buffer = new byte[4096];
 				while (true) {
 					int length = in.read(buffer);
@@ -168,29 +173,63 @@ public class ANGLELoader {
 		}
 		return false;
 	}
-
-	public static void load () {
-		if ((isARM && !isMac) || (!isWindows && !isLinux && !isMac))
-			throw new GdxRuntimeException("ANGLE is only supported on x86/x86_64 Windows, x64 Linux, and x64/arm64 macOS.");
-		String osDir = null;
-		String ext = null;
+	
+	public static boolean isCompatible()
+	{
+		String osDir = "";
+		String arch = isARM ? (is64Bit ? "arm64" : "arm32") : (is64Bit ? "x64" : "x86");
+		String ext = "";
 		if (isWindows) {
-			osDir = is64Bit ? "windows64" : "windows32";
+			osDir = "windows";
 			ext = ".dll";
 		}
 		if (isLinux) {
-			osDir = "linux64";
+			osDir = "linux";
 			ext = ".so";
 		}
 		if (isMac) {
-			osDir = isARM ? "macosxarm64" : "macosx64";
+			osDir = "macos";
 			ext = ".dylib";
 		}
 
-		String eglSource = osDir + "/libEGL" + ext;
-		String glesSource = osDir + "/libGLESv2" + ext;
-		String crc = crc(ANGLELoader.class.getResourceAsStream("/" + eglSource))
-			+ crc(ANGLELoader.class.getResourceAsStream("/" + glesSource));
+		String dir = osDir + "/" + arch + "/angle";
+
+		String eglSource = dir + "/libEGL" + ext;
+		String glesSource = dir + "/libGLESv2" + ext;
+
+		return ANGLELoader.class.getClassLoader().getResource(eglSource) != null && ANGLELoader.class.getClassLoader().getResource(glesSource) != null;
+	}
+
+	private static InputStream readFile (String path) {
+		InputStream input = ANGLELoader.class.getClassLoader().getResourceAsStream(path);
+		if(input == null)
+			throw new GdxRuntimeException("Unable to read file for extraction: " + path);
+		return input;
+	}
+
+	public static void load () {
+		String osDir = "";
+		String arch = isARM ? (is64Bit ? "arm64" : "arm32") : (is64Bit ? "x64" : "x86");
+		String ext = "";
+		if (isWindows) {
+			osDir = "windows";
+			ext = ".dll";
+		}
+		if (isLinux) {
+			osDir = "linux";
+			ext = ".so";
+		}
+		if (isMac) {
+			osDir = "macos";
+			ext = ".dylib";
+		}
+
+		String dir = osDir + "/" + arch + "/angle";
+
+		String eglSource = dir + "/libEGL" + ext;
+		String glesSource = dir + "/libGLESv2" + ext;
+		String crc = crc(readFile(eglSource))
+			+ crc(readFile(glesSource));
 		egl = getExtractedFile(crc, new File(eglSource).getName());
 		gles = getExtractedFile(crc, new File(glesSource).getName());
 
