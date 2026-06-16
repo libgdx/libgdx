@@ -697,9 +697,11 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 			height += getSoftButtonsBarHeight();
 		}
 
-		if (onscreenVisible && height == 0) {
+		if (onscreenVisible && !visible) {
 			// The keyboard was closed by the system, not through `setOnscreenKeyboardVisible`.
 			// We need to actively close it to keep the input state consistent.
+			// Note: this may not work for SDK < 30.
+			// See https://github.com/libgdx/libgdx/issues/7663 and the PR comments for full details.
 			setOnscreenKeyboardVisible(false);
 		}
 
