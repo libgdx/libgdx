@@ -162,7 +162,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	protected void setupPressure () {
-		UIForceTouchCapability forceTouchCapability = UIScreen.getMainScreen().getTraitCollection().getForceTouchCapability();
+		UIForceTouchCapability forceTouchCapability = app.uiWindowScene.getScreen().getTraitCollection().getForceTouchCapability();
 		pressureSupported = forceTouchCapability == UIForceTouchCapability.Available;
 	}
 
@@ -753,7 +753,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		UIToolbar uiToolbar = null;
 		if (needsDoneToolbar) {
 			uiToolbar = new UIToolbar(
-				new CGRect(new CGPoint(0, 0), new CGSize(UIScreen.getMainScreen().getBounds().getSize().getWidth(), 35)));
+				new CGRect(new CGPoint(0, 0), new CGSize(app.uiWindowScene.getScreen().getBounds().getSize().getWidth(), 35)));
 
 			UIBarButtonItem space = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, (NSObject)null, null);
 

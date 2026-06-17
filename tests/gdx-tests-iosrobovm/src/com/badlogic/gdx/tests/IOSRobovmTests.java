@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.backends.iosrobovm.IOSUIWindowSceneDelegate;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.uikit.*;
 
@@ -41,13 +40,5 @@ public class IOSRobovmTests extends IOSApplication.Delegate {
 	@Override
 	public boolean didFinishLaunching (UIApplication application, UIApplicationLaunchOptions launchOptions) {
 		return super.didFinishLaunching(application, launchOptions);
-	}
-
-	@Override
-	public UISceneConfiguration getConfigurationForConnectingSceneSession (UIApplication application,
-		UISceneSession connectingSceneSession, UISceneConnectionOptions options) {
-		UISceneConfiguration config = new UISceneConfiguration("Default Configuration", connectingSceneSession.getRole());
-		config.setDelegateClass(IOSUIWindowSceneDelegate.class);
-		return config;
 	}
 }

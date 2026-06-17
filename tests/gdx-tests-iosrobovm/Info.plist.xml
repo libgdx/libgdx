@@ -51,10 +51,5 @@
         <string>LaunchScreen</string>
         <key>CFBundleIconName</key>
         <string>AppIcon</string>
-        <key>UIApplicationSceneManifest</key>
-        <dict>
-            <key>UIApplicationSupportsMultipleScenes</key>
-            <false/>
-        </dict>
     </dict>
 </plist>

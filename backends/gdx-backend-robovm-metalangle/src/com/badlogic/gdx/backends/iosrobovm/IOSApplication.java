@@ -47,6 +47,32 @@ public class IOSApplication implements Application {
 		public void willTerminate (UIApplication application) {
 			app.willTerminate(application);
 		}
+
+		@Override
+		public UISceneConfiguration getConfigurationForConnectingSceneSession (UIApplication application,
+			UISceneSession connectingSceneSession, UISceneConnectionOptions options) {
+			UISceneConfiguration config = new UISceneConfiguration("Default Configuration", connectingSceneSession.getRole());
+			config.setDelegateClass(IOSSceneDelegate.class);
+			return config;
+		}
+
+		public void willConnect (UIScene scene, UISceneSession session, UISceneConnectionOptions connectionOptions) {
+		}
+
+		public void sceneDidBecomeActive (UIScene scene) {
+		}
+
+		public void sceneWillResignActive (UIScene scene) {
+		}
+
+		public void sceneWillEnterForeground (UIScene scene) {
+		}
+
+		public void sceneDidEnterBackground (UIScene scene) {
+		}
+
+		public void sceneDidDisconnect (UIScene scene) {
+		}
 	}
 
 	static final boolean IS_METALANGLE = true;
@@ -199,7 +225,7 @@ public class IOSApplication implements Application {
 		// //// Graphics related
 		this.uiWindow = new UIWindow(scene);
 		this.uiWindow.makeKeyAndVisible();
-		((IOSUIWindowSceneDelegate)scene.getDelegate()).setWindow(uiWindow);
+		((UIWindowSceneDelegate)scene.getDelegate()).setWindow(uiWindow);
 		// iOS counts in "points" instead of pixels. Points are logical pixels
 		pixelsPerPoint = (float)uiWindowScene.getScreen().getNativeScale();
 		Gdx.app.debug("IOSApplication", "Pixels per point: " + pixelsPerPoint);
