@@ -136,7 +136,6 @@ public class IOSApplication implements Application {
 		Gdx.audio = this.audio;
 		Gdx.input = this.input;
 		Gdx.net = this.net;
-		this.input.setupPeripherals();
 		Gdx.app.debug("IOSApplication", "created");
 		return true;
 	}
@@ -222,7 +221,6 @@ public class IOSApplication implements Application {
 
 	final void handleSceneConnection (UIWindowScene scene) {
 		this.uiWindowScene = scene;
-		// //// Graphics related
 		this.uiWindow = new UIWindow(scene);
 		this.uiWindow.makeKeyAndVisible();
 		((UIWindowSceneDelegate)scene.getDelegate()).setWindow(uiWindow);
@@ -241,7 +239,7 @@ public class IOSApplication implements Application {
 		listener.resize(this.graphics.getWidth(), this.graphics.getHeight());
 		// make sure the OpenGL view has contents before displaying it
 		this.graphics.view.display();
-		// //// End Graphics related
+		this.input.setupPeripherals();
 	}
 
 	final void didBecomeActive (UIScene uiScene) {
