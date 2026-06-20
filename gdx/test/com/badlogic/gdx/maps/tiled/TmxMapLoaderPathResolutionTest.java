@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.utils.ObjectMap;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -52,6 +53,21 @@ public class TmxMapLoaderPathResolutionTest {
 		@Override
 		protected void addTileProperties (TiledMapTile tile, com.badlogic.gdx.utils.XmlReader.Element tileElement) {
 			// no-op: avoids Gdx.app.log() call in loadMapPropertiesClassDefaults
+		}
+	}
+
+	/** TmjMapLoader that skips actual tile construction so null TextureRegions are safe, skips property loading that requires
+	 * Gdx.app, and avoids calls to Gdx.app.log(). */
+	static class HeadlessTmjMapLoader extends TmjMapLoader {
+		HeadlessTmjMapLoader () {
+			this.projectClassInfo = new ObjectMap<>();
+		}
+
+		@Override
+		protected void addStaticTiledMapTile (TiledMapTileSet tileSet, TextureRegion textureRegion, int tileId, float offsetX,
+			float offsetY) {
+			// no-op: avoids NPE on null TextureRegion in headless tests
+			tileSet.putTile(tileId, new StaticTiledMapTile((TextureRegion)null));
 		}
 	}
 
@@ -172,4 +188,158 @@ public class TmxMapLoaderPathResolutionTest {
 		assertTrue("Embedded tileset image should be resolved relative to the .tmx file, " + "but was: " + resolvedPath,
 			resolvedPath.endsWith(expectedSuffix));
 	}
+
+	/** External TSJ with collection-of-images tiles in a sub-directory (JSON variant).
+	 *
+	 * <pre>
+	 *   maps/
+	 *     test.tmj          ← references ../ts/sprites.tsj
+	 *   ts/
+	 *     sprites.tsj       ← tile image source: "img/tile.png"
+	 *   ts/img/
+	 *     tile.png          ← correct resolved location
+	 * </pre>
+	 *
+	 * Verifies that addStaticTiles resolves images relative to the .tsj file, not the .tmj map file. */
+	@Test
+	public void externalTsjTileImagesResolvedRelativeToTsjFile () throws Exception {
+		// set up directory layout
+		File mapsDir = tmp.newFolder("maps");
+		File tsDir = tmp.newFolder("ts");
+		File tsImgDir = new File(tsDir, "img");
+		tsImgDir.mkdirs();
+
+		// write sprites.tsj (JSON tileset: collection of images with one tile referencing img/tile.png)
+		File tsjFile = new File(tsDir, "sprites.tsj");
+		try (PrintWriter w = new PrintWriter(tsjFile)) {
+			w.println("{");
+			w.println("  \"name\": \"sprites\",");
+			w.println("  \"tilewidth\": 16,");
+			w.println("  \"tileheight\": 16,");
+			w.println("  \"tilecount\": 1,");
+			w.println("  \"tiles\": [");
+			w.println("    {");
+			w.println("      \"id\": 0,");
+			w.println("      \"image\": \"img/tile.png\",");
+			w.println("      \"imagewidth\": 16,");
+			w.println("      \"imageheight\": 16");
+			w.println("    }");
+			w.println("  ]");
+			w.println("}");
+		}
+
+		// write test.tmj referencing ../ts/sprites.tsj
+		File tmjFile = new File(mapsDir, "test.tmj");
+		try (PrintWriter w = new PrintWriter(tmjFile)) {
+			w.println("{");
+			w.println("  \"width\": 1,");
+			w.println("  \"height\": 1,");
+			w.println("  \"tilewidth\": 16,");
+			w.println("  \"tileheight\": 16,");
+			w.println("  \"infinite\": false,");
+			w.println("  \"tilesets\": [");
+			w.println("    {");
+			w.println("      \"firstgid\": 1,");
+			w.println("      \"source\": \"../ts/sprites.tsj\"");
+			w.println("    }");
+			w.println("  ],");
+			w.println("  \"layers\": [");
+			w.println("    {");
+			w.println("      \"type\": \"tilelayer\",");
+			w.println("      \"width\": 1,");
+			w.println("      \"height\": 1,");
+			w.println("      \"data\": [0]");
+			w.println("    }");
+			w.println("  ]");
+			w.println("}");
+		}
+
+		// also create the expected image file so FileHandle.exists() passes if needed
+		new File(tsImgDir, "tile.png").createNewFile();
+
+		FileHandle tmjHandle = new FileHandle(tmjFile);
+		RecordingImageResolver resolver = new RecordingImageResolver();
+		HeadlessTmjMapLoader loader = new HeadlessTmjMapLoader();
+
+		// parse TMJ, extract the tileset reference element, and load it
+		loader.root = loader.json.parse(tmjHandle);
+		com.badlogic.gdx.utils.JsonValue tilesetRef = loader.root.get("tilesets").get(0);
+		loader.loadTileSet(tilesetRef, tmjHandle, resolver);
+
+		// the resolver must have been called exactly once
+		assertEquals("Expected exactly one tile image to be resolved", 1, resolver.requestedPaths.size());
+
+		String resolvedPath = resolver.requestedPaths.get(0).replace(File.separatorChar, '/');
+		String expectedSuffix = "ts/img/tile.png";
+
+		assertTrue("Image path should be resolved relative to the .tsj file (ts/img/tile.png), " + "but was: " + resolvedPath,
+			resolvedPath.endsWith(expectedSuffix));
+
+		// explicitly verify it was NOT resolved relative to the .tmj file
+		assertFalse("Image path must NOT be resolved relative to the .tmj file (maps/img/tile.png)",
+			resolvedPath.endsWith("maps/img/tile.png"));
+	}
+
+	/** Embedded tileset in TMJ (no external .tsj source) — image path stays relative to the .tmj file (JSON variant). This ensures
+	 * the fallback path is not broken by the fix. */
+	@Test
+	public void embeddedTilesetInTmjMap () throws Exception {
+		File mapsDir = tmp.newFolder("maps3");
+		File mapsImgDir = new File(mapsDir, "img");
+		mapsImgDir.mkdirs();
+
+		File tmjFile = new File(mapsDir, "embedded.tmj");
+		try (PrintWriter w = new PrintWriter(tmjFile)) {
+			w.println("{");
+			w.println("  \"width\": 1,");
+			w.println("  \"height\": 1,");
+			w.println("  \"tilewidth\": 16,");
+			w.println("  \"tileheight\": 16,");
+			w.println("  \"infinite\": false,");
+			w.println("  \"tilesets\": [");
+			w.println("    {");
+			w.println("      \"firstgid\": 1,");
+			w.println("      \"name\": \"embedded\",");
+			w.println("      \"tilewidth\": 16,");
+			w.println("      \"tileheight\": 16,");
+			w.println("      \"tilecount\": 1,");
+			w.println("      \"tiles\": [");
+			w.println("        {");
+			w.println("          \"id\": 0,");
+			w.println("          \"image\": \"img/tile.png\",");
+			w.println("          \"imagewidth\": 16,");
+			w.println("          \"imageheight\": 16");
+			w.println("        }");
+			w.println("      ]");
+			w.println("    }");
+			w.println("  ],");
+			w.println("  \"layers\": [");
+			w.println("    {");
+			w.println("      \"type\": \"tilelayer\",");
+			w.println("      \"width\": 1,");
+			w.println("      \"height\": 1,");
+			w.println("      \"data\": [0]");
+			w.println("    }");
+			w.println("  ]");
+			w.println("}");
+		}
+
+		new File(mapsImgDir, "tile.png").createNewFile();
+
+		FileHandle tmjHandle = new FileHandle(tmjFile);
+		RecordingImageResolver resolver = new RecordingImageResolver();
+		HeadlessTmjMapLoader loader = new HeadlessTmjMapLoader();
+
+		loader.root = loader.json.parse(tmjHandle);
+		com.badlogic.gdx.utils.JsonValue tilesetRef = loader.root.get("tilesets").get(0);
+		loader.loadTileSet(tilesetRef, tmjHandle, resolver);
+
+		assertEquals("Expected exactly one tile image to be resolved", 1, resolver.requestedPaths.size());
+
+		String resolvedPath = resolver.requestedPaths.get(0).replace(File.separatorChar, '/');
+		String expectedSuffix = "maps3/img/tile.png";
+
+		assertTrue("Embedded tileset image should be resolved relative to the .tmj file, " + "but was: " + resolvedPath,
+			resolvedPath.endsWith(expectedSuffix));
+}
 }
