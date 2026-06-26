@@ -1,4 +1,5 @@
 [1.14.3]
+- [BREAKING CHANGE] Migrated to UIKit scene-based life cycle. (see #7823)
 
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805
