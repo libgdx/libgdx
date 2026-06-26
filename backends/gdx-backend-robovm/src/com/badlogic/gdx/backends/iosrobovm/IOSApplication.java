@@ -50,6 +50,13 @@ public class IOSApplication implements Application {
 
 		@Override
 		public boolean didFinishLaunching (UIApplication application, UIApplicationLaunchOptions launchOptions) {
+			// TODO Replace with @CustomClass "preload" parameter when MobiVM 2.3.26 is released
+			// Workaround to force class preloading by RoboVM.
+			try {
+				Class.forName(IOSSceneDelegate.class.getName());
+			} catch (ClassNotFoundException e) {
+				// Swallow
+			}
 			application.addStrongRef(this); // Prevent this from being GCed until the ObjC UIApplication is deallocated
 			this.app = createApplication();
 			return app.didFinishLaunching(application, launchOptions);
@@ -63,7 +70,7 @@ public class IOSApplication implements Application {
 		@Override
 		public UISceneConfiguration getConfigurationForConnectingSceneSession (UIApplication application,
 			UISceneSession connectingSceneSession, UISceneConnectionOptions options) {
-			UISceneConfiguration config = new UISceneConfiguration("Default Configuration", connectingSceneSession.getRole());
+			UISceneConfiguration config = new UISceneConfiguration(null, connectingSceneSession.getRole());
 			config.setDelegateClass(IOSSceneDelegate.class);
 			return config;
 		}
