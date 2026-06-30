@@ -27,7 +27,6 @@ import com.badlogic.gdx.backends.lwjgl3.audio.Lwjgl3Audio;
 import com.badlogic.gdx.backends.lwjgl3.audio.OpenALLwjgl3Audio;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 
-import com.badlogic.gdx.utils.*;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.AMDDebugOutput;
@@ -39,6 +38,7 @@ import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.Callback;
+import org.lwjgl.system.MemoryUtil;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -57,6 +57,7 @@ import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogic.gdx.utils.Os;
 
 public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 	private final Lwjgl3ApplicationConfiguration config;
@@ -553,9 +554,15 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 						monitorHandle = config.maximizedMonitor.monitorHandle;
 					}
 
-					GridPoint2 newPos = Lwjgl3ApplicationConfiguration.calculateCenteredWindowPosition(
-						Lwjgl3ApplicationConfiguration.toLwjgl3Monitor(monitorHandle), windowWidth, windowHeight);
-					GLFW.glfwSetWindowPos(windowHandle, newPos.x, newPos.y);
+					// If the primary monitor is unavailable, use (0, 0) as a fallback
+					if (monitorHandle == MemoryUtil.NULL) {
+						GLFW.glfwSetWindowPos(windowHandle, 0, 0);
+					} else {
+						GridPoint2 newPos = Lwjgl3ApplicationConfiguration.calculateCenteredWindowPosition(
+							Lwjgl3ApplicationConfiguration.toLwjgl3Monitor(monitorHandle), windowWidth, windowHeight);
+						GLFW.glfwSetWindowPos(windowHandle, newPos.x, newPos.y);
+					}
+
 				} else {
 					GLFW.glfwSetWindowPos(windowHandle, config.windowX, config.windowY);
 				}
