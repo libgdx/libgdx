@@ -35,6 +35,7 @@ public class ActorGestureListener implements EventListener {
 	private final GestureDetector detector;
 	InputEvent event;
 	Actor actor, touchDownTarget;
+	private int activeTouches = 0;
 
 	/** @see GestureDetector#GestureDetector(com.badlogic.gdx.input.GestureDetector.GestureListener) */
 	public ActorGestureListener () {
@@ -110,6 +111,7 @@ public class ActorGestureListener implements EventListener {
 			actor = event.getListenerActor();
 			touchDownTarget = event.getTarget();
 			detector.touchDown(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
+			if (event.getPointer() <= 1) activeTouches++;
 			actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
 			touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
 			if (event.getTouchFocus()) event.getStage().addTouchFocus(this, event.getListenerActor(), event.getTarget(),
@@ -129,11 +131,14 @@ public class ActorGestureListener implements EventListener {
 				final float preservedTouchY = tmpCoords.y;
 
 				detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
+				if (event.getPointer() <= 1) activeTouches--;
 				touchUp(event, preservedTouchX, preservedTouchY, event.getPointer(), event.getButton());
 			}
-			this.event = null;
-			actor = null;
-			touchDownTarget = null;
+			if (activeTouches == 0) {
+				this.event = null;
+				actor = null;
+				touchDownTarget = null;
+			}
 			return !touchFocusCancel;
 		case touchDragged:
 			this.event = event;
