@@ -38,7 +38,6 @@ import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.Callback;
-import org.lwjgl.system.MemoryUtil;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -555,7 +554,7 @@ public class Lwjgl3Application implements Lwjgl3ApplicationBase {
 					}
 
 					// If the primary monitor is unavailable, use (0, 0) as a fallback
-					if (monitorHandle == MemoryUtil.NULL) {
+					if (monitorHandle == 0) {
 						GLFW.glfwSetWindowPos(windowHandle, 0, 0);
 					} else {
 						GridPoint2 newPos = Lwjgl3ApplicationConfiguration.calculateCenteredWindowPosition(
