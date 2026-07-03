@@ -119,6 +119,7 @@ public class ActorGestureListener implements EventListener {
 			return true;
 		case touchUp:
 			boolean touchFocusCancel = event.isTouchFocusCancel();
+			if (event.getPointer() <= 1) activeTouches--;
 			if (touchFocusCancel)
 				detector.reset();
 			else {
@@ -131,7 +132,6 @@ public class ActorGestureListener implements EventListener {
 				final float preservedTouchY = tmpCoords.y;
 
 				detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
-				if (event.getPointer() <= 1) activeTouches--;
 				touchUp(event, preservedTouchX, preservedTouchY, event.getPointer(), event.getButton());
 			}
 			if (activeTouches == 0) {
