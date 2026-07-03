@@ -35,7 +35,7 @@ public class ActorGestureListener implements EventListener {
 	private final GestureDetector detector;
 	InputEvent event;
 	Actor actor, touchDownTarget;
-	private int activeTouches = 0;
+	private int activeTouches;
 
 	/** @see GestureDetector#GestureDetector(com.badlogic.gdx.input.GestureDetector.GestureListener) */
 	public ActorGestureListener () {
@@ -119,7 +119,6 @@ public class ActorGestureListener implements EventListener {
 			return true;
 		case touchUp:
 			boolean touchFocusCancel = event.isTouchFocusCancel();
-			if (event.getPointer() <= 1) activeTouches--;
 			if (touchFocusCancel)
 				detector.reset();
 			else {
@@ -128,12 +127,12 @@ public class ActorGestureListener implements EventListener {
 
 				actor.stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
 				// Preserve the touch coordinates before a possible reentrant callback modifies tmpCoords
-				final float preservedTouchX = tmpCoords.x;
-				final float preservedTouchY = tmpCoords.y;
+				float touchUpX = tmpCoords.x, touchUpY = tmpCoords.y;
 
 				detector.touchUp(event.getStageX(), event.getStageY(), event.getPointer(), event.getButton());
-				touchUp(event, preservedTouchX, preservedTouchY, event.getPointer(), event.getButton());
+				touchUp(event, touchUpX, touchUpY, event.getPointer(), event.getButton());
 			}
+			if (event.getPointer() <= 1) activeTouches--;
 			if (activeTouches == 0) {
 				this.event = null;
 				actor = null;
