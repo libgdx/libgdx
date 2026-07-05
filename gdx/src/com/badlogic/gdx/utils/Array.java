@@ -381,8 +381,7 @@ public class Array<T> implements Iterable<T> {
 			int i = Math.max(lastIndex, end + 1);
 			System.arraycopy(items, i, items, start, n - i);
 		}
-		for (int i = lastIndex; i < n; i++)
-			items[i] = null;
+		Arrays.fill(items, lastIndex, n, null);
 		size = n - count;
 	}
 
@@ -573,8 +572,7 @@ public class Array<T> implements Iterable<T> {
 	public void truncate (int newSize) {
 		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (size <= newSize) return;
-		for (int i = newSize; i < size; i++)
-			items[i] = null;
+		Arrays.fill(items, newSize, size, null);
 		size = newSize;
 	}
 
