@@ -25,15 +25,7 @@ import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSProcessInfo;
 import org.robovm.apple.foundation.NSString;
-import org.robovm.apple.uikit.UIApplication;
-import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
-import org.robovm.apple.uikit.UIApplicationLaunchOptions;
-import org.robovm.apple.uikit.UIDevice;
-import org.robovm.apple.uikit.UIUserInterfaceIdiom;
-import org.robovm.apple.uikit.UIPasteboard;
-import org.robovm.apple.uikit.UIScreen;
-import org.robovm.apple.uikit.UIViewController;
-import org.robovm.apple.uikit.UIWindow;
+import org.robovm.apple.uikit.*;
 import org.robovm.rt.bro.Bro;
 
 import com.badlogic.gdx.Application;
@@ -58,35 +50,54 @@ public class IOSApplication implements Application {
 
 		@Override
 		public boolean didFinishLaunching (UIApplication application, UIApplicationLaunchOptions launchOptions) {
+			// TODO Replace with @CustomClass "preload" parameter when MobiVM 2.3.26 is released
+			// Workaround to force class preloading by RoboVM.
+			try {
+				Class.forName(IOSSceneDelegate.class.getName());
+			} catch (ClassNotFoundException e) {
+				// Swallow
+			}
 			application.addStrongRef(this); // Prevent this from being GCed until the ObjC UIApplication is deallocated
 			this.app = createApplication();
 			return app.didFinishLaunching(application, launchOptions);
 		}
 
 		@Override
-		public void didBecomeActive (UIApplication application) {
-			app.didBecomeActive(application);
-		}
-
-		@Override
-		public void willEnterForeground (UIApplication application) {
-			app.willEnterForeground(application);
-		}
-
-		@Override
-		public void willResignActive (UIApplication application) {
-			app.willResignActive(application);
-		}
-
-		@Override
 		public void willTerminate (UIApplication application) {
 			app.willTerminate(application);
+		}
+
+		@Override
+		public UISceneConfiguration getConfigurationForConnectingSceneSession (UIApplication application,
+			UISceneSession connectingSceneSession, UISceneConnectionOptions options) {
+			UISceneConfiguration config = new UISceneConfiguration(null, connectingSceneSession.getRole());
+			config.setDelegateClass(IOSSceneDelegate.class);
+			return config;
+		}
+
+		public void willConnect (UIScene scene, UISceneSession session, UISceneConnectionOptions connectionOptions) {
+		}
+
+		public void sceneDidBecomeActive (UIScene scene) {
+		}
+
+		public void sceneWillResignActive (UIScene scene) {
+		}
+
+		public void sceneWillEnterForeground (UIScene scene) {
+		}
+
+		public void sceneDidEnterBackground (UIScene scene) {
+		}
+
+		public void sceneDidDisconnect (UIScene scene) {
 		}
 	}
 
 	static final boolean IS_METALANGLE = false;
 
 	UIApplication uiApp;
+	UIWindowScene uiWindowScene;
 	UIWindow uiWindow;
 	ApplicationListener listener;
 	IOSViewControllerListener viewControllerListener;
@@ -124,44 +135,18 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "iOS version: " + UIDevice.getCurrentDevice().getSystemVersion());
 		Gdx.app.debug("IOSApplication", "Running in " + (Bro.IS_64BIT ? "64-bit" : "32-bit") + " mode");
 
-		// iOS counts in "points" instead of pixels. Points are logical pixels
-		pixelsPerPoint = (float)UIScreen.getMainScreen().getNativeScale();
-		Gdx.app.debug("IOSApplication", "Pixels per point: " + pixelsPerPoint);
-
-		this.uiWindow = new UIWindow(UIScreen.getMainScreen().getBounds());
-		this.uiWindow.makeKeyAndVisible();
-		uiApp.getDelegate().setWindow(uiWindow);
-
 		// setup libgdx
 		this.input = createInput();
-		this.graphics = createGraphics();
-		Gdx.gl = Gdx.gl20 = graphics.gl20;
-		Gdx.gl30 = graphics.gl30;
 		this.files = createFiles();
 		this.audio = createAudio(config);
 		this.net = new IOSNet(this, config);
 
 		Gdx.files = this.files;
-		Gdx.graphics = this.graphics;
 		Gdx.audio = this.audio;
 		Gdx.input = this.input;
 		Gdx.net = this.net;
 
-		this.input.setupPeripherals();
-
-		this.uiWindow.setRootViewController(this.graphics.viewController);
-		this.graphics.updateSafeInsets();
-
 		Gdx.app.debug("IOSApplication", "created");
-
-		// Trigger first render, special case that is caught and returned
-		this.graphics.view.display();
-
-		listener.create();
-		listener.resize(this.graphics.getWidth(), this.graphics.getHeight());
-
-		// make sure the OpenGL view has contents before displaying it
-		this.graphics.view.display();
 
 		return true;
 	}
@@ -216,7 +201,7 @@ public class IOSApplication implements Application {
 	 * @return logical dimensions of space we draw to, adjusted for device orientation */
 	protected IOSScreenBounds computeBounds () {
 		CGRect screenBounds = uiWindow.getBounds();
-		final CGRect statusBarFrame = uiApp.getStatusBarFrame();
+		final CGRect statusBarFrame = uiWindowScene.getStatusBarManager().getStatusBarFrame();
 		double statusBarHeight = statusBarFrame.getHeight();
 
 		double screenWidth = screenBounds.getWidth();
@@ -251,18 +236,48 @@ public class IOSApplication implements Application {
 			return lastScreenBounds;
 	}
 
-	final void didBecomeActive (UIApplication uiApp) {
+	final void handleSceneConnection (UIWindowScene scene) {
+		this.uiWindowScene = scene;
+		this.uiWindow = new UIWindow(scene);
+		this.uiWindow.makeKeyAndVisible();
+		((UIWindowSceneDelegate)scene.getDelegate()).setWindow(uiWindow);
+
+		// iOS counts in "points" instead of pixels. Points are logical pixels
+		pixelsPerPoint = (float)uiWindowScene.getScreen().getNativeScale();
+		Gdx.app.debug("IOSApplication", "Pixels per point: " + pixelsPerPoint);
+
+		this.graphics = createGraphics();
+		Gdx.gl = Gdx.gl20 = graphics.gl20;
+		Gdx.gl30 = graphics.gl30;
+		Gdx.graphics = this.graphics;
+
+		this.uiWindow.setRootViewController(this.graphics.viewController);
+		this.graphics.updateSafeInsets();
+
+		// Trigger first render, special case that is caught and returned
+		this.graphics.view.display();
+
+		listener.create();
+		listener.resize(this.graphics.getWidth(), this.graphics.getHeight());
+
+		// make sure the OpenGL view has contents before displaying it
+		this.graphics.view.display();
+
+		this.input.setupPeripherals();
+	}
+
+	final void didBecomeActive (UIScene uiScene) {
 		Gdx.app.debug("IOSApplication", "resumed");
 		audio.didBecomeActive();
 		graphics.makeCurrent();
 		graphics.resume();
 	}
 
-	final void willEnterForeground (UIApplication uiApp) {
+	final void willEnterForeground (UIScene uiScene) {
 		audio.willEnterForeground();
 	}
 
-	final void willResignActive (UIApplication uiApp) {
+	final void willResignActive (UIScene uiScene) {
 		Gdx.app.debug("IOSApplication", "paused");
 		audio.willResignActive();
 		graphics.makeCurrent();
