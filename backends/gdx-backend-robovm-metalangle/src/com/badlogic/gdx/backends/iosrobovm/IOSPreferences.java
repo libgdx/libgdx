@@ -6,7 +6,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.robovm.apple.dispatch.DispatchQueue;
 import org.robovm.apple.foundation.NSAutoreleasePool;
+import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSNumber;
 import org.robovm.apple.foundation.NSObject;
@@ -172,10 +174,18 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public void flush () {
-		NSAutoreleasePool pool = new NSAutoreleasePool();
-		if (!nsDictionary.write(file, false)) {
-			Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + file);
-		}
-		pool.close();
+		// Safe to do shallow copy because dictionary only contains immutable objects
+		final NSDictionary dataToSave = (NSDictionary)nsDictionary.copy();
+		DispatchQueue.getGlobalQueue(DispatchQueue.PRIORITY_DEFAULT, 0).async(new Runnable() {
+
+			@Override
+			public void run () {
+				NSAutoreleasePool pool = new NSAutoreleasePool();
+				if (!dataToSave.write(file, true)) {
+					Gdx.app.error("IOSPreferences", "Failed to write NSDictionary atomically to " + file);
+				}
+				pool.close();
+			}
+		});
 	}
 }
