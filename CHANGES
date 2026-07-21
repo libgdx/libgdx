@@ -1,4 +1,5 @@
 [1.14.3]
+- API Addition: SpriteBatch/PolygonSpriteBatch/SpriteCache constructors that take Graphics; existing constructors use Gdx.graphics.
 - API Addition: GLFrameBuffer/FrameBuffer/FloatFrameBuffer/FrameBufferCubemap constructors and builders that take Graphics; existing APIs use Gdx.graphics.
 - API Addition: Mesh and Vertex/Index/Instance buffer object constructors that take Graphics; existing constructors use Gdx.graphics.
 - API Addition: GLTexture/Texture/Cubemap/TextureArray/Texture3D constructors that take Graphics; existing constructors use Gdx.graphics.
