@@ -70,6 +70,7 @@ import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightObserver;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.keyboardheight.StandardKeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.input.NativeInputConfiguration.NativeInputCloseCallback;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -198,7 +199,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		touchHandler = new AndroidTouchHandler();
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
-		haptics = new AndroidHaptics(context);
+		haptics = new AndroidHaptics(context, config.hapticsFallback);
 
 		if (Build.VERSION.SDK_INT >= 33 && context instanceof Activity) {
 			this.predictiveBackHandler = new PredictiveBackHandler();
@@ -1042,23 +1043,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	@Override
-	public void vibrate (int milliseconds) {
-		haptics.vibrate(milliseconds);
-	}
-
-	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-		haptics.vibrate(milliseconds);
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-		haptics.vibrate(milliseconds, amplitude, fallback);
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
-		haptics.vibrate(vibrationType);
+	public Haptics getHaptics () {
+		return haptics;
 	}
 
 	@Override
@@ -1231,8 +1217,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
-		if (peripheral == Peripheral.Vibrator) return haptics.hasVibratorAvailable();
-		if (peripheral == Peripheral.HapticFeedback) return haptics.hasHapticsSupport();
+		if (peripheral == Peripheral.Vibrator) return haptics.isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return haptics.isHapticsSupported();
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		if (peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
 		if (peripheral == Peripheral.Pressure) return true;

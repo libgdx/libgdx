@@ -57,7 +57,9 @@ import javax.swing.event.DocumentListener;
 import com.badlogic.gdx.AbstractInput;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
+import com.badlogic.gdx.input.NoOpHaptics;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
@@ -117,6 +119,7 @@ public class LwjglAWTInput extends AbstractInput implements MouseMotionListener,
 	boolean catched = false;
 	Robot robot = null;
 	long currentEventTimeStamp;
+	private Haptics haptics = new NoOpHaptics();
 
 	public LwjglAWTInput (LwjglAWTCanvas lwjglAwtCanvas) {
 		this.lwjglAwtCanvas = lwjglAwtCanvas;
@@ -860,19 +863,8 @@ public class LwjglAWTInput extends AbstractInput implements MouseMotionListener,
 	}
 
 	@Override
-	public void vibrate (int milliseconds) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
+	public Haptics getHaptics () {
+		return haptics;
 	}
 
 	@Override
