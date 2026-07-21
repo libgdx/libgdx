@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests.bullet;
 
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
@@ -72,7 +71,7 @@ public class SoftMeshTest extends BaseBulletTest {
 			0.25f + 0.5f * (float)Math.random(), 1f);
 
 		// Note: not every model is suitable for a one on one translation with a soft body, a better model might be added later.
-		model = objLoader.loadModel(Gdx.files.internal("data/wheel.obj"));
+		model = objLoader.loadModel(files.internal("data/wheel.obj"));
 		MeshPart meshPart = model.nodes.get(0).parts.get(0).meshPart;
 
 		meshPart.mesh.scale(6, 6, 6);

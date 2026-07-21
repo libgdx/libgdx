@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -44,8 +43,8 @@ public class AnimationTest extends GdxTest {
 		public void update (float deltaTime) {
 			stateTime += deltaTime;
 			pos.x = pos.x + (headsLeft ? -VELOCITY * deltaTime : VELOCITY * deltaTime);
-			if (pos.x < -64) pos.x = Gdx.graphics.getWidth();
-			if (pos.x > Gdx.graphics.getWidth() + 64) pos.x = -64;
+			if (pos.x < -64) pos.x = graphics.getWidth();
+			if (pos.x > graphics.getWidth() + 64) pos.x = -64;
 		}
 	}
 
@@ -58,7 +57,7 @@ public class AnimationTest extends GdxTest {
 
 	@Override
 	public void create () {
-		texture = new Texture(Gdx.files.internal("data/walkanim.png"));
+		texture = new Texture(files.internal("data/walkanim.png"));
 		TextureRegion[] leftWalkFrames = TextureRegion.split(texture, 64, 64)[0];
 		Array<TextureRegion> rightWalkFrames = new Array<>(TextureRegion[]::new);
 		for (int i = 0; i < leftWalkFrames.length; i++) {
@@ -71,12 +70,12 @@ public class AnimationTest extends GdxTest {
 
 		TextureRegion[] rightRegions = rightWalk.getKeyFrames(); // testing backing array type
 		TextureRegion firstRightRegion = rightRegions[0];
-		Gdx.app.log("AnimationTest",
+		app.log("AnimationTest",
 			"First right walk region is " + firstRightRegion.getRegionWidth() + "x" + firstRightRegion.getRegionHeight());
 
 		cavemen = new Caveman[100];
 		for (int i = 0; i < 100; i++) {
-			cavemen[i] = new Caveman((float)Math.random() * Gdx.graphics.getWidth(), (float)Math.random() * Gdx.graphics.getHeight(),
+			cavemen[i] = new Caveman((float)Math.random() * graphics.getWidth(), (float)Math.random() * graphics.getHeight(),
 				Math.random() > 0.5 ? true : false);
 		}
 		batch = new SpriteBatch();
@@ -96,7 +95,7 @@ public class AnimationTest extends GdxTest {
 		batch.end();
 
 		for (int i = 0; i < cavemen.length; i++) {
-			cavemen[i].update(Gdx.graphics.getDeltaTime());
+			cavemen[i].update(graphics.getDeltaTime());
 		}
 
 		fpsLog.log();

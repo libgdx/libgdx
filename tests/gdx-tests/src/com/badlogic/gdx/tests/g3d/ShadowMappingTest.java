@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -54,7 +53,7 @@ public class ShadowMappingTest extends GdxTest {
 			.add((shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f)).set(0.8f, 0.8f, 0.8f, -1f, -.8f, -.2f));
 		environment.shadowMap = shadowLight;
 
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam = new PerspectiveCamera(67, graphics.getWidth(), graphics.getHeight());
 		cam.position.set(0f, 7f, 10f);
 		cam.lookAt(0, 0, 0);
 		cam.near = 1f;
@@ -74,16 +73,16 @@ public class ShadowMappingTest extends GdxTest {
 
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
 
-		Gdx.input.setInputProcessor(camController = new CameraInputController(cam));
+		input.setInputProcessor(camController = new CameraInputController(cam));
 	}
 
 	@Override
 	public void render () {
 		camController.update();
 
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		gl.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+		gl.glClearColor(0, 0, 0, 1);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		shadowLight.begin(Vector3.Zero, cam.direction);
 		shadowBatch.begin(shadowLight.getCamera());

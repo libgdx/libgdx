@@ -21,7 +21,6 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -36,7 +35,7 @@ public class GroupFadeTest extends GdxTest {
 
 	@Override
 	public void create () {
-		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture = new Texture(files.internal("data/badlogicsmall.jpg"));
 		stage = new Stage();
 
 		for (int i = 0; i < 100; i++) {
@@ -52,8 +51,8 @@ public class GroupFadeTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 	}
 

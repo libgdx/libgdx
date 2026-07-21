@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -49,15 +48,15 @@ public class FramebufferToTextureTest extends GdxTest {
 
 	@Override
 	public void create () {
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
+		texture = new Texture(files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 		ObjLoader objLoader = new ObjLoader();
-		mesh = objLoader.loadModel(Gdx.files.internal("data/cube.obj"));
+		mesh = objLoader.loadModel(files.internal("data/cube.obj"));
 		mesh.materials.get(0).set(new TextureAttribute(TextureAttribute.Diffuse, texture));
 		modelInstance = new ModelInstance(mesh);
 		modelBatch = new ModelBatch();
 
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam = new PerspectiveCamera(67, graphics.getWidth(), graphics.getHeight());
 		cam.position.set(3, 3, 3);
 		cam.direction.set(-1, -1, -1);
 		batch = new SpriteBatch();
@@ -66,19 +65,19 @@ public class FramebufferToTextureTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl.glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		gl.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+		gl.glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		gl.glEnable(GL20.GL_DEPTH_TEST);
 
 		cam.update();
 
-		modelInstance.transform.rotate(Vector3.Y, 45 * Gdx.graphics.getDeltaTime());
+		modelInstance.transform.rotate(Vector3.Y, 45 * graphics.getDeltaTime());
 		modelBatch.begin(cam);
 		modelBatch.render(modelInstance);
 		modelBatch.end();
 
-		if (Gdx.input.justTouched() || fbTexture == null) {
+		if (input.justTouched() || fbTexture == null) {
 			if (fbTexture != null) fbTexture.getTexture().dispose();
 			fbTexture = ScreenUtils.getFrameBufferTexture();
 		}

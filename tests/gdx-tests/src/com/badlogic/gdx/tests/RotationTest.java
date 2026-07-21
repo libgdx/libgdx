@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,7 +30,7 @@ public class RotationTest extends GdxTest {
 
 	@Override
 	public void create () {
-		texture = new Texture(Gdx.files.internal("data/black_marked_0.png"));
+		texture = new Texture(files.internal("data/black_marked_0.png"));
 		region = new TextureRegion(texture);
 		batch = new SpriteBatch();
 		batch.getTransformMatrix().setToTranslation(30.5f, 30.5f, 0);
@@ -39,7 +38,7 @@ public class RotationTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(texture, 0, 0);
 		batch.draw(region, 128, 0, 64, 64, 128, 128, 1, 1, 90);

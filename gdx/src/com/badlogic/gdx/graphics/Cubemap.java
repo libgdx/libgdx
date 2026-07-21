@@ -19,7 +19,7 @@ package com.badlogic.gdx.graphics;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
@@ -37,7 +37,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author Xoppa */
 public class Cubemap extends GLTexture {
 	private static AssetManager assetManager;
-	final static Map<Application, Array<Cubemap>> managedCubemaps = new HashMap<Application, Array<Cubemap>>();
+	final static Map<Graphics, Array<Cubemap>> managedCubemaps = new HashMap<Graphics, Array<Cubemap>>();
 
 	/** Enum to identify each side of a Cubemap */
 	public enum CubemapSide {
@@ -88,12 +88,17 @@ public class Cubemap extends GLTexture {
 
 	protected CubemapData data;
 
-	/** Construct a Cubemap based on the given CubemapData. */
+	/** Construct a Cubemap based on the given CubemapData using {@link Gdx#graphics}. */
 	public Cubemap (CubemapData data) {
-		super(GL20.GL_TEXTURE_CUBE_MAP);
+		this(Gdx.graphics, data);
+	}
+
+	/** Construct a Cubemap based on the given CubemapData. */
+	public Cubemap (Graphics graphics, CubemapData data) {
+		super(graphics, GL20.GL_TEXTURE_CUBE_MAP);
 		this.data = data;
 		load(data);
-		if (data.isManaged()) addManagedCubemap(Gdx.app, this);
+		if (data.isManaged()) addManagedCubemap(graphics, this);
 	}
 
 	/** Construct a Cubemap with the specified texture files for the sides, does not generate mipmaps. */
@@ -139,7 +144,13 @@ public class Cubemap extends GLTexture {
 	/** Construct a Cubemap with the specified {@link TextureData}'s for the sides */
 	public Cubemap (TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY,
 		TextureData positiveZ, TextureData negativeZ) {
-		this(new FacedCubemapData(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ));
+		this(Gdx.graphics, positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ);
+	}
+
+	/** Construct a Cubemap with the specified {@link TextureData}'s for the sides */
+	public Cubemap (Graphics graphics, TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY,
+		TextureData positiveZ, TextureData negativeZ) {
+		this(graphics, new FacedCubemapData(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ));
 	}
 
 	/** Sets the sides of this cubemap to the specified {@link CubemapData}. */
@@ -150,7 +161,7 @@ public class Cubemap extends GLTexture {
 		unsafeSetWrap(uWrap, vWrap, true);
 		unsafeSetAnisotropicFilter(anisotropicFilterLevel, true);
 		data.consumeCubemapData();
-		Gdx.gl.glBindTexture(glTarget, 0);
+		gl().glBindTexture(glTarget, 0);
 	}
 
 	public CubemapData getCubemapData () {
@@ -165,7 +176,7 @@ public class Cubemap extends GLTexture {
 	@Override
 	protected void reload () {
 		if (!isManaged()) throw new GdxRuntimeException("Tried to reload an unmanaged Cubemap");
-		glHandle = Gdx.gl.glGenTexture();
+		glHandle = gl().glGenTexture();
 		load(data);
 	}
 
@@ -193,24 +204,24 @@ public class Cubemap extends GLTexture {
 		// removal from the asset manager.
 		if (glHandle == 0) return;
 		delete();
-		if (data.isManaged()) if (managedCubemaps.get(Gdx.app) != null) managedCubemaps.get(Gdx.app).removeValue(this, true);
+		if (data.isManaged()) if (managedCubemaps.get(graphics) != null) managedCubemaps.get(graphics).removeValue(this, true);
 	}
 
-	private static void addManagedCubemap (Application app, Cubemap cubemap) {
-		Array<Cubemap> managedCubemapArray = managedCubemaps.get(app);
+	private static void addManagedCubemap (Graphics graphics, Cubemap cubemap) {
+		Array<Cubemap> managedCubemapArray = managedCubemaps.get(graphics);
 		if (managedCubemapArray == null) managedCubemapArray = new Array<Cubemap>();
 		managedCubemapArray.add(cubemap);
-		managedCubemaps.put(app, managedCubemapArray);
+		managedCubemaps.put(graphics, managedCubemapArray);
 	}
 
 	/** Clears all managed cubemaps. This is an internal method. Do not use it! */
-	public static void clearAllCubemaps (Application app) {
-		managedCubemaps.remove(app);
+	public static void clearAllCubemaps (Graphics graphics) {
+		managedCubemaps.remove(graphics);
 	}
 
 	/** Invalidate all managed cubemaps. This is an internal method. Do not use it! */
-	public static void invalidateAllCubemaps (Application app) {
-		Array<Cubemap> managedCubemapArray = managedCubemaps.get(app);
+	public static void invalidateAllCubemaps (Graphics graphics) {
+		Array<Cubemap> managedCubemapArray = managedCubemaps.get(graphics);
 		if (managedCubemapArray == null) return;
 
 		if (assetManager == null) {
@@ -258,7 +269,7 @@ public class Cubemap extends GLTexture {
 
 					// unload the c, create a new gl handle then reload it.
 					assetManager.unload(fileName);
-					cubemap.glHandle = Gdx.gl.glGenTexture();
+					cubemap.glHandle = graphics.getGL20().glGenTexture();
 					assetManager.load(fileName, Cubemap.class, params);
 				}
 			}
@@ -277,9 +288,9 @@ public class Cubemap extends GLTexture {
 
 	public static String getManagedStatus () {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Managed cubemap/app: { ");
-		for (Application app : managedCubemaps.keySet()) {
-			builder.append(managedCubemaps.get(app).size);
+		builder.append("Managed cubemap/graphics: { ");
+		for (Graphics graphics : managedCubemaps.keySet()) {
+			builder.append(managedCubemaps.get(graphics).size);
 			builder.append(" ");
 		}
 		builder.append("}");
@@ -288,7 +299,7 @@ public class Cubemap extends GLTexture {
 
 	/** @return the number of managed cubemaps currently loaded */
 	public static int getNumManagedCubemaps () {
-		return managedCubemaps.get(Gdx.app).size;
+		return managedCubemaps.get(Gdx.graphics).size;
 	}
 
 }

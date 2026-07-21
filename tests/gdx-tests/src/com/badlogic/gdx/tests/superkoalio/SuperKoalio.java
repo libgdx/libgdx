@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.superkoalio;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -125,7 +124,7 @@ public class SuperKoalio extends GdxTest {
 		ScreenUtils.clear(0.7f, 0.7f, 1.0f, 1);
 
 		// get the delta time
-		float deltaTime = Gdx.graphics.getDeltaTime();
+		float deltaTime = graphics.getDeltaTime();
 
 		// update the koala (process input, collision detection, position update)
 		updateKoala(deltaTime);
@@ -154,25 +153,25 @@ public class SuperKoalio extends GdxTest {
 		koala.stateTime += deltaTime;
 
 		// check input and apply to velocity & state
-		if ((Gdx.input.isKeyPressed(Keys.SPACE) || isTouched(0.5f, 1)) && koala.grounded) {
+		if ((input.isKeyPressed(Keys.SPACE) || isTouched(0.5f, 1)) && koala.grounded) {
 			koala.velocity.y += Koala.JUMP_VELOCITY;
 			koala.state = Koala.State.Jumping;
 			koala.grounded = false;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A) || isTouched(0, 0.25f)) {
+		if (input.isKeyPressed(Keys.LEFT) || input.isKeyPressed(Keys.A) || isTouched(0, 0.25f)) {
 			koala.velocity.x = -Koala.MAX_VELOCITY;
 			if (koala.grounded) koala.state = Koala.State.Walking;
 			koala.facesRight = false;
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D) || isTouched(0.25f, 0.5f)) {
+		if (input.isKeyPressed(Keys.RIGHT) || input.isKeyPressed(Keys.D) || isTouched(0.25f, 0.5f)) {
 			koala.velocity.x = Koala.MAX_VELOCITY;
 			if (koala.grounded) koala.state = Koala.State.Walking;
 			koala.facesRight = true;
 		}
 
-		if (Gdx.input.isKeyJustPressed(Keys.B)) debug = !debug;
+		if (input.isKeyJustPressed(Keys.B)) debug = !debug;
 
 		// apply gravity if we are falling
 		koala.velocity.add(0, GRAVITY);
@@ -259,8 +258,8 @@ public class SuperKoalio extends GdxTest {
 		// Check for touch inputs between startX and endX
 		// startX/endX are given between 0 (left edge of the screen) and 1 (right edge of the screen)
 		for (int i = 0; i < 2; i++) {
-			float x = Gdx.input.getX(i) / (float)Gdx.graphics.getWidth();
-			if (Gdx.input.isTouched(i) && (x >= startX && x <= endX)) {
+			float x = input.getX(i) / (float)graphics.getWidth();
+			if (input.isTouched(i) && (x >= startX && x <= endX)) {
 				return true;
 			}
 		}

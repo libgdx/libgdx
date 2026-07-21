@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -29,11 +28,11 @@ public class QuadTreeFloatTest extends GdxTest {
 	}
 
 	public void render () {
-		float radius = 50, x = Gdx.input.getX(), y = Gdx.graphics.getHeight() - Gdx.input.getY();
+		float radius = 50, x = input.getX(), y = graphics.getHeight() - input.getY();
 		results.clear();
 		q.query(x, y, radius, results);
 
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		shapes.begin(ShapeType.Line);
 		draw(q);
 		shapes.setColor(Color.GREEN);

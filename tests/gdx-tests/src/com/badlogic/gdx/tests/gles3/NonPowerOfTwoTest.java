@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.gles3;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -32,7 +31,7 @@ public class NonPowerOfTwoTest extends GdxTest {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		texture = new Texture(Gdx.files.internal("data/heightmap.png"), true);
+		texture = new Texture(files.internal("data/heightmap.png"), true);
 		texture.setFilter(Texture.TextureFilter.MipMapLinearNearest, Texture.TextureFilter.Linear);
 	}
 

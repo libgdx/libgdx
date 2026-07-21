@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -65,13 +64,13 @@ public class ViewportTest2 extends GdxTest {
 		names = ViewportTest1.getViewportNames();
 		name = names.first();
 
-		Gdx.input.setInputProcessor(new InputAdapter() {
+		input.setInputProcessor(new InputAdapter() {
 			public boolean keyDown (int keycode) {
 				if (keycode == Input.Keys.SPACE) {
 					int index = (viewports.indexOf(viewport, true) + 1) % viewports.size;
 					name = names.get(index);
 					viewport = viewports.get(index);
-					resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+					resize(graphics.getWidth(), graphics.getHeight());
 				}
 				return false;
 			}
@@ -82,7 +81,7 @@ public class ViewportTest2 extends GdxTest {
 		batch.setProjectionMatrix(camera.projection);
 		batch.setTransformMatrix(camera.view);
 
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		// draw a white background so we are able to see the black bars
 		batch.setColor(1, 1, 1, 1);
@@ -97,8 +96,8 @@ public class ViewportTest2 extends GdxTest {
 		if (viewport instanceof ScalingViewport) {
 			// This shows how to set the viewport to the whole screen and draw within the black bars.
 			ScalingViewport scalingViewport = (ScalingViewport)viewport;
-			int screenWidth = Gdx.graphics.getWidth();
-			int screenHeight = Gdx.graphics.getHeight();
+			int screenWidth = graphics.getWidth();
+			int screenHeight = graphics.getHeight();
 			HdpiUtils.glViewport(0, 0, screenWidth, screenHeight);
 			batch.getProjectionMatrix().idt().setToOrtho2D(0, 0, screenWidth, screenHeight);
 			batch.getTransformMatrix().idt();

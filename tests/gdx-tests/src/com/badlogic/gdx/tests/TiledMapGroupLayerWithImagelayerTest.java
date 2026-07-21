@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
@@ -30,8 +29,8 @@ public class TiledMapGroupLayerWithImagelayerTest extends GdxTest {
 
 	@Override
 	public void create () {
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
+		float w = graphics.getWidth();
+		float h = graphics.getHeight();
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, (w / h) * 10, 10);
@@ -39,7 +38,7 @@ public class TiledMapGroupLayerWithImagelayerTest extends GdxTest {
 		camera.update();
 
 		cameraController = new OrthoCamController(camera);
-		Gdx.input.setInputProcessor(cameraController);
+		input.setInputProcessor(cameraController);
 
 		font = new BitmapFont();
 		batch = new SpriteBatch();
@@ -78,7 +77,7 @@ public class TiledMapGroupLayerWithImagelayerTest extends GdxTest {
 			font.draw(batch, "ERROR (OK if running in GWT): " + errorMessage, 10, 50);
 			System.out.println(errorMessage);
 		}
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+		font.draw(batch, "FPS: " + graphics.getFramesPerSecond(), 10, 20);
 		batch.end();
 	}
 }

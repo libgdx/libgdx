@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -32,10 +31,10 @@ public class ColorTest extends GdxTest {
 	@Override
 	public void create () {
 		stage = new Stage(new ScreenViewport());
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		skin.add("default", new BitmapFont(Gdx.files.internal("data/lsans-32.fnt"), false));
+		Skin skin = new Skin(files.internal("data/uiskin.json"));
+		skin.add("default", new BitmapFont(files.internal("data/lsans-32.fnt"), false));
 
 		Table root = new Table();
 		stage.addActor(root);
@@ -92,7 +91,7 @@ public class ColorTest extends GdxTest {
 	public void render () {
 		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 
-		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+		stage.act(Math.min(graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
 	}
 

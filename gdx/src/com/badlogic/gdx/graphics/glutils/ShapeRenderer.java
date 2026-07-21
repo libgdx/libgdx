@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -104,20 +105,32 @@ public class ShapeRenderer implements Disposable {
 	private float defaultRectLineWidth = 0.75f;
 
 	public ShapeRenderer () {
-		this(5000);
+		this(Gdx.graphics, 5000);
+	}
+
+	public ShapeRenderer (Graphics graphics) {
+		this(graphics, 5000);
 	}
 
 	public ShapeRenderer (int maxVertices) {
-		this(maxVertices, null);
+		this(Gdx.graphics, maxVertices, null);
+	}
+
+	public ShapeRenderer (Graphics graphics, int maxVertices) {
+		this(graphics, maxVertices, null);
 	}
 
 	public ShapeRenderer (int maxVertices, ShaderProgram defaultShader) {
+		this(Gdx.graphics, maxVertices, defaultShader);
+	}
+
+	public ShapeRenderer (Graphics graphics, int maxVertices, ShaderProgram defaultShader) {
 		if (defaultShader == null) {
-			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0);
+			renderer = new ImmediateModeRenderer20(graphics, maxVertices, false, true, 0);
 		} else {
-			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0, defaultShader);
+			renderer = new ImmediateModeRenderer20(graphics, maxVertices, false, true, 0, defaultShader);
 		}
-		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		projectionMatrix.setToOrtho2D(0, 0, graphics.getWidth(), graphics.getHeight());
 		matrixDirty = true;
 	}
 

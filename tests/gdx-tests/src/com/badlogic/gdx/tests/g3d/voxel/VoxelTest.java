@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.g3d.voxel;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -48,17 +47,17 @@ public class VoxelTest extends GdxTest {
 		font = new BitmapFont();
 		modelBatch = new ModelBatch();
 		DefaultShader.defaultCullFace = GL20.GL_FRONT;
-		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new PerspectiveCamera(67, graphics.getWidth(), graphics.getHeight());
 		camera.near = 0.5f;
 		camera.far = 1000;
 		controller = new FirstPersonCameraController(camera);
-		Gdx.input.setInputProcessor(controller);
+		input.setInputProcessor(controller);
 
 		lights = new Environment();
 		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
 		lights.add(new DirectionalLight().set(1, 1, 1, 0, -1, 0));
 
-		Texture texture = new Texture(Gdx.files.internal("data/g3d/tiles.png"));
+		Texture texture = new Texture(files.internal("data/g3d/tiles.png"));
 		TextureRegion[][] tiles = TextureRegion.split(texture, 32, 32);
 
 		MathUtils.random.setSeed(0);
@@ -79,7 +78,7 @@ public class VoxelTest extends GdxTest {
 		controller.update();
 
 		spriteBatch.begin();
-		font.draw(spriteBatch, "fps: " + Gdx.graphics.getFramesPerSecond() + ", #visible chunks: " + voxelWorld.renderedChunks + "/"
+		font.draw(spriteBatch, "fps: " + graphics.getFramesPerSecond() + ", #visible chunks: " + voxelWorld.renderedChunks + "/"
 			+ voxelWorld.numChunks, 0, 20);
 		spriteBatch.end();
 	}

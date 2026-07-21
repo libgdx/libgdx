@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -42,7 +41,7 @@ public class MeshShapeTest extends BaseBulletTest {
 		sphereConstructor.bodyInfo.setRestitution(1f);
 		world.addConstructor("sphere", sphereConstructor);
 
-		final Model sceneModel = objLoader.loadModel(Gdx.files.internal("data/scene.obj"));
+		final Model sceneModel = objLoader.loadModel(files.internal("data/scene.obj"));
 		disposables.add(sceneModel);
 		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f,
 			new btBvhTriangleMeshShape(sceneModel.meshParts));

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -35,16 +34,16 @@ public class AnisotropyTest extends GdxTest {
 
 	@Override
 	public void create () {
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-		Gdx.gl.glDepthFunc(GL20.GL_LESS);
+		gl.glEnable(GL20.GL_DEPTH_TEST);
+		gl.glDepthFunc(GL20.GL_LESS);
 
-		brick = new Texture(Gdx.files.internal("data/g3d/materials/brick_diffuse_01.png"), true);
+		brick = new Texture(files.internal("data/g3d/materials/brick_diffuse_01.png"), true);
 		brick.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
 		brick.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 		batch = new SpriteBatch();
 
-		Gdx.gl.glClearColor(0, 0.2f, 0.2f, 1);
+		gl.glClearColor(0, 0.2f, 0.2f, 1);
 	}
 
 	@Override
@@ -57,14 +56,14 @@ public class AnisotropyTest extends GdxTest {
 		targetAnisotropicLevel *= 2;
 		if (targetAnisotropicLevel > 16) targetAnisotropicLevel = 1;
 		float value = brick.setAnisotropicFilter(targetAnisotropicLevel);
-		Gdx.app.log("anisotropic value", Float.toString(value));
+		app.log("anisotropic value", Float.toString(value));
 	}
 
 	@Override
 	public void render () {
-		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) changeAnisotropy();
+		if (input.isKeyJustPressed(Input.Keys.SPACE)) changeAnisotropy();
 
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 		for (int i = 0; i < 5; i++) {

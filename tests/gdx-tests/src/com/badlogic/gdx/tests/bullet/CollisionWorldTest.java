@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
@@ -95,7 +94,7 @@ public class CollisionWorldTest extends BaseBulletTest {
 	@Override
 	public void render () {
 		movingBox.transform.val[Matrix4.M03] = movingBox.transform.val[Matrix4.M13] = movingBox.transform.val[Matrix4.M23] = 0f;
-		movingBox.transform.rotate(Vector3.Y, Gdx.graphics.getDeltaTime() * 45f);
+		movingBox.transform.rotate(Vector3.Y, graphics.getDeltaTime() * 45f);
 		movingBox.transform.translate(-5f, 1f, 0f);
 		movingBox.body.setWorldTransform(movingBox.transform);
 

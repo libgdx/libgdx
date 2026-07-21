@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -33,7 +32,7 @@ public class ActionTest extends GdxTest {
 	@Override
 	public void create () {
 		stage = new Stage();
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
+		texture = new Texture(files.internal("data/badlogic.jpg"), false);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		final Image img = new Image(new TextureRegion(texture));
 		img.setSize(100, 100);
@@ -56,8 +55,8 @@ public class ActionTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.act(Math.min(graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
 	}
 

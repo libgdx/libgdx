@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests.conformance;
 
 import java.util.Arrays;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -26,18 +25,18 @@ public class DisplayModeTest extends GdxTest {
 
 	@Override
 	public void create () {
-		DisplayMode displayMode = Gdx.graphics.getDisplayMode();
-		DisplayMode displayModeForMonitor = Gdx.graphics.getDisplayMode(Gdx.graphics.getMonitor());
-		DisplayMode[] displayModes = Gdx.graphics.getDisplayModes();
-		DisplayMode[] displayModesForMonitor = Gdx.graphics.getDisplayModes(Gdx.graphics.getMonitor());
+		DisplayMode displayMode = graphics.getDisplayMode();
+		DisplayMode displayModeForMonitor = graphics.getDisplayMode(graphics.getMonitor());
+		DisplayMode[] displayModes = graphics.getDisplayModes();
+		DisplayMode[] displayModesForMonitor = graphics.getDisplayModes(graphics.getMonitor());
 
-		Gdx.app.log("DisplayModeTest", "Display mode (using Gdx.graphics.getDisplayMode() ) : " + displayMode);
-		Gdx.app.log("DisplayModeTest",
-			"Display mode (using Gdx.graphics.getDisplayMode(Gdx.graphics.getMonitor()) ) : " + Arrays.toString(displayModes));
-		Gdx.app.log("DisplayModeTest",
-			"Display mode (using Gdx.graphics.getDisplayModes() ) : " + Arrays.toString(displayModesForMonitor));
-		Gdx.app.log("DisplayModeTest",
-			"Display mode (using Gdx.graphics.getDisplayModes(Gdx.graphics.getMonitor()) ): " + displayModeForMonitor);
+		app.log("DisplayModeTest", "Display mode (using graphics.getDisplayMode() ) : " + displayMode);
+		app.log("DisplayModeTest",
+			"Display mode (using graphics.getDisplayMode(graphics.getMonitor()) ) : " + Arrays.toString(displayModes));
+		app.log("DisplayModeTest",
+			"Display mode (using graphics.getDisplayModes() ) : " + Arrays.toString(displayModesForMonitor));
+		app.log("DisplayModeTest",
+			"Display mode (using graphics.getDisplayModes(graphics.getMonitor()) ): " + displayModeForMonitor);
 		assertDisplayModeEquals(displayMode, displayModeForMonitor);
 		assertDisplayModesEquals(displayModes, displayModesForMonitor);
 	}

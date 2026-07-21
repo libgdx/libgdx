@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -46,8 +45,8 @@ public class SpriteBatchOriginScaleTest extends GdxTest {
 
 		renderer.begin(ShapeType.Line);
 		renderer.setColor(1, 1, 1, 1);
-		renderer.line(0, 100, Gdx.graphics.getWidth(), 100);
-		renderer.line(100, 0, 100, Gdx.graphics.getHeight());
+		renderer.line(0, 100, graphics.getWidth(), 100);
+		renderer.line(100, 0, 100, graphics.getHeight());
 		renderer.end();
 
 		batch.begin();

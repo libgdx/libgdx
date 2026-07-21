@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -43,14 +42,14 @@ public class AlphaTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(texture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.draw(texture, 0, 0, graphics.getWidth(), graphics.getHeight());
 		batch.end();
 
-		Pixmap pixmap = Pixmap.createFromFrameBuffer(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Pixmap pixmap = Pixmap.createFromFrameBuffer(0, 0, graphics.getWidth(), graphics.getHeight());
 		int color = pixmap.getPixel(0, pixmap.getHeight() - 1);
-		Gdx.app.log("AlphaTest", Integer.toHexString(color));
+		app.log("AlphaTest", Integer.toHexString(color));
 		pixmap.dispose();
 	}
 

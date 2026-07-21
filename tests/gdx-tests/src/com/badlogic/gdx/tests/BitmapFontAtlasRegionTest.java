@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader.BitmapFontParameter;
 import com.badlogic.gdx.graphics.Color;
@@ -47,12 +46,12 @@ public class BitmapFontAtlasRegionTest extends GdxTest {
 		this.fonts[2].setColor(Color.GREEN);
 		this.testStrings = new String[] {"I'm loaded from an atlas!", "I, too, am loaded from an atlas", "I'm with stupid ^"};
 
-		Gdx.gl.glClearColor(1, 1, 1, 1);
+		gl.glClearColor(1, 1, 1, 1);
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
 
@@ -74,9 +73,9 @@ public class BitmapFontAtlasRegionTest extends GdxTest {
 		for (int i = 0; i < loaded.size; ++i) {
 			String asset = loaded.get(i);
 			if (this.assets.isLoaded(asset)) {
-				Gdx.app.error(name, asset + " not properly disposed of!");
+				app.error(name, asset + " not properly disposed of!");
 			} else {
-				Gdx.app.log(name, asset + " disposed of OK");
+				app.log(name, asset + " disposed of OK");
 			}
 		}
 	}

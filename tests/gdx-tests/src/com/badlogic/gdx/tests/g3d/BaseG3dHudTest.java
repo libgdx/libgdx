@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -61,14 +60,14 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 
 		createHUD();
 
-		Gdx.input.setInputProcessor(new InputMultiplexer(hud, this, inputController));
+		input.setInputProcessor(new InputMultiplexer(hud, this, inputController));
 	}
 
 	protected void createHUD () {
 		hud = new Stage(new ScalingViewport(Scaling.fit, PREF_HUDWIDTH, PREF_HUDHEIGHT));
 		hudWidth = hud.getWidth();
 		hudHeight = hud.getHeight();
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(files.internal("data/uiskin.json"));
 
 		final List<String> modelsList = new List(skin);
 		modelsList.setItems(models);
@@ -131,7 +130,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 	protected abstract void onModelClicked (final String name);
 
 	protected void getStatus (final StringBuilder stringBuilder) {
-		stringBuilder.append("FPS: ").append(Gdx.graphics.getFramesPerSecond());
+		stringBuilder.append("FPS: ").append(graphics.getFramesPerSecond());
 		if (loading) stringBuilder.append(" loading...");
 	}
 
@@ -141,9 +140,9 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 	public void render () {
 		transform.idt();
 		if (rotateCheckBox.isChecked())
-			transform.rotate(Vector3.Y, rotation = (rotation + rotationSpeed * Gdx.graphics.getDeltaTime()) % 360);
+			transform.rotate(Vector3.Y, rotation = (rotation + rotationSpeed * graphics.getDeltaTime()) % 360);
 		if (moveCheckBox.isChecked()) {
-			movement = (movement + moveSpeed * Gdx.graphics.getDeltaTime()) % 1f;
+			movement = (movement + moveSpeed * graphics.getDeltaTime()) % 1f;
 			final float sm = MathUtils.sin(movement * MathUtils.PI2);
 			final float cm = MathUtils.cos(movement * MathUtils.PI2);
 			transform.trn(0, moveRadius * cm, moveRadius * sm);
@@ -154,7 +153,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 		stringBuilder.setLength(0);
 		getStatus(stringBuilder);
 		fpsLabel.setText(stringBuilder);
-		hud.act(Gdx.graphics.getDeltaTime());
+		hud.act(graphics.getDeltaTime());
 		hud.draw();
 	}
 

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -34,17 +33,17 @@ public class AtlasIssueTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		batch.setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, 855, 480));
-		atlas = new TextureAtlas(Gdx.files.internal("data/issue_pack"), Gdx.files.internal("data/"));
+		atlas = new TextureAtlas(files.internal("data/issue_pack"), files.internal("data/"));
 		sprite = atlas.createSprite("map");
-		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), Gdx.files.internal("data/font.png"), false);
-		Gdx.gl.glClearColor(0, 1, 0, 1);
+		font = new BitmapFont(files.internal("data/font.fnt"), files.internal("data/font.png"), false);
+		gl.glClearColor(0, 1, 0, 1);
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		sprite.draw(batch);
-		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond(), 26, 65);
+		font.draw(batch, "fps:" + graphics.getFramesPerSecond(), 26, 65);
 		batch.end();
 	}
 

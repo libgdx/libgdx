@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -46,7 +45,7 @@ public class TextAreaTest3 extends GdxTest {
 
 	@Override
 	public void create () {
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(files.internal("data/uiskin.json"));
 		// default font in the skin has line height == text height, so its impossible to see updated selection/cursor rendering
 		styleDefault = skin.get(TextField.TextFieldStyle.class);
 		// nearest so its easier to see whats going on
@@ -55,20 +54,20 @@ public class TextAreaTest3 extends GdxTest {
 		printMetrics("default", styleDefault.font);
 
 		styleLSans15 = new TextField.TextFieldStyle(styleDefault);
-		styleLSans15.font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), Gdx.files.internal("data/lsans-15_00.png"),
+		styleLSans15.font = new BitmapFont(files.internal("data/lsans-15.fnt"), files.internal("data/lsans-15_00.png"),
 			false);
 		printMetrics("lsans15", styleLSans15.font);
 
 		styleLSans32 = new TextField.TextFieldStyle(styleDefault);
-		styleLSans32.font = new BitmapFont(Gdx.files.internal("data/lsans-32.fnt"), Gdx.files.internal("data/lsans-32.png"), false);
+		styleLSans32.font = new BitmapFont(files.internal("data/lsans-32.fnt"), files.internal("data/lsans-32.png"), false);
 		printMetrics("lsans32", styleLSans32.font);
 
 		styleFont = new TextField.TextFieldStyle(styleDefault);
-		styleFont.font = new BitmapFont(Gdx.files.internal("data/font.fnt"), Gdx.files.internal("data/font.png"), false);
+		styleFont.font = new BitmapFont(files.internal("data/font.fnt"), files.internal("data/font.png"), false);
 		printMetrics("font", styleFont.font);
 
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 		// easier to test this with proper layout
 		Table root = new Table();
 		root.setFillParent(true);
@@ -112,7 +111,7 @@ public class TextAreaTest3 extends GdxTest {
 		BitmapFont.BitmapFontData data = font.getData();
 		float textHeight = data.capHeight - data.descent;
 		float textFieldHeight = data.capHeight - data.descent * 2;
-		Gdx.app.log(name, "line height = " + data.lineHeight + ", text height = " + textHeight + ", text field height = "
+		app.log(name, "line height = " + data.lineHeight + ", text height = " + textHeight + ", text field height = "
 			+ textFieldHeight + ", cap height = " + data.capHeight + ", descent = " + data.descent);
 	}
 

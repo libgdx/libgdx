@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
@@ -50,8 +48,7 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 		new ConveyorBelt()};
 
 	private int testIndex = 0;
-
-	private Application app = null;
+	private boolean started;
 
 	@Override
 	public void render () {
@@ -60,16 +57,15 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 
 	@Override
 	public void create () {
-		if (this.app == null) {
-			this.app = Gdx.app;
-			Box2DTest test = tests[testIndex];
-			test.create();
+		if (!started) {
+			started = true;
+			tests[testIndex].create(app);
 		}
 
 		InputMultiplexer multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(this);
 		multiplexer.addProcessor(new GestureDetector(this));
-		Gdx.input.setInputProcessor(multiplexer);
+		input.setInputProcessor(multiplexer);
 	}
 
 	@Override
@@ -136,7 +132,7 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 		testIndex++;
 		if (testIndex >= tests.length) testIndex = 0;
 		Box2DTest test = tests[testIndex];
-		test.create();
+		test.create(app);
 		app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName());
 		return false;
 	}

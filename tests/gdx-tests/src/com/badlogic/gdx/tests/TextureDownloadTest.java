@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Texture;
@@ -80,7 +79,7 @@ public class TextureDownloadTest extends GdxTest {
 					potPixmap.setBlending(Blending.None);
 					potPixmap.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 					pixmap.dispose();
-					Gdx.app.postRunnable(new Runnable() {
+					app.postRunnable(new Runnable() {
 						@Override
 						public void run () {
 							image = new TextureRegion(new Texture(potPixmap), 0, 0, originalWidth, originalHeight);

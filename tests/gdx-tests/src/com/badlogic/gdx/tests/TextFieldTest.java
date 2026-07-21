@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -35,8 +34,8 @@ public class TextFieldTest extends GdxTest {
 	@Override
 	public void create () {
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		input.setInputProcessor(stage);
+		skin = new Skin(files.internal("data/uiskin.json"));
 
 		textField = new TextField("0123456789ABCDEFGHIJ", skin);
 		textField.setBounds(20, 20, 300, 30);
@@ -46,7 +45,7 @@ public class TextFieldTest extends GdxTest {
 			public void changed (ChangeEvent event, Actor actor) {
 				if (cancelled) {
 					event.cancel();
-					Gdx.app.log("Test", "ChangeEvent Cancelled.");
+					app.log("Test", "ChangeEvent Cancelled.");
 				}
 			}
 		});
@@ -82,7 +81,7 @@ public class TextFieldTest extends GdxTest {
 	@Override
 	public void render () {
 		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
-		stage.act(Gdx.graphics.getDeltaTime());
+		stage.act(graphics.getDeltaTime());
 		updateStatus();
 		stage.draw();
 	}

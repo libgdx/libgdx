@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -57,8 +56,8 @@ public class ParticleEmittersTest extends GdxTest {
 		spriteBatch = new SpriteBatch();
 
 		effect = new ParticleEffect();
-		effect.load(Gdx.files.internal("data/singleTextureAllAdditive.p"), Gdx.files.internal("data"));
-		effect.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		effect.load(files.internal("data/singleTextureAllAdditive.p"), files.internal("data"));
+		effect.setPosition(graphics.getWidth() / 2, graphics.getHeight() / 2);
 		effectPool = new ParticleEffectPool(effect, 20, 20);
 
 		setupUI();
@@ -66,14 +65,14 @@ public class ParticleEmittersTest extends GdxTest {
 		InputProcessor inputProcessor = new InputAdapter() {
 
 			public boolean touchDragged (int x, int y, int pointer) {
-				if (latestEffect != null) latestEffect.setPosition(x, Gdx.graphics.getHeight() - y);
+				if (latestEffect != null) latestEffect.setPosition(x, graphics.getHeight() - y);
 				return false;
 			}
 
 			public boolean touchDown (int x, int y, int pointer, int newParam) {
 				latestEffect = effectPool.obtain();
 				latestEffect.setEmittersCleanUpBlendFunction(!skipCleanup.isChecked());
-				latestEffect.setPosition(x, Gdx.graphics.getHeight() - y);
+				latestEffect.setPosition(x, graphics.getHeight() - y);
 				effects.add(latestEffect);
 
 				return false;
@@ -85,7 +84,7 @@ public class ParticleEmittersTest extends GdxTest {
 		multiplexer.addProcessor(ui);
 		multiplexer.addProcessor(inputProcessor);
 
-		Gdx.input.setInputProcessor(multiplexer);
+		input.setInputProcessor(multiplexer);
 	}
 
 	@Override
@@ -101,9 +100,9 @@ public class ParticleEmittersTest extends GdxTest {
 
 	public void render () {
 		ui.act();
-		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		float delta = Gdx.graphics.getDeltaTime();
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, graphics.getWidth(), graphics.getHeight());
+		float delta = graphics.getDeltaTime();
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		for (ParticleEffect e : effects)
 			e.draw(spriteBatch, delta);
@@ -111,9 +110,9 @@ public class ParticleEmittersTest extends GdxTest {
 		fpsCounter += delta;
 		if (fpsCounter > 3) {
 			fpsCounter = 0;
-			String log = effects.size + " particle effects, FPS: " + Gdx.graphics.getFramesPerSecond() + ", Render calls: "
+			String log = effects.size + " particle effects, FPS: " + graphics.getFramesPerSecond() + ", Render calls: "
 				+ spriteBatch.renderCalls;
-			Gdx.app.log("libGDX", log);
+			app.log("libGDX", log);
 			logLabel.setText(log);
 		}
 		ui.draw();
@@ -125,7 +124,7 @@ public class ParticleEmittersTest extends GdxTest {
 
 	private void setupUI () {
 		ui = new Stage(new ExtendViewport(640, 480));
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		Skin skin = new Skin(files.internal("data/uiskin.json"));
 		skipCleanup = new CheckBox("Skip blend function clean-up", skin);
 		skipCleanup.addListener(listener);
 		logLabel = new Label("", skin.get(LabelStyle.class));

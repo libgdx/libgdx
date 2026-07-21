@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,8 +22,8 @@ public class TiledMapModifiedExternalTilesetTest extends GdxTest {
 
 	@Override
 	public void create () {
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
+		float w = graphics.getWidth();
+		float h = graphics.getHeight();
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, (w / h) * 10, 10);
@@ -32,7 +31,7 @@ public class TiledMapModifiedExternalTilesetTest extends GdxTest {
 		camera.update();
 
 		cameraController = new OrthoCamController(camera);
-		Gdx.input.setInputProcessor(cameraController);
+		input.setInputProcessor(cameraController);
 
 		font = new BitmapFont();
 		batch = new SpriteBatch();
@@ -52,7 +51,7 @@ public class TiledMapModifiedExternalTilesetTest extends GdxTest {
 		renderer.setView(camera);
 		renderer.render();
 		batch.begin();
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+		font.draw(batch, "FPS: " + graphics.getFramesPerSecond(), 10, 20);
 		batch.end();
 	}
 

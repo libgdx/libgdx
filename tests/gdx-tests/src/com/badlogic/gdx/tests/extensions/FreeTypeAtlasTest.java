@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.extensions;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -94,12 +93,12 @@ public class FreeTypeAtlasTest extends GdxTest {
 	public void render () {
 		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 
-		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.setToOrtho(false, graphics.getWidth(), graphics.getHeight());
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 
 		float x = 10;
-		float y = Gdx.graphics.getHeight() - 10;
+		float y = graphics.getHeight() - 10;
 
 		int renderCalls = 0;
 
@@ -157,7 +156,7 @@ public class FreeTypeAtlasTest extends GdxTest {
 		// for each style...
 		for (FontStyle style : FontStyle.values()) {
 			// get the file for this style
-			FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal(style.path));
+			FreeTypeFontGenerator gen = new FreeTypeFontGenerator(files.internal(style.path));
 
 			// For each size...
 			for (FontSize size : FontSize.values()) {

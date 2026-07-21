@@ -146,7 +146,7 @@ public class LwjglApplication implements LwjglApplicationBase {
 			throw new GdxRuntimeException(e);
 		}
 
-		listener.create();
+		listener.create(this);
 		graphics.resize = true;
 
 		int lastWidth = graphics.getWidth();

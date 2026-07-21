@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -163,10 +162,10 @@ public class OcclusionCullingTest extends BaseBulletTest {
 
 	@Override
 	public void create () {
-		Gdx.input.setOnscreenKeyboardVisible(true);
+		input.setOnscreenKeyboardVisible(true);
 		super.create();
 
-		glProfiler = new GLProfiler(Gdx.graphics);
+		glProfiler = new GLProfiler(graphics);
 		glProfiler.enable();
 
 		StringBuilder sb = new StringBuilder();
@@ -293,7 +292,7 @@ public class OcclusionCullingTest extends BaseBulletTest {
 
 	@Override
 	public void dispose () {
-		Gdx.input.setOnscreenKeyboardVisible(false);
+		input.setOnscreenKeyboardVisible(false);
 		glProfiler.disable();
 		visibleEntities.clear();
 		rng.setSeed(0);
@@ -425,7 +424,7 @@ public class OcclusionCullingTest extends BaseBulletTest {
 		super.update();
 		// Transform the frustum camera
 		if ((state & PAUSE_FRUSTUM_CAM) == PAUSE_FRUSTUM_CAM) return;
-		final float dt = Gdx.graphics.getDeltaTime();
+		final float dt = graphics.getDeltaTime();
 		frustumInstance.transform.idt().rotate(Vector3.Y, frustumCamAngleY = (frustumCamAngleY + dt * FRUSTUM_ANG_SPEED) % 360);
 		frustumCam.direction.set(0, 0, -1);
 		frustumCam.up.set(Vector3.Y);

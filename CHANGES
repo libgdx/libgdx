@@ -1,4 +1,14 @@
 [1.14.3]
+- API Addition: ScreenUtils/Pixmap.createFromFrameBuffer/ShapeRenderer/ImmediateModeRenderer20 and custom TextureData types take Graphics; existing APIs use Gdx.graphics.
+- API Addition: RenderContext/DefaultTextureBinder/HdpiUtils/MipMapGenerator APIs that take Graphics; existing APIs use Gdx.graphics.
+- API Addition: SpriteBatch/PolygonSpriteBatch/SpriteCache constructors that take Graphics; existing constructors use Gdx.graphics.
+- API Addition: GLFrameBuffer/FrameBuffer/FloatFrameBuffer/FrameBufferCubemap constructors and builders that take Graphics; existing APIs use Gdx.graphics.
+- API Addition: Mesh and Vertex/Index/Instance buffer object constructors that take Graphics; existing constructors use Gdx.graphics.
+- API Addition: GLTexture/Texture/Cubemap/TextureArray/Texture3D constructors that take Graphics; existing constructors use Gdx.graphics.
+- API Addition: ShaderProgram constructors that take Graphics; existing constructors use Gdx.graphics.
+- API Change: Managed GL resources (ShaderProgram, Texture, Cubemap, TextureArray, Texture3D, Mesh, GLFrameBuffer) are keyed by Graphics instead of Application.
+- API Addition: ApplicationListener#create(Application); backends call it, default delegates to create().
+- API Addition: ApplicationAdapter/Game bind graphics/audio/input/files/net/gl* from create(Application).
 - API Addition: add() with 5-8 parameters for arrays.
 - iOS: Made iOS Preferences flush() implementation atomic (see #7833)
 

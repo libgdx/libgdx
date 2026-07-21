@@ -30,8 +30,17 @@ package com.badlogic.gdx;
  * 
  * @author mzechner */
 public interface ApplicationListener {
-	/** Called when the {@link Application} is first created. */
+	/** Called when the {@link Application} is first created. Prefer {@link #create(Application)}. */
 	public void create ();
+
+	/** Called when the {@link Application} is first created, with the application instance.
+	 * <p>
+	 * Default implementation delegates to {@link #create()} for backwards compatibility. Override this method to receive the
+	 * {@link Application} without relying on {@link Gdx} statics. Backends invoke this overload.
+	 * @param app the application */
+	default void create (Application app) {
+		create();
+	}
 
 	/** Called when the {@link Application} is resized. This can happen at any point during a non-paused state but will never
 	 * happen before a call to {@link #create()}.

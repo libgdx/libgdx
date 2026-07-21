@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -121,7 +120,7 @@ public class SoftBodyTest extends BaseBulletTest {
 			verts[i * vertSize + uvOffset + 1] = (verts[i * vertSize + 2] - z0) / (z1 - z0);
 		}
 		mesh.setVertices(verts);
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		texture = new Texture(files.internal("data/badlogic.jpg"));
 
 		ModelBuilder builder = new ModelBuilder();
 		builder.begin();

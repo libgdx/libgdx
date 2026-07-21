@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests.gwt;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -57,38 +56,38 @@ public class GwtTest extends GdxTest {
 
 	@Override
 	public void create () {
-		Preferences pref = Gdx.app.getPreferences("test");
+		Preferences pref = app.getPreferences("test");
 		boolean resultb = pref.getBoolean("test");
 		int resulti = pref.getInteger("test");
 
-		shader = new ShaderProgram(Gdx.files.internal("data/shaders/shader-vs.glsl"),
-			Gdx.files.internal("data/shaders/shader-fs.glsl"));
+		shader = new ShaderProgram(files.internal("data/shaders/shader-vs.glsl"),
+			files.internal("data/shaders/shader-fs.glsl"));
 		if (!shader.isCompiled()) throw new GdxRuntimeException(shader.getLog());
 		mesh = new Mesh(VertexDataType.VertexBufferObject, true, 6, 0, VertexAttribute.Position(), VertexAttribute.TexCoords(0));
 		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 0, 1, 0.5f, -0.5f, 0, 1, 1, 0.5f, 0.5f, 0, 1, 0, 0.5f, 0.5f, 0, 1, 0, -0.5f,
 			0.5f, 0, 0, 0, -0.5f, -0.5f, 0, 0, 1});
 
-		texture = new Texture(new Pixmap(Gdx.files.internal("data/badlogic.jpg")), true);
+		texture = new Texture(new Pixmap(files.internal("data/badlogic.jpg")), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
-		String params = Gdx.files.internal("data/gwttestparams.txt").readString();
+		String params = files.internal("data/gwttestparams.txt").readString();
 		numSprites = Integer.parseInt(params);
 
 		batch = new SpriteBatch();
 		positions = new ArrayList<Vector2>();
 		for (int i = 0; i < numSprites; i++) {
-			positions.add(new Vector2(MathUtils.random() * Gdx.graphics.getWidth(), MathUtils.random() * Gdx.graphics.getHeight()));
+			positions.add(new Vector2(MathUtils.random() * graphics.getWidth(), MathUtils.random() * graphics.getHeight()));
 		}
 		sprite = new Sprite(texture);
 		sprite.setSize(64, 64);
 		sprite.setOrigin(32, 32);
 
-		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
+		font = new BitmapFont(files.internal("data/lsans-15.fnt"), false);
 		cache = font.newFontCache();
 		cache.setColor(Color.RED);
 		cache.setText("This is a Test", 0, 0);
 
-		atlas = new TextureAtlas(Gdx.files.internal("data/pack.atlas"));
+		atlas = new TextureAtlas(files.internal("data/pack.atlas"));
 	}
 
 	@Override
@@ -102,13 +101,13 @@ public class GwtTest extends GdxTest {
 
 		batch.begin();
 		batch.draw(atlas.findRegion("font"), 0, 100);
-		sprite.rotate(Gdx.graphics.getDeltaTime() * 45);
+		sprite.rotate(graphics.getDeltaTime() * 45);
 		for (Vector2 position : positions) {
 			sprite.setPosition(position.x, position.y);
 			sprite.draw(batch);
 		}
 		font.draw(batch,
-			"fps:" + Gdx.graphics.getFramesPerSecond() + ", delta: " + Gdx.graphics.getDeltaTime() + ", #sprites: " + numSprites, 0,
+			"fps:" + graphics.getFramesPerSecond() + ", delta: " + graphics.getDeltaTime() + ", #sprites: " + numSprites, 0,
 			30);
 		cache.setPosition(200, 200);
 		cache.draw(batch);

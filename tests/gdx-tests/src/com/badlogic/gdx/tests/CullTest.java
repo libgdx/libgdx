@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests;
 import java.util.Random;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -52,8 +51,8 @@ public class CullTest extends GdxTest implements ApplicationListener {
 		ModelBuilder builder = new ModelBuilder();
 		sphere = builder.createSphere(2f, 2f, 2f, 16, 16, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)),
 			Usage.Position | Usage.Normal);
-		// cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam = new OrthographicCamera(45, 45 * (Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight()));
+		// cam = new PerspectiveCamera(45, graphics.getWidth(), graphics.getHeight());
+		cam = new OrthographicCamera(45, 45 * (graphics.getWidth() / (float)graphics.getHeight()));
 
 		cam.near = 1;
 		cam.far = 200;
@@ -68,13 +67,13 @@ public class CullTest extends GdxTest implements ApplicationListener {
 
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		// Gdx.graphics.setVSync(true);
-		// Gdx.app.log("CullTest", "" + Gdx.graphics.getBufferFormat().toString());
+		// graphics.setVSync(true);
+		// app.log("CullTest", "" + graphics.getBufferFormat().toString());
 	}
 
 	@Override
 	public void render () {
-		GL20 gl = Gdx.gl20;
+		GL20 gl = gl20;
 
 		gl.glClearColor(0, 0, 0, 0);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -96,12 +95,12 @@ public class CullTest extends GdxTest implements ApplicationListener {
 		}
 		modelBatch.end();
 
-		if (Gdx.input.isKeyPressed(Keys.A)) cam.rotate(20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
-		if (Gdx.input.isKeyPressed(Keys.D)) cam.rotate(-20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
+		if (input.isKeyPressed(Keys.A)) cam.rotate(20 * graphics.getDeltaTime(), 0, 1, 0);
+		if (input.isKeyPressed(Keys.D)) cam.rotate(-20 * graphics.getDeltaTime(), 0, 1, 0);
 
 		gl.glDisable(GL20.GL_DEPTH_TEST);
 		batch.begin();
-		font.draw(batch, "visible: " + visible + "/100" + ", fps: " + Gdx.graphics.getFramesPerSecond(), 0, 20);
+		font.draw(batch, "visible: " + visible + "/100" + ", fps: " + graphics.getFramesPerSecond(), 0, 20);
 		batch.end();
 	}
 

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -53,14 +52,14 @@ public class ActorGestureListenerTouchUpTest extends GdxTest {
 		table.setFillParent(true);
 		table.setTouchable(Touchable.enabled);
 
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 		stage.addActor(table);
 
 	}
 
 	@Override
 	public void render () {
-		update(Gdx.graphics.getDeltaTime());
+		update(graphics.getDeltaTime());
 		draw();
 	}
 

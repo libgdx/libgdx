@@ -10,6 +10,7 @@ import java.nio.IntBuffer;
 import java.util.zip.GZIPInputStream;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.CubemapData;
@@ -54,10 +55,21 @@ public class KTXTextureData implements TextureData, CubemapData {
 
 	// Whether to generate mipmaps if they are not included in the file
 	private boolean useMipMaps;
+	private Graphics graphics = Gdx.graphics;
 
 	public KTXTextureData (FileHandle file, boolean genMipMaps) {
+		this(Gdx.graphics, file, genMipMaps);
+	}
+
+	public KTXTextureData (Graphics graphics, FileHandle file, boolean genMipMaps) {
+		this.graphics = graphics;
 		this.file = file;
 		this.useMipMaps = genMipMaps;
+	}
+
+	@Override
+	public void setGraphics (Graphics graphics) {
+		this.graphics = graphics;
 	}
 
 	@Override
@@ -217,9 +229,9 @@ public class KTXTextureData implements TextureData, CubemapData {
 		}
 
 		// KTX files require an unpack alignment of 4
-		Gdx.gl.glGetIntegerv(GL20.GL_UNPACK_ALIGNMENT, buffer);
+		graphics.getGL20().glGetIntegerv(GL20.GL_UNPACK_ALIGNMENT, buffer);
 		int previousUnpackAlignment = buffer.get(0);
-		if (previousUnpackAlignment != 4) Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 4);
+		if (previousUnpackAlignment != 4) graphics.getGL20().glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 4);
 		int glInternalFormat = this.glInternalFormat;
 		int glFormat = this.glFormat;
 		int pos = imagePos;
@@ -247,23 +259,23 @@ public class KTXTextureData implements TextureData, CubemapData {
 					if (numberOfArrayElements > 0) pixelHeight = numberOfArrayElements;
 					if (compressed) {
 						if (glInternalFormat == ETC1.ETC1_RGB8_OES) {
-							if (!Gdx.graphics.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {
+							if (!graphics.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {
 								ETC1Data etcData = new ETC1Data(pixelWidth, pixelHeight, data, 0);
 								Pixmap pixmap = ETC1.decodeImage(etcData, Format.RGB888);
-								Gdx.gl.glTexImage2D(target + face, level, pixmap.getGLInternalFormat(), pixmap.getWidth(),
+								graphics.getGL20().glTexImage2D(target + face, level, pixmap.getGLInternalFormat(), pixmap.getWidth(),
 									pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 								pixmap.dispose();
 							} else {
-								Gdx.gl.glCompressedTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0,
+								graphics.getGL20().glCompressedTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0,
 									faceLodSize, data);
 							}
 						} else {
 							// Try to load (no software unpacking fallback)
-							Gdx.gl.glCompressedTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0,
+							graphics.getGL20().glCompressedTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0,
 								faceLodSize, data);
 						}
 					} else
-						Gdx.gl.glTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0, glFormat, glType, data);
+						graphics.getGL20().glTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0, glFormat, glType, data);
 				} else if (textureDimensions == 3) {
 					if (numberOfArrayElements > 0) pixelDepth = numberOfArrayElements;
 					// if (compressed)
@@ -275,8 +287,8 @@ public class KTXTextureData implements TextureData, CubemapData {
 				}
 			}
 		}
-		if (previousUnpackAlignment != 4) Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, previousUnpackAlignment);
-		if (useMipMaps()) Gdx.gl.glGenerateMipmap(target);
+		if (previousUnpackAlignment != 4) graphics.getGL20().glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, previousUnpackAlignment);
+		if (useMipMaps()) graphics.getGL20().glGenerateMipmap(target);
 
 		// dispose data once transfered to GPU
 		disposePreparedData();

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.Collision;
@@ -60,7 +59,7 @@ public class KinematicTest extends BaseBulletTest {
 
 	@Override
 	public void render () {
-		angle = angle + Gdx.graphics.getDeltaTime() * 360f / 5f;
+		angle = angle + graphics.getDeltaTime() * 360f / 5f;
 		kinematicBox3.transform.idt().rotate(Vector3.Y, 360f - 2f * angle).translate(position3);
 
 		if (angle >= 360f) {

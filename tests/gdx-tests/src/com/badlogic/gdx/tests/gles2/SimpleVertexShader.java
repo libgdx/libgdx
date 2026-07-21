@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.gles2;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -62,19 +61,19 @@ public class SimpleVertexShader extends GdxTest {
 
 	@Override
 	public void render () {
-		angle += Gdx.graphics.getDeltaTime() * 40.0f;
-		float aspect = Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
+		angle += graphics.getDeltaTime() * 40.0f;
+		float aspect = graphics.getWidth() / (float)graphics.getHeight();
 		projection.setToProjection(1.0f, 20.0f, 60.0f, aspect);
 		view.idt().trn(0, 0, -2.0f);
 		model.setToRotation(axis, angle);
 		combined.set(projection).mul(view).mul(model);
 
-		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl20.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		shader.bind();
 		shader.setUniformMatrix("u_mvpMatrix", combined);
 		mesh.render(shader, GL20.GL_TRIANGLES);
 
-		Gdx.app.log("angle", "" + angle);
+		app.log("angle", "" + angle);
 	}
 }

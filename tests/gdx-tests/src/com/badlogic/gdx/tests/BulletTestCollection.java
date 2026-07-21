@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -45,7 +43,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 
 	protected int testIndex = 0;
 
-	private Application app = null;
+	private boolean started;
 
 	private BitmapFont font;
 	private Stage hud;
@@ -66,9 +64,9 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 
 	@Override
 	public void create () {
-		if (app == null) {
-			app = Gdx.app;
-			tests[testIndex].create();
+		if (!started) {
+			started = true;
+			tests[testIndex].create(app);
 		}
 
 		cameraController = new CameraInputController(tests[testIndex].camera);
@@ -76,9 +74,9 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		cameraController.autoUpdate = false;
 		cameraController.forwardTarget = false;
 		cameraController.translateTarget = false;
-		Gdx.input.setInputProcessor(new InputMultiplexer(cameraController, this, new GestureDetector(this)));
+		input.setInputProcessor(new InputMultiplexer(cameraController, this, new GestureDetector(this)));
 
-		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
+		font = new BitmapFont(files.internal("data/lsans-15.fnt"), false);
 		hud = new Stage();
 		hud.addActor(fpsLabel = new Label(" ", new Label.LabelStyle(font, Color.WHITE)));
 		fpsLabel.setPosition(0, 0);
@@ -98,7 +96,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	@Override
 	public void dispose () {
 		tests[testIndex].dispose();
-		app = null;
+		started = false;
 	}
 
 	public void next () {
@@ -113,7 +111,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		System.gc();
 		testIndex++;
 		if (testIndex >= tests.length) testIndex = 0;
-		tests[testIndex].create();
+		tests[testIndex].create(app);
 		cameraController.camera = tests[testIndex].camera;
 		app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName() + "'");
 

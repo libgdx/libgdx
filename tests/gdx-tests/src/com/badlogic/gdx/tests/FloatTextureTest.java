@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -105,13 +104,13 @@ public class FloatTextureTest extends GdxTest {
 		shader = new ShaderProgram(vertexShader, fragmentShader);
 		createQuad();
 
-		screenCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		screenCamera = new OrthographicCamera(graphics.getWidth(), graphics.getHeight());
 		createScreenQuad();
 	}
 
 	public void render () {
-		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl20.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		fb.begin();
 		fbshader.bind();
@@ -153,7 +152,7 @@ public class FloatTextureTest extends GdxTest {
 
 		Vector3 vec0 = new Vector3(0, 0, 0);
 		screenCamera.unproject(vec0);
-		Vector3 vec1 = new Vector3(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0);
+		Vector3 vec1 = new Vector3(graphics.getWidth(), graphics.getHeight(), 0);
 		screenCamera.unproject(vec1);
 		screenQuad.setVertices(new float[] {vec0.x, vec0.y, 0, 1, 1, 1, 1, 0, 1, vec1.x, vec0.y, 0, 1, 1, 1, 1, 1, 1, vec1.x,
 			vec1.y, 0, 1, 1, 1, 1, 1, 0, vec0.x, vec1.y, 0, 1, 1, 1, 1, 0, 0});

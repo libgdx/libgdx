@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -50,7 +49,7 @@ public class Basic3DTest extends GdxTest {
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, .4f, .4f, .4f, 1f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam = new PerspectiveCamera(67, graphics.getWidth(), graphics.getHeight());
 		cam.position.set(10f, 10f, 10f);
 		cam.lookAt(0, 0, 0);
 		cam.near = 1f;
@@ -62,15 +61,15 @@ public class Basic3DTest extends GdxTest {
 			Usage.Position | Usage.Normal);
 		instance = new ModelInstance(model);
 
-		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
+		input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
 	}
 
 	@Override
 	public void render () {
 		inputController.update();
 
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		gl.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		modelBatch.begin(cam);
 		modelBatch.render(instance, environment);

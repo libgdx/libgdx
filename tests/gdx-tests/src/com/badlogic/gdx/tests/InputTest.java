@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
@@ -26,89 +25,89 @@ public class InputTest extends GdxTest implements InputProcessor {
 
 	@Override
 	public void create () {
-// Gdx.input = new RemoteInput();
-		Gdx.input.setInputProcessor(this);
-// Gdx.input.setCursorCatched(true);
+// input = new RemoteInput();
+		input.setInputProcessor(this);
+// input.setCursorCatched(true);
 //
-// Gdx.input.getTextInput(new Input.TextInputListener() {
+// input.getTextInput(new Input.TextInputListener() {
 // @Override
 // public void input(String text) {
-// Gdx.app.log("Input test", "Input value: " + text);
+// app.log("Input test", "Input value: " + text);
 // }
 //
 // @Override
 // public void canceled() {
-// Gdx.app.log("Input test", "Canceled input text");
+// app.log("Input test", "Canceled input text");
 // }
 // }, "Title", "Text", "Placeholder");
 	}
 
 	@Override
 	public void render () {
-		if (Gdx.input.justTouched()) {
-			Gdx.app.log("Input Test", "just touched, button: " + (Gdx.input.isButtonPressed(Buttons.LEFT) ? "left " : "")
-				+ (Gdx.input.isButtonPressed(Buttons.MIDDLE) ? "middle " : "")
-				+ (Gdx.input.isButtonPressed(Buttons.RIGHT) ? "right" : "") + (Gdx.input.isButtonPressed(Buttons.BACK) ? "back" : "")
-				+ (Gdx.input.isButtonPressed(Buttons.FORWARD) ? "forward" : ""));
+		if (input.justTouched()) {
+			app.log("Input Test", "just touched, button: " + (input.isButtonPressed(Buttons.LEFT) ? "left " : "")
+				+ (input.isButtonPressed(Buttons.MIDDLE) ? "middle " : "")
+				+ (input.isButtonPressed(Buttons.RIGHT) ? "right" : "") + (input.isButtonPressed(Buttons.BACK) ? "back" : "")
+				+ (input.isButtonPressed(Buttons.FORWARD) ? "forward" : ""));
 		}
 
 		for (int i = 0; i < 10; i++) {
-			if (Gdx.input.getDeltaX(i) != 0 || Gdx.input.getDeltaY(i) != 0) {
-				Gdx.app.log("Input Test", "delta[" + i + "]: " + Gdx.input.getDeltaX(i) + ", " + Gdx.input.getDeltaY(i));
+			if (input.getDeltaX(i) != 0 || input.getDeltaY(i) != 0) {
+				app.log("Input Test", "delta[" + i + "]: " + input.getDeltaX(i) + ", " + input.getDeltaY(i));
 			}
 		}
-// Gdx.input.setCursorPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-// if(Gdx.input.isTouched()) {
-// Gdx.app.log("Input Test", "is touched");
+// input.setCursorPosition(graphics.getWidth() / 2, graphics.getHeight() / 2);
+// if(input.isTouched()) {
+// app.log("Input Test", "is touched");
 // }
 	}
 
 	@Override
 	public boolean keyDown (int keycode) {
-		Gdx.app.log("Input Test", "key down: " + keycode);
-		if (keycode == Keys.G) Gdx.input.setCursorCatched(!Gdx.input.isCursorCatched());
+		app.log("Input Test", "key down: " + keycode);
+		if (keycode == Keys.G) input.setCursorCatched(!input.isCursorCatched());
 		return false;
 	}
 
 	@Override
 	public boolean keyTyped (char character) {
-		Gdx.app.log("Input Test", "key typed: '" + character + "'");
+		app.log("Input Test", "key typed: '" + character + "'");
 		return false;
 	}
 
 	@Override
 	public boolean keyUp (int keycode) {
-		Gdx.app.log("Input Test", "key up: " + keycode);
+		app.log("Input Test", "key up: " + keycode);
 		return false;
 	}
 
 	@Override
 	public boolean touchDown (int x, int y, int pointer, int button) {
-		Gdx.app.log("Input Test", "touch down: " + x + ", " + y + ", button: " + getButtonString(button));
+		app.log("Input Test", "touch down: " + x + ", " + y + ", button: " + getButtonString(button));
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged (int x, int y, int pointer) {
-		Gdx.app.log("Input Test", "touch dragged: " + x + ", " + y + ", pointer: " + pointer);
+		app.log("Input Test", "touch dragged: " + x + ", " + y + ", pointer: " + pointer);
 		return false;
 	}
 
 	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
-		Gdx.app.log("Input Test", "touch up: " + x + ", " + y + ", button: " + getButtonString(button));
+		app.log("Input Test", "touch up: " + x + ", " + y + ", button: " + getButtonString(button));
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved (int x, int y) {
-		Gdx.app.log("Input Test", "touch moved: " + x + ", " + y);
+		app.log("Input Test", "touch moved: " + x + ", " + y);
 		return false;
 	}
 
 	@Override
 	public boolean scrolled (float amountX, float amountY) {
-		Gdx.app.log("Input Test", "scrolled: " + amountY);
+		app.log("Input Test", "scrolled: " + amountY);
 		return false;
 	}
 

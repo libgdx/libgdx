@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -67,7 +66,7 @@ public class LightsTest extends ModelTest {
 
 	@Override
 	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
-		final float delta = Gdx.graphics.getDeltaTime();
+		final float delta = graphics.getDeltaTime();
 		dirLight.direction.rotate(Vector3.X, delta * 45f);
 		dirLight.direction.rotate(Vector3.Y, delta * 25f);
 		dirLight.direction.rotate(Vector3.Z, delta * 33f);

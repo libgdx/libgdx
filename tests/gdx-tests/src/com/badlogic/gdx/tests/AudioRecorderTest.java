@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.graphics.GL20;
@@ -29,8 +28,8 @@ public class AudioRecorderTest extends GdxTest {
 
 	@Override
 	public void create () {
-		device = Gdx.audio.newAudioDevice(44100, true);
-		recorder = Gdx.audio.newAudioRecorder(44100, true);
+		device = audio.newAudioDevice(44100, true);
+		recorder = audio.newAudioRecorder(44100, true);
 
 		Thread t = new Thread(new Runnable() {
 
@@ -48,7 +47,7 @@ public class AudioRecorderTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 
 	@Override
@@ -59,7 +58,7 @@ public class AudioRecorderTest extends GdxTest {
 
 	@Override
 	public void resume () {
-		device = Gdx.audio.newAudioDevice(44100, true);
-		recorder = Gdx.audio.newAudioRecorder(44100, true);
+		device = audio.newAudioDevice(44100, true);
+		recorder = audio.newAudioRecorder(44100, true);
 	}
 }

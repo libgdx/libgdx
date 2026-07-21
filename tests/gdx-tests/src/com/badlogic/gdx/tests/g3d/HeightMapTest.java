@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,10 +31,10 @@ public class HeightMapTest extends BaseG3dTest {
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f));
 
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		texture = new Texture(files.internal("data/badlogic.jpg"));
 
 		int w = 20, h = 20;
-		Pixmap data = new Pixmap(Gdx.files.internal("data/g3d/heightmap.png"));
+		Pixmap data = new Pixmap(files.internal("data/g3d/heightmap.png"));
 		field = new HeightField(true, data, true, Usage.Position | Usage.Normal | Usage.ColorUnpacked | Usage.TextureCoordinates);
 		data.dispose();
 		field.corner00.set(-10f, 0, -10f);

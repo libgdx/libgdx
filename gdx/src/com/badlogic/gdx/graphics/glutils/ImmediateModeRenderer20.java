@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -47,23 +49,42 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	private final String[] shaderUniformNames;
 
 	public ImmediateModeRenderer20 (boolean hasNormals, boolean hasColors, int numTexCoords) {
-		this(5000, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
+		this(Gdx.graphics, 5000, hasNormals, hasColors, numTexCoords,
+			createDefaultShader(Gdx.graphics, hasNormals, hasColors, numTexCoords));
+		ownsShader = true;
+	}
+
+	public ImmediateModeRenderer20 (Graphics graphics, boolean hasNormals, boolean hasColors, int numTexCoords) {
+		this(graphics, 5000, hasNormals, hasColors, numTexCoords,
+			createDefaultShader(graphics, hasNormals, hasColors, numTexCoords));
 		ownsShader = true;
 	}
 
 	public ImmediateModeRenderer20 (int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords) {
-		this(maxVertices, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
+		this(Gdx.graphics, maxVertices, hasNormals, hasColors, numTexCoords,
+			createDefaultShader(Gdx.graphics, hasNormals, hasColors, numTexCoords));
+		ownsShader = true;
+	}
+
+	public ImmediateModeRenderer20 (Graphics graphics, int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords) {
+		this(graphics, maxVertices, hasNormals, hasColors, numTexCoords,
+			createDefaultShader(graphics, hasNormals, hasColors, numTexCoords));
 		ownsShader = true;
 	}
 
 	public ImmediateModeRenderer20 (int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords,
+		ShaderProgram shader) {
+		this(Gdx.graphics, maxVertices, hasNormals, hasColors, numTexCoords, shader);
+	}
+
+	public ImmediateModeRenderer20 (Graphics graphics, int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords,
 		ShaderProgram shader) {
 		this.maxVertices = maxVertices;
 		this.numTexCoords = numTexCoords;
 		this.shader = shader;
 
 		VertexAttribute[] attribs = buildVertexAttributes(hasNormals, hasColors, numTexCoords);
-		mesh = new Mesh(false, maxVertices, 0, attribs);
+		mesh = new Mesh(graphics, false, maxVertices, 0, attribs);
 
 		vertices = new float[maxVertices * (mesh.getVertexAttributes().vertexSize / 4)];
 		vertexSize = mesh.getVertexAttributes().vertexSize / 4;
@@ -236,9 +257,13 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 
 	/** Returns a new instance of the default shader used by SpriteBatch for GL2 when no shader is specified. */
 	static public ShaderProgram createDefaultShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
+		return createDefaultShader(Gdx.graphics, hasNormals, hasColors, numTexCoords);
+	}
+
+	static public ShaderProgram createDefaultShader (Graphics graphics, boolean hasNormals, boolean hasColors, int numTexCoords) {
 		String vertexShader = createVertexShader(hasNormals, hasColors, numTexCoords);
 		String fragmentShader = createFragmentShader(hasNormals, hasColors, numTexCoords);
-		ShaderProgram program = new ShaderProgram(vertexShader, fragmentShader);
+		ShaderProgram program = new ShaderProgram(graphics, vertexShader, fragmentShader);
 		if (!program.isCompiled()) throw new GdxRuntimeException("Error compiling shader: " + program.getLog());
 		return program;
 	}

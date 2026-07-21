@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -57,7 +56,7 @@ public class ModelTest extends BaseG3dHudTest {
 	@Override
 	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
 		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries())
-			e.value.update(Gdx.graphics.getDeltaTime());
+			e.value.update(graphics.getDeltaTime());
 		batch.render(instances, environment);
 	}
 

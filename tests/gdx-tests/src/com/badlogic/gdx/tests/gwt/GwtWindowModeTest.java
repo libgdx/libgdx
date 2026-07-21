@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.gwt;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,41 +33,41 @@ public class GwtWindowModeTest extends GdxTest {
 
 	public void create () {
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		input.setInputProcessor(stage);
+		Skin skin = new Skin(files.internal("data/uiskin.json"));
 
 		changeModeButton = new TextButton(windowedInstructions, skin);
-		changeModeButton.setSize(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-		changeModeButton.setPosition(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4);
+		changeModeButton.setSize(graphics.getWidth() / 2, graphics.getHeight() / 2);
+		changeModeButton.setPosition(graphics.getWidth() / 4, graphics.getHeight() / 4);
 		stage.addActor(changeModeButton);
 
 		changeModeButton.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
-				if (!Gdx.graphics.isFullscreen()) {
-					Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+				if (!graphics.isFullscreen()) {
+					graphics.setFullscreenMode(graphics.getDisplayMode());
 				} else {
-					Gdx.graphics.setWindowedMode(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+					graphics.setWindowedMode(graphics.getWidth(), graphics.getHeight());
 				}
 			}
 		});
-		if (!Gdx.graphics.supportsDisplayModeChange()) {
+		if (!graphics.supportsDisplayModeChange()) {
 			changeModeButton.setDisabled(true);
 			changeModeButton.setText(notSupported);
 		}
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 	}
 
 	public void resize (int width, int height) {
 		stage.getViewport().update(width, height, true);
-		if (Gdx.graphics.supportsDisplayModeChange()) {
-			if (Gdx.graphics.isFullscreen()) {
+		if (graphics.supportsDisplayModeChange()) {
+			if (graphics.isFullscreen()) {
 				changeModeButton.setText(fullScreenInstructions);
 			} else {
 				changeModeButton.setText(windowedInstructions);

@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -26,15 +25,15 @@ public class BackTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		Gdx.input.setInputProcessor(new InputAdapter() {
+		input.setInputProcessor(new InputAdapter() {
 
 			@Override
 			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-				int screenWidth = Gdx.graphics.getBackBufferWidth();
+				int screenWidth = graphics.getBackBufferWidth();
 				float safeZone = screenWidth * .1f;
 				if (screenX >= safeZone && screenX < screenWidth - safeZone) {
 					stackDepth++;
-					Gdx.input.setCatchKey(Input.Keys.BACK, stackDepth > 0);
+					input.setCatchKey(Input.Keys.BACK, stackDepth > 0);
 					return true;
 				}
 				return false;
@@ -44,7 +43,7 @@ public class BackTest extends GdxTest {
 			public boolean keyDown (int keycode) {
 				if (keycode == Input.Keys.BACK) {
 					stackDepth--;
-					Gdx.input.setCatchKey(Input.Keys.BACK, stackDepth > 0);
+					input.setCatchKey(Input.Keys.BACK, stackDepth > 0);
 					return true;
 				}
 				return false;

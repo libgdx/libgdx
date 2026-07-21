@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
@@ -47,7 +46,7 @@ public class ViewportTest1 extends GdxTest {
 
 	public void create () {
 		stage = new Stage();
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		Skin skin = new Skin(files.internal("data/uiskin.json"));
 
 		label = new Label("", skin);
 
@@ -67,14 +66,14 @@ public class ViewportTest1 extends GdxTest {
 		stage.setViewport(viewports.first());
 		label.setText(names.first());
 
-		Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
+		input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
 			public boolean keyDown (int keycode) {
 				if (keycode == Input.Keys.SPACE) {
 					int index = (viewports.indexOf(stage.getViewport(), true) + 1) % viewports.size;
 					label.setText(names.get(index));
 					Viewport viewport = viewports.get(index);
 					stage.setViewport(viewport);
-					resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+					resize(graphics.getWidth(), graphics.getHeight());
 				}
 				return false;
 			}
@@ -84,7 +83,7 @@ public class ViewportTest1 extends GdxTest {
 	public void render () {
 		stage.act();
 
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 	}
 

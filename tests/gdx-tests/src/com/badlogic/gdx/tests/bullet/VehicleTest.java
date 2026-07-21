@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -62,16 +61,16 @@ public class VehicleTest extends BaseBulletTest {
 		super.create();
 		instructions = "Tap to shoot\nArrow keys to drive\nR to reset\nLong press to toggle debug mode\nSwipe for next test";
 
-		final Model chassisModel = objLoader.loadModel(Gdx.files.internal("data/car.obj"));
+		final Model chassisModel = objLoader.loadModel(files.internal("data/car.obj"));
 		disposables.add(chassisModel);
 		chassisModel.materials.get(0).clear();
 		chassisModel.materials.get(0).set(ColorAttribute.createDiffuse(Color.RED), ColorAttribute.createSpecular(Color.WHITE));
-		final Model wheelModel = objLoader.loadModel(Gdx.files.internal("data/wheel.obj"));
+		final Model wheelModel = objLoader.loadModel(files.internal("data/wheel.obj"));
 		disposables.add(wheelModel);
 		wheelModel.materials.get(0).clear();
 		wheelModel.materials.get(0).set(ColorAttribute.createDiffuse(Color.BLACK), ColorAttribute.createSpecular(Color.WHITE),
 			FloatAttribute.createShininess(128));
-		Texture checkboard = new Texture(Gdx.files.internal("data/g3d/checkboard.png"));
+		Texture checkboard = new Texture(files.internal("data/g3d/checkboard.png"));
 		final Model largeGroundModel = modelBuilder.createBox(200f, 2f, 200f,
 			new Material(TextureAttribute.createDiffuse(checkboard), ColorAttribute.createSpecular(Color.WHITE),
 				FloatAttribute.createShininess(16f)),
@@ -128,7 +127,7 @@ public class VehicleTest extends BaseBulletTest {
 
 	@Override
 	public void update () {
-		final float delta = Gdx.graphics.getDeltaTime();
+		final float delta = graphics.getDeltaTime();
 		float angle = currentAngle;
 		if (rightPressed) {
 			if (angle > 0f) angle = 0f;

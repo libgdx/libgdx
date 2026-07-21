@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.extensions;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -48,7 +47,7 @@ public class InternationalFontsTest extends GdxTest {
 
 	@Override
 	public void create () {
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("data/unbom.ttf"));
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(files.internal("data/unbom.ttf"));
 
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 18;
@@ -59,26 +58,26 @@ public class InternationalFontsTest extends GdxTest {
 
 		parameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS;
 
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/russkij.ttf"));
+		generator = new FreeTypeFontGenerator(files.internal("data/russkij.ttf"));
 		cyrillicFont = generator.generateFont(parameter);
 		generator.dispose();
 
 		parameter.characters = "วรณยุ�?ต์";
 
-		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/garuda.ttf"));
+		generator = new FreeTypeFontGenerator(files.internal("data/garuda.ttf"));
 		thaiFont = generator.generateFont(parameter);
 		generator.dispose();
 
 		batch = new SpriteBatch();
 
 		cam = new OrthographicCamera();
-		cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam.setToOrtho(false, graphics.getWidth(), graphics.getHeight());
 		cam.update();
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();

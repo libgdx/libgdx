@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -43,7 +42,7 @@ public class UISimpleTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 
 		// A skin can be loaded via JSON or defined programmatically, either is fine. Using a skin is optional but strongly
 		// recommended solely for the convenience of getting a texture, region, etc as a drawable, tinted drawable, etc.
@@ -94,7 +93,7 @@ public class UISimpleTest extends GdxTest {
 	@Override
 	public void render () {
 		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
-		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+		stage.act(Math.min(graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
 	}
 

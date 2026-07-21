@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -65,7 +64,7 @@ public class CharacterTest extends BaseBulletTest {
 
 		// Create a visual representation of the character (note that we don't use the physics part of BulletEntity, we'll do that
 		// manually)
-		final Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		final Texture texture = new Texture(files.internal("data/badlogic.jpg"));
 		disposables.add(texture);
 		final Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1, 1, 1, 1),
 			FloatAttribute.createShininess(8f));
@@ -107,11 +106,11 @@ public class CharacterTest extends BaseBulletTest {
 	@Override
 	public void update () {
 		// If the left or right key is pressed, rotate the character and update its physics update accordingly.
-		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+		if (input.isKeyPressed(Keys.LEFT)) {
 			characterTransform.rotate(0, 1, 0, 5f);
 			ghostObject.setWorldTransform(characterTransform);
 		}
-		if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+		if (input.isKeyPressed(Keys.RIGHT)) {
 			characterTransform.rotate(0, 1, 0, -5f);
 			ghostObject.setWorldTransform(characterTransform);
 		}
@@ -119,10 +118,10 @@ public class CharacterTest extends BaseBulletTest {
 		characterDirection.set(-1, 0, 0).rot(characterTransform).nor();
 		// Set the walking direction accordingly (either forward or backward)
 		walkDirection.set(0, 0, 0);
-		if (Gdx.input.isKeyPressed(Keys.UP)) walkDirection.add(characterDirection);
-		if (Gdx.input.isKeyPressed(Keys.DOWN))
+		if (input.isKeyPressed(Keys.UP)) walkDirection.add(characterDirection);
+		if (input.isKeyPressed(Keys.DOWN))
 			walkDirection.add(-characterDirection.x, -characterDirection.y, -characterDirection.z);
-		walkDirection.scl(4f * Gdx.graphics.getDeltaTime());
+		walkDirection.scl(4f * graphics.getDeltaTime());
 		// And update the character controller
 		characterController.setWalkDirection(walkDirection);
 		// Now we can update the world as normally

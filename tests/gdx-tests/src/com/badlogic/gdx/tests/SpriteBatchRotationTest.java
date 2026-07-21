@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import java.nio.IntBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -35,7 +34,7 @@ public class SpriteBatchRotationTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		spriteBatch.draw(texture, 16, 10, 16, 16, 32, 32, 1, 1, 0, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
 		spriteBatch.draw(texture, 64, 10, 32, 32, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
@@ -50,8 +49,8 @@ public class SpriteBatchRotationTest extends GdxTest {
 			false);
 
 		spriteBatch.end();
-		angle += 20 * Gdx.graphics.getDeltaTime();
-		scale += vScale * Gdx.graphics.getDeltaTime();
+		angle += 20 * graphics.getDeltaTime();
+		scale += vScale * graphics.getDeltaTime();
 		if (scale > 2) {
 			vScale = -vScale;
 			scale = 2;
@@ -66,6 +65,6 @@ public class SpriteBatchRotationTest extends GdxTest {
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();
-		texture = new Texture(Gdx.files.internal("data/test.png"));
+		texture = new Texture(files.internal("data/test.png"));
 	}
 }

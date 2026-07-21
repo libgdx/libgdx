@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -42,7 +41,7 @@ public class BitmapFontAlignmentTest extends GdxTest {
 
 	@Override
 	public void create () {
-		Gdx.input.setInputProcessor(new InputAdapter() {
+		input.setInputProcessor(new InputAdapter() {
 			public boolean touchDown (int x, int y, int pointer, int newParam) {
 				renderMode = (renderMode + 1) % 6;
 				return false;
@@ -50,13 +49,13 @@ public class BitmapFontAlignmentTest extends GdxTest {
 		});
 
 		spriteBatch = new SpriteBatch();
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		texture = new Texture(files.internal("data/badlogic.jpg"));
 		logoSprite = new Sprite(texture);
 		logoSprite.setColor(1, 1, 1, 0.6f);
 		logoSprite.setBounds(50, 100, 400, 100);
 
-		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal),
-			Gdx.files.getFileHandle("data/verdana39.png", FileType.Internal), false);
+		font = new BitmapFont(files.getFileHandle("data/verdana39.fnt", FileType.Internal),
+			files.getFileHandle("data/verdana39.png", FileType.Internal), false);
 		cache = font.newFontCache();
 		layout = new GlyphLayout();
 	}

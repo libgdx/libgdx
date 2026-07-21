@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
@@ -201,7 +200,7 @@ public class ReflectionCorrectnessTest extends GdxTest {
 
 	public void doTest (final Class c, Expectation e) {
 
-		Gdx.app.log("ClassReflectionTest", "Name of class: " + c.getName());
+		app.log("ClassReflectionTest", "Name of class: " + c.getName());
 
 		boolean isArray = ClassReflection.isArray(c);
 		expectResult(e.isArray, isArray, "value of is Array");

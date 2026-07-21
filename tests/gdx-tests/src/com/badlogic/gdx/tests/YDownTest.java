@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -49,14 +48,14 @@ public class YDownTest extends GdxTest {
 	public void create () {
 		// a bitmap font to draw some text, note that we
 		// pass true to the constructor, which flips glyphs on y
-		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), true);
+		font = new BitmapFont(files.internal("data/lsans-15.fnt"), true);
 
 		// a texture region, note the flipping on y again
 		region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		region.flip(false, true);
 
 		// a texture atlas, note the boolean
-		atlas = new TextureAtlas(Gdx.files.internal("data/pack.atlas"), true);
+		atlas = new TextureAtlas(files.internal("data/pack.atlas"), true);
 
 		// a sprite, created from a region in the atlas
 		sprite = atlas.createSprite("badlogicsmall");
@@ -80,7 +79,7 @@ public class YDownTest extends GdxTest {
 		stage.addActor(image);
 
 		// finally we write up the stage as the input process and call it a day.
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 	}
 
 	@Override
@@ -93,7 +92,7 @@ public class YDownTest extends GdxTest {
 	public void render () {
 		// clear the screen, update the camera and make the sprite batch
 		// use its matrices.
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 
@@ -112,11 +111,11 @@ public class YDownTest extends GdxTest {
 		sprite.setColor(Color.RED);
 		sprite.draw(batch);
 		// finally we draw our current touch/mouse coordinates
-		font.draw(batch, Gdx.input.getX() + ", " + Gdx.input.getY(), 0, 0);
+		font.draw(batch, input.getX() + ", " + input.getY(), 0, 0);
 		batch.end();
 
 		// tell the stage to act and draw itself
-		stage.act(Gdx.graphics.getDeltaTime());
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 	}
 

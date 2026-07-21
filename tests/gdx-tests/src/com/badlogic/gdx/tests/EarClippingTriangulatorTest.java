@@ -120,7 +120,7 @@ public class EarClippingTriangulatorTest {
 // casesX = (int)Math.ceil(Math.sqrt(testCases.size()));
 // casesY = (int)Math.ceil((float)testCases.size() / casesX);
 //
-// Gdx.input.setInputProcessor(new InputAdapter() {
+// input.setInputProcessor(new InputAdapter() {
 // @Override
 // public boolean keyDown (int keycode) {
 // switch (keycode) {
@@ -143,27 +143,27 @@ public class EarClippingTriangulatorTest {
 //
 // @Override
 // public void render () {
-// Gdx.gl.glClearColor(1, 1, 1, 1);
-// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+// gl.glClearColor(1, 1, 1, 1);
+// gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 //
-// int w = Gdx.graphics.getWidth();
-// int h = Gdx.graphics.getHeight();
-// Gdx.gl20.glViewport(0, 0, w, h);
+// int w = graphics.getWidth();
+// int h = graphics.getHeight();
+// gl20.glViewport(0, 0, w, h);
 //
 // final float M = 0.1f;
-// Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
-// Gdx.gl10.glLoadIdentity();
-// Gdx.gl10.glOrthof(-M, casesX * (1 + M), -M, casesY * (1 + M), -1, 1);
-// Gdx.gl10.glMatrixMode(GL10.GL_MODELVIEW);
-// Gdx.gl10.glLoadIdentity();
+// gl10.glMatrixMode(GL10.GL_PROJECTION);
+// gl10.glLoadIdentity();
+// gl10.glOrthof(-M, casesX * (1 + M), -M, casesY * (1 + M), -1, 1);
+// gl10.glMatrixMode(GL10.GL_MODELVIEW);
+// gl10.glLoadIdentity();
 //
 // int x = 0;
 // int y = 0;
 // for (TestCase testCase : testCases) {
-// Gdx.gl10.glPushMatrix();
-// Gdx.gl10.glTranslatef(x * (1 + M), y * (1 + M), 0);
+// gl10.glPushMatrix();
+// gl10.glTranslatef(x * (1 + M), y * (1 + M), 0);
 // testCase.render();
-// Gdx.gl10.glPopMatrix();
+// gl10.glPopMatrix();
 //
 // x++;
 // if (x >= casesX) {
@@ -307,17 +307,17 @@ public class EarClippingTriangulatorTest {
 // }
 //
 // public void render () {
-// Gdx.gl10.glScalef(1 / boundingRect.width, 1 / boundingRect.height, 1);
-// Gdx.gl10.glTranslatef(-boundingRect.x, -boundingRect.y, 0);
+// gl10.glScalef(1 / boundingRect.width, 1 / boundingRect.height, 1);
+// gl10.glTranslatef(-boundingRect.x, -boundingRect.y, 0);
 //
 // interiorMesh.render(GL10.GL_TRIANGLES);
 //
-// Gdx.gl10.glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
-// Gdx.gl10.glLineWidth(1.0f);
+// gl10.glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
+// gl10.glLineWidth(1.0f);
 // triangleOutlineMesh.render(GL10.GL_LINES);
 //
-// Gdx.gl10.glColor4f(0.3f, 0.0f, 0.0f, 1.0f);
-// Gdx.gl10.glLineWidth(2.0f);
+// gl10.glColor4f(0.3f, 0.0f, 0.0f, 1.0f);
+// gl10.glLineWidth(2.0f);
 // polygonMesh.render(GL10.GL_LINE_LOOP);
 // }
 //

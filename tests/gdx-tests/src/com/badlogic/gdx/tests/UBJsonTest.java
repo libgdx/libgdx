@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.UBJsonReader;
@@ -36,7 +35,7 @@ public class UBJsonTest extends GdxTest {
 	public void create () {
 		try {
 
-			UBJsonWriter uw = new UBJsonWriter(Gdx.files.external(fn).write(false));
+			UBJsonWriter uw = new UBJsonWriter(files.external(fn).write(false));
 			uw.object();
 			uw.set(longString, longString);
 			uw.set("0floats", new float[] {});
@@ -64,19 +63,19 @@ public class UBJsonTest extends GdxTest {
 			uw.close();
 			UBJsonReader ur = new UBJsonReader();
 			ur.oldFormat = false;
-			JsonValue v = ur.parse(Gdx.files.external(fn));
-			Gdx.app.log("UBJsonTest", "result = \n" + v.toString());
+			JsonValue v = ur.parse(files.external(fn));
+			app.log("UBJsonTest", "result = \n" + v.toString());
 			performanceTest();
-			Gdx.app.log("UBJsonTest", "Test succeeded");
+			app.log("UBJsonTest", "Test succeeded");
 		} catch (Throwable t) {
-			Gdx.app.error("UBJsonTest", "Test failed", t);
+			app.error("UBJsonTest", "Test failed", t);
 		}
 	}
 
 	private void performanceTest () throws Exception {
-		Gdx.app.log("UBJsonTest", "--- performanceTest ---");
+		app.log("UBJsonTest", "--- performanceTest ---");
 		long start = System.currentTimeMillis();
-		UBJsonWriter uw = new UBJsonWriter(Gdx.files.external(fn).write(false, 8192));
+		UBJsonWriter uw = new UBJsonWriter(files.external(fn).write(false, 8192));
 		uw.object();
 		uw.set("0floats", new float[] {});
 		uw.set("3floats", new float[] {1, 2, 3.456789f});
@@ -98,12 +97,12 @@ public class UBJsonTest extends GdxTest {
 		uw.pop();
 		uw.close();
 
-		Gdx.app.log("UBJsonTest", "Writing the test file took " + (System.currentTimeMillis() - start) + "ms");
-		Gdx.app.log("UBJsonTest", "File size is " + Gdx.files.external(fn).length());
+		app.log("UBJsonTest", "Writing the test file took " + (System.currentTimeMillis() - start) + "ms");
+		app.log("UBJsonTest", "File size is " + files.external(fn).length());
 		UBJsonReader ur = new UBJsonReader();
 		ur.oldFormat = false;
 		start = System.currentTimeMillis();
-		ur.parse(Gdx.files.external(fn));
-		Gdx.app.log("UBJsonTest", "Parsing the test file took " + (System.currentTimeMillis() - start) + "ms");
+		ur.parse(files.external(fn));
+		app.log("UBJsonTest", "Parsing the test file took " + (System.currentTimeMillis() - start) + "ms");
 	}
 }

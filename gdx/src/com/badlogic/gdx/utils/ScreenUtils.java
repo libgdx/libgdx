@@ -20,6 +20,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -38,25 +39,41 @@ public final class ScreenUtils {
 	/** Clears the color buffers with the specified Color.
 	 * @param color Color to clear the color buffers with. */
 	public static void clear (Color color) {
-		clear(color.r, color.g, color.b, color.a, false);
+		clear(Gdx.graphics, color.r, color.g, color.b, color.a, false);
+	}
+
+	public static void clear (Graphics graphics, Color color) {
+		clear(graphics, color.r, color.g, color.b, color.a, false);
 	}
 
 	/** Clears the color buffers with the specified color. */
 	public static void clear (float r, float g, float b, float a) {
-		clear(r, g, b, a, false);
+		clear(Gdx.graphics, r, g, b, a, false);
+	}
+
+	public static void clear (Graphics graphics, float r, float g, float b, float a) {
+		clear(graphics, r, g, b, a, false);
 	}
 
 	/** Clears the color buffers and optionally the depth buffer.
 	 * @param color Color to clear the color buffers with.
 	 * @param clearDepth Clears the depth buffer if true. */
 	public static void clear (Color color, boolean clearDepth) {
-		clear(color.r, color.g, color.b, color.a, clearDepth);
+		clear(Gdx.graphics, color.r, color.g, color.b, color.a, clearDepth);
+	}
+
+	public static void clear (Graphics graphics, Color color, boolean clearDepth) {
+		clear(graphics, color.r, color.g, color.b, color.a, clearDepth);
 	}
 
 	/** Clears the color buffers and optionally the depth buffer.
 	 * @param clearDepth Clears the depth buffer if true. */
 	public static void clear (float r, float g, float b, float a, boolean clearDepth) {
-		clear(r, g, b, a, clearDepth, false);
+		clear(Gdx.graphics, r, g, b, a, clearDepth, false);
+	}
+
+	public static void clear (Graphics graphics, float r, float g, float b, float a, boolean clearDepth) {
+		clear(graphics, r, g, b, a, clearDepth, false);
 	}
 
 	/** Clears the color buffers, optionally the depth buffer and whether to apply antialiasing (requires to set number of samples
@@ -65,11 +82,17 @@ public final class ScreenUtils {
 	 * @param clearDepth Clears the depth buffer if true.
 	 * @param applyAntialiasing applies multi-sampling for antialiasing if true. */
 	public static void clear (float r, float g, float b, float a, boolean clearDepth, boolean applyAntialiasing) {
-		Gdx.gl.glClearColor(r, g, b, a);
+		clear(Gdx.graphics, r, g, b, a, clearDepth, applyAntialiasing);
+	}
+
+	public static void clear (Graphics graphics, float r, float g, float b, float a, boolean clearDepth,
+		boolean applyAntialiasing) {
+		GL20 gl = graphics.getGL20();
+		gl.glClearColor(r, g, b, a);
 		int mask = GL20.GL_COLOR_BUFFER_BIT;
 		if (clearDepth) mask = mask | GL20.GL_DEPTH_BUFFER_BIT;
-		if (applyAntialiasing && Gdx.graphics.getBufferFormat().coverageSampling) mask = mask | GL20.GL_COVERAGE_BUFFER_BIT_NV;
-		Gdx.gl.glClear(mask);
+		if (applyAntialiasing && graphics.getBufferFormat().coverageSampling) mask = mask | GL20.GL_COVERAGE_BUFFER_BIT_NV;
+		gl.glClear(mask);
 	}
 
 	/** Returns the current framebuffer contents as a {@link TextureRegion} with a width and height equal to the current screen
@@ -77,9 +100,13 @@ public final class ScreenUtils {
 	 * accessed via {@link TextureRegion#getTexture}. The texture is not managed and has to be reloaded manually on a context loss.
 	 * The returned TextureRegion is flipped along the Y axis by default. */
 	public static TextureRegion getFrameBufferTexture () {
-		final int w = Gdx.graphics.getBackBufferWidth();
-		final int h = Gdx.graphics.getBackBufferHeight();
-		return getFrameBufferTexture(0, 0, w, h);
+		return getFrameBufferTexture(Gdx.graphics);
+	}
+
+	public static TextureRegion getFrameBufferTexture (Graphics graphics) {
+		final int w = graphics.getBackBufferWidth();
+		final int h = graphics.getBackBufferHeight();
+		return getFrameBufferTexture(graphics, 0, 0, w, h);
 	}
 
 	/** Returns a portion of the current framebuffer contents specified by x, y, width and height as a {@link TextureRegion} with
@@ -93,14 +120,18 @@ public final class ScreenUtils {
 	 * @param w the width of the framebuffer contents to capture
 	 * @param h the height of the framebuffer contents to capture */
 	public static TextureRegion getFrameBufferTexture (int x, int y, int w, int h) {
+		return getFrameBufferTexture(Gdx.graphics, x, y, w, h);
+	}
+
+	public static TextureRegion getFrameBufferTexture (Graphics graphics, int x, int y, int w, int h) {
 		final int potW = MathUtils.nextPowerOfTwo(w);
 		final int potH = MathUtils.nextPowerOfTwo(h);
 
-		final Pixmap pixmap = Pixmap.createFromFrameBuffer(x, y, w, h);
+		final Pixmap pixmap = Pixmap.createFromFrameBuffer(graphics, x, y, w, h);
 		final Pixmap potPixmap = new Pixmap(potW, potH, Format.RGBA8888);
 		potPixmap.setBlending(Blending.None);
 		potPixmap.drawPixmap(pixmap, 0, 0);
-		Texture texture = new Texture(potPixmap);
+		Texture texture = new Texture(graphics, potPixmap);
 		TextureRegion textureRegion = new TextureRegion(texture, 0, h, w, -h);
 		potPixmap.dispose();
 		pixmap.dispose();
@@ -121,9 +152,13 @@ public final class ScreenUtils {
 	 *
 	 * @param flipY whether to flip pixels along Y axis */
 	public static byte[] getFrameBufferPixels (boolean flipY) {
-		final int w = Gdx.graphics.getBackBufferWidth();
-		final int h = Gdx.graphics.getBackBufferHeight();
-		return getFrameBufferPixels(0, 0, w, h, flipY);
+		return getFrameBufferPixels(Gdx.graphics, flipY);
+	}
+
+	public static byte[] getFrameBufferPixels (Graphics graphics, boolean flipY) {
+		final int w = graphics.getBackBufferWidth();
+		final int h = graphics.getBackBufferHeight();
+		return getFrameBufferPixels(graphics, 0, 0, w, h, flipY);
 	}
 
 	/** Returns a portion of the current framebuffer contents specified by x, y, width and height, as a byte[] array with a length
@@ -135,9 +170,14 @@ public final class ScreenUtils {
 	 *
 	 * @param flipY whether to flip pixels along Y axis */
 	public static byte[] getFrameBufferPixels (int x, int y, int w, int h, boolean flipY) {
-		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+		return getFrameBufferPixels(Gdx.graphics, x, y, w, h, flipY);
+	}
+
+	public static byte[] getFrameBufferPixels (Graphics graphics, int x, int y, int w, int h, boolean flipY) {
+		GL20 gl = graphics.getGL20();
+		gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
 		final ByteBuffer pixels = BufferUtils.newByteBuffer(w * h * 4);
-		Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+		gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
 		final int numBytes = w * h * 4;
 		byte[] lines = new byte[numBytes];
 		if (flipY) {

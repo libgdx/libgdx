@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
@@ -54,7 +53,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	float elapsed = 0;
 
 	public void create () {
-		Gdx.app.setLogLevel(Application.LOG_ERROR);
+		app.setLogLevel(Application.LOG_ERROR);
 
 		Resolution[] resolutions = {new Resolution(320, 480, ".320480"), new Resolution(480, 800, ".480800"),
 			new Resolution(480, 856, ".480854")};
@@ -65,7 +64,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		load();
 		Texture.setAssetManager(manager);
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), false);
+		font = new BitmapFont(files.internal("data/font.fnt"), false);
 		skin = new Skin();
 
 	}
@@ -83,17 +82,17 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	private ShaderProgram shader;
 
 	private void load () {
-// Gdx.app.setLogLevel(Logger.DEBUG);
+// app.setLogLevel(Logger.DEBUG);
 		start = TimeUtils.nanoTime();
 		tex1 = new Texture("data/animation.png");
-		tex2 = new TextureAtlas(Gdx.files.internal("data/pack.atlas"));
-		font2 = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), false);
+		tex2 = new TextureAtlas(files.internal("data/pack.atlas"));
+		font2 = new BitmapFont(files.internal("data/verdana39.fnt"), false);
 // tex3 = new Texture("data/test.etc1");
-// map = TiledLoader.createMap(Gdx.files.internal("data/tiledmap/tilemap csv.tmx"));
-// atlas = new TileAtlas(map, Gdx.files.internal("data/tiledmap/"));
+// map = TiledLoader.createMap(files.internal("data/tiledmap/tilemap csv.tmx"));
+// atlas = new TileAtlas(map, files.internal("data/tiledmap/"));
 // renderer = new TileMapRenderer(map, atlas, 8, 8);
-		shader = new ShaderProgram(Gdx.files.internal("data/g2d/batchCommon.vert").readString(),
-			Gdx.files.internal("data/g2d/monochrome.frag").readString());
+		shader = new ShaderProgram(files.internal("data/g2d/batchCommon.vert").readString(),
+			files.internal("data/g2d/monochrome.frag").readString());
 		System.out.println("plain took: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
 
 		start = TimeUtils.nanoTime();
@@ -146,11 +145,11 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	private void invalidateTexture (Texture texture) {
 		IntBuffer buffer = BufferUtils.newIntBuffer(1);
 		buffer.put(0, texture.getTextureObjectHandle());
-		Gdx.gl.glDeleteTextures(1, buffer);
+		gl.glDeleteTextures(1, buffer);
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		boolean result = manager.update(16);
 		if (result) {
@@ -159,7 +158,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 				System.out.println("took: " + (TimeUtils.nanoTime() - start) / 1000000000.0f);
 				elapsed = 0;
 			} else {
-				elapsed += Gdx.graphics.getDeltaTime();
+				elapsed += graphics.getDeltaTime();
 				if (elapsed > 0.2f) {
 					unload();
 					load();
@@ -205,8 +204,8 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		font.draw(batch, "loaded: " + manager.getProgress() + ", reloads: " + reloads, 0, 30);
 		batch.end();
 
-// if(Gdx.input.justTouched()) {
-// Texture.invalidateAllTextures(Gdx.app);
+// if(input.justTouched()) {
+// Texture.invalidateAllTextures(app);
 // diagnosed = false;
 // unload();
 // load();
@@ -215,7 +214,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 
 	@Override
 	public void error (AssetDescriptor asset, Throwable throwable) {
-		Gdx.app.error("AssetManagerTest", "Couldn't load asset: " + asset, (Exception)throwable);
+		app.error("AssetManagerTest", "Couldn't load asset: " + asset, (Exception)throwable);
 	}
 
 	@Override

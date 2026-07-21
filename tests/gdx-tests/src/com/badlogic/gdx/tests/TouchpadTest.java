@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -29,9 +28,9 @@ public class TouchpadTest extends GdxTest {
 
 	public void create () {
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		Skin skin = new Skin(files.internal("data/uiskin.json"));
 
 		touchpad = new Touchpad(20, skin);
 		touchpad.setBounds(15, 15, 100, 100);
@@ -40,8 +39,8 @@ public class TouchpadTest extends GdxTest {
 
 	public void render () {
 		// System.out.println(touchpad.getKnobPercentX() + " " + touchpad.getKnobPercentY());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 	}
 

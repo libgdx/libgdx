@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -33,8 +32,8 @@ public class TextAreaTest extends GdxTest {
 	@Override
 	public void create () {
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		input.setInputProcessor(stage);
+		skin = new Skin(files.internal("data/uiskin.json"));
 		skin.getFont("default-font").setFixedWidthGlyphs("0123456789");
 		TextArea textArea = new TextArea("Text Area\n1111111111\n0123456789\nEssentially, a text field\nwith\nmultiple\nlines.\n"
 			+ "It can even handle very loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong lines.",
@@ -52,16 +51,16 @@ public class TextAreaTest extends GdxTest {
 		stage.addActor(textArea);
 		stage.addActor(textField);
 
-		Gdx.input.setCatchKey(Input.Keys.TAB, true);
+		input.setCatchKey(Input.Keys.TAB, true);
 	}
 
 	@Override
 	public void render () {
 		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 		stage.draw();
-		Gdx.app.log("X", "FPS: " + Gdx.graphics.getFramesPerSecond());
+		app.log("X", "FPS: " + graphics.getFramesPerSecond());
 		SpriteBatch spriteBatch = (SpriteBatch)stage.getBatch();
-		Gdx.app.log("X", "render calls: " + spriteBatch.totalRenderCalls);
+		app.log("X", "render calls: " + spriteBatch.totalRenderCalls);
 		spriteBatch.totalRenderCalls = 0;
 	}
 

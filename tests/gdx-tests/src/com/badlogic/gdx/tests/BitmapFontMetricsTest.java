@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -38,17 +37,17 @@ public class BitmapFontMetricsTest extends GdxTest {
 		spriteBatch = new SpriteBatch();
 		atlas = new TextureAtlas("data/pack.atlas");
 		smallFont = new BitmapFont();
-		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), atlas.findRegion("verdana39"), false);
-		font = new BitmapFont(Gdx.files.internal("data/lsans-32-pad.fnt"), false);
+		font = new BitmapFont(files.internal("data/verdana39.fnt"), atlas.findRegion("verdana39"), false);
+		font = new BitmapFont(files.internal("data/lsans-32-pad.fnt"), false);
 		renderer = new ShapeRenderer();
 		renderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
 	}
 
 	@Override
 	public void render () {
-		// red.a = (red.a + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
+		// red.a = (red.a + graphics.getDeltaTime() * 0.1f) % 1;
 
-		int viewHeight = Gdx.graphics.getHeight();
+		int viewHeight = graphics.getHeight();
 
 		ScreenUtils.clear(1, 1, 1, 1);
 		spriteBatch.begin();

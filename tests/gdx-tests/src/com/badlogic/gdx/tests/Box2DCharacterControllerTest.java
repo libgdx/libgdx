@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
@@ -66,9 +65,9 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		renderer = new Box2DDebugRenderer();
 		cam = new OrthographicCamera(28, 20);
 		createWorld();
-		Gdx.input.setInputProcessor(this);
+		input.setInputProcessor(this);
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
+		font = new BitmapFont(files.internal("data/lsans-15.fnt"), false);
 	}
 
 	@Override
@@ -183,14 +182,14 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		cam.position.set(player.getPosition().x, player.getPosition().y, 0);
 		cam.update();
 		renderer.render(world, cam.combined);
 
 		Vector2 vel = player.getLinearVelocity();
 		Vector2 pos = player.getPosition();
-		boolean grounded = isPlayerGrounded(Gdx.graphics.getDeltaTime());
+		boolean grounded = isPlayerGrounded(graphics.getDeltaTime());
 		if (grounded) {
 			lastGroundTime = TimeUtils.nanoTime();
 		} else {
@@ -206,8 +205,8 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		}
 
 		// calculate stilltime & damp
-		if (!Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D)) {
-			stillTime += Gdx.graphics.getDeltaTime();
+		if (!input.isKeyPressed(Keys.A) && !input.isKeyPressed(Keys.D)) {
+			stillTime += graphics.getDeltaTime();
 			player.setLinearVelocity(vel.x * 0.9f, vel.y);
 		} else {
 			stillTime = 0;
@@ -218,7 +217,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 			playerPhysicsFixture.setFriction(0f);
 			playerSensorFixture.setFriction(0f);
 		} else {
-			if (!Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D) && stillTime > 0.2) {
+			if (!input.isKeyPressed(Keys.A) && !input.isKeyPressed(Keys.D) && stillTime > 0.2) {
 				playerPhysicsFixture.setFriction(1000f);
 				playerSensorFixture.setFriction(1000f);
 			} else {
@@ -242,12 +241,12 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		}
 
 		// apply left impulse, but only if max velocity is not reached yet
-		if (Gdx.input.isKeyPressed(Keys.A) && vel.x > -MAX_VELOCITY) {
+		if (input.isKeyPressed(Keys.A) && vel.x > -MAX_VELOCITY) {
 			player.applyLinearImpulse(-2f, 0, pos.x, pos.y, true);
 		}
 
 		// apply right impulse, but only if max velocity is not reached yet
-		if (Gdx.input.isKeyPressed(Keys.D) && vel.x < MAX_VELOCITY) {
+		if (input.isKeyPressed(Keys.D) && vel.x < MAX_VELOCITY) {
 			player.applyLinearImpulse(2f, 0, pos.x, pos.y, true);
 		}
 
@@ -266,12 +265,12 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		// update platforms
 		for (int i = 0; i < platforms.size; i++) {
 			Platform platform = platforms.get(i);
-			platform.update(Math.max(1 / 30.0f, Gdx.graphics.getDeltaTime()));
+			platform.update(Math.max(1 / 30.0f, graphics.getDeltaTime()));
 		}
 
 		// le step...
-		world.step(Gdx.graphics.getDeltaTime(), 4, 4);
-// accum += Gdx.graphics.getDeltaTime();
+		world.step(graphics.getDeltaTime(), 4, 4);
+// accum += graphics.getDeltaTime();
 // while(accum > TICK) {
 // accum -= TICK;
 // world.step(TICK, 4, 4);

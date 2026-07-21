@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
@@ -97,11 +98,16 @@ public class Pixmap implements Disposable {
 	 * @param h framebuffer region height
 	 * @return the pixmap */
 	public static Pixmap createFromFrameBuffer (int x, int y, int w, int h) {
-		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
+		return createFromFrameBuffer(Gdx.graphics, x, y, w, h);
+	}
+
+	public static Pixmap createFromFrameBuffer (Graphics graphics, int x, int y, int w, int h) {
+		GL20 gl = graphics.getGL20();
+		gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
 
 		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
 		ByteBuffer pixels = pixmap.getPixels();
-		Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
+		gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
 
 		return pixmap;
 	}

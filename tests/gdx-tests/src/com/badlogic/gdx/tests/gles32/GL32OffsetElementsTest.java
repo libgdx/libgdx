@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests.gles32;
 
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -87,7 +86,7 @@ public class GL32OffsetElementsTest extends GdxTest {
 
 	@Override
 	public void render () {
-		time += Gdx.graphics.getDeltaTime();
+		time += graphics.getDeltaTime();
 
 		int baseVertex = ((int)time) % 3;
 
@@ -98,7 +97,7 @@ public class GL32OffsetElementsTest extends GdxTest {
 		shader.setUniformMatrix("u_projTrans", transform);
 
 		mesh.bind(shader);
-		Gdx.gl32.glDrawElementsBaseVertex(GL20.GL_TRIANGLES, 6, GL20.GL_UNSIGNED_SHORT, indices, baseVertex);
+		gl32.glDrawElementsBaseVertex(GL20.GL_TRIANGLES, 6, GL20.GL_UNSIGNED_SHORT, indices, baseVertex);
 		mesh.unbind(shader);
 	}
 }

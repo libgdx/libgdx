@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -39,13 +38,13 @@ public class ScrollPaneScrollBarsTest extends GdxTest {
 	private Table bottomLeft, bottomRight, topLeft, topRight, horizOnlyTop, horizOnlyBottom, vertOnlyLeft, vertOnlyRight;
 
 	public void create () {
-		float width = Gdx.graphics.getWidth();
-		float height = Gdx.graphics.getHeight();
+		float width = graphics.getWidth();
+		float height = graphics.getHeight();
 		float btnWidth = 200;
 		float btnHeight = 40;
 		stage = new Stage();
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		Gdx.input.setInputProcessor(stage);
+		Skin skin = new Skin(files.internal("data/uiskin.json"));
+		input.setInputProcessor(stage);
 
 		final TextButton fadeBtn = new TextButton("Fade: " + doFade, skin);
 		fadeBtn.setSize(btnWidth, btnHeight);
@@ -78,7 +77,7 @@ public class ScrollPaneScrollBarsTest extends GdxTest {
 			}
 		});
 
-		// Gdx.graphics.setVSync(false);
+		// graphics.setVSync(false);
 
 		float gap = 8;
 		float x = gap;
@@ -235,14 +234,14 @@ public class ScrollPaneScrollBarsTest extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 	}
 
 	public void resize (int width, int height) {
 		stage.getViewport().update(width, height, true);
-		// Gdx.gl.glViewport(100, 100, width - 200, height - 200);
+		// gl.glViewport(100, 100, width - 200, height - 200);
 		// stage.setViewport(800, 600, false, 100, 100, width - 200, height - 200);
 	}
 

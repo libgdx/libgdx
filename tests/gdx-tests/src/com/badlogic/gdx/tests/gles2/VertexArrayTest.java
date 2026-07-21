@@ -20,7 +20,6 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Mesh.VertexDataType;
@@ -71,7 +70,7 @@ public class VertexArrayTest extends GdxTest {
 	@Override
 	public void render () {
 		boolean log = false;
-		if (Gdx.input.justTouched()) {
+		if (input.justTouched()) {
 			testCase = (testCase + 1) % testCases.length;
 			log = true;
 		}
@@ -79,11 +78,11 @@ public class VertexArrayTest extends GdxTest {
 		int offset = testCases[testCase][1];
 		int count = testCases[testCase][2];
 		if (log) {
-			Gdx.app.log("VertexArrayTest", "mode: " + mode + ", offset: " + offset + ", count: " + count);
+			app.log("VertexArrayTest", "mode: " + mode + ", offset: " + offset + ", count: " + count);
 		}
 
-		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl20.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		shader.bind();
 		mesh.bind(shader);
 
@@ -104,10 +103,10 @@ public class VertexArrayTest extends GdxTest {
 		}
 
 		if (log) {
-			Gdx.app.log("VertexArrayTest", "position: " + buffer.position());
+			app.log("VertexArrayTest", "position: " + buffer.position());
 		}
 
-		Gdx.gl20.glDrawElements(GL20.GL_TRIANGLES, count, type, buffer);
+		gl20.glDrawElements(GL20.GL_TRIANGLES, count, type, buffer);
 		buffer.position(0);
 		mesh.unbind(shader);
 	}

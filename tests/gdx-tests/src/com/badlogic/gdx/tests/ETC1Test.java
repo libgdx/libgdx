@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -40,9 +39,9 @@ public class ETC1Test extends GdxTest {
 	@Override
 	public void create () {
 		font = new BitmapFont();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new OrthographicCamera(graphics.getWidth(), graphics.getHeight());
 		controller = new OrthoCamController(camera);
-		Gdx.input.setInputProcessor(controller);
+		input.setInputProcessor(controller);
 
 		Pixmap pixmap = new Pixmap(32, 32, Format.RGB565);
 		pixmap.setColor(1, 0, 0, 1);
@@ -63,7 +62,7 @@ public class ETC1Test extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
 
@@ -73,9 +72,9 @@ public class ETC1Test extends GdxTest {
 		batch.draw(img1, 0, 0);
 		batch.end();
 
-		batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, graphics.getWidth(), graphics.getHeight());
 		batch.begin();
-		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 0, 30);
+		font.draw(batch, "fps: " + graphics.getFramesPerSecond(), 0, 30);
 		batch.end();
 	}
 

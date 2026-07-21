@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.graphics;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
@@ -29,7 +29,7 @@ import java.util.Map;
  * @author Tomski */
 public class TextureArray extends GLTexture {
 
-	final static Map<Application, Array<TextureArray>> managedTextureArrays = new HashMap<Application, Array<TextureArray>>();
+	final static Map<Graphics, Array<TextureArray>> managedTextureArrays = new HashMap<Graphics, Array<TextureArray>>();
 
 	private TextureArrayData data;
 
@@ -50,15 +50,19 @@ public class TextureArray extends GLTexture {
 	}
 
 	public TextureArray (TextureArrayData data) {
-		super(GL30.GL_TEXTURE_2D_ARRAY, Gdx.gl.glGenTexture());
+		this(Gdx.graphics, data);
+	}
 
-		if (Gdx.gl30 == null) {
+	public TextureArray (Graphics graphics, TextureArrayData data) {
+		super(graphics, GL30.GL_TEXTURE_2D_ARRAY);
+
+		if (graphics.getGL30() == null) {
 			throw new GdxRuntimeException("TextureArray requires a device running with GLES 3.0 compatibilty");
 		}
 
 		load(data);
 
-		if (data.isManaged()) addManagedTexture(Gdx.app, this);
+		if (data.isManaged()) addManagedTexture(graphics, this);
 	}
 
 	private static FileHandle[] getInternalHandles (String... internalPaths) {
@@ -75,7 +79,7 @@ public class TextureArray extends GLTexture {
 		this.data = data;
 
 		bind();
-		Gdx.gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, data.getInternalFormat(), data.getWidth(), data.getHeight(),
+		gl30().glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, data.getInternalFormat(), data.getWidth(), data.getHeight(),
 			data.getDepth(), 0, data.getInternalFormat(), data.getGLType(), null);
 
 		if (!data.isPrepared()) data.prepare();
@@ -84,7 +88,7 @@ public class TextureArray extends GLTexture {
 
 		setFilter(minFilter, magFilter);
 		setWrap(uWrap, vWrap);
-		Gdx.gl.glBindTexture(glTarget, 0);
+		gl().glBindTexture(glTarget, 0);
 	}
 
 	@Override
@@ -110,25 +114,25 @@ public class TextureArray extends GLTexture {
 	@Override
 	protected void reload () {
 		if (!isManaged()) throw new GdxRuntimeException("Tried to reload an unmanaged TextureArray");
-		glHandle = Gdx.gl.glGenTexture();
+		glHandle = gl().glGenTexture();
 		load(data);
 	}
 
-	private static void addManagedTexture (Application app, TextureArray texture) {
-		Array<TextureArray> managedTextureArray = managedTextureArrays.get(app);
+	private static void addManagedTexture (Graphics graphics, TextureArray texture) {
+		Array<TextureArray> managedTextureArray = managedTextureArrays.get(graphics);
 		if (managedTextureArray == null) managedTextureArray = new Array<TextureArray>();
 		managedTextureArray.add(texture);
-		managedTextureArrays.put(app, managedTextureArray);
+		managedTextureArrays.put(graphics, managedTextureArray);
 	}
 
 	/** Clears all managed TextureArrays. This is an internal method. Do not use it! */
-	public static void clearAllTextureArrays (Application app) {
-		managedTextureArrays.remove(app);
+	public static void clearAllTextureArrays (Graphics graphics) {
+		managedTextureArrays.remove(graphics);
 	}
 
 	/** Invalidate all managed TextureArrays. This is an internal method. Do not use it! */
-	public static void invalidateAllTextureArrays (Application app) {
-		Array<TextureArray> managedTextureArray = managedTextureArrays.get(app);
+	public static void invalidateAllTextureArrays (Graphics graphics) {
+		Array<TextureArray> managedTextureArray = managedTextureArrays.get(graphics);
 		if (managedTextureArray == null) return;
 
 		for (int i = 0; i < managedTextureArray.size; i++) {
@@ -139,9 +143,9 @@ public class TextureArray extends GLTexture {
 
 	public static String getManagedStatus () {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Managed TextureArrays/app: { ");
-		for (Application app : managedTextureArrays.keySet()) {
-			builder.append(managedTextureArrays.get(app).size);
+		builder.append("Managed TextureArrays/graphics: { ");
+		for (Graphics graphics : managedTextureArrays.keySet()) {
+			builder.append(managedTextureArrays.get(graphics).size);
 			builder.append(" ");
 		}
 		builder.append("}");
@@ -150,7 +154,7 @@ public class TextureArray extends GLTexture {
 
 	/** @return the number of managed TextureArrays currently loaded */
 	public static int getNumManagedTextureArrays () {
-		return managedTextureArrays.get(Gdx.app).size;
+		return managedTextureArrays.get(Gdx.graphics).size;
 	}
 
 }

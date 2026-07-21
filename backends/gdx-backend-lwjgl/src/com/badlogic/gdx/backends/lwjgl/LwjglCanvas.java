@@ -210,7 +210,7 @@ public class LwjglCanvas implements LwjglApplicationBase {
 		try {
 			graphics.setupDisplay();
 
-			listener.create();
+			listener.create(this);
 			listener.resize(Math.max(1, graphics.getWidth()), Math.max(1, graphics.getHeight()));
 
 			start();
