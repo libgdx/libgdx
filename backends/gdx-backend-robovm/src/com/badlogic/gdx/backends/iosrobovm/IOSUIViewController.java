@@ -1,17 +1,10 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
-import org.robovm.apple.coregraphics.CGPoint;
-import org.robovm.apple.coregraphics.CGRect;
-import org.robovm.apple.coregraphics.CGSize;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.uikit.*;
-import org.robovm.objc.Selector;
-import org.robovm.objc.annotation.Method;
 
 public class IOSUIViewController extends GLKViewController {
 	final IOSApplication app;
@@ -28,74 +21,6 @@ public class IOSUIViewController extends GLKViewController {
 		// start GLKViewController even though we may only draw a single frame
 		// (we may be in non-continuous mode)
 		setPaused(false);
-		injectKeyboardNotification();
-	}
-
-	protected Input.KeyboardHeightObserver observer;
-
-	@Method(selector = "keyboardWillHide")
-	public void keyboardWillHide (NSNotification notification) {
-		if (observer != null) {
-			observer.onKeyboardHide();
-			observer.onKeyboardHeightChanged(0);
-		}
-	}
-
-	@Method(selector = "keyboardWillShow")
-	public void keyboardWillShow (NSNotification notification) {
-		CGRect screenRect = UIScreen.getMainScreen().getBounds();
-		double screenHeight = screenRect.getSize().getHeight();
-		double heightScale = Gdx.graphics.getHeight() / screenHeight;
-
-		NSDictionary<NSString, ?> userInfo = (NSDictionary<NSString, ?>)notification.getUserInfo();
-		CGRect keyboardEndFrame = ((NSValue)userInfo.get(UIKeyboardAnimation.Keys.FrameEnd())).rectValue();
-
-		UIView textField = graphics.input.getActiveKeyboardTextField();
-		if (textField == null || !textField.isFirstResponder() || textField.isHidden()) {
-			if (observer != null) {
-				int kbHeight = (int)(keyboardEndFrame.getSize().getHeight() * heightScale);
-				observer.onKeyboardShow(kbHeight);
-				observer.onKeyboardHeightChanged(kbHeight);
-			}
-			return;
-		}
-
-		// I haven't found any docs on when keyboardWillShow constructs a implicit animation, so iOS 15 should be fine
-		if (Foundation.getMajorSystemVersion() <= 15) {
-			double duration;
-			long curve;
-			curve = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationCurve())).longValue();
-			duration = ((NSNumber)userInfo.get(UIKeyboardAnimation.Keys.AnimationDuration())).doubleValue();
-
-			UIView.beginAnimations(null, null);
-			UIView.setAnimationDurationInSeconds(duration);
-			UIView.setAnimationCurve(UIViewAnimationCurve.valueOf(curve));
-		}
-
-		CGRect newFrame = textField.getFrame();
-		if (observer != null) {
-			int kbHeight = (int)((keyboardEndFrame.getSize().getHeight() + newFrame.getSize().getHeight()) * heightScale);
-			observer.onKeyboardShow(kbHeight);
-			observer.onKeyboardHeightChanged(kbHeight);
-		}
-		keyboardEndFrame = textField.convertRectToView(keyboardEndFrame, null);
-		newFrame.setOrigin(new CGPoint(getView().getSafeAreaInsets().getLeft(),
-			getView().getBounds().getSize().getHeight() - keyboardEndFrame.getSize().getHeight() - newFrame.getSize().getHeight()));
-		newFrame.setSize(new CGSize(getView().getBounds().getSize().getWidth() - getView().getSafeAreaInsets().getLeft()
-			- getView().getSafeAreaInsets().getRight(), newFrame.getSize().getHeight()));
-		textField.setFrame(newFrame);
-
-		if (Foundation.getMajorSystemVersion() <= 15) {
-			UIView.commitAnimations();
-		}
-	}
-
-	public void injectKeyboardNotification () {
-		NSNotificationCenter.getDefaultCenter().addObserver(this, Selector.register("keyboardWillShow"),
-			UIWindow.KeyboardWillShowNotification(), null);
-		NSNotificationCenter.getDefaultCenter().addObserver(this, Selector.register("keyboardWillHide"),
-			UIWindow.KeyboardWillHideNotification(), null);
-
 	}
 
 	@Override
@@ -147,6 +72,8 @@ public class IOSUIViewController extends GLKViewController {
 			} else {
 				app.listener.resize(newBounds.width, newBounds.height);
 			}
+
+			graphics.input.onScreenLayoutChanged();
 		}
 
 	}
