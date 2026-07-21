@@ -159,7 +159,7 @@ public class IOSHaptics implements Haptics {
 	}
 
 	@Override
-	public boolean isFallbackEnabled() {
+	public boolean isFallbackEnabled () {
 		return fallback;
 	}
 

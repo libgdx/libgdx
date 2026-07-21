@@ -26,12 +26,12 @@ public class NoOpHaptics implements Haptics {
 	}
 
 	@Override
-	public boolean isFallbackEnabled() {
+	public boolean isFallbackEnabled () {
 		return false;
 	}
 
 	@Override
-	public void setFallbackEnabled(boolean enabled) {
+	public void setFallbackEnabled (boolean enabled) {
 
 	}
 }

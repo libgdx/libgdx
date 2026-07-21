@@ -36,8 +36,8 @@ public interface Haptics {
 
 	boolean isVibratorSupported ();
 
-	boolean isFallbackEnabled();
+	boolean isFallbackEnabled ();
 
-	void setFallbackEnabled(boolean enabled);
+	void setFallbackEnabled (boolean enabled);
 
 }

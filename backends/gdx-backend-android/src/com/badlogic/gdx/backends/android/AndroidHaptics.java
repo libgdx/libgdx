@@ -119,7 +119,7 @@ public class AndroidHaptics implements Haptics {
 	}
 
 	@Override
-	public boolean isFallbackEnabled() {
+	public boolean isFallbackEnabled () {
 		return fallback;
 	}
 

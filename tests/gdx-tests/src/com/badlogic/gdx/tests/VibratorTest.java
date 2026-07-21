@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.Haptics;
@@ -79,7 +78,8 @@ public class VibratorTest extends GdxTest {
 		buttonVibrateType.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
-				Haptics.ImpactType impactType = Haptics.ImpactType.values()[MathUtils.random(0, Haptics.ImpactType.values().length - 1)];
+				Haptics.ImpactType impactType = Haptics.ImpactType.values()[MathUtils.random(0,
+					Haptics.ImpactType.values().length - 1)];
 				Gdx.input.getHaptics().impact(impactType);
 				Gdx.app.log("VibratorTest", "VibrationType: " + impactType.name());
 			}
