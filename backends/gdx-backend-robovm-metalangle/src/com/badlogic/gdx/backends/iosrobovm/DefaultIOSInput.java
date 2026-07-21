@@ -847,7 +847,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	@Override
-	public void vibrate (VibrationType vibrationType) {
+	public void vibrate (ImpactType vibrationType) {
 		haptics.vibrate(vibrationType);
 	}
 

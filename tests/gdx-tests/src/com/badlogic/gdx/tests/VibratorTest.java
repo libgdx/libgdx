@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -50,11 +51,18 @@ public class VibratorTest extends GdxTest {
 		stage.addActor(table);
 
 		final CheckBox fallbackCheckbox = new CheckBox("Fallback", skin);
+		fallbackCheckbox.setChecked(Gdx.input.getHaptics().isFallbackEnabled());
+		fallbackCheckbox.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Gdx.input.getHaptics().setFallbackEnabled(!Gdx.input.getHaptics().isFallbackEnabled());
+			}
+		});
 		final Button button = getButton("Vibrate");
 		button.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
-				Gdx.input.vibrate(50);
+				Gdx.input.getHaptics().vibrate(50);
 			}
 		});
 		final Button buttonVibrateAmplitude = getButton("Vibrate \n Amplitude \n Random");
@@ -63,7 +71,7 @@ public class VibratorTest extends GdxTest {
 			public void changed (ChangeEvent event, Actor actor) {
 				int randomLength = MathUtils.random(10, 200);
 				int randomAmplitude = MathUtils.random(0, 255);
-				Gdx.input.vibrate(randomLength, randomAmplitude, fallbackCheckbox.isChecked());
+				Gdx.input.getHaptics().vibrate(randomLength, randomAmplitude);
 				Gdx.app.log("VibratorTest", "Length: " + randomLength + "ms, Amplitude: " + randomAmplitude);
 			}
 		});
@@ -71,10 +79,9 @@ public class VibratorTest extends GdxTest {
 		buttonVibrateType.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
-				Input.VibrationType vibrationType = Input.VibrationType.values()[MathUtils.random(0,
-					Input.VibrationType.values().length - 1)];
-				Gdx.input.vibrate(vibrationType);
-				Gdx.app.log("VibratorTest", "VibrationType: " + vibrationType.name());
+				Haptics.ImpactType impactType = Haptics.ImpactType.values()[MathUtils.random(0, Haptics.ImpactType.values().length - 1)];
+				Gdx.input.getHaptics().impact(impactType);
+				Gdx.app.log("VibratorTest", "VibrationType: " + impactType.name());
 			}
 		});
 

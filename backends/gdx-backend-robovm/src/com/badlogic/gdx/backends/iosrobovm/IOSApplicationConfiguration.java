@@ -64,6 +64,9 @@ public class IOSApplicationConfiguration {
 	/** whether to use the haptics engine, default false. **/
 	public boolean useHaptics = false;
 
+	/** whether devices with vibrator support but without haptics support should vibrate on haptics effects when supported */
+	public boolean hapticsFallback = false;
+
 	/** whether or not to allow background music from iPod **/
 	public boolean allowIpod = true;
 

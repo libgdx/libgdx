@@ -113,7 +113,7 @@ public class IOSHaptics {
 			.getDictionary()));
 	}
 
-	public void vibrate (Input.VibrationType vibrationType) {
+	public void vibrate (Input.ImpactType vibrationType) {
 		if (hapticsSupport) {
 			UIImpactFeedbackStyle uiImpactFeedbackStyle;
 			switch (vibrationType) {
