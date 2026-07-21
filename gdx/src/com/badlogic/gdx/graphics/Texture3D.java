@@ -41,15 +41,19 @@ public class Texture3D extends GLTexture {
 	}
 
 	public Texture3D (Texture3DData data) {
-		super(GL30.GL_TEXTURE_3D, Gdx.gl.glGenTexture());
+		this(Gdx.graphics, data);
+	}
 
-		if (Gdx.gl30 == null) {
+	public Texture3D (Graphics graphics, Texture3DData data) {
+		super(graphics, GL30.GL_TEXTURE_3D);
+
+		if (graphics.getGL30() == null) {
 			throw new GdxRuntimeException("Texture3D requires a device running with GLES 3.0 compatibilty");
 		}
 
 		load(data);
 
-		if (data.isManaged()) addManagedTexture(Gdx.graphics, this);
+		if (data.isManaged()) addManagedTexture(graphics, this);
 	}
 
 	private void load (Texture3DData data) {
@@ -66,7 +70,7 @@ public class Texture3D extends GLTexture {
 		setFilter(minFilter, magFilter);
 		setWrap(uWrap, vWrap, rWrap);
 
-		Gdx.gl.glBindTexture(glTarget, 0);
+		gl().glBindTexture(glTarget, 0);
 	}
 
 	public Texture3DData getData () {
@@ -101,7 +105,7 @@ public class Texture3D extends GLTexture {
 	@Override
 	protected void reload () {
 		if (!isManaged()) throw new GdxRuntimeException("Tried to reload an unmanaged TextureArray");
-		glHandle = Gdx.gl.glGenTexture();
+		glHandle = gl().glGenTexture();
 		load(data);
 	}
 
@@ -147,13 +151,13 @@ public class Texture3D extends GLTexture {
 	public void setWrap (TextureWrap u, TextureWrap v, TextureWrap r) {
 		this.rWrap = r;
 		super.setWrap(u, v);
-		Gdx.gl.glTexParameteri(glTarget, GL30.GL_TEXTURE_WRAP_R, r.getGLEnum());
+		gl().glTexParameteri(glTarget, GL30.GL_TEXTURE_WRAP_R, r.getGLEnum());
 	}
 
 	public void unsafeSetWrap (TextureWrap u, TextureWrap v, TextureWrap r, boolean force) {
 		unsafeSetWrap(u, v, force);
 		if (r != null && (force || rWrap != r)) {
-			Gdx.gl.glTexParameteri(glTarget, GL30.GL_TEXTURE_WRAP_R, u.getGLEnum());
+			gl().glTexParameteri(glTarget, GL30.GL_TEXTURE_WRAP_R, u.getGLEnum());
 			rWrap = r;
 		}
 	}

@@ -50,15 +50,19 @@ public class TextureArray extends GLTexture {
 	}
 
 	public TextureArray (TextureArrayData data) {
-		super(GL30.GL_TEXTURE_2D_ARRAY, Gdx.gl.glGenTexture());
+		this(Gdx.graphics, data);
+	}
 
-		if (Gdx.gl30 == null) {
+	public TextureArray (Graphics graphics, TextureArrayData data) {
+		super(graphics, GL30.GL_TEXTURE_2D_ARRAY);
+
+		if (graphics.getGL30() == null) {
 			throw new GdxRuntimeException("TextureArray requires a device running with GLES 3.0 compatibilty");
 		}
 
 		load(data);
 
-		if (data.isManaged()) addManagedTexture(Gdx.graphics, this);
+		if (data.isManaged()) addManagedTexture(graphics, this);
 	}
 
 	private static FileHandle[] getInternalHandles (String... internalPaths) {
@@ -75,7 +79,7 @@ public class TextureArray extends GLTexture {
 		this.data = data;
 
 		bind();
-		Gdx.gl30.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, data.getInternalFormat(), data.getWidth(), data.getHeight(),
+		gl30().glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, data.getInternalFormat(), data.getWidth(), data.getHeight(),
 			data.getDepth(), 0, data.getInternalFormat(), data.getGLType(), null);
 
 		if (!data.isPrepared()) data.prepare();
@@ -84,7 +88,7 @@ public class TextureArray extends GLTexture {
 
 		setFilter(minFilter, magFilter);
 		setWrap(uWrap, vWrap);
-		Gdx.gl.glBindTexture(glTarget, 0);
+		gl().glBindTexture(glTarget, 0);
 	}
 
 	@Override
@@ -110,7 +114,7 @@ public class TextureArray extends GLTexture {
 	@Override
 	protected void reload () {
 		if (!isManaged()) throw new GdxRuntimeException("Tried to reload an unmanaged TextureArray");
-		glHandle = Gdx.gl.glGenTexture();
+		glHandle = gl().glGenTexture();
 		load(data);
 	}
 

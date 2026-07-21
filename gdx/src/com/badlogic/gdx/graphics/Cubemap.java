@@ -88,12 +88,17 @@ public class Cubemap extends GLTexture {
 
 	protected CubemapData data;
 
-	/** Construct a Cubemap based on the given CubemapData. */
+	/** Construct a Cubemap based on the given CubemapData using {@link Gdx#graphics}. */
 	public Cubemap (CubemapData data) {
-		super(GL20.GL_TEXTURE_CUBE_MAP);
+		this(Gdx.graphics, data);
+	}
+
+	/** Construct a Cubemap based on the given CubemapData. */
+	public Cubemap (Graphics graphics, CubemapData data) {
+		super(graphics, GL20.GL_TEXTURE_CUBE_MAP);
 		this.data = data;
 		load(data);
-		if (data.isManaged()) addManagedCubemap(Gdx.graphics, this);
+		if (data.isManaged()) addManagedCubemap(graphics, this);
 	}
 
 	/** Construct a Cubemap with the specified texture files for the sides, does not generate mipmaps. */
@@ -150,7 +155,7 @@ public class Cubemap extends GLTexture {
 		unsafeSetWrap(uWrap, vWrap, true);
 		unsafeSetAnisotropicFilter(anisotropicFilterLevel, true);
 		data.consumeCubemapData();
-		Gdx.gl.glBindTexture(glTarget, 0);
+		gl().glBindTexture(glTarget, 0);
 	}
 
 	public CubemapData getCubemapData () {
@@ -165,7 +170,7 @@ public class Cubemap extends GLTexture {
 	@Override
 	protected void reload () {
 		if (!isManaged()) throw new GdxRuntimeException("Tried to reload an unmanaged Cubemap");
-		glHandle = Gdx.gl.glGenTexture();
+		glHandle = gl().glGenTexture();
 		load(data);
 	}
 
@@ -193,7 +198,7 @@ public class Cubemap extends GLTexture {
 		// removal from the asset manager.
 		if (glHandle == 0) return;
 		delete();
-		if (data.isManaged()) if (managedCubemaps.get(Gdx.graphics) != null) managedCubemaps.get(Gdx.graphics).removeValue(this, true);
+		if (data.isManaged()) if (managedCubemaps.get(graphics) != null) managedCubemaps.get(graphics).removeValue(this, true);
 	}
 
 	private static void addManagedCubemap (Graphics graphics, Cubemap cubemap) {
@@ -258,7 +263,7 @@ public class Cubemap extends GLTexture {
 
 					// unload the c, create a new gl handle then reload it.
 					assetManager.unload(fileName);
-					cubemap.glHandle = Gdx.gl.glGenTexture();
+					cubemap.glHandle = graphics.getGL20().glGenTexture();
 					assetManager.load(fileName, Cubemap.class, params);
 				}
 			}

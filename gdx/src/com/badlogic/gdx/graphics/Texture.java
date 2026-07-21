@@ -111,45 +111,85 @@ public class Texture extends GLTexture {
 	}
 
 	public Texture (String internalPath) {
-		this(Gdx.files.internal(internalPath));
+		this(Gdx.graphics, Gdx.files.internal(internalPath));
+	}
+
+	public Texture (Graphics graphics, String internalPath) {
+		this(graphics, Gdx.files.internal(internalPath));
 	}
 
 	public Texture (FileHandle file) {
-		this(file, null, false);
+		this(Gdx.graphics, file, null, false);
+	}
+
+	public Texture (Graphics graphics, FileHandle file) {
+		this(graphics, file, null, false);
 	}
 
 	public Texture (FileHandle file, boolean useMipMaps) {
-		this(file, null, useMipMaps);
+		this(Gdx.graphics, file, null, useMipMaps);
+	}
+
+	public Texture (Graphics graphics, FileHandle file, boolean useMipMaps) {
+		this(graphics, file, null, useMipMaps);
 	}
 
 	public Texture (FileHandle file, Format format, boolean useMipMaps) {
-		this(TextureData.Factory.loadFromFile(file, format, useMipMaps));
+		this(Gdx.graphics, file, format, useMipMaps);
+	}
+
+	public Texture (Graphics graphics, FileHandle file, Format format, boolean useMipMaps) {
+		this(graphics, TextureData.Factory.loadFromFile(file, format, useMipMaps));
 	}
 
 	public Texture (Pixmap pixmap) {
-		this(new PixmapTextureData(pixmap, null, false, false));
+		this(Gdx.graphics, new PixmapTextureData(pixmap, null, false, false));
+	}
+
+	public Texture (Graphics graphics, Pixmap pixmap) {
+		this(graphics, new PixmapTextureData(pixmap, null, false, false));
 	}
 
 	public Texture (Pixmap pixmap, boolean useMipMaps) {
-		this(new PixmapTextureData(pixmap, null, useMipMaps, false));
+		this(Gdx.graphics, new PixmapTextureData(pixmap, null, useMipMaps, false));
+	}
+
+	public Texture (Graphics graphics, Pixmap pixmap, boolean useMipMaps) {
+		this(graphics, new PixmapTextureData(pixmap, null, useMipMaps, false));
 	}
 
 	public Texture (Pixmap pixmap, Format format, boolean useMipMaps) {
-		this(new PixmapTextureData(pixmap, format, useMipMaps, false));
+		this(Gdx.graphics, new PixmapTextureData(pixmap, format, useMipMaps, false));
+	}
+
+	public Texture (Graphics graphics, Pixmap pixmap, Format format, boolean useMipMaps) {
+		this(graphics, new PixmapTextureData(pixmap, format, useMipMaps, false));
 	}
 
 	public Texture (int width, int height, Format format) {
-		this(new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
+		this(Gdx.graphics, new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
+	}
+
+	public Texture (Graphics graphics, int width, int height, Format format) {
+		this(graphics, new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
 	}
 
 	public Texture (TextureData data) {
-		this(GL20.GL_TEXTURE_2D, Gdx.gl.glGenTexture(), data);
+		this(Gdx.graphics, data);
+	}
+
+	public Texture (Graphics graphics, TextureData data) {
+		this(graphics, GL20.GL_TEXTURE_2D, graphics.getGL20().glGenTexture(), data);
 	}
 
 	protected Texture (int glTarget, int glHandle, TextureData data) {
-		super(glTarget, glHandle);
+		this(Gdx.graphics, glTarget, glHandle, data);
+	}
+
+	protected Texture (Graphics graphics, int glTarget, int glHandle, TextureData data) {
+		super(graphics, glTarget, glHandle);
 		load(data);
-		if (data.isManaged()) addManagedTexture(Gdx.graphics, this);
+		if (data.isManaged()) addManagedTexture(graphics, this);
 	}
 
 	public void load (TextureData data) {
@@ -165,7 +205,7 @@ public class Texture extends GLTexture {
 		unsafeSetFilter(minFilter, magFilter, true);
 		unsafeSetWrap(uWrap, vWrap, true);
 		unsafeSetAnisotropicFilter(anisotropicFilterLevel, true);
-		Gdx.gl.glBindTexture(glTarget, 0);
+		gl().glBindTexture(glTarget, 0);
 	}
 
 	/** Used internally to reload after context loss. Creates a new GL handle then calls {@link #load(TextureData)}. Use this only
@@ -173,7 +213,7 @@ public class Texture extends GLTexture {
 	@Override
 	protected void reload () {
 		if (!isManaged()) throw new GdxRuntimeException("Tried to reload unmanaged Texture");
-		glHandle = Gdx.gl.glGenTexture();
+		glHandle = gl().glGenTexture();
 		load(data);
 	}
 
@@ -187,7 +227,7 @@ public class Texture extends GLTexture {
 		if (data.isManaged()) throw new GdxRuntimeException("can't draw to a managed texture");
 
 		bind();
-		Gdx.gl.glTexSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(), pixmap.getGLType(),
+		gl().glTexSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(), pixmap.getGLType(),
 			pixmap.getPixels());
 	}
 
@@ -223,7 +263,7 @@ public class Texture extends GLTexture {
 		// removal from the asset manager.
 		if (glHandle == 0) return;
 		delete();
-		if (data.isManaged()) if (managedTextures.get(Gdx.graphics) != null) managedTextures.get(Gdx.graphics).removeValue(this, true);
+		if (data.isManaged()) if (managedTextures.get(graphics) != null) managedTextures.get(graphics).removeValue(this, true);
 	}
 
 	public String toString () {
@@ -294,7 +334,7 @@ public class Texture extends GLTexture {
 
 					// unload the texture, create a new gl handle then reload it.
 					assetManager.unload(fileName);
-					texture.glHandle = Gdx.gl.glGenTexture();
+					texture.glHandle = graphics.getGL20().glGenTexture();
 					assetManager.load(fileName, Texture.class, params);
 				}
 			}
