@@ -76,6 +76,7 @@ public class Mesh implements Disposable {
 	/** list of all meshes **/
 	static final Map<Graphics, Array<Mesh>> meshes = new HashMap<Graphics, Array<Mesh>>();
 
+	protected final Graphics graphics;
 	protected final VertexData vertices;
 	protected final IndexData indices;
 	protected boolean autoBind = true;
@@ -84,12 +85,25 @@ public class Mesh implements Disposable {
 	protected InstanceData instances;
 	protected boolean isInstanced = false;
 
+	private GL20 gl20 () {
+		return graphics.getGL20();
+	}
+
+	private GL30 gl30 () {
+		return graphics.getGL30();
+	}
+
 	protected Mesh (VertexData vertices, IndexData indices, boolean isVertexArray) {
+		this(Gdx.graphics, vertices, indices, isVertexArray);
+	}
+
+	protected Mesh (Graphics graphics, VertexData vertices, IndexData indices, boolean isVertexArray) {
+		this.graphics = graphics;
 		this.vertices = vertices;
 		this.indices = indices;
 		this.isVertexArray = isVertexArray;
 
-		addManagedMesh(Gdx.graphics, this);
+		addManagedMesh(graphics, this);
 	}
 
 	/** Creates a new Mesh with the given attributes.
@@ -100,11 +114,16 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
+		this(Gdx.graphics, isStatic, maxVertices, maxIndices, attributes);
+	}
+
+	public Mesh (Graphics graphics, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
+		this.graphics = graphics;
 		vertices = makeVertexBuffer(isStatic, maxVertices, new VertexAttributes(attributes));
-		indices = new IndexBufferObject(isStatic, maxIndices);
+		indices = new IndexBufferObject(graphics, isStatic, maxIndices);
 		isVertexArray = false;
 
-		addManagedMesh(Gdx.graphics, this);
+		addManagedMesh(graphics, this);
 	}
 
 	/** Creates a new Mesh with the given attributes.
@@ -115,11 +134,16 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
+		this(Gdx.graphics, isStatic, maxVertices, maxIndices, attributes);
+	}
+
+	public Mesh (Graphics graphics, boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
+		this.graphics = graphics;
 		vertices = makeVertexBuffer(isStatic, maxVertices, attributes);
-		indices = new IndexBufferObject(isStatic, maxIndices);
+		indices = new IndexBufferObject(graphics, isStatic, maxIndices);
 		isVertexArray = false;
 
-		addManagedMesh(Gdx.graphics, this);
+		addManagedMesh(graphics, this);
 	}
 
 	/** Creates a new Mesh with the given attributes. Adds extra optimizations for dynamic (frequently modified) meshes.
@@ -133,18 +157,24 @@ public class Mesh implements Disposable {
 	 *
 	 * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com> **/
 	public Mesh (boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices, VertexAttributes attributes) {
+		this(Gdx.graphics, staticVertices, staticIndices, maxVertices, maxIndices, attributes);
+	}
+
+	public Mesh (Graphics graphics, boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices,
+		VertexAttributes attributes) {
+		this.graphics = graphics;
 		vertices = makeVertexBuffer(staticVertices, maxVertices, attributes);
-		indices = new IndexBufferObject(staticIndices, maxIndices);
+		indices = new IndexBufferObject(graphics, staticIndices, maxIndices);
 		isVertexArray = false;
 
-		addManagedMesh(Gdx.graphics, this);
+		addManagedMesh(graphics, this);
 	}
 
 	private VertexData makeVertexBuffer (boolean isStatic, int maxVertices, VertexAttributes vertexAttributes) {
-		if (Gdx.gl30 != null) {
-			return new VertexBufferObjectWithVAO(isStatic, maxVertices, vertexAttributes);
+		if (gl30() != null) {
+			return new VertexBufferObjectWithVAO(graphics, isStatic, maxVertices, vertexAttributes);
 		} else {
-			return new VertexBufferObject(isStatic, maxVertices, vertexAttributes);
+			return new VertexBufferObject(graphics, isStatic, maxVertices, vertexAttributes);
 		}
 	}
 
@@ -157,7 +187,12 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
-		this(type, isStatic, maxVertices, maxIndices, new VertexAttributes(attributes));
+		this(Gdx.graphics, type, isStatic, maxVertices, maxIndices, attributes);
+	}
+
+	public Mesh (Graphics graphics, VertexDataType type, boolean isStatic, int maxVertices, int maxIndices,
+		VertexAttribute... attributes) {
+		this(graphics, type, isStatic, maxVertices, maxIndices, new VertexAttributes(attributes));
 	}
 
 	/** Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
@@ -168,20 +203,26 @@ public class Mesh implements Disposable {
 	 * @param maxIndices the maximum number of indices this mesh can hold
 	 * @param attributes the {@link VertexAttributes}. */
 	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
+		this(Gdx.graphics, type, isStatic, maxVertices, maxIndices, attributes);
+	}
+
+	public Mesh (Graphics graphics, VertexDataType type, boolean isStatic, int maxVertices, int maxIndices,
+		VertexAttributes attributes) {
+		this.graphics = graphics;
 		switch (type) {
 		case VertexBufferObject:
-			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
-			indices = new IndexBufferObject(isStatic, maxIndices);
+			vertices = new VertexBufferObject(graphics, isStatic, maxVertices, attributes);
+			indices = new IndexBufferObject(graphics, isStatic, maxIndices);
 			isVertexArray = false;
 			break;
 		case VertexBufferObjectSubData:
-			vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
-			indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+			vertices = new VertexBufferObjectSubData(graphics, isStatic, maxVertices, attributes);
+			indices = new IndexBufferObjectSubData(graphics, isStatic, maxIndices);
 			isVertexArray = false;
 			break;
 		case VertexBufferObjectWithVAO:
-			vertices = new VertexBufferObjectWithVAO(isStatic, maxVertices, attributes);
-			indices = new IndexBufferObjectSubData(isStatic, maxIndices);
+			vertices = new VertexBufferObjectWithVAO(graphics, isStatic, maxVertices, attributes);
+			indices = new IndexBufferObjectSubData(graphics, isStatic, maxIndices);
 			isVertexArray = false;
 			break;
 		case VertexArray:
@@ -192,13 +233,13 @@ public class Mesh implements Disposable {
 			break;
 		}
 
-		addManagedMesh(Gdx.graphics, this);
+		addManagedMesh(graphics, this);
 	}
 
 	public Mesh enableInstancedRendering (boolean isStatic, int maxInstances, VertexAttribute... attributes) {
 		if (!isInstanced) {
 			isInstanced = true;
-			instances = new InstanceBufferObject(isStatic, maxInstances, attributes);
+			instances = new InstanceBufferObject(graphics, isStatic, maxInstances, attributes);
 		} else {
 			throw new GdxRuntimeException("Trying to enable InstancedRendering on same Mesh instance twice."
 				+ " Use disableInstancedRendering to clean up old InstanceData first");
@@ -629,10 +670,10 @@ public class Mesh implements Disposable {
 				int oldPosition = buffer.position();
 				int oldLimit = buffer.limit();
 				((Buffer)buffer).position(offset);
-				Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
+				gl20().glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
 				((Buffer)buffer).position(oldPosition);
 			} else {
-				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+				gl20().glDrawArrays(primitiveType, offset, count);
 			}
 		} else {
 			int numInstances = 0;
@@ -645,15 +686,15 @@ public class Mesh implements Disposable {
 				}
 
 				if (isInstanced && numInstances > 0) {
-					Gdx.gl30.glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2, numInstances);
+					gl30().glDrawElementsInstanced(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2, numInstances);
 				} else {
-					Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
+					gl20().glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
 				}
 			} else {
 				if (isInstanced && numInstances > 0) {
-					Gdx.gl30.glDrawArraysInstanced(primitiveType, offset, count, numInstances);
+					gl30().glDrawArraysInstanced(primitiveType, offset, count, numInstances);
 				} else {
-					Gdx.gl20.glDrawArrays(primitiveType, offset, count);
+					gl20().glDrawArrays(primitiveType, offset, count);
 				}
 			}
 		}
@@ -663,7 +704,7 @@ public class Mesh implements Disposable {
 
 	/** Frees all resources associated with this Mesh */
 	public void dispose () {
-		if (meshes.get(Gdx.graphics) != null) meshes.get(Gdx.graphics).removeValue(this, true);
+		if (meshes.get(graphics) != null) meshes.get(graphics).removeValue(this, true);
 		vertices.dispose();
 		if (instances != null) instances.dispose();
 		indices.dispose();

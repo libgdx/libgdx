@@ -21,6 +21,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -40,6 +41,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  *
  * @author mzechner */
 public class VertexBufferObjectSubData implements VertexData {
+
+	private final Graphics graphics;
+
+	private GL20 gl20 () {
+		return graphics.getGL20();
+	}
+
 	final VertexAttributes attributes;
 	final FloatBuffer buffer;
 	final ByteBuffer byteBuffer;
@@ -56,7 +64,11 @@ public class VertexBufferObjectSubData implements VertexData {
 	 * @param numVertices the maximum number of vertices
 	 * @param attributes the {@link VertexAttributes}. */
 	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttribute... attributes) {
-		this(isStatic, numVertices, new VertexAttributes(attributes));
+		this(Gdx.graphics, isStatic, numVertices, attributes);
+	}
+
+	public VertexBufferObjectSubData (Graphics graphics, boolean isStatic, int numVertices, VertexAttribute... attributes) {
+		this(graphics, isStatic, numVertices, new VertexAttributes(attributes));
 	}
 
 	/** Constructs a new interleaved VertexBufferObject.
@@ -65,6 +77,11 @@ public class VertexBufferObjectSubData implements VertexData {
 	 * @param numVertices the maximum number of vertices
 	 * @param attributes the {@link VertexAttribute}s. */
 	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttributes attributes) {
+		this(Gdx.graphics, isStatic, numVertices, attributes);
+	}
+
+	public VertexBufferObjectSubData (Graphics graphics, boolean isStatic, int numVertices, VertexAttributes attributes) {
+		this.graphics = graphics;
 		this.isStatic = isStatic;
 		this.attributes = attributes;
 		byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numVertices);
@@ -78,10 +95,10 @@ public class VertexBufferObjectSubData implements VertexData {
 	}
 
 	private int createBufferObject () {
-		int result = Gdx.gl20.glGenBuffer();
-		Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, result);
-		Gdx.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
-		Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+		int result = gl20().glGenBuffer();
+		gl20().glBindBuffer(GL20.GL_ARRAY_BUFFER, result);
+		gl20().glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
+		gl20().glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
 		return result;
 	}
 
@@ -116,7 +133,7 @@ public class VertexBufferObjectSubData implements VertexData {
 
 	private void bufferChanged () {
 		if (isBound) {
-			Gdx.gl20.glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+			gl20().glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
 			isDirty = false;
 		}
 	}
@@ -163,7 +180,7 @@ public class VertexBufferObjectSubData implements VertexData {
 
 	@Override
 	public void bind (final ShaderProgram shader, final int[] locations) {
-		final GL20 gl = Gdx.gl20;
+		final GL20 gl = gl20();
 
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
@@ -207,7 +224,7 @@ public class VertexBufferObjectSubData implements VertexData {
 
 	@Override
 	public void unbind (final ShaderProgram shader, final int[] locations) {
-		final GL20 gl = Gdx.gl20;
+		final GL20 gl = gl20();
 		final int numAttributes = attributes.size();
 		if (locations == null) {
 			for (int i = 0; i < numAttributes; i++) {
@@ -232,7 +249,7 @@ public class VertexBufferObjectSubData implements VertexData {
 	/** Disposes of all resources this VertexBufferObject uses. */
 	@Override
 	public void dispose () {
-		GL20 gl = Gdx.gl20;
+		GL20 gl = gl20();
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
 		gl.glDeleteBuffer(bufferHandle);
 		bufferHandle = 0;

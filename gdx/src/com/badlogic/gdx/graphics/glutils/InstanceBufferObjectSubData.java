@@ -17,7 +17,9 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -32,6 +34,16 @@ import java.nio.FloatBuffer;
  *
  * @author mrdlink */
 public class InstanceBufferObjectSubData implements InstanceData {
+
+	private final Graphics graphics;
+
+	private GL20 gl20 () {
+		return graphics.getGL20();
+	}
+
+	private GL30 gl30 () {
+		return graphics.getGL30();
+	}
 
 	final VertexAttributes attributes;
 	final FloatBuffer buffer;
@@ -49,7 +61,11 @@ public class InstanceBufferObjectSubData implements InstanceData {
 	 * @param numInstances the maximum number of vertices
 	 * @param instanceAttributes the {@link VertexAttributes}. */
 	public InstanceBufferObjectSubData (boolean isStatic, int numInstances, VertexAttribute... instanceAttributes) {
-		this(isStatic, numInstances, new VertexAttributes(instanceAttributes));
+		this(Gdx.graphics, isStatic, numInstances, instanceAttributes);
+	}
+
+	public InstanceBufferObjectSubData (Graphics graphics, boolean isStatic, int numInstances, VertexAttribute... instanceAttributes) {
+		this(graphics, isStatic, numInstances, new VertexAttributes(instanceAttributes));
 	}
 
 	/** Constructs a new interleaved InstanceBufferObject.
@@ -58,6 +74,11 @@ public class InstanceBufferObjectSubData implements InstanceData {
 	 * @param numInstances the maximum number of vertices
 	 * @param instanceAttributes the {@link VertexAttribute}s. */
 	public InstanceBufferObjectSubData (boolean isStatic, int numInstances, VertexAttributes instanceAttributes) {
+		this(Gdx.graphics, isStatic, numInstances, instanceAttributes);
+	}
+
+	public InstanceBufferObjectSubData (Graphics graphics, boolean isStatic, int numInstances, VertexAttributes instanceAttributes) {
+		this.graphics = graphics;
 		this.isStatic = isStatic;
 		this.attributes = instanceAttributes;
 		byteBuffer = BufferUtils.newByteBuffer(this.attributes.vertexSize * numInstances);
@@ -71,10 +92,10 @@ public class InstanceBufferObjectSubData implements InstanceData {
 	}
 
 	private int createBufferObject () {
-		int result = Gdx.gl20.glGenBuffer();
-		Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, result);
-		Gdx.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
-		Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+		int result = gl20().glGenBuffer();
+		gl20().glBindBuffer(GL20.GL_ARRAY_BUFFER, result);
+		gl20().glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.capacity(), null, usage);
+		gl20().glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
 		return result;
 	}
 
@@ -115,8 +136,8 @@ public class InstanceBufferObjectSubData implements InstanceData {
 
 	private void bufferChanged () {
 		if (isBound) {
-			Gdx.gl20.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), null, usage);
-			Gdx.gl20.glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+			gl20().glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), null, usage);
+			gl20().glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
 			isDirty = false;
 		}
 	}
@@ -196,7 +217,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
 
 	@Override
 	public void bind (final ShaderProgram shader, final int[] locations) {
-		final GL20 gl = Gdx.gl20;
+		final GL20 gl = gl20();
 
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
@@ -216,7 +237,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
 
 				shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized,
 					attributes.vertexSize, attribute.offset);
-				Gdx.gl30.glVertexAttribDivisor(location + unitOffset, 1);
+				gl30().glVertexAttribDivisor(location + unitOffset, 1);
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
@@ -228,7 +249,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
 
 				shader.setVertexAttribute(location + unitOffset, attribute.numComponents, attribute.type, attribute.normalized,
 					attributes.vertexSize, attribute.offset);
-				Gdx.gl30.glVertexAttribDivisor(location + unitOffset, 1);
+				gl30().glVertexAttribDivisor(location + unitOffset, 1);
 			}
 		}
 		isBound = true;
@@ -244,7 +265,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
 
 	@Override
 	public void unbind (final ShaderProgram shader, final int[] locations) {
-		final GL20 gl = Gdx.gl20;
+		final GL20 gl = gl20();
 		final int numAttributes = attributes.size();
 		if (locations == null) {
 			for (int i = 0; i < numAttributes; i++) {
@@ -276,7 +297,7 @@ public class InstanceBufferObjectSubData implements InstanceData {
 	/** Disposes of all resources this InstanceBufferObject uses. */
 	@Override
 	public void dispose () {
-		GL20 gl = Gdx.gl20;
+		GL20 gl = gl20();
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
 		gl.glDeleteBuffer(bufferHandle);
 		bufferHandle = 0;
