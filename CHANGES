@@ -1,4 +1,5 @@
 [1.14.3]
+- API Addition: ShaderProgram constructors that take Graphics; existing constructors use Gdx.graphics.
 - API Change: Managed GL resources (ShaderProgram, Texture, Cubemap, TextureArray, Texture3D, Mesh, GLFrameBuffer) are keyed by Graphics instead of Application.
 - API Addition: ApplicationListener#create(Application); backends call it, default delegates to create().
 - API Addition: ApplicationAdapter/Game bind graphics/audio/input/files/net/gl* from create(Application).
