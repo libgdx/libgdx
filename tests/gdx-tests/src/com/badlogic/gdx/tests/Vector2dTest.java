@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -82,7 +81,7 @@ public class Vector2dTest extends GdxTest {
 		renderer.setColor(Color.YELLOW);
 		renderVectorAt(0, 0, sum);
 
-		final float changeRate = Gdx.graphics.getDeltaTime();
+		final float changeRate = graphics.getDeltaTime();
 		renderer.setColor(Color.WHITE);
 
 		renderVectorAt(2, 2, rotating);
@@ -100,7 +99,7 @@ public class Vector2dTest extends GdxTest {
 			lerpTarget.set(-1.0f + MathUtils.random(2.0f), -1.0f + MathUtils.random(2.0f)).nor();
 		}
 
-		timePassed += Gdx.graphics.getDeltaTime();
+		timePassed += graphics.getDeltaTime();
 		renderVectorAt(-4, 0, lerping2);
 		lerping2.set(lerpStart2);
 		lerping2.interpolate(lerpTarget2, MathUtils.clamp(timePassed / DURATION, 0, 1), interpolator);
@@ -119,7 +118,7 @@ public class Vector2dTest extends GdxTest {
 
 	@Override
 	public void resize (int width, int height) {
-		float ratio = ((float)Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight());
+		float ratio = ((float)graphics.getWidth() / (float)graphics.getHeight());
 		int h = 10;
 		int w = (int)(h * ratio);
 		camera = new OrthographicCamera(w, h);

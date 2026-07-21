@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,7 +29,7 @@ public class DownloadTest extends GdxTest {
 
 			@Override
 			public void downloadFailed (Throwable t) {
-				Gdx.app.log("EmptyDownloadTest", "Failed, trying next", t);
+				app.log("EmptyDownloadTest", "Failed, trying next", t);
 				if (urls.notEmpty()) {
 					Pixmap.downloadFromUrl(urls.removeFirst(), this);
 				}
@@ -40,7 +39,7 @@ public class DownloadTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		if (texture != null) batch.draw(texture, 0, 0);
 		batch.end();

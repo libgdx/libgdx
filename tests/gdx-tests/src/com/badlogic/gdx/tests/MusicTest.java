@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -66,7 +65,7 @@ public class MusicTest extends GdxTest {
 		batch = new SpriteBatch();
 
 		stage = new Stage(new ExtendViewport(600, 480));
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		Skin skin = new Skin(files.internal("data/uiskin.json"));
 
 		Table sliderTable = new Table();
 		label = new Label("", skin);
@@ -142,7 +141,7 @@ public class MusicTest extends GdxTest {
 		stage.addActor(table);
 		stage.addActor(footerTable);
 
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 	}
 
 	void setSong (Song song) {
@@ -152,23 +151,23 @@ public class MusicTest extends GdxTest {
 		switch (song) {
 		default:
 		case MP3_CLOCK:
-			music = Gdx.audio.newMusic(Gdx.files.internal("data/60bpm.mp3"));
+			music = audio.newMusic(files.internal("data/60bpm.mp3"));
 			songDuration = 5 * 60 + 4;
 			break;
 		case MP3:
-			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.mp3"));
+			music = audio.newMusic(files.internal("data/8.12.mp3"));
 			songDuration = 183;
 			break;
 		case OGG:
-			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.ogg"));
+			music = audio.newMusic(files.internal("data/8.12.ogg"));
 			songDuration = 183;
 			break;
 		case WAV:
-			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.loop.wav"));
+			music = audio.newMusic(files.internal("data/8.12.loop.wav"));
 			songDuration = 4;
 			break;
 		case PCM8:
-			music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.loop-8bit.wav"));
+			music = audio.newMusic(files.internal("data/8.12.loop-8bit.wav"));
 			songDuration = 4;
 			break;
 		}
@@ -184,7 +183,7 @@ public class MusicTest extends GdxTest {
 
 	@Override
 	public void resume () {
-		System.out.println(Gdx.graphics.getDeltaTime());
+		System.out.println(graphics.getDeltaTime());
 	}
 
 	@Override
@@ -200,7 +199,7 @@ public class MusicTest extends GdxTest {
 		stage.draw();
 
 // if(music.isPlaying()){
-// time += Gdx.graphics.getDeltaTime();
+// time += graphics.getDeltaTime();
 // System.out.println("realtime: " + time + " music time: " + currentPosition);
 // }
 	}
@@ -212,6 +211,6 @@ public class MusicTest extends GdxTest {
 	}
 
 	private Drawable getDrawable (String path) {
-		return new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path))));
+		return new TextureRegionDrawable(new TextureRegion(new Texture(files.internal(path))));
 	}
 }

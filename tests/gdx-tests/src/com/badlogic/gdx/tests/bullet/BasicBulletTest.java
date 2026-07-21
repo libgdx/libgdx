@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -80,8 +79,8 @@ public class BasicBulletTest extends BulletTest {
 		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1f, -0.7f));
 
 		// Set up the camera
-		final float width = Gdx.graphics.getWidth();
-		final float height = Gdx.graphics.getHeight();
+		final float width = graphics.getWidth();
+		final float height = graphics.getHeight();
 		if (width > height)
 			camera = new PerspectiveCamera(67f, 3f * width / height, 3f);
 		else
@@ -152,14 +151,14 @@ public class BasicBulletTest extends BulletTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		gl.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		fpsCounter.put(Gdx.graphics.getFramesPerSecond());
+		fpsCounter.put(graphics.getFramesPerSecond());
 
 		performanceCounter.tick();
 		performanceCounter.start();
-		((btDynamicsWorld)collisionWorld).stepSimulation(Gdx.graphics.getDeltaTime(), 5);
+		((btDynamicsWorld)collisionWorld).stepSimulation(graphics.getDeltaTime(), 5);
 		performanceCounter.stop();
 
 		int c = motionStates.size;

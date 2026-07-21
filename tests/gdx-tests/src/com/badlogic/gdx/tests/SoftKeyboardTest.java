@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -42,7 +41,7 @@ public class SoftKeyboardTest extends GdxTest {
 		// we register an InputAdapter to listen for the keyboard
 		// input. The on-screen keyboard might only generate
 		// "key typed" events, depending on the backend.
-		Gdx.input.setInputProcessor(new InputAdapter() {
+		input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean keyTyped (char character) {
 				// convert \r to \n
@@ -62,14 +61,14 @@ public class SoftKeyboardTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.draw(batch, textBuffer, 0, Gdx.graphics.getHeight() - 20);
+		font.draw(batch, textBuffer, 0, graphics.getHeight() - 20);
 		batch.end();
 
 		// bring up the keyboard if we touch the screen
-		if (Gdx.input.justTouched()) {
-			Gdx.input.setOnscreenKeyboardVisible(true);
+		if (input.justTouched()) {
+			input.setOnscreenKeyboardVisible(true);
 			textBuffer = new SimpleCharSequence();
 		}
 	}

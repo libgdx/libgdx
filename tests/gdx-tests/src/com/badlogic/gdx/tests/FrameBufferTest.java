@@ -28,7 +28,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -57,9 +56,9 @@ public class FrameBufferTest extends GdxTest {
 	@Override
 	public void render () {
 		frameBuffer.begin();
-		Gdx.gl20.glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
-		Gdx.gl20.glClearColor(0f, 1f, 0f, 1);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl20.glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
+		gl20.glClearColor(0f, 1f, 0f, 1);
+		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		texture.bind();
 		meshShader.bind();
 		meshShader.setUniformi("u_texture", 0);
@@ -67,37 +66,37 @@ public class FrameBufferTest extends GdxTest {
 		frameBuffer.end();
 
 		stencilFrameBuffer.begin();
-		Gdx.gl20.glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
-		Gdx.gl20.glClearColor(1f, 1f, 0f, 1);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
+		gl20.glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
+		gl20.glClearColor(1f, 1f, 0f, 1);
+		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
 
-		Gdx.gl20.glEnable(GL20.GL_STENCIL_TEST);
+		gl20.glEnable(GL20.GL_STENCIL_TEST);
 
-		Gdx.gl20.glColorMask(false, false, false, false);
-		Gdx.gl20.glDepthMask(false);
-		Gdx.gl20.glStencilFunc(GL20.GL_NEVER, 1, 0xFF);
-		Gdx.gl20.glStencilOp(GL20.GL_REPLACE, GL20.GL_KEEP, GL20.GL_KEEP);
+		gl20.glColorMask(false, false, false, false);
+		gl20.glDepthMask(false);
+		gl20.glStencilFunc(GL20.GL_NEVER, 1, 0xFF);
+		gl20.glStencilOp(GL20.GL_REPLACE, GL20.GL_KEEP, GL20.GL_KEEP);
 
-		Gdx.gl20.glStencilMask(0xFF);
-		Gdx.gl20.glClear(GL20.GL_STENCIL_BUFFER_BIT);
+		gl20.glStencilMask(0xFF);
+		gl20.glClear(GL20.GL_STENCIL_BUFFER_BIT);
 
 		meshShader.bind();
 		stencilMesh.render(meshShader, GL20.GL_TRIANGLES);
 
-		Gdx.gl20.glColorMask(true, true, true, true);
-		Gdx.gl20.glDepthMask(true);
-		Gdx.gl20.glStencilMask(0x00);
-		Gdx.gl20.glStencilFunc(GL20.GL_EQUAL, 1, 0xFF);
+		gl20.glColorMask(true, true, true, true);
+		gl20.glDepthMask(true);
+		gl20.glStencilMask(0x00);
+		gl20.glStencilFunc(GL20.GL_EQUAL, 1, 0xFF);
 
 		meshShader.bind();
 		mesh.render(meshShader, GL20.GL_TRIANGLES);
 
-		Gdx.gl20.glDisable(GL20.GL_STENCIL_TEST);
+		gl20.glDisable(GL20.GL_STENCIL_TEST);
 		stencilFrameBuffer.end();
 
-		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl20.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+		gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
+		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		spriteBatch.begin();
 		spriteBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, 256, 256, 0, 0, frameBuffer.getColorBufferTexture().getWidth(),
@@ -122,12 +121,12 @@ public class FrameBufferTest extends GdxTest {
 			new VertexAttribute(Usage.ColorPacked, 4, "a_Color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 		stencilMesh.setVertices(new float[] {-0.5f, 0.5f, 0, c1, 0, 0, 0.5f, 0.5f, 0, c2, 1, 0, 0, -0.5f, 0, c3, 0.5f, 1});
 
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		texture = new Texture(files.internal("data/badlogic.jpg"));
 
 		spriteBatch = new SpriteBatch();
 		frameBuffer = new FrameBuffer(Format.RGB565, 128, 128, false);
 		stencilFrameBuffer = new FrameBuffer(Format.RGB565, 128, 128, false, true);
-		createShader(Gdx.graphics);
+		createShader(graphics);
 	}
 
 	private void createShader (Graphics graphics) {

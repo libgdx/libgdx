@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -63,8 +62,8 @@ public class TiledMapAssetManagerTest extends GdxTest {
 
 	@Override
 	public void create () {
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
+		float w = graphics.getWidth();
+		float h = graphics.getHeight();
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, (w / h) * 10, 10);
@@ -72,7 +71,7 @@ public class TiledMapAssetManagerTest extends GdxTest {
 		camera.update();
 
 		cameraController = new OrthoCamController(camera);
-		Gdx.input.setInputProcessor(cameraController);
+		input.setInputProcessor(cameraController);
 
 		font = new BitmapFont();
 		batch = new SpriteBatch();
@@ -85,25 +84,25 @@ public class TiledMapAssetManagerTest extends GdxTest {
 		renderer = new IsometricTiledMapRenderer(map, 1f / 64f);
 
 		String mapCustomValue = map.getProperties().get(MAP_PROPERTY_NAME, String.class);
-		Gdx.app.log("TiledMapAssetManagerTest", "Property : " + MAP_PROPERTY_NAME + ", Value : " + mapCustomValue);
+		app.log("TiledMapAssetManagerTest", "Property : " + MAP_PROPERTY_NAME + ", Value : " + mapCustomValue);
 		if (!MAP_PROPERTY_VALUE.equals(mapCustomValue)) {
 			throw new RuntimeException("Failed to get map properties");
 		}
 
 		boolean boolCustomValue = map.getProperties().get(BOOL_PROPERTY_NAME, Boolean.class);
-		Gdx.app.log("TiledMapAssetManagerTest", "Property : " + BOOL_PROPERTY_NAME + ", Value : " + boolCustomValue);
+		app.log("TiledMapAssetManagerTest", "Property : " + BOOL_PROPERTY_NAME + ", Value : " + boolCustomValue);
 		if (boolCustomValue != BOOL_PROPERTY_VALUE) {
 			throw new RuntimeException("Failed to get boolean map properties");
 		}
 
 		int intCustomValue = map.getProperties().get(INT_PROPERTY_NAME, Integer.class);
-		Gdx.app.log("TiledMapAssetManagerTest", "Property : " + INT_PROPERTY_NAME + ", Value : " + intCustomValue);
+		app.log("TiledMapAssetManagerTest", "Property : " + INT_PROPERTY_NAME + ", Value : " + intCustomValue);
 		if (intCustomValue != INT_PROPERTY_VALUE) {
 			throw new RuntimeException("Failed to get int map properties");
 		}
 
 		float floatCustomValue = map.getProperties().get(FLOAT_PROPERTY_NAME, Float.class);
-		Gdx.app.log("TiledMapAssetManagerTest", "Property : " + FLOAT_PROPERTY_NAME + ", Value : " + floatCustomValue);
+		app.log("TiledMapAssetManagerTest", "Property : " + FLOAT_PROPERTY_NAME + ", Value : " + floatCustomValue);
 		if (floatCustomValue != FLOAT_PROPERTY_VALUE) {
 			throw new RuntimeException("Failed to get float map properties");
 		}
@@ -134,7 +133,7 @@ public class TiledMapAssetManagerTest extends GdxTest {
 		renderer.setView(camera);
 		renderer.render();
 		batch.begin();
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+		font.draw(batch, "FPS: " + graphics.getFramesPerSecond(), 10, 20);
 		batch.end();
 	}
 }

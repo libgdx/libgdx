@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -55,7 +54,7 @@ public class InverseKinematicsTest extends GdxTest {
 
 	@Override
 	public void create () {
-		float aspect = Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
+		float aspect = graphics.getWidth() / (float)graphics.getHeight();
 		camera = new OrthographicCamera(15 * aspect, 15);
 		camera.update();
 		renderer = new ShapeRenderer();
@@ -73,12 +72,12 @@ public class InverseKinematicsTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		camera.update();
 		renderer.setProjectionMatrix(camera.combined);
 
-		if (Gdx.input.isTouched()) camera.unproject(globalCoords.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+		if (input.isTouched()) camera.unproject(globalCoords.set(input.getX(), input.getY(), 0));
 		solveFakeIK(globalCoords);
 		renderBones();
 	}
@@ -100,7 +99,7 @@ public class InverseKinematicsTest extends GdxTest {
 	}
 
 	public void solveFakeIK (Vector3 target) {
-		float gravity = Gdx.graphics.getDeltaTime() * GRAVITY;
+		float gravity = graphics.getDeltaTime() * GRAVITY;
 
 		endPoint.set(target);
 		bones[0].position.set(endPoint);
@@ -116,7 +115,7 @@ public class InverseKinematicsTest extends GdxTest {
 
 			float x = endPoint.x - diff.x;
 			float y = endPoint.y - diff.y;
-			float delta = Gdx.graphics.getDeltaTime();
+			float delta = graphics.getDeltaTime();
 			bones[i + 1].inertia.add((bones[i + 1].position.x - x) * delta, (bones[i + 1].position.y - y) * delta, 0).scl(0.99f);
 			bones[i + 1].position.set(x, y, 0);
 		}

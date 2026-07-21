@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -139,8 +138,8 @@ public class BigMeshTest extends GdxTest {
 	public void render () {
 		ScreenUtils.clear(0, 0, 0, 0, true);
 
-		camera.viewportWidth = Gdx.graphics.getWidth();
-		camera.viewportHeight = Gdx.graphics.getHeight();
+		camera.viewportWidth = graphics.getWidth();
+		camera.viewportHeight = graphics.getHeight();
 		camera.update();
 
 		batch.begin(camera);

@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests;
 import java.util.Date;
 import java.util.Locale;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -51,7 +50,7 @@ public class I18NSimpleMessageTest extends GdxTest {
 		I18NBundle.setSimpleFormatter(true);
 
 		try {
-			FileHandle bfh = Gdx.files.internal("data/i18n/message2");
+			FileHandle bfh = files.internal("data/i18n/message2");
 			rb_root = I18NBundle.createBundle(bfh, Locale.ROOT);
 			rb_default = I18NBundle.createBundle(bfh);
 			rb_en = I18NBundle.createBundle(bfh, new Locale("en", "US"));
@@ -74,12 +73,12 @@ public class I18NSimpleMessageTest extends GdxTest {
 			println(getParametricMessage("it", rb_it));
 			println(getParametricMessage("unsupported", rb_unsupported));
 
-			Gdx.app.log("", message);
+			app.log("", message);
 
 		} catch (Throwable t) {
 			message = "FAILED: " + t.getMessage() + "\n";
 			message += t.getClass();
-			Gdx.app.error(I18NSimpleMessageTest.class.getSimpleName(), "Error", t);
+			app.error(I18NSimpleMessageTest.class.getSimpleName(), "Error", t);
 		}
 	}
 
@@ -98,9 +97,9 @@ public class I18NSimpleMessageTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.draw(batch, message, 20, Gdx.graphics.getHeight() - 20);
+		font.draw(batch, message, 20, graphics.getHeight() - 20);
 		batch.end();
 	}
 

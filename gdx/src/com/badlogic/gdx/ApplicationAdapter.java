@@ -16,11 +16,26 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
+import com.badlogic.gdx.graphics.GL32;
+
 /** Convenience implementation of {@link ApplicationListener}. Derive from this and only override what you need.
  * @author mzechner */
 public abstract class ApplicationAdapter implements ApplicationListener {
-	/** The {@link Application} passed to {@link #create(Application)}, or {@code null} if only {@link #create()} was used. */
+	/** Set by {@link #create(Application)}; prefer these over {@link Gdx} statics. */
 	protected Application app;
+	protected Graphics graphics;
+	protected Audio audio;
+	protected Input input;
+	protected Files files;
+	protected Net net;
+	protected GL20 gl;
+	protected GL20 gl20;
+	protected GL30 gl30;
+	protected GL31 gl31;
+	protected GL32 gl32;
 
 	@Override
 	public void create () {
@@ -28,8 +43,27 @@ public abstract class ApplicationAdapter implements ApplicationListener {
 
 	@Override
 	public void create (Application app) {
-		this.app = app;
+		bind(app);
 		create();
+	}
+
+	protected void bind (Application app) {
+		this.app = app;
+		this.graphics = app.getGraphics();
+		this.audio = app.getAudio();
+		this.input = app.getInput();
+		this.files = app.getFiles();
+		this.net = app.getNet();
+		refreshGl();
+	}
+
+	protected void refreshGl () {
+		if (graphics == null) return;
+		gl32 = graphics.getGL32();
+		gl31 = gl32 != null ? gl32 : graphics.getGL31();
+		gl30 = gl31 != null ? gl31 : graphics.getGL30();
+		gl20 = gl30 != null ? gl30 : graphics.getGL20();
+		gl = gl20;
 	}
 
 	@Override

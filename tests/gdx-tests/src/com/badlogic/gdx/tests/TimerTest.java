@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -26,7 +25,7 @@ public class TimerTest extends GdxTest {
 
 	@Override
 	public void create () {
-		Gdx.app.log("TimerTest", "Starting tests...");
+		app.log("TimerTest", "Starting tests...");
 		testOnce();
 		testRepeat();
 		testCancelPosted();
@@ -44,11 +43,11 @@ public class TimerTest extends GdxTest {
 
 	public void render () {
 		if (time < 2) {
-			time += Gdx.graphics.getDeltaTime();
+			time += graphics.getDeltaTime();
 			if (time >= 2) {
 				if (testCount != expectedTests)
 					throw new RuntimeException("Some tests did not run: " + testCount + " != " + expectedTests);
-				Gdx.app.log("TimerTest", "SUCCESS! " + testCount + " tests passed.");
+				app.log("TimerTest", "SUCCESS! " + testCount + " tests passed.");
 				repeatTask.cancel();
 			}
 		}
@@ -58,7 +57,7 @@ public class TimerTest extends GdxTest {
 		Task task = Timer.schedule(new Task() {
 			@Override
 			public void run () {
-				Gdx.app.log("TimerTest", "testOnce");
+				app.log("TimerTest", "testOnce");
 				testCount++;
 			}
 		}, 1);
@@ -71,7 +70,7 @@ public class TimerTest extends GdxTest {
 
 			@Override
 			public void run () {
-				Gdx.app.log("TimerTest", "testRepeat");
+				app.log("TimerTest", "testRepeat");
 				if (++count <= 2) testCount++;
 			}
 		}, 1, 1);
@@ -90,7 +89,7 @@ public class TimerTest extends GdxTest {
 		assertNotScheduled(task);
 		task.cancel(); // The posted task should not execute.
 		assertNotScheduled(task);
-		Gdx.app.log("TimerTest", "testCancelPosted");
+		app.log("TimerTest", "testCancelPosted");
 		testCount++;
 	}
 
@@ -111,7 +110,7 @@ public class TimerTest extends GdxTest {
 		assertNotScheduled(task);
 		task.cancel(); // The twice posted task should not execute.
 		assertNotScheduled(task);
-		Gdx.app.log("TimerTest", "testCancelPostedTwice");
+		app.log("TimerTest", "testCancelPostedTwice");
 		testCount++;
 	}
 
@@ -122,7 +121,7 @@ public class TimerTest extends GdxTest {
 			@Override
 			public void run () {
 				if (++count != 1) throw new RuntimeException("Rescheduled task should only run once.");
-				Gdx.app.log("TimerTest", "testCancelPostedReschedule");
+				app.log("TimerTest", "testCancelPostedReschedule");
 				testCount++;
 			}
 		}, 0.01f);
@@ -145,7 +144,7 @@ public class TimerTest extends GdxTest {
 		}, 1);
 		assertScheduled(task);
 		timer.stop();
-		Gdx.app.log("TimerTest", "testStop");
+		app.log("TimerTest", "testStop");
 		testCount++;
 	}
 
@@ -154,7 +153,7 @@ public class TimerTest extends GdxTest {
 		Task task = timer.scheduleTask(new Task() {
 			@Override
 			public void run () {
-				Gdx.app.log("TimerTest", "testStopStart");
+				app.log("TimerTest", "testStopStart");
 				testCount++;
 			}
 		}, 0.200f);
@@ -171,7 +170,7 @@ public class TimerTest extends GdxTest {
 		Task task = timer.scheduleTask(new Task() {
 			@Override
 			public void run () {
-				Gdx.app.log("TimerTest", "testDelay");
+				app.log("TimerTest", "testDelay");
 				testCount++;
 			}
 		}, 0.200f);
@@ -192,7 +191,7 @@ public class TimerTest extends GdxTest {
 		assertScheduled(task);
 		timer.clear();
 		assertNotScheduled(task);
-		Gdx.app.log("TimerTest", "testClear");
+		app.log("TimerTest", "testClear");
 		testCount++;
 	}
 

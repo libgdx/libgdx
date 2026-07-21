@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -37,13 +36,13 @@ public class GroupCullingTest extends GdxTest {
 
 	public void create () {
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 
 		root = new Table();
 		root.setFillParent(true);
 		stage.addActor(root);
 
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(files.internal("data/uiskin.json"));
 
 		Table labels = new Table();
 		root.add(new ScrollPane(labels, skin)).grow();
@@ -73,9 +72,9 @@ public class GroupCullingTest extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		drawn = 0;
-		stage.act(Gdx.graphics.getDeltaTime());
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 		drawnLabel.setText("Drawn: " + drawn + "/" + count);
 		drawnLabel.invalidateHierarchy();

@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import java.util.Comparator;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -99,7 +98,7 @@ public class SortedSpriteTest extends GdxTest {
 		for (int i = 0; i < 100; i++) {
 			// create the sprite and set a random position
 			MySprite sprite = new MySprite(texture);
-			sprite.setPosition(MathUtils.random() * Gdx.graphics.getWidth(), MathUtils.random() * Gdx.graphics.getHeight());
+			sprite.setPosition(MathUtils.random() * graphics.getWidth(), MathUtils.random() * graphics.getHeight());
 
 			// create a random z coordinate in the range 0-1
 			sprite.z = MathUtils.random();

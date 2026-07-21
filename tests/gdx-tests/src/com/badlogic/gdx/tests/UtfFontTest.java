@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,12 +15,12 @@ public class UtfFontTest extends GdxTest {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/utf-font.fnt"));
+		font = new BitmapFont(files.internal("data/utf-font.fnt"));
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 
 		// https://github.com/libgdx/libgdx/pull/6501#issuecomment-821749417

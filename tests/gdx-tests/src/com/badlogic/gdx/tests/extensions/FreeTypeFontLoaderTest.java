@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests.extensions;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -49,7 +48,7 @@ public class FreeTypeFontLoaderTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		if (manager.update(16) && manager.isLoaded("size10.ttf")) {
 			batch.begin();
 			manager.get("size10.ttf", BitmapFont.class).draw(batch, "First font!", 20, 20);
@@ -58,7 +57,7 @@ public class FreeTypeFontLoaderTest extends GdxTest {
 			batch.end();
 		}
 
-		if (Gdx.input.justTouched() && manager.isLoaded("size10.ttf")) {
+		if (input.justTouched() && manager.isLoaded("size10.ttf")) {
 			// unload all the things and check if they really get disposed properly
 			manager.unload("size10.ttf");
 			manager.finishLoading();

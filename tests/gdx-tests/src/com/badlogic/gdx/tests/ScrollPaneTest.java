@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -39,10 +38,10 @@ public class ScrollPaneTest extends GdxTest {
 
 	public void create () {
 		stage = new Stage();
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		Gdx.input.setInputProcessor(stage);
+		Skin skin = new Skin(files.internal("data/uiskin.json"));
+		input.setInputProcessor(stage);
 
-		// Gdx.graphics.setVSync(false);
+		// graphics.setVSync(false);
 
 		container = new Table();
 		stage.addActor(container);
@@ -120,15 +119,15 @@ public class ScrollPaneTest extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 	}
 
 	public void resize (int width, int height) {
 		stage.getViewport().update(width, height, true);
 
-		// Gdx.gl.glViewport(100, 100, width - 200, height - 200);
+		// gl.glViewport(100, 100, width - 200, height - 200);
 		// stage.setViewport(800, 600, false, 100, 100, width - 200, height - 200);
 	}
 

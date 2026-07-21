@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -51,7 +50,7 @@ public class Scene2dTest extends GdxTest {
 
 	public void create () {
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 
 		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		final Actor actor = new Actor() {
@@ -76,7 +75,7 @@ public class Scene2dTest extends GdxTest {
 			}
 		});
 
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		Skin skin = new Skin(files.internal("data/uiskin.json"));
 
 		VerticalGroup g = new VerticalGroup().space(5).reverse().pad(5).fill();
 		for (int i = 0; i < 10; i++)
@@ -210,8 +209,8 @@ public class Scene2dTest extends GdxTest {
 
 	public void render () {
 		// System.out.println(meow.getValue());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 
 		stage.getBatch().begin();

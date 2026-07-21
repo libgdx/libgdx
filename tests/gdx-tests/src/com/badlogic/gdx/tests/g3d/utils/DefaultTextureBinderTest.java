@@ -3,7 +3,6 @@ package com.badlogic.gdx.tests.g3d.utils;
 
 import java.nio.IntBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -72,9 +71,9 @@ public class DefaultTextureBinderTest extends GdxTest {
 
 	private void assertBinding (int... b) {
 		for (int i = 0; i < b.length; i++) {
-			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
+			gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
 			IntBuffer buffer = BufferUtils.newIntBuffer(16);
-			Gdx.gl.glGetIntegerv(GL20.GL_TEXTURE_BINDING_2D, buffer);
+			gl.glGetIntegerv(GL20.GL_TEXTURE_BINDING_2D, buffer);
 			int tex = buffer.get(0);
 			int textureID = map.get(tex, -1);
 			if (textureID != b[i]) {
@@ -85,9 +84,9 @@ public class DefaultTextureBinderTest extends GdxTest {
 
 	private void printBindings (int n) {
 		for (int i = 0; i < n; i++) {
-			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
+			gl.glActiveTexture(GL20.GL_TEXTURE0 + i);
 			IntBuffer buffer = BufferUtils.newIntBuffer(16);
-			Gdx.gl.glGetIntegerv(GL20.GL_TEXTURE_BINDING_2D, buffer);
+			gl.glGetIntegerv(GL20.GL_TEXTURE_BINDING_2D, buffer);
 			int tex = buffer.get(0);
 			int textureID = map.get(tex, -1);
 			System.out.println("UNIT " + i + " texture " + textureID);

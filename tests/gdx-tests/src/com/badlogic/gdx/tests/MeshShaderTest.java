@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -49,8 +48,8 @@ public class MeshShaderTest extends GdxTest {
 
 		shader = new ShaderProgram(vertexShader, fragmentShader);
 		if (shader.isCompiled() == false) {
-			Gdx.app.log("ShaderTest", shader.getLog());
-			Gdx.app.exit();
+			app.log("ShaderTest", shader.getLog());
+			app.exit();
 		}
 
 		mesh = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.ColorUnpacked(), VertexAttribute.TexCoords(0));
@@ -66,7 +65,7 @@ public class MeshShaderTest extends GdxTest {
 			Color.WHITE_FLOAT_BITS, toSingleFloat(0, 0)});
 		meshCustomVA.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 
-		texture = new Texture(Gdx.files.internal("data/bobrgb888-32x32.png"));
+		texture = new Texture(files.internal("data/bobrgb888-32x32.png"));
 	}
 
 	private static float toSingleFloat (float u, float v) {
@@ -79,17 +78,17 @@ public class MeshShaderTest extends GdxTest {
 
 	@Override
 	public void render () {
-		angle += Gdx.graphics.getDeltaTime() * 45;
+		angle += graphics.getDeltaTime() * 45;
 		matrix.setToRotation(axis, angle);
 
-		Mesh meshToDraw = Gdx.input.isButtonPressed(0) ? meshCustomVA : mesh;
+		Mesh meshToDraw = input.isButtonPressed(0) ? meshCustomVA : mesh;
 
-		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl20.glEnable(GL20.GL_TEXTURE_2D);
-		Gdx.gl20.glEnable(GL20.GL_BLEND);
-		Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		gl20.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+		gl20.glClearColor(0.2f, 0.2f, 0.2f, 1);
+		gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl20.glEnable(GL20.GL_TEXTURE_2D);
+		gl20.glEnable(GL20.GL_BLEND);
+		gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		texture.bind();
 		shader.bind();
 		shader.setUniformMatrix("u_worldView", matrix);

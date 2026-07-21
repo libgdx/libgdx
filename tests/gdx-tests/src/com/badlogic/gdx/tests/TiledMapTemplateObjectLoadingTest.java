@@ -18,7 +18,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -64,8 +63,8 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 
 	@Override
 	public void create () {
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
+		float w = graphics.getWidth();
+		float h = graphics.getHeight();
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, (w / h) * 520, 520);
@@ -74,7 +73,7 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 		camera.update();
 
 		cameraController = new OrthoCamController(camera);
-		Gdx.input.setInputProcessor(cameraController);
+		input.setInputProcessor(cameraController);
 
 		stringBuilder = new StringBuilder();
 		font = new BitmapFont();
@@ -103,12 +102,12 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 
 	@Override
 	public void render () {
-		if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+		if (input.isKeyJustPressed(Input.Keys.NUM_1)) {
 			if (mapType != 0) {
 				mapType = 0;
 				map = tmxMapLoader.load(TMX_TESTMAP);
 			}
-		} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+		} else if (input.isKeyJustPressed(Input.Keys.NUM_2)) {
 			if (mapType != 1) {
 				mapType = 1;
 				map = tmjMapLoader.load(TMJ_TESTMAP);
@@ -125,7 +124,7 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 			shapeRenderer.setColor(Color.RED);
 		}
 
-		Gdx.gl20.glLineWidth(2);
+		gl20.glLineWidth(2);
 		MapLayer layer = map.getLayers().get("Objects");
 		AnimatedTiledMapTile.updateAnimationBaseTime();
 		for (MapObject mapObject : layer.getObjects()) {
@@ -339,7 +338,7 @@ public class TiledMapTemplateObjectLoadingTest extends GdxTest {
 			}
 		}
 
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond() + "\n" + loadingStatus, 20, 1470);
+		font.draw(batch, "FPS: " + graphics.getFramesPerSecond() + "\n" + loadingStatus, 20, 1470);
 		batch.end();
 	}
 

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -45,7 +44,7 @@ public class ConvexHullDistanceTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 
-		final Model carModel = objLoader.loadModel(Gdx.files.internal("data/car.obj"));
+		final Model carModel = objLoader.loadModel(files.internal("data/car.obj"));
 		disposables.add(carModel);
 		carModel.materials.get(0).clear();
 		carModel.materials.get(0).set(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE));

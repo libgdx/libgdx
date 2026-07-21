@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -45,9 +44,9 @@ public class FilterPerformanceTest extends GdxTest {
 
 	void setTextureFilter (int filter) {
 		atlas.findRegion("map").getTexture().bind();
-		Gdx.gl.glTexParameterf(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, filters[filter]);
+		gl.glTexParameterf(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, filters[filter]);
 		texture.bind();
-		Gdx.gl.glTexParameterf(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, filters[filter]);
+		gl.glTexParameterf(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, filters[filter]);
 	}
 
 	void setModeString () {
@@ -59,17 +58,17 @@ public class FilterPerformanceTest extends GdxTest {
 		sceneMatrix = new Matrix4().setToOrtho2D(0, 0, 480, 320);
 		textMatrix = new Matrix4().setToOrtho2D(0, 0, 480, 320);
 
-		atlas = new TextureAtlas(Gdx.files.internal("data/issue_pack"), Gdx.files.internal("data/"));
-		texture = new Texture(Gdx.files.internal("data/resource1.jpg"), true);
+		atlas = new TextureAtlas(files.internal("data/issue_pack"), files.internal("data/"));
+		texture = new Texture(files.internal("data/resource1.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Nearest);
 		setTextureFilter(0);
 		setModeString();
 
 		sprite = atlas.createSprite("map");
 		sprite2 = new Sprite(texture, 0, 0, 855, 480);
-		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), Gdx.files.internal("data/font.png"), false);
+		font = new BitmapFont(files.internal("data/font.fnt"), files.internal("data/font.png"), false);
 
-		Gdx.input.setInputProcessor(new InputAdapter() {
+		input.setInputProcessor(new InputAdapter() {
 			public boolean touchDown (int x, int y, int pointer, int newParam) {
 				mode++;
 				if (mode == filters.length * 2) mode = 0;
@@ -89,7 +88,7 @@ public class FilterPerformanceTest extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.setProjectionMatrix(sceneMatrix);
 		batch.begin();
@@ -98,7 +97,7 @@ public class FilterPerformanceTest extends GdxTest {
 
 		batch.setProjectionMatrix(textMatrix);
 		batch.begin();
-		font.draw(batch, modeString + " fps:" + Gdx.graphics.getFramesPerSecond(), 26, 65);
+		font.draw(batch, modeString + " fps:" + graphics.getFramesPerSecond(), 26, 65);
 		batch.end();
 	}
 

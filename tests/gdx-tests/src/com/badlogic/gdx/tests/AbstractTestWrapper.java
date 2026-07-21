@@ -52,12 +52,12 @@ public abstract class AbstractTestWrapper extends GdxTest {
 	@Override
 	public void create () {
 		Instancer[] tests = getTestList();
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		Gdx.app.log("GdxTestGwt", "Setting up for " + tests.length + " tests.");
+		app.setLogLevel(Application.LOG_DEBUG);
+		app.log("GdxTestGwt", "Setting up for " + tests.length + " tests.");
 
 		ui = new Stage(new ExtendViewport(480, 320));
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
+		skin = new Skin(files.internal("data/uiskin.json"));
+		font = new BitmapFont(files.internal("data/lsans-15.fnt"), false);
 		container = new Table();
 		ui.addActor(container);
 		container.debug();
@@ -78,11 +78,11 @@ public abstract class AbstractTestWrapper extends GdxTest {
 			button.addListener(new ChangeListener() {
 				@Override
 				public void changed (ChangeEvent event, Actor actor) {
-					((InputWrapper)Gdx.input).multiplexer.removeProcessor(ui);
+					((InputWrapper)input).multiplexer.removeProcessor(ui);
 					test = instancer.instance();
-					Gdx.app.log("GdxTestGwt", "Clicked on " + test.getClass().getName());
-					test.create();
-					test.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+					app.log("GdxTestGwt", "Clicked on " + test.getClass().getName());
+					test.create(app);
+					test.resize(graphics.getWidth(), graphics.getHeight());
 				}
 			});
 			table.add(button).growX();
@@ -91,12 +91,12 @@ public abstract class AbstractTestWrapper extends GdxTest {
 		container.add(new Label("Click on a test to start it, press ESC or tap the upper left corner to close it.",
 			new LabelStyle(font, Color.WHITE))).pad(5, 5, 5, 5);
 
-		Gdx.input = new InputWrapper(Gdx.input) {
+		input = new InputWrapper(input) {
 			@Override
 			public boolean keyUp (int keycode) {
 				if (keycode == Keys.ESCAPE) {
 					if (test != null) {
-						Gdx.app.log("GdxTestGwt", "Exiting current test.");
+						app.log("GdxTestGwt", "Exiting current test.");
 						dispose = true;
 					}
 				}
@@ -105,7 +105,7 @@ public abstract class AbstractTestWrapper extends GdxTest {
 
 			@Override
 			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-				if (screenX < Gdx.graphics.getWidth() / 10.0 && screenY < Gdx.graphics.getHeight() / 10.0) {
+				if (screenX < graphics.getWidth() / 10.0 && screenY < graphics.getHeight() / 10.0) {
 					if (test != null) {
 						dispose = true;
 					}
@@ -113,24 +113,26 @@ public abstract class AbstractTestWrapper extends GdxTest {
 				return false;
 			}
 		};
-		((InputWrapper)Gdx.input).multiplexer.addProcessor(ui);
+		// Keep Gdx.input in sync until framework code no longer reads the static.
+		Gdx.input = input;
+		((InputWrapper)input).multiplexer.addProcessor(ui);
 
-		Gdx.app.log("GdxTestGwt", "Test picker UI setup complete.");
+		app.log("GdxTestGwt", "Test picker UI setup complete.");
 	}
 
 	public void render () {
 		if (test == null) {
 			ScreenUtils.clear(0, 0, 0, 0);
-			ui.act(Gdx.graphics.getDeltaTime());
+			ui.act(graphics.getDeltaTime());
 			ui.draw();
 		} else {
 			if (dispose) {
 				test.pause();
 				test.dispose();
 				test = null;
-				ui.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-				Gdx.graphics.setVSync(true);
-				InputWrapper wrapper = ((InputWrapper)Gdx.input);
+				ui.getViewport().update(graphics.getWidth(), graphics.getHeight(), true);
+				graphics.setVSync(true);
+				InputWrapper wrapper = ((InputWrapper)input);
 				wrapper.multiplexer.addProcessor(ui);
 				wrapper.multiplexer.removeProcessor(wrapper.lastProcessor);
 				wrapper.lastProcessor = null;

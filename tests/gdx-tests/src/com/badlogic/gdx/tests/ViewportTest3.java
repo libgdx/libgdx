@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -81,13 +80,13 @@ public class ViewportTest3 extends GdxTest {
 		boxInstance.transform.rotate(1, 0, 0, 30);
 		boxInstance.transform.rotate(0, 1, 0, 30);
 
-		Gdx.input.setInputProcessor(new InputAdapter() {
+		input.setInputProcessor(new InputAdapter() {
 			public boolean keyDown (int keycode) {
 				if (keycode == Input.Keys.SPACE) {
 					int index = (viewports.indexOf(viewport, true) + 1) % viewports.size;
 					name = names.get(index);
 					viewport = viewports.get(index);
-					resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+					resize(graphics.getWidth(), graphics.getHeight());
 				}
 				return false;
 			}

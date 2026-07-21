@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -49,7 +48,7 @@ public class SoundTest extends GdxTest {
 	@Override
 	public void create () {
 
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(files.internal("data/uiskin.json"));
 		ui = new Stage(new FitViewport(640, 400));
 		final SelectBox<String> soundSelector = new SelectBox<String>(skin);
 		soundSelector.setItems(FILENAMES);
@@ -141,12 +140,12 @@ public class SoundTest extends GdxTest {
 				panValue.setText("" + pan.getValue());
 			}
 		});
-		Gdx.input.setInputProcessor(ui);
+		input.setInputProcessor(ui);
 	}
 
 	protected void setSound (String fileName) {
 		if (sound != null) sound.dispose();
-		sound = Gdx.audio.newSound(Gdx.files.internal("data").child(fileName));
+		sound = audio.newSound(files.internal("data").child(fileName));
 	}
 
 	@Override
@@ -156,8 +155,8 @@ public class SoundTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		ui.act(Gdx.graphics.getDeltaTime());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		ui.act(graphics.getDeltaTime());
 		ui.draw();
 	}
 

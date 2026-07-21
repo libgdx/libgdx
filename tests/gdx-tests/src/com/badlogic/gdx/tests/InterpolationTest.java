@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
@@ -76,10 +75,10 @@ public class InterpolationTest extends GdxTest {
 
 	@Override
 	public void create () {
-		Gdx.gl.glClearColor(.3f, .3f, .3f, 1);
+		gl.glClearColor(.3f, .3f, .3f, 1);
 		renderer = new ShapeRenderer();
 
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(files.internal("data/uiskin.json"));
 
 		stage = new Stage(new ScreenViewport());
 		resetPositions();
@@ -118,9 +117,9 @@ public class InterpolationTest extends GdxTest {
 		table.add(scroll).expandX().left().width(100);
 		stage.addActor(table);
 
-		Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
+		input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
 			public boolean scrolled (float amountX, float amountY) {
-				if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) return false;
+				if (!input.isKeyPressed(Keys.CONTROL_LEFT)) return false;
 				duration -= amountY / 15f;
 				duration = MathUtils.clamp(duration, 0, Float.POSITIVE_INFINITY);
 				return true;
@@ -139,9 +138,9 @@ public class InterpolationTest extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		float bottomLeftX = Gdx.graphics.getWidth() / 2 - graphSize / 2, bottomLeftY = Gdx.graphics.getHeight() / 2 - graphSize / 2;
+		float bottomLeftX = graphics.getWidth() / 2 - graphSize / 2, bottomLeftY = graphics.getHeight() / 2 - graphSize / 2;
 
 		// only show up to two decimals
 		String text = String.valueOf(duration);
@@ -163,7 +162,7 @@ public class InterpolationTest extends GdxTest {
 			lastX = x;
 			lastY = y;
 		}
-		time += Gdx.graphics.getDeltaTime();
+		time += graphics.getDeltaTime();
 		if (time > duration) {
 			time = Float.NaN; // stop "walking"
 			startPosition.set(targetPosition); // set startPosition to targetPosition for next click

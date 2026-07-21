@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
@@ -50,10 +49,10 @@ public class TiledMapPropertiesTest extends GdxTest {
 		try {
 			verifyTiledMap(tiledMap);
 		} catch (Exception e) {
-			Gdx.app.error(LOG_TAG, "Verification of tiledmap properties failed", e);
+			app.error(LOG_TAG, "Verification of tiledmap properties failed", e);
 			return;
 		}
-		Gdx.app.log(LOG_TAG, "TMJ properties successfully verified!");
+		app.log(LOG_TAG, "TMJ properties successfully verified!");
 
 		// verify TMX
 		tiledMap.dispose();
@@ -64,10 +63,10 @@ public class TiledMapPropertiesTest extends GdxTest {
 		try {
 			verifyTiledMap(tiledMap);
 		} catch (Exception e) {
-			Gdx.app.error(LOG_TAG, "Verification of tiledmap properties failed", e);
+			app.error(LOG_TAG, "Verification of tiledmap properties failed", e);
 			return;
 		}
-		Gdx.app.log(LOG_TAG, "TMX properties successfully verified!");
+		app.log(LOG_TAG, "TMX properties successfully verified!");
 
 		success = true;
 	}

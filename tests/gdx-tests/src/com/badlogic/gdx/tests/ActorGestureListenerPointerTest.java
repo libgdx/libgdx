@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -39,7 +38,7 @@ public class ActorGestureListenerPointerTest extends GdxTest {
 	public void create () {
 
 		stage = new Stage();
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(files.internal("data/uiskin.json"));
 
 		firstPane = new ScrollPane(new Table(), skin);
 		secondPane = new ScrollPane(new Table(), skin);
@@ -49,13 +48,13 @@ public class ActorGestureListenerPointerTest extends GdxTest {
 		table.add(firstPane).grow();
 		table.add(secondPane).grow();
 
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 		stage.addActor(table);
 
 	}
 
 	public void render () {
-		update(Gdx.graphics.getDeltaTime());
+		update(graphics.getDeltaTime());
 		draw();
 	}
 
@@ -71,7 +70,7 @@ public class ActorGestureListenerPointerTest extends GdxTest {
 
 	private void update (float deltaTime) {
 
-		stage.act(Gdx.graphics.getDeltaTime());
+		stage.act(graphics.getDeltaTime());
 
 		if (inputTriggered) return;
 

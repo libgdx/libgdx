@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -29,11 +28,11 @@ public class QuadTreeFloatNearestTest extends GdxTest {
 	}
 
 	public void render () {
-		float x = Gdx.input.getX(), y = Gdx.graphics.getHeight() - Gdx.input.getY();
+		float x = input.getX(), y = graphics.getHeight() - input.getY();
 		results.clear();
 		boolean found = q.nearest(x, y, results);
 
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		shapes.begin(ShapeType.Line);
 		draw(q);
 		shapes.setColor(Color.GREEN);

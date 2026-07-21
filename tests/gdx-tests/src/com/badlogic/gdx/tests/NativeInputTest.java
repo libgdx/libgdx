@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.OnscreenKeyboardType;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.input.NativeInputConfiguration;
@@ -49,14 +48,14 @@ public class NativeInputTest extends GdxTest {
 
 	public void create () {
 		stage = new Stage();
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(files.internal("data/uiskin.json"));
 
 		Table table = new Table();
 		table.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
 				if (!event.isStopped()) {
-					Gdx.input.closeTextInputField(false);
+					input.closeTextInputField(false);
 				}
 				super.clicked(event, x, y);
 			}
@@ -106,8 +105,8 @@ public class NativeInputTest extends GdxTest {
 		openInput.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
-				if (Gdx.input.isTextInputFieldOpened()) {
-					Gdx.input.closeTextInputField(false, (confirmative) -> {
+				if (input.isTextInputFieldOpened()) {
+					input.closeTextInputField(false, (confirmative) -> {
 						openNativeInputField();
 						return true;
 					});
@@ -148,7 +147,7 @@ public class NativeInputTest extends GdxTest {
 
 		stage.addActor(table);
 
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 	}
 
 	public void openNativeInputField () {
@@ -185,15 +184,15 @@ public class NativeInputTest extends GdxTest {
 		});
 		try {
 			configuration.validate();
-			Gdx.input.openTextInputField(configuration);
+			input.openTextInputField(configuration);
 		} catch (IllegalArgumentException e) {
 			resultArea.setText(e.getMessage());
 		}
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 	}
 }

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -72,7 +71,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		end = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
 		if (TimeUtils.nanoTime() - startTime > 1000000000) {
-// Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
+// app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
 // ", " + draw2 + ", " + drawText + ", " + end );
 			frames = 0;
 			startTime = TimeUtils.nanoTime();
@@ -102,7 +101,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		end = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
 		if (TimeUtils.nanoTime() - startTime > 1000000000) {
-// Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
+// app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
 // ", " + draw2 + ", " + drawText + ", " + end );
 			frames = 0;
 			startTime = TimeUtils.nanoTime();
@@ -114,7 +113,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	public void create () {
 		spriteCache = new SpriteCache(1000, true);
 
-		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture = new Texture(files.internal("data/badlogicsmall.jpg"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
@@ -128,14 +127,14 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		Sprite[] sprites3 = new Sprite[SPRITES * 2];
 
 		for (int i = 0; i < sprites.length; i += 6) {
-			sprites[i] = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));
-			sprites[i + 1] = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));
+			sprites[i] = (int)(Math.random() * (graphics.getWidth() - 32));
+			sprites[i + 1] = (int)(Math.random() * (graphics.getHeight() - 32));
 			sprites[i + 2] = 0;
 			sprites[i + 3] = 0;
 			sprites[i + 4] = 32;
 			sprites[i + 5] = 32;
-			sprites2[i] = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));
-			sprites2[i + 1] = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));
+			sprites2[i] = (int)(Math.random() * (graphics.getWidth() - 32));
+			sprites2[i + 1] = (int)(Math.random() * (graphics.getHeight() - 32));
 			sprites2[i + 2] = 0;
 			sprites2[i + 3] = 0;
 			sprites2[i + 4] = 32;
@@ -143,8 +142,8 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		}
 
 		for (int i = 0; i < SPRITES * 2; i++) {
-			int x = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));
-			int y = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));
+			int x = (int)(Math.random() * (graphics.getWidth() - 32));
+			int y = (int)(Math.random() * (graphics.getHeight() - 32));
 
 			if (i >= SPRITES)
 				sprites3[i] = new Sprite(texture2, 32, 32);
@@ -179,7 +178,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		}
 		spriteCacheID = spriteCache.endCache();
 
-		Gdx.input.setInputProcessor(this);
+		input.setInputProcessor(this);
 	}
 
 	@Override

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.extensions;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -43,8 +42,8 @@ public class FreeTypeTest extends GdxTest {
 			cam.update();
 			batch.setProjectionMatrix(cam.combined);
 		}
-		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), flip);
-		FileHandle fontFile = Gdx.files.internal("data/lsans.ttf");
+		font = new BitmapFont(files.internal("data/lsans-15.fnt"), flip);
+		FileHandle fontFile = files.internal("data/lsans.ttf");
 
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
 

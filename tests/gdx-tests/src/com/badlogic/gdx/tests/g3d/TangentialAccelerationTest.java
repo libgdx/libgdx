@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -138,9 +137,9 @@ public class TangentialAccelerationTest extends BaseG3dTest {
 	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
 		if (emitters.size > 0) {
 			// Update
-			float delta = Gdx.graphics.getDeltaTime();
+			float delta = graphics.getDeltaTime();
 			builder.delete(0, builder.length());
-			builder.append(Gdx.graphics.getFramesPerSecond());
+			builder.append(graphics.getFramesPerSecond());
 			fpsLabel.setText(builder);
 			ui.act(delta);
 

@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests.gles31;
 
 import java.nio.IntBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
@@ -69,7 +68,7 @@ public class GL31IndirectDrawingNonIndexedTest extends GdxTest {
 	@Override
 	public void create () {
 
-		drawCommands = Gdx.gl.glGenBuffer();
+		drawCommands = gl.glGenBuffer();
 		IntBuffer buffer = BufferUtils.newIntBuffer(commandInts * nbCommands);
 		buffer.put(new int[] { //
 			3, // count
@@ -86,9 +85,9 @@ public class GL31IndirectDrawingNonIndexedTest extends GdxTest {
 		});
 		buffer.flip();
 
-		Gdx.gl.glBindBuffer(GL31.GL_DRAW_INDIRECT_BUFFER, drawCommands);
-		Gdx.gl.glBufferData(GL31.GL_DRAW_INDIRECT_BUFFER, nbCommands * commandStride, buffer, GL30.GL_DYNAMIC_DRAW);
-		Gdx.gl.glBindBuffer(GL31.GL_DRAW_INDIRECT_BUFFER, 0);
+		gl.glBindBuffer(GL31.GL_DRAW_INDIRECT_BUFFER, drawCommands);
+		gl.glBufferData(GL31.GL_DRAW_INDIRECT_BUFFER, nbCommands * commandStride, buffer, GL30.GL_DYNAMIC_DRAW);
+		gl.glBindBuffer(GL31.GL_DRAW_INDIRECT_BUFFER, 0);
 
 		mesh = new Mesh(true, 6, 0, VertexAttribute.Position(), VertexAttribute.ColorUnpacked());
 		mesh.setVertices(new float[] { //
@@ -109,12 +108,12 @@ public class GL31IndirectDrawingNonIndexedTest extends GdxTest {
 	public void dispose () {
 		shader.dispose();
 		mesh.dispose();
-		Gdx.gl.glDeleteBuffer(drawCommands);
+		gl.glDeleteBuffer(drawCommands);
 	}
 
 	@Override
 	public void render () {
-		time += Gdx.graphics.getDeltaTime();
+		time += graphics.getDeltaTime();
 		int commandIndex = (int)time % nbCommands;
 
 		ScreenUtils.clear(Color.CLEAR, true);
@@ -125,8 +124,8 @@ public class GL31IndirectDrawingNonIndexedTest extends GdxTest {
 
 		mesh.bind(shader);
 
-		Gdx.gl.glBindBuffer(GL31.GL_DRAW_INDIRECT_BUFFER, drawCommands);
-		Gdx.gl31.glDrawArraysIndirect(GL20.GL_TRIANGLES, commandStride * commandIndex);
+		gl.glBindBuffer(GL31.GL_DRAW_INDIRECT_BUFFER, drawCommands);
+		gl31.glDrawArraysIndirect(GL20.GL_TRIANGLES, commandStride * commandIndex);
 		mesh.unbind(shader);
 	}
 }

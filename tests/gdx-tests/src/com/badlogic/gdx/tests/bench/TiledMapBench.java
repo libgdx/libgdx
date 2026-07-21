@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.bench;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -48,21 +47,21 @@ public class TiledMapBench extends GdxTest {
 
 	@Override
 	public void create () {
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
+		float w = graphics.getWidth();
+		float h = graphics.getHeight();
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, (w / h) * 320, 320);
 		camera.update();
 
 		cameraController = new OrthoCamController(camera);
-		Gdx.input.setInputProcessor(cameraController);
+		input.setInputProcessor(cameraController);
 
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
 		{
-			tiles = new Texture(Gdx.files.internal("data/maps/tiled/tiles.png"));
+			tiles = new Texture(files.internal("data/maps/tiled/tiles.png"));
 			TextureRegion[][] splitTiles = TextureRegion.split(tiles, 32, 32);
 			map = new TiledMap();
 			MapLayers layers = map.getLayers();
@@ -92,7 +91,7 @@ public class TiledMapBench extends GdxTest {
 		renderer.setView(camera);
 		renderer.render();
 		batch.begin();
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+		font.draw(batch, "FPS: " + graphics.getFramesPerSecond(), 10, 20);
 		batch.end();
 	}
 }

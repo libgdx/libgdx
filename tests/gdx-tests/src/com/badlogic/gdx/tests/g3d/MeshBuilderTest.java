@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -36,7 +35,7 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 
 		modelsWindow.setVisible(false);
 
-		Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		Texture texture = new Texture(files.internal("data/badlogic.jpg"));
 
 		Material material = new Material(TextureAttribute.createDiffuse(texture));
 		Material solidMaterial = new Material();

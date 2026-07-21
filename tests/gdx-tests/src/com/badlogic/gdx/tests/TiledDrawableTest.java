@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -27,13 +26,13 @@ public class TiledDrawableTest extends GdxTest {
 	public void create () {
 		stage = new Stage();
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
+		font = new BitmapFont(files.internal("data/lsans-15.fnt"), false);
 
 		// Must be a texture atlas so uv is not just 0 and 1
-		atlas = new TextureAtlas(Gdx.files.internal("data/testAtlas.atlas"));
+		atlas = new TextureAtlas(files.internal("data/testAtlas.atlas"));
 		tiledDrawable = new TiledDrawable(atlas.findRegion("tileTester"));
 
-		Gdx.input.setInputProcessor(this);
+		input.setInputProcessor(this);
 	}
 
 	@Override
@@ -51,8 +50,8 @@ public class TiledDrawableTest extends GdxTest {
 		final float spacingX = 80;
 		final float bottomSpacing = 60;
 		final float spacingY = 40;
-		float inputX = Gdx.input.getX();
-		float inputY = Gdx.graphics.getHeight() - Gdx.input.getY();
+		float inputX = input.getX();
+		float inputY = graphics.getHeight() - input.getY();
 
 		final float clusterWidth = Math.max(13, (inputX - leftSpacingX - (2 * spacingX)) / 3f);
 		final float clusterHeight = Math.max(13, (inputY - bottomSpacing - (2 * spacingY)) / 3f);

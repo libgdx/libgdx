@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cubemap;
@@ -95,7 +94,7 @@ public class KTXTest extends GdxTest {
 			+ "}\n";
 		modelBatch = new ModelBatch(new DefaultShaderProvider(new Config(cubemapVS, cubemapFS)));
 
-		cubemap = new Cubemap(new KTXTextureData(Gdx.files.internal("data/cubemap.zktx"), true));
+		cubemap = new Cubemap(new KTXTextureData(files.internal("data/cubemap.zktx"), true));
 		cubemap.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
 
 		environment = new Environment();
@@ -103,7 +102,7 @@ public class KTXTest extends GdxTest {
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f));
 		environment.set(new CubemapAttribute(CubemapAttribute.EnvironmentMap, cubemap));
 
-		perspectiveCamera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		perspectiveCamera = new PerspectiveCamera(67, graphics.getWidth(), graphics.getHeight());
 		perspectiveCamera.position.set(10f, 10f, 10f);
 		perspectiveCamera.lookAt(0, 0, 0);
 		perspectiveCamera.near = 0.1f;
@@ -115,7 +114,7 @@ public class KTXTest extends GdxTest {
 			Usage.Position | Usage.Normal);
 		instance = new ModelInstance(model);
 
-		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(perspectiveCamera)));
+		input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(perspectiveCamera)));
 
 		// 2D texture test
 		String etc1aVS = "" //
@@ -148,7 +147,7 @@ public class KTXTest extends GdxTest {
 			+ "   gl_FragColor = vec4(col, alpha) * v_color;\n"//
 			+ "}\n";//
 		etc1aShader = new ShaderProgram(etc1aVS, etc1aFS);
-		orthoCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		orthoCamera = new OrthographicCamera(graphics.getWidth(), graphics.getHeight());
 		image = new Texture("data/egg.zktx");
 		batch = new SpriteBatch(100, etc1aShader);
 
@@ -156,15 +155,15 @@ public class KTXTest extends GdxTest {
 
 	@Override
 	public void render () {
-		time += Gdx.graphics.getDeltaTime();
+		time += graphics.getDeltaTime();
 		inputController.update();
-		int gw = Gdx.graphics.getWidth(), gh = Gdx.graphics.getHeight();
+		int gw = graphics.getWidth(), gh = graphics.getHeight();
 		int pw = gw > gh ? gw / 2 : gw, ph = gw > gh ? gh : gh / 2;
 
 		ScreenUtils.clear(0, 0, 0, 1, true);
 
 		// cubemap
-		Gdx.gl.glViewport(gw - pw, gh - ph, pw, ph);
+		gl.glViewport(gw - pw, gh - ph, pw, ph);
 		perspectiveCamera.viewportWidth = pw;
 		perspectiveCamera.viewportHeight = ph;
 		perspectiveCamera.update();
@@ -173,7 +172,7 @@ public class KTXTest extends GdxTest {
 		modelBatch.end();
 
 		// 2D texture with alpha & ETC1
-		Gdx.gl.glViewport(0, 0, pw, ph);
+		gl.glViewport(0, 0, pw, ph);
 		orthoCamera.viewportWidth = pw;
 		orthoCamera.viewportHeight = ph;
 		orthoCamera.update();

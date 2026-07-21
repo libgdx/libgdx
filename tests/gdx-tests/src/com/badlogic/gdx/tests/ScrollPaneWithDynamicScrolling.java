@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -37,8 +36,8 @@ public class ScrollPaneWithDynamicScrolling extends GdxTest {
 
 	public void create () {
 		stage = new Stage();
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		Gdx.input.setInputProcessor(stage);
+		Skin skin = new Skin(files.internal("data/uiskin.json"));
+		input.setInputProcessor(stage);
 
 		dynamicLabel = new Label("Chat box begin here", skin);
 
@@ -71,8 +70,8 @@ public class ScrollPaneWithDynamicScrolling extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 	}
 

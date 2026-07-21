@@ -31,7 +31,6 @@ package com.badlogic.gdx.tests.box2d;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -183,7 +182,7 @@ public class ContactListenerTest extends Box2DTest implements ContactListener {
 
 		final Body toRemove = contact.getFixtureA().getBody().getType() == BodyType.DynamicBody ? contact.getFixtureA().getBody()
 			: contact.getFixtureB().getBody();
-		Gdx.app.postRunnable(new Runnable() {
+		app.postRunnable(new Runnable() {
 			@Override
 			public void run () {
 				world.destroyBody(toRemove);

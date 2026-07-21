@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -53,7 +52,7 @@ public class Basic3DSceneTest extends GdxTest implements ApplicationListener {
 		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
 		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam = new PerspectiveCamera(67, graphics.getWidth(), graphics.getHeight());
 		cam.position.set(0f, 7f, 10f);
 		cam.lookAt(0, 0, 0);
 		cam.near = 0.1f;
@@ -61,7 +60,7 @@ public class Basic3DSceneTest extends GdxTest implements ApplicationListener {
 		cam.update();
 
 		camController = new CameraInputController(cam);
-		Gdx.input.setInputProcessor(camController);
+		input.setInputProcessor(camController);
 
 		assets = new AssetManager();
 		assets.load("data/g3d/invaders.g3dj", Model.class);
@@ -103,8 +102,8 @@ public class Basic3DSceneTest extends GdxTest implements ApplicationListener {
 		if (loading && assets.update(16)) doneLoading();
 		camController.update();
 
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		gl.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		modelBatch.begin(cam);
 		for (ModelInstance instance : instances)

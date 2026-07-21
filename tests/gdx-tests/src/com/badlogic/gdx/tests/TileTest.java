@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import java.util.Random;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -46,9 +45,9 @@ public class TileTest extends GdxTest {
 		cam = new OrthographicCamera(480, 320);
 		cam.position.set(WIDTH * 32 / 2, HEIGHT * 32 / 2, 0);
 		camController = new OrthoCamController(cam);
-		Gdx.input.setInputProcessor(camController);
+		input.setInputProcessor(camController);
 
-		texture = new Texture(Gdx.files.internal("data/tiles.png"));
+		texture = new Texture(files.internal("data/tiles.png"));
 
 		Random rand = new Random();
 		for (int i = 0; i < LAYERS; i++) {
@@ -69,11 +68,11 @@ public class TileTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		cam.update();
 
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL20.GL_BLEND);
+		gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		for (int i = 0; i < LAYERS; i++) {
 			SpriteCache cache = caches[i];
 			cache.setProjectionMatrix(cam.combined);
@@ -85,7 +84,7 @@ public class TileTest extends GdxTest {
 		}
 
 		if (TimeUtils.nanoTime() - startTime >= 1000000000) {
-			Gdx.app.log("TileTest", "fps: " + Gdx.graphics.getFramesPerSecond());
+			app.log("TileTest", "fps: " + graphics.getFramesPerSecond());
 			startTime = TimeUtils.nanoTime();
 		}
 	}

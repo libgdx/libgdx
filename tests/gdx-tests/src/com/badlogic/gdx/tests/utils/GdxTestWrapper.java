@@ -23,19 +23,19 @@ public class GdxTestWrapper implements ApplicationListener {
 	}
 
 	@Override
-	public void create (Application app) {
+	public void create (Application application) {
 		if (logGLErrors) {
-			app.log("GLProfiler", "profiler enabled");
-			GLProfiler profiler = new GLProfiler(app.getGraphics());
+			application.log("GLProfiler", "profiler enabled");
+			GLProfiler profiler = new GLProfiler(application.getGraphics());
 			profiler.setListener(new GLErrorListener() {
 				@Override
 				public void onError (int error) {
-					app.error("GLProfiler", "error " + error);
+					application.error("GLProfiler", "error " + error);
 				}
 			});
 			profiler.enable();
 		}
-		this.app.create(app);
+		app.create(application);
 	}
 
 	@Override

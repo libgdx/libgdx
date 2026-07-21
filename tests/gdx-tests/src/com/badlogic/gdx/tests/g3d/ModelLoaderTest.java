@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -36,7 +35,7 @@ public class ModelLoaderTest extends GdxTest {
 
 	@Override
 	public void create () {
-		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new PerspectiveCamera(67, graphics.getWidth(), graphics.getHeight());
 		camera.position.set(0, 0, 5);
 		camera.near = 1;
 		camera.far = 100;
@@ -56,7 +55,7 @@ public class ModelLoaderTest extends GdxTest {
 
 	@Override
 	public void render () {
-		if ((instance != null) && ((counter += Gdx.graphics.getDeltaTime()) >= 1f)) {
+		if ((instance != null) && ((counter += graphics.getDeltaTime()) >= 1f)) {
 			counter = 0f;
 			instance = null;
 			assets.unload("data/g3d/cube.g3dj");
@@ -64,9 +63,9 @@ public class ModelLoaderTest extends GdxTest {
 			assets.finishLoading();
 		}
 
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		gl.glEnable(GL20.GL_DEPTH_TEST);
 
 		if (assets.update(16)) {
 			doneLoading();

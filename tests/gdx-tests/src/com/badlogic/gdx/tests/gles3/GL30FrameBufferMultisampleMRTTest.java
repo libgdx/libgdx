@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests.gles3;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
@@ -59,21 +58,21 @@ public class GL30FrameBufferMultisampleMRTTest extends GdxTest {
 
 		batch = new SpriteBatch();
 
-		ShaderProgram.prependVertexCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop)
+		ShaderProgram.prependVertexCode = app.getType().equals(Application.ApplicationType.Desktop)
 			? "#version 140\n #extension GL_ARB_explicit_attrib_location : enable\n"
 			: "#version 300 es\n";
-		ShaderProgram.prependFragmentCode = Gdx.app.getType().equals(Application.ApplicationType.Desktop)
+		ShaderProgram.prependFragmentCode = app.getType().equals(Application.ApplicationType.Desktop)
 			? "#version 140\n #extension GL_ARB_explicit_attrib_location : enable\n"
 			: "#version 300 es\n";
 
-		shader = new ShaderProgram(Gdx.files.internal("data/shaders/shape-renderer-mrt-vert.glsl").readString(),
-			Gdx.files.internal("data/shaders/shape-renderer-mrt-frag.glsl").readString());
+		shader = new ShaderProgram(files.internal("data/shaders/shape-renderer-mrt-vert.glsl").readString(),
+			files.internal("data/shaders/shape-renderer-mrt-frag.glsl").readString());
 
 		if (shader.isCompiled()) {
-			Gdx.app.log("GL30FrameBufferMultisampleMRTTest", "Shader compiled successfully");
+			app.log("GL30FrameBufferMultisampleMRTTest", "Shader compiled successfully");
 		} else {
-			Gdx.app.error("GL30FrameBufferMultisampleMRTTest", "Shader compilation failed: " + shader.getLog());
-			Gdx.app.exit();
+			app.error("GL30FrameBufferMultisampleMRTTest", "Shader compilation failed: " + shader.getLog());
+			app.exit();
 		}
 		shapes = new ShapeRenderer(3, shader);
 
@@ -91,7 +90,7 @@ public class GL30FrameBufferMultisampleMRTTest extends GdxTest {
 	@Override
 	public void render () {
 
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		gl.glEnable(GL20.GL_DEPTH_TEST);
 		ScreenUtils.clear(Color.CLEAR, true);
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, 2, 3);
 
@@ -133,6 +132,6 @@ public class GL30FrameBufferMultisampleMRTTest extends GdxTest {
 		batch.draw(fbo.getTextureAttachments().get(2), 1, 2, 1, 1, 0, 0, 1, 1);
 		batch.end();
 
-		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+		gl.glDisable(GL20.GL_DEPTH_TEST);
 	}
 }

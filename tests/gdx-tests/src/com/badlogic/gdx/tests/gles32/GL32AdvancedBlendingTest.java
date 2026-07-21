@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.gles32;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL32;
@@ -50,7 +49,7 @@ public class GL32AdvancedBlendingTest extends GdxTest {
 	int mode = 0;
 
 	public void create () {
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		texture = new Texture(files.internal("data/badlogic.jpg"));
 		batch = new SpriteBatch();
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, 1, 1);
 	}
@@ -63,7 +62,7 @@ public class GL32AdvancedBlendingTest extends GdxTest {
 
 	@Override
 	public void render () {
-		if (Gdx.input.justTouched()) {
+		if (input.justTouched()) {
 			mode = (mode + 1) % modes.length;
 		}
 
@@ -74,11 +73,11 @@ public class GL32AdvancedBlendingTest extends GdxTest {
 
 		batch.flush();
 
-		Gdx.gl.glBlendEquation(modes[mode]);
+		gl.glBlendEquation(modes[mode]);
 		batch.draw(texture, 0, 0, .5f, .5f);
 
 		batch.end();
 
-		Gdx.gl.glBlendEquation(GL20.GL_FUNC_ADD);
+		gl.glBlendEquation(GL20.GL_FUNC_ADD);
 	}
 }

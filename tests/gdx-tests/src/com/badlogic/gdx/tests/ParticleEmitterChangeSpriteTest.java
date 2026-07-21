@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
@@ -53,8 +52,8 @@ public class ParticleEmitterChangeSpriteTest extends GdxTest {
 		}
 
 		effect = new ParticleEffect();
-		effect.load(Gdx.files.internal("data/test.p"), Gdx.files.internal("data"));
-		effect.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		effect.load(files.internal("data/test.p"), files.internal("data"));
+		effect.setPosition(graphics.getWidth() / 2, graphics.getHeight() / 2);
 		// Of course, a ParticleEffect is normally just used, without messing around with its emitters.
 		emitters = new Array(effect.getEmitters());
 		effect.getEmitters().clear();
@@ -63,7 +62,7 @@ public class ParticleEmitterChangeSpriteTest extends GdxTest {
 		inputProcessor = new InputAdapter() {
 
 			public boolean touchDragged (int x, int y, int pointer) {
-				effect.setPosition(x, Gdx.graphics.getHeight() - y);
+				effect.setPosition(x, graphics.getHeight() - y);
 				return false;
 			}
 
@@ -75,7 +74,7 @@ public class ParticleEmitterChangeSpriteTest extends GdxTest {
 			}
 		};
 
-		Gdx.input.setInputProcessor(inputProcessor);
+		input.setInputProcessor(inputProcessor);
 	}
 
 	@Override
@@ -86,16 +85,16 @@ public class ParticleEmitterChangeSpriteTest extends GdxTest {
 	}
 
 	public void render () {
-		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		float delta = Gdx.graphics.getDeltaTime();
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, graphics.getWidth(), graphics.getHeight());
+		float delta = graphics.getDeltaTime();
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		effect.draw(spriteBatch, delta);
 		spriteBatch.end();
 		fpsCounter += delta;
 		if (fpsCounter > 3) {
 			fpsCounter = 0;
-			Gdx.app.log("libgdx", "current sprite: " + currentSprite + ", FPS: " + Gdx.graphics.getFramesPerSecond());
+			app.log("libgdx", "current sprite: " + currentSprite + ", FPS: " + graphics.getFramesPerSecond());
 		}
 	}
 

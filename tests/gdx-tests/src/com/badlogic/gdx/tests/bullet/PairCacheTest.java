@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -113,7 +112,7 @@ public class PairCacheTest extends BaseBulletTest {
 
 	@Override
 	public void render () {
-		final float dt = Gdx.graphics.getDeltaTime();
+		final float dt = graphics.getDeltaTime();
 		ghostEntity.transform.idt();
 		ghostEntity.transform.rotate(Vector3.X, angleX = (angleX + dt * SPEED_X) % 360);
 		ghostEntity.transform.rotate(Vector3.Y, angleY = (angleY + dt * SPEED_Y) % 360);

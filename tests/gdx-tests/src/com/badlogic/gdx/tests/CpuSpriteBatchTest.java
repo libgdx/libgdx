@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -68,7 +67,7 @@ public class CpuSpriteBatchTest extends GdxTest {
 
 		stage = new Stage(new ExtendViewport(500, 500), batch);
 
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 
 		texture = new Texture("data/bobargb8888-32x32.png");
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -119,7 +118,7 @@ public class CpuSpriteBatchTest extends GdxTest {
 	public void render () {
 		ScreenUtils.clear(0.5f, 0.5f, 0.5f, 1);
 
-		stage.act(Gdx.graphics.getDeltaTime());
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 
 		long now = TimeUtils.nanoTime();
@@ -128,7 +127,7 @@ public class CpuSpriteBatchTest extends GdxTest {
 		if (now - sampleStartTime > 1000000000) {
 			if (sampleStartTime != 0) {
 				int renderCalls = ((SpriteBatch)stage.getBatch()).renderCalls;
-				Gdx.app.log("CpuSpriteBatch", "FPS: " + sampleFrames + ", render calls: " + renderCalls);
+				app.log("CpuSpriteBatch", "FPS: " + sampleFrames + ", render calls: " + renderCalls);
 			}
 			sampleStartTime = now;
 			sampleFrames = 0;

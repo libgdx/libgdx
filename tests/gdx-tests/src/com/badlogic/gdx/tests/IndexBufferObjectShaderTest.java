@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -45,15 +44,15 @@ public class IndexBufferObjectShaderTest extends GdxTest {
 	public void render () {
 // System.out.println( "render");
 
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		shader.bind();
 		shader.setUniformi("u_texture", 0);
 		texture.bind();
 		vbo.bind(shader);
 		ibo.bind();
-		Gdx.gl20.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT, 0);
+		gl20.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT, 0);
 		ibo.unbind();
 		vbo.unbind(shader);
 	}
@@ -80,7 +79,7 @@ public class IndexBufferObjectShaderTest extends GdxTest {
 		ibo = new IndexBufferObject(true, 3);
 		ibo.setIndices(new short[] {0, 1, 2}, 0, 3);
 
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		texture = new Texture(files.internal("data/badlogic.jpg"));
 	}
 
 	@Override

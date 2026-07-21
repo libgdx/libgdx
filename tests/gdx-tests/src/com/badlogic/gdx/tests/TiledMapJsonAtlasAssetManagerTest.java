@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
@@ -55,8 +54,8 @@ public class TiledMapJsonAtlasAssetManagerTest extends GdxTest {
 
 	@Override
 	public void create () {
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
+		float w = graphics.getWidth();
+		float h = graphics.getHeight();
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, (w / h) * 10, 10);
@@ -64,7 +63,7 @@ public class TiledMapJsonAtlasAssetManagerTest extends GdxTest {
 		camera.update();
 
 		cameraController = new OrthoCamController(camera);
-		Gdx.input.setInputProcessor(cameraController);
+		input.setInputProcessor(cameraController);
 
 		font = new BitmapFont();
 		batch = new SpriteBatch();
@@ -98,13 +97,13 @@ public class TiledMapJsonAtlasAssetManagerTest extends GdxTest {
 			map = assetManager.get(fileName);
 			renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
 		} else if (renderer != null) {
-			if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+			if (input.isKeyJustPressed(Input.Keys.NUM_1)) {
 				if (mapType != 0) {
 					mapType = 0;
 					map = assetManager.get(fileName);
 					renderer = new OrthogonalTiledMapRenderer(map, 1f / 32f);
 				}
-			} else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+			} else if (input.isKeyJustPressed(Input.Keys.NUM_2)) {
 				if (mapType != 1) {
 					if (renderer instanceof Disposable) ((Disposable)renderer).dispose();
 					mapType = 1;
@@ -119,7 +118,7 @@ public class TiledMapJsonAtlasAssetManagerTest extends GdxTest {
 
 		batch.begin();
 		if (errorMessage != null) font.draw(batch, "ERROR (OK if running in GWT): " + errorMessage, 10, 50);
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+		font.draw(batch, "FPS: " + graphics.getFramesPerSecond(), 10, 20);
 		font.draw(batch, "Press keys 1 and 2 to toggle between a map with packed imagelayers.", 170, 20);
 		batch.end();
 	}

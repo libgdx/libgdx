@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import java.util.Random;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -50,9 +49,9 @@ public class ProjectTest extends GdxTest {
 	@Override
 	public void create () {
 		ObjLoader objLoader = new ObjLoader();
-		sphere = objLoader.loadModel(Gdx.files.internal("data/sphere.obj"));
+		sphere = objLoader.loadModel(files.internal("data/sphere.obj"));
 		sphere.materials.get(0).set(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE));
-		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam = new PerspectiveCamera(45, graphics.getWidth(), graphics.getHeight());
 		cam.far = 200;
 		Random rand = new Random();
 		for (int i = 0; i < instances.length; i++) {
@@ -61,15 +60,15 @@ public class ProjectTest extends GdxTest {
 		}
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		logo = new TextureRegion(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
+		logo = new TextureRegion(new Texture(files.internal("data/badlogicsmall.jpg")));
 		modelBatch = new ModelBatch();
 	}
 
 	@Override
 	public void render () {
 
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		gl.glEnable(GL20.GL_DEPTH_TEST);
 
 		cam.update();
 
@@ -88,10 +87,10 @@ public class ProjectTest extends GdxTest {
 		}
 		modelBatch.end();
 
-		if (Gdx.input.isKeyPressed(Keys.A)) cam.rotate(20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
-		if (Gdx.input.isKeyPressed(Keys.D)) cam.rotate(-20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
+		if (input.isKeyPressed(Keys.A)) cam.rotate(20 * graphics.getDeltaTime(), 0, 1, 0);
+		if (input.isKeyPressed(Keys.D)) cam.rotate(-20 * graphics.getDeltaTime(), 0, 1, 0);
 
-		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+		gl.glDisable(GL20.GL_DEPTH_TEST);
 		batch.begin();
 		for (int i = 0; i < instances.length; i++) {
 			instances[i].transform.getTranslation(tmp);

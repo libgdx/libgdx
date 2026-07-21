@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,15 +31,15 @@ public class CustomShaderSpriteBatchTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch(10);
 		ShaderProgram.pedantic = false;
-		shader = new ShaderProgram(Gdx.files.internal("data/shaders/batch.vert").readString(),
-			Gdx.files.internal("data/shaders/batch.frag").readString());
+		shader = new ShaderProgram(files.internal("data/shaders/batch.vert").readString(),
+			files.internal("data/shaders/batch.frag").readString());
 		batch.setShader(shader);
 		texture = new Texture("data/badlogic.jpg");
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(texture, 0, 0);
 		batch.end();

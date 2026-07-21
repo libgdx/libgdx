@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.bullet;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -35,7 +34,7 @@ public class BasicShapesTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 
-		final Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		final Texture texture = new Texture(files.internal("data/badlogic.jpg"));
 		disposables.add(texture);
 		final Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1, 1, 1, 1),
 			FloatAttribute.createShininess(8f));

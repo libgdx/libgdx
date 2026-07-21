@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -37,9 +36,9 @@ public class SystemCursorTest extends GdxTest {
 	public void create () {
 		super.create();
 		stage = new Stage(new ScreenViewport());
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(files.internal("data/uiskin.json"));
 
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 
 		Table table = new Table();
 		table.setFillParent(true);
@@ -50,7 +49,7 @@ public class SystemCursorTest extends GdxTest {
 			button.addListener(new ChangeListener() {
 				@Override
 				public void changed (ChangeEvent event, Actor actor) {
-					Gdx.graphics.setSystemCursor(cursor);
+					graphics.setSystemCursor(cursor);
 				}
 			});
 			table.add(button).row();

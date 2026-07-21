@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.gles3;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -55,7 +54,7 @@ public class InstancedRenderingSpriteTest extends GdxTest {
 
 	@Override
 	public void create () {
-		if (Gdx.gl30 == null) {
+		if (gl30 == null) {
 			throw new GdxRuntimeException("GLES 3.0 profile required for this test");
 		}
 
@@ -63,8 +62,8 @@ public class InstancedRenderingSpriteTest extends GdxTest {
 		String ofs = ShaderProgram.prependFragmentCode;
 		ShaderProgram.prependVertexCode = "#version 300 es\n";
 		ShaderProgram.prependFragmentCode = "#version 300 es\n";
-		shader = new ShaderProgram(Gdx.files.internal("data/shaders/sprite-instanced.vert"),
-			Gdx.files.internal("data/shaders/sprite-instanced.frag"));
+		shader = new ShaderProgram(files.internal("data/shaders/sprite-instanced.vert"),
+			files.internal("data/shaders/sprite-instanced.frag"));
 		if (!shader.isCompiled()) {
 			throw new GdxRuntimeException("Shader compile error: " + shader.getLog());
 		}
@@ -95,7 +94,7 @@ public class InstancedRenderingSpriteTest extends GdxTest {
 		((Buffer)offsets).position(0);
 		mesh.setInstanceData(offsets);
 
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		texture = new Texture(files.internal("data/badlogic.jpg"));
 		sprite = new Sprite(texture);
 		sprite.setSize(1, 1);
 		sprite.setPosition(5, 5);
@@ -104,7 +103,7 @@ public class InstancedRenderingSpriteTest extends GdxTest {
 
 		batch = new SpriteBatch();
 
-		glProfiler = new GLProfiler(Gdx.graphics);
+		glProfiler = new GLProfiler(graphics);
 		glProfiler.enable();
 	}
 
@@ -138,7 +137,7 @@ public class InstancedRenderingSpriteTest extends GdxTest {
 
 		int drawCalls = glProfiler.getDrawCalls();
 
-		System.out.println("Draw Calls: " + drawCalls + " and " + Gdx.graphics.getFramesPerSecond() + " FPS");
+		System.out.println("Draw Calls: " + drawCalls + " and " + graphics.getFramesPerSecond() + " FPS");
 	}
 
 	@Override

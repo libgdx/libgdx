@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -35,6 +34,6 @@ public class DeltaTimeTest extends GdxTest {
 		float deltaTime = (frameTime - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = frameTime;
 
-		Gdx.app.log("DeltaTimeTest", "delta: " + deltaTime + ", gdx delta: " + Gdx.graphics.getDeltaTime());
+		app.log("DeltaTimeTest", "delta: " + deltaTime + ", gdx delta: " + graphics.getDeltaTime());
 	}
 }

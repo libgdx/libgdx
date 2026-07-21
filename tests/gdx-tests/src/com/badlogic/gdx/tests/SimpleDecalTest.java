@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -41,21 +40,21 @@ public class SimpleDecalTest extends GdxTest {
 	FPSLogger logger = new FPSLogger();
 
 	public void create () {
-		float width = Gdx.graphics.getWidth();
-		float height = Gdx.graphics.getHeight();
+		float width = graphics.getWidth();
+		float height = graphics.getHeight();
 
-		camera = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new PerspectiveCamera(45, graphics.getWidth(), graphics.getHeight());
 		camera.near = 1;
 		camera.far = 300;
 		camera.position.set(0, 0, 5);
 		controller = new PerspectiveCamController(camera);
 
-		Gdx.input.setInputProcessor(controller);
+		input.setInputProcessor(controller);
 		batch = new DecalBatch(new CameraGroupStrategy(camera));
 
-		TextureRegion[] textures = {new TextureRegion(new Texture(Gdx.files.internal("data/egg.png"))),
-			new TextureRegion(new Texture(Gdx.files.internal("data/sys.png"))),
-			new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")))};
+		TextureRegion[] textures = {new TextureRegion(new Texture(files.internal("data/egg.png"))),
+			new TextureRegion(new Texture(files.internal("data/sys.png"))),
+			new TextureRegion(new Texture(files.internal("data/badlogic.jpg")))};
 
 		Decal decal = Decal.newDecal(1, 1, textures[1]);
 		decal.setPosition(0, 0, 0);
@@ -83,7 +82,7 @@ public class SimpleDecalTest extends GdxTest {
 
 	public void render () {
 		ScreenUtils.clear(Color.DARK_GRAY, true);
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		gl.glEnable(GL20.GL_DEPTH_TEST);
 
 		camera.update();
 		for (int i = 0; i < decals.size; i++) {

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -113,10 +112,10 @@ public class SimpleStageCullingTest extends GdxTest {
 		stage = new Stage();
 		;
 		camController = new OrthoCamController((OrthographicCamera)stage.getCamera()); // we know it's an ortho cam at this point!
-		Gdx.input.setInputProcessor(camController);
+		input.setInputProcessor(camController);
 
 		// load a dummy texture
-		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture = new Texture(files.internal("data/badlogicsmall.jpg"));
 
 		// populate the stage with some actors and groups.
 		for (int i = 0; i < 5000; i++) {
@@ -128,11 +127,11 @@ public class SimpleStageCullingTest extends GdxTest {
 
 		// we also want to output the number of visible actors, so we need a SpriteBatch and a BitmapFont
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/lsans-15.fnt"), false);
+		font = new BitmapFont(files.internal("data/lsans-15.fnt"), false);
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.draw();
 
 		// check how many actors are visible.
@@ -143,7 +142,7 @@ public class SimpleStageCullingTest extends GdxTest {
 		}
 
 		batch.begin();
-		font.draw(batch, "Visible: " + numVisible + ", fps: " + Gdx.graphics.getFramesPerSecond(), 20, 30);
+		font.draw(batch, "Visible: " + numVisible + ", fps: " + graphics.getFramesPerSecond(), 20, 30);
 		batch.end();
 	}
 

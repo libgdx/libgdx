@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.net;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
@@ -74,17 +73,17 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(files.internal("data/uiskin.json"));
 		font = new BitmapFont();
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 
 		{
 			statusLabel = new Label("", skin);
 			statusLabel.setWrap(true);
-			statusLabel.setWidth(Gdx.graphics.getWidth() * 0.96f);
+			statusLabel.setWidth(graphics.getWidth() * 0.96f);
 			statusLabel.setAlignment(Align.center);
-			statusLabel.setPosition(Gdx.graphics.getWidth() * 0.5f - statusLabel.getWidth() * 0.5f, 30f);
+			statusLabel.setPosition(graphics.getWidth() * 0.5f - statusLabel.getWidth() * 0.5f, 30f);
 			statusLabel.setColor(Color.CYAN);
 			stage.addActor(statusLabel);
 		}
@@ -113,7 +112,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 					else if (clickedButton == btnDownloadError)
 						url = "https://libgdx.com/doesnotexist";
 					else if (clickedButton == btnOpenUri) {
-						Gdx.net.openURI("https://libgdx.com");
+						net.openURI("https://libgdx.com");
 						return;
 					} else {
 						url = "https://httpbin.org/post";
@@ -124,7 +123,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 					httpRequest = new HttpRequest(httpMethod);
 					httpRequest.setUrl(url);
 					httpRequest.setContent(requestContent);
-					Gdx.net.sendHttpRequest(httpRequest, NetAPITest.this);
+					net.sendHttpRequest(httpRequest, NetAPITest.this);
 
 					statusLabel.setText("Downloading data from " + httpRequest.getUrl());
 				}
@@ -135,15 +134,15 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 				public void clicked (InputEvent event, float x, float y) {
 					super.clicked(event, x, y);
 					if (httpRequest != null) {
-						Gdx.net.cancelHttpRequest(httpRequest);
-						Gdx.app.log("NetAPITest", "Cancelling request " + httpRequest.getUrl());
+						net.cancelHttpRequest(httpRequest);
+						app.log("NetAPITest", "Cancelling request " + httpRequest.getUrl());
 						statusLabel.setText("Cancelling request " + httpRequest.getUrl());
 					}
 				}
 			};
 
 			btnCancel = new TextButton("Cancel", skin);
-			btnCancel.setPosition(Gdx.graphics.getWidth() * 0.10f, 60f);
+			btnCancel.setPosition(graphics.getWidth() * 0.10f, 60f);
 			btnCancel.addListener(cancelListener);
 			stage.addActor(btnCancel);
 
@@ -186,7 +185,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 
 		final int statusCode = httpResponse.getStatus().getStatusCode();
 		// We are not in main thread right now so we need to post to main thread for ui updates
-		Gdx.app.postRunnable(new Runnable() {
+		app.postRunnable(new Runnable() {
 			@Override
 			public void run () {
 				statusLabel.setText("HTTP Request status: " + statusCode);
@@ -195,14 +194,14 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 		});
 
 		if (statusCode != 200) {
-			Gdx.app.log("NetAPITest", "An error ocurred since statusCode is not OK");
+			app.log("NetAPITest", "An error ocurred since statusCode is not OK");
 			setText(httpResponse);
 			return;
 		}
 
 		if (clickedButton == btnDownloadImage) {
 			final byte[] rawImageBytes = httpResponse.getResult();
-			Gdx.app.postRunnable(new Runnable() {
+			app.postRunnable(new Runnable() {
 				public void run () {
 					Pixmap pixmap = new Pixmap(rawImageBytes, 0, rawImageBytes.length);
 					texture = new Texture(pixmap);
@@ -210,13 +209,13 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			});
 
 		} else if (clickedButton == btnDownloadLarge) {
-			Gdx.app.postRunnable(new Runnable() {
+			app.postRunnable(new Runnable() {
 				public void run () {
 					text = "Retrieving large file...";
 				}
 			});
 			final byte[] rawFileBytes = httpResponse.getResult();
-			Gdx.app.postRunnable(new Runnable() {
+			app.postRunnable(new Runnable() {
 				public void run () {
 					text = "Retrieved large file: " + rawFileBytes.length;
 				}
@@ -229,7 +228,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 
 	void setText (HttpResponse httpResponse) {
 		final String newText = httpResponse.getResultAsString();
-		Gdx.app.postRunnable(new Runnable() {
+		app.postRunnable(new Runnable() {
 			public void run () {
 				text = newText;
 			}
@@ -265,15 +264,15 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 
 		if (texture != null) {
 			batch.begin();
-			batch.draw(texture, Gdx.graphics.getWidth() * 0.5f - texture.getWidth() * 0.5f, 100f);
+			batch.draw(texture, graphics.getWidth() * 0.5f - texture.getWidth() * 0.5f, 100f);
 			batch.end();
 		} else if (text != null) {
 			batch.begin();
-			font.draw(batch, text, 10, Gdx.graphics.getHeight() - 10);
+			font.draw(batch, text, 10, graphics.getHeight() - 10);
 			batch.end();
 		}
 
-		stage.act(Gdx.graphics.getDeltaTime());
+		stage.act(graphics.getDeltaTime());
 		stage.draw();
 	}
 
@@ -284,10 +283,10 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 
 	@Override
 	public void cancelled () {
-		Gdx.app.postRunnable(new Runnable() {
+		app.postRunnable(new Runnable() {
 			public void run () {
 				setButtonDisabled(false);
-				Gdx.app.log("NetAPITest", "HTTP request cancelled");
+				app.log("NetAPITest", "HTTP request cancelled");
 				statusLabel.setText("HTTP request cancelled");
 			}
 		});

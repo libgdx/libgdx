@@ -1,7 +1,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,12 +18,12 @@ public class DpiTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		font.draw(batch,
-			"Density: " + Gdx.graphics.getDensity() + "\n" + "PPC-x: " + Gdx.graphics.getPpcX() + "\n" + "PPC-y: "
-				+ Gdx.graphics.getPpcY() + "\n" + "PPI-x: " + Gdx.graphics.getPpiX() + "\n" + "PPI-y: " + Gdx.graphics.getPpiY(),
-			0, Gdx.graphics.getHeight());
+			"Density: " + graphics.getDensity() + "\n" + "PPC-x: " + graphics.getPpcX() + "\n" + "PPC-y: "
+				+ graphics.getPpcY() + "\n" + "PPI-x: " + graphics.getPpiX() + "\n" + "PPI-y: " + graphics.getPpiY(),
+			0, graphics.getHeight());
 		batch.end();
 	}
 

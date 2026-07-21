@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -42,7 +41,7 @@ public class DelaunayTriangulatorTest extends GdxTest {
 		triangulate();
 		System.out.println(seed);
 
-		Gdx.input.setInputProcessor(new InputAdapter() {
+		input.setInputProcessor(new InputAdapter() {
 			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 				seed = MathUtils.random.nextLong();
 				System.out.println(seed);
@@ -75,14 +74,14 @@ public class DelaunayTriangulatorTest extends GdxTest {
 			} while (points.contains(value));
 			points.add(value);
 		}
-		points.add(Gdx.input.getX());
-		points.add(Gdx.graphics.getHeight() - Gdx.input.getY());
+		points.add(input.getX());
+		points.add(graphics.getHeight() - input.getY());
 
 		triangles = trianglulator.computeTriangles(points, false);
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		renderer.setColor(Color.RED);
 		renderer.begin(ShapeType.Filled);

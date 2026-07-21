@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -46,12 +45,12 @@ public class LabelTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		renderer = new ShapeRenderer();
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(files.internal("data/uiskin.json"));
 		skin.getAtlas().getTextures().iterator().next().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		skin.getFont("default-font").getData().markupEnabled = true;
 		skin.getFont("default-font").getData().setScale(scale);
 		stage = new Stage(new ScreenViewport());
-		Gdx.input.setInputProcessor(stage);
+		input.setInputProcessor(stage);
 
 		// skin.getFont("default-font").getData().getGlyph('T').xoffset = -20;
 		skin.getFont("default-font").getData().getGlyph('B').setKerning('B', -5);
@@ -122,7 +121,7 @@ public class LabelTest extends GdxTest {
 	public void render () {
 		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
 
-		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+		stage.act(Math.min(graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
 
 		float x = 40, y = 15 + 20 * scale;

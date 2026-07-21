@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -35,13 +34,13 @@ public class ImageTest extends GdxTest {
 
 	@Override
 	public void create () {
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
+		skin = new Skin(files.internal("data/uiskin.json"));
+		image2 = new TextureRegion(new Texture(files.internal("data/badlogic.jpg")));
 		ui = new Stage();
-		Gdx.input.setInputProcessor(ui);
+		input.setInputProcessor(ui);
 
 		root = new Table();
-		root.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		root.setSize(graphics.getWidth(), graphics.getHeight());
 		ui.addActor(root);
 		root.debug();
 
@@ -60,7 +59,7 @@ public class ImageTest extends GdxTest {
 	@Override
 	public void render () {
 		ScreenUtils.clear(0.2f, 0.2f, 0.2f, 1);
-		ui.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+		ui.act(Math.min(graphics.getDeltaTime(), 1 / 30f));
 		ui.draw();
 	}
 

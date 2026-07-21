@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
@@ -56,8 +55,8 @@ public class KinematicBodyTest extends GdxTest {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		world.step(Math.min(0.032f, Gdx.graphics.getDeltaTime()), 3, 4);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		world.step(Math.min(0.032f, graphics.getDeltaTime()), 3, 4);
 		cam.update();
 		renderer.render(world, cam.combined);
 	}

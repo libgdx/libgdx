@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -51,7 +50,7 @@ public class StageDebugTest extends GdxTest {
 	public void create () {
 		textureRegion = new TextureRegion(new Texture("data/badlogic.jpg"));
 
-		Gdx.input.setInputProcessor(this);
+		input.setInputProcessor(this);
 
 		stage1 = new Stage();
 		stage1.getCamera().position.set(100, 100, 0);
@@ -74,7 +73,7 @@ public class StageDebugTest extends GdxTest {
 		group.debugAll();
 
 		stage2 = new Stage();
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		Skin skin = new Skin(files.internal("data/uiskin.json"));
 
 		TextButton shortButton = new TextButton("Button short", skin);
 		shortButton.debug();
@@ -101,7 +100,7 @@ public class StageDebugTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		stage.act();
 		stage.draw();
 	}

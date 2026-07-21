@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,7 +31,7 @@ public class SpriteCacheOffsetTest extends GdxTest implements InputProcessor {
 	private Texture texture;
 
 	public void create () {
-		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture = new Texture(files.internal("data/badlogicsmall.jpg"));
 		Sprite sprite = new Sprite(texture);
 		sprite.setSize(tileSize, tileSize);
 
@@ -49,7 +48,7 @@ public class SpriteCacheOffsetTest extends GdxTest implements InputProcessor {
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		cache.begin();
 		for (int y = 1; y < tileMapHeight - 1; y++)
 			cache.draw(y, 1, tileMapWidth - 2);

@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -47,7 +46,7 @@ public class SpriteBatchShaderTest extends GdxTest {
 
 	@Override
 	public void render () {
-		GL20 gl = Gdx.gl20;
+		GL20 gl = gl20;
 		gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -84,7 +83,7 @@ public class SpriteBatchShaderTest extends GdxTest {
 		end = (TimeUtils.nanoTime() - start) / 1000000000.0f;
 
 		if (TimeUtils.nanoTime() - startTime > 1000000000) {
-			Gdx.app.log("SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1
+			app.log("SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1
 				+ ", " + draw2 + ", " + drawText + ", " + end);
 			frames = 0;
 			startTime = TimeUtils.nanoTime();
@@ -95,7 +94,7 @@ public class SpriteBatchShaderTest extends GdxTest {
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();
-		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture = new Texture(files.internal("data/badlogicsmall.jpg"));
 
 		Pixmap pixmap = new Pixmap(32, 32, Format.RGB565);
 		pixmap.setColor(1, 1, 0, 0.7f);
@@ -104,10 +103,10 @@ public class SpriteBatchShaderTest extends GdxTest {
 		pixmap.dispose();
 
 		for (int i = 0; i < coords.length; i += 2) {
-			coords[i] = (int)(Math.random() * Gdx.graphics.getWidth());
-			coords[i + 1] = (int)(Math.random() * Gdx.graphics.getHeight());
-			coords2[i] = (int)(Math.random() * Gdx.graphics.getWidth());
-			coords2[i + 1] = (int)(Math.random() * Gdx.graphics.getHeight());
+			coords[i] = (int)(Math.random() * graphics.getWidth());
+			coords[i + 1] = (int)(Math.random() * graphics.getHeight());
+			coords2[i] = (int)(Math.random() * graphics.getWidth());
+			coords2[i + 1] = (int)(Math.random() * graphics.getHeight());
 		}
 	}
 

@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -50,7 +49,7 @@ public class FogTest extends GdxTest implements ApplicationListener {
 		environment.set(new ColorAttribute(ColorAttribute.Fog, 0.13f, 0.13f, 0.13f, 1f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam = new PerspectiveCamera(67, graphics.getWidth(), graphics.getHeight());
 		cam.position.set(30f, 10f, 30f);
 		cam.lookAt(0, 0, 0);
 		cam.near = 0.1f;
@@ -62,7 +61,7 @@ public class FogTest extends GdxTest implements ApplicationListener {
 			Usage.Position | Usage.Normal);
 		instance = new ModelInstance(model);
 
-		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
+		input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
 	}
 
 	@Override
@@ -72,7 +71,7 @@ public class FogTest extends GdxTest implements ApplicationListener {
 
 		inputController.update();
 
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
+		gl.glViewport(0, 0, graphics.getBackBufferWidth(), graphics.getBackBufferHeight());
 
 		ScreenUtils.clear(0.13f, 0.13f, 0.13f, 1, true);
 
@@ -85,7 +84,7 @@ public class FogTest extends GdxTest implements ApplicationListener {
 
 	private void animate () {
 
-		delta = Gdx.graphics.getDeltaTime();
+		delta = graphics.getDeltaTime();
 
 		instance.transform.val[14] += delta * 4 * dir;
 
