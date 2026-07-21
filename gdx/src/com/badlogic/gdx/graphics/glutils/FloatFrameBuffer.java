@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -47,11 +48,16 @@ public class FloatFrameBuffer extends FrameBuffer {
 	 * @param hasDepth whether to attach a depth buffer
 	 * @throws GdxRuntimeException in case the FrameBuffer could not be created */
 	public FloatFrameBuffer (int width, int height, boolean hasDepth) {
-		checkExtensions();
-		FloatFrameBufferBuilder bufferBuilder = new FloatFrameBufferBuilder(width, height);
+		this(Gdx.graphics, width, height, hasDepth);
+	}
+
+	public FloatFrameBuffer (Graphics graphics, int width, int height, boolean hasDepth) {
+		checkExtensions(graphics);
+		FloatFrameBufferBuilder bufferBuilder = new FloatFrameBufferBuilder(graphics, width, height);
 		bufferBuilder.addFloatAttachment(GL30.GL_RGBA32F, GL30.GL_RGBA, GL30.GL_FLOAT, false);
 		if (hasDepth) bufferBuilder.addBasicDepthRenderBuffer();
 		this.bufferBuilder = bufferBuilder;
+		this.graphics = graphics;
 
 		build();
 	}
@@ -60,7 +66,7 @@ public class FloatFrameBuffer extends FrameBuffer {
 	protected Texture createTexture (FrameBufferTextureAttachmentSpec attachmentSpec) {
 		FloatTextureData data = new FloatTextureData(bufferBuilder.width, bufferBuilder.height, attachmentSpec.internalFormat,
 			attachmentSpec.format, attachmentSpec.type, attachmentSpec.isGpuOnly);
-		Texture result = new Texture(data);
+		Texture result = new Texture(graphics, data);
 		if (Gdx.app.getType() == ApplicationType.Desktop || Gdx.app.getType() == ApplicationType.Applet)
 			result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		else
@@ -72,9 +78,13 @@ public class FloatFrameBuffer extends FrameBuffer {
 
 	/** Check for support for any required extensions on the current platform. */
 	private void checkExtensions () {
-		if (Gdx.graphics.isGL30Available() && Gdx.app.getType() == ApplicationType.WebGL) {
+		checkExtensions(graphics != null ? graphics : Gdx.graphics);
+	}
+
+	private void checkExtensions (Graphics graphics) {
+		if (graphics.isGL30Available() && Gdx.app.getType() == ApplicationType.WebGL) {
 			// For WebGL2, Rendering to a Floating Point Texture requires this extension
-			if (!Gdx.graphics.supportsExtension("EXT_color_buffer_float"))
+			if (!graphics.supportsExtension("EXT_color_buffer_float"))
 				throw new GdxRuntimeException("Extension EXT_color_buffer_float not supported!");
 		}
 	}

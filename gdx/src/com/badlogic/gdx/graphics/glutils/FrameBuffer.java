@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -55,7 +56,11 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached. */
 	public FrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth) {
-		this(format, width, height, hasDepth, false);
+		this(Gdx.graphics, format, width, height, hasDepth, false);
+	}
+
+	public FrameBuffer (Graphics graphics, Pixmap.Format format, int width, int height, boolean hasDepth) {
+		this(graphics, format, width, height, hasDepth, false);
 	}
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
@@ -67,11 +72,16 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 	 * @param hasDepth whether to attach a depth buffer
 	 * @throws com.badlogic.gdx.utils.GdxRuntimeException in case the FrameBuffer could not be created */
 	public FrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil) {
-		FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(width, height);
+		this(Gdx.graphics, format, width, height, hasDepth, hasStencil);
+	}
+
+	public FrameBuffer (Graphics graphics, Pixmap.Format format, int width, int height, boolean hasDepth, boolean hasStencil) {
+		FrameBufferBuilder frameBufferBuilder = new FrameBufferBuilder(graphics, width, height);
 		frameBufferBuilder.addBasicColorTextureAttachment(format);
 		if (hasDepth) frameBufferBuilder.addBasicDepthRenderBuffer();
 		if (hasStencil) frameBufferBuilder.addBasicStencilRenderBuffer();
 		this.bufferBuilder = frameBufferBuilder;
+		this.graphics = graphics;
 
 		build();
 	}
@@ -80,7 +90,7 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 	protected Texture createTexture (FrameBufferTextureAttachmentSpec attachmentSpec) {
 		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat,
 			attachmentSpec.format, attachmentSpec.type);
-		Texture result = new Texture(data);
+		Texture result = new Texture(graphics, data);
 		// Filtering support for depth textures on WebGL is spotty https://github.com/KhronosGroup/OpenGL-API/issues/84
 		boolean webGLDepth = attachmentSpec.isDepth && Gdx.app.getType() == Application.ApplicationType.WebGL;
 		if (!webGLDepth) {
@@ -97,7 +107,7 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 
 	@Override
 	protected void attachFrameBufferColorTexture (Texture texture) {
-		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
+		graphics.getGL20().glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
 			texture.getTextureObjectHandle(), 0);
 	}
 

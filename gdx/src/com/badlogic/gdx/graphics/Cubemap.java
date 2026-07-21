@@ -144,7 +144,13 @@ public class Cubemap extends GLTexture {
 	/** Construct a Cubemap with the specified {@link TextureData}'s for the sides */
 	public Cubemap (TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY,
 		TextureData positiveZ, TextureData negativeZ) {
-		this(new FacedCubemapData(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ));
+		this(Gdx.graphics, positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ);
+	}
+
+	/** Construct a Cubemap with the specified {@link TextureData}'s for the sides */
+	public Cubemap (Graphics graphics, TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY,
+		TextureData positiveZ, TextureData negativeZ) {
+		this(graphics, new FacedCubemapData(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ));
 	}
 
 	/** Sets the sides of this cubemap to the specified {@link CubemapData}. */
