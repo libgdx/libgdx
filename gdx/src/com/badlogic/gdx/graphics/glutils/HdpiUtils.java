@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL20;
 
 /** To deal with HDPI monitors properly, use the glViewport and glScissor functions of this class instead of directly calling
@@ -49,42 +50,68 @@ public class HdpiUtils {
 	/** Calls {@link GL20#glScissor(int, int, int, int)}, expecting the coordinates and sizes given in logical coordinates and
 	 * automatically converts them to backbuffer coordinates, which may be bigger on HDPI screens. */
 	public static void glScissor (int x, int y, int width, int height) {
-		if (mode == HdpiMode.Logical && (Gdx.graphics.getWidth() != Gdx.graphics.getBackBufferWidth()
-			|| Gdx.graphics.getHeight() != Gdx.graphics.getBackBufferHeight())) {
-			Gdx.gl.glScissor(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
+		glScissor(Gdx.graphics, x, y, width, height);
+	}
+
+	public static void glScissor (Graphics graphics, int x, int y, int width, int height) {
+		if (mode == HdpiMode.Logical && (graphics.getWidth() != graphics.getBackBufferWidth()
+			|| graphics.getHeight() != graphics.getBackBufferHeight())) {
+			graphics.getGL20().glScissor(toBackBufferX(graphics, x), toBackBufferY(graphics, y), toBackBufferX(graphics, width),
+				toBackBufferY(graphics, height));
 		} else {
-			Gdx.gl.glScissor(x, y, width, height);
+			graphics.getGL20().glScissor(x, y, width, height);
 		}
 	}
 
 	/** Calls {@link GL20#glViewport(int, int, int, int)}, expecting the coordinates and sizes given in logical coordinates and
 	 * automatically converts them to backbuffer coordinates, which may be bigger on HDPI screens. */
 	public static void glViewport (int x, int y, int width, int height) {
-		if (mode == HdpiMode.Logical && (Gdx.graphics.getWidth() != Gdx.graphics.getBackBufferWidth()
-			|| Gdx.graphics.getHeight() != Gdx.graphics.getBackBufferHeight())) {
-			Gdx.gl.glViewport(toBackBufferX(x), toBackBufferY(y), toBackBufferX(width), toBackBufferY(height));
+		glViewport(Gdx.graphics, x, y, width, height);
+	}
+
+	public static void glViewport (Graphics graphics, int x, int y, int width, int height) {
+		if (mode == HdpiMode.Logical && (graphics.getWidth() != graphics.getBackBufferWidth()
+			|| graphics.getHeight() != graphics.getBackBufferHeight())) {
+			graphics.getGL20().glViewport(toBackBufferX(graphics, x), toBackBufferY(graphics, y), toBackBufferX(graphics, width),
+				toBackBufferY(graphics, height));
 		} else {
-			Gdx.gl.glViewport(x, y, width, height);
+			graphics.getGL20().glViewport(x, y, width, height);
 		}
 	}
 
 	/** Converts an x-coordinate given in backbuffer coordinates to logical screen coordinates. */
 	public static int toLogicalX (int backBufferX) {
-		return (int)(backBufferX * Gdx.graphics.getWidth() / (float)Gdx.graphics.getBackBufferWidth());
+		return toLogicalX(Gdx.graphics, backBufferX);
+	}
+
+	public static int toLogicalX (Graphics graphics, int backBufferX) {
+		return (int)(backBufferX * graphics.getWidth() / (float)graphics.getBackBufferWidth());
 	}
 
 	/** Converts an y-coordinate given in backbuffer coordinates to logical screen coordinates. */
 	public static int toLogicalY (int backBufferY) {
-		return (int)(backBufferY * Gdx.graphics.getHeight() / (float)Gdx.graphics.getBackBufferHeight());
+		return toLogicalY(Gdx.graphics, backBufferY);
+	}
+
+	public static int toLogicalY (Graphics graphics, int backBufferY) {
+		return (int)(backBufferY * graphics.getHeight() / (float)graphics.getBackBufferHeight());
 	}
 
 	/** Converts an x-coordinate given in logical screen coordinates to backbuffer coordinates. */
 	public static int toBackBufferX (int logicalX) {
-		return (int)(logicalX * Gdx.graphics.getBackBufferWidth() / (float)Gdx.graphics.getWidth());
+		return toBackBufferX(Gdx.graphics, logicalX);
+	}
+
+	public static int toBackBufferX (Graphics graphics, int logicalX) {
+		return (int)(logicalX * graphics.getBackBufferWidth() / (float)graphics.getWidth());
 	}
 
 	/** Converts an y-coordinate given in logical screen coordinates to backbuffer coordinates. */
 	public static int toBackBufferY (int logicalY) {
-		return (int)(logicalY * Gdx.graphics.getBackBufferHeight() / (float)Gdx.graphics.getHeight());
+		return toBackBufferY(Gdx.graphics, logicalY);
+	}
+
+	public static int toBackBufferY (Graphics graphics, int logicalY) {
+		return (int)(logicalY * graphics.getBackBufferHeight() / (float)graphics.getHeight());
 	}
 }

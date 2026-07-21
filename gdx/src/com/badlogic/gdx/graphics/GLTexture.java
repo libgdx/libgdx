@@ -217,7 +217,7 @@ public abstract class GLTexture implements Disposable {
 	 * @param force True to always set the value, even if it is the same as the current values.
 	 * @return The actual level set, which may be lower than the provided value due to device limitations. */
 	public float unsafeSetAnisotropicFilter (float level, boolean force) {
-		float max = getMaxAnisotropicFilterLevel();
+		float max = getMaxAnisotropicFilterLevel(graphics);
 		if (max == 1f) return 1f;
 		level = Math.min(level, max);
 		if (!force && MathUtils.isEqual(level, anisotropicFilterLevel, 0.1f)) return anisotropicFilterLevel;
@@ -230,7 +230,7 @@ public abstract class GLTexture implements Disposable {
 	 * @param level The desired level of filtering. The maximum level supported by the device up to this value will be used.
 	 * @return The actual level set, which may be lower than the provided value due to device limitations. */
 	public float setAnisotropicFilter (float level) {
-		float max = getMaxAnisotropicFilterLevel();
+		float max = getMaxAnisotropicFilterLevel(graphics);
 		if (max == 1f) return 1f;
 		level = Math.min(level, max);
 		if (MathUtils.isEqual(level, anisotropicFilterLevel, 0.1f)) return level;
@@ -246,12 +246,16 @@ public abstract class GLTexture implements Disposable {
 
 	/** @return The maximum supported anisotropic filtering level supported by the device. */
 	public static float getMaxAnisotropicFilterLevel () {
+		return getMaxAnisotropicFilterLevel(Gdx.graphics);
+	}
+
+	public static float getMaxAnisotropicFilterLevel (Graphics graphics) {
 		if (maxAnisotropicFilterLevel > 0) return maxAnisotropicFilterLevel;
-		if (Gdx.graphics.supportsExtension("GL_EXT_texture_filter_anisotropic")) {
+		if (graphics.supportsExtension("GL_EXT_texture_filter_anisotropic")) {
 			FloatBuffer buffer = BufferUtils.newFloatBuffer(16);
 			((Buffer)buffer).position(0);
 			((Buffer)buffer).limit(buffer.capacity());
-			Gdx.gl20.glGetFloatv(GL20.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, buffer);
+			graphics.getGL20().glGetFloatv(GL20.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, buffer);
 			return maxAnisotropicFilterLevel = buffer.get(0);
 		}
 		return maxAnisotropicFilterLevel = 1f;
@@ -271,10 +275,18 @@ public abstract class GLTexture implements Disposable {
 	}
 
 	protected static void uploadImageData (int target, TextureData data) {
-		uploadImageData(target, data, 0);
+		uploadImageData(Gdx.graphics, target, data, 0);
+	}
+
+	protected static void uploadImageData (Graphics graphics, int target, TextureData data) {
+		uploadImageData(graphics, target, data, 0);
 	}
 
 	public static void uploadImageData (int target, TextureData data, int miplevel) {
+		uploadImageData(Gdx.graphics, target, data, miplevel);
+	}
+
+	public static void uploadImageData (Graphics graphics, int target, TextureData data, int miplevel) {
 		if (data == null) {
 			// FIXME: remove texture on target?
 			return;
@@ -301,11 +313,12 @@ public abstract class GLTexture implements Disposable {
 			disposePixmap = true;
 		}
 
-		Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
+		GL20 gl = graphics.getGL20();
+		gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
 		if (data.useMipMaps()) {
-			MipMapGenerator.generateMipMap(target, pixmap, pixmap.getWidth(), pixmap.getHeight());
+			MipMapGenerator.generateMipMap(graphics, target, pixmap, pixmap.getWidth(), pixmap.getHeight());
 		} else {
-			Gdx.gl.glTexImage2D(target, miplevel, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+			gl.glTexImage2D(target, miplevel, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
 				pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 		}
 		if (disposePixmap) pixmap.dispose();

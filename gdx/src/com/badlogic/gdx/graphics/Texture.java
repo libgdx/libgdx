@@ -200,7 +200,7 @@ public class Texture extends GLTexture {
 		if (!data.isPrepared()) data.prepare();
 
 		bind();
-		uploadImageData(GL20.GL_TEXTURE_2D, data);
+		uploadImageData(graphics, GL20.GL_TEXTURE_2D, data);
 
 		unsafeSetFilter(minFilter, magFilter, true);
 		unsafeSetWrap(uWrap, vWrap, true);

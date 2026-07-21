@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g3d.utils;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -42,26 +43,44 @@ public final class DefaultTextureBinder implements TextureBinder {
 	private int[] unitsLRU;
 	/** The method of binding to use */
 	private final int method;
+	private final Graphics graphics;
 	/** Flag to indicate the current texture is reused */
 	private boolean reused;
 
 	private int reuseCount = 0; // TODO remove debug code
 	private int bindCount = 0; // TODO remove debug code
 
+	private GL20 gl20 () {
+		return graphics.getGL20();
+	}
+
 	/** Uses all available texture units and reuse weight of 3 */
 	public DefaultTextureBinder (final int method) {
-		this(method, 0);
+		this(Gdx.graphics, method, 0);
+	}
+
+	public DefaultTextureBinder (Graphics graphics, final int method) {
+		this(graphics, method, 0);
 	}
 
 	/** Uses all remaining texture units and reuse weight of 3 */
 	public DefaultTextureBinder (final int method, final int offset) {
-		this(method, offset, -1);
+		this(Gdx.graphics, method, offset, -1);
+	}
+
+	public DefaultTextureBinder (Graphics graphics, final int method, final int offset) {
+		this(graphics, method, offset, -1);
 	}
 
 	public DefaultTextureBinder (final int method, final int offset, int count) {
-		final int max = Math.min(getMaxTextureUnits(), MAX_GLES_UNITS);
+		this(Gdx.graphics, method, offset, count);
+	}
+
+	public DefaultTextureBinder (Graphics graphics, final int method, final int offset, int count) {
+		final int max = Math.min(getMaxTextureUnits(graphics), MAX_GLES_UNITS);
 		if (count < 0) count = max - offset;
 		if (offset < 0 || count < 0 || (offset + count) > max) throw new GdxRuntimeException("Illegal arguments");
+		this.graphics = graphics;
 		this.method = method;
 		this.offset = offset;
 		this.count = count;
@@ -69,9 +88,9 @@ public final class DefaultTextureBinder implements TextureBinder {
 		this.unitsLRU = (method == LRU) ? new int[count] : null;
 	}
 
-	private static int getMaxTextureUnits () {
+	private static int getMaxTextureUnits (Graphics graphics) {
 		IntBuffer buffer = BufferUtils.newIntBuffer(16);
-		Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_IMAGE_UNITS, buffer);
+		graphics.getGL20().glGetIntegerv(GL20.GL_MAX_TEXTURE_IMAGE_UNITS, buffer);
 		return buffer.get(0);
 	}
 
@@ -90,7 +109,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 		 * Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + offset + i); Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0); textures[i] = null; }
 		 * }
 		 */
-		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+		gl20().glActiveTexture(GL20.GL_TEXTURE0);
 	}
 
 	@Override
@@ -127,7 +146,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 			if (rebind)
 				texture.bind(result);
 			else
-				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + result);
+				gl20().glActiveTexture(GL20.GL_TEXTURE0 + result);
 		} else
 			bindCount++;
 		texture.unsafeSetWrap(textureDesc.uWrap, textureDesc.vWrap);
