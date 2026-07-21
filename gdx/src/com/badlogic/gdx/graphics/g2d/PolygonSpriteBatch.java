@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g2d;
 import static com.badlogic.gdx.graphics.g2d.Sprite.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -56,6 +57,12 @@ import com.badlogic.gdx.math.Matrix4;
  * @author Stefan Bachmann
  * @author Nathan Sweet */
 public class PolygonSpriteBatch implements PolygonBatch {
+	private final Graphics graphics;
+
+	private GL20 gl20 () {
+		return graphics.getGL20();
+	}
+
 	private Mesh mesh;
 
 	private final float[] vertices;
@@ -94,21 +101,33 @@ public class PolygonSpriteBatch implements PolygonBatch {
 	/** Constructs a PolygonSpriteBatch with the default shader, 2000 vertices, and 4000 triangles.
 	 * @see #PolygonSpriteBatch(int, int, ShaderProgram) */
 	public PolygonSpriteBatch () {
-		this(2000, null);
+		this(Gdx.graphics, 2000, null);
+	}
+
+	public PolygonSpriteBatch (Graphics graphics) {
+		this(graphics, 2000, null);
 	}
 
 	/** Constructs a PolygonSpriteBatch with the default shader, size vertices, and size * 2 triangles.
 	 * @param size The max number of vertices and number of triangles in a single batch. Max of 32767.
 	 * @see #PolygonSpriteBatch(int, int, ShaderProgram) */
 	public PolygonSpriteBatch (int size) {
-		this(size, size * 2, null);
+		this(Gdx.graphics, size, size * 2, null);
+	}
+
+	public PolygonSpriteBatch (Graphics graphics, int size) {
+		this(graphics, size, size * 2, null);
 	}
 
 	/** Constructs a PolygonSpriteBatch with the specified shader, size vertices and size * 2 triangles.
 	 * @param size The max number of vertices and number of triangles in a single batch. Max of 32767.
 	 * @see #PolygonSpriteBatch(int, int, ShaderProgram) */
 	public PolygonSpriteBatch (int size, ShaderProgram defaultShader) {
-		this(size, size * 2, defaultShader);
+		this(Gdx.graphics, size, size * 2, defaultShader);
+	}
+
+	public PolygonSpriteBatch (Graphics graphics, int size, ShaderProgram defaultShader) {
+		this(graphics, size, size * 2, defaultShader);
 	}
 
 	/** Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
@@ -122,15 +141,21 @@ public class PolygonSpriteBatch implements PolygonBatch {
 	 * @param defaultShader The default shader to use. This is not owned by the PolygonSpriteBatch and must be disposed separately.
 	 *           May be null to use the default shader. */
 	public PolygonSpriteBatch (int maxVertices, int maxTriangles, ShaderProgram defaultShader) {
+		this(Gdx.graphics, maxVertices, maxTriangles, defaultShader);
+	}
+
+	public PolygonSpriteBatch (Graphics graphics, int maxVertices, int maxTriangles, ShaderProgram defaultShader) {
 		// 32767 is max vertex index.
 		if (maxVertices > 32767)
 			throw new IllegalArgumentException("Can't have more than 32767 vertices per batch: " + maxVertices);
 
+		this.graphics = graphics;
+
 		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
-		if (Gdx.gl30 != null) {
+		if (graphics.getGL30() != null) {
 			vertexDataType = VertexDataType.VertexBufferObjectWithVAO;
 		}
-		mesh = new Mesh(vertexDataType, false, maxVertices, maxTriangles * 3,
+		mesh = new Mesh(graphics, vertexDataType, false, maxVertices, maxTriangles * 3,
 			new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
 			new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
@@ -139,12 +164,12 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		triangles = new short[maxTriangles * 3];
 
 		if (defaultShader == null) {
-			shader = SpriteBatch.createDefaultShader();
+			shader = SpriteBatch.createDefaultShader(graphics);
 			ownsShader = true;
 		} else
 			shader = defaultShader;
 
-		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		projectionMatrix.setToOrtho2D(0, 0, graphics.getWidth(), graphics.getHeight());
 	}
 
 	@Override
@@ -152,7 +177,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		if (drawing) throw new IllegalStateException("PolygonSpriteBatch.end must be called before begin.");
 		renderCalls = 0;
 
-		Gdx.gl.glDepthMask(false);
+		gl20().glDepthMask(false);
 		if (customShader != null)
 			customShader.bind();
 		else
@@ -169,7 +194,7 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		lastTexture = null;
 		drawing = false;
 
-		GL20 gl = Gdx.gl;
+		GL20 gl = gl20();
 		gl.glDepthMask(true);
 		if (isBlendingEnabled()) gl.glDisable(GL20.GL_BLEND);
 	}
@@ -1209,10 +1234,10 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		mesh.setVertices(vertices, 0, vertexIndex);
 		mesh.setIndices(triangles, 0, trianglesInBatch);
 		if (blendingDisabled) {
-			Gdx.gl.glDisable(GL20.GL_BLEND);
+			gl20().glDisable(GL20.GL_BLEND);
 		} else {
-			Gdx.gl.glEnable(GL20.GL_BLEND);
-			if (blendSrcFunc != -1) Gdx.gl.glBlendFuncSeparate(blendSrcFunc, blendDstFunc, blendSrcFuncAlpha, blendDstFuncAlpha);
+			gl20().glEnable(GL20.GL_BLEND);
+			if (blendSrcFunc != -1) gl20().glBlendFuncSeparate(blendSrcFunc, blendDstFunc, blendSrcFuncAlpha, blendDstFuncAlpha);
 		}
 
 		mesh.render(customShader != null ? customShader : shader, GL20.GL_TRIANGLES, 0, trianglesInBatch);

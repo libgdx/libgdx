@@ -24,6 +24,7 @@ import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -69,6 +70,12 @@ import com.badlogic.gdx.utils.IntArray;
 public class SpriteCache implements Disposable {
 	static private final float[] tempVertices = new float[VERTEX_SIZE * 6];
 
+	private final Graphics graphics;
+
+	private GL20 gl20 () {
+		return graphics.getGL20();
+	}
+
 	private final Mesh mesh;
 	private boolean drawing;
 	private final Matrix4 transformMatrix = new Matrix4();
@@ -95,7 +102,11 @@ public class SpriteCache implements Disposable {
 
 	/** Creates a cache that uses indexed geometry and can contain up to 1000 images. */
 	public SpriteCache () {
-		this(1000, false);
+		this(Gdx.graphics, 1000, false);
+	}
+
+	public SpriteCache (Graphics graphics) {
+		this(graphics, 1000, false);
 	}
 
 	/** Creates a cache with the specified size, using a default shader if OpenGL ES 2.0 is being used.
@@ -103,7 +114,11 @@ public class SpriteCache implements Disposable {
 	 *           Max of 8191 if indices are used.
 	 * @param useIndices If true, indexed geometry will be used. */
 	public SpriteCache (int size, boolean useIndices) {
-		this(size, createDefaultShader(), useIndices);
+		this(Gdx.graphics, size, useIndices);
+	}
+
+	public SpriteCache (Graphics graphics, int size, boolean useIndices) {
+		this(graphics, size, createDefaultShader(graphics), useIndices);
 	}
 
 	/** Creates a cache with the specified size and OpenGL ES 2.0 shader.
@@ -111,11 +126,16 @@ public class SpriteCache implements Disposable {
 	 *           Max of 8191 if indices are used.
 	 * @param useIndices If true, indexed geometry will be used. */
 	public SpriteCache (int size, ShaderProgram shader, boolean useIndices) {
+		this(Gdx.graphics, size, shader, useIndices);
+	}
+
+	public SpriteCache (Graphics graphics, int size, ShaderProgram shader, boolean useIndices) {
+		this.graphics = graphics;
 		this.shader = shader;
 
 		if (useIndices && size > 8191) throw new IllegalArgumentException("Can't have more than 8191 sprites per batch: " + size);
 
-		mesh = new Mesh(true, size * (useIndices ? 4 : 6), useIndices ? size * 6 : 0,
+		mesh = new Mesh(graphics, true, size * (useIndices ? 4 : 6), useIndices ? size * 6 : 0,
 			new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
 			new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
@@ -136,7 +156,7 @@ public class SpriteCache implements Disposable {
 			mesh.setIndices(indices);
 		}
 
-		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		projectionMatrix.setToOrtho2D(0, 0, graphics.getWidth(), graphics.getHeight());
 	}
 
 	/** Sets the color used to tint images when they are added to the SpriteCache. Default is {@link Color#WHITE}. */
@@ -855,7 +875,7 @@ public class SpriteCache implements Disposable {
 		renderCalls = 0;
 		combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
-		Gdx.gl20.glDepthMask(false);
+		gl20().glDepthMask(false);
 
 		if (customShader != null) {
 			customShader.bind();
@@ -878,7 +898,7 @@ public class SpriteCache implements Disposable {
 		if (!drawing) throw new IllegalStateException("begin must be called before end.");
 		drawing = false;
 
-		GL20 gl = Gdx.gl20;
+		GL20 gl = gl20();
 		gl.glDepthMask(true);
 		if (customShader != null)
 			mesh.unbind(customShader);
@@ -979,6 +999,10 @@ public class SpriteCache implements Disposable {
 	}
 
 	static ShaderProgram createDefaultShader () {
+		return createDefaultShader(Gdx.graphics);
+	}
+
+	static ShaderProgram createDefaultShader (Graphics graphics) {
 		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
@@ -1003,7 +1027,7 @@ public class SpriteCache implements Disposable {
 			+ "{\n" //
 			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
 			+ "}";
-		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
+		ShaderProgram shader = new ShaderProgram(graphics, vertexShader, fragmentShader);
 		if (!shader.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
 		return shader;
 	}
