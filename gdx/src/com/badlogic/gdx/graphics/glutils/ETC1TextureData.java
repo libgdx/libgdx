@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -32,19 +33,39 @@ public class ETC1TextureData implements TextureData {
 	int width = 0;
 	int height = 0;
 	boolean isPrepared = false;
+	private Graphics graphics = Gdx.graphics;
 
 	public ETC1TextureData (FileHandle file) {
-		this(file, false);
+		this(Gdx.graphics, file, false);
+	}
+
+	public ETC1TextureData (Graphics graphics, FileHandle file) {
+		this(graphics, file, false);
 	}
 
 	public ETC1TextureData (FileHandle file, boolean useMipMaps) {
+		this(Gdx.graphics, file, useMipMaps);
+	}
+
+	public ETC1TextureData (Graphics graphics, FileHandle file, boolean useMipMaps) {
+		this.graphics = graphics;
 		this.file = file;
 		this.useMipMaps = useMipMaps;
 	}
 
 	public ETC1TextureData (ETC1Data encodedImage, boolean useMipMaps) {
+		this(Gdx.graphics, encodedImage, useMipMaps);
+	}
+
+	public ETC1TextureData (Graphics graphics, ETC1Data encodedImage, boolean useMipMaps) {
+		this.graphics = graphics;
 		this.data = encodedImage;
 		this.useMipMaps = useMipMaps;
+	}
+
+	@Override
+	public void setGraphics (Graphics graphics) {
+		this.graphics = graphics;
 	}
 
 	@Override
@@ -73,17 +94,18 @@ public class ETC1TextureData implements TextureData {
 	public void consumeCustomData (int target) {
 		if (!isPrepared) throw new GdxRuntimeException("Call prepare() before calling consumeCompressedData()");
 
-		if (!Gdx.graphics.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {
+		GL20 gl = graphics.getGL20();
+		if (!graphics.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {
 			Pixmap pixmap = ETC1.decodeImage(data, Format.RGB565);
-			Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+			gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
 				pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-			if (useMipMaps) MipMapGenerator.generateMipMap(target, pixmap, pixmap.getWidth(), pixmap.getHeight());
+			if (useMipMaps) MipMapGenerator.generateMipMap(graphics, target, pixmap, pixmap.getWidth(), pixmap.getHeight());
 			pixmap.dispose();
 			useMipMaps = false;
 		} else {
-			Gdx.gl.glCompressedTexImage2D(target, 0, ETC1.ETC1_RGB8_OES, width, height, 0,
+			gl.glCompressedTexImage2D(target, 0, ETC1.ETC1_RGB8_OES, width, height, 0,
 				data.compressedData.capacity() - data.dataOffset, data.compressedData);
-			if (useMipMaps()) Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
+			if (useMipMaps()) gl.glGenerateMipmap(GL20.GL_TEXTURE_2D);
 		}
 		data.dispose();
 		data = null;

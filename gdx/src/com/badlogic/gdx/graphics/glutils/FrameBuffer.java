@@ -88,8 +88,8 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 
 	@Override
 	protected Texture createTexture (FrameBufferTextureAttachmentSpec attachmentSpec) {
-		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0, attachmentSpec.internalFormat,
-			attachmentSpec.format, attachmentSpec.type);
+		GLOnlyTextureData data = new GLOnlyTextureData(graphics, bufferBuilder.width, bufferBuilder.height, 0,
+			attachmentSpec.internalFormat, attachmentSpec.format, attachmentSpec.type);
 		Texture result = new Texture(graphics, data);
 		// Filtering support for depth textures on WebGL is spotty https://github.com/KhronosGroup/OpenGL-API/issues/84
 		boolean webGLDepth = attachmentSpec.isDepth && Gdx.app.getType() == Application.ApplicationType.WebGL;

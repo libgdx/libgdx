@@ -64,7 +64,7 @@ public class FloatFrameBuffer extends FrameBuffer {
 
 	@Override
 	protected Texture createTexture (FrameBufferTextureAttachmentSpec attachmentSpec) {
-		FloatTextureData data = new FloatTextureData(bufferBuilder.width, bufferBuilder.height, attachmentSpec.internalFormat,
+		FloatTextureData data = new FloatTextureData(graphics, bufferBuilder.width, bufferBuilder.height, attachmentSpec.internalFormat,
 			attachmentSpec.format, attachmentSpec.type, attachmentSpec.isGpuOnly);
 		Texture result = new Texture(graphics, data);
 		if (Gdx.app.getType() == ApplicationType.Desktop || Gdx.app.getType() == ApplicationType.Applet)

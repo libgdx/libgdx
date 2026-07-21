@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
@@ -69,6 +70,11 @@ public interface TextureData {
 	 * must preceed a call to this method. Any internal data structures created in {@link #prepare()} should be disposed of
 	 * here. */
 	public void consumeCustomData (int target);
+
+	/** Called by {@link GLTexture} before {@link #consumeCustomData(int)} so custom uploaders can resolve GL without
+	 * {@link com.badlogic.gdx.Gdx}. Default is a no-op. */
+	default void setGraphics (Graphics graphics) {
+	}
 
 	/** @return the width of the pixel data */
 	public int getWidth ();

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -31,6 +32,7 @@ public class GLOnlyTextureData implements TextureData {
 	int width = 0;
 	int height = 0;
 	boolean isPrepared = false;
+	private Graphics graphics = Gdx.graphics;
 
 	/** properties of opengl texture */
 	int mipLevel = 0;
@@ -49,12 +51,22 @@ public class GLOnlyTextureData implements TextureData {
 	 *           {@link GL20#GL_UNSIGNED_BYTE}, {@link GL20#GL_UNSIGNED_SHORT_5_6_5}, {@link GL20#GL_UNSIGNED_SHORT_4_4_4_4}, and
 	 *           {@link GL20#GL_UNSIGNED_SHORT_5_5_5_1}. */
 	public GLOnlyTextureData (int width, int height, int mipMapLevel, int internalFormat, int format, int type) {
+		this(Gdx.graphics, width, height, mipMapLevel, internalFormat, format, type);
+	}
+
+	public GLOnlyTextureData (Graphics graphics, int width, int height, int mipMapLevel, int internalFormat, int format, int type) {
+		this.graphics = graphics;
 		this.width = width;
 		this.height = height;
 		this.mipLevel = mipMapLevel;
 		this.internalFormat = internalFormat;
 		this.format = format;
 		this.type = type;
+	}
+
+	@Override
+	public void setGraphics (Graphics graphics) {
+		this.graphics = graphics;
 	}
 
 	@Override
@@ -75,7 +87,7 @@ public class GLOnlyTextureData implements TextureData {
 
 	@Override
 	public void consumeCustomData (int target) {
-		Gdx.gl.glTexImage2D(target, mipLevel, internalFormat, width, height, 0, format, type, null);
+		graphics.getGL20().glTexImage2D(target, mipLevel, internalFormat, width, height, 0, format, type, null);
 	}
 
 	@Override
