@@ -22,7 +22,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -91,8 +91,8 @@ public class ShaderProgram implements Disposable {
 	 * as-is, you should include a newline (`\n`) if needed. */
 	public static String prependFragmentCode = "";
 
-	/** the list of currently available shaders **/
-	private final static ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<Application, Array<ShaderProgram>>();
+	/** the list of currently available shaders, keyed by the {@link Graphics} instance that owns the GL context **/
+	private final static ObjectMap<Graphics, Array<ShaderProgram>> shaders = new ObjectMap<Graphics, Array<ShaderProgram>>();
 
 	/** the log **/
 	private String log = "";
@@ -168,7 +168,7 @@ public class ShaderProgram implements Disposable {
 		if (isCompiled()) {
 			fetchAttributes();
 			fetchUniforms();
-			addManagedShader(Gdx.app, this);
+			addManagedShader(Gdx.graphics, this);
 		}
 	}
 
@@ -769,7 +769,7 @@ public class ShaderProgram implements Disposable {
 		gl.glDeleteShader(vertexShaderHandle);
 		gl.glDeleteShader(fragmentShaderHandle);
 		gl.glDeleteProgram(program);
-		if (shaders.get(Gdx.app) != null) shaders.get(Gdx.app).removeValue(this, true);
+		if (shaders.get(Gdx.graphics) != null) shaders.get(Gdx.graphics).removeValue(this, true);
 	}
 
 	/** Disables the vertex attribute with the given name
@@ -813,19 +813,19 @@ public class ShaderProgram implements Disposable {
 		}
 	}
 
-	private void addManagedShader (Application app, ShaderProgram shaderProgram) {
-		Array<ShaderProgram> managedResources = shaders.get(app);
+	private void addManagedShader (Graphics graphics, ShaderProgram shaderProgram) {
+		Array<ShaderProgram> managedResources = shaders.get(graphics);
 		if (managedResources == null) managedResources = new Array<ShaderProgram>();
 		managedResources.add(shaderProgram);
-		shaders.put(app, managedResources);
+		shaders.put(graphics, managedResources);
 	}
 
 	/** Invalidates all shaders so the next time they are used new handles are generated
-	 * @param app */
-	public static void invalidateAllShaderPrograms (Application app) {
+	 * @param graphics the graphics instance whose shaders should be invalidated */
+	public static void invalidateAllShaderPrograms (Graphics graphics) {
 		if (Gdx.gl20 == null) return;
 
-		Array<ShaderProgram> shaderArray = shaders.get(app);
+		Array<ShaderProgram> shaderArray = shaders.get(graphics);
 		if (shaderArray == null) return;
 
 		for (int i = 0; i < shaderArray.size; i++) {
@@ -834,16 +834,16 @@ public class ShaderProgram implements Disposable {
 		}
 	}
 
-	public static void clearAllShaderPrograms (Application app) {
-		shaders.remove(app);
+	public static void clearAllShaderPrograms (Graphics graphics) {
+		shaders.remove(graphics);
 	}
 
 	public static String getManagedStatus () {
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
-		builder.append("Managed shaders/app: { ");
-		for (Application app : shaders.keys()) {
-			builder.append(shaders.get(app).size);
+		builder.append("Managed shaders/graphics: { ");
+		for (Graphics graphics : shaders.keys()) {
+			builder.append(shaders.get(graphics).size);
 			builder.append(" ");
 		}
 		builder.append("}");
@@ -852,7 +852,7 @@ public class ShaderProgram implements Disposable {
 
 	/** @return the number of managed shader programs currently loaded */
 	public static int getNumManagedShaderPrograms () {
-		return shaders.get(Gdx.app).size;
+		return shaders.get(Gdx.graphics).size;
 	}
 
 	/** Sets the given attribute

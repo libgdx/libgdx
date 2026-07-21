@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -55,7 +56,7 @@ import com.badlogic.gdx.utils.IntArray;
  * @author mzechner, realitix */
 public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 	/** the frame buffers **/
-	protected final static Map<Application, Array<GLFrameBuffer>> buffers = new HashMap<Application, Array<GLFrameBuffer>>();
+	protected final static Map<Graphics, Array<GLFrameBuffer>> buffers = new HashMap<Graphics, Array<GLFrameBuffer>>();
 
 	protected final static int GL_DEPTH24_STENCIL8_OES = 0x88F0;
 
@@ -306,7 +307,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 			throw new IllegalStateException("Frame buffer couldn't be constructed: unknown error " + result);
 		}
 
-		addManagedFrameBuffer(Gdx.app, this);
+		addManagedFrameBuffer(Gdx.graphics, this);
 	}
 
 	private void checkValidBuilder () {
@@ -362,7 +363,7 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 
 		gl.glDeleteFramebuffer(framebufferHandle);
 
-		if (buffers.get(Gdx.app) != null) buffers.get(Gdx.app).removeValue(this, true);
+		if (buffers.get(Gdx.graphics) != null) buffers.get(Gdx.graphics).removeValue(this, true);
 	}
 
 	/** Makes the frame buffer current so everything gets drawn to it. */
@@ -541,33 +542,33 @@ public abstract class GLFrameBuffer<T extends GLTexture> implements Disposable {
 		return bufferBuilder.width;
 	}
 
-	private static void addManagedFrameBuffer (Application app, GLFrameBuffer frameBuffer) {
-		Array<GLFrameBuffer> managedResources = buffers.get(app);
+	private static void addManagedFrameBuffer (Graphics graphics, GLFrameBuffer frameBuffer) {
+		Array<GLFrameBuffer> managedResources = buffers.get(graphics);
 		if (managedResources == null) managedResources = new Array<GLFrameBuffer>();
 		managedResources.add(frameBuffer);
-		buffers.put(app, managedResources);
+		buffers.put(graphics, managedResources);
 	}
 
 	/** Invalidates all frame buffers. This can be used when the OpenGL context is lost to rebuild all managed frame buffers. This
 	 * assumes that the texture attached to this buffer has already been rebuild! Use with care. */
-	public static void invalidateAllFrameBuffers (Application app) {
+	public static void invalidateAllFrameBuffers (Graphics graphics) {
 		if (Gdx.gl20 == null) return;
 
-		Array<GLFrameBuffer> bufferArray = buffers.get(app);
+		Array<GLFrameBuffer> bufferArray = buffers.get(graphics);
 		if (bufferArray == null) return;
 		for (int i = 0; i < bufferArray.size; i++) {
 			bufferArray.get(i).build();
 		}
 	}
 
-	public static void clearAllFrameBuffers (Application app) {
-		buffers.remove(app);
+	public static void clearAllFrameBuffers (Graphics graphics) {
+		buffers.remove(graphics);
 	}
 
 	public static StringBuilder getManagedStatus (final StringBuilder builder) {
-		builder.append("Managed buffers/app: { ");
-		for (Application app : buffers.keySet()) {
-			builder.append(buffers.get(app).size);
+		builder.append("Managed buffers/graphics: { ");
+		for (Graphics graphics : buffers.keySet()) {
+			builder.append(buffers.get(graphics).size);
 			builder.append(" ");
 		}
 		builder.append("}");

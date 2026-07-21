@@ -329,12 +329,12 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		updatePpi();
 		updateSafeAreaInsets();
 
-		Mesh.invalidateAllMeshes(app);
-		Texture.invalidateAllTextures(app);
-		Cubemap.invalidateAllCubemaps(app);
-		TextureArray.invalidateAllTextureArrays(app);
-		ShaderProgram.invalidateAllShaderPrograms(app);
-		FrameBuffer.invalidateAllFrameBuffers(app);
+		Mesh.invalidateAllMeshes(this);
+		Texture.invalidateAllTextures(this);
+		Cubemap.invalidateAllCubemaps(this);
+		TextureArray.invalidateAllTextureArrays(this);
+		ShaderProgram.invalidateAllShaderPrograms(this);
+		FrameBuffer.invalidateAllFrameBuffers(this);
 
 		logManagedCachesStatus();
 
@@ -581,12 +581,12 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	}
 
 	public void clearManagedCaches () {
-		Mesh.clearAllMeshes(app);
-		Texture.clearAllTextures(app);
-		Cubemap.clearAllCubemaps(app);
-		TextureArray.clearAllTextureArrays(app);
-		ShaderProgram.clearAllShaderPrograms(app);
-		FrameBuffer.clearAllFrameBuffers(app);
+		Mesh.clearAllMeshes(this);
+		Texture.clearAllTextures(this);
+		Cubemap.clearAllCubemaps(this);
+		TextureArray.clearAllTextureArrays(this);
+		ShaderProgram.clearAllShaderPrograms(this);
+		FrameBuffer.clearAllFrameBuffers(this);
 
 		logManagedCachesStatus();
 	}

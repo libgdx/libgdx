@@ -22,7 +22,7 @@ import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.IndexArray;
@@ -74,7 +74,7 @@ public class Mesh implements Disposable {
 	}
 
 	/** list of all meshes **/
-	static final Map<Application, Array<Mesh>> meshes = new HashMap<Application, Array<Mesh>>();
+	static final Map<Graphics, Array<Mesh>> meshes = new HashMap<Graphics, Array<Mesh>>();
 
 	protected final VertexData vertices;
 	protected final IndexData indices;
@@ -89,7 +89,7 @@ public class Mesh implements Disposable {
 		this.indices = indices;
 		this.isVertexArray = isVertexArray;
 
-		addManagedMesh(Gdx.app, this);
+		addManagedMesh(Gdx.graphics, this);
 	}
 
 	/** Creates a new Mesh with the given attributes.
@@ -104,7 +104,7 @@ public class Mesh implements Disposable {
 		indices = new IndexBufferObject(isStatic, maxIndices);
 		isVertexArray = false;
 
-		addManagedMesh(Gdx.app, this);
+		addManagedMesh(Gdx.graphics, this);
 	}
 
 	/** Creates a new Mesh with the given attributes.
@@ -119,7 +119,7 @@ public class Mesh implements Disposable {
 		indices = new IndexBufferObject(isStatic, maxIndices);
 		isVertexArray = false;
 
-		addManagedMesh(Gdx.app, this);
+		addManagedMesh(Gdx.graphics, this);
 	}
 
 	/** Creates a new Mesh with the given attributes. Adds extra optimizations for dynamic (frequently modified) meshes.
@@ -137,7 +137,7 @@ public class Mesh implements Disposable {
 		indices = new IndexBufferObject(staticIndices, maxIndices);
 		isVertexArray = false;
 
-		addManagedMesh(Gdx.app, this);
+		addManagedMesh(Gdx.graphics, this);
 	}
 
 	private VertexData makeVertexBuffer (boolean isStatic, int maxVertices, VertexAttributes vertexAttributes) {
@@ -192,7 +192,7 @@ public class Mesh implements Disposable {
 			break;
 		}
 
-		addManagedMesh(Gdx.app, this);
+		addManagedMesh(Gdx.graphics, this);
 	}
 
 	public Mesh enableInstancedRendering (boolean isStatic, int maxInstances, VertexAttribute... attributes) {
@@ -663,7 +663,7 @@ public class Mesh implements Disposable {
 
 	/** Frees all resources associated with this Mesh */
 	public void dispose () {
-		if (meshes.get(Gdx.app) != null) meshes.get(Gdx.app).removeValue(this, true);
+		if (meshes.get(Gdx.graphics) != null) meshes.get(Gdx.graphics).removeValue(this, true);
 		vertices.dispose();
 		if (instances != null) instances.dispose();
 		indices.dispose();
@@ -975,17 +975,17 @@ public class Mesh implements Disposable {
 		return indices.getBuffer(forWriting);
 	}
 
-	private static void addManagedMesh (Application app, Mesh mesh) {
-		Array<Mesh> managedResources = meshes.get(app);
+	private static void addManagedMesh (Graphics graphics, Mesh mesh) {
+		Array<Mesh> managedResources = meshes.get(graphics);
 		if (managedResources == null) managedResources = new Array<Mesh>();
 		managedResources.add(mesh);
-		meshes.put(app, managedResources);
+		meshes.put(graphics, managedResources);
 	}
 
 	/** Invalidates all meshes so the next time they are rendered new VBO handles are generated.
-	 * @param app */
-	public static void invalidateAllMeshes (Application app) {
-		Array<Mesh> meshesArray = meshes.get(app);
+	 * @param graphics the graphics instance whose meshes should be invalidated */
+	public static void invalidateAllMeshes (Graphics graphics) {
+		Array<Mesh> meshesArray = meshes.get(graphics);
 		if (meshesArray == null) return;
 		for (int i = 0; i < meshesArray.size; i++) {
 			meshesArray.get(i).vertices.invalidate();
@@ -994,16 +994,16 @@ public class Mesh implements Disposable {
 	}
 
 	/** Will clear the managed mesh cache. I wouldn't use this if i was you :) */
-	public static void clearAllMeshes (Application app) {
-		meshes.remove(app);
+	public static void clearAllMeshes (Graphics graphics) {
+		meshes.remove(graphics);
 	}
 
 	public static String getManagedStatus () {
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
-		builder.append("Managed meshes/app: { ");
-		for (Application app : meshes.keySet()) {
-			builder.append(meshes.get(app).size);
+		builder.append("Managed meshes/graphics: { ");
+		for (Graphics graphics : meshes.keySet()) {
+			builder.append(meshes.get(graphics).size);
 			builder.append(" ");
 		}
 		builder.append("}");

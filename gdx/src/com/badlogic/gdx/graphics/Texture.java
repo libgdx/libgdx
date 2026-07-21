@@ -19,7 +19,7 @@ package com.badlogic.gdx.graphics;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
@@ -47,7 +47,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author badlogicgames@gmail.com */
 public class Texture extends GLTexture {
 	private static AssetManager assetManager;
-	final static Map<Application, Array<Texture>> managedTextures = new HashMap<Application, Array<Texture>>();
+	final static Map<Graphics, Array<Texture>> managedTextures = new HashMap<Graphics, Array<Texture>>();
 
 	public enum TextureFilter {
 		/** Fetch the nearest texel that best maps to the pixel on screen. */
@@ -149,7 +149,7 @@ public class Texture extends GLTexture {
 	protected Texture (int glTarget, int glHandle, TextureData data) {
 		super(glTarget, glHandle);
 		load(data);
-		if (data.isManaged()) addManagedTexture(Gdx.app, this);
+		if (data.isManaged()) addManagedTexture(Gdx.graphics, this);
 	}
 
 	public void load (TextureData data) {
@@ -223,7 +223,7 @@ public class Texture extends GLTexture {
 		// removal from the asset manager.
 		if (glHandle == 0) return;
 		delete();
-		if (data.isManaged()) if (managedTextures.get(Gdx.app) != null) managedTextures.get(Gdx.app).removeValue(this, true);
+		if (data.isManaged()) if (managedTextures.get(Gdx.graphics) != null) managedTextures.get(Gdx.graphics).removeValue(this, true);
 	}
 
 	public String toString () {
@@ -231,21 +231,21 @@ public class Texture extends GLTexture {
 		return super.toString();
 	}
 
-	private static void addManagedTexture (Application app, Texture texture) {
-		Array<Texture> managedTextureArray = managedTextures.get(app);
+	private static void addManagedTexture (Graphics graphics, Texture texture) {
+		Array<Texture> managedTextureArray = managedTextures.get(graphics);
 		if (managedTextureArray == null) managedTextureArray = new Array<Texture>();
 		managedTextureArray.add(texture);
-		managedTextures.put(app, managedTextureArray);
+		managedTextures.put(graphics, managedTextureArray);
 	}
 
 	/** Clears all managed textures. This is an internal method. Do not use it! */
-	public static void clearAllTextures (Application app) {
-		managedTextures.remove(app);
+	public static void clearAllTextures (Graphics graphics) {
+		managedTextures.remove(graphics);
 	}
 
 	/** Invalidate all managed textures. This is an internal method. Do not use it! */
-	public static void invalidateAllTextures (Application app) {
-		Array<Texture> managedTextureArray = managedTextures.get(app);
+	public static void invalidateAllTextures (Graphics graphics) {
+		Array<Texture> managedTextureArray = managedTextures.get(graphics);
 		if (managedTextureArray == null) return;
 
 		if (assetManager == null) {
@@ -313,9 +313,9 @@ public class Texture extends GLTexture {
 
 	public static String getManagedStatus () {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Managed textures/app: { ");
-		for (Application app : managedTextures.keySet()) {
-			builder.append(managedTextures.get(app).size);
+		builder.append("Managed textures/graphics: { ");
+		for (Graphics graphics : managedTextures.keySet()) {
+			builder.append(managedTextures.get(graphics).size);
 			builder.append(" ");
 		}
 		builder.append("}");
@@ -324,6 +324,6 @@ public class Texture extends GLTexture {
 
 	/** @return the number of managed textures currently loaded */
 	public static int getNumManagedTextures () {
-		return managedTextures.get(Gdx.app).size;
+		return managedTextures.get(Gdx.graphics).size;
 	}
 }

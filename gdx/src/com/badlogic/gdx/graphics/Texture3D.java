@@ -19,7 +19,7 @@ package com.badlogic.gdx.graphics;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.glutils.CustomTexture3DData;
@@ -30,7 +30,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mgsx */
 public class Texture3D extends GLTexture {
 
-	final static Map<Application, Array<Texture3D>> managedTexture3Ds = new HashMap<Application, Array<Texture3D>>();
+	final static Map<Graphics, Array<Texture3D>> managedTexture3Ds = new HashMap<Graphics, Array<Texture3D>>();
 
 	private Texture3DData data;
 
@@ -49,7 +49,7 @@ public class Texture3D extends GLTexture {
 
 		load(data);
 
-		if (data.isManaged()) addManagedTexture(Gdx.app, this);
+		if (data.isManaged()) addManagedTexture(Gdx.graphics, this);
 	}
 
 	private void load (Texture3DData data) {
@@ -105,21 +105,21 @@ public class Texture3D extends GLTexture {
 		load(data);
 	}
 
-	private static void addManagedTexture (Application app, Texture3D texture) {
-		Array<Texture3D> managedTextureArray = managedTexture3Ds.get(app);
+	private static void addManagedTexture (Graphics graphics, Texture3D texture) {
+		Array<Texture3D> managedTextureArray = managedTexture3Ds.get(graphics);
 		if (managedTextureArray == null) managedTextureArray = new Array<Texture3D>();
 		managedTextureArray.add(texture);
-		managedTexture3Ds.put(app, managedTextureArray);
+		managedTexture3Ds.put(graphics, managedTextureArray);
 	}
 
 	/** Clears all managed TextureArrays. This is an internal method. Do not use it! */
-	public static void clearAllTextureArrays (Application app) {
-		managedTexture3Ds.remove(app);
+	public static void clearAllTextureArrays (Graphics graphics) {
+		managedTexture3Ds.remove(graphics);
 	}
 
 	/** Invalidate all managed TextureArrays. This is an internal method. Do not use it! */
-	public static void invalidateAllTextureArrays (Application app) {
-		Array<Texture3D> managedTextureArray = managedTexture3Ds.get(app);
+	public static void invalidateAllTextureArrays (Graphics graphics) {
+		Array<Texture3D> managedTextureArray = managedTexture3Ds.get(graphics);
 		if (managedTextureArray == null) return;
 
 		for (int i = 0; i < managedTextureArray.size; i++) {
@@ -130,9 +130,9 @@ public class Texture3D extends GLTexture {
 
 	public static String getManagedStatus () {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Managed TextureArrays/app: { ");
-		for (Application app : managedTexture3Ds.keySet()) {
-			builder.append(managedTexture3Ds.get(app).size);
+		builder.append("Managed TextureArrays/graphics: { ");
+		for (Graphics graphics : managedTexture3Ds.keySet()) {
+			builder.append(managedTexture3Ds.get(graphics).size);
 			builder.append(" ");
 		}
 		builder.append("}");
@@ -141,7 +141,7 @@ public class Texture3D extends GLTexture {
 
 	/** @return the number of managed Texture3D currently loaded */
 	public static int getNumManagedTextures3D () {
-		return managedTexture3Ds.get(Gdx.app).size;
+		return managedTexture3Ds.get(Gdx.graphics).size;
 	}
 
 	public void setWrap (TextureWrap u, TextureWrap v, TextureWrap r) {
