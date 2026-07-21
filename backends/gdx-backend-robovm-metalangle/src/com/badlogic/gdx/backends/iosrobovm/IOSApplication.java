@@ -147,7 +147,7 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "created");
 		// Trigger first render, special case that is caught and returned
 		this.graphics.view.display();
-		listener.create();
+		listener.create(this);
 		listener.resize(this.graphics.getWidth(), this.graphics.getHeight());
 		// make sure the OpenGL view has contents before displaying it
 		this.graphics.view.display();

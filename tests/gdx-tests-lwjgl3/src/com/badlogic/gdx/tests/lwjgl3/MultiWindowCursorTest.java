@@ -18,7 +18,11 @@ public class MultiWindowCursorTest {
 
 		@Override
 		public void create () {
-			listener.create();
+		}
+
+		@Override
+		public void create (Application app) {
+			listener.create(app);
 			if (MathUtils.randomBoolean()) {
 				Cursor.SystemCursor[] systemCursors = Cursor.SystemCursor.values();
 				Cursor.SystemCursor systemCursor = systemCursors[MathUtils.random(systemCursors.length - 1)];

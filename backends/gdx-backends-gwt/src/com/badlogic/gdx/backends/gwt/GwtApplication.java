@@ -230,7 +230,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 		// tell listener about app creation
 		try {
-			listener.create();
+			listener.create(this);
 			listener.resize(graphics.getWidth(), graphics.getHeight());
 		} catch (Throwable t) {
 			error("GwtApplication", "exception: " + t.getMessage(), t);

@@ -26,7 +26,19 @@ package com.badlogic.gdx;
  * </p>
  */
 public abstract class Game implements ApplicationListener {
+	/** The {@link Application} passed to {@link #create(Application)}, or {@code null} if only {@link #create()} was used. */
+	protected Application app;
 	protected Screen screen;
+
+	@Override
+	public void create () {
+	}
+
+	@Override
+	public void create (Application app) {
+		this.app = app;
+		create();
+	}
 
 	@Override
 	public void dispose () {

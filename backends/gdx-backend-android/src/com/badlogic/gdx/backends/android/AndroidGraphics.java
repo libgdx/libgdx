@@ -312,7 +312,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		updateSafeAreaInsets();
 		gl.glViewport(0, 0, this.width, this.height);
 		if (created == false) {
-			app.getApplicationListener().create();
+			app.getApplicationListener().create(app);
 			created = true;
 			synchronized (this) {
 				running = true;

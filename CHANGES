@@ -1,4 +1,5 @@
 [1.14.3]
+- API Addition: ApplicationListener#create(Application); backends call it, default delegates to create().
 - API Addition: add() with 5-8 parameters for arrays.
 
 [1.14.2]

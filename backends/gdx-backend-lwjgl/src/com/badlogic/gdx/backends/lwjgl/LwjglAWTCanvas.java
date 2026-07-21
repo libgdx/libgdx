@@ -236,7 +236,7 @@ public class LwjglAWTCanvas implements Application {
 			setGlobals();
 			graphics.initiateGL();
 			canvas.setVSyncEnabled(graphics.config.vSyncEnabled);
-			listener.create();
+			listener.create(this);
 			lastWidth = Math.max(1, graphics.getWidth());
 			lastHeight = Math.max(1, graphics.getHeight());
 			listener.resize(lastWidth, lastHeight);

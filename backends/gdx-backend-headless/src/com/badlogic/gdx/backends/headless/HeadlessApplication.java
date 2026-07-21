@@ -105,7 +105,7 @@ public class HeadlessApplication implements Application {
 	protected void mainLoop () {
 		Array<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
 
-		listener.create();
+		listener.create(this);
 
 		// unlike LwjglApplication, a headless application will eat up CPU in this while loop
 		// it is up to the implementation to call Thread.sleep as necessary
