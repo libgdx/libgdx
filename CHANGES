@@ -1,7 +1,7 @@
 [1.14.3]
 - API Addition: add() with 5-8 parameters for arrays.
 - iOS: Made iOS Preferences flush() implementation atomic (see #7833)
-- Android: Made AsynchrounousAndroidAudio the default Android Audio backend for better performance.
+- Android: Made AsynchronousAndroidAudio the default Android Audio backend for better performance.
 
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805
