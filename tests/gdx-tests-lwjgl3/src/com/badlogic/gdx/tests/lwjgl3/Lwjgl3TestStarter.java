@@ -84,6 +84,7 @@ public class Lwjgl3TestStarter {
 		if (options.startupTestName != null) {
 			ApplicationListener test = GdxTests.newTest(options.startupTestName);
 			if (test != null) {
+				GdxTests.resetContext();
 				new Lwjgl3Application(test, config);
 				return;
 			}
@@ -130,6 +131,7 @@ public class Lwjgl3TestStarter {
 					@Override
 					public void changed (ChangeEvent event, Actor actor) {
 						ApplicationListener test = GdxTests.newTest(testName);
+						GdxTests.resetContext();
 						Lwjgl3WindowConfiguration winConfig = new Lwjgl3WindowConfiguration();
 						winConfig.setTitle(testName);
 						winConfig.setWindowedMode(640, 480);
