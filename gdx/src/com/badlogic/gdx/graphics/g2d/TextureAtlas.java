@@ -757,6 +757,26 @@ public class TextureAtlas implements Disposable {
 		}
 
 		@Override
+		public void setCenter (float x, float y) {
+			setPosition(x - getWidth() / 2, y - getHeight() / 2);
+		}
+
+		@Override
+		public void setCenterX (float x) {
+			setX(x - getWidth() / 2);
+		}
+
+		@Override
+		public void setCenterY (float y) {
+			setY(y - getHeight() / 2);
+		}
+
+		@Override
+		public void setOriginBasedPosition (float x, float y) {
+			setPosition(x - getOriginX(), y - getOriginY());
+		}
+
+		@Override
 		public float getX () {
 			return super.getX() - region.offsetX;
 		}
@@ -784,6 +804,16 @@ public class TextureAtlas implements Disposable {
 		@Override
 		public float getHeight () {
 			return super.getHeight() / region.getRotatedPackedHeight() * region.originalHeight;
+		}
+
+		@Override
+		public float getPackedWidth () {
+			return super.getWidth();
+		}
+
+		@Override
+		public float getPackedHeight () {
+			return super.getHeight();
 		}
 
 		public float getWidthRatio () {
