@@ -215,7 +215,7 @@ public class AsynchronousSound implements Sound {
 	}
 
 	/** @return Whether the sound has failed to play or not. */
-	public boolean hasFailed(long soundId) {
+	public boolean hasFailed (long soundId) {
 		return getSoundId(soundId) == -1;
 	}
 

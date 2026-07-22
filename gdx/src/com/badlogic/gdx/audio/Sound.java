@@ -69,8 +69,8 @@ public interface Sound extends Disposable {
 	public long loop (float volume);
 
 	/** Plays the sound, looping. If the sound is already playing, it will be played again, concurrently. You need to stop the
-	 * sound via a call to {@link #stop(long)} using the returned id. Note that (except for the Android backend) panning
-	 * only works for mono sounds, not for stereo sounds!
+	 * sound via a call to {@link #stop(long)} using the returned id. Note that (except for the Android backend) panning only works
+	 * for mono sounds, not for stereo sounds!
 	 * @param volume the volume in the range [0,1]
 	 * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower, the value has to be between 0.5 and 2.0
 	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
