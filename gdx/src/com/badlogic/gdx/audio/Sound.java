@@ -127,4 +127,11 @@ public interface Sound extends Disposable {
 	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
 	 * @param volume the volume in the range [0,1]. */
 	public void setPan (long soundId, float pan, float volume);
+
+	/** Checks if the provided sound with the given id has failed playing
+	 * @param soundId the sound id
+	 * @return whether the sound has failed or not */
+	public default boolean hasFailed (long soundId) {
+		return soundId == -1;
+	}
 }
