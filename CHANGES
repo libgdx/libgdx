@@ -1,5 +1,6 @@
 [1.14.3]
 - API Addition: add() with 5-8 parameters for arrays.
+- API Removal: Removed LwjglApplet (Java applets are obsolete). ApplicationType.Applet is deprecated.
 
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805
