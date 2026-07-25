@@ -102,7 +102,8 @@ public interface Application {
 	public enum ApplicationType {
 		Android, Desktop, HeadlessDesktop,
 		/** @deprecated Java applets are no longer supported; no backend returns this type. */
-		@Deprecated Applet, WebGL, iOS
+		@Deprecated
+		Applet, WebGL, iOS
 	}
 
 	public static final int LOG_NONE = 0;
