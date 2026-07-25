@@ -201,9 +201,11 @@ public class IOSApplication implements Application {
 	 * @return logical dimensions of space we draw to, adjusted for device orientation */
 	protected IOSScreenBounds computeBounds () {
 		CGRect screenBounds = uiWindow.getBounds();
-		final CGRect statusBarFrame = uiWindowScene.getStatusBarManager().getStatusBarFrame();
-		double statusBarHeight = statusBarFrame.getHeight();
-
+		double statusBarHeight = 0.0;
+		UIStatusBarManager uiStatusBarManager = uiWindowScene.getStatusBarManager();
+		if (uiStatusBarManager != null) {
+			statusBarHeight = uiStatusBarManager.getStatusBarFrame().getHeight();
+		}
 		double screenWidth = screenBounds.getWidth();
 		double screenHeight = screenBounds.getHeight();
 
@@ -257,13 +259,14 @@ public class IOSApplication implements Application {
 		// Trigger first render, special case that is caught and returned
 		this.graphics.view.display();
 
+		this.input.setupPeripherals();
+
 		listener.create();
 		listener.resize(this.graphics.getWidth(), this.graphics.getHeight());
 
 		// make sure the OpenGL view has contents before displaying it
 		this.graphics.view.display();
 
-		this.input.setupPeripherals();
 	}
 
 	final void didBecomeActive (UIScene uiScene) {
@@ -288,7 +291,10 @@ public class IOSApplication implements Application {
 	final void willTerminate (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "disposed");
 		audio.dispose();
-		graphics.makeCurrent();
+		// willTerminate can be called before a scene is connected and graphics initialized
+		if (graphics != null) {
+			graphics.makeCurrent();
+		}
 		Array<LifecycleListener> listeners = lifecycleListeners;
 		synchronized (listeners) {
 			for (LifecycleListener listener : listeners) {
@@ -296,7 +302,9 @@ public class IOSApplication implements Application {
 			}
 		}
 		listener.dispose();
-		Gdx.gl.glFinish();
+		if (graphics != null) {
+			Gdx.gl.glFinish();
+		}
 	}
 
 	@Override
@@ -420,7 +428,9 @@ public class IOSApplication implements Application {
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
-			Gdx.graphics.requestRendering();
+			if (Gdx.graphics != null) {
+				Gdx.graphics.requestRendering();
+			}
 		}
 	}
 
