@@ -67,8 +67,13 @@ public class IOSSceneDelegate extends UIWindowSceneDelegateAdapter {
 		IOSApplication.Delegate userLauncher = (IOSApplication.Delegate)UIApplication.getSharedApplication().getDelegate();
 		if (userLauncher != null) {
 			userLauncher.sceneDidDisconnect(scene);
+			// We call willTerminate manually as we will kill process
+			userLauncher.willTerminate(UIApplication.getSharedApplication());
 		}
-		super.sceneDidDisconnect(scene);
+		// OS can disconnect scenes to free resources and reconnect with a new one when app goes to foreground. libGDX handles
+		// single scene apps and currently doesn't handle graphics recreation so, when the scene gets disconnected, we have to kill
+		// the process.
+		System.exit(0);
 	}
 
 	@Override
@@ -77,6 +82,5 @@ public class IOSSceneDelegate extends UIWindowSceneDelegateAdapter {
 		if (userLauncher != null) {
 			userLauncher.sceneDidEnterBackground(scene);
 		}
-		super.sceneDidEnterBackground(scene);
 	}
 }
