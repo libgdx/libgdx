@@ -114,6 +114,8 @@ public class GdxTests {
 		AccelerometerTest.class,
 		ActionSequenceTest.class,
 		ActionTest.class,
+		ActorGestureListenerPointerTest.class,
+		ActorGestureListenerTouchUpTest.class,
 		Affine2Test.class,
 		AlphaTest.class,
 		Animation3DTest.class,

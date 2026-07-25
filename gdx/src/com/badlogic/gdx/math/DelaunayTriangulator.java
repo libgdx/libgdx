@@ -96,9 +96,7 @@ public class DelaunayTriangulator {
 					triangles.removeRange(triangleIndex - 2, triangleIndex);
 					break;
 				case INSIDE:
-					edges.add(p1, p2, p2, p3);
-					edges.add(p3, p1);
-
+					edges.add(p1, p2, p2, p3, p3, p1);
 					triangles.removeRange(triangleIndex - 2, triangleIndex);
 					break;
 				}

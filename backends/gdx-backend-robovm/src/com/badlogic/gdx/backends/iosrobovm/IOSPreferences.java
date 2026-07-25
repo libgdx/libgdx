@@ -186,8 +186,8 @@ public class IOSPreferences implements Preferences {
 	@Override
 	public void flush () {
 		NSAutoreleasePool pool = new NSAutoreleasePool();
-		if (!nsDictionary.write(file, false)) {
-			Gdx.app.debug("IOSPreferences", "Failed to write NSDictionary to file " + file);
+		if (!nsDictionary.write(file, true)) {
+			Gdx.app.error("IOSPreferences", "Failed to write NSDictionary atomically to " + file);
 		}
 		pool.close();
 	}

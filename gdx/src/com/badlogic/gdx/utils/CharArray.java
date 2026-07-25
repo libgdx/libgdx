@@ -177,6 +177,56 @@ public class CharArray implements CharSequence, Appendable {
 		size += 4;
 	}
 
+	public void add (char value1, char value2, char value3, char value4, char value5) {
+		if (size + 4 >= items.length) resizeBuffer(size + 5);
+		char[] items = this.items;
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		size += 5;
+	}
+
+	public void add (char value1, char value2, char value3, char value4, char value5, char value6) {
+		if (size + 5 >= items.length) resizeBuffer(size + 6);
+		char[] items = this.items;
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		items[size + 5] = value6;
+		size += 6;
+	}
+
+	public void add (char value1, char value2, char value3, char value4, char value5, char value6, char value7) {
+		if (size + 6 >= items.length) resizeBuffer(size + 7);
+		char[] items = this.items;
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		items[size + 5] = value6;
+		items[size + 6] = value7;
+		size += 7;
+	}
+
+	public void add (char value1, char value2, char value3, char value4, char value5, char value6, char value7, char value8) {
+		if (size + 7 >= items.length) resizeBuffer(size + 8);
+		char[] items = this.items;
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		items[size + 5] = value6;
+		items[size + 6] = value7;
+		items[size + 7] = value8;
+		size += 8;
+	}
+
 	public void addAll (CharArray array) {
 		addAll(array.items, 0, array.size);
 	}

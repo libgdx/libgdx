@@ -1,6 +1,8 @@
 [1.14.3]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 13.0.
 - [BREAKING CHANGE] iOS: Migrated to UIKit scene-based life cycle. (see #7823)
+- API Addition: add() with 5-8 parameters for arrays.
+- iOS: Made iOS Preferences flush() implementation atomic (see #7833)
 
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805
