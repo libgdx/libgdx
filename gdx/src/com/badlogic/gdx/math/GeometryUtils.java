@@ -18,13 +18,12 @@ package com.badlogic.gdx.math;
 
 /** @author Nathan Sweet */
 public final class GeometryUtils {
-
 	private GeometryUtils () {
 	}
 
 	static private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
 
-	/** Computes the barycentric coordinates v,w for the specified point in the triangle.
+	/** Computes the barycentric coordinates v,w for the specified point in the triangle. The input points must not be colinear.
 	 * <p>
 	 * If barycentric.x >= 0 && barycentric.y >= 0 && barycentric.x + barycentric.y <= 1 then the point is inside the triangle.
 	 * <p>
@@ -84,6 +83,12 @@ public final class GeometryUtils {
 	 * @param c the third coefficient of the quadric equation
 	 * @return the lowest positive root or Float.Nan */
 	static public float lowestPositiveRoot (float a, float b, float c) {
+		if (a == 0) {
+			if (b == 0) return Float.NaN;
+			float r = -c / b;
+			return r > 0 ? r : Float.NaN;
+		}
+
 		float det = b * b - 4 * a * c;
 		if (det < 0) return Float.NaN;
 
@@ -130,6 +135,7 @@ public final class GeometryUtils {
 		return circumcenter;
 	}
 
+	/** Returns the circumradius of the triangle. The input points must not be colinear. */
 	static public float triangleCircumradius (float x1, float y1, float x2, float y2, float x3, float y3) {
 		float m1, m2, mx1, mx2, my1, my2, x, y;
 		if (Math.abs(y2 - y1) < MathUtils.FLOAT_ROUNDING_ERROR) {
@@ -163,9 +169,12 @@ public final class GeometryUtils {
 	 * Gary L. Miller, Dafna Talmor, Shang-Hua Teng, and Noel Walkington. A Delaunay Based Numerical Method for Three Dimensions:
 	 * Generation, Formulation, and Partition. */
 	static public float triangleQuality (float x1, float y1, float x2, float y2, float x3, float y3) {
-		float sqLength1 = x1 * x1 + y1 * y1;
-		float sqLength2 = x2 * x2 + y2 * y2;
-		float sqLength3 = x3 * x3 + y3 * y3;
+		float dx12 = x1 - x2, dy12 = y1 - y2;
+		float dx23 = x2 - x3, dy23 = y2 - y3;
+		float dx31 = x3 - x1, dy31 = y3 - y1;
+		float sqLength1 = dx12 * dx12 + dy12 * dy12;
+		float sqLength2 = dx23 * dx23 + dy23 * dy23;
+		float sqLength3 = dx31 * dx31 + dy31 * dy31;
 		return (float)Math.sqrt(Math.min(sqLength1, Math.min(sqLength2, sqLength3))) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
 	}
 
@@ -175,16 +184,22 @@ public final class GeometryUtils {
 
 	static public Vector2 quadrilateralCentroid (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
 		Vector2 centroid) {
-		float avgX1 = (x1 + x2 + x3) / 3;
-		float avgY1 = (y1 + y2 + y3) / 3;
-		float avgX2 = (x1 + x4 + x3) / 3;
-		float avgY2 = (y1 + y4 + y3) / 3;
-		centroid.x = avgX1 - (avgX1 - avgX2) / 2;
-		centroid.y = avgY1 - (avgY1 - avgY2) / 2;
+		float cx1 = (x1 + x2 + x3) / 3, cy1 = (y1 + y2 + y3) / 3;
+		float cx2 = (x1 + x3 + x4) / 3, cy2 = (y1 + y3 + y4) / 3;
+		float area1 = Math.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1)) * 0.5f;
+		float area2 = Math.abs((x1 - x3) * (y4 - y1) - (x1 - x4) * (y3 - y1)) * 0.5f;
+		float total = area1 + area2;
+		if (total == 0) {
+			centroid.x = cx1;
+			centroid.y = cy1;
+		} else {
+			centroid.x = (cx1 * area1 + cx2 * area2) / total;
+			centroid.y = (cy1 * area1 + cy2 * area2) / total;
+		}
 		return centroid;
 	}
 
-	/** Returns the centroid for the specified non-self-intersecting polygon. */
+	/** Returns the centroid for the specified non-self-intersecting polygon. The input points must not be colinear. */
 	static public Vector2 polygonCentroid (float[] polygon, int offset, int count, Vector2 centroid) {
 		if (count < 6) throw new IllegalArgumentException("A polygon must have 3 or more coordinate pairs.");
 
@@ -211,7 +226,7 @@ public final class GeometryUtils {
 		return centroid;
 	}
 
-	/** Computes the area for a convex polygon. */
+	/** Computes the area for a non-self-intersecting polygon. */
 	static public float polygonArea (float[] polygon, int offset, int count) {
 		float area = 0;
 		int last = offset + count - 2;
@@ -257,7 +272,7 @@ public final class GeometryUtils {
 	}
 
 	static public boolean isClockwise (float[] polygon, int offset, int count) {
-		if (count <= 2) return false;
+		if (count < 6) return false;
 		float area = 0;
 		int last = offset + count - 2;
 		float x1 = polygon[last], y1 = polygon[last + 1];

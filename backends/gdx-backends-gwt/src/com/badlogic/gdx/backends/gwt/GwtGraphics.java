@@ -544,6 +544,7 @@ public class GwtGraphics extends AbstractGraphics {
 
 	public void update () {
 		long currTimeStamp = System.currentTimeMillis();
+		if (lastTimeStamp > currTimeStamp) lastTimeStamp = currTimeStamp;
 		deltaTime = (currTimeStamp - lastTimeStamp) / 1000.0f;
 		lastTimeStamp = currTimeStamp;
 		time += deltaTime;

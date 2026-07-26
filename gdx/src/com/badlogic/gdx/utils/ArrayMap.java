@@ -127,6 +127,15 @@ public class ArrayMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		return index;
 	}
 
+	public @Null V putMissing (K key, @Null V value) {
+		int index = indexOfKey(key);
+		if (index != -1) return values[index];
+		if (size == keys.length) resize(Math.max(8, (int)(size * 1.75f)));
+		keys[size] = key;
+		values[size++] = value;
+		return null;
+	}
+
 	public void putAll (ArrayMap<? extends K, ? extends V> map) {
 		putAll(map, 0, map.size);
 	}

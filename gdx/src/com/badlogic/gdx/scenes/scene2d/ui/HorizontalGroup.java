@@ -469,7 +469,7 @@ public class HorizontalGroup extends WidgetGroup {
 		return this;
 	}
 
-	/** @param fill 0 will use preferred width. */
+	/** @param fill 0 will use preferred height. */
 	public HorizontalGroup fill (float fill) {
 		this.fill = fill;
 		return this;

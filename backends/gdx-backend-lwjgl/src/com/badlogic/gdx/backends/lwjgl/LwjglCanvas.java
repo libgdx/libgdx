@@ -403,9 +403,9 @@ public class LwjglCanvas implements LwjglApplicationBase {
 
 	@Override
 	public void postRunnable (Runnable runnable) {
+		Throwable caller = postedRunnableStacktraces ? new Throwable() : null;
 		synchronized (runnables) {
-			runnables.add(runnable);
-			runnables.add(postedRunnableStacktraces ? new Throwable() : null);
+			runnables.add(runnable, caller);
 			graphics.requestRendering();
 		}
 	}

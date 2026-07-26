@@ -317,17 +317,11 @@ public class Queue<T> implements Iterable<T> {
 
 		if (head < tail) {
 			// Continuous
-			for (int i = head; i < tail; i++) {
-				values[i] = null;
-			}
+			Arrays.fill(values, head, tail, null);
 		} else {
 			// Wrapped
-			for (int i = head; i < values.length; i++) {
-				values[i] = null;
-			}
-			for (int i = 0; i < tail; i++) {
-				values[i] = null;
-			}
+			Arrays.fill(values, head, values.length, null);
+			Arrays.fill(values, 0, tail, null);
 		}
 		this.head = 0;
 		this.tail = 0;

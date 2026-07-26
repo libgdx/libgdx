@@ -65,7 +65,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<BaseTiledMapLoader.Parameters
 
 		this.root = xml.parse(tmxFile);
 
-		ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
+		ObjectMap<String, Texture> textures = new ObjectMap<>();
 
 		final Array<FileHandle> textureFiles = getDependencyFileHandles(tmxFile);
 		for (FileHandle textureFile : textureFiles) {
@@ -89,10 +89,36 @@ public class TmxMapLoader extends BaseTmxMapLoader<BaseTiledMapLoader.Parameters
 		return map;
 	}
 
+	/** Loads the {@link TiledMapTileSet} from the given file. The file is resolved via the {@link FileHandleResolver} set in the
+	 * constructor of this class. By default it will resolve to an internal file. The map will be loaded for a y-up coordinate
+	 * system.
+	 *
+	 * @param fileName the filename
+	 * @return the TiledMapTileSet */
+	public TiledMapTileSet loadTileset (String fileName) {
+		return loadTileset(fileName, new TmjMapLoader.Parameters());
+	}
+
+	/** Loads the {@link TiledMapTileSet} from the given file. The file is resolved via the {@link FileHandleResolver} set in the
+	 * constructor of this class. By default it will resolve to an internal file.
+	 *
+	 * @param fileName the filename
+	 * @param parameter specifies whether to use y-up, generate mip maps etc.
+	 * @return the TiledMapTileSet */
+	public TiledMapTileSet loadTileset (String fileName, TmjMapLoader.Parameters parameter) {
+		FileHandle tmxFile = resolve(fileName);
+
+		this.root = xml.parse(tmxFile);
+
+		ObjectMap<String, Texture> textures = new ObjectMap<>();
+
+		return loadTileSet(root, tmxFile, new ImageResolver.DirectImageResolver(textures));
+	}
+
 	@Override
 	protected Array<AssetDescriptor> getDependencyAssetDescriptors (FileHandle tmxFile,
 		TextureLoader.TextureParameter textureParameter) {
-		Array<AssetDescriptor> descriptors = new Array<AssetDescriptor>();
+		Array<AssetDescriptor> descriptors = new Array<>();
 
 		final Array<FileHandle> fileHandles = getDependencyFileHandles(tmxFile);
 		for (FileHandle handle : fileHandles) {
@@ -103,7 +129,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<BaseTiledMapLoader.Parameters
 	}
 
 	protected Array<FileHandle> getDependencyFileHandles (FileHandle tmxFile) {
-		Array<FileHandle> fileHandles = new Array<FileHandle>();
+		Array<FileHandle> fileHandles = new Array<>();
 
 		// TileSet descriptors
 		for (Element tileset : root.getChildrenByNameRecursively("tileset")) {
@@ -125,7 +151,7 @@ public class TmxMapLoader extends BaseTmxMapLoader<BaseTiledMapLoader.Parameters
 	}
 
 	protected Array<FileHandle> getTileSetDependencyFileHandle (FileHandle tmxFile, Element tileset) {
-		Array<FileHandle> fileHandles = new Array<FileHandle>();
+		Array<FileHandle> fileHandles = new Array<>();
 		return getTileSetDependencyFileHandle(fileHandles, tmxFile, tileset);
 	}
 
@@ -156,14 +182,13 @@ public class TmxMapLoader extends BaseTmxMapLoader<BaseTiledMapLoader.Parameters
 
 	@Override
 	protected void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileSet, Element element,
-		Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
-		String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
+		Array<Element> tileElements, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, int offsetX,
+		int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
 
 		MapProperties props = tileSet.getProperties();
-		if (image != null) {
-			// One image for the whole tileSet
-			TextureRegion texture = imageResolver.getImage(image.path());
 
+		if (image != null) {
+			TextureRegion texture = imageResolver.getImage(image.path());
 			props.put("imagesource", imageSource);
 			props.put("imagewidth", imageWidth);
 			props.put("imageheight", imageHeight);
@@ -176,30 +201,23 @@ public class TmxMapLoader extends BaseTmxMapLoader<BaseTiledMapLoader.Parameters
 			int stopHeight = texture.getRegionHeight() - tileheight;
 
 			int id = firstgid;
-
 			for (int y = margin; y <= stopHeight; y += tileheight + spacing) {
 				for (int x = margin; x <= stopWidth; x += tilewidth + spacing) {
 					TextureRegion tileRegion = new TextureRegion(texture, x, y, tilewidth, tileheight);
-					int tileId = id++;
-					addStaticTiledMapTile(tileSet, tileRegion, tileId, offsetX, offsetY);
+					addStaticTiledMapTile(tileSet, tileRegion, id++, offsetX, offsetY);
 				}
 			}
 		} else {
-			// Every tile has its own image source
 			for (Element tileElement : tileElements) {
 				Element imageElement = tileElement.getChildByName("image");
 				if (imageElement != null) {
-					imageSource = imageElement.getAttribute("source");
+					String tileImageSource = imageElement.getAttribute("source");
+					FileHandle tileImage = getRelativeFileHandle(tmxFile, tileImageSource);
+					TextureRegion texture = imageResolver.getImage(tileImage.path());
 
-					if (source != null) {
-						image = getRelativeFileHandle(getRelativeFileHandle(tmxFile, source), imageSource);
-					} else {
-						image = getRelativeFileHandle(tmxFile, imageSource);
-					}
+					int tileId = firstgid + tileElement.getIntAttribute("id");
+					addStaticTiledMapTile(tileSet, texture, tileId, offsetX, offsetY);
 				}
-				TextureRegion texture = imageResolver.getImage(image.path());
-				int tileId = firstgid + tileElement.getIntAttribute("id");
-				addStaticTiledMapTile(tileSet, texture, tileId, offsetX, offsetY);
 			}
 		}
 	}

@@ -1080,12 +1080,12 @@ public class TiledMapPacker {
 		@Override
 		protected void addStaticTiles (FileHandle tmxFile, ImageResolver imageResolver, TiledMapTileSet tileSet,
 			XmlReader.Element element, Array<XmlReader.Element> tileElements, String name, int firstgid, int tilewidth,
-			int tileheight, int spacing, int margin, String source, int offsetX, int offsetY, String imageSource, int imageWidth,
-			int imageHeight, FileHandle image) {
+			int tileheight, int spacing, int margin, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight,
+			FileHandle image) {
 
 			// Let the standard TmxMapLoader logic run first
 			super.addStaticTiles(tmxFile, imageResolver, tileSet, element, tileElements, name, firstgid, tilewidth, tileheight,
-				spacing, margin, source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
+				spacing, margin, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
 
 			// If image is null it means we are dealing with a "collection of images" tileset.
 			// Each tile element has its own image node.
@@ -1138,11 +1138,11 @@ public class TiledMapPacker {
 
 		@Override
 		protected void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet, JsonValue element,
-			JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, String source,
-			int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
+			JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin, int offsetX,
+			int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image) {
 			// Let the standard TmxMapLoader logic run first
 			super.addStaticTiles(tmjFile, imageResolver, tileSet, element, tiles, name, firstgid, tilewidth, tileheight, spacing,
-				margin, source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
+				margin, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
 
 			// If image is null it means we are dealing with a "collection of images" tileset.
 			// Each tile element has its own image node.

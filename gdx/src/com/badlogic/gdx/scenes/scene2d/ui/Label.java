@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.CharArray;
+import com.badlogic.gdx.utils.Justify;
 import com.badlogic.gdx.utils.Null;
 
 /** A text label, with optional word wrapping.
@@ -48,6 +49,7 @@ public class Label extends Widget implements Styleable<Label.LabelStyle> {
 	private float fontScaleX = 1, fontScaleY = 1;
 	private boolean fontScaleChanged = false;
 	private @Null String ellipsis;
+	private Justify justify = Justify.None;
 
 	public Label (@Null CharSequence text, Skin skin) {
 		this(text, skin.get(LabelStyle.class));
@@ -193,7 +195,7 @@ public class Label extends Widget implements Styleable<Label.LabelStyle> {
 		float textWidth, textHeight;
 		if (wrap || text.indexOf("\n") != -1) {
 			// If the text can span multiple lines, determine the text's actual size so it can be aligned within the label.
-			layout.setText(font, text, 0, text.size, Color.WHITE, width, lineAlign, wrap, ellipsis);
+			layout.setText(font, text, 0, text.size, Color.WHITE, width, lineAlign, wrap, justify, ellipsis);
 			textWidth = layout.width;
 			textHeight = layout.height;
 
@@ -219,7 +221,7 @@ public class Label extends Widget implements Styleable<Label.LabelStyle> {
 		}
 		if (!cache.getFont().isFlipped()) y += textHeight;
 
-		layout.setText(font, text, 0, text.size, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
+		layout.setText(font, text, 0, text.size, Color.WHITE, textWidth, lineAlign, wrap, justify, ellipsis);
 		cache.setText(layout, x, y);
 
 		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
@@ -351,6 +353,18 @@ public class Label extends Widget implements Styleable<Label.LabelStyle> {
 			this.ellipsis = "...";
 		else
 			this.ellipsis = null;
+	}
+
+	public Justify getJustify () {
+		return this.justify;
+	}
+
+	/** @param justify Justifies text to the label widths (disabled by default).
+	 * @see Justify */
+	public void setJustify (Justify justify) {
+		if (justify == null) throw new IllegalArgumentException("Justify cannot be null");
+		this.justify = justify;
+		invalidate();
 	}
 
 	/** Allows subclasses to access the cache in {@link #draw(Batch, float)}. */

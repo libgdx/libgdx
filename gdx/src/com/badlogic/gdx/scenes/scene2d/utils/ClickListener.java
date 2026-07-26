@@ -37,7 +37,7 @@ public class ClickListener extends InputListener {
 	private int pressedPointer = -1;
 	private int pressedButton = -1;
 	private int button;
-	private boolean pressed, over, cancelled;
+	private boolean pressed, over, cancelled, cancelledOver;
 	private long visualPressedTime;
 	private long tapCountInterval = (long)(0.4f * 1000000000l);
 	private int tapCount;
@@ -91,22 +91,35 @@ public class ClickListener extends InputListener {
 			pressed = false;
 			pressedPointer = -1;
 			pressedButton = -1;
+			if (cancelled) over = cancelledOver;
 			cancelled = false;
 		}
 	}
 
 	public void enter (InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-		if (pointer == -1 && !cancelled) over = true;
+		if (pointer == -1) {
+			if (!cancelled)
+				over = true;
+			else
+				cancelledOver = true;
+		}
 	}
 
 	public void exit (InputEvent event, float x, float y, int pointer, @Null Actor toActor) {
-		if (pointer == -1 && !cancelled) over = false;
+		if (pointer == -1) {
+			if (!cancelled)
+				over = false;
+			else
+				cancelledOver = false;
+		}
 	}
 
-	/** If a touch down is being monitored, the drag and touch up events are ignored until the next touch up. */
+	/** If a touch down is being monitored, the over state and drag and touch up events are ignored until the next touch up. */
 	public void cancel () {
-		if (pressedPointer == -1) return;
+		if (pressedPointer == -1 || cancelled) return;
 		cancelled = true;
+		cancelledOver = over;
+		over = false;
 		pressed = false;
 	}
 

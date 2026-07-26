@@ -1,0 +1,1 @@
+[Test fixtures](https://www.cs.cmu.edu/afs/cs/project/pscico/pscico/src/arithmetic/compiler1/test/) that accompany [Automatic Generation of Staged Geometric Predicates (2001)](https://www.cs.cmu.edu/afs/cs/project/pscico/pscico/src/arithmetic/compiler1/paper/geomtr.pdf) paper by Aleksandar Nanevski et. al.

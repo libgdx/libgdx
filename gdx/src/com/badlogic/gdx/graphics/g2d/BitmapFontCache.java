@@ -310,6 +310,7 @@ public class BitmapFontCache {
 		y = 0;
 		pooledLayouts.flush();
 		layouts.clear();
+		glyphCount = 0;
 		for (int i = 0, n = idx.length; i < n; i++) {
 			if (pageGlyphIndices != null) pageGlyphIndices[i].clear();
 			idx[i] = 0;

@@ -248,6 +248,7 @@ public class IOSGraphics extends AbstractGraphics {
 			return;
 		}
 		long time = System.nanoTime();
+		if (lastFrameTime > time) lastFrameTime = time;
 		if (!resume) {
 			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		} else {

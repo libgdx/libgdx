@@ -59,9 +59,9 @@ class TimSort<T> {
 	/** When we get into galloping mode, we stay there until both runs win less often than MIN_GALLOP consecutive times. */
 	private static final int MIN_GALLOP = 7;
 
-	/** This controls when we get *into* galloping mode. It is initialized to MIN_GALLOP. The mergeLo and mergeHi methods nudge it
-	 * higher for random data, and lower for highly structured data. */
-	private int minGallop = MIN_GALLOP;
+	/** This controls when we get *into* galloping mode. It is reset to MIN_GALLOP before each sort. The mergeLo and mergeHi
+	 * methods nudge it higher for random data, and lower for highly structured data. */
+	private int minGallop;
 
 	/** Maximum initial size of tmp array, which is used for merging. The array can grow to accommodate demand.
 	 * 
@@ -108,41 +108,41 @@ class TimSort<T> {
 
 		this.a = a;
 		this.c = c;
+		minGallop = MIN_GALLOP;
 		tmpCount = 0;
+		try {
+			/** March over the array once, left to right, finding natural runs, extending short natural runs to minRun elements, and
+			 * merging runs to maintain stack invariant. */
+			int minRun = minRunLength(nRemaining);
+			do {
+				// Identify next run
+				int runLen = countRunAndMakeAscending(a, lo, hi, c);
 
-		/** March over the array once, left to right, finding natural runs, extending short natural runs to minRun elements, and
-		 * merging runs to maintain stack invariant. */
-		int minRun = minRunLength(nRemaining);
-		do {
-			// Identify next run
-			int runLen = countRunAndMakeAscending(a, lo, hi, c);
+				// If run is short, extend to min(minRun, nRemaining)
+				if (runLen < minRun) {
+					int force = nRemaining <= minRun ? nRemaining : minRun;
+					binarySort(a, lo, lo + force, lo + runLen, c);
+					runLen = force;
+				}
 
-			// If run is short, extend to min(minRun, nRemaining)
-			if (runLen < minRun) {
-				int force = nRemaining <= minRun ? nRemaining : minRun;
-				binarySort(a, lo, lo + force, lo + runLen, c);
-				runLen = force;
-			}
+				// Push run onto pending-run stack, and maybe merge
+				pushRun(lo, runLen);
+				mergeCollapse();
 
-			// Push run onto pending-run stack, and maybe merge
-			pushRun(lo, runLen);
-			mergeCollapse();
+				// Advance to find next run
+				lo += runLen;
+				nRemaining -= runLen;
+			} while (nRemaining != 0);
 
-			// Advance to find next run
-			lo += runLen;
-			nRemaining -= runLen;
-		} while (nRemaining != 0);
-
-		// Merge all remaining runs to complete sort
-		if (DEBUG) assert lo == hi;
-		mergeForceCollapse();
-		if (DEBUG) assert stackSize == 1;
-
-		this.a = null;
-		this.c = null;
-		T[] tmp = this.tmp;
-		for (int i = 0, n = tmpCount; i < n; i++)
-			tmp[i] = null;
+			// Merge all remaining runs to complete sort
+			if (DEBUG) assert lo == hi;
+			mergeForceCollapse();
+			if (DEBUG) assert stackSize == 1;
+		} finally {
+			this.a = null;
+			this.c = null;
+			Arrays.fill(tmp, 0, tmpCount, null);
+		}
 	}
 
 	/** Creates a TimSort instance to maintain the state of an ongoing sort.
@@ -152,6 +152,7 @@ class TimSort<T> {
 	private TimSort (T[] a, Comparator<? super T> c) {
 		this.a = a;
 		this.c = c;
+		minGallop = MIN_GALLOP;
 
 		// Allocate temp storage (which may be increased later if necessary)
 		int len = a.length;

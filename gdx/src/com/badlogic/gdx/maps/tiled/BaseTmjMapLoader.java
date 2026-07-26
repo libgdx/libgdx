@@ -49,6 +49,7 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.StreamUtils;
 
@@ -65,6 +66,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	protected JsonValue root;
 
 	protected ObjectMap<String, JsonValue> templateCache;
+	protected ObjectIntMap<String> tilesetPathsToGIDs;
 
 	public BaseTmjMapLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -90,11 +92,13 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	 * @param parameter
 	 * @param imageResolver
 	 * @return the {@link TiledMap} */
+	@Override
 	protected TiledMap loadTiledMap (FileHandle tmjFile, P parameter, ImageResolver imageResolver) {
 		this.map = new TiledMap();
 		this.idToObject = new IntMap<>();
 		this.runOnEndOfLoadTiled = new Array<>();
 		this.templateCache = new ObjectMap<>();
+		this.tilesetPathsToGIDs = new ObjectIntMap<>();
 
 		if (parameter != null) {
 			this.convertObjectToTileSpace = parameter.convertObjectToTileSpace;
@@ -153,8 +157,10 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 
 		JsonValue tileSets = root.get("tilesets");
 		for (JsonValue element : tileSets) {
-			loadTileSet(element, tmjFile, imageResolver);
-
+			TiledMapTileSet tileSet = loadTileSet(element, tmjFile, imageResolver);
+			if (tileSet != null) {
+				map.getTileSets().addTileSet(tileSet);
+			}
 		}
 		JsonValue layers = root.get("layers");
 
@@ -281,7 +287,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			for (JsonValue objectElement : element.get("objects")) {
 				JsonValue elementToLoad = objectElement;
 				if (objectElement.has("template")) {
-					elementToLoad = resolveTemplateObject(map, layer, objectElement, tmjFile);
+					elementToLoad = resolveTemplateObject(objectElement, tmjFile);
 				}
 				loadObject(map, layer, elementToLoad);
 			}
@@ -439,7 +445,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		object.setName(element.getString("name", null));
 		String rotation = element.getString("rotation", null);
 		if (rotation != null) {
-			object.getProperties().put("rotation", Float.parseFloat(rotation));
+			object.getProperties().put("rotation", Float.valueOf(rotation));
 		}
 		String type = element.getString("type", null);
 		if (type != null) {
@@ -477,20 +483,23 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 	 * object links to a specific .tj file. Attributes and properties found in the template are allowed to be overwritten by any
 	 * matching ones found in its parent element. Knowing this, we will merge the two elements together with the parent's props
 	 * taking precedence and then return the merged value.
-	 * @param map TileMap object
-	 * @param layer MapLayer object
 	 * @param mapElement JsonValue which contains the single json element we are currently parsing
 	 * @param tmjFile tmjFile
 	 * @return a merged JsonValue representing the combined JsonValues. */
-	protected JsonValue resolveTemplateObject (TiledMap map, MapLayer layer, JsonValue mapElement, FileHandle tmjFile) {
+	protected JsonValue resolveTemplateObject (JsonValue mapElement, FileHandle tmjFile) {
 		// Get template (.tj) file name from element
 		String tjFileName = mapElement.getString("template");
+
+		// Template's own tileset declaration. We will need this to figure out how the template's
+		// local gids map to the map's global gids.
+		FileHandle templateFile = getRelativeFileHandle(tmjFile, tjFileName);
+
 		// check for cached tj element
 		JsonValue templateElement = templateCache.get(tjFileName);
 		if (templateElement == null) {
 			// parse the .tj template file
 			try {
-				templateElement = json.parse(getRelativeFileHandle(tmjFile, tjFileName));
+				templateElement = json.parse(templateFile);
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Error parsing template file: " + tjFileName, e);
 			}
@@ -498,6 +507,32 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		}
 		// Get the root object from the template file
 		JsonValue templateObjectElement = templateElement.get("object");
+
+		// Calculate the GID shift or keep as 0 if not required
+		int addGID = 0;
+		// Get the template tileset source path if any
+		JsonValue templateTilesetSource = templateElement.get("tileset");
+		if (templateTilesetSource != null) {
+			// Resolve the tileset path relative to the TEMPLATE file, because the
+			// "source" in the template is stored relative to the template's location.
+			String tilesetPath = getRelativeFileHandle(templateFile, templateTilesetSource.getString("source")).path();
+			addGID = tilesetPathsToGIDs.get(tilesetPath, 0) - 1;
+		}
+
+		// Inject the GID into the object instance in the map
+		if (templateObjectElement.has("gid")) {
+			if (!mapElement.has("gid")) {
+				// read gid from the template
+				int templateGid = templateObjectElement.getInt("gid");
+				int finalGid = templateGid + addGID;
+
+				// create a JsonValue for the gid and attach it to the map object
+				JsonValue gidValue = new JsonValue(finalGid);
+				gidValue.setName("gid");
+				mapElement.addChild(gidValue);
+			}
+		}
+
 		// Merge the parent map element with its template element
 		return mergeParentElementWithTemplate(mapElement, templateObjectElement);
 	}
@@ -690,98 +725,98 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		return ids;
 	}
 
-	protected void loadTileSet (JsonValue element, FileHandle tmjFile, ImageResolver imageResolver) {
-		if (element.getString("firstgid") != null) {
-			int firstgid = element.getInt("firstgid", 1);
-			String imageSource = "";
-			int imageWidth = 0;
-			int imageHeight = 0;
-			FileHandle image = null;
+	public TiledMapTileSet loadTileSet (JsonValue rawElement, FileHandle tmjFile, ImageResolver imageResolver) {
+		int firstgid = rawElement.getInt("firstgid", 1);
+		JsonValue element = resolveTilesetElement(rawElement, tmjFile);
 
-			String source = element.getString("source", null);
-			if (source != null) {
-				FileHandle tsj = getRelativeFileHandle(tmjFile, source);
-				try {
-					element = json.parse(tsj);
-					if (element.has("image")) {
-						imageSource = element.getString("image");
-						imageWidth = element.getInt("imagewidth", 0);
-						imageHeight = element.getInt("imageheight", 0);
-						image = getRelativeFileHandle(tsj, imageSource);
-					}
-				} catch (SerializationException e) {
-					throw new GdxRuntimeException("Error parsing external tileSet.");
-				}
-			} else {
-				if (element.has("image")) {
-					imageSource = element.getString("image");
-					imageWidth = element.getInt("imagewidth", 0);
-					imageHeight = element.getInt("imageheight", 0);
-					image = getRelativeFileHandle(tmjFile, imageSource);
-				}
-			}
-			String name = element.getString("name", null);
-			int tilewidth = element.getInt("tilewidth", 0);
-			int tileheight = element.getInt("tileheight", 0);
-			int spacing = element.getInt("spacing", 0);
-			int margin = element.getInt("margin", 0);
+		String name = element.getString("name", null);
+		int tilewidth = element.getInt("tilewidth", 0);
+		int tileheight = element.getInt("tileheight", 0);
+		int spacing = element.getInt("spacing", 0);
+		int margin = element.getInt("margin", 0);
 
-			JsonValue offset = element.get("tileoffset");
-			int offsetX = 0;
-			int offsetY = 0;
-			if (offset != null) {
-				offsetX = offset.getInt("x", 0);
-				offsetY = offset.getInt("y", 0);
-			}
-			TiledMapTileSet tileSet = new TiledMapTileSet();
-
-			// TileSet
-			tileSet.setName(name);
-			final MapProperties tileSetProperties = tileSet.getProperties();
-			JsonValue properties = element.get("properties");
-			if (properties != null) {
-				loadProperties(tileSetProperties, properties);
-			}
-			tileSetProperties.put("firstgid", firstgid);
-
-			// Tiles
-			JsonValue tiles = element.get("tiles");
-
-			if (tiles == null) {
-				tiles = new JsonValue(JsonValue.ValueType.array);
-			}
-
-			addStaticTiles(tmjFile, imageResolver, tileSet, element, tiles, name, firstgid, tilewidth, tileheight, spacing, margin,
-				source, offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
-
-			Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
-
-			for (JsonValue tileElement : tiles) {
-				int localtid = tileElement.getInt("id", 0);
-				TiledMapTile tile = tileSet.getTile(firstgid + localtid);
-				if (tile != null) {
-					AnimatedTiledMapTile animatedTile = createAnimatedTile(tileSet, tile, tileElement, firstgid);
-					if (animatedTile != null) {
-						animatedTiles.add(animatedTile);
-						tile = animatedTile;
-					}
-					addTileProperties(tile, tileElement);
-					addTileObjectGroup(tile, tileElement);
-				}
-			}
-			// replace original static tiles by animated tiles
-			for (AnimatedTiledMapTile animatedTile : animatedTiles) {
-				tileSet.putTile(animatedTile.getId(), animatedTile);
-			}
-
-			map.getTileSets().addTileSet(tileSet);
-
+		int offsetX = 0, offsetY = 0;
+		JsonValue offset = element.get("tileoffset");
+		if (offset != null) {
+			offsetX = offset.getInt("x", 0);
+			offsetY = offset.getInt("y", 0);
 		}
+
+		FileHandle image = resolveTilesetImage(element, tmjFile);
+		String imageSource = element.getString("image", null);
+		int imageWidth = element.getInt("imagewidth", 0);
+		int imageHeight = element.getInt("imageheight", 0);
+
+		TiledMapTileSet tileSet = new TiledMapTileSet();
+		tileSet.setName(name);
+		final MapProperties tileSetProperties = tileSet.getProperties();
+		tileSetProperties.put("firstgid", firstgid);
+
+		JsonValue properties = element.get("properties");
+		if (properties != null) {
+			loadProperties(tileSetProperties, properties);
+		}
+
+		JsonValue tiles = element.get("tiles");
+		if (tiles == null) tiles = new JsonValue(JsonValue.ValueType.array);
+
+		addStaticTiles(tmjFile, imageResolver, tileSet, element, tiles, name, firstgid, tilewidth, tileheight, spacing, margin,
+			offsetX, offsetY, imageSource, imageWidth, imageHeight, image);
+
+		Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
+		for (JsonValue tileElement : tiles) {
+			int localtid = tileElement.getInt("id", 0);
+			TiledMapTile tile = tileSet.getTile(firstgid + localtid);
+			if (tile != null) {
+				AnimatedTiledMapTile animatedTile = createAnimatedTile(tileSet, tile, tileElement, firstgid);
+				if (animatedTile != null) {
+					animatedTiles.add(animatedTile);
+					tile = animatedTile;
+				}
+				addTileProperties(tile, tileElement);
+				addTileObjectGroup(tile, tileElement);
+			}
+		}
+		for (AnimatedTiledMapTile animatedTile : animatedTiles) {
+			tileSet.putTile(animatedTile.getId(), animatedTile);
+		}
+
+		return tileSet;
+	}
+
+	private JsonValue resolveTilesetElement (JsonValue element, FileHandle tmjFile) {
+		String source = element.getString("source", null);
+		if (source != null) {
+			FileHandle tsj = getRelativeFileHandle(tmjFile, source);
+			if (tilesetPathsToGIDs != null) {
+				int firstgid = element.getInt("firstgid", 1);
+				tilesetPathsToGIDs.put(tsj.path(), firstgid);
+			}
+			try {
+				JsonValue resolved = json.parse(tsj);
+				resolved.addChild("source", new JsonValue(source));
+				return resolved;
+			} catch (SerializationException e) {
+				throw new GdxRuntimeException("Error parsing external tileset: " + source, e);
+			}
+		}
+		return element;
+	}
+
+	private FileHandle resolveTilesetImage (JsonValue element, FileHandle tmjFile) {
+		if (!element.has("image")) return null;
+
+		String imageSource = element.getString("image");
+		String tilesetSource = element.getString("source", null);
+
+		FileHandle base = (tilesetSource != null) ? getRelativeFileHandle(tmjFile, tilesetSource) : tmjFile;
+
+		return getRelativeFileHandle(base, imageSource);
 	}
 
 	protected abstract void addStaticTiles (FileHandle tmjFile, ImageResolver imageResolver, TiledMapTileSet tileSet,
 		JsonValue element, JsonValue tiles, String name, int firstgid, int tilewidth, int tileheight, int spacing, int margin,
-		String source, int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
+		int offsetX, int offsetY, String imageSource, int imageWidth, int imageHeight, FileHandle image);
 
 	private void addTileProperties (TiledMapTile tile, JsonValue tileElement) {
 		String terrain = tileElement.getString("terrain", null);

@@ -61,7 +61,7 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 	protected int shift;
 
 	/** A bitmask used to confine hashcodes to the size of the table. Must be all 1 bits in its low positions, ie a power of two
-	 * minus 1. If {@link #place(int)} is overriden, this can be used instead of {@link #shift} to isolate usable bits of a
+	 * minus 1. If {@link #place(int)} is overridden, this can be used instead of {@link #shift} to isolate usable bits of a
 	 * hash. */
 	protected int mask;
 
@@ -119,15 +119,14 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 	 * "https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">Malte
 	 * Skarupke's blog post</a>).
 	 * <p>
-	 * This method can be overriden to customizing hashing. This may be useful eg in the unlikely event that most hashcodes are
+	 * This method can be overridden to customizing hashing. This may be useful eg in the unlikely event that most hashcodes are
 	 * Fibonacci numbers, if keys provide poor or incorrect hashcodes, or to simplify hashing if keys provide high quality
-	 * hashcodes and don't need Fibonacci hashing: {@code return item.hashCode() & mask;} */
+	 * hashcodes and don't need Fibonacci hashing. */
 	protected int place (int item) {
 		return (int)(item * 0x9E3779B97F4A7C15L >>> shift);
 	}
 
-	/** Returns the index of the key if already present, else -(index + 1) for the next empty index. This can be overridden in this
-	 * pacakge to compare for equality differently than {@link Object#equals(Object)}. */
+	/** Returns the index of the key if already present, else -(index + 1) for the next empty index. */
 	private int locateKey (int key) {
 		int[] keyTable = this.keyTable;
 		for (int i = place(key);; i = i + 1 & mask) {
@@ -176,6 +175,42 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 			valueTable[i] = value;
 			return oldValue;
 		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
+	}
+
+	public void putMissing (int key, float value) {
+		if (key == 0) {
+			if (!hasZeroValue) {
+				zeroValue = value;
+				hasZeroValue = true;
+				size++;
+			}
+			return;
+		}
+		int i = locateKey(key);
+		if (i >= 0) return; // Existing key was found.
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+	}
+
+	public float putMissing (int key, float value, float defaultValue) {
+		if (key == 0) {
+			if (!hasZeroValue) {
+				zeroValue = value;
+				hasZeroValue = true;
+				size++;
+				return defaultValue;
+			}
+			return zeroValue;
+		}
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i]; // Existing key was found.
 		i = -(i + 1); // Empty space was found.
 		keyTable[i] = key;
 		valueTable[i] = value;
