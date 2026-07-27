@@ -58,6 +58,10 @@ public class IOSApplication implements Application {
 		@Override
 		public UISceneConfiguration getConfigurationForConnectingSceneSession (UIApplication application,
 			UISceneSession connectingSceneSession, UISceneConnectionOptions options) {
+			// Exit callback if it comes from screen mirroring initialization (see https://developer.apple.com/forums/thread/815376)
+			if (connectingSceneSession.getRole() == UISceneSessionRole.ExternalDisplayNonInteractive) {
+				return null;
+			}
 			UISceneConfiguration config = new UISceneConfiguration(null, connectingSceneSession.getRole());
 			config.setDelegateClass(IOSSceneDelegate.class);
 			return config;
