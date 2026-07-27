@@ -341,5 +341,5 @@ public class TmxMapLoaderPathResolutionTest {
 
 		assertTrue("Embedded tileset image should be resolved relative to the .tmj file, " + "but was: " + resolvedPath,
 			resolvedPath.endsWith(expectedSuffix));
-}
+	}
 }
