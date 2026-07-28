@@ -525,7 +525,7 @@ public class btRigidBody extends btCollisionObject {
 	}
 
 	public Vector3 getAngularVelocity () {
-		return DynamicsJNI.btRigidBody_getAngularVelocity(swigCPtr, this);
+		return DynamicsJNI.btRigidBody_getAngularVelocity__SWIG_0(swigCPtr, this);
 	}
 
 	public void setLinearVelocity (Vector3 lin_vel) {
@@ -677,6 +677,10 @@ public class btRigidBody extends btCollisionObject {
 	private btRigidBody (boolean dummy, float mass, btMotionState motionState, btCollisionShape collisionShape) {
 		this(DynamicsJNI.new_btRigidBody__SWIG_2(dummy, mass, btMotionState.getCPtr(motionState), motionState,
 			btCollisionShape.getCPtr(collisionShape), collisionShape), true);
+	}
+
+	public void getAngularVelocity (Vector3 out) {
+		DynamicsJNI.btRigidBody_getAngularVelocity__SWIG_1(swigCPtr, this, out);
 	}
 
 }

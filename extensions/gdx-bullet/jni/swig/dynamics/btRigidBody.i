@@ -120,6 +120,9 @@
 	btRigidBody(bool dummy, btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape, const btVector3& localInertia=btVector3(0,0,0)) {
 		return new btRigidBody(mass, motionState, collisionShape, localInertia);
 	}
+	void getAngularVelocity(btVector3 & out) {
+		out = $self->getAngularVelocity();
+	}
 };
 
 %typemap(javacode) btRigidBody %{

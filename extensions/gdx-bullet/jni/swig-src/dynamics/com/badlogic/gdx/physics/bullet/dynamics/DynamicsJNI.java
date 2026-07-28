@@ -215,7 +215,7 @@ public class DynamicsJNI {
 
 	public final static native Vector3 btRigidBody_getLinearVelocity (long jarg1, btRigidBody jarg1_);
 
-	public final static native Vector3 btRigidBody_getAngularVelocity (long jarg1, btRigidBody jarg1_);
+	public final static native Vector3 btRigidBody_getAngularVelocity__SWIG_0 (long jarg1, btRigidBody jarg1_);
 
 	public final static native void btRigidBody_setLinearVelocity (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
 
@@ -298,6 +298,8 @@ public class DynamicsJNI {
 
 	public final static native long new_btRigidBody__SWIG_2 (boolean jarg1, float jarg2, long jarg3, btMotionState jarg3_,
 		long jarg4, btCollisionShape jarg4_);
+
+	public final static native void btRigidBody_getAngularVelocity__SWIG_1 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
 
 	public final static native void btRigidBodyFloatData_collisionObjectData_set (long jarg1, btRigidBodyFloatData jarg1_,
 		long jarg2, btCollisionObjectFloatData jarg2_);
