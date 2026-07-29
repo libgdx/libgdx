@@ -176,7 +176,7 @@ public class VehicleTest extends BaseBulletTest {
 	}
 
 	@Override
-	public void render() {
+	public void render () {
 		super.render();
 		Vector3 tmpU = vehicle.getRigidBody().getAngularVelocity();
 		vehicle.getRigidBody().getAngularVelocity(tmpV);

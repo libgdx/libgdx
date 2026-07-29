@@ -153,7 +153,7 @@ public class DynamicsJNI {
 
 	public final static native void btRigidBody_setGravity (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
 
-	public final static native Vector3 btRigidBody_getGravity (long jarg1, btRigidBody jarg1_);
+	public final static native Vector3 btRigidBody_getGravity__SWIG_0 (long jarg1, btRigidBody jarg1_);
 
 	public final static native void btRigidBody_setDamping (long jarg1, btRigidBody jarg1_, float jarg2, float jarg3);
 
@@ -169,7 +169,7 @@ public class DynamicsJNI {
 
 	public final static native void btRigidBody_setMassProps (long jarg1, btRigidBody jarg1_, float jarg2, Vector3 jarg3);
 
-	public final static native Vector3 btRigidBody_getLinearFactor (long jarg1, btRigidBody jarg1_);
+	public final static native Vector3 btRigidBody_getLinearFactor__SWIG_0 (long jarg1, btRigidBody jarg1_);
 
 	public final static native void btRigidBody_setLinearFactor (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
 
@@ -183,11 +183,11 @@ public class DynamicsJNI {
 
 	public final static native void btRigidBody_applyCentralForce (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
 
-	public final static native Vector3 btRigidBody_getTotalForce (long jarg1, btRigidBody jarg1_);
+	public final static native Vector3 btRigidBody_getTotalForce__SWIG_0 (long jarg1, btRigidBody jarg1_);
 
-	public final static native Vector3 btRigidBody_getTotalTorque (long jarg1, btRigidBody jarg1_);
+	public final static native Vector3 btRigidBody_getTotalTorque__SWIG_0 (long jarg1, btRigidBody jarg1_);
 
-	public final static native Vector3 btRigidBody_getInvInertiaDiagLocal (long jarg1, btRigidBody jarg1_);
+	public final static native Vector3 btRigidBody_getInvInertiaDiagLocal__SWIG_0 (long jarg1, btRigidBody jarg1_);
 
 	public final static native void btRigidBody_setInvInertiaDiagLocal (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
 
@@ -207,13 +207,13 @@ public class DynamicsJNI {
 
 	public final static native void btRigidBody_updateInertiaTensor (long jarg1, btRigidBody jarg1_);
 
-	public final static native Vector3 btRigidBody_getCenterOfMassPosition (long jarg1, btRigidBody jarg1_);
+	public final static native Vector3 btRigidBody_getCenterOfMassPosition__SWIG_0 (long jarg1, btRigidBody jarg1_);
 
 	public final static native Quaternion btRigidBody_getOrientation (long jarg1, btRigidBody jarg1_);
 
-	public final static native Matrix4 btRigidBody_getCenterOfMassTransform (long jarg1, btRigidBody jarg1_);
+	public final static native Matrix4 btRigidBody_getCenterOfMassTransform__SWIG_0 (long jarg1, btRigidBody jarg1_);
 
-	public final static native Vector3 btRigidBody_getLinearVelocity (long jarg1, btRigidBody jarg1_);
+	public final static native Vector3 btRigidBody_getLinearVelocity__SWIG_0 (long jarg1, btRigidBody jarg1_);
 
 	public final static native Vector3 btRigidBody_getAngularVelocity__SWIG_0 (long jarg1, btRigidBody jarg1_);
 
@@ -262,7 +262,7 @@ public class DynamicsJNI {
 
 	public final static native void btRigidBody_setAngularFactor__SWIG_1 (long jarg1, btRigidBody jarg1_, float jarg2);
 
-	public final static native Vector3 btRigidBody_getAngularFactor (long jarg1, btRigidBody jarg1_);
+	public final static native Vector3 btRigidBody_getAngularFactor__SWIG_0 (long jarg1, btRigidBody jarg1_);
 
 	public final static native boolean btRigidBody_isInWorld (long jarg1, btRigidBody jarg1_);
 
@@ -299,7 +299,25 @@ public class DynamicsJNI {
 	public final static native long new_btRigidBody__SWIG_2 (boolean jarg1, float jarg2, long jarg3, btMotionState jarg3_,
 		long jarg4, btCollisionShape jarg4_);
 
+	public final static native void btRigidBody_getLinearVelocity__SWIG_1 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
 	public final static native void btRigidBody_getAngularVelocity__SWIG_1 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_getLinearFactor__SWIG_1 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_getAngularFactor__SWIG_1 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_getGravity__SWIG_1 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_getTotalForce__SWIG_1 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_getTotalTorque__SWIG_1 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_getInvInertiaDiagLocal__SWIG_1 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_getCenterOfMassPosition__SWIG_1 (long jarg1, btRigidBody jarg1_, Vector3 jarg2);
+
+	public final static native void btRigidBody_getCenterOfMassTransform__SWIG_1 (long jarg1, btRigidBody jarg1_, Matrix4 jarg2);
 
 	public final static native void btRigidBodyFloatData_collisionObjectData_set (long jarg1, btRigidBodyFloatData jarg1_,
 		long jarg2, btCollisionObjectFloatData jarg2_);

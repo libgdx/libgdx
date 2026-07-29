@@ -120,9 +120,47 @@
 	btRigidBody(bool dummy, btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape, const btVector3& localInertia=btVector3(0,0,0)) {
 		return new btRigidBody(mass, motionState, collisionShape, localInertia);
 	}
+
+	void getLinearVelocity(btVector3 & out) {
+        out = $self->getLinearVelocity();
+    }
+
 	void getAngularVelocity(btVector3 & out) {
 		out = $self->getAngularVelocity();
 	}
+
+	void getLinearFactor(btVector3 & out) {
+		out = $self->getLinearFactor();
+	}
+
+	void getAngularFactor(btVector3 & out) {
+        out = $self->getAngularFactor();
+    }
+
+	void getGravity(btVector3 & out) {
+		out = $self->getGravity();
+	}
+
+	void getTotalForce(btVector3 & out) {
+		out = $self->getTotalForce();
+	}
+
+	void getTotalTorque(btVector3 & out) {
+		out = $self->getTotalTorque();
+	}
+
+	void getInvInertiaDiagLocal(btVector3 & out) {
+		out = $self->getInvInertiaDiagLocal();
+	}
+
+	void getCenterOfMassPosition(btVector3 & out) {
+		out = $self->getCenterOfMassPosition();
+	}
+
+	void getCenterOfMassTransform(btTransform & out) {
+		out = $self->getCenterOfMassTransform();
+	}
+
 };
 
 %typemap(javacode) btRigidBody %{

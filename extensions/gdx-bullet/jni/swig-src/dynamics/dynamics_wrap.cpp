@@ -1890,8 +1890,35 @@ SWIGINTERN btRigidBody *new_btRigidBody__SWIG_0(bool dummy,btRigidBody::btRigidB
 SWIGINTERN btRigidBody *new_btRigidBody__SWIG_1(bool dummy,btScalar mass,btMotionState *motionState,btCollisionShape *collisionShape,btVector3 const &localInertia=btVector3(0,0,0)){
 		return new btRigidBody(mass, motionState, collisionShape, localInertia);
 	}
+SWIGINTERN void btRigidBody_getLinearVelocity__SWIG_1(btRigidBody *self,btVector3 &out){
+        out = self->getLinearVelocity();
+    }
 SWIGINTERN void btRigidBody_getAngularVelocity__SWIG_1(btRigidBody *self,btVector3 &out){
 		out = self->getAngularVelocity();
+	}
+SWIGINTERN void btRigidBody_getLinearFactor__SWIG_1(btRigidBody *self,btVector3 &out){
+		out = self->getLinearFactor();
+	}
+SWIGINTERN void btRigidBody_getAngularFactor__SWIG_1(btRigidBody *self,btVector3 &out){
+        out = self->getAngularFactor();
+    }
+SWIGINTERN void btRigidBody_getGravity__SWIG_1(btRigidBody *self,btVector3 &out){
+		out = self->getGravity();
+	}
+SWIGINTERN void btRigidBody_getTotalForce__SWIG_1(btRigidBody *self,btVector3 &out){
+		out = self->getTotalForce();
+	}
+SWIGINTERN void btRigidBody_getTotalTorque__SWIG_1(btRigidBody *self,btVector3 &out){
+		out = self->getTotalTorque();
+	}
+SWIGINTERN void btRigidBody_getInvInertiaDiagLocal__SWIG_1(btRigidBody *self,btVector3 &out){
+		out = self->getInvInertiaDiagLocal();
+	}
+SWIGINTERN void btRigidBody_getCenterOfMassPosition__SWIG_1(btRigidBody *self,btVector3 &out){
+		out = self->getCenterOfMassPosition();
+	}
+SWIGINTERN void btRigidBody_getCenterOfMassTransform__SWIG_1(btRigidBody *self,btTransform &out){
+		out = self->getCenterOfMassTransform();
 	}
 
 #include <BulletDynamics/ConstraintSolver/btTypedConstraint.h>
@@ -2953,7 +2980,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getGravity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getGravity_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btVector3 *result = 0 ;
@@ -3075,7 +3102,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getLinearFactor(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getLinearFactor_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btVector3 *result = 0 ;
@@ -3183,7 +3210,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getTotalForce(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getTotalForce_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btVector3 *result = 0 ;
@@ -3199,7 +3226,7 @@ SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamic
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getTotalTorque(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getTotalTorque_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btVector3 *result = 0 ;
@@ -3215,7 +3242,7 @@ SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamic
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getInvInertiaDiagLocal(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getInvInertiaDiagLocal_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btVector3 *result = 0 ;
@@ -3374,7 +3401,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getCenterOfMassPosition(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getCenterOfMassPosition_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btVector3 *result = 0 ;
@@ -3406,7 +3433,7 @@ SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamic
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getCenterOfMassTransform(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getCenterOfMassTransform_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btTransform *result = 0 ;
@@ -3422,7 +3449,7 @@ SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamic
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getLinearVelocity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getLinearVelocity_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btVector3 *result = 0 ;
@@ -3790,7 +3817,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
 }
 
 
-SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getAngularFactor(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getAngularFactor_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jobject jresult = 0 ;
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btVector3 *result = 0 ;
@@ -4049,6 +4076,22 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getLinearVelocity_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btRigidBody_getLinearVelocity__SWIG_1(arg1,*arg2);
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getAngularVelocity_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   btRigidBody *arg1 = (btRigidBody *) 0 ;
   btVector3 *arg2 = 0 ;
@@ -4062,6 +4105,134 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   arg2 = &local_arg2;
   gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
   btRigidBody_getAngularVelocity__SWIG_1(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getLinearFactor_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btRigidBody_getLinearFactor__SWIG_1(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getAngularFactor_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btRigidBody_getAngularFactor__SWIG_1(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getGravity_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btRigidBody_getGravity__SWIG_1(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getTotalForce_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btRigidBody_getTotalForce__SWIG_1(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getTotalTorque_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btRigidBody_getTotalTorque__SWIG_1(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getInvInertiaDiagLocal_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btRigidBody_getInvInertiaDiagLocal__SWIG_1(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getCenterOfMassPosition_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btRigidBody_getCenterOfMassPosition__SWIG_1(arg1,*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBody_1getCenterOfMassTransform_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btRigidBody *arg1 = (btRigidBody *) 0 ;
+  btTransform *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBody **)&jarg1; 
+  btTransform local_arg2;
+  gdx_setbtTransformFromMatrix4(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitMatrix4 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  btRigidBody_getCenterOfMassTransform__SWIG_1(arg1,*arg2);
 }
 
 
