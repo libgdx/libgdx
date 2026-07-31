@@ -176,6 +176,15 @@ public class VehicleTest extends BaseBulletTest {
 	}
 
 	@Override
+	public void render () {
+		super.render();
+		Vector3 tmpU = vehicle.getRigidBody().getAngularVelocity();
+		vehicle.getRigidBody().getAngularVelocity(tmpV);
+		performance.append(", Angular Velocity (value): ").append(String.format("%+.3f", tmpU.len()));
+		performance.append(", Angular Velocity (ref): ").append(String.format("%+.3f", tmpV.len()));
+	}
+
+	@Override
 	public boolean tap (float x, float y, int count, int button) {
 		shoot(x, y);
 		return true;
