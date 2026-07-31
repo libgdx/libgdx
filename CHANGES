@@ -3,6 +3,7 @@
 - API Addition: Json#getUsePrototypes(), so a Json.Serializable can restore the setting it changed.
 - API Removal: Removed LwjglApplet (Java applets are obsolete). ApplicationType.Applet is deprecated.
 - iOS: Made iOS Preferences flush() implementation atomic (see #7833)
+- API Change: TexturePacker now throws if duplicatePadding is true and paddingX or paddingY is less than 2. Padding is the whole gap between two adjacent images, so half of it is duplicated on each side and a padding of 1 duplicated nothing at all, silently.
 
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805
