@@ -37,7 +37,6 @@ import org.robovm.apple.coregraphics.CGSize;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.gamecontroller.GCKeyboard;
 import org.robovm.apple.uikit.*;
-import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.Method;
 import org.robovm.objc.block.VoidBlock1;
 import org.robovm.rt.VM;
@@ -111,14 +110,75 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	protected UIAccelerometerDelegate accelerometerDelegate;
 	boolean compassSupported;
 	boolean keyboardCloseOnReturn;
-	boolean softkeyboardActive = false;
 
 	private boolean hadHardwareKeyEvent = false;
+
+	/** The active {@link #openTextInputField(NativeInputConfiguration)} session, or null. */
+	IOSNativeInput nativeInput;
+
+	// hack for software keyboard support
+	// uses a hidden textfield to capture input
+	// see: https://web.archive.org/web/20171016192705/http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
+	private UITextField invisibleTextField = null;
+
+	protected KeyboardHeightObserver observer;
+	/** Whether a docked keyboard frame is on screen per the keyboard notifications. Gates the resize re-pin and the open/close
+	 * fallback dispatches for the flows where no keyboard notification will fire. */
+	private boolean keyboardOpen;
+
+	private int cachedHeight;
+	private boolean cachedVisible;
+
+	private final UITextFieldDelegate textDelegateInvisible = new UITextFieldDelegateAdapter() {
+		@Override
+		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String string) {
+			for (int i = 0; i < range.getLength(); i++) {
+				inputProcessor.keyTyped((char)8);
+			}
+
+			if (string.isEmpty()) {
+				if (range.getLength() > 0) Gdx.graphics.requestRendering();
+				return false;
+			}
+
+			char[] chars = new char[string.length()];
+			string.getChars(0, string.length(), chars, 0);
+
+			for (int i = 0; i < chars.length; i++) {
+				inputProcessor.keyTyped(chars[i]);
+			}
+			Gdx.graphics.requestRendering();
+
+			return true;
+		}
+
+		@Override
+		public boolean shouldEndEditing (UITextField textField) {
+			// Text field needs to have at least one symbol - so we can use backspace
+			textField.setText("x");
+			Gdx.graphics.requestRendering();
+
+			return true;
+		}
+
+		@Override
+		public boolean shouldReturn (UITextField textField) {
+			if (keyboardCloseOnReturn) setOnscreenKeyboardVisible(false);
+			inputProcessor.keyDown(Keys.ENTER);
+			inputProcessor.keyTyped((char)13);
+			Gdx.graphics.requestRendering();
+			return false;
+		}
+	};
 
 	public DefaultIOSInput (IOSApplication app) {
 		this.app = app;
 		this.config = app.config;
 		this.keyboardCloseOnReturn = app.config.keyboardCloseOnReturn;
+	}
+
+	protected IOSNativeInput createNativeInput (NativeInputConfiguration configuration) {
+		return new IOSNativeInput(app, configuration);
 	}
 
 	@Override
@@ -377,107 +437,6 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		app.getUIViewController().presentViewController(uiAlertController, true, null);
 	}
 
-	// hack for software keyboard support
-	// uses a hidden textfield to capture input
-	// see: https://web.archive.org/web/20171016192705/http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
-
-	private UIView textfield = null;
-	private UITableView suggestionTable;
-	private NativeInputConfiguration nativeInputConfiguration;
-
-	private final UITextViewDelegate textViewDelegate = new UITextViewDelegateAdapter() {
-		@Override
-		public void didChange (UITextView textView) {
-			if (textView.getText().isEmpty()) {
-				textView.setText(nativeInputConfiguration.getPlaceholder());
-				textView.setTextColor(UIColor.lightGray());
-				textView
-					.setSelectedTextRange(textView.getTextRange(textView.getBeginningOfDocument(), textView.getBeginningOfDocument()));
-			}
-		}
-
-		@Override
-		public boolean shouldChangeCharacters (UITextView textView, NSRange range, String text) {
-			if (textView.getTextColor().isEqual(UIColor.lightGray())) {
-				if (text.length() != 0) {
-					textView.setText("");
-					textView.setTextColor(UIColor.black());
-				} else {
-					return false;
-				}
-			}
-			if (nativeInputConfiguration.getMaxLength() != -1
-				&& textView.getText().length() + (text.length() - range.getLength()) > nativeInputConfiguration.getMaxLength()) {
-				return false;
-			}
-
-			if (nativeInputConfiguration.getValidator() == null) return true;
-			return nativeInputConfiguration.getValidator().validate(text);
-		}
-	};
-
-	private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
-
-		@Override
-		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String text) {
-			if (nativeInputConfiguration.getMaxLength() != -1
-				&& textField.getText().length() + (text.length() - range.getLength()) > nativeInputConfiguration.getMaxLength()) {
-				return false;
-			}
-			if (nativeInputConfiguration.getValidator() == null) return true;
-			return nativeInputConfiguration.getValidator().validate(text);
-		}
-
-		@Override
-		public boolean shouldReturn (UITextField textField) {
-			if (keyboardCloseOnReturn) Gdx.input.closeTextInputField(true);
-			Gdx.graphics.requestRendering();
-			return false;
-		}
-	};
-
-	private final UITextFieldDelegate textDelegateInvisible = new UITextFieldDelegateAdapter() {
-		@Override
-		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String string) {
-			for (int i = 0; i < range.getLength(); i++) {
-				inputProcessor.keyTyped((char)8);
-			}
-
-			if (string.isEmpty()) {
-				if (range.getLength() > 0) Gdx.graphics.requestRendering();
-				return false;
-			}
-
-			char[] chars = new char[string.length()];
-			string.getChars(0, string.length(), chars, 0);
-
-			for (int i = 0; i < chars.length; i++) {
-				inputProcessor.keyTyped(chars[i]);
-			}
-			Gdx.graphics.requestRendering();
-
-			return true;
-		}
-
-		@Override
-		public boolean shouldEndEditing (UITextField textField) {
-			// Text field needs to have at least one symbol - so we can use backspace
-			textField.setText("x");
-			Gdx.graphics.requestRendering();
-
-			return true;
-		}
-
-		@Override
-		public boolean shouldReturn (UITextField textField) {
-			if (keyboardCloseOnReturn) setOnscreenKeyboardVisible(false);
-			inputProcessor.keyDown(Keys.ENTER);
-			inputProcessor.keyTyped((char)13);
-			Gdx.graphics.requestRendering();
-			return false;
-		}
-	};
-
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 		setOnscreenKeyboardVisible(visible, OnscreenKeyboardType.Default);
@@ -485,234 +444,78 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible, OnscreenKeyboardType type) {
-		if (textfield != null && !textfield.isHidden())
-			throw new RuntimeException("Can't open KeyBoard, if TextInputField KeyBoard is already open");
-		// Maybe supporting needsDoneToolbar also here?
-		if (textfield == null) createDefaultTextField(false, false);
-		softkeyboardActive = visible;
+		if (nativeInput != null) throw new GdxRuntimeException("Can't open KeyBoard, if TextInputField KeyBoard is already open");
+		if (invisibleTextField == null) createInvisibleTextField();
 		if (visible) {
-			UITextField uiTextField = (UITextField)textfield;
 			if (type == null) type = OnscreenKeyboardType.Default;
-			uiTextField.setKeyboardType(getIosInputType(type));
-			uiTextField.setAutocorrectionType(UITextAutocorrectionType.No);
-			uiTextField.setSpellCheckingType(UITextSpellCheckingType.No);
-			uiTextField.reloadInputViews();
-			uiTextField.becomeFirstResponder();
-			uiTextField.setDelegate(textDelegateInvisible);
-			uiTextField.setText("x");
-			uiTextField.setHidden(true);
+			invisibleTextField.setKeyboardType(getIosInputType(type));
+			invisibleTextField.setAutocorrectionType(UITextAutocorrectionType.No);
+			invisibleTextField.setSpellCheckingType(UITextSpellCheckingType.No);
+			invisibleTextField.reloadInputViews();
+			invisibleTextField.becomeFirstResponder();
+			invisibleTextField.setDelegate(textDelegateInvisible);
+			invisibleTextField.setText("x");
 		} else {
-			textfield.resignFirstResponder();
-			textfield.removeFromSuperview();
-			textfield.dispose();
-			textfield = null;
+			invisibleTextField.resignFirstResponder();
+			invisibleTextField.removeFromSuperview();
+			invisibleTextField.dispose();
+			invisibleTextField = null;
 		}
 	}
 
-	static class PasswordViewCallback extends NSObject {
-
-		private final UITextField textField;
-
-		public PasswordViewCallback (UITextField textfield) {
-			this.textField = textfield;
-		}
-
-		@Method(selector = "togglePasswordView")
-		public void togglePasswordView (UIButton sender) {
-			textField.setSecureTextEntry(!textField.isSecureTextEntry());
-			String fileName = textField.isSecureTextEntry() ? "ic_password_visible.png" : "ic_password_invisible.png";
-			byte[] data = Gdx.files.classpath(fileName).readBytes();
-			NSData nsData = new NSData(data);
-			sender.setImage(new UIImage(nsData), UIControlState.Normal);
-		}
+	private void createInvisibleTextField () {
+		CGRect rect = new CGRect();
+		rect.setOrigin(new CGPoint(app.graphics.screenBounds.width, app.graphics.screenBounds.height));
+		rect.setSize(new CGSize(app.graphics.screenBounds.width, 50));
+		UITextField uiTextField = new UITextField(rect);
+		uiTextField.setReturnKeyType(UIReturnKeyType.Done);
+		uiTextField.setAutocapitalizationType(UITextAutocapitalizationType.None);
+		uiTextField.setHidden(true);
+		app.getUIViewController().getView().addSubview(uiTextField);
+		invisibleTextField = uiTextField;
 	}
 
 	@Override
-	public void openTextInputField (final NativeInputConfiguration configuration) {
-		if (textfield != null) throw new GdxRuntimeException("Can't open TextInputField, if KeyBoard is already open");
+	public void openTextInputField (NativeInputConfiguration configuration) {
+		if (nativeInput != null) throw new GdxRuntimeException("Can't open TextInputField, if KeyBoard is already open");
+		if (invisibleTextField != null) throw new GdxRuntimeException("Can't open TextInputField, if KeyBoard is already open");
 		configuration.validate();
-		this.nativeInputConfiguration = configuration;
-
-		createDefaultTextField(configuration.isMultiLine(),
-			configuration.isMultiLine() || (configuration.getType() != OnscreenKeyboardType.Default
-				&& configuration.getType() != OnscreenKeyboardType.Password));
-
-		softkeyboardActive = true;
-		UITextInput uiTextInput = (UITextInput)textfield;
-		textfield.setHidden(false);
-		uiTextInput.setKeyboardType(getIosInputType(configuration.getType()));
-
-		if (configuration.isPreventCorrection()) {
-			uiTextInput.setAutocorrectionType(UITextAutocorrectionType.No);
-			uiTextInput.setSpellCheckingType(UITextSpellCheckingType.No);
-			uiTextInput.setAutocapitalizationType(UITextAutocapitalizationType.None);
-		} else {
-			uiTextInput.setAutocorrectionType(UITextAutocorrectionType.Yes);
-			uiTextInput.setSpellCheckingType(UITextSpellCheckingType.Yes);
-			uiTextInput.setAutocapitalizationType(UITextAutocapitalizationType.Sentences);
-		}
-
-		if (textfield instanceof UITextView) {
-			if (configuration.getTextInputWrapper().getText().isEmpty()) {
-				((UITextView)textfield).setText(configuration.getPlaceholder());
-				((UITextView)textfield).setTextColor(UIColor.lightGray());
-			} else {
-				((UITextView)textfield).setText(configuration.getTextInputWrapper().getText());
-			}
-			((UITextView)textfield).setDelegate(textViewDelegate);
-		} else {
-			final UITextField asTextField = (UITextField)textfield;
-			if (configuration.getAutoComplete() != null) {
-				suggestionTable = new UITableView(new CGRect(app.graphics.screenBounds.width, app.graphics.screenBounds.height,
-					app.graphics.screenBounds.width, 50));
-				suggestionTable.setScrollEnabled(true);
-				suggestionTable.setBackgroundColor(UIColor.white());
-				suggestionTable.setRowHeight(40);
-				final Array<String> available = new Array<>(configuration.getAutoComplete());
-				suggestionTable.setDataSource(new UITableViewDataSourceAdapter() {
-					@Override
-					public UITableViewCell getCellForRow (UITableView tableView, NSIndexPath indexPath) {
-						UITableViewCell cell = tableView.dequeueReusableCell("suggestion");
-						if (cell == null) cell = new UITableViewCell(UITableViewCellStyle.Default, "suggestion");
-						if (Foundation.getMajorSystemVersion() >= 14) {
-							UIListContentConfiguration contentConfiguration = cell.defaultContentConfiguration();
-							NSAttributedString coloredText = new NSAttributedString(available.get(indexPath.getRow()),
-								new NSDictionary<>(NSAttributedStringAttribute.ForegroundColor.value(), UIColor.white()));
-							contentConfiguration.setAttributedText(coloredText);
-							cell.setContentConfiguration(contentConfiguration);
-						} else {
-							cell.getTextLabel().setText(available.get(indexPath.getRow()));
-							cell.getTextLabel().setTextColor(UIColor.black());
-						}
-						cell.setBackgroundColor(UIColor.white());
-						return cell;
-					}
-
-					@Override
-					public long getNumberOfRowsInSection (UITableView tableView, long section) {
-						return available.size;
-					}
-				});
-				suggestionTable.setDelegate(new UITableViewDelegateAdapter() {
-					@Override
-					public void didSelectRow (UITableView tableView, NSIndexPath indexPath) {
-						tableView.deselectRow(indexPath, true);
-						asTextField.setText(available.get(indexPath.getRow()));
-						Gdx.input.closeTextInputField(false);
-					}
-				});
-
-				asTextField.addTarget(new NSObject() {
-					@Method(selector = "changedText")
-					public void changedText (UITextField textField) {
-						available.clear();
-						for (String s : configuration.getAutoComplete()) {
-							if (s.startsWith(textField.getText())) {
-								available.add(s);
-							}
-						}
-						int height = (int)(available.size * suggestionTable.getRowHeight());
-						CGRect textFrame = textfield.getFrame();
-						suggestionTable.setFrame(new CGRect(new CGPoint(textFrame.getX(), textFrame.getY() - height),
-							new CGSize(textFrame.getWidth(), height)));
-
-						suggestionTable.reloadData();
-
-					}
-				}, Selector.register("changedText"), UIControlEvents.EditingChanged);
-				app.getUIViewController().getView().addSubview(suggestionTable);
-			}
-			asTextField.setText(configuration.getTextInputWrapper().getText());
-			asTextField.setDelegate(textDelegate);
-			// Because apple seems to have unreadable placeholder color by default
-			NSAttributedString placeholderString = new NSAttributedString(configuration.getPlaceholder(),
-				new NSDictionary<>(NSAttributedStringAttribute.ForegroundColor.value(), UIColor.lightGray()));
-			asTextField.setAttributedPlaceholder(placeholderString);
-
-			if (configuration.isMaskInput()) {
-				if (configuration.isShowUnmaskButton()) {
-					UIButton button = new UIButton(UIButtonType.Custom);
-					PasswordViewCallback passwordViewCallback = new PasswordViewCallback(asTextField);
-					passwordViewCallback.togglePasswordView(button);
-					button.setImageEdgeInsets(new UIEdgeInsets(0, -16, 0, 0));
-					button.setFrame(new CGRect(new CGPoint(textfield.getFrame().getSize().getWidth() - 25, 5), new CGSize(25, 25)));
-					button.addTarget(passwordViewCallback, Selector.register("togglePasswordView"), UIControlEvents.TouchUpInside);
-					asTextField.setRightView(button);
-					asTextField.setRightViewMode(UITextFieldViewMode.Always);
-				} else {
-					asTextField.setSecureTextEntry(true);
-				}
-			}
-		}
-		textfield.reloadInputViews();
-		textfield.becomeFirstResponder();
-
-		UITextPosition start = uiTextInput.getPosition(uiTextInput.getBeginningOfDocument(),
-			configuration.getTextInputWrapper().getSelectionStart());
-		UITextPosition end = uiTextInput.getPosition(uiTextInput.getBeginningOfDocument(),
-			configuration.getTextInputWrapper().getSelectionEnd());
-
-		uiTextInput.setSelectedTextRange(uiTextInput.getTextRange(start, end));
+		IOSNativeInput nativeInput = createNativeInput(configuration);
+		this.nativeInput = nativeInput;
+		nativeInput.open();
+		// With a hardware or already-floating keyboard no keyboard notification will fire, but the field now occupies
+		// the bottom of the screen — report it. Deferred one frame so a docked keyboard's willShow (queued by the
+		// provider during becomeFirstResponder, running before this) gets the chance to report the full height instead.
+		Gdx.app.postRunnable( () -> {
+			if (!keyboardOpen && this.nativeInput == nativeInput)
+				dispatchHeightAndVisibilityChangesToObserver(true, nativeInput.getFieldOccupiedHeight());
+		});
 	}
 
 	@Override
 	public void closeTextInputField (boolean isConfirmative, @Null NativeInputCloseCallback callback) {
-		if (textfield == null) return;
-		UITextInput uiTextInput = (UITextInput)textfield;
-		softkeyboardActive = false;
-		String text;
-		if (textfield instanceof UITextView) {
-			UITextView textView = (UITextView)textfield;
-			if (textView.getTextColor().isEqual(UIColor.lightGray())) {
-				text = "";
-			} else {
-				text = ((UITextView)textfield).getText();
-			}
-		} else {
-			text = ((UITextField)textfield).getText();
-		}
-		long selectionStart = uiTextInput.getOffset(uiTextInput.getBeginningOfDocument(),
-			uiTextInput.getSelectedTextRange().getStart());
-		long selectionEnd = uiTextInput.getOffset(uiTextInput.getBeginningOfDocument(),
-			uiTextInput.getSelectedTextRange().getEnd());
-
-		NativeInputConfiguration configuration = nativeInputConfiguration;
-		Gdx.app.postRunnable( () -> {
-			configuration.getTextInputWrapper().writeResults(text, (int)selectionStart, (int)selectionEnd);
-
-			// We actually don't care about whether the keyboard should be closed or not, cause iOS is not buggy in that regard
-			boolean keepOpen = configuration.getCloseCallback().onClose(isConfirmative);
-			if (callback != null) keepOpen |= callback.onClose(isConfirmative);
-		});
-
-		if (suggestionTable != null) {
-			for (NSObject action : ((UITextField)textfield).getAllTargets()) {
-				if (action != null) {
-					((UITextField)textfield).removeTarget(action, Selector.register("changedText"), UIControlEvents.EditingChanged);
-				}
-			}
-			suggestionTable.removeFromSuperview();
-			suggestionTable = null;
-		}
-
-		textfield.resignFirstResponder();
-		// We could first move the text field animated down and than delete, but I think it doesn't matter
-		textfield.removeFromSuperview();
-		textfield = null;
-		nativeInputConfiguration = null;
+		IOSNativeInput nativeInput = this.nativeInput;
+		if (nativeInput == null) return;
+		this.nativeInput = null;
+		boolean openedWhenClosed = keyboardOpen;
+		nativeInput.close(isConfirmative, callback);
+		// Without a docked keyboard up no willHide will fire (hardware/floating keyboard) — and when a keyboard hide
+		// triggered this close, the flag is false too: dispatch the hide here. With a docked keyboard still up, the
+		// resignFirstResponder above triggers the willHide that dispatches it.
+		if (!openedWhenClosed) dispatchHeightAndVisibilityChangesToObserver(false, 0);
 	}
 
 	@Override
 	public boolean isTextInputFieldOpened () {
-		return textfield != null && !textfield.isHidden();
+		return nativeInput != null;
 	}
 
 	@Override
 	public void setKeyboardHeightObserver (KeyboardHeightObserver observer) {
-		app.graphics.viewController.observer = observer;
+		this.observer = observer;
 	}
 
-	protected UIKeyboardType getIosInputType (OnscreenKeyboardType type) {
+	protected static UIKeyboardType getIosInputType (OnscreenKeyboardType type) {
 		UIKeyboardType preferredInputType;
 		switch (type) {
 		case NumberPad:
@@ -735,6 +538,74 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 		return preferredInputType;
 	}
 
+	protected void dispatchHeightAndVisibilityChangesToObserver (boolean visible, int height) {
+		if (observer == null) return;
+		boolean visibilityChanged = visible != cachedVisible;
+		boolean heightChanged = height != cachedHeight;
+		if (!visibilityChanged && !heightChanged) return;
+
+		if (visibilityChanged) {
+			if (visible)
+				observer.onKeyboardShow(height);
+			else
+				observer.onKeyboardHide();
+		} else if (visible) {
+			// Height changed but visibility didn't, and keyboard is visible
+			observer.onKeyboardShow(height);
+		}
+		if (heightChanged) observer.onKeyboardHeightChanged(height);
+
+		cachedVisible = visible;
+		cachedHeight = height;
+	}
+
+	@Override
+	public void onKeyboardHeightChanged (boolean opened, double height) {
+		keyboardOpen = opened;
+
+		IOSNativeInput nativeInput = this.nativeInput;
+		UIView textField = getActiveKeyboardTextField();
+
+		if (opened) {
+			if (nativeInput == null || !textField.isFirstResponder()) {
+				// No native input field to lay out: invisible keyboard, alert dialog or a foreign first responder
+				double heightScale = Gdx.graphics.getHeight() / UIScreen.getMainScreen().getBounds().getSize().getHeight();
+				dispatchHeightAndVisibilityChangesToObserver(true, (int)(height * heightScale));
+				return;
+			}
+
+			nativeInput.layoutTextFieldAboveKeyboard(height);
+			dispatchHeightAndVisibilityChangesToObserver(true, nativeInput.getFieldOccupiedHeight());
+		} else {
+			// keyboardWillHide does not mean the keyboard closed: password auto-fill, undocking to a floating keyboard
+			// and field replacement all fire it while our field stays first responder (settled, since the provider
+			// deferred this event one frame). The keyboard is still open then.
+			if (textField != null && textField.isFirstResponder()) {
+				int occupiedHeight = 0;
+				if (nativeInput != null) {
+					// The re-pinned field still occupies the bottom of the screen
+					nativeInput.moveTextFieldToBottom();
+					occupiedHeight = nativeInput.getFieldOccupiedHeight();
+				}
+				dispatchHeightAndVisibilityChangesToObserver(true, occupiedHeight);
+				return;
+			}
+
+			if (nativeInput != null) {
+				// Dispatches the hide itself (keyboardOpen is already false here)
+				closeTextInputField(false, null);
+			} else {
+				dispatchHeightAndVisibilityChangesToObserver(false, 0);
+				if (invisibleTextField != null) setOnscreenKeyboardVisible(false, null);
+			}
+		}
+	}
+
+	@Override
+	public void onScreenLayoutChanged () {
+		if (!keyboardOpen && nativeInput != null) nativeInput.moveTextFieldToBottom();
+	}
+
 	/** Set the keyboard to close when the UITextField return key is pressed
 	 * @param shouldClose Whether or not the keyboard should clsoe on return key press */
 	public void setKeyboardCloseOnReturnKey (boolean shouldClose) {
@@ -742,64 +613,21 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	public UIView getActiveKeyboardTextField () {
-		return textfield;
+		if (nativeInput != null) return nativeInput.getTextField();
+		return invisibleTextField;
 	}
 
-	private void createDefaultTextField (boolean isMultiLine, boolean needsDoneToolbar) {
-		CGRect rect = new CGRect();
-		rect.setOrigin(new CGPoint(app.graphics.screenBounds.width, app.graphics.screenBounds.height));
-		rect.setSize(new CGSize(app.graphics.screenBounds.width, 50));
-
-		UIToolbar uiToolbar = null;
-		if (needsDoneToolbar) {
-			uiToolbar = new UIToolbar(
-				new CGRect(new CGPoint(0, 0), new CGSize(UIScreen.getMainScreen().getBounds().getSize().getWidth(), 35)));
-
-			UIBarButtonItem space = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, (NSObject)null, null);
-
-			UIBarButtonItem doneButton = new UIBarButtonItem(UIBarButtonSystemItem.Done, new NSObject() {
-				@Method(selector = "doneClicked")
-				public void doneClicked () {
-					Gdx.input.closeTextInputField(true);
-				}
-			}, Selector.register("doneClicked"));
-
-			uiToolbar.setItems(new NSArray<>(space, doneButton));
-			uiToolbar.updateConstraintsIfNeeded();
-		}
-
-		if (isMultiLine) {
-			UITextView textView = new UITextView(rect);
-			textView.setInputAccessoryView(uiToolbar);
-			textView.setTextColor(UIColor.black());
-			textView.setReturnKeyType(UIReturnKeyType.Default);
-			textfield = textView;
-		} else {
-			UITextField uiTextField = new UITextField(rect);
-			uiTextField.setTextColor(UIColor.black());
-			uiTextField.setReturnKeyType(UIReturnKeyType.Done);
-			uiTextField.setInputAccessoryView(uiToolbar);
-			textfield = uiTextField;
-		}
-
-		UITextInputTraits asTrait = (UITextInputTraits)textfield;
-		// Parameters
-		// Setting parameters
-		asTrait.setKeyboardType(UIKeyboardType.Default);
-		asTrait.setAutocapitalizationType(UITextAutocapitalizationType.None);
-		asTrait.setAutocorrectionType(UITextAutocorrectionType.Yes);
-		asTrait.setSpellCheckingType(UITextSpellCheckingType.Yes);
-		textfield.setHidden(true);
-		textfield.setBackgroundColor(UIColor.white());
-
-		app.getUIViewController().getView().addSubview(textfield);
+	@Override
+	public NativeInputConfiguration getNativeInputConfiguration () {
+		return nativeInput != null ? nativeInput.getConfiguration() : null;
 	}
 
 	/** Builds an {@link UIAlertController} with an added {@link UITextField} for inputting text.
 	 * @param listener Text input listener
 	 * @param title Dialog title
 	 * @param text Text for text field
-	 * @param type
+	 * @param placeholder Placeholder text shown in the text field
+	 * @param type The keyboard type to use
 	 * @return UIAlertController */
 	private UIAlertController buildUIAlertController (final TextInputListener listener, String title, final String text,
 		final String placeholder, final OnscreenKeyboardType type) {
@@ -1033,9 +861,9 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 					if (inputProcessor != null) inputProcessor.keyUp(e.keyCode);
 					break;
 				case KeyEvent.KEY_TYPED:
-					// don't process key typed events if soft keyboard is active
+					// don't process key typed events if soft keyboard is active (= one of our text fields exists)
 					// the soft keyboard hook already catches the changes
-					if (!softkeyboardActive && inputProcessor != null) inputProcessor.keyTyped(e.keyChar);
+					if (getActiveKeyboardTextField() == null && inputProcessor != null) inputProcessor.keyTyped(e.keyChar);
 				}
 
 			}

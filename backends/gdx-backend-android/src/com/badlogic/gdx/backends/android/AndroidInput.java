@@ -5,8 +5,9 @@ import android.view.View.OnGenericMotionListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightObserver;
 
-public interface AndroidInput extends Input, OnTouchListener, OnKeyListener, OnGenericMotionListener {
+public interface AndroidInput extends Input, OnTouchListener, OnKeyListener, OnGenericMotionListener, KeyboardHeightObserver {
 
 	/** Called when the {@link AndroidApplication} is about to pause */
 	void onPause ();

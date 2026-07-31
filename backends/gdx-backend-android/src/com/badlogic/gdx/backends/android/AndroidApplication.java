@@ -179,12 +179,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		setLayoutInDisplayCutoutMode(this.renderUnderCutout);
 
-		// The docs say it should work below android 30, but it just doesn't
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-			keyboardHeightProvider = new AndroidXKeyboardHeightProvider(this);
-		} else {
-			keyboardHeightProvider = new StandardKeyboardHeightProvider(this);
-		}
+		keyboardHeightProvider = createKeyboardHeightProvider();
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -295,13 +290,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			this.isWaitingForAudio = false;
 		}
 		super.onResume();
-		keyboardHeightProvider.setKeyboardHeightObserver((DefaultAndroidInput)Gdx.input);
-		((AndroidGraphics)getGraphics()).getView().post(new Runnable() {
-			@Override
-			public void run () {
-				keyboardHeightProvider.start();
-			}
-		});
+		keyboardHeightProvider.setKeyboardHeightObserver(input);
+		graphics.getView().post( () -> keyboardHeightProvider.start());
 	}
 
 	@Override
@@ -537,6 +527,15 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected AndroidGraphics createGraphics (AndroidApplicationConfiguration config) {
 		return new AndroidGraphics(this, config,
 			config.resolutionStrategy == null ? new FillResolutionStrategy() : config.resolutionStrategy);
+	}
+
+	protected KeyboardHeightProvider createKeyboardHeightProvider () {
+		// The docs say it should work below android 30, but it just doesn't
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			return new AndroidXKeyboardHeightProvider(this);
+		} else {
+			return new StandardKeyboardHeightProvider(this);
+		}
 	}
 
 	public KeyboardHeightProvider getKeyboardHeightProvider () {

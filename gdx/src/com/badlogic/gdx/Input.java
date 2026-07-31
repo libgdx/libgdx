@@ -796,6 +796,24 @@ public interface Input {
 		/** @param toCheck The string that should be validated
 		 * @return true, if the string is acceptable, false if not. */
 		boolean validate (String toCheck);
+
+		InputStringValidator DIGITAL_VALIDATOR = toCheck -> {
+			for (int i = 0; i < toCheck.length(); i++) {
+				char c = toCheck.charAt(i);
+				if (c < '0' || c > '9') return false;
+			}
+
+			return true;
+		};
+
+		InputStringValidator PHONE_VALIDATOR = toCheck -> {
+			for (int i = 0; i < toCheck.length(); i++) {
+				char c = toCheck.charAt(i);
+				if ((c < '0' || c > '9') && c != '+' && c != '*' && c != '#') return false;
+			}
+
+			return true;
+		};
 	}
 
 	/** Sets the on-screen keyboard visible if available.
