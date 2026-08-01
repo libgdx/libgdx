@@ -6,6 +6,7 @@ import java.io.File;
 import com.badlogic.gdx.ApplicationLogger;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALIOSAudio;
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSProcessInfo;
@@ -59,8 +60,14 @@ public class IOSApplication implements Application {
 		public UISceneConfiguration getConfigurationForConnectingSceneSession (UIApplication application,
 			UISceneSession connectingSceneSession, UISceneConnectionOptions options) {
 			// Exit callback if it comes from screen mirroring initialization (see https://developer.apple.com/forums/thread/815376)
-			if (connectingSceneSession.getRole() == UISceneSessionRole.ExternalDisplayNonInteractive) {
-				return null;
+			if (Foundation.getMajorSystemVersion() < 16) {
+				if (connectingSceneSession.getRole() == UISceneSessionRole.ExternalDisplay) {
+					return null;
+				}
+			} else {
+				if (connectingSceneSession.getRole() == UISceneSessionRole.ExternalDisplayNonInteractive) {
+					return null;
+				}
 			}
 			UISceneConfiguration config = new UISceneConfiguration(null, connectingSceneSession.getRole());
 			config.setDelegateClass(IOSSceneDelegate.class);
