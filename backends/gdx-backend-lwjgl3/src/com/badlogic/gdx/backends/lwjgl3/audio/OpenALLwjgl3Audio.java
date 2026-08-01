@@ -231,6 +231,14 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		return devices.toArray(new String[0]);
 	}
 
+	@Override
+	public void pause () {
+	}
+
+	@Override
+	public void resume () {
+	}
+
 	int obtainSource (boolean isMusic) {
 		if (noDevice) return 0;
 		for (int i = 0, n = idleSources.size; i < n; i++) {

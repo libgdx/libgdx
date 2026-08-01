@@ -99,8 +99,15 @@ public class DefaultGwtAudio implements GwtAudio {
 	}
 
 	@Override
-	public void dispose () {
+	public void pause () {
+	}
 
+	@Override
+	public void resume () {
+	}
+
+	@Override
+	public void dispose () {
 	}
 
 	private native void getUserMedia () /*-{
