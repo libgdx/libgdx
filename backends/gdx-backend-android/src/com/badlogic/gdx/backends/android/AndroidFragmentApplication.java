@@ -444,7 +444,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public AndroidAudio createAudio (Context context, AndroidApplicationConfiguration config) {
 		if (!config.disableAudio)
-			return new DefaultAndroidAudio(context, config);
+			return new AsynchronousAndroidAudio(context, config);
 		else
 			return new DisabledAndroidAudio();
 	}
