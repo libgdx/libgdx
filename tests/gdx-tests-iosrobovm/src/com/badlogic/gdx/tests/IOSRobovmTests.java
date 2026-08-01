@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import org.robovm.apple.foundation.NSAutoreleasePool;
-import org.robovm.apple.uikit.UIApplication;
+import org.robovm.apple.uikit.*;
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
@@ -35,5 +35,10 @@ public class IOSRobovmTests extends IOSApplication.Delegate {
 		NSAutoreleasePool pool = new NSAutoreleasePool();
 		UIApplication.main(argv, null, IOSRobovmTests.class);
 		pool.close();
+	}
+
+	@Override
+	public boolean didFinishLaunching (UIApplication application, UIApplicationLaunchOptions launchOptions) {
+		return super.didFinishLaunching(application, launchOptions);
 	}
 }

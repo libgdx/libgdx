@@ -15,7 +15,6 @@ import org.robovm.apple.foundation.NSArray;
 import org.robovm.apple.foundation.NSError;
 import org.robovm.apple.foundation.NSErrorException;
 import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSProcessInfo;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIImpactFeedbackGenerator;
 import org.robovm.apple.uikit.UIImpactFeedbackStyle;
@@ -33,37 +32,35 @@ public class IOSHaptics {
 
 	public IOSHaptics (boolean useHaptics) {
 		vibratorSupport = useHaptics && UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Phone;
-		if (NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion() >= 13) {
-			hapticsSupport = useHaptics && CHHapticEngine.capabilitiesForHardware().supportsHaptics();
-			if (hapticsSupport) {
-				try {
-					hapticEngine = new CHHapticEngine();
-				} catch (NSErrorException e) {
-					Gdx.app.error("IOSHaptics", "Error creating CHHapticEngine. Haptics will be disabled. " + e);
-					hapticsSupport = false;
-					return;
-				}
-				hapticEngine.setPlaysHapticsOnly(true);
-				hapticEngine.setAutoShutdownEnabled(true);
-				// The reset handler provides an opportunity to restart the engine.
-				hapticEngine.setResetHandler(new Runnable() {
-
-					@Override
-					public void run () {
-						// Try restarting the engine.
-						hapticEngine.start(new VoidBlock1<NSError>() {
-
-							@Override
-							public void invoke (NSError nsError) {
-								if (nsError != null) {
-									Gdx.app.error("IOSHaptics", "Error restarting CHHapticEngine. Haptics will be disabled.");
-									hapticsSupport = false;
-								}
-							}
-						});
-					}
-				});
+		hapticsSupport = useHaptics && CHHapticEngine.capabilitiesForHardware().supportsHaptics();
+		if (hapticsSupport) {
+			try {
+				hapticEngine = new CHHapticEngine();
+			} catch (NSErrorException e) {
+				Gdx.app.error("IOSHaptics", "Error creating CHHapticEngine. Haptics will be disabled. " + e);
+				hapticsSupport = false;
+				return;
 			}
+			hapticEngine.setPlaysHapticsOnly(true);
+			hapticEngine.setAutoShutdownEnabled(true);
+			// The reset handler provides an opportunity to restart the engine.
+			hapticEngine.setResetHandler(new Runnable() {
+
+				@Override
+				public void run () {
+					// Try restarting the engine.
+					hapticEngine.start(new VoidBlock1<NSError>() {
+
+						@Override
+						public void invoke (NSError nsError) {
+							if (nsError != null) {
+								Gdx.app.error("IOSHaptics", "Error restarting CHHapticEngine. Haptics will be disabled.");
+								hapticsSupport = false;
+							}
+						}
+					});
+				}
+			});
 		}
 	}
 

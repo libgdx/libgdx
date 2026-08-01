@@ -1,4 +1,6 @@
 [1.14.3]
+- [BREAKING CHANGE] iOS: Increased min supported iOS version to 13.0.
+- [BREAKING CHANGE] iOS: Migrated to UIKit scene-based life cycle. (see #7823)
 - API Addition: add() with 5-8 parameters for arrays.
 - API Addition: Json#getUsePrototypes(), so a Json.Serializable can restore the setting it changed.
 - API Removal: Removed LwjglApplet (Java applets are obsolete). ApplicationType.Applet is deprecated.
