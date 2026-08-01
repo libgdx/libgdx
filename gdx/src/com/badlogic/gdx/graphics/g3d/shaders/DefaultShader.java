@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Attributes;
@@ -744,6 +745,16 @@ public class DefaultShader extends BaseShader {
 		if ((attributesMask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
 			prefix += "#define " + FloatAttribute.AlphaTestAlias + "Flag\n";
 		if (renderable.bones != null && config.numBones > 0) prefix += "#define numBones " + config.numBones + "\n";
+
+		final VertexAttributes instancedAttrs = renderable.meshPart.mesh.getInstancedAttributes();
+		if (instancedAttrs != null) {
+			final int attrsCount = instancedAttrs.size();
+			for (int i = 0; i < attrsCount; i++) {
+				final VertexAttribute attr = instancedAttrs.get(i);
+				prefix += "#define " + attr.alias + "_instancedFlag\n";
+			}
+		}
+
 		return prefix;
 	}
 
