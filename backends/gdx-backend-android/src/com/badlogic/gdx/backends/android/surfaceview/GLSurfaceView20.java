@@ -1,11 +1,11 @@
 /*
  * Copyright (C) 2009 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
@@ -21,14 +21,13 @@ import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-import com.badlogic.gdx.Input.OnscreenKeyboardType;
-import com.badlogic.gdx.backends.android.DefaultAndroidInput;
 
 /** A simple GLSurfaceView sub-class that demonstrates how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the
  * following important details:
@@ -47,7 +46,12 @@ public class GLSurfaceView20 extends GLSurfaceView {
 
 	final ResolutionStrategy resolutionStrategy;
 	static int targetGLESVersion;
-	public OnscreenKeyboardType onscreenKeyboardType = OnscreenKeyboardType.Default;
+
+	/** Defines the view IME input type.
+	 * <p/>
+	 * This is used to set the input type for the IME when the view is focused. The default value is {@link InputType#TYPE_NULL},
+	 * which means the IME will not be shown. */
+	public int inputType = InputType.TYPE_NULL;
 
 	public GLSurfaceView20 (Context context, ResolutionStrategy resolutionStrategy, int targetGLESVersion) {
 		super(context);
@@ -75,14 +79,13 @@ public class GLSurfaceView20 extends GLSurfaceView {
 
 	@Override
 	public InputConnection onCreateInputConnection (EditorInfo outAttrs) {
-
 		// add this line, the IME can show the selectable words when use chinese input method editor.
 		if (outAttrs != null) {
 			outAttrs.imeOptions = outAttrs.imeOptions | EditorInfo.IME_FLAG_NO_EXTRACT_UI;
-			outAttrs.inputType = DefaultAndroidInput.getAndroidInputType(onscreenKeyboardType, true);
+			outAttrs.inputType = inputType;
 		}
 
-		BaseInputConnection connection = new BaseInputConnection(this, false) {
+		return new BaseInputConnection(this, false) {
 			@Override
 			public boolean deleteSurroundingText (int beforeLength, int afterLength) {
 				/*
@@ -104,7 +107,6 @@ public class GLSurfaceView20 extends GLSurfaceView {
 					KeyCharacterMap.VIRTUAL_KEYBOARD, 0, KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
 			}
 		};
-		return connection;
 	}
 
 	@Override
