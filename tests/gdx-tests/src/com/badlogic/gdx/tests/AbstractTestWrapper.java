@@ -24,6 +24,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -316,23 +317,8 @@ public abstract class AbstractTestWrapper extends GdxTest {
 		}
 
 		@Override
-		public void vibrate (int milliseconds) {
-			input.vibrate(milliseconds);
-		}
-
-		@Override
-		public void vibrate (int milliseconds, boolean fallback) {
-			input.vibrate(milliseconds, fallback);
-		}
-
-		@Override
-		public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-			input.vibrate(milliseconds, amplitude, fallback);
-		}
-
-		@Override
-		public void vibrate (VibrationType vibrationType) {
-			input.vibrate(vibrationType);
+		public Haptics getHaptics () {
+			return input.getHaptics();
 		}
 
 		@Override

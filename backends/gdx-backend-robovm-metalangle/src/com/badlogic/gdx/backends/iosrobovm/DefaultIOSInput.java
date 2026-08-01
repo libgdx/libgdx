@@ -10,6 +10,7 @@ import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometer;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegate;
 import com.badlogic.gdx.backends.iosrobovm.custom.UIAccelerometerDelegateAdapter;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
+import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.input.NativeInputConfiguration.NativeInputCloseCallback;
 import com.badlogic.gdx.utils.Array;
@@ -174,7 +175,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	protected void setupHaptics () {
-		haptics = new IOSHaptics(config.useHaptics);
+		haptics = new IOSHaptics(config.useHaptics, config.hapticsFallback);
 	}
 
 	protected void setupPressure () {
@@ -832,23 +833,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	@Override
-	public void vibrate (int milliseconds) {
-		haptics.vibrate(milliseconds, true);
-	}
-
-	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-		haptics.vibrate(milliseconds, fallback);
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-		haptics.vibrate(milliseconds, amplitude, fallback);
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
-		haptics.vibrate(vibrationType);
+	public Haptics getHaptics () {
+		return haptics;
 	}
 
 	@Override

@@ -17,7 +17,7 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.math.MathUtils;
 import org.robovm.apple.audiotoolbox.AudioServices;
 import org.robovm.apple.corehaptic.CHHapticEngine;
@@ -36,13 +36,15 @@ import org.robovm.apple.uikit.UIImpactFeedbackStyle;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.objc.block.VoidBlock1;
 
-public class IOSHaptics {
+public class IOSHaptics implements Haptics {
 
 	private CHHapticEngine hapticEngine;
 	private boolean hapticsSupport;
 	private final boolean vibratorSupport;
+	private boolean fallback;
 
-	public IOSHaptics (boolean useHaptics) {
+	public IOSHaptics (boolean useHaptics, boolean fallback) {
+		this.fallback = fallback;
 		vibratorSupport = useHaptics && UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Phone;
 		if (NSProcessInfo.getSharedProcessInfo().getOperatingSystemVersion().getMajorVersion() >= 13) {
 			hapticsSupport = useHaptics && CHHapticEngine.capabilitiesForHardware().supportsHaptics();
@@ -76,7 +78,8 @@ public class IOSHaptics {
 		}
 	}
 
-	public void vibrate (int milliseconds, boolean fallback) {
+	@Override
+	public void vibrate (int milliseconds) {
 		if (hapticsSupport) {
 			CHHapticPatternDict hapticDict = getChHapticPatternDict(milliseconds, 0.5f);
 			try {
@@ -94,7 +97,8 @@ public class IOSHaptics {
 		}
 	}
 
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
+	@Override
+	public void vibrate (int milliseconds, int amplitude) {
 		if (hapticsSupport) {
 			float intensity = MathUtils.clamp(amplitude / 255f, 0, 1);
 			CHHapticPatternDict hapticDict = getChHapticPatternDict(milliseconds, intensity);
@@ -109,7 +113,7 @@ public class IOSHaptics {
 				Gdx.app.error("IOSHaptics", "Error creating haptics player. " + e.getMessage());
 			}
 		} else {
-			vibrate(milliseconds, fallback);
+			vibrate(milliseconds);
 		}
 	}
 
@@ -122,10 +126,11 @@ public class IOSHaptics {
 			.getDictionary()));
 	}
 
-	public void vibrate (Input.VibrationType vibrationType) {
+	@Override
+	public void impact (ImpactType impactType) {
 		if (hapticsSupport) {
 			UIImpactFeedbackStyle uiImpactFeedbackStyle;
-			switch (vibrationType) {
+			switch (impactType) {
 			case LIGHT:
 				uiImpactFeedbackStyle = UIImpactFeedbackStyle.Light;
 				break;
@@ -136,19 +141,35 @@ public class IOSHaptics {
 				uiImpactFeedbackStyle = UIImpactFeedbackStyle.Heavy;
 				break;
 			default:
-				throw new IllegalArgumentException("Unknown VibrationType " + vibrationType);
+				throw new IllegalArgumentException("Unknown VibrationType " + impactType);
 			}
 			UIImpactFeedbackGenerator uiImpactFeedbackGenerator = new UIImpactFeedbackGenerator(uiImpactFeedbackStyle);
 			uiImpactFeedbackGenerator.impactOccurred();
 		}
 	}
 
+	@Override
 	public boolean isHapticsSupported () {
 		return hapticsSupport;
 	}
 
+	@Override
 	public boolean isVibratorSupported () {
 		return vibratorSupport;
+	}
+
+	@Override
+	public boolean isFallbackEnabled () {
+		return fallback;
+	}
+
+	@Override
+	public void setFallbackEnabled (boolean fallback) {
+		this.fallback = fallback;
+	}
+
+	public CHHapticEngine getHapticEngine () {
+		return hapticEngine;
 	}
 
 }
