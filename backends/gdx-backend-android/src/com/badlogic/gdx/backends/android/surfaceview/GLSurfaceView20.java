@@ -29,6 +29,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import com.badlogic.gdx.Input.OnscreenKeyboardType;
 import com.badlogic.gdx.backends.android.DefaultAndroidInput;
+import com.badlogic.gdx.backends.android.GLES;
 
 /** A simple GLSurfaceView sub-class that demonstrates how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the
  * following important details:
@@ -46,25 +47,22 @@ public class GLSurfaceView20 extends GLSurfaceView {
 	private static final boolean DEBUG = false;
 
 	final ResolutionStrategy resolutionStrategy;
-	static int targetGLESVersion;
+	public GLES targetGLESVersion;
 	public OnscreenKeyboardType onscreenKeyboardType = OnscreenKeyboardType.Default;
 
-	public GLSurfaceView20 (Context context, ResolutionStrategy resolutionStrategy, int targetGLESVersion) {
+	public GLSurfaceView20 (Context context, ResolutionStrategy resolutionStrategy, GLES targetGLESVersion) {
 		super(context);
-		GLSurfaceView20.targetGLESVersion = targetGLESVersion;
+		this.targetGLESVersion = targetGLESVersion;
 		this.resolutionStrategy = resolutionStrategy;
 		init(false, 16, 0);
 	}
 
-	public GLSurfaceView20 (Context context, ResolutionStrategy resolutionStrategy) {
-		this(context, resolutionStrategy, 2);
-	}
-
-	public GLSurfaceView20 (Context context, boolean translucent, int depth, int stencil, ResolutionStrategy resolutionStrategy) {
+	public GLSurfaceView20 (Context context, boolean translucent, int depth, int stencil, ResolutionStrategy resolutionStrategy,
+		GLES targetGLESVersion) {
 		super(context);
+		this.targetGLESVersion = targetGLESVersion;
 		this.resolutionStrategy = resolutionStrategy;
 		init(translucent, depth, stencil);
-
 	}
 
 	@Override
@@ -113,7 +111,6 @@ public class GLSurfaceView20 extends GLSurfaceView {
 	}
 
 	private void init (boolean translucent, int depth, int stencil) {
-
 		/*
 		 * By default, GLSurfaceView() creates a RGB_888 opaque surface. If we want a translucent one, we should change the
 		 * surface's format here, using PixelFormat.TRANSLUCENT for GL Surfaces is interpreted as any 32-bit surface with alpha by
@@ -138,22 +135,39 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		/* Set the renderer responsible for frame rendering */
 	}
 
-	static class ContextFactory implements GLSurfaceView.EGLContextFactory {
-		private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
+	class ContextFactory implements GLSurfaceView.EGLContextFactory {
+
+		private static final int EGL_CONTEXT_MAJOR_VERSION = 0x3098;
+		private static final int EGL_CONTEXT_MINOR_VERSION = 0x30FB;
 
 		public EGLContext createContext (EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
-			Log.w(TAG, "creating OpenGL ES " + GLSurfaceView20.targetGLESVersion + ".0 context");
+			GLES version = targetGLESVersion;
+			Log.w(TAG, "creating " + version + " context");
 			checkEglError("Before eglCreateContext " + targetGLESVersion, egl);
-			int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, GLSurfaceView20.targetGLESVersion, EGL10.EGL_NONE};
+
+			int[] attrib_list = null;
+			switch (version) {
+			case GLES20:
+			case GLES30:
+				attrib_list = new int[] {EGL_CONTEXT_MAJOR_VERSION, version.major, EGL10.EGL_NONE};
+				break;
+			case GLES31:
+			case GLES32:
+				attrib_list = new int[] {EGL_CONTEXT_MAJOR_VERSION, version.major, EGL_CONTEXT_MINOR_VERSION, version.minor,
+					EGL10.EGL_NONE};
+				break;
+			}
+
 			EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
 			boolean success = checkEglError("After eglCreateContext " + targetGLESVersion, egl);
 
-			if ((!success || context == null) && GLSurfaceView20.targetGLESVersion > 2) {
-				Log.w(TAG, "Falling back to GLES 2");
-				GLSurfaceView20.targetGLESVersion = 2;
+			if ((!success || context == null) && version.major > 2) {
+				targetGLESVersion = version.lower();
+				Log.w(TAG, "Falling back to " + targetGLESVersion);
 				return createContext(egl, display, eglConfig);
 			}
-			Log.w(TAG, "Returning a GLES " + targetGLESVersion + " context");
+
+			Log.w(TAG, "Returning a " + targetGLESVersion + " context");
 			return context;
 		}
 
