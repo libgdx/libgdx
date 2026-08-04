@@ -1,4 +1,5 @@
 [1.14.3]
+- API Addition: BitmapFont#draw and BitmapFontCache#addText/setText overloads that take a tint for a GlyphLayout. The tint is applied while the glyph vertices are built, avoiding the second pass over the vertices done by BitmapFontCache#tint.
 - API Addition: add() with 5-8 parameters for arrays.
 - API Addition: Json#getUsePrototypes(), so a Json.Serializable can restore the setting it changed.
 - API Removal: Removed LwjglApplet (Java applets are obsolete). ApplicationType.Applet is deprecated.

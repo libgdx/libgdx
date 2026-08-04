@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FlushablePool;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.NumberUtils;
 
 import java.util.Arrays;
@@ -112,7 +113,10 @@ public class BitmapFontCache {
 		}
 	}
 
-	/** Tints all text currently in the cache. Does not affect subsequently added text. */
+	/** Tints all text currently in the cache. Does not affect subsequently added text.
+	 * <p>
+	 * This is a second pass over the vertices. When the text is added just to be drawn tinted, it is more efficient to pass the
+	 * tint to {@link #addText(GlyphLayout, float, float, Color)} or {@link #setText(GlyphLayout, float, float, Color)}. */
 	public void tint (Color tint) {
 		float newTint = tint.toFloatBits();
 		if (currentTint == newTint) return;
@@ -308,6 +312,7 @@ public class BitmapFontCache {
 	public void clear () {
 		x = 0;
 		y = 0;
+		currentTint = Color.WHITE_FLOAT_BITS;
 		pooledLayouts.flush();
 		layouts.clear();
 		glyphCount = 0;
@@ -376,7 +381,7 @@ public class BitmapFontCache {
 		tempGlyphCount = new int[pageCount];
 	}
 
-	private void addToCache (GlyphLayout layout, float x, float y) {
+	private void addToCache (GlyphLayout layout, float x, float y, @Null Color tint) {
 		int runCount = layout.runs.size;
 		if (runCount == 0) return;
 
@@ -396,7 +401,13 @@ public class BitmapFontCache {
 			float gx = x + run.x, gy = y + run.y;
 			for (int ii = 0, nn = run.glyphs.size; ii < nn; ii++) {
 				if (glyphIndex++ == nextColorGlyphIndex) {
-					lastColorFloatBits = NumberUtils.intToFloatColor(colors.get(++colorsIndex));
+					int abgr = colors.get(++colorsIndex);
+					if (tint == null)
+						lastColorFloatBits = NumberUtils.intToFloatColor(abgr);
+					else {
+						Color.abgr8888ToColor(tempColor, abgr);
+						lastColorFloatBits = tempColor.mul(tint).toFloatBits();
+					}
 					nextColorGlyphIndex = ++colorsIndex < colors.size ? colors.get(colorsIndex) : -1;
 				}
 				gx += xAdvances[ii];
@@ -404,7 +415,13 @@ public class BitmapFontCache {
 			}
 		}
 
-		currentTint = Color.WHITE_FLOAT_BITS; // Cached glyphs have changed, reset the current tint.
+		// Cached glyphs have changed, reset the current tint. Glyphs added with a tint have it baked into their vertices, so from
+		// then until the cache is cleared the tint of the cached text is unknown. NaN is never equal to the tint passed to tint(),
+		// which ensures tint() is not skipped for those glyphs.
+		if (tint != null || Float.isNaN(currentTint))
+			currentTint = Float.NaN;
+		else
+			currentTint = Color.WHITE_FLOAT_BITS;
 	}
 
 	private void addGlyph (Glyph glyph, float x, float y, float color) {
@@ -491,6 +508,13 @@ public class BitmapFontCache {
 		addText(layout, x, y);
 	}
 
+	/** Clears any cached glyphs and adds the specified glyphs, tinted.
+	 * @see #addText(GlyphLayout, float, float, Color) */
+	public void setText (GlyphLayout layout, float x, float y, @Null Color tint) {
+		clear();
+		addText(layout, x, y, tint);
+	}
+
 	/** Adds glyphs for the specified text.
 	 * @see #addText(CharSequence, float, float, int, int, float, int, boolean, String) */
 	public GlyphLayout addText (CharSequence str, float x, float y) {
@@ -530,9 +554,20 @@ public class BitmapFontCache {
 	}
 
 	/** Adds the specified glyphs.
-	 * @param layout The cache keeps the layout until cleared or new text is set. The layout should not be modified before then. */
+	 * @param layout The cache keeps the layout until cleared or new text is set. The layout should not be modified before then.
+	 * @see #addText(GlyphLayout, float, float, Color) */
 	public void addText (GlyphLayout layout, float x, float y) {
-		addToCache(layout, x, y + font.data.ascent);
+		addToCache(layout, x, y + font.data.ascent, null);
+	}
+
+	/** Adds the specified glyphs, multiplying the color of each glyph by the specified tint.
+	 * <p>
+	 * The tint is applied while the glyph vertices are built, once per color run, so this is more efficient than adding the glyphs
+	 * and then calling {@link #tint(Color)}, which is a second pass over every vertex.
+	 * @param layout The cache keeps the layout until cleared or new text is set. The layout should not be modified before then.
+	 * @param tint May be null to add the glyphs with the colors of the layout, unmodified. */
+	public void addText (GlyphLayout layout, float x, float y, @Null Color tint) {
+		addToCache(layout, x, y + font.data.ascent, tint);
 	}
 
 	/** Returns the x position of the cached string, relative to the position when the string was cached. */
