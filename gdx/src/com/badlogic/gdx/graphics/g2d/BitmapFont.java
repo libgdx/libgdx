@@ -39,6 +39,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.StreamUtils;
 
 /** Renders bitmap fonts. The font consists of 2 files: an image file or {@link TextureRegion} containing the glyphs and a file in
@@ -231,6 +232,19 @@ public class BitmapFont implements Disposable {
 	public void draw (Batch batch, GlyphLayout layout, float x, float y) {
 		cache.clear();
 		cache.addText(layout, x, y);
+		cache.draw(batch);
+	}
+
+	/** Draws text at the specified position, multiplying the color of each glyph by the specified tint.
+	 * <p>
+	 * The tint is applied while the glyph vertices are built, so drawing a layout that fades or flashes costs a single pass over
+	 * the vertices rather than the two needed by {@link BitmapFontCache#tint(Color)}. Note the color of the {@link Batch} does not
+	 * affect cached text.
+	 * @param tint May be null to draw the glyphs with the colors of the layout, unmodified.
+	 * @see BitmapFontCache#addText(GlyphLayout, float, float, Color) */
+	public void draw (Batch batch, GlyphLayout layout, float x, float y, @Null Color tint) {
+		cache.clear();
+		cache.addText(layout, x, y, tint);
 		cache.draw(batch);
 	}
 
