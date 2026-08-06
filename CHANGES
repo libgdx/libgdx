@@ -1,4 +1,5 @@
 [1.14.3]
+- API Addition: Added Sprite#getPackedWidth/getPackedHeight, and fixed ParticleEmitter/AtlasSprite positioning offsets when using whitespace-stripped TextureAtlas regions.
 - API Addition: add() with 5-8 parameters for arrays.
 - API Addition: Json#getUsePrototypes(), so a Json.Serializable can restore the setting it changed.
 - API Removal: Removed LwjglApplet (Java applets are obsolete). ApplicationType.Applet is deprecated.
