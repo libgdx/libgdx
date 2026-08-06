@@ -400,13 +400,13 @@ public class ParticleEmitter {
 	private void activateParticle (int index) {
 		Sprite sprite = null;
 		switch (spriteMode) {
-			case single:
-			case animated:
-				sprite = sprites.first();
-				break;
-			case random:
-				sprite = sprites.random();
-				break;
+		case single:
+		case animated:
+			sprite = sprites.first();
+			break;
+		case random:
+			sprite = sprites.random();
+			break;
 		}
 
 		Particle particle = particles[index];
@@ -455,7 +455,7 @@ public class ParticleEmitter {
 			particle.yScaleDiff = yScaleValue.newHighValue() / spriteHeight;
 			if (!yScaleValue.relative) particle.yScaleDiff -= particle.yScale;
 			particle.setScale(particle.xScale + particle.xScaleDiff * xScaleValue.getScale(0),
-					particle.yScale + particle.yScaleDiff * yScaleValue.getScale(0));
+				particle.yScale + particle.yScaleDiff * yScaleValue.getScale(0));
 		} else {
 			particle.setScale(particle.xScale + particle.xScaleDiff * xScaleValue.getScale(0));
 		}
@@ -645,7 +645,8 @@ public class ParticleEmitter {
 				particle.setRegion(sprite);
 				particle.setSize(sprite.getPackedWidth(), sprite.getPackedHeight());
 				particle.setOrigin(sprite.getPackedWidth() * 0.5f, sprite.getPackedHeight() * 0.5f);
-				particle.translate((prevSpriteWidth - sprite.getPackedWidth()) * 0.5f, (prevSpriteHeight - sprite.getPackedHeight()) * 0.5f);
+				particle.translate((prevSpriteWidth - sprite.getPackedWidth()) * 0.5f,
+					(prevSpriteHeight - sprite.getPackedHeight()) * 0.5f);
 				particle.frame = frame;
 			}
 		}

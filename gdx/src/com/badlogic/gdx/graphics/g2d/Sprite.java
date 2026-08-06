@@ -620,8 +620,8 @@ public class Sprite extends TextureRegion {
 	}
 
 	/** @return the height of the packed region of the sprite. For sprites created from a {@link TextureAtlas} with whitespace
-	 *         stripping, this is the height of the region without the stripped whitespace, as opposed to {@link #getHeight()} which
-	 *         returns the height of the original image. */
+	 *         stripping, this is the height of the region without the stripped whitespace, as opposed to {@link #getHeight()}
+	 *         which returns the height of the original image. */
 	public float getPackedHeight () {
 		return height;
 	}
