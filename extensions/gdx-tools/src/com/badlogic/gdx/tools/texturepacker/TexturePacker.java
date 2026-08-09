@@ -907,9 +907,6 @@ public class TexturePacker {
 		public boolean multipleOfFour;
 		public int paddingX = 2, paddingY = 2;
 		public boolean edgePadding = true;
-		/** If true, the edge pixels of each image are duplicated into the padding, so filtering does not sample transparent pixels.
-		 * {@link #paddingX} and {@link #paddingY} are the whole gap between two adjacent images, so each image duplicates only half
-		 * of it on each side, rounded down. Requires padding of 2 or more. */
 		public boolean duplicatePadding = false;
 		public boolean rotation;
 		public int minWidth = 16, minHeight = 16;
