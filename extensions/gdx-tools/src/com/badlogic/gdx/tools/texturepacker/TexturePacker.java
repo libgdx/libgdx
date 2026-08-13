@@ -78,6 +78,13 @@ public class TexturePacker {
 				throw new RuntimeException("If mod4 is true, maxHeight must be evenly divisible by 4: " + settings.maxHeight);
 		}
 
+		if (settings.duplicatePadding) {
+			if (settings.paddingX < 2)
+				throw new RuntimeException("If duplicatePadding is true, paddingX must be >= 2: " + settings.paddingX);
+			if (settings.paddingY < 2)
+				throw new RuntimeException("If duplicatePadding is true, paddingY must be >= 2: " + settings.paddingY);
+		}
+
 		if (settings.grid)
 			packer = new GridPacker(settings);
 		else
