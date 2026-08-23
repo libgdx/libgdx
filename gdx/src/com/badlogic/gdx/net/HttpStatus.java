@@ -101,7 +101,6 @@ public class HttpStatus {
 	public static final int SC_USE_PROXY = 305;
 	/** {@code 307 Temporary Redirect} (HTTP Semantics) */
 	public static final int SC_TEMPORARY_REDIRECT = 307;
-
 	/** {@code 308 Permanent Redirect} (HTTP Semantics) */
 	public static final int SC_PERMANENT_REDIRECT = 308;
 
@@ -145,24 +144,23 @@ public class HttpStatus {
 	public static final int SC_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
 	/** {@code 417 Expectation Failed} (HTTP Semantics) */
 	public static final int SC_EXPECTATION_FAILED = 417;
+	/** {@code 419 Insufficient Space on Resource} (WebDAV - draft-ietf-webdav-protocol-05?) or
+	 * {@code 419 Proxy Reauthentication Required} (HTTP/1.1 drafts?) */
+	public static final int SC_INSUFFICIENT_SPACE_ON_RESOURCE = 419;
+	/** {@code 420 Method Failure} (WebDAV - draft-ietf-webdav-protocol-05?) */
+	public static final int SC_METHOD_FAILURE = 420;
 	/** {@code 421 Misdirected Request} (HTTP Semantics) */
 	public static final int SC_MISDIRECTED_REQUEST = 421;
 	/** {@code 422 Unprocessable Content} (HTTP Semantics) */
 	public static final int SC_UNPROCESSABLE_CONTENT = 422;
-	/** {@code 426 Upgrade Required} (HTTP Semantics) */
-	public static final int SC_UPGRADE_REQUIRED = 426;
-
-	/** Static constant for a 419 error. {@code 419 Insufficient Space on Resource} (WebDAV - draft-ietf-webdav-protocol-05?) or
-	 * {@code 419 Proxy Reauthentication Required} (HTTP/1.1 drafts?) */
-	public static final int SC_INSUFFICIENT_SPACE_ON_RESOURCE = 419;
-	/** Static constant for a 420 error. {@code 420 Method Failure} (WebDAV - draft-ietf-webdav-protocol-05?) */
-	public static final int SC_METHOD_FAILURE = 420;
 	/** {@code 423 Locked} (WebDAV - RFC 2518) */
 	public static final int SC_LOCKED = 423;
 	/** {@code 424 Failed Dependency} (WebDAV - RFC 2518) */
 	public static final int SC_FAILED_DEPENDENCY = 424;
 	/** {@code 425 Too Early} (Using Early Data in HTTP - RFC 8470) */
 	public static final int SC_TOO_EARLY = 425;
+	/** {@code 426 Upgrade Required} (HTTP Semantics) */
+	public static final int SC_UPGRADE_REQUIRED = 426;
 	/** {@code 428 Precondition Required} (Additional HTTP Status Codes - RFC 6585) */
 	public static final int SC_PRECONDITION_REQUIRED = 428;
 	/** {@code 429 Too Many Requests} (Additional HTTP Status Codes - RFC 6585) */
@@ -192,13 +190,10 @@ public class HttpStatus {
 	public static final int SC_VARIANT_ALSO_NEGOTIATES = 506;
 	/** {@code 507 Insufficient Storage} (WebDAV - RFC 2518) */
 	public static final int SC_INSUFFICIENT_STORAGE = 507;
-
 	/** {@code 508 Loop Detected} (WebDAV - RFC 5842, p.33, section 7.2) */
 	public static final int SC_LOOP_DETECTED = 508;
-
 	/** {@code 510 Not Extended} (An HTTP Extension Framework - RFC 2774, p. 10, section 7) */
 	public static final int SC_NOT_EXTENDED = 510;
-
 	/** {@code 511 Network Authentication Required} (Additional HTTP Status Codes - RFC 6585) */
 	public static final int SC_NETWORK_AUTHENTICATION_REQUIRED = 511;
 
