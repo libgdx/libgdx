@@ -3,6 +3,7 @@
 - API Addition: Json#getUsePrototypes(), so a Json.Serializable can restore the setting it changed.
 - API Removal: Removed LwjglApplet (Java applets are obsolete). ApplicationType.Applet is deprecated.
 - iOS: Made iOS Preferences flush() implementation atomic (see #7833)
+- Added additional HTTP status code constants.
 
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805
