@@ -2,6 +2,7 @@
 - API Addition: add() with 5-8 parameters for arrays.
 - API Addition: Json#getUsePrototypes(), so a Json.Serializable can restore the setting it changed.
 - API Removal: Removed LwjglApplet (Java applets are obsolete). ApplicationType.Applet is deprecated.
+- API Fix: Box2D on GWT now uses same welding threshold as other platforms.
 - iOS: Made iOS Preferences flush() implementation atomic (see #7833)
 
 [1.14.2]
