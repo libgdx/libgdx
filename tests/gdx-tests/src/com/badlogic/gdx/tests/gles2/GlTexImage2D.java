@@ -153,7 +153,7 @@ public class GlTexImage2D extends GdxTest {
 
 		/* set shader */
 		shader = new ShaderProgram(vertexShader, fragmentShader);
-		if(!shader.isCompiled()){
+		if (!shader.isCompiled()) {
 			Gdx.app.error("Shader compile", shader.getLog());
 		}
 		shader.bind();
@@ -186,12 +186,12 @@ public class GlTexImage2D extends GdxTest {
 		((Buffer)tmpHandle).clear();
 		Gdx.gl30.glGenVertexArrays(1, tmpHandle);
 		vaoHandle = tmpHandle.get();
-		Gdx.gl30.glBindVertexArray(vaoHandle);	// bind vao
+		Gdx.gl30.glBindVertexArray(vaoHandle); // bind vao
 	}
 
 	private void deleteVAO () {
 		if (vaoHandle != -1) {
-			Gdx.gl30.glBindVertexArray(0);	// unbind vao
+			Gdx.gl30.glBindVertexArray(0); // unbind vao
 			((Buffer)tmpHandle).clear();
 			tmpHandle.put(vaoHandle);
 			((Buffer)tmpHandle).flip();
