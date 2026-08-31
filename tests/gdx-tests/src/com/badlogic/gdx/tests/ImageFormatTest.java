@@ -23,10 +23,10 @@ import static com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.*;
 public class ImageFormatTest extends GdxTest {
 
 	private Stage stage;
-
 	private final String pathPrefix = "data/format-test/";
-	// @off
-	private final String[][] filepaths = {
+
+  // @off
+	private final String[][] filenames = {
 		{ // Widely supported
 			"bmp.bmp",
 			"gif.gif", // Static
@@ -77,21 +77,21 @@ public class ImageFormatTest extends GdxTest {
 		root.align(Align.topLeft);
 		root.pad(8);
 
-		for (String[] row : filepaths) {
+		for (String[] row : filenames) {
 			HorizontalGroup group = new HorizontalGroup();
 			group.wrap();
 			group.space(spacePx).wrapSpace(spacePx);
 			group.align(Align.topLeft).rowAlign(Align.topLeft);
 
-			for (String filepath : row) {
+			for (String filename : row) {
 				try {
 					if (Gdx.app.getType() == Application.ApplicationType.WebGL) {
-						if (filepath.contains("ktx-etc1") && !Gdx.graphics.supportsExtension("WEBGL_compressed_texture_etc1"))
+						if (filename.contains("ktx-etc1") && !Gdx.graphics.supportsExtension("WEBGL_compressed_texture_etc1"))
 							throw new GdxRuntimeException("ETC1 not supported");
-						if (filepath.contains("ktx-s3tc") && !Gdx.graphics.supportsExtension("WEBGL_compressed_texture_s3tc_srgb"))
+						if (filename.contains("ktx-s3tc") && !Gdx.graphics.supportsExtension("WEBGL_compressed_texture_s3tc_srgb"))
 							throw new GdxRuntimeException("S3TC not supported");
 					}
-					FileHandle handle = Gdx.files.internal(pathPrefix + filepath);
+          FileHandle handle = Gdx.files.internal(pathPrefix + filename);
 					Image image = new Image(new Texture(handle, Format.RGBA8888, false));
 					group.addActor(image);
 				} catch (Exception e) {
