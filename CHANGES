@@ -4,6 +4,8 @@
 - API Removal: Removed LwjglApplet (Java applets are obsolete). ApplicationType.Applet is deprecated.
 - API Fix: Box2D PolygonShape now uses same welding threshold on GWT as other platforms.
 - iOS: Made iOS Preferences flush() implementation atomic (see #7833)
+- GWT: Add support for KTX1 files. Note that there is no built-in fallback if an unsupported compressed texture format is loaded; use Gdx.graphics.supportsExtension().
+- GWT: Expanded the DefaultAssetFilter image types. Now WebP and AVIF (and more) can be used out-of-the-box, subject to browser compatibility.
 
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805
