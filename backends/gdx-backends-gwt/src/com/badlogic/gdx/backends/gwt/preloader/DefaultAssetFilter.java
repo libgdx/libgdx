@@ -51,31 +51,27 @@ public class DefaultAssetFilter implements AssetFilter {
 
 	// @off
 
-	/** File extensions to be processed as image tags.
+	/** Compares file extensions to be processed as image tags.
 	 * KTX is supported but don't add it here! */
-	private static final ObjectSet<String> IMAGE_EXTENSIONS = ObjectSet.with(
-		"bmp", "gif", "jpg", "jpeg", "jpe", "jfif", "png", "apng",
-		"avif", "cur", "ico", "jxl", "svg", "svgz", "webp",
-		"heif", "heifs", "heic", "heics", "avci", "avcs", "hif", "pdf", "tiff", "tif"
-	);
 	private boolean isImage (String extension) {
-		return IMAGE_EXTENSIONS.contains(extension);
+		return ObjectSet.with(
+			"bmp", "gif", "jpg", "jpeg", "jpe", "jfif", "png", "apng",
+			"avif", "cur", "ico", "jxl", "svg", "svgz", "webp",
+			"heif", "heifs", "heic", "heics", "avci", "avcs", "hif", "pdf", "tiff", "tif"
+		).contains(extension);
 	}
 
-	private static final ObjectSet<String> TEXT_EXTENSIONS = ObjectSet.with(
-		"json", "xml", "txt", "glsl", "fnt", "pack", "obj", "atlas", "g3dj"
-	);
 	private boolean isText (String extension) {
-		return TEXT_EXTENSIONS.contains(extension);
+		return ObjectSet.with(
+			"json", "xml", "txt", "glsl", "fnt", "pack", "obj", "atlas", "g3dj"
+		).contains(extension);
 	}
 
-	/** Somewhat common audio file extensions. */
-	private static final ObjectSet<String> AUDIO_EXTENSIONS = ObjectSet.with(
-		"mp3", "ogg", "wav", "wave", "m4a", "aac", "flac", "oga", "opus", "weba", "webm", // widely supported
-		"caf", "aif", "aiff", "m4b", "m4r" // Apple stuff
-	);
 	private boolean isAudio (String extension) {
-		return AUDIO_EXTENSIONS.contains(extension);
+		return ObjectSet.with(
+			"mp3", "ogg", "wav", "wave", "m4a", "aac", "flac", "oga", "opus", "weba", "webm",
+			"caf", "aif", "aiff", "m4b", "m4r"
+		).contains(extension);
 	}
 
 	@Override
