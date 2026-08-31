@@ -25,7 +25,7 @@ public class ImageFormatTest extends GdxTest {
 	private Stage stage;
 	private final String pathPrefix = "data/format-test/";
 
-  // @off
+	// @off
 	private final String[][] filenames = {
 		{ // Widely supported
 			"bmp.bmp",
@@ -91,7 +91,7 @@ public class ImageFormatTest extends GdxTest {
 						if (filename.contains("ktx-s3tc") && !Gdx.graphics.supportsExtension("WEBGL_compressed_texture_s3tc_srgb"))
 							throw new GdxRuntimeException("S3TC not supported");
 					}
-          FileHandle handle = Gdx.files.internal(pathPrefix + filename);
+					FileHandle handle = Gdx.files.internal(pathPrefix + filename);
 					Image image = new Image(new Texture(handle, Format.RGBA8888, false));
 					group.addActor(image);
 				} catch (Exception e) {
