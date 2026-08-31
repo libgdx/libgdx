@@ -1,27 +1,32 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *	 http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.graphics.glutils;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.util.zip.GZIPInputStream;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Cubemap;
-import com.badlogic.gdx.graphics.CubemapData;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureData;
-import com.badlogic.gdx.graphics.glutils.ETC1.ETC1Data;
-import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
 
 /** A KTXTextureData holds the data from a KTX (or zipped KTX file, aka ZKTX). That is to say an OpenGL ready texture data. The
  * KTX file format is just a thin wrapper around OpenGL textures and therefore is compatible with most OpenGL texture capabilities
@@ -74,27 +79,18 @@ public class KTXTextureData implements TextureData, CubemapData {
 	public void prepare () {
 		if (compressedData != null) throw new GdxRuntimeException("Already prepared");
 		if (file == null) throw new GdxRuntimeException("Need a file to load from");
-		// We support normal ktx files as well as 'zktx' which are gzip ktx file with an int length at the beginning (like ETC1).
+
 		if (file.name().endsWith(".zktx")) {
-			byte[] buffer = new byte[1024 * 10];
-			DataInputStream in = null;
-			try {
-				in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(file.read())));
-				int fileSize = in.readInt();
-				compressedData = BufferUtils.newUnsafeByteBuffer(fileSize);
-				int readBytes = 0;
-				while ((readBytes = in.read(buffer)) != -1)
-					compressedData.put(buffer, 0, readBytes);
-				((Buffer)compressedData).position(0);
-				((Buffer)compressedData).limit(compressedData.capacity());
-			} catch (Exception e) {
-				throw new GdxRuntimeException("Couldn't load zktx file '" + file + "'", e);
-			} finally {
-				StreamUtils.closeQuietly(in);
-			}
-		} else {
-			compressedData = ByteBuffer.wrap(file.readBytes());
+			throw new GdxRuntimeException("ZKTX unsupported on GWT");
 		}
+
+		byte[] bytes = file.readBytes();
+		compressedData = BufferUtils.newByteBuffer(bytes.length);
+		compressedData.put(bytes);
+		((Buffer)compressedData).position(0);
+		((Buffer)compressedData).limit(bytes.length);
+		ByteBuffer.wrap(file.readBytes());
+
 		if (compressedData.get() != (byte)0x0AB) throw new GdxRuntimeException("Invalid KTX Header");
 		if (compressedData.get() != (byte)0x04B) throw new GdxRuntimeException("Invalid KTX Header");
 		if (compressedData.get() != (byte)0x054) throw new GdxRuntimeException("Invalid KTX Header");
@@ -128,20 +124,6 @@ public class KTXTextureData implements TextureData, CubemapData {
 		}
 		int bytesOfKeyValueData = compressedData.getInt();
 		imagePos = compressedData.position() + bytesOfKeyValueData;
-		if (!compressedData.isDirect()) {
-			int pos = imagePos;
-			for (int level = 0; level < numberOfMipmapLevels; level++) {
-				int faceLodSize = compressedData.getInt(pos);
-				int faceLodSizeRounded = (faceLodSize + 3) & ~3;
-				pos += faceLodSizeRounded * numberOfFaces + 4;
-			}
-			((Buffer)compressedData).limit(pos);
-			((Buffer)compressedData).position(0);
-			ByteBuffer directBuffer = BufferUtils.newUnsafeByteBuffer(pos);
-			directBuffer.order(compressedData.order());
-			directBuffer.put(compressedData);
-			compressedData = directBuffer;
-		}
 	}
 
 	private static final int GL_TEXTURE_1D = 0x1234;
@@ -201,8 +183,7 @@ public class KTXTextureData implements TextureData, CubemapData {
 		if (numberOfFaces == 6 && target != GL20.GL_TEXTURE_CUBE_MAP) {
 			// Load a single face of the cube (should be avoided since the data is unloaded afterwards)
 			if (!(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X <= target && target <= GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z))
-				throw new GdxRuntimeException(
-					"You must specify either GL_TEXTURE_CUBE_MAP to bind all 6 faces of the cube or the requested face GL_TEXTURE_CUBE_MAP_POSITIVE_X and followings.");
+				throw new GdxRuntimeException("Must specify valid cubemap face target.");
 			singleFace = target - GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X;
 			target = GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X;
 		} else if (numberOfFaces == 6 && target == GL20.GL_TEXTURE_CUBE_MAP) {
@@ -212,17 +193,18 @@ public class KTXTextureData implements TextureData, CubemapData {
 			// Load normal texture
 			if (target != glTarget && !(GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X <= target
 				&& target <= GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z && target == GL20.GL_TEXTURE_2D))
-				throw new GdxRuntimeException("Invalid target requested : 0x" + Integer.toHexString(target) + ", expecting : 0x"
-					+ Integer.toHexString(glTarget));
+				throw new GdxRuntimeException("Invalid target requested: 0x" + Integer.toHexString(target));
 		}
 
 		// KTX files require an unpack alignment of 4
 		Gdx.gl.glGetIntegerv(GL20.GL_UNPACK_ALIGNMENT, buffer);
 		int previousUnpackAlignment = buffer.get(0);
 		if (previousUnpackAlignment != 4) Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 4);
+
 		int glInternalFormat = this.glInternalFormat;
 		int glFormat = this.glFormat;
 		int pos = imagePos;
+
 		for (int level = 0; level < numberOfMipmapLevels; level++) {
 			int pixelWidth = Math.max(1, this.pixelWidth >> level);
 			int pixelHeight = Math.max(1, this.pixelHeight >> level);
@@ -237,6 +219,7 @@ public class KTXTextureData implements TextureData, CubemapData {
 				if (singleFace != -1 && singleFace != face) continue;
 				ByteBuffer data = compressedData.slice();
 				((Buffer)data).limit(faceLodSizeRounded);
+
 				if (textureDimensions == 1) {
 					// if (compressed)
 					// Gdx.gl.glCompressedTexImage1D(target + face, level, glInternalFormat, pixelWidth, 0, faceLodSize,
@@ -246,24 +229,12 @@ public class KTXTextureData implements TextureData, CubemapData {
 				} else if (textureDimensions == 2) {
 					if (numberOfArrayElements > 0) pixelHeight = numberOfArrayElements;
 					if (compressed) {
-						if (glInternalFormat == ETC1.ETC1_RGB8_OES) {
-							if (!Gdx.graphics.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {
-								ETC1Data etcData = new ETC1Data(pixelWidth, pixelHeight, data, 0);
-								Pixmap pixmap = ETC1.decodeImage(etcData, Format.RGB888);
-								Gdx.gl.glTexImage2D(target + face, level, pixmap.getGLInternalFormat(), pixmap.getWidth(),
-									pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-								pixmap.dispose();
-							} else {
-								Gdx.gl.glCompressedTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0,
-									faceLodSize, data);
-							}
-						} else {
-							// Try to load (no software unpacking fallback)
-							Gdx.gl.glCompressedTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0,
-								faceLodSize, data);
-						}
-					} else
+						// Try to load (no software unpacking fallback)
+						Gdx.gl.glCompressedTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0, faceLodSize,
+							data);
+					} else {
 						Gdx.gl.glTexImage2D(target + face, level, glInternalFormat, pixelWidth, pixelHeight, 0, glFormat, glType, data);
+					}
 				} else if (textureDimensions == 3) {
 					if (numberOfArrayElements > 0) pixelDepth = numberOfArrayElements;
 					// if (compressed)
@@ -275,6 +246,7 @@ public class KTXTextureData implements TextureData, CubemapData {
 				}
 			}
 		}
+
 		if (previousUnpackAlignment != 4) Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, previousUnpackAlignment);
 		if (useMipMaps()) Gdx.gl.glGenerateMipmap(target);
 
@@ -283,7 +255,6 @@ public class KTXTextureData implements TextureData, CubemapData {
 	}
 
 	public void disposePreparedData () {
-		if (compressedData != null) BufferUtils.disposeUnsafeByteBuffer(compressedData);
 		compressedData = null;
 	}
 
@@ -356,5 +327,4 @@ public class KTXTextureData implements TextureData, CubemapData {
 	public boolean isManaged () {
 		return true;
 	}
-
 }
