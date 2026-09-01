@@ -4,6 +4,7 @@
 - API Removal: Removed LwjglApplet (Java applets are obsolete). ApplicationType.Applet is deprecated.
 - API Fix: Box2D PolygonShape now uses same welding threshold on GWT as other platforms.
 - iOS: Made iOS Preferences flush() implementation atomic (see #7833)
+- iOS: Update to MobiVM 2.3.26
 - LWJGL3: Update to 3.4.3
 
 [1.14.2]
