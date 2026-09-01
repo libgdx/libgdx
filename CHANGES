@@ -5,6 +5,7 @@
 - API Fix: Box2D PolygonShape now uses same welding threshold on GWT as other platforms.
 - iOS: Made iOS Preferences flush() implementation atomic (see #7833)
 - LWJGL3: Update to 3.4.3
+- Fix: KTXProcessor no longer mandates ETC1 compression.
 
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805

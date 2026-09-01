@@ -249,12 +249,11 @@ public class KTXProcessor {
 						levelPixmap = null;
 					}
 
-					// Save result to ouput ktx
+					// Save result to output ktx
 					images[face][level] = new Image();
 					images[face][level].etcData = levelETCData;
 					images[face][level].pixmap = levelPixmap;
 					if (levelPixmap != null) {
-						levelPixmap.dispose();
 						facePixmap = null;
 					}
 				}
@@ -342,6 +341,15 @@ public class KTXProcessor {
 				Gdx.app.error("KTXProcessor", "Error writing to file: " + output.getName(), e);
 			}
 
+			for (int face = 0; face < nFaces; face++) {
+				for (int level = 0; level < nLevels; level++) {
+					if (images[face][level].pixmap != null) {
+						images[face][level].pixmap.dispose();
+						images[face][level].pixmap = null;
+					}
+				}
+			}
+
 			Gdx.app.exit();
 		}
 	}
@@ -356,6 +364,7 @@ public class KTXProcessor {
 
 		public int getSize () {
 			if (etcData != null) return etcData.compressedData.limit() - etcData.dataOffset;
+			if (pixmap != null) return pixmap.getPixels().limit();
 			throw new GdxRuntimeException("Unsupported output format, try adding '-etc1' as argument");
 		}
 
@@ -364,6 +373,13 @@ public class KTXProcessor {
 				byte[] result = new byte[getSize()];
 				((Buffer)etcData.compressedData).position(etcData.dataOffset);
 				etcData.compressedData.get(result);
+				return result;
+			}
+			if (pixmap != null) {
+				byte[] result = new byte[getSize()];
+				ByteBuffer pixels = pixmap.getPixels();
+				((Buffer)pixels).position(0);
+				pixels.get(result);
 				return result;
 			}
 			throw new GdxRuntimeException("Unsupported output format, try adding '-etc1' as argument");
