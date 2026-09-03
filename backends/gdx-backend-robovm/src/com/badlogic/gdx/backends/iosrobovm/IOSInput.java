@@ -3,10 +3,12 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.Input;
 
+import com.badlogic.gdx.backends.iosrobovm.keyboard.IOSKeyboardHeightProvider;
+import com.badlogic.gdx.input.NativeInputConfiguration;
 import org.robovm.apple.uikit.UIKey;
 import org.robovm.apple.uikit.UIView;
 
-public interface IOSInput extends Input {
+public interface IOSInput extends Input, IOSKeyboardHeightProvider.IOSKeyboardObserver {
 
 	/** Initializes peripherals (such as compass or accelerometer) */
 	void setupPeripherals ();
@@ -21,4 +23,10 @@ public interface IOSInput extends Input {
 
 	/** Returns the current active input text field */
 	UIView getActiveKeyboardTextField ();
+
+	/** Returns the {@link NativeInputConfiguration} if open, null otherwise. */
+	NativeInputConfiguration getNativeInputConfiguration ();
+
+	/** Notifies the input that the screen bounds changed (rotation/resize). */
+	void onScreenLayoutChanged ();
 }

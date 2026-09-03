@@ -15,6 +15,10 @@ public interface TextInputWrapper {
 	int getSelectionEnd ();
 
 	/** This is called, when text was retrieved from the native input. Only use this to write back results. This will always be
-	 * called on the main thread. For close logic use {@link NativeInputConfiguration#setCloseCallback} */
+	 * called on the main thread. For ({@link NativeInputConfiguration.WriteMode#ONLY_FINAL}) this is only called once, when the
+	 * native input is closed. With {@link NativeInputConfiguration.WriteMode#TEXT_UPDATES} /
+	 * {@link NativeInputConfiguration.WriteMode#ALL_UPDATES} it is additionally called on every change to the native input (while
+	 * the IME assembles text, and for ALL_UPDATES on selection-only changes too), so do not assume the text is final here. For
+	 * close/finalization logic use {@link NativeInputConfiguration#setCloseCallback} */
 	void writeResults (String text, int selectionStart, int selectionEnd);
 }

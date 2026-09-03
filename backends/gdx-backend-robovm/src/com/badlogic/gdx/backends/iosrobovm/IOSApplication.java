@@ -19,6 +19,8 @@ package com.badlogic.gdx.backends.iosrobovm;
 import java.io.File;
 
 import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.backends.iosrobovm.keyboard.IOSKeyboardHeightProvider;
+import com.badlogic.gdx.backends.iosrobovm.keyboard.KeyboardHeightProvider;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALIOSAudio;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSMutableDictionary;
@@ -95,6 +97,7 @@ public class IOSApplication implements Application {
 	IOSAudio audio;
 	Files files;
 	IOSInput input;
+	KeyboardHeightProvider keyboardHeightProvider;
 	IOSNet net;
 	int logLevel = Application.LOG_DEBUG;
 	ApplicationLogger applicationLogger;
@@ -149,6 +152,10 @@ public class IOSApplication implements Application {
 
 		this.input.setupPeripherals();
 
+		this.keyboardHeightProvider = createKeyboardHeightProvider();
+		this.keyboardHeightProvider.setKeyboardHeightObserver(input);
+		this.keyboardHeightProvider.start();
+
 		this.uiWindow.setRootViewController(this.graphics.viewController);
 		this.graphics.updateSafeInsets();
 
@@ -164,6 +171,10 @@ public class IOSApplication implements Application {
 		this.graphics.view.display();
 
 		return true;
+	}
+
+	protected KeyboardHeightProvider createKeyboardHeightProvider () {
+		return new IOSKeyboardHeightProvider();
 	}
 
 	protected Files createFiles () {
@@ -302,6 +313,10 @@ public class IOSApplication implements Application {
 	@Override
 	public Input getInput () {
 		return input;
+	}
+
+	public KeyboardHeightProvider getKeyboardHeightProvider () {
+		return keyboardHeightProvider;
 	}
 
 	@Override

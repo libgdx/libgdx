@@ -4,6 +4,8 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import java.io.File;
 import com.badlogic.gdx.ApplicationLogger;
+import com.badlogic.gdx.backends.iosrobovm.keyboard.IOSKeyboardHeightProvider;
+import com.badlogic.gdx.backends.iosrobovm.keyboard.KeyboardHeightProvider;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALIOSAudio;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.foundation.NSMutableDictionary;
@@ -92,6 +94,8 @@ public class IOSApplication implements Application {
 
 	IOSInput input;
 
+	KeyboardHeightProvider keyboardHeightProvider;
+
 	IOSNet net;
 
 	int logLevel = Application.LOG_DEBUG;
@@ -142,6 +146,9 @@ public class IOSApplication implements Application {
 		Gdx.input = this.input;
 		Gdx.net = this.net;
 		this.input.setupPeripherals();
+		this.keyboardHeightProvider = createKeyboardHeightProvider();
+		this.keyboardHeightProvider.setKeyboardHeightObserver(input);
+		this.keyboardHeightProvider.start();
 		this.uiWindow.setRootViewController(this.graphics.viewController);
 		this.graphics.updateSafeInsets();
 		Gdx.app.debug("IOSApplication", "created");
@@ -152,6 +159,10 @@ public class IOSApplication implements Application {
 		// make sure the OpenGL view has contents before displaying it
 		this.graphics.view.display();
 		return true;
+	}
+
+	protected KeyboardHeightProvider createKeyboardHeightProvider () {
+		return new IOSKeyboardHeightProvider();
 	}
 
 	protected Files createFiles () {
@@ -284,6 +295,10 @@ public class IOSApplication implements Application {
 	@Override
 	public Input getInput () {
 		return input;
+	}
+
+	public KeyboardHeightProvider getKeyboardHeightProvider () {
+		return keyboardHeightProvider;
 	}
 
 	@Override
