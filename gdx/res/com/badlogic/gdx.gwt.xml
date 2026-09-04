@@ -22,6 +22,8 @@
 		<include name="LifecycleListener.java"/>
 		<include name="Net.java"/>
 		<include name="Preferences.java"/>
+		<include name="PreferencesSaveCallback.java"/>
+		<include name="PreferencesSaveResult.java"/>
 		<include name="Screen.java"/>
 		<include name="ScreenAdapter.java"/>
 		<include name="Version.java"/>

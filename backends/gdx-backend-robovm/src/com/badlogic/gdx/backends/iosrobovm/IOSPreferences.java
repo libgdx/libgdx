@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.robovm.apple.dispatch.DispatchQueue;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSNumber;
@@ -29,6 +30,8 @@ import org.robovm.apple.foundation.NSString;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.PreferencesSaveCallback;
+import com.badlogic.gdx.PreferencesSaveResult;
 
 public class IOSPreferences implements Preferences {
 	NSMutableDictionary<NSString, NSObject> nsDictionary;
@@ -191,4 +194,19 @@ public class IOSPreferences implements Preferences {
 		}
 		pool.close();
 	}
+
+	@Override
+	public void flush (PreferencesSaveCallback saveCallback) {
+		if (saveCallback == null) throw new IllegalArgumentException("saveCallback must not be null");
+		DispatchQueue.getGlobalQueue(DispatchQueue.PRIORITY_DEFAULT, 0).async( () -> {
+			NSAutoreleasePool pool = new NSAutoreleasePool();
+			boolean success = nsDictionary.write(file, false);
+			pool.close();
+			if (success)
+				saveCallback.onSuccess();
+			else
+				saveCallback.onFailure(PreferencesSaveResult.IO_ERROR, null);
+		});
+	}
+
 }

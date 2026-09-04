@@ -19,6 +19,8 @@ package com.badlogic.gdx.backends.lwjgl3;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.Files;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -28,6 +30,8 @@ import java.util.Properties;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.PreferencesSaveCallback;
+import com.badlogic.gdx.PreferencesSaveResult;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
@@ -173,15 +177,47 @@ public class Lwjgl3Preferences implements Preferences {
 
 	@Override
 	public void flush () {
-		OutputStream out = null;
 		try {
-			out = new BufferedOutputStream(file.write(false));
-			properties.storeToXML(out, null);
+			writeToDisk();
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error writing preferences: " + file, ex);
+		}
+	}
+
+	@Override
+	public void flush (PreferencesSaveCallback saveCallback) {
+		if (saveCallback == null) throw new IllegalArgumentException("saveCallback must not be null");
+		Thread thread = new Thread( () -> {
+			try {
+				writeToDisk();
+				saveCallback.onSuccess();
+			} catch (Throwable t) {
+				saveCallback.onFailure(classify(t), t);
+			}
+		}, "Lwjgl3Preferences-Flush");
+		thread.setDaemon(true);
+		thread.start();
+	}
+
+	/** Writes through {@code java.nio.file} so the JVM's error code translation is preserved as exception types, instead of being
+	 * flattened into message-carrying {@code java.io} exceptions. */
+	private void writeToDisk () throws Exception {
+		OutputStream out = null;
+		try {
+			file.parent().mkdirs();
+			out = new BufferedOutputStream(Files.newOutputStream(file.file().toPath()));
+			properties.storeToXML(out, null);
 		} finally {
 			StreamUtils.closeQuietly(out);
 		}
+	}
+
+	private static PreferencesSaveResult classify (Throwable t) {
+		while (t != null && t.getCause() != t) {
+			if (t instanceof AccessDeniedException || t instanceof SecurityException) return PreferencesSaveResult.ACCESS_DENIED;
+			t = t.getCause();
+		}
+		return PreferencesSaveResult.IO_ERROR;
 	}
 
 	@Override

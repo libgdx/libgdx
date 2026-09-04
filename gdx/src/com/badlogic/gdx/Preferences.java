@@ -81,4 +81,25 @@ public interface Preferences {
 
 	/** Makes sure the preferences are persisted. */
 	public void flush ();
+
+	/** Asynchronously persists the preferences and reports the outcome through the callback.
+	 * <p>
+	 * Backends dispatch the write to a background thread and invoke the callback after the write completes. This method does not
+	 * add any thread safety; callers must finish preference mutations before invoking it.
+	 * </p>
+	 * <p>
+	 * The default implementation performs the write synchronously. This fallback keeps custom {@code Preferences} implementations
+	 * source compatible; platform backends should override it with asynchronous execution. Callback exceptions propagate to the
+	 * caller for the default implementation and on the callback thread for asynchronous implementations.
+	 * </p>
+	 * @param saveCallback invoked once with the outcome of the persist operation; must not be null */
+	default public void flush (final PreferencesSaveCallback saveCallback) {
+		if (saveCallback == null) throw new IllegalArgumentException("saveCallback must not be null");
+		try {
+			flush();
+			saveCallback.onSuccess();
+		} catch (Throwable t) {
+			saveCallback.onFailure(PreferencesSaveResult.from(t), t);
+		}
+	}
 }

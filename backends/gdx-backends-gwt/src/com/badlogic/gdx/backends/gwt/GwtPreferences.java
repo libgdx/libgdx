@@ -20,8 +20,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.PreferencesSaveCallback;
+import com.badlogic.gdx.PreferencesSaveResult;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.util.Locale;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.google.gwt.user.client.Timer;
 
 public class GwtPreferences implements Preferences {
 	final String prefix;
@@ -82,6 +87,35 @@ public class GwtPreferences implements Preferences {
 				throw new GdxRuntimeException("Couldn't flush preferences", e);
 			}
 		}
+	}
+
+	@Override
+	public void flush (final PreferencesSaveCallback saveCallback) {
+		if (saveCallback == null) throw new IllegalArgumentException("saveCallback must not be null");
+		// GWT is single-threaded, so defer the write to the next event-loop turn.
+		new Timer() {
+			@Override
+			public void run () {
+				try {
+					flush();
+					saveCallback.onSuccess();
+				} catch (Throwable t) {
+					// The browser error name is stable across locales and identifies a storage quota failure.
+					saveCallback.onFailure(isQuotaExceeded(t) ? PreferencesSaveResult.DISK_FULL : PreferencesSaveResult.IO_ERROR, t);
+				}
+			}
+		}.schedule(0);
+	}
+
+	private static boolean isQuotaExceeded (Throwable t) {
+		while (t != null && t.getCause() != t) {
+			String name = t.getClass().getName();
+			if (name.toLowerCase(Locale.ROOT).contains("quotaexceedederror")) return true;
+			String message = t.getMessage();
+			if (message != null && message.toLowerCase(Locale.ROOT).contains("quotaexceedederror")) return true;
+			t = t.getCause();
+		}
+		return false;
 	}
 
 	@Override

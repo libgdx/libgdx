@@ -23,6 +23,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.PreferencesSaveCallback;
+import com.badlogic.gdx.PreferencesSaveResult;
 
 public class AndroidPreferences implements Preferences {
 	SharedPreferences sharedPrefs;
@@ -152,6 +154,23 @@ public class AndroidPreferences implements Preferences {
 			editor.apply();
 			editor = null;
 		}
+	}
+
+	@Override
+	public void flush (PreferencesSaveCallback saveCallback) {
+		if (saveCallback == null) throw new IllegalArgumentException("saveCallback must not be null");
+		Thread thread = new Thread( () -> {
+			// Use commit() on the background thread for a real result; apply() gives no completion signal.
+			if (editor == null || editor.commit()) {
+				editor = null;
+				saveCallback.onSuccess();
+			} else {
+				editor = null;
+				saveCallback.onFailure(PreferencesSaveResult.IO_ERROR, null);
+			}
+		}, "AndroidPreferences-Flush");
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	@Override
