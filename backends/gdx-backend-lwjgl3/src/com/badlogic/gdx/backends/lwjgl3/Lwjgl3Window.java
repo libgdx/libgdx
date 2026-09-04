@@ -248,6 +248,7 @@ public class Lwjgl3Window implements Disposable {
 	/** @return the window position in logical coordinates. All monitors span a virtual surface together. The coordinates are
 	 *         relative to the first monitor in the virtual surface. **/
 	public int getPositionX () {
+		if (GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) return 0;
 		GLFW.glfwGetWindowPos(windowHandle, tmpBuffer, tmpBuffer2);
 		return tmpBuffer.get(0);
 	}
@@ -255,6 +256,7 @@ public class Lwjgl3Window implements Disposable {
 	/** @return the window position in logical coordinates. All monitors span a virtual surface together. The coordinates are
 	 *         relative to the first monitor in the virtual surface. **/
 	public int getPositionY () {
+		if (GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) return 0;
 		GLFW.glfwGetWindowPos(windowHandle, tmpBuffer, tmpBuffer2);
 		return tmpBuffer2.get(0);
 	}

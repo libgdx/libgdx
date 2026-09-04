@@ -487,10 +487,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 			}
 
 			if (touchEvents.isEmpty()) {
-				for (int i = 0; i < deltaX.length; i++) {
-					deltaX[0] = 0;
-					deltaY[0] = 0;
-				}
+				Arrays.fill(deltaX, 0);
+				Arrays.fill(deltaY, 0);
 			}
 
 			keyEvents.clear();

@@ -61,7 +61,7 @@ public class FloatFrameBuffer extends FrameBuffer {
 		FloatTextureData data = new FloatTextureData(bufferBuilder.width, bufferBuilder.height, attachmentSpec.internalFormat,
 			attachmentSpec.format, attachmentSpec.type, attachmentSpec.isGpuOnly);
 		Texture result = new Texture(data);
-		if (Gdx.app.getType() == ApplicationType.Desktop || Gdx.app.getType() == ApplicationType.Applet)
+		if (Gdx.app.getType() == ApplicationType.Desktop)
 			result.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		else
 			// no filtering for float textures in OpenGL ES
