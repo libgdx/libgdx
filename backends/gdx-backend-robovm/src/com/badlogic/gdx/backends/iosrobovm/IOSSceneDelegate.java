@@ -3,7 +3,9 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.Gdx;
 import org.robovm.apple.uikit.*;
+import org.robovm.objc.annotation.CustomClass;
 
+@CustomClass(preload = true)
 public class IOSSceneDelegate extends UIWindowSceneDelegateAdapter {
 
 	private UIWindow uiWindow;
