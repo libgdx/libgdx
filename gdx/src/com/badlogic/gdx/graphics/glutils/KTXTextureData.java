@@ -195,7 +195,7 @@ public class KTXTextureData implements TextureData, CubemapData {
 			textureDimensions++;
 		}
 		if (glTarget == 0x1234)
-			throw new GdxRuntimeException("Unsupported texture format (only 2D texture are supported in LibGdx for the time being)");
+			throw new GdxRuntimeException("Unsupported texture format (only 2D texture are supported in libGDX for the time being)");
 
 		int singleFace = -1;
 		if (numberOfFaces == 6 && target != GL20.GL_TEXTURE_CUBE_MAP) {
@@ -278,7 +278,7 @@ public class KTXTextureData implements TextureData, CubemapData {
 		if (previousUnpackAlignment != 4) Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, previousUnpackAlignment);
 		if (useMipMaps()) Gdx.gl.glGenerateMipmap(target);
 
-		// dispose data once transfered to GPU
+		// dispose data once transferred to GPU
 		disposePreparedData();
 	}
 
