@@ -58,7 +58,7 @@ public class Lwjgl3TestStarter {
 
 		if (options.gl30 || options.gl31 || options.gl32) {
 			ShaderProgram.prependVertexCode = "#version 140\n#define varying out\n#define attribute in\n";
-			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define textureCube texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
 		}
 
 		if (options.gl32) {
