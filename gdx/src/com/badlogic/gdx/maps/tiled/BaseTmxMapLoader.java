@@ -645,6 +645,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 					// the actual properties of a 'class' property are stored as a new properties tag
 					properties.put(name, classProperties);
 					loadClassProperties(className, classProperties, property.getChildByName("properties"));
+				} else if ("list".equals(type)) {
+					loadListProperty(properties, name, property.getChildren());
 				} else {
 					loadBasicProperty(properties, name, value, type);
 				}
@@ -697,6 +699,45 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			}
 			}
 		}
+	}
+
+	protected void loadListProperty(MapProperties properties, String name, Array<Element> listItems) {
+		properties.put(name, parseListProperty(name, listItems));
+	}
+
+	protected Array<Object> parseListProperty(String name, Array<Element> listItems) {
+		if (listItems == null) {
+			// empty array for empty list properties in Tiled
+			return new Array<>();
+		}
+
+		Array<Object> list = new Array<>();
+		for (int i = 0, max = listItems.size; i < max; i++) {
+			XmlReader.Element item = listItems.get(i);
+			String type = item.get("type", "string");
+			if ("list".equals(type)) {
+				list.add(parseListProperty(name, item.getChildren()));
+			} else if ("class".equals(type)) {
+				String className = item.get("propertytype");
+				MapProperties classProperties = new MapProperties();
+				loadClassProperties(className, classProperties, item.getChildByName("properties"));
+				list.add(classProperties);
+			} else if ("object".equals(type)) {
+				// Object references are only known after the whole map is parsed, so fetch them at the end of [loadTiledMap]
+				final int id = Integer.parseInt(item.get("value"));
+				final int index = list.size;
+				list.add(null);
+				runOnEndOfLoadTiled.add(new Runnable() {
+					@Override
+					public void run() {
+						list.set(index, idToObject.get(id));
+					}
+				});
+			} else {
+				list.add(castProperty(name, item.get("value"), type));
+			}
+		}
+		return list;
 	}
 
 	private static String getPropertyValue (Element classProp) {

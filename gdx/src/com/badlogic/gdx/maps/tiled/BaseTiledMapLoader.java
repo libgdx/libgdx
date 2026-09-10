@@ -297,6 +297,11 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 				loadJsonClassProperties(nestedClassName, nestedClassProperties, classProp);
 				break;
 			}
+			case "list": {
+				JsonValue value = classProp == null ? projectClassMember.defaultValue : classProp;
+				loadListProperty(classProperties, propName, value);
+				break;
+			}
 			default: {
 				String value = classProp == null ? projectClassMember.defaultValue.asString() : classProp.asString();
 				loadBasicProperty(classProperties, propName, value, projectClassMember.type);
@@ -304,6 +309,39 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 			}
 			}
 		}
+	}
+
+	protected void loadListProperty(MapProperties properties, String name, JsonValue value) {
+		properties.put(name, parseListProperty(name, value));
+	}
+
+	protected Array<Object> parseListProperty(String name, JsonValue value) {
+		Array<Object> list = new Array<>();
+		for (JsonValue item = value.child; item != null; item = item.next) {
+			String type = item.getString("type");
+			if ("list".equals(type)) {
+				list.add(parseListProperty(name, item.get("value")));
+			} else if ("class".equals(type)) {
+				String className = item.getString("propertytype");
+				MapProperties classProperties = new MapProperties();
+				loadJsonClassProperties(className, classProperties, item.get("value"));
+				list.add(classProperties);
+			} else if ("object".equals(type)) {
+				// Object references are only known after the whole map is parsed, so fetch them at the end of [loadTiledMap]
+				final int id = Integer.parseInt(item.getString("value"));
+				final int index = list.size;
+				list.add(null);
+				runOnEndOfLoadTiled.add(new Runnable() {
+					@Override
+					public void run() {
+						list.set(index, idToObject.get(id));
+					}
+				});
+			} else {
+				list.add(castProperty(name, item.getString("value"), type));
+			}
+		}
+		return list;
 	}
 
 	/** Converts Tiled's color format #AARRGGBB to a libGDX appropriate #RRGGBBAA The Tiled Map Editor uses the color format
@@ -349,6 +387,11 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 				nestedClassProperties.put("type", nestedClassName);
 				mapProperties.put(propName, nestedClassProperties);
 				loadJsonClassProperties(classMember.propertyType, nestedClassProperties, classMember.defaultValue);
+				continue;
+			}
+
+			if ("list".equals(classMember.type)) {
+				loadListProperty(mapProperties, propName, classMember.defaultValue);
 				continue;
 			}
 

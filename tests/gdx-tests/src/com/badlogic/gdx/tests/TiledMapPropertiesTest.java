@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -214,6 +215,91 @@ public class TiledMapPropertiesTest extends GdxTest {
 		objProps.remove("height");
 		objProps.remove("rotation");
 		verifyProperty("classObjProps", expectedProps, objProps);
+
+		// verify simple list property (no nested list)
+		mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Simple List Object");
+		objProps = mapObj.getProperties();
+		expectedProps = new MapProperties();
+		Array<Object> listProp = new Array<>();
+		listProp.add(true);
+		listProp.add(Color.RED);
+		listProp.add(4.2f);
+		listProp.add("tiled-prop-test.tiled-project");
+		listProp.add(42);
+		listProp.add(tiledMap.getLayers().get("object layer").getObjects().get("Test Object"));
+		listProp.add("someText");
+		listProp.add(1);
+		listProp.add(2);
+		listProp.add("STR2");
+		listProp.add("STR2");
+		MapProperties listClassProps = new MapProperties();
+		listClassProps.put("classColor", Color.GREEN);
+		listClassProps.put("classStr", "");
+		listClassProps.put("classInt", 1);
+		listClassProps.put("classEnumStr", "STR2");
+		listClassProps.put("classObj", null);
+		listProp.add(listClassProps);
+		expectedProps.put("someList", listProp);
+		objProps.remove("x");
+		objProps.remove("y");
+		objProps.remove("id");
+		objProps.remove("width");
+		objProps.remove("height");
+		objProps.remove("rotation");
+		objProps.remove("type");
+		verifyProperty("someList", expectedProps, objProps);
+
+		// verify empty list
+		mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Empty List Object");
+		objProps = mapObj.getProperties();
+		expectedProps = new MapProperties();
+		expectedProps.put("aList", new Array<>());
+		objProps.remove("x");
+		objProps.remove("y");
+		objProps.remove("id");
+		objProps.remove("width");
+		objProps.remove("height");
+		objProps.remove("rotation");
+		objProps.remove("type");
+		verifyProperty("aList", expectedProps, objProps);
+
+		// verify nested list (as part of a class)
+		mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Class Nested List Object (defaults only)");
+		objProps = mapObj.getProperties();
+		expectedProps = new MapProperties();
+		listProp = new Array<>();
+		listProp.add(4);
+		listProp.add(2);
+		listProp.add(new Array<>());
+		listProp.add(new Array<>(new String[]{"some", "str"}));
+		expectedProps.put("classList", listProp);
+		objProps.remove("x");
+		objProps.remove("y");
+		objProps.remove("id");
+		objProps.remove("width");
+		objProps.remove("height");
+		objProps.remove("rotation");
+		objProps.remove("type");
+		verifyProperty("classList", expectedProps, objProps);
+
+		// verify nested list with overrides (as part of a class)
+		mapObj = tiledMap.getLayers().get("object layer").getObjects().get("Class Nested List Object (overrides)");
+		objProps = mapObj.getProperties();
+		expectedProps = new MapProperties();
+		listProp = new Array<>();
+		listProp.add(5);
+		listProp.add(2);
+		listProp.add(new Array<>());
+		listProp.add(new Array<>(new String[]{"some", "text"}));
+		expectedProps.put("classList", listProp);
+		objProps.remove("x");
+		objProps.remove("y");
+		objProps.remove("id");
+		objProps.remove("width");
+		objProps.remove("height");
+		objProps.remove("rotation");
+		objProps.remove("type");
+		verifyProperty("classList", expectedProps, objProps);
 	}
 
 	private <T> void verifyProperty (String propName, T expected, T actual) {
