@@ -271,7 +271,7 @@ public class TiledMapPropertiesTest extends GdxTest {
 		listProp.add(4);
 		listProp.add(2);
 		listProp.add(new Array<>());
-		listProp.add(new Array<>(new String[]{"some", "str"}));
+		listProp.add(new Array<>(new String[] {"some", "str"}));
 		expectedProps.put("classList", listProp);
 		objProps.remove("x");
 		objProps.remove("y");
@@ -290,7 +290,7 @@ public class TiledMapPropertiesTest extends GdxTest {
 		listProp.add(5);
 		listProp.add(2);
 		listProp.add(new Array<>());
-		listProp.add(new Array<>(new String[]{"some", "text"}));
+		listProp.add(new Array<>(new String[] {"some", "text"}));
 		expectedProps.put("classList", listProp);
 		objProps.remove("x");
 		objProps.remove("y");

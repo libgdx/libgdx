@@ -311,11 +311,11 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 		}
 	}
 
-	protected void loadListProperty(MapProperties properties, String name, JsonValue value) {
+	protected void loadListProperty (MapProperties properties, String name, JsonValue value) {
 		properties.put(name, parseListProperty(name, value));
 	}
 
-	protected Array<Object> parseListProperty(String name, JsonValue value) {
+	protected Array<Object> parseListProperty (String name, JsonValue value) {
 		Array<Object> list = new Array<>();
 		for (JsonValue item = value.child; item != null; item = item.next) {
 			String type = item.getString("type");
@@ -333,7 +333,7 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 				list.add(null);
 				runOnEndOfLoadTiled.add(new Runnable() {
 					@Override
-					public void run() {
+					public void run () {
 						list.set(index, idToObject.get(id));
 					}
 				});

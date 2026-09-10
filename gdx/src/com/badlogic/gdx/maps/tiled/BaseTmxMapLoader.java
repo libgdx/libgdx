@@ -701,11 +701,11 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 		}
 	}
 
-	protected void loadListProperty(MapProperties properties, String name, Array<Element> listItems) {
+	protected void loadListProperty (MapProperties properties, String name, Array<Element> listItems) {
 		properties.put(name, parseListProperty(name, listItems));
 	}
 
-	protected Array<Object> parseListProperty(String name, Array<Element> listItems) {
+	protected Array<Object> parseListProperty (String name, Array<Element> listItems) {
 		if (listItems == null) {
 			// empty array for empty list properties in Tiled
 			return new Array<>();
@@ -729,7 +729,7 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 				list.add(null);
 				runOnEndOfLoadTiled.add(new Runnable() {
 					@Override
-					public void run() {
+					public void run () {
 						list.set(index, idToObject.get(id));
 					}
 				});
