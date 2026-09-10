@@ -7,6 +7,7 @@
 - API Removal: Removed LwjglApplet (Java applets are obsolete). ApplicationType.Applet is deprecated.
 - API Fix: Box2D PolygonShape now uses same welding threshold on GWT as other platforms.
 - iOS: Made iOS Preferences flush() implementation atomic (see #7833)
+- API Addition: Added LWJGL3 ANGLE (GL)ES 3.0 support
 - iOS: Update to MobiVM 2.3.26
 - LWJGL3: Update to 3.4.3
 - GWT: Add support for KTX1 files. Note that there is no built-in fallback if an unsupported compressed texture format is loaded; use Gdx.graphics.supportsExtension().

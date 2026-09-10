@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.Texture3D;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.CustomTexture3DData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.tests.utils.GLTestUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestConfig;
 
@@ -74,7 +75,7 @@ public class GL30Texture3DTest extends GdxTest {
 			+ "}";
 
 		String prepend;
-		if (Gdx.app.getType() == ApplicationType.Desktop) {
+		if (Gdx.app.getType() == ApplicationType.Desktop && !GLTestUtils.isAngleGLES30()) {
 			prepend = "#version 130\n";
 		} else {
 			prepend = "#version 300 es\n";

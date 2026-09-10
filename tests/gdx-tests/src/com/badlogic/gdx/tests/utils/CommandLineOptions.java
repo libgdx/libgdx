@@ -40,8 +40,8 @@ public class CommandLineOptions {
 				startupTestName = arg;
 			}
 		}
-		if ((gl30 || gl31 || gl32) && angle) {
-			throw new GdxRuntimeException("Both --gl3[0|1|2] and --angle set. Can not be combined.");
+		if ((gl31 || gl32) && angle) {
+			throw new GdxRuntimeException("Both --gl3[1|2] and --angle set. Can not be combined.");
 		}
 	}
 
