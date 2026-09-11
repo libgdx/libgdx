@@ -1,0 +1,13 @@
+info face="Noto Sans Symbols 2 Regular" size=18 bold=0 italic=0 charset="" unicode=0 stretchH=100 smooth=1 aa=1 padding=1,1,1,1 spacing=-2,-2
+common lineHeight=32 base=20 scaleW=120 scaleH=20 pages=1 packed=0
+page id=0 file="noto-sans-symbol2.png"
+chars count=8
+char id=0       x=0    y=0    width=0    height=0    xoffset=-1   yoffset=0    xadvance=0    page=0    chnl=0 
+char id=32      x=0    y=0    width=0    height=0    xoffset=-1   yoffset=0    xadvance=5    page=0    chnl=0 
+char id=8986    x=0    y=0    width=16   height=19   xoffset=-1   yoffset=4    xadvance=14   page=0    chnl=0 
+char id=9654    x=68   y=0    width=16   height=17   xoffset=-1   yoffset=5    xadvance=14   page=0    chnl=0 
+char id=9660    x=84   y=0    width=18   height=15   xoffset=-1   yoffset=6    xadvance=16   page=0    chnl=0 
+char id=10003   x=16   y=0    width=16   height=17   xoffset=-1   yoffset=5    xadvance=15   page=0    chnl=0 
+char id=10005   x=32   y=0    width=17   height=17   xoffset=-1   yoffset=6    xadvance=16   page=0    chnl=0 
+char id=128736  x=49   y=0    width=19   height=17   xoffset=-1   yoffset=5    xadvance=18   page=0    chnl=0 
+kernings count=0
