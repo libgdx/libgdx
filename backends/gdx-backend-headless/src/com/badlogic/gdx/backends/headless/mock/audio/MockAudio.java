@@ -58,7 +58,14 @@ public class MockAudio implements Audio {
 	}
 
 	@Override
-	public void dispose () {
+	public void pause () {
+	}
 
+	@Override
+	public void resume () {
+	}
+
+	@Override
+	public void dispose () {
 	}
 }

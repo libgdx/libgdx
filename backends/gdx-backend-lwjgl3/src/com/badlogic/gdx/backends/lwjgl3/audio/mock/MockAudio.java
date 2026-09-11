@@ -58,6 +58,14 @@ public class MockAudio implements Lwjgl3Audio {
 	}
 
 	@Override
+	public void pause () {
+	}
+
+	@Override
+	public void resume () {
+	}
+
+	@Override
 	public void update () {
 	}
 
