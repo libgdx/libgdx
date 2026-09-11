@@ -21,6 +21,7 @@ import android.widget.ListView;
 
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.badlogic.gdx.backends.android.GLES;
 import com.badlogic.gdx.tests.BackTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
@@ -127,11 +128,13 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 		public void onCreate (Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			test = GdxTests.newTest(getArguments().getString("test"));
+			GdxTests.resetContext();
 		}
 
 		@Override
 		public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+			config.gles = GLES.GLES32;
 			config.useImmersiveMode = true;
 			return initializeForView(test, config);
 		}
