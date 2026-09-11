@@ -214,6 +214,11 @@ public class AsynchronousSound implements Sound {
 		});
 	}
 
+	@Override
+	public boolean hasFailed (long soundId) {
+		return getSoundId(soundId) == -1;
+	}
+
 	private void saveSoundId (int soundNumber, long soundId) {
 		soundIds[soundNumber % soundIdsCountToSave] = soundId;
 	}
