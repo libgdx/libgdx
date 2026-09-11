@@ -73,11 +73,13 @@ public class Lwjgl3TestStarter {
 			}
 		} else if (options.angle) {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 0, 0);
-			// Use CPU sync if ANGLE is enabled on macOS, otherwise the framerate gets halfed
+			// Use CPU sync if ANGLE is enabled on macOS, otherwise the framerate gets
+			// halfed
 			// by each new open window.
 			if (SharedLibraryLoader.os == Os.MacOsX) {
 				config.useVsync(false);
 				config.setForegroundFPS(60);
+				config.setBackgroundFPS(10);
 			}
 		}
 
@@ -162,7 +164,8 @@ public class Lwjgl3TestStarter {
 					+ tableSpace * 2 + 20;
 				scroll.scrollTo(0, scrollY, 0, 0, false, false);
 
-				// Since ScrollPane takes some time for scrolling to a position, we just "fake" time
+				// Since ScrollPane takes some time for scrolling to a position, we just "fake"
+				// time
 				stage.act(1f);
 				stage.act(1f);
 				stage.draw();
