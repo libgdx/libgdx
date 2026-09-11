@@ -401,7 +401,7 @@ public class btRigidBody extends btCollisionObject {
 	}
 
 	public Vector3 getGravity () {
-		return DynamicsJNI.btRigidBody_getGravity(swigCPtr, this);
+		return DynamicsJNI.btRigidBody_getGravity__SWIG_0(swigCPtr, this);
 	}
 
 	public void setDamping (float lin_damping, float ang_damping) {
@@ -433,7 +433,7 @@ public class btRigidBody extends btCollisionObject {
 	}
 
 	public Vector3 getLinearFactor () {
-		return DynamicsJNI.btRigidBody_getLinearFactor(swigCPtr, this);
+		return DynamicsJNI.btRigidBody_getLinearFactor__SWIG_0(swigCPtr, this);
 	}
 
 	public void setLinearFactor (Vector3 linearFactor) {
@@ -461,15 +461,15 @@ public class btRigidBody extends btCollisionObject {
 	}
 
 	public Vector3 getTotalForce () {
-		return DynamicsJNI.btRigidBody_getTotalForce(swigCPtr, this);
+		return DynamicsJNI.btRigidBody_getTotalForce__SWIG_0(swigCPtr, this);
 	}
 
 	public Vector3 getTotalTorque () {
-		return DynamicsJNI.btRigidBody_getTotalTorque(swigCPtr, this);
+		return DynamicsJNI.btRigidBody_getTotalTorque__SWIG_0(swigCPtr, this);
 	}
 
 	public Vector3 getInvInertiaDiagLocal () {
-		return DynamicsJNI.btRigidBody_getInvInertiaDiagLocal(swigCPtr, this);
+		return DynamicsJNI.btRigidBody_getInvInertiaDiagLocal__SWIG_0(swigCPtr, this);
 	}
 
 	public void setInvInertiaDiagLocal (Vector3 diagInvInertia) {
@@ -509,7 +509,7 @@ public class btRigidBody extends btCollisionObject {
 	}
 
 	public Vector3 getCenterOfMassPosition () {
-		return DynamicsJNI.btRigidBody_getCenterOfMassPosition(swigCPtr, this);
+		return DynamicsJNI.btRigidBody_getCenterOfMassPosition__SWIG_0(swigCPtr, this);
 	}
 
 	public Quaternion getOrientation () {
@@ -517,15 +517,15 @@ public class btRigidBody extends btCollisionObject {
 	}
 
 	public Matrix4 getCenterOfMassTransform () {
-		return DynamicsJNI.btRigidBody_getCenterOfMassTransform(swigCPtr, this);
+		return DynamicsJNI.btRigidBody_getCenterOfMassTransform__SWIG_0(swigCPtr, this);
 	}
 
 	public Vector3 getLinearVelocity () {
-		return DynamicsJNI.btRigidBody_getLinearVelocity(swigCPtr, this);
+		return DynamicsJNI.btRigidBody_getLinearVelocity__SWIG_0(swigCPtr, this);
 	}
 
 	public Vector3 getAngularVelocity () {
-		return DynamicsJNI.btRigidBody_getAngularVelocity(swigCPtr, this);
+		return DynamicsJNI.btRigidBody_getAngularVelocity__SWIG_0(swigCPtr, this);
 	}
 
 	public void setLinearVelocity (Vector3 lin_vel) {
@@ -615,7 +615,7 @@ public class btRigidBody extends btCollisionObject {
 	}
 
 	public Vector3 getAngularFactor () {
-		return DynamicsJNI.btRigidBody_getAngularFactor(swigCPtr, this);
+		return DynamicsJNI.btRigidBody_getAngularFactor__SWIG_0(swigCPtr, this);
 	}
 
 	public boolean isInWorld () {
@@ -677,6 +677,46 @@ public class btRigidBody extends btCollisionObject {
 	private btRigidBody (boolean dummy, float mass, btMotionState motionState, btCollisionShape collisionShape) {
 		this(DynamicsJNI.new_btRigidBody__SWIG_2(dummy, mass, btMotionState.getCPtr(motionState), motionState,
 			btCollisionShape.getCPtr(collisionShape), collisionShape), true);
+	}
+
+	public void getLinearVelocity (Vector3 out) {
+		DynamicsJNI.btRigidBody_getLinearVelocity__SWIG_1(swigCPtr, this, out);
+	}
+
+	public void getAngularVelocity (Vector3 out) {
+		DynamicsJNI.btRigidBody_getAngularVelocity__SWIG_1(swigCPtr, this, out);
+	}
+
+	public void getLinearFactor (Vector3 out) {
+		DynamicsJNI.btRigidBody_getLinearFactor__SWIG_1(swigCPtr, this, out);
+	}
+
+	public void getAngularFactor (Vector3 out) {
+		DynamicsJNI.btRigidBody_getAngularFactor__SWIG_1(swigCPtr, this, out);
+	}
+
+	public void getGravity (Vector3 out) {
+		DynamicsJNI.btRigidBody_getGravity__SWIG_1(swigCPtr, this, out);
+	}
+
+	public void getTotalForce (Vector3 out) {
+		DynamicsJNI.btRigidBody_getTotalForce__SWIG_1(swigCPtr, this, out);
+	}
+
+	public void getTotalTorque (Vector3 out) {
+		DynamicsJNI.btRigidBody_getTotalTorque__SWIG_1(swigCPtr, this, out);
+	}
+
+	public void getInvInertiaDiagLocal (Vector3 out) {
+		DynamicsJNI.btRigidBody_getInvInertiaDiagLocal__SWIG_1(swigCPtr, this, out);
+	}
+
+	public void getCenterOfMassPosition (Vector3 out) {
+		DynamicsJNI.btRigidBody_getCenterOfMassPosition__SWIG_1(swigCPtr, this, out);
+	}
+
+	public void getCenterOfMassTransform (Matrix4 out) {
+		DynamicsJNI.btRigidBody_getCenterOfMassTransform__SWIG_1(swigCPtr, this, out);
 	}
 
 }
