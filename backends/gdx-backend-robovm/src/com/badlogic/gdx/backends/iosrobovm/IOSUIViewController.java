@@ -43,7 +43,7 @@ public class IOSUIViewController extends GLKViewController {
 
 	@Method(selector = "keyboardWillShow")
 	public void keyboardWillShow (NSNotification notification) {
-		CGRect screenRect = UIScreen.getMainScreen().getBounds();
+		CGRect screenRect = app.uiWindowScene.getScreen().getBounds();
 		double screenHeight = screenRect.getSize().getHeight();
 		double heightScale = Gdx.graphics.getHeight() / screenHeight;
 
@@ -101,7 +101,7 @@ public class IOSUIViewController extends GLKViewController {
 	@Override
 	public void viewDidAppear (boolean animated) {
 		super.viewDidAppear(animated);
-		getView().setContentScaleFactor(UIScreen.getMainScreen().getNativeScale());
+		getView().setContentScaleFactor(app.uiWindowScene.getScreen().getNativeScale());
 		if (app.viewControllerListener != null) app.viewControllerListener.viewDidAppear(animated);
 	}
 

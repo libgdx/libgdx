@@ -157,6 +157,11 @@ public class Json {
 		this.usePrototypes = usePrototypes;
 	}
 
+	/** @see #setUsePrototypes(boolean) */
+	public boolean getUsePrototypes () {
+		return usePrototypes;
+	}
+
 	/** Sets the type of elements in a collection. When the element type is known, the class for each element in the collection
 	 * does not need to be written unless different from the element type. */
 	public void setElementType (Class type, String fieldName, Class elementType) {

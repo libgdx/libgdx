@@ -4,6 +4,7 @@ package com.badlogic.gdx.graphics;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
+import com.badlogic.gdx.graphics.glutils.KTXTextureData;
 import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 
 /** Used by a {@link Texture} to load the pixel data. A TextureData can either return a {@link Pixmap} or upload the pixel data
@@ -78,6 +79,7 @@ public interface TextureData {
 
 		public static TextureData loadFromFile (FileHandle file, Format format, boolean useMipMaps) {
 			if (file == null) return null;
+			if (file.name().endsWith(".ktx") || file.name().endsWith(".zktx")) return new KTXTextureData(file, useMipMaps);
 			return new FileTextureData(file, new Pixmap(file), format, useMipMaps);
 		}
 
