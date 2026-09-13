@@ -101,6 +101,9 @@ public class AndroidApplicationConfiguration {
 	/** set this to true to render under the display cutout. Use the Graphics::getSafeInsetXX to get the safe render space */
 	public boolean renderUnderCutout = false;
 
+	/** whether devices with vibrator support but without haptics support should vibrate on haptics effects when supported */
+	public boolean hapticsFallback = false;
+
 	/** The loader used to load native libraries. Override this to use a different loading strategy. */
 	public GdxNativeLoader nativeLoader = new GdxNativeLoader() {
 		@Override

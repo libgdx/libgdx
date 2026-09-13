@@ -17,9 +17,9 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -43,6 +43,7 @@ public class VibratorTest extends GdxTest {
 		stage = new Stage();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		Gdx.input.setInputProcessor(stage);
+		Haptics haptics = Gdx.input.getHaptics();
 
 		// Create a table that fills the screen. Everything else will go inside this table.
 		Table table = new Table();
@@ -50,11 +51,18 @@ public class VibratorTest extends GdxTest {
 		stage.addActor(table);
 
 		final CheckBox fallbackCheckbox = new CheckBox("Fallback", skin);
+		fallbackCheckbox.setChecked(haptics.isFallbackEnabled());
+		fallbackCheckbox.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				haptics.setFallbackEnabled(!fallbackCheckbox.isChecked());
+			}
+		});
 		final Button button = getButton("Vibrate");
 		button.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
-				Gdx.input.vibrate(50);
+				haptics.vibrate(50);
 			}
 		});
 		final Button buttonVibrateAmplitude = getButton("Vibrate \n Amplitude \n Random");
@@ -63,25 +71,25 @@ public class VibratorTest extends GdxTest {
 			public void changed (ChangeEvent event, Actor actor) {
 				int randomLength = MathUtils.random(10, 200);
 				int randomAmplitude = MathUtils.random(0, 255);
-				Gdx.input.vibrate(randomLength, randomAmplitude, fallbackCheckbox.isChecked());
+				haptics.vibrate(randomLength, randomAmplitude);
 				Gdx.app.log("VibratorTest", "Length: " + randomLength + "ms, Amplitude: " + randomAmplitude);
 			}
 		});
-		final Button buttonVibrateType = getButton("Vibrate \n Type \n Random");
-		buttonVibrateType.addListener(new ChangeListener() {
+		final Button buttonImpactType = getButton("Impact \n Type \n Random");
+		buttonImpactType.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
-				Input.VibrationType vibrationType = Input.VibrationType.values()[MathUtils.random(0,
-					Input.VibrationType.values().length - 1)];
-				Gdx.input.vibrate(vibrationType);
-				Gdx.app.log("VibratorTest", "VibrationType: " + vibrationType.name());
+				Haptics.ImpactType impactType = Haptics.ImpactType.values()[MathUtils.random(0,
+					Haptics.ImpactType.values().length - 1)];
+				haptics.impact(impactType);
+				Gdx.app.log("VibratorTest", "ImpactType: " + impactType.name());
 			}
 		});
 
 		table.defaults().pad(20f);
 		table.add(button).size(120f);
 		table.add(buttonVibrateAmplitude).size(120f);
-		table.add(buttonVibrateType).size(120f);
+		table.add(buttonImpactType).size(120f);
 		table.row();
 		table.add(fallbackCheckbox).colspan(3).height(120f);
 
