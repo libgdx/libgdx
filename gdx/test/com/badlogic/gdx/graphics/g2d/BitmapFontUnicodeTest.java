@@ -100,6 +100,25 @@ public class BitmapFontUnicodeTest {
 		font.dispose();
 	}
 
+	@Test
+	public void fixedWidthIncludesSupplementaryGlyphs () {
+		BitmapFontData data = new BitmapFontData();
+		BitmapFont font = new BitmapFont(data, new TextureRegion(), false);
+		Glyph latin = glyph('A');
+		Glyph symbol = glyph(0x1F6E0);
+		symbol.xadvance = 12;
+		data.setGlyph(latin.id, latin);
+		data.setGlyph(symbol.id, symbol);
+
+		font.setFixedWidthGlyphs("A\uD83D\uDEE0");
+		assertEquals(12, latin.xadvance);
+		assertEquals(2, latin.xoffset);
+		assertTrue(latin.fixedWidth);
+		assertEquals(12, symbol.xadvance);
+		assertTrue(symbol.fixedWidth);
+		font.dispose();
+	}
+
 	private static Glyph glyph (int codePoint) {
 		Glyph glyph = new Glyph();
 		glyph.id = codePoint;
