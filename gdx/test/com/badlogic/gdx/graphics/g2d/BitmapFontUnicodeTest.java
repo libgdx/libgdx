@@ -2,10 +2,12 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Align;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -79,6 +81,23 @@ public class BitmapFontUnicodeTest {
 		BitmapFontData data = new BitmapFontData();
 		Array<Glyph> glyphs = Array.with(glyph('A'), glyph(0x10020), glyph('A'));
 		assertEquals(0, data.getWrapIndex(glyphs, 2));
+	}
+
+	@Test
+	public void truncationCountsSupplementaryGlyphAsOneGlyph () {
+		BitmapFontData data = new BitmapFontData();
+		BitmapFont font = new BitmapFont(data, new TextureRegion(), false);
+		data.setGlyph('A', glyph('A'));
+		data.setGlyph(0x1F6E0, glyph(0x1F6E0));
+
+		GlyphLayout layout = new GlyphLayout();
+		String text = "A\uD83D\uDEE0A";
+		layout.setText(font, text, 0, text.length(), Color.WHITE, 16, Align.left, false, "A");
+		assertEquals(2, layout.glyphCount);
+		assertEquals(2, layout.runs.first().glyphs.size);
+		assertEquals('A', layout.runs.first().glyphs.first().id);
+		assertEquals('A', layout.runs.first().glyphs.peek().id);
+		font.dispose();
 	}
 
 	private static Glyph glyph (int codePoint) {
