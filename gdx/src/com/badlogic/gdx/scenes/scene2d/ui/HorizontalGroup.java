@@ -47,6 +47,7 @@ public class HorizontalGroup extends WidgetGroup {
 	private float space, wrapSpace, fill, padTop, padLeft, padBottom, padRight;
 
 	public HorizontalGroup () {
+		setTransform(false);
 		setTouchable(Touchable.childrenOnly);
 	}
 
@@ -468,7 +469,7 @@ public class HorizontalGroup extends WidgetGroup {
 		return this;
 	}
 
-	/** @param fill 0 will use preferred width. */
+	/** @param fill 0 will use preferred height. */
 	public HorizontalGroup fill (float fill) {
 		this.fill = fill;
 		return this;

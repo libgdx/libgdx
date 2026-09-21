@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="10" infinite="0" nextlayerid="6" nextobjectid="1" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.0" tileheight="16" tilewidth="16" version="1.10" width="20"><properties><property name="atlas" value="tileset/test_w_imglayers_coi.atlas"/></properties>
+ <tileset columns="16" firstgid="1" name="ts1" tilecount="256" tileheight="16" tilewidth="16">
+  <image height="256" source="tilesets/tileset1.png" width="256"/>
+ </tileset>
+ <tileset columns="16" firstgid="257" name="ts2" tilecount="256" tileheight="32" tilewidth="32">
+  <image height="512" source="tilesets/tileset2.png" width="512"/>
+ </tileset>
+ <tileset columns="0" firstgid="513" name="ImageCollectionTS" tilecount="7" tileheight="128" tilewidth="128">
+  <grid height="1" orientation="orthogonal" width="1"/>
+  <tile id="0">
+   <image height="128" source="../../particle-ball1.png" width="128"/>
+   <animation>
+    <frame duration="150" tileid="0"/>
+    <frame duration="150" tileid="1"/>
+    <frame duration="150" tileid="2"/>
+    <frame duration="150" tileid="3"/>
+   </animation>
+  </tile>
+  <tile id="1">
+   <image height="128" source="../../particle-ball2.png" width="128"/>
+  </tile>
+  <tile id="2">
+   <image height="128" source="../../particle-ball3.png" width="128"/>
+  </tile>
+  <tile id="3">
+   <image height="128" source="../../particle-ball4.png" width="128"/>
+  </tile>
+  <tile id="4">
+   <image height="25" source="../tiled/super-koalio/koalio-single.png" width="17"/>
+  </tile>
+  <tile id="6">
+   <image height="32" source="../../bobargb8888-32x32.png" width="32"/>
+  </tile>
+  <tile id="7">
+   <image height="32" source="../../bobargb8888-32x32.png" width="32"/>
+   <animation>
+    <frame duration="125" tileid="7"/>
+    <frame duration="125" tileid="4"/>
+   </animation>
+  </tile>
+ </tileset>
+ <imagelayer id="3" name="Image Layer 1" offsetx="63.8514" offsety="-64.2683">
+  <image height="256" source="atlas_imagelayer_badlogic_134946840601202x" width="256"/>
+ </imagelayer>
+ <group id="5" name="Group Layer">
+  <imagelayer id="4" name="Image Layer 2" offsetx="0.181631" offsety="0.588235">
+   <image height="512" source="atlas_imagelayer_Textures1_134946840601203x" width="64"/>
+  </imagelayer>
+  <layer height="10" id="1" name="Tile Layer 1" width="20">
+   <data compression="zlib" encoding="base64">
+   eJxjYBgFo2D4AC5GBgZuKmAeRoh5ACn1AOU=
+  </data>
+  </layer>
+ </group>
+ <layer height="10" id="2" name="Tile Layer 2" width="20">
+  <data compression="zlib" encoding="base64">
+   eJzlzksOgjAQxvHSxIRERde+cA2+1grKGvFxA7kBHIEbyBE5Cv+Fi0LaNHHhxkl+adpMZz4h/qscKcSQc4QxPEww/XLeDHMssMQKPtaWf5XhPUCIDbbYYY8DXNntHfTuujrihAgxzrggwQu50vvWYEejzktxRYYb7njgiQKlJU/9wdzKnv535RjytFmhDiw=
+  </data>
+ </layer>
+</map>

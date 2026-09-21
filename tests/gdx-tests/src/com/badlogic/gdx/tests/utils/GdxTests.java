@@ -80,14 +80,15 @@ import com.badlogic.gdx.tests.gles2.GlTexImage2D;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
+import com.badlogic.gdx.tests.gles3.GL30FrameBufferMultisampleMRTTest;
+import com.badlogic.gdx.tests.gles3.GL30FrameBufferMultisampleTest;
 import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
+import com.badlogic.gdx.tests.gles3.InstancedRenderingSpriteTest;
 import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.ModelInstancedRenderingTest;
 import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
 import com.badlogic.gdx.tests.gles3.PixelBufferObjectTest;
 import com.badlogic.gdx.tests.gles3.UniformBufferObjectsTest;
-import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleMRTTest;
-import com.badlogic.gdx.tests.gles31.GL31FrameBufferMultisampleTest;
 import com.badlogic.gdx.tests.gles31.GL31IndirectDrawingIndexedTest;
 import com.badlogic.gdx.tests.gles31.GL31IndirectDrawingNonIndexedTest;
 import com.badlogic.gdx.tests.gles31.GL31ProgramIntrospectionTest;
@@ -113,6 +114,8 @@ public class GdxTests {
 		AccelerometerTest.class,
 		ActionSequenceTest.class,
 		ActionTest.class,
+		ActorGestureListenerPointerTest.class,
+		ActorGestureListenerTouchUpTest.class,
 		Affine2Test.class,
 		AlphaTest.class,
 		Animation3DTest.class,
@@ -174,12 +177,12 @@ public class GdxTests {
 		FullscreenTest.class,
 		Gdx2DTest.class,
 		GestureDetectorTest.class,
+		GL30FrameBufferMultisampleMRTTest.class,
+		GL30FrameBufferMultisampleTest.class,
 		GL30Texture3DTest.class,
 		GLES30Test.class,
 		GL31IndirectDrawingIndexedTest.class,
 		GL31IndirectDrawingNonIndexedTest.class,
-		GL31FrameBufferMultisampleMRTTest.class,
-		GL31FrameBufferMultisampleTest.class,
 		GL31ProgramIntrospectionTest.class,
 		GL32AdvancedBlendingTest.class,
 		GL32DebugControlTest.class,
@@ -195,12 +198,14 @@ public class GdxTests {
 		HexagonalTiledMapTest.class,
 		I18NMessageTest.class,
 		I18NSimpleMessageTest.class,
+		ImageFormatTest.class,
 		ImageScaleTest.class,
 		ImageTest.class,
 		ImmediateModeRendererTest.class,
 		IndexBufferObjectShaderTest.class,
 		InputTest.class,
 		InstancedRenderingTest.class,
+		InstancedRenderingSpriteTest.class,
 		IntegerBitmapFontTest.class,
 		InterpolationTest.class,
 		IntersectorOverlapConvexPolygonsTest.class,
@@ -297,7 +302,9 @@ public class GdxTests {
 		TextAreaTest.class,
 		TextAreaTest2.class,		
 		TextAreaTest3.class,
+		TextAreaTest4.class,
 		TextButtonTest.class,
+		TextFieldTest.class,
 		TextInputDialogTest.class,
 		TextureAtlasTest.class,
 		TextureArrayTest.class,
@@ -319,12 +326,15 @@ public class GdxTests {
 		TiledMapModifiedExternalTilesetTest.class,
 		TiledMapObjectLoadingTest.class,
 		TiledMapObjectPropertyTest.class,
+		TiledMapTemplateObjectLoadingTest.class,
 		TiledMapBench.class,
 		TiledMapLayerOffsetTest.class,
 		TiledMapLayerTintOpacityTest.class,
 		TiledMapPropertiesTest.class,
+		TiledMapJsonAtlasAssetManagerTest.class,
 		TiledMapJsonFormatTest.class,
 		TiledMapJsonObjectLoadingTest.class,
+		TiledMapUniversalLoaderTest.class,
 		TimerTest.class,
 		TimeUtilsTest.class,
 		TouchpadTest.class,

@@ -97,12 +97,62 @@ public class ByteArray {
 
 	public void add (byte value1, byte value2, byte value3, byte value4) {
 		byte[] items = this.items;
-		if (size + 3 >= items.length) items = resize(Math.max(8, (int)(size * 1.8f))); // 1.75 isn't enough when size=5.
+		if (size + 3 >= items.length) items = resize(Math.max(9, (int)(size * 1.75f)));
 		items[size] = value1;
 		items[size + 1] = value2;
 		items[size + 2] = value3;
 		items[size + 3] = value4;
 		size += 4;
+	}
+
+	public void add (byte value1, byte value2, byte value3, byte value4, byte value5) {
+		byte[] items = this.items;
+		if (size + 4 >= items.length) items = resize(Math.max(11, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		size += 5;
+	}
+
+	public void add (byte value1, byte value2, byte value3, byte value4, byte value5, byte value6) {
+		byte[] items = this.items;
+		if (size + 5 >= items.length) items = resize(Math.max(13, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		items[size + 5] = value6;
+		size += 6;
+	}
+
+	public void add (byte value1, byte value2, byte value3, byte value4, byte value5, byte value6, byte value7) {
+		byte[] items = this.items;
+		if (size + 6 >= items.length) items = resize(Math.max(16, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		items[size + 5] = value6;
+		items[size + 6] = value7;
+		size += 7;
+	}
+
+	public void add (byte value1, byte value2, byte value3, byte value4, byte value5, byte value6, byte value7, byte value8) {
+		byte[] items = this.items;
+		if (size + 7 >= items.length) items = resize(Math.max(18, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		items[size + 5] = value6;
+		items[size + 6] = value7;
+		items[size + 7] = value8;
+		size += 8;
 	}
 
 	public void addAll (ByteArray array) {
@@ -393,6 +443,7 @@ public class ByteArray {
 	/** Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
 	 * taken. */
 	public void truncate (int newSize) {
+		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (size > newSize) size = newSize;
 	}
 

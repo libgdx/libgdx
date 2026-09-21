@@ -104,7 +104,7 @@ public class OALIOSAudio implements IOSAudio {
 	}
 
 	@Override
-	public void willTerminate () {
+	public void dispose () {
 
 	}
 

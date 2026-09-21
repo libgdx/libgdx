@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -40,11 +41,15 @@ class AndroidAudioDevice implements AudioDevice {
 
 	AndroidAudioDevice (int samplingRate, boolean isMono) {
 		this.isMono = isMono;
-		int minSize = AudioTrack.getMinBufferSize(samplingRate,
-			isMono ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
-		track = new AudioTrack(AudioManager.STREAM_MUSIC, samplingRate,
-			isMono ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT, minSize,
-			AudioTrack.MODE_STREAM);
+		int channelMask = isMono ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO;
+		int encoding = AudioFormat.ENCODING_PCM_16BIT;
+		int minSize = AudioTrack.getMinBufferSize(samplingRate, channelMask, encoding);
+		AudioAttributes audioAttributes = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
+			.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build();
+		AudioFormat audioFormat = new AudioFormat.Builder().setSampleRate(samplingRate).setChannelMask(channelMask)
+			.setEncoding(encoding).build();
+		track = new AudioTrack(audioAttributes, audioFormat, minSize, AudioTrack.MODE_STREAM,
+			AudioManager.AUDIO_SESSION_ID_GENERATE);
 		track.play();
 		latency = minSize / (isMono ? 1 : 2);
 	}
@@ -92,7 +97,7 @@ class AndroidAudioDevice implements AudioDevice {
 
 	@Override
 	public void setVolume (float volume) {
-		track.setStereoVolume(volume, volume);
+		track.setVolume(volume);
 	}
 
 	@Override

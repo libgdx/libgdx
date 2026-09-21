@@ -27,6 +27,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.DisplayCutout;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.WindowManager.LayoutParams;
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
@@ -94,7 +95,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	private float density = 1;
 
 	protected final AndroidApplicationConfiguration config;
-	private BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 0, 16, 0, 0, false);
+	private BufferFormat bufferFormat;
 	private boolean isContinuous = true;
 
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
@@ -104,6 +105,8 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy, boolean focusableView) {
+		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples,
+			config.coverageSampling);
 		this.config = config;
 		this.app = application;
 		view = createGLSurfaceView(application, resolutionStrategy);
@@ -426,6 +429,20 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 			running = false;
 			destroy = true;
 
+			view.queueEvent(new Runnable() {
+				@Override
+				public void run () {
+					if (!destroy) {
+						// destroy event already picked up by onDrawFrame
+						return;
+					}
+
+					// it's ok to call ApplicationListener's events
+					// from onDrawFrame because it's executing in GL thread
+					onDrawFrame(null);
+				}
+			});
+
 			while (destroy) {
 				try {
 					synch.wait();
@@ -439,6 +456,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	@Override
 	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
 		long time = System.nanoTime();
+		if (lastFrameTime > time) lastFrameTime = time;
 		// After pause deltaTime can have somewhat huge value that destabilizes the mean, so let's cut it off
 		if (!resume) {
 			deltaTime = (time - lastFrameTime) / 1000000000.0f;
@@ -659,7 +677,10 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 			try {
-				DisplayCutout displayCutout = app.getApplicationWindow().getDecorView().getRootWindowInsets().getDisplayCutout();
+				View decorView = app.getApplicationWindow().getDecorView();
+				WindowInsets insets = decorView.getRootWindowInsets();
+				if (insets == null) return;
+				DisplayCutout displayCutout = insets.getDisplayCutout();
 				if (displayCutout != null) {
 					safeInsetRight = displayCutout.getSafeInsetRight();
 					safeInsetBottom = displayCutout.getSafeInsetBottom();

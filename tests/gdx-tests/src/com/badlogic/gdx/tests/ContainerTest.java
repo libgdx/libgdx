@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -67,6 +68,18 @@ public class ContainerTest extends GdxTest {
 		Container clip = new Container(label("clip1clip2clip3clip4"));
 		clip.setClip(true);
 		root.add(clip);
+
+		root.row();
+
+		Table cullTable = new Table();
+		cullTable.add(label("cull1")).row();
+		cullTable.add(label("cull2")).row();
+		cullTable.add(label("cull3")).row();
+		cullTable.add(label("cull4")).row();
+		cullTable.add(label("cull5")).row();
+		cullTable.add(label("cull6")).row();
+		cullTable.add(label("cull7")).row();
+		root.add(new ScrollPane(new Container(cullTable).pad(20, 25, 15, 30)));
 	}
 
 	Table label (String text) {

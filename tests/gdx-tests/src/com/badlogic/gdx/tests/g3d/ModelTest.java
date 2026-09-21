@@ -30,7 +30,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.StringBuilder;
 
 public class ModelTest extends BaseG3dHudTest {
 	protected Environment environment;

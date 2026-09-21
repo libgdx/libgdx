@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <object name="Polyline">
+  <properties>
+   <property name="BoolProp" type="bool" value="true"/>
+   <property name="ColorProp" type="color" value="#ffff0000"/>
+   <property name="IntProp" type="int" value="86"/>
+   <property name="StringProp" value="Template Default"/>
+  </properties>
+  <polyline points="0,0 29,-60 57,4 91,-63"/>
+ </object>
+</template>

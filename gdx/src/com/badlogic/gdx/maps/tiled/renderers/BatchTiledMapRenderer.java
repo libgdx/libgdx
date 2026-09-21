@@ -148,7 +148,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		endRender();
 	}
 
-	protected void renderMapLayer (MapLayer layer) {
+	public void renderMapLayer (MapLayer layer) {
 		if (!layer.isVisible()) return;
 		if (layer instanceof MapGroupLayer) {
 			MapLayers childLayers = ((MapGroupLayer)layer).getLayers();

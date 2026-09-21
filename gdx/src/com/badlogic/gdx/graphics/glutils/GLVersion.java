@@ -43,8 +43,6 @@ public class GLVersion {
 			this.type = Type.GLES;
 		else if (appType == Application.ApplicationType.Desktop)
 			this.type = Type.OpenGL;
-		else if (appType == Application.ApplicationType.Applet)
-			this.type = Type.OpenGL;
 		else if (appType == Application.ApplicationType.WebGL)
 			this.type = Type.WebGL;
 		else

@@ -72,24 +72,29 @@ public class NinePatch {
 	 * @param bottom Pixels from bottom edge. */
 	public NinePatch (TextureRegion region, int left, int right, int top, int bottom) {
 		if (region == null) throw new IllegalArgumentException("region cannot be null.");
+		final int sign = region.isFlipY() ? -1 : 1;
 		final int middleWidth = region.getRegionWidth() - left - right;
 		final int middleHeight = region.getRegionHeight() - top - bottom;
 
 		TextureRegion[] patches = new TextureRegion[9];
 		if (top > 0) {
-			if (left > 0) patches[TOP_LEFT] = new TextureRegion(region, 0, 0, left, top);
-			if (middleWidth > 0) patches[TOP_CENTER] = new TextureRegion(region, left, 0, middleWidth, top);
-			if (right > 0) patches[TOP_RIGHT] = new TextureRegion(region, left + middleWidth, 0, right, top);
+			if (left > 0) patches[TOP_LEFT] = new TextureRegion(region, 0, 0, left, sign * top);
+			if (middleWidth > 0) patches[TOP_CENTER] = new TextureRegion(region, left, 0, middleWidth, sign * top);
+			if (right > 0) patches[TOP_RIGHT] = new TextureRegion(region, left + middleWidth, 0, right, sign * top);
 		}
 		if (middleHeight > 0) {
-			if (left > 0) patches[MIDDLE_LEFT] = new TextureRegion(region, 0, top, left, middleHeight);
-			if (middleWidth > 0) patches[MIDDLE_CENTER] = new TextureRegion(region, left, top, middleWidth, middleHeight);
-			if (right > 0) patches[MIDDLE_RIGHT] = new TextureRegion(region, left + middleWidth, top, right, middleHeight);
+			if (left > 0) patches[MIDDLE_LEFT] = new TextureRegion(region, 0, sign * top, left, sign * middleHeight);
+			if (middleWidth > 0)
+				patches[MIDDLE_CENTER] = new TextureRegion(region, left, sign * top, middleWidth, sign * middleHeight);
+			if (right > 0)
+				patches[MIDDLE_RIGHT] = new TextureRegion(region, left + middleWidth, sign * top, right, sign * middleHeight);
 		}
 		if (bottom > 0) {
-			if (left > 0) patches[BOTTOM_LEFT] = new TextureRegion(region, 0, top + middleHeight, left, bottom);
-			if (middleWidth > 0) patches[BOTTOM_CENTER] = new TextureRegion(region, left, top + middleHeight, middleWidth, bottom);
-			if (right > 0) patches[BOTTOM_RIGHT] = new TextureRegion(region, left + middleWidth, top + middleHeight, right, bottom);
+			if (left > 0) patches[BOTTOM_LEFT] = new TextureRegion(region, 0, sign * (top + middleHeight), left, sign * bottom);
+			if (middleWidth > 0)
+				patches[BOTTOM_CENTER] = new TextureRegion(region, left, sign * (top + middleHeight), middleWidth, sign * bottom);
+			if (right > 0) patches[BOTTOM_RIGHT] = new TextureRegion(region, left + middleWidth, sign * (top + middleHeight), right,
+				sign * bottom);
 		}
 
 		// If split only vertical, move splits from right to center.

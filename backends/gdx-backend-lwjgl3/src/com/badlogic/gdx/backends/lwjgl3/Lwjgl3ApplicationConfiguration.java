@@ -21,11 +21,14 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.LifecycleListener;
+import com.badlogic.gdx.utils.Os;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWVidMode.Buffer;
+import org.lwjgl.system.Configuration;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
@@ -157,7 +160,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	}
 
 	/** Sets the bit depth of the color, depth and stencil buffer as well as multi-sampling.
-	 * 
+	 *
 	 * @param r red bits (default 8)
 	 * @param g green bits (default 8)
 	 * @param b blue bits (default 8)
@@ -172,6 +175,40 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		this.a = a;
 		this.depth = depth;
 		this.stencil = stencil;
+		this.samples = samples;
+	}
+
+	/** Sets the bit depth of the color buffer.
+	 * 
+	 * @param r red bits (default 8)
+	 * @param g green bits (default 8)
+	 * @param b blue bits (default 8)
+	 * @param a alpha bits (default 8) */
+	public void setRGBABits (int r, int g, int b, int a) {
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.a = a;
+	}
+
+	/** Sets the bit depth of depth buffer.
+	 * 
+	 * @param depth depth bits (default 16) */
+	public void setDepthBits (int depth) {
+		this.depth = depth;
+	}
+
+	/** Sets the bit depth of stencil buffer.
+	 * 
+	 * @param stencil stencil bits (default 0) */
+	public void setStencilBits (int stencil) {
+		this.stencil = stencil;
+	}
+
+	/** Sets the multi-sampling samples value.
+	 * 
+	 * @param samples MSAA samples (default 0) */
+	public void setSamples (int samples) {
 		this.samples = samples;
 	}
 
@@ -232,6 +269,17 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	public void enableGLDebugOutput (boolean enable, PrintStream debugOutputStream) {
 		debug = enable;
 		debugStream = debugOutputStream;
+	}
+
+	/** Whether to use the "glfw_async" library. This method only does something on mac operating system.
+	 *
+	 * This means you do not have to set the JVM argument "-XstartOnFirstThread"
+	 *
+	 * @see <a href= "https://libgdx.com/news/2021/07/devlog-7-lwjgl3#do-i-need-to-do-anything-else"> Documentation</a> */
+	public static void useGlfwAsync () {
+		if (SharedLibraryLoader.os == Os.MacOsX) {
+			Configuration.GLFW_LIBRARY_NAME.set("glfw_async");
+		}
 	}
 
 	/** @return the currently active {@link DisplayMode} of the primary monitor */

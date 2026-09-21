@@ -156,12 +156,13 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 
 	void update () {
 		long time = System.nanoTime();
-		if (lastFrameTime == -1) lastFrameTime = time;
+		if (lastFrameTime == -1 || lastFrameTime > time) lastFrameTime = time;
 		if (resetDeltaTime) {
 			resetDeltaTime = false;
 			deltaTime = 0;
-		} else
+		} else {
 			deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		}
 		lastFrameTime = time;
 
 		if (time - frameCounterStart >= 1000000000) {
@@ -336,9 +337,8 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 		Monitor[] monitors = getMonitors();
 		Monitor result = monitors[0];
 
-		GLFW.glfwGetWindowPos(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
-		int windowX = tmpBuffer.get(0);
-		int windowY = tmpBuffer2.get(0);
+		int windowX = window.getPositionX();
+		int windowY = window.getPositionY();
 		GLFW.glfwGetWindowSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
 		int windowWidth = tmpBuffer.get(0);
 		int windowHeight = tmpBuffer2.get(0);

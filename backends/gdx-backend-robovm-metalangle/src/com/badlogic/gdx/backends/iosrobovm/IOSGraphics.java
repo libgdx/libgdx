@@ -31,7 +31,6 @@ import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.MGLContext;
 import com.badlogic.gdx.backends.iosrobovm.bindings.metalangle.MGLRenderingAPI;
 import org.robovm.apple.uikit.UIEdgeInsets;
 import org.robovm.apple.uikit.UIEvent;
-import org.robovm.apple.uikit.UIScreen;
 import org.robovm.objc.annotation.Method;
 import org.robovm.rt.bro.annotation.Pointer;
 
@@ -152,7 +151,7 @@ public class IOSGraphics extends AbstractGraphics {
 		viewController.setView(view);
 		viewController.setDelegate(viewDelegate);
 		int preferredFps;
-		int maxSupportedFPS = (int)(UIScreen.getMainScreen().getMaximumFramesPerSecond());
+		int maxSupportedFPS = (int)app.uiWindowScene.getScreen().getMaximumFramesPerSecond();
 		if (config.preferredFramesPerSecond == 0) {
 			preferredFps = maxSupportedFPS;
 		} else {
@@ -248,6 +247,7 @@ public class IOSGraphics extends AbstractGraphics {
 			return;
 		}
 		long time = System.nanoTime();
+		if (lastFrameTime > time) lastFrameTime = time;
 		if (!resume) {
 			deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		} else {

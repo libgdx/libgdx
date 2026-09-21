@@ -23,53 +23,84 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.DefaultPool.PoolSupplier;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.PoolManager;
 
 /** Static convenience methods for using pooled actions, intended for static import.
  * @author Nathan Sweet */
 public class Actions {
 
-	/** Returns a new or pooled action of the specified type.
-	 * @deprecated Use {@link Actions#action(PoolSupplier)} instead */
-	@Deprecated
-	static public <T extends Action> T action (Class<T> type) {
-		Pool<T> pool = Pools.get(type);
-		T action = pool.obtain();
-		action.setPool(pool);
-		return action;
+	public static final PoolManager ACTION_POOLS = new PoolManager();
+
+	static {
+		registerAction(AddAction.class, AddAction::new);
+		registerAction(AddListenerAction.class, AddListenerAction::new);
+		registerAction(AfterAction.class, AfterAction::new);
+		registerAction(AlphaAction.class, AlphaAction::new);
+		registerAction(ColorAction.class, ColorAction::new);
+		registerAction(DelayAction.class, DelayAction::new);
+		registerAction(FloatAction.class, FloatAction::new);
+		registerAction(IntAction.class, IntAction::new);
+		registerAction(LayoutAction.class, LayoutAction::new);
+		registerAction(MoveByAction.class, MoveByAction::new);
+		registerAction(MoveToAction.class, MoveToAction::new);
+		registerAction(ParallelAction.class, ParallelAction::new);
+		registerAction(RemoveAction.class, RemoveAction::new);
+		registerAction(RemoveActorAction.class, RemoveActorAction::new);
+		registerAction(RemoveListenerAction.class, RemoveListenerAction::new);
+		registerAction(RepeatAction.class, RepeatAction::new);
+		registerAction(RotateByAction.class, RotateByAction::new);
+		registerAction(RotateToAction.class, RotateToAction::new);
+		registerAction(RunnableAction.class, RunnableAction::new);
+		registerAction(ScaleByAction.class, ScaleByAction::new);
+		registerAction(ScaleToAction.class, ScaleToAction::new);
+		registerAction(SequenceAction.class, SequenceAction::new);
+		registerAction(SizeByAction.class, SizeByAction::new);
+		registerAction(SizeToAction.class, SizeToAction::new);
+		registerAction(TimeScaleAction.class, TimeScaleAction::new);
+		registerAction(TouchableAction.class, TouchableAction::new);
+		registerAction(VisibleAction.class, VisibleAction::new);
+	}
+
+	static public <T extends Action> void registerAction (Class<T> poolClass, PoolSupplier<T> supplier) {
+		ACTION_POOLS.addPool(poolClass, supplier);
 	}
 
 	/** Returns a new or pooled action of the specified type. */
-	static public <T extends Action> T action (PoolSupplier<T> supplier) {
-		Pool<T> pool = Pools.get(supplier);
+	static public <T extends Action> T action (Class<T> type) {
+		Pool<T> pool = ACTION_POOLS.getPoolOrNull(type);
+		if (pool == null) {
+			throw new GdxRuntimeException(
+				"No action pool registered for type " + type + ". Register it with Actions#registerAction.");
+		}
 		T action = pool.obtain();
 		action.setPool(pool);
 		return action;
 	}
 
 	static public AddAction addAction (Action action) {
-		AddAction addAction = action(AddAction::new);
+		AddAction addAction = action(AddAction.class);
 		addAction.setAction(action);
 		return addAction;
 	}
 
 	static public AddAction addAction (Action action, Actor targetActor) {
-		AddAction addAction = action(AddAction::new);
+		AddAction addAction = action(AddAction.class);
 		addAction.setTarget(targetActor);
 		addAction.setAction(action);
 		return addAction;
 	}
 
 	static public RemoveAction removeAction (Action action) {
-		RemoveAction removeAction = action(RemoveAction::new);
+		RemoveAction removeAction = action(RemoveAction.class);
 		removeAction.setAction(action);
 		return removeAction;
 	}
 
 	static public RemoveAction removeAction (Action action, Actor targetActor) {
-		RemoveAction removeAction = action(RemoveAction::new);
+		RemoveAction removeAction = action(RemoveAction.class);
 		removeAction.setTarget(targetActor);
 		removeAction.setAction(action);
 		return removeAction;
@@ -85,7 +116,7 @@ public class Actions {
 	}
 
 	static public MoveToAction moveTo (float x, float y, float duration, @Null Interpolation interpolation) {
-		MoveToAction action = action(MoveToAction::new);
+		MoveToAction action = action(MoveToAction.class);
 		action.setPosition(x, y);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -101,7 +132,7 @@ public class Actions {
 	}
 
 	static public MoveToAction moveToAligned (float x, float y, int alignment, float duration, @Null Interpolation interpolation) {
-		MoveToAction action = action(MoveToAction::new);
+		MoveToAction action = action(MoveToAction.class);
 		action.setPosition(x, y, alignment);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -118,7 +149,7 @@ public class Actions {
 	}
 
 	static public MoveByAction moveBy (float amountX, float amountY, float duration, @Null Interpolation interpolation) {
-		MoveByAction action = action(MoveByAction::new);
+		MoveByAction action = action(MoveByAction.class);
 		action.setAmount(amountX, amountY);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -135,7 +166,7 @@ public class Actions {
 	}
 
 	static public SizeToAction sizeTo (float x, float y, float duration, @Null Interpolation interpolation) {
-		SizeToAction action = action(SizeToAction::new);
+		SizeToAction action = action(SizeToAction.class);
 		action.setSize(x, y);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -152,7 +183,7 @@ public class Actions {
 	}
 
 	static public SizeByAction sizeBy (float amountX, float amountY, float duration, @Null Interpolation interpolation) {
-		SizeByAction action = action(SizeByAction::new);
+		SizeByAction action = action(SizeByAction.class);
 		action.setAmount(amountX, amountY);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -169,7 +200,7 @@ public class Actions {
 	}
 
 	static public ScaleToAction scaleTo (float x, float y, float duration, @Null Interpolation interpolation) {
-		ScaleToAction action = action(ScaleToAction::new);
+		ScaleToAction action = action(ScaleToAction.class);
 		action.setScale(x, y);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -186,7 +217,7 @@ public class Actions {
 	}
 
 	static public ScaleByAction scaleBy (float amountX, float amountY, float duration, @Null Interpolation interpolation) {
-		ScaleByAction action = action(ScaleByAction::new);
+		ScaleByAction action = action(ScaleByAction.class);
 		action.setAmount(amountX, amountY);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -203,7 +234,7 @@ public class Actions {
 	}
 
 	static public RotateToAction rotateTo (float rotation, float duration, @Null Interpolation interpolation) {
-		RotateToAction action = action(RotateToAction::new);
+		RotateToAction action = action(RotateToAction.class);
 		action.setRotation(rotation);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -220,7 +251,7 @@ public class Actions {
 	}
 
 	static public RotateByAction rotateBy (float rotationAmount, float duration, @Null Interpolation interpolation) {
-		RotateByAction action = action(RotateByAction::new);
+		RotateByAction action = action(RotateByAction.class);
 		action.setAmount(rotationAmount);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -239,7 +270,7 @@ public class Actions {
 
 	/** Transitions from the color at the time this action starts to the specified color. */
 	static public ColorAction color (Color color, float duration, @Null Interpolation interpolation) {
-		ColorAction action = action(ColorAction::new);
+		ColorAction action = action(ColorAction.class);
 		action.setEndColor(color);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -258,7 +289,7 @@ public class Actions {
 
 	/** Transitions from the alpha at the time this action starts to the specified alpha. */
 	static public AlphaAction alpha (float a, float duration, @Null Interpolation interpolation) {
-		AlphaAction action = action(AlphaAction::new);
+		AlphaAction action = action(AlphaAction.class);
 		action.setAlpha(a);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -272,7 +303,7 @@ public class Actions {
 
 	/** Transitions from the alpha at the time this action starts to an alpha of 0. */
 	static public AlphaAction fadeOut (float duration, @Null Interpolation interpolation) {
-		AlphaAction action = action(AlphaAction::new);
+		AlphaAction action = action(AlphaAction.class);
 		action.setAlpha(0);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -286,7 +317,7 @@ public class Actions {
 
 	/** Transitions from the alpha at the time this action starts to an alpha of 1. */
 	static public AlphaAction fadeIn (float duration, @Null Interpolation interpolation) {
-		AlphaAction action = action(AlphaAction::new);
+		AlphaAction action = action(AlphaAction.class);
 		action.setAlpha(1);
 		action.setDuration(duration);
 		action.setInterpolation(interpolation);
@@ -302,62 +333,62 @@ public class Actions {
 	}
 
 	static public VisibleAction visible (boolean visible) {
-		VisibleAction action = action(VisibleAction::new);
+		VisibleAction action = action(VisibleAction.class);
 		action.setVisible(visible);
 		return action;
 	}
 
 	static public TouchableAction touchable (Touchable touchable) {
-		TouchableAction action = action(TouchableAction::new);
+		TouchableAction action = action(TouchableAction.class);
 		action.setTouchable(touchable);
 		return action;
 	}
 
 	static public RemoveActorAction removeActor () {
-		return action(RemoveActorAction::new);
+		return action(RemoveActorAction.class);
 	}
 
 	static public RemoveActorAction removeActor (Actor removeActor) {
-		RemoveActorAction action = action(RemoveActorAction::new);
+		RemoveActorAction action = action(RemoveActorAction.class);
 		action.setTarget(removeActor);
 		return action;
 	}
 
 	static public DelayAction delay (float duration) {
-		DelayAction action = action(DelayAction::new);
+		DelayAction action = action(DelayAction.class);
 		action.setDuration(duration);
 		return action;
 	}
 
 	static public DelayAction delay (float duration, Action delayedAction) {
-		DelayAction action = action(DelayAction::new);
+		DelayAction action = action(DelayAction.class);
 		action.setDuration(duration);
 		action.setAction(delayedAction);
 		return action;
 	}
 
 	static public TimeScaleAction timeScale (float scale, Action scaledAction) {
-		TimeScaleAction action = action(TimeScaleAction::new);
+		TimeScaleAction action = action(TimeScaleAction.class);
 		action.setScale(scale);
 		action.setAction(scaledAction);
 		return action;
 	}
 
 	static public SequenceAction sequence (Action action1) {
-		SequenceAction action = action(SequenceAction::new);
+		SequenceAction action = action(SequenceAction.class);
 		action.addAction(action1);
 		return action;
 	}
 
 	static public SequenceAction sequence (Action action1, Action action2) {
-		SequenceAction action = action(SequenceAction::new);
+		SequenceAction action = action(SequenceAction.class);
 		action.addAction(action1);
 		action.addAction(action2);
 		return action;
 	}
 
 	static public SequenceAction sequence (Action action1, Action action2, Action action3) {
-		SequenceAction action = action(SequenceAction::new);
+		SequenceAction action = action(SequenceAction.class);
 		action.addAction(action1);
 		action.addAction(action2);
 		action.addAction(action3);
@@ -365,7 +396,7 @@ public class Actions {
 	}
 
 	static public SequenceAction sequence (Action action1, Action action2, Action action3, Action action4) {
-		SequenceAction action = action(SequenceAction::new);
+		SequenceAction action = action(SequenceAction.class);
 		action.addAction(action1);
 		action.addAction(action2);
 		action.addAction(action3);
@@ -374,7 +405,7 @@ public class Actions {
 	}
 
 	static public SequenceAction sequence (Action action1, Action action2, Action action3, Action action4, Action action5) {
-		SequenceAction action = action(SequenceAction::new);
+		SequenceAction action = action(SequenceAction.class);
 		action.addAction(action1);
 		action.addAction(action2);
 		action.addAction(action3);
@@ -384,31 +415,31 @@ public class Actions {
 	}
 
 	static public SequenceAction sequence (Action... actions) {
-		SequenceAction action = action(SequenceAction::new);
+		SequenceAction action = action(SequenceAction.class);
 		for (int i = 0, n = actions.length; i < n; i++)
 			action.addAction(actions[i]);
 		return action;
 	}
 
 	static public SequenceAction sequence () {
-		return action(SequenceAction::new);
+		return action(SequenceAction.class);
 	}
 
 	static public ParallelAction parallel (Action action1) {
-		ParallelAction action = action(ParallelAction::new);
+		ParallelAction action = action(ParallelAction.class);
 		action.addAction(action1);
 		return action;
 	}
 
 	static public ParallelAction parallel (Action action1, Action action2) {
-		ParallelAction action = action(ParallelAction::new);
+		ParallelAction action = action(ParallelAction.class);
 		action.addAction(action1);
 		action.addAction(action2);
 		return action;
 	}
 
 	static public ParallelAction parallel (Action action1, Action action2, Action action3) {
-		ParallelAction action = action(ParallelAction::new);
+		ParallelAction action = action(ParallelAction.class);
 		action.addAction(action1);
 		action.addAction(action2);
 		action.addAction(action3);
@@ -416,7 +447,7 @@ public class Actions {
 	}
 
 	static public ParallelAction parallel (Action action1, Action action2, Action action3, Action action4) {
-		ParallelAction action = action(ParallelAction::new);
+		ParallelAction action = action(ParallelAction.class);
 		action.addAction(action1);
 		action.addAction(action2);
 		action.addAction(action3);
@@ -425,7 +456,7 @@ public class Actions {
 	}
 
 	static public ParallelAction parallel (Action action1, Action action2, Action action3, Action action4, Action action5) {
-		ParallelAction action = action(ParallelAction::new);
+		ParallelAction action = action(ParallelAction.class);
 		action.addAction(action1);
 		action.addAction(action2);
 		action.addAction(action3);
@@ -435,57 +466,57 @@ public class Actions {
 	}
 
 	static public ParallelAction parallel (Action... actions) {
-		ParallelAction action = action(ParallelAction::new);
+		ParallelAction action = action(ParallelAction.class);
 		for (int i = 0, n = actions.length; i < n; i++)
 			action.addAction(actions[i]);
 		return action;
 	}
 
 	static public ParallelAction parallel () {
-		return action(ParallelAction::new);
+		return action(ParallelAction.class);
 	}
 
 	static public RepeatAction repeat (int count, Action repeatedAction) {
-		RepeatAction action = action(RepeatAction::new);
+		RepeatAction action = action(RepeatAction.class);
 		action.setCount(count);
 		action.setAction(repeatedAction);
 		return action;
 	}
 
 	static public RepeatAction forever (Action repeatedAction) {
-		RepeatAction action = action(RepeatAction::new);
+		RepeatAction action = action(RepeatAction.class);
 		action.setCount(RepeatAction.FOREVER);
 		action.setAction(repeatedAction);
 		return action;
 	}
 
 	static public RunnableAction run (Runnable runnable) {
-		RunnableAction action = action(RunnableAction::new);
+		RunnableAction action = action(RunnableAction.class);
 		action.setRunnable(runnable);
 		return action;
 	}
 
 	static public LayoutAction layout (boolean enabled) {
-		LayoutAction action = action(LayoutAction::new);
+		LayoutAction action = action(LayoutAction.class);
 		action.setLayoutEnabled(enabled);
 		return action;
 	}
 
 	static public AfterAction after (Action action) {
-		AfterAction afterAction = action(AfterAction::new);
+		AfterAction afterAction = action(AfterAction.class);
 		afterAction.setAction(action);
 		return afterAction;
 	}
 
 	static public AddListenerAction addListener (EventListener listener, boolean capture) {
-		AddListenerAction addAction = action(AddListenerAction::new);
+		AddListenerAction addAction = action(AddListenerAction.class);
 		addAction.setListener(listener);
 		addAction.setCapture(capture);
 		return addAction;
 	}
 
 	static public AddListenerAction addListener (EventListener listener, boolean capture, Actor targetActor) {
-		AddListenerAction addAction = action(AddListenerAction::new);
+		AddListenerAction addAction = action(AddListenerAction.class);
 		addAction.setTarget(targetActor);
 		addAction.setListener(listener);
 		addAction.setCapture(capture);
@@ -493,14 +524,14 @@ public class Actions {
 	}
 
 	static public RemoveListenerAction removeListener (EventListener listener, boolean capture) {
-		RemoveListenerAction addAction = action(RemoveListenerAction::new);
+		RemoveListenerAction addAction = action(RemoveListenerAction.class);
 		addAction.setListener(listener);
 		addAction.setCapture(capture);
 		return addAction;
 	}
 
 	static public RemoveListenerAction removeListener (EventListener listener, boolean capture, Actor targetActor) {
-		RemoveListenerAction addAction = action(RemoveListenerAction::new);
+		RemoveListenerAction addAction = action(RemoveListenerAction.class);
 		addAction.setTarget(targetActor);
 		addAction.setListener(listener);
 		addAction.setCapture(capture);

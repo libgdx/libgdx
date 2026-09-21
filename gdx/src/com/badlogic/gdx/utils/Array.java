@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.reflect.ArrayReflection;
  * @author Nathan Sweet */
 public class Array<T> implements Iterable<T> {
 	/** Provides direct access to the underlying array. If the Array's generic type is not Object, this field may only be accessed
-	 * if the {@link Array#Array(boolean, int, Class)} constructor was used. */
+	 * if the {@link Array#Array(boolean, int, ArraySupplier)} constructor was used. */
 	public T[] items;
 
 	public int size;
@@ -91,7 +91,7 @@ public class Array<T> implements Iterable<T> {
 	/** Creates a new array containing the elements in the specified array. The new array will have the same type of backing array
 	 * and will be ordered if the specified array is ordered. The capacity is set to the number of elements, so any subsequent
 	 * elements added will cause the backing array to be grown. */
-	public Array (Array<T> array) {
+	public Array (Array<? extends T> array) {
 		items = Arrays.copyOf(array.items, array.size);
 		ordered = array.ordered;
 		size = array.size;
@@ -139,12 +139,62 @@ public class Array<T> implements Iterable<T> {
 
 	public void add (T value1, T value2, T value3, T value4) {
 		T[] items = this.items;
-		if (size + 3 >= items.length) items = resize(Math.max(8, (int)(size * 1.8f))); // 1.75 isn't enough when size=5.
+		if (size + 3 >= items.length) items = resize(Math.max(9, (int)(size * 1.75f)));
 		items[size] = value1;
 		items[size + 1] = value2;
 		items[size + 2] = value3;
 		items[size + 3] = value4;
 		size += 4;
+	}
+
+	public void add (T value1, T value2, T value3, T value4, T value5) {
+		T[] items = this.items;
+		if (size + 4 >= items.length) items = resize(Math.max(11, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		size += 5;
+	}
+
+	public void add (T value1, T value2, T value3, T value4, T value5, T value6) {
+		T[] items = this.items;
+		if (size + 5 >= items.length) items = resize(Math.max(13, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		items[size + 5] = value6;
+		size += 6;
+	}
+
+	public void add (T value1, T value2, T value3, T value4, T value5, T value6, T value7) {
+		T[] items = this.items;
+		if (size + 6 >= items.length) items = resize(Math.max(16, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		items[size + 5] = value6;
+		items[size + 6] = value7;
+		size += 7;
+	}
+
+	public void add (T value1, T value2, T value3, T value4, T value5, T value6, T value7, T value8) {
+		T[] items = this.items;
+		if (size + 7 >= items.length) items = resize(Math.max(18, (int)(size * 1.75f)));
+		items[size] = value1;
+		items[size + 1] = value2;
+		items[size + 2] = value3;
+		items[size + 3] = value4;
+		items[size + 4] = value5;
+		items[size + 5] = value6;
+		items[size + 6] = value7;
+		items[size + 7] = value8;
+		size += 8;
 	}
 
 	public void addAll (Array<? extends T> array) {
@@ -381,8 +431,7 @@ public class Array<T> implements Iterable<T> {
 			int i = Math.max(lastIndex, end + 1);
 			System.arraycopy(items, i, items, start, n - i);
 		}
-		for (int i = lastIndex; i < n; i++)
-			items[i] = null;
+		Arrays.fill(items, lastIndex, n, null);
 		size = n - count;
 	}
 
@@ -573,8 +622,7 @@ public class Array<T> implements Iterable<T> {
 	public void truncate (int newSize) {
 		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (size <= newSize) return;
-		for (int i = newSize; i < size; i++)
-			items[i] = null;
+		Arrays.fill(items, newSize, size, null);
 		size = newSize;
 	}
 
@@ -584,8 +632,8 @@ public class Array<T> implements Iterable<T> {
 		return items[MathUtils.random(0, size - 1)];
 	}
 
-	/** Returns the items as an array. Note the array is typed, so the {@link #Array(Class)} constructor must have been used.
-	 * Otherwise use {@link #toArray(ArraySupplier)} to specify the array type. */
+	/** Returns the items as an array. Note the array is typed, so the {@link #Array(ArraySupplier)} constructor must have been
+	 * used. Otherwise use {@link #toArray(ArraySupplier)} to specify the array type. */
 	public T[] toArray () {
 		return Arrays.copyOf(items, size);
 	}

@@ -27,6 +27,7 @@ ext {
 	particles3DMainClass = "com.badlogic.gdx.tools.flame.FlameMain"
 	hieroMainClass = "com.badlogic.gdx.tools.hiero.Hiero"
 	texturePackerMainClass = "com.badlogic.gdx.tools.texturepacker.TexturePacker"
+	tiledMapPackerMainClass = "com.badlogic.gdx.tiledmappacker.TiledMapPacker"
 
 	toolsAssetsDir = ["assets"]
 }
@@ -85,9 +86,27 @@ tasks.register('distTexturePacker', Jar) {
 	}
 }
 
+tasks.register('distTiledMapPacker', Jar) {
+	dependsOn("build")
+
+	dependsOn configurations.runtimeClasspath
+	duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+	from files(sourceSets.main.java.classesDirectory)
+	from files(sourceSets.main.output.resourcesDir)
+	from {configurations.runtimeClasspath.collect {zipTree(it)}}
+	from files(toolsAssetsDir)
+
+	archiveFileName = "runnable-tiledmappacker.jar"
+
+	manifest {
+		attributes 'Main-Class': tiledMapPackerMainClass
+	}
+}
+
 tasks.register('buildRunnables') {
 	dependsOn("build")
-	dependsOn dist3DParticles, distHiero, distTexturePacker
+	dependsOn dist3DParticles, distHiero, distTexturePacker, distTiledMapPacker
 	doLast {
 		println "Building ye runnables"
 	}

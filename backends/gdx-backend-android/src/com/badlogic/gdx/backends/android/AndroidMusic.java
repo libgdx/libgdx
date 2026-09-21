@@ -44,7 +44,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 		try {
 			player.release();
 		} catch (Throwable t) {
-			Gdx.app.log("AndroidMusic", "error while disposing AndroidMusic instance, non-fatal");
+			Gdx.app.log("AndroidMusic", "Error while disposing AndroidMusic instance, non-fatal");
 		} finally {
 			player = null;
 			onCompletionListener = null;
@@ -58,7 +58,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 		try {
 			return player.isLooping();
 		} catch (IllegalStateException e) {
-			e.printStackTrace();
+			Gdx.app.error("AndroidMusic", "Error while checking isLooping", e);
 			return false;
 		}
 	}
@@ -69,7 +69,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 		try {
 			return player.isPlaying();
 		} catch (IllegalStateException e) {
-			e.printStackTrace();
+			Gdx.app.error("AndroidMusic", "Error while checking isPlaying", e);
 			return false;
 		}
 	}
@@ -82,7 +82,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 				player.pause();
 			}
 		} catch (IllegalStateException e) {
-			e.printStackTrace();
+			Gdx.app.error("AndroidMusic", "Error trying to pause music", e);
 		}
 		wasPlaying = false;
 	}
@@ -96,10 +96,8 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 				isPrepared = true;
 			}
 			player.start();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IllegalStateException | IOException e) {
+			Gdx.app.error("AndroidMusic", "Error trying to play music", e);
 		}
 	}
 
@@ -152,10 +150,8 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 				isPrepared = true;
 			}
 			player.seekTo((int)(position * 1000));
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IllegalStateException | IOException e) {
+			Gdx.app.error("AndroidMusic", "Error setting music position", e);
 		}
 	}
 

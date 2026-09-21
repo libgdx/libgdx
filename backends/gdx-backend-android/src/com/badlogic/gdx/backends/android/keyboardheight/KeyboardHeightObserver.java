@@ -20,9 +20,13 @@ package com.badlogic.gdx.backends.android.keyboardheight;
 /** The observer that will be notified when the height of the keyboard has changed */
 public interface KeyboardHeightObserver {
 
-	/** Called when the keyboard height has changed, 0 means keyboard is closed, >= 1 means keyboard is opened.
+	/** Called when the keyboard height has changed.
 	 *
+	 * @param opened This is a best-effort measure that does not 100% work < android sdk 30 on floating keyboards. It will report
+	 *           always "opened" on android sdk 21-30 for floating keyboards.
 	 * @param height The height of the keyboard in pixels
+	 * @param leftInset The left-inset to consider
+	 * @param rightInset The right inset to consider
 	 * @param orientation The orientation either: Configuration.ORIENTATION_PORTRAIT or Configuration.ORIENTATION_LANDSCAPE */
-	void onKeyboardHeightChanged (int height, int leftInset, int rightInset, int orientation);
+	void onKeyboardHeightChanged (boolean opened, int height, int leftInset, int rightInset, int orientation);
 }

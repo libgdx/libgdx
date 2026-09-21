@@ -1,0 +1,38 @@
+{ "object":
+    {
+     "height":19,
+     "id":56,
+     "name":"Text",
+     "properties":[
+            {
+             "name":"BoolProp",
+             "type":"bool",
+             "value":true
+            }, 
+            {
+             "name":"ColorProp",
+             "type":"color",
+             "value":"#ffff0000"
+            }, 
+            {
+             "name":"IntProp",
+             "type":"int",
+             "value":86
+            }, 
+            {
+             "name":"StringProp",
+             "type":"string",
+             "value":"Template Default"
+            }],
+     "rotation":0,
+     "text":
+        {
+         "text":"Text Object",
+         "wrap":true
+        },
+     "type":"",
+     "visible":true,
+     "width":129
+    },
+ "type":"template"
+}

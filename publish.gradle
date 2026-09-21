@@ -109,10 +109,12 @@ configure([
 
 				repositories {
 					maven {
-						url = version.endsWith('SNAPSHOT') ? getSnapshotRepositoryUrl() : getReleaseRepositoryUrl()
+						url = version.endsWith('SNAPSHOT')
+								? getSnapshotRepositoryUrl()
+								// If release build, dump artifacts to local build/staging-deploy folder for consumption by jreleaser below
+								: rootProject.layout.buildDirectory.dir('staging-deploy')
 
-						if (getRepositoryUsername() || getRepositoryPassword())
-						{
+						if (version.endsWith('SNAPSHOT') && (getRepositoryUsername() || getRepositoryPassword())) {
 							credentials {
 								username = getRepositoryUsername()
 								password = getRepositoryPassword()
@@ -137,5 +139,33 @@ configure([
 				}
 			}
 		}
+	}
+}
+
+// JReleaser config for release builds to Central Portal
+if (project.hasProperty('RELEASE')) {
+	rootProject.apply plugin: 'org.jreleaser'
+
+	rootProject.jreleaser {
+		deploy {
+			maven {
+				mavenCentral {
+					sonatype {
+						active = 'ALWAYS'
+						username = getRepositoryUsername()
+						password = getRepositoryPassword()
+						url = 'https://central.sonatype.com/api/v1/publisher'
+						stagingRepository("${rootProject.buildDir}/staging-deploy")
+						sign = false
+						verifyPom = false
+					}
+				}
+			}
+		}
+	}
+
+	rootProject.tasks.register('publish') {
+		dependsOn subprojects.collect { it.tasks.withType(PublishToMavenRepository) }
+		finalizedBy rootProject.tasks.named('jreleaserDeploy')
 	}
 }

@@ -47,6 +47,7 @@ public class VerticalGroup extends WidgetGroup {
 	private float space, wrapSpace, fill, padTop, padLeft, padBottom, padRight;
 
 	public VerticalGroup () {
+		setTransform(false);
 		setTouchable(Touchable.childrenOnly);
 	}
 
@@ -451,7 +452,7 @@ public class VerticalGroup extends WidgetGroup {
 		return this;
 	}
 
-	/** @param fill 0 will use preferred height. */
+	/** @param fill 0 will use preferred width. */
 	public VerticalGroup fill (float fill) {
 		this.fill = fill;
 		return this;

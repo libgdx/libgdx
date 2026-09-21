@@ -29,7 +29,6 @@ import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTestConfig;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.StringBuilder;
 
 @GdxTestConfig
 public class SpriteBatchPerformanceTest extends GdxTest {

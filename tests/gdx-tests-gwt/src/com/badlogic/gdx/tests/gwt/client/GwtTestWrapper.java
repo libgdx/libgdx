@@ -2,100 +2,7 @@
 package com.badlogic.gdx.tests.gwt.client;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.tests.AbstractTestWrapper;
-import com.badlogic.gdx.tests.AccelerometerTest;
-import com.badlogic.gdx.tests.ActionSequenceTest;
-import com.badlogic.gdx.tests.ActionTest;
-import com.badlogic.gdx.tests.AlphaTest;
-import com.badlogic.gdx.tests.AnimationTest;
-import com.badlogic.gdx.tests.AnnotationTest;
-import com.badlogic.gdx.tests.AssetManagerTest;
-import com.badlogic.gdx.tests.AtlasIssueTest;
-import com.badlogic.gdx.tests.AudioChangeDeviceTest;
-import com.badlogic.gdx.tests.BigMeshTest;
-import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
-import com.badlogic.gdx.tests.BitmapFontFlipTest;
-import com.badlogic.gdx.tests.BitmapFontMetricsTest;
-import com.badlogic.gdx.tests.BitmapFontTest;
-import com.badlogic.gdx.tests.BlitTest;
-import com.badlogic.gdx.tests.Box2DCharacterControllerTest;
-import com.badlogic.gdx.tests.Box2DTest;
-import com.badlogic.gdx.tests.Box2DTestCollection;
-import com.badlogic.gdx.tests.BufferUtilsTest;
-import com.badlogic.gdx.tests.ClipboardTest;
-import com.badlogic.gdx.tests.TiledMapObjectPropertyTest;
-import com.badlogic.gdx.tests.ColorTest;
-import com.badlogic.gdx.tests.ComplexActionTest;
-import com.badlogic.gdx.tests.CustomShaderSpriteBatchTest;
-import com.badlogic.gdx.tests.DecalTest;
-import com.badlogic.gdx.tests.DownloadTest;
-import com.badlogic.gdx.tests.EdgeDetectionTest;
-import com.badlogic.gdx.tests.FilesTest;
-import com.badlogic.gdx.tests.FilterPerformanceTest;
-import com.badlogic.gdx.tests.FloatTextureTest;
-import com.badlogic.gdx.tests.FrameBufferTest;
-import com.badlogic.gdx.tests.FramebufferToTextureTest;
-import com.badlogic.gdx.tests.GLProfilerErrorTest;
-import com.badlogic.gdx.tests.GWTLossyPremultipliedAlphaTest;
-import com.badlogic.gdx.tests.GestureDetectorTest;
-import com.badlogic.gdx.tests.GroupCullingTest;
-import com.badlogic.gdx.tests.GroupFadeTest;
-import com.badlogic.gdx.tests.I18NSimpleMessageTest;
-import com.badlogic.gdx.tests.ImageScaleTest;
-import com.badlogic.gdx.tests.ImageTest;
-import com.badlogic.gdx.tests.IndexBufferObjectShaderTest;
-import com.badlogic.gdx.tests.IntegerBitmapFontTest;
-import com.badlogic.gdx.tests.InterpolationTest;
-import com.badlogic.gdx.tests.InverseKinematicsTest;
-import com.badlogic.gdx.tests.IsometricTileTest;
-import com.badlogic.gdx.tests.KinematicBodyTest;
-import com.badlogic.gdx.tests.LabelScaleTest;
-import com.badlogic.gdx.tests.LabelTest;
-import com.badlogic.gdx.tests.LifeCycleTest;
-import com.badlogic.gdx.tests.MeshShaderTest;
-import com.badlogic.gdx.tests.MeshWithCustomAttributesTest;
-import com.badlogic.gdx.tests.MipMapTest;
-import com.badlogic.gdx.tests.MultitouchTest;
-import com.badlogic.gdx.tests.MusicTest;
-import com.badlogic.gdx.tests.ParallaxTest;
-import com.badlogic.gdx.tests.ParticleEmitterTest;
-import com.badlogic.gdx.tests.PixelsPerInchTest;
-import com.badlogic.gdx.tests.PixmapPackerTest;
-import com.badlogic.gdx.tests.PixmapTest;
-import com.badlogic.gdx.tests.PreferencesTest;
-import com.badlogic.gdx.tests.ProjectiveTextureTest;
-import com.badlogic.gdx.tests.QuadTreeFloatNearestTest;
-import com.badlogic.gdx.tests.QuadTreeFloatTest;
-import com.badlogic.gdx.tests.ReflectionCorrectnessTest;
-import com.badlogic.gdx.tests.ReflectionTest;
-import com.badlogic.gdx.tests.RotationTest;
-import com.badlogic.gdx.tests.Scene2dTest;
-import com.badlogic.gdx.tests.ShapeRendererTest;
-import com.badlogic.gdx.tests.SimpleAnimationTest;
-import com.badlogic.gdx.tests.SimpleDecalTest;
-import com.badlogic.gdx.tests.SimpleStageCullingTest;
-import com.badlogic.gdx.tests.SortedSpriteTest;
-import com.badlogic.gdx.tests.SoundTest;
-import com.badlogic.gdx.tests.SpriteBatchShaderTest;
-import com.badlogic.gdx.tests.SpriteBatchPerformanceTest;
-import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
-import com.badlogic.gdx.tests.SpriteCacheTest;
-import com.badlogic.gdx.tests.StageTest;
-import com.badlogic.gdx.tests.SystemCursorTest;
-import com.badlogic.gdx.tests.TableTest;
-import com.badlogic.gdx.tests.TextAreaTest;
-import com.badlogic.gdx.tests.TextAreaTest2;
-import com.badlogic.gdx.tests.TextAreaTest3;
-import com.badlogic.gdx.tests.TextButtonTest;
-import com.badlogic.gdx.tests.TextInputDialogTest;
-import com.badlogic.gdx.tests.TextureAtlasTest;
-import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
-import com.badlogic.gdx.tests.TiledMapObjectLoadingTest;
-import com.badlogic.gdx.tests.TiledMapPropertiesTest;
-import com.badlogic.gdx.tests.TimeUtilsTest;
-import com.badlogic.gdx.tests.UITest;
-import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
-import com.badlogic.gdx.tests.YDownTest;
+import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.conformance.DisplayModeTest;
 import com.badlogic.gdx.tests.g3d.ModelCacheTest;
 import com.badlogic.gdx.tests.g3d.MultipleRenderTargetTest;
@@ -104,10 +11,7 @@ import com.badlogic.gdx.tests.g3d.ShadowMappingTextureTest;
 import com.badlogic.gdx.tests.g3d.TextureArrayTest;
 import com.badlogic.gdx.tests.gles2.GlTexImage2D;
 import com.badlogic.gdx.tests.gles2.VertexArrayTest;
-import com.badlogic.gdx.tests.gles3.GL30Texture3DTest;
-import com.badlogic.gdx.tests.gles3.NonPowerOfTwoTest;
-import com.badlogic.gdx.tests.gles3.UniformBufferObjectsTest;
-import com.badlogic.gdx.tests.gles3.InstancedRenderingTest;
+import com.badlogic.gdx.tests.gles3.*;
 import com.badlogic.gdx.tests.gwt.GwtInputTest;
 import com.badlogic.gdx.tests.gwt.GwtWindowModeTest;
 import com.badlogic.gdx.tests.math.CollisionPlaygroundTest;
@@ -328,6 +232,11 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new I18NSimpleMessageTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new ImageFormatTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
@@ -583,6 +492,16 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		});
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
+				return new TiledMapGWTAtlasAssetManagerTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
+				return new TiledMapJsonObjectLoadingTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			public GdxTest instance () {
 				return new TiledMapObjectLoadingTest();
 			}
 		});
@@ -596,6 +515,12 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			@Override
 			public GdxTest instance () {
 				return new TiledMapPropertiesTest();
+			}
+		});
+		tests.add(new GwtInstancer() {
+			@Override
+			public GdxTest instance () {
+				return new TiledMapTemplateObjectLoadingTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
@@ -621,11 +546,6 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 		tests.add(new GwtInstancer() {
 			public GdxTest instance () {
 				return new ReflectionTest();
-			}
-		});
-		tests.add(new GwtInstancer() {
-			public GdxTest instance () {
-				return new TiledMapAtlasAssetManagerTest();
 			}
 		});
 		tests.add(new GwtInstancer() {
@@ -675,6 +595,16 @@ public class GwtTestWrapper extends AbstractTestWrapper {
 			tests.add(new GwtInstancer() {
 				public GdxTest instance () {
 					return new FloatTextureTest();
+				}
+			});
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new GL30FrameBufferMultisampleMRTTest();
+				}
+			});
+			tests.add(new GwtInstancer() {
+				public GdxTest instance () {
+					return new GL30FrameBufferMultisampleTest();
 				}
 			});
 			tests.add(new GwtInstancer() {

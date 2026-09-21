@@ -366,6 +366,7 @@ public class OpenALLwjgl3Audio implements Lwjgl3Audio {
 		}
 	}
 
+	@Override
 	public void dispose () {
 		if (noDevice) return;
 		observerThread.interrupt();

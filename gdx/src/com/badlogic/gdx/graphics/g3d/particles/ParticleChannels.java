@@ -120,22 +120,22 @@ public class ParticleChannels {
 
 	// Channels
 	/** Channels of common use like position, life, color, etc... */
-	public static final ChannelDescriptor Life = new ChannelDescriptor(newGlobalId(), float.class, 3);
-	public static final ChannelDescriptor Position = new ChannelDescriptor(newGlobalId(), float.class, 3); // gl units
-	public static final ChannelDescriptor PreviousPosition = new ChannelDescriptor(newGlobalId(), float.class, 3);
-	public static final ChannelDescriptor Color = new ChannelDescriptor(newGlobalId(), float.class, 4);
-	public static final ChannelDescriptor TextureRegion = new ChannelDescriptor(newGlobalId(), float.class, 6);
-	public static final ChannelDescriptor Rotation2D = new ChannelDescriptor(newGlobalId(), float.class, 2);
-	public static final ChannelDescriptor Rotation3D = new ChannelDescriptor(newGlobalId(), float.class, 4);
-	public static final ChannelDescriptor Scale = new ChannelDescriptor(newGlobalId(), float.class, 1);
-	public static final ChannelDescriptor ModelInstance = new ChannelDescriptor(newGlobalId(), ModelInstance.class, 1);
-	public static final ChannelDescriptor ParticleController = new ChannelDescriptor(newGlobalId(), ParticleController.class, 1);
-	public static final ChannelDescriptor Acceleration = new ChannelDescriptor(newGlobalId(), float.class, 3); // gl units/s2
-	public static final ChannelDescriptor AngularVelocity2D = new ChannelDescriptor(newGlobalId(), float.class, 1);
-	public static final ChannelDescriptor AngularVelocity3D = new ChannelDescriptor(newGlobalId(), float.class, 3);
-	public static final ChannelDescriptor Interpolation = new ChannelDescriptor(-1, float.class, 2);
-	public static final ChannelDescriptor Interpolation4 = new ChannelDescriptor(-1, float.class, 4);
-	public static final ChannelDescriptor Interpolation6 = new ChannelDescriptor(-1, float.class, 6);
+	public static final ChannelDescriptor Life = new ChannelDescriptor(newGlobalId(), float[]::new, 3);
+	public static final ChannelDescriptor Position = new ChannelDescriptor(newGlobalId(), float[]::new, 3); // gl units
+	public static final ChannelDescriptor PreviousPosition = new ChannelDescriptor(newGlobalId(), float[]::new, 3);
+	public static final ChannelDescriptor Color = new ChannelDescriptor(newGlobalId(), float[]::new, 4);
+	public static final ChannelDescriptor TextureRegion = new ChannelDescriptor(newGlobalId(), float[]::new, 6);
+	public static final ChannelDescriptor Rotation2D = new ChannelDescriptor(newGlobalId(), float[]::new, 2);
+	public static final ChannelDescriptor Rotation3D = new ChannelDescriptor(newGlobalId(), float[]::new, 4);
+	public static final ChannelDescriptor Scale = new ChannelDescriptor(newGlobalId(), float[]::new, 1);
+	public static final ChannelDescriptor ModelInstance = new ChannelDescriptor(newGlobalId(), ModelInstance[]::new, 1);
+	public static final ChannelDescriptor ParticleController = new ChannelDescriptor(newGlobalId(), ParticleController[]::new, 1);
+	public static final ChannelDescriptor Acceleration = new ChannelDescriptor(newGlobalId(), float[]::new, 3); // gl units/s2
+	public static final ChannelDescriptor AngularVelocity2D = new ChannelDescriptor(newGlobalId(), float[]::new, 1);
+	public static final ChannelDescriptor AngularVelocity3D = new ChannelDescriptor(newGlobalId(), float[]::new, 3);
+	public static final ChannelDescriptor Interpolation = new ChannelDescriptor(-1, float[]::new, 2);
+	public static final ChannelDescriptor Interpolation4 = new ChannelDescriptor(-1, float[]::new, 4);
+	public static final ChannelDescriptor Interpolation6 = new ChannelDescriptor(-1, float[]::new, 6);
 
 	// Offsets
 	/** Offsets to acess a particular value inside a stride of a given channel */

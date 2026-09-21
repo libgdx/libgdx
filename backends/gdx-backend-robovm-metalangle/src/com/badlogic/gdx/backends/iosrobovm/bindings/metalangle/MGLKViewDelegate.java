@@ -29,7 +29,7 @@ import org.robovm.rt.bro.annotation.ByVal;
 /*</javadoc>*/
 /*<annotations>*//*</annotations>*/
 /*<visibility>*/public/* </visibility> */ interface /* <name> */ MGLKViewDelegate/* </name> */
-	/* <implements> */extends NSObjectProtocol/* </implements> */ {
+	/* <implements> */ extends NSObjectProtocol/* </implements> */ {
 
 	/* <ptr> */
 	/* </ptr> */

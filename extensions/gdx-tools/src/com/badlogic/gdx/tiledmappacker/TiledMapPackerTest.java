@@ -25,17 +25,22 @@ public class TiledMapPackerTest {
 
 	// TestTypes "NoArgs" and "BadOption" do not create/process maps.
 	public enum TestType {
-		NoArgs, DefaultUsage, Verbose, StripUnused, CombineTilesets, UnusedAndCombine, BadOption
+		NoArgs, DefaultUsage, DefaultUsageWithProjectFile, Verbose, DefaultUsageWithProjectFileVerbose, StripUnused, CombineTilesets, UnusedAndCombine, BadOption
 	}
 
 	public static void main (String[] args) throws Exception {
-		String path = "../../tests/gdx-tests-android/assets/data/maps/";
+		String path = "data/maps/";
 		String input = path + "tiled-atlas-src";
 		String output = path + "tiled-atlas-processed/deleteMe";
 		String verboseOpt = "-v";
 		String unused = "--strip-unused";
 		String combine = "--combine-tilesets";
 		String badOpt = "bad";
+
+		/** There is an optional 3rd path parameter, which is specifically meant to support maps which use the custom class
+		 * properties. You must specify the path to the tiled project file if your files requires it. If not, that map will be
+		 * skipped during processing. Can be tested by setting TestType testType = TestType.DefaultUsageWithProjectFile; */
+		String projectFilePath = input + "/tiled-prop-test.tiled-project";
 
 		File outputDir = new File(output);
 		if (outputDir.exists()) {
@@ -48,6 +53,8 @@ public class TiledMapPackerTest {
 
 		String[] noArgs = {};
 		String[] defaultUsage = {input, output};
+		String[] defaultUsageWithProjectFile = {input, output, projectFilePath};
+		String[] defaultUsageWithProjectFileVerbose = {input, output, projectFilePath, verboseOpt};
 		String[] verbose = {input, output, verboseOpt};
 		String[] stripUnused = {input, output, unused};
 		String[] combineTilesets = {input, output, combine};
@@ -61,8 +68,14 @@ public class TiledMapPackerTest {
 		case DefaultUsage:
 			TiledMapPacker.main(defaultUsage);
 			break;
+		case DefaultUsageWithProjectFile:
+			TiledMapPacker.main(defaultUsageWithProjectFile);
+			break;
 		case Verbose:
 			TiledMapPacker.main(verbose);
+			break;
+		case DefaultUsageWithProjectFileVerbose:
+			TiledMapPacker.main(defaultUsageWithProjectFileVerbose);
 			break;
 		case StripUnused:
 			TiledMapPacker.main(stripUnused);

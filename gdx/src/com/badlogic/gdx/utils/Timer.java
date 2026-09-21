@@ -42,7 +42,7 @@ public class Timer {
 		}
 	}
 
-	static private TimerThread thread () {
+	static TimerThread thread () {
 		synchronized (threadLock) {
 			if (thread == null || thread.files != Gdx.files) {
 				if (thread != null) thread.dispose();
