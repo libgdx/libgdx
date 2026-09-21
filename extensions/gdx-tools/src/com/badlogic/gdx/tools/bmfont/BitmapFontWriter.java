@@ -148,7 +148,7 @@ public class BitmapFontWriter {
 		if (BitmapFontWriter.getOutputFormat() == OutputFormat.XML)
 			return "\"" + params.toString().trim() + "\"" + (spaceAfter ? " " : "");
 		else
-			return params.toString();
+			return params.toString() + (spaceAfter ? " " : "");
 	}
 
 	/** Writes the given BitmapFontData to a file, using the specified <tt>pageRefs</tt> strings as the image paths for each
@@ -228,6 +228,7 @@ public class BitmapFontWriter {
 		if (fontData.surrogates != null) {
 			extractGlyphs(fontData.surrogates, glyphs);
 		}
+		glyphs.shrink();
 
 		buf.append(xmlOpen).append("chars count=").append(quote(glyphs.size)).append(xmlClose).append("\n");
 
@@ -303,7 +304,7 @@ public class BitmapFontWriter {
 		outFntFile.writeString(buf.toString(), false, charset);
 	}
 
-	private static void extractGlyphs(final Glyph[][] arr, final Array<Glyph> glyphs) {
+	private static void extractGlyphs (final Glyph[][] arr, final Array<Glyph> glyphs) {
 		for (int i = 0; i < arr.length; i++) {
 			if (arr[i] == null) continue;
 

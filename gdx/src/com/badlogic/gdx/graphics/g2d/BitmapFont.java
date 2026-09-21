@@ -58,9 +58,8 @@ public class BitmapFont implements Disposable {
 	static private final int LOG2_PAGE_SIZE = 9;
 	static private final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
 	static private final int PAGES = 0x10000 / PAGE_SIZE;
-	static private final int SURROGATE_WIDTH = 0x400; // 1024 bits high, 1024 bits low
-	static private final int HIGH_SURROGATE_MIN = 0xD800; // 1024 bits of high surrogate, 0xD800-0xDBFF
-	static private final int LOW_SURROGATE_MIN = 0xDC00; // 1024 bits of low surrogate, 0xDC00-0xDFFF
+	static private final int SURROGATE_WIDTH = 0x400; // High (D800-DBFF) and low (DC00-DFFF) surrogates each have 1024 values.
+	static private final int SUPPLEMENTARY_MIN = 0x10000; // First code point represented by a surrogate pair.
 
 	final BitmapFontData data;
 	Array<TextureRegion> regions;
@@ -194,7 +193,6 @@ public class BitmapFont implements Disposable {
 				for (Glyph glyph : page)
 					if (glyph != null) data.setGlyphRegion(glyph, regions.get(glyph.page));
 			}
-
 		}
 		if (data.missingGlyph != null) data.setGlyphRegion(data.missingGlyph, regions.get(data.missingGlyph.page));
 	}
@@ -337,12 +335,16 @@ public class BitmapFont implements Disposable {
 	public void setFixedWidthGlyphs (CharSequence glyphs) {
 		BitmapFontData data = this.data;
 		int maxAdvance = 0;
-		for (int index = 0, end = glyphs.length(); index < end; index++) {
-			Glyph g = data.getGlyph(glyphs.charAt(index));
+		for (int index = 0, end = glyphs.length(); index < end;) {
+			int codePoint = Character.codePointAt(glyphs, index);
+			index += Character.charCount(codePoint);
+			Glyph g = data.getGlyph(codePoint);
 			if (g != null && g.xadvance > maxAdvance) maxAdvance = g.xadvance;
 		}
-		for (int index = 0, end = glyphs.length(); index < end; index++) {
-			Glyph g = data.getGlyph(glyphs.charAt(index));
+		for (int index = 0, end = glyphs.length(); index < end;) {
+			int codePoint = Character.codePointAt(glyphs, index);
+			index += Character.charCount(codePoint);
+			Glyph g = data.getGlyph(codePoint);
 			if (g == null) continue;
 			g.xoffset += (maxAdvance - g.xadvance) / 2;
 			g.xadvance = maxAdvance;
@@ -485,8 +487,6 @@ public class BitmapFont implements Disposable {
 		public char[] xChars = {'x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'};
 		public char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q', 'R', 'S',
 			'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-
-		private Character highSurrogate;
 
 		/** Creates an empty BitmapFontData for configuration before calling {@link #load(FileHandle, boolean)}, to subclass, or to
 		 * populate yourself, e.g. using stb-truetype or FreeType. */
@@ -714,7 +714,6 @@ public class BitmapFont implements Disposable {
 								capHeight = Math.max(capHeight, glyph.height);
 							}
 						}
-
 					}
 				} else
 					capHeight = capGlyph.height;
@@ -815,15 +814,14 @@ public class BitmapFont implements Disposable {
 		}
 
 		public void setGlyph (int ch, Glyph glyph) {
+			if (!Character.isValidCodePoint(ch)) throw new IllegalArgumentException("Invalid code point: " + ch);
 			if (Character.isSupplementaryCodePoint(ch)) {
-				char upper = Character.highSurrogate(ch);
-				char lower = Character.lowSurrogate(ch);
-				if (surrogates == null) {
-					surrogates = new Glyph[SURROGATE_WIDTH][];
-				}
-				Glyph[] page = surrogates[upper - HIGH_SURROGATE_MIN];
-				if (page == null) surrogates[upper - HIGH_SURROGATE_MIN] = page = new Glyph[SURROGATE_WIDTH];
-				page[lower - LOW_SURROGATE_MIN] = glyph;
+				int offset = ch - SUPPLEMENTARY_MIN;
+				int high = offset >>> 10, low = offset & (SURROGATE_WIDTH - 1);
+				if (surrogates == null) surrogates = new Glyph[SURROGATE_WIDTH][];
+				Glyph[] page = surrogates[high];
+				if (page == null) surrogates[high] = page = new Glyph[SURROGATE_WIDTH];
+				page[low] = glyph;
 				return;
 			}
 			final int ind = ch / PAGE_SIZE;
@@ -848,7 +846,6 @@ public class BitmapFont implements Disposable {
 						return glyph;
 					}
 				}
-
 			}
 			throw new GdxRuntimeException("No glyphs found.");
 		}
@@ -859,33 +856,30 @@ public class BitmapFont implements Disposable {
 			return getGlyph(ch) != null;
 		}
 
+		/** Returns true if the font has the glyph for the specified code point, or if the font has a {@link #missingGlyph}. */
+		public boolean hasGlyph (int codePoint) {
+			if (!Character.isValidCodePoint(codePoint)) return false;
+			if (missingGlyph != null) return true;
+			return getGlyph(codePoint) != null;
+		}
+
 		/** Returns the glyph for the specified character, or null if no such glyph exists. Note that
 		 * {@link #getGlyphs(GlyphRun, CharSequence, int, int, Glyph)} should be be used to shape a string of characters into a list
 		 * of glyphs. */
 		public Glyph getGlyph (char ch) {
-			if (Character.isHighSurrogate(ch)) {
-				highSurrogate = ch;
-				return null;
-			} else if (Character.isLowSurrogate(ch)) {
-				if (highSurrogate == null) {
-					assert false : "No surrogate found for 0x" + Integer.toHexString(ch);
-					return null;
-				}
-				final Glyph[] page = surrogates == null ? null : surrogates[highSurrogate - HIGH_SURROGATE_MIN];
-				highSurrogate = null;
-				if (page == null) {
-					// allow people who choose to run with asserts enabled get notified when characters don't work
-					assert false : "No glyph found in " + name + " for character '" + highSurrogate + ch + "'";
-					return null;
-				}
-				return page[ch - LOW_SURROGATE_MIN];
-			}
-			assert highSurrogate == null : "Saw high surrogate " + Integer.toHexString(highSurrogate) + " but no low surrogate at character '" + ch + "'";
-            //noinspection DataFlowIssue
-            highSurrogate = null;
 			Glyph[] page = glyphs[ch / PAGE_SIZE];
 			if (page != null) return page[ch & PAGE_SIZE - 1];
 			return null;
+		}
+
+		/** Returns the glyph for the specified Unicode code point, or null if no such glyph exists. */
+		public Glyph getGlyph (int codePoint) {
+			if (!Character.isValidCodePoint(codePoint)) return null;
+			if (!Character.isSupplementaryCodePoint(codePoint)) return getGlyph((char)codePoint);
+			if (surrogates == null) return null;
+			int offset = codePoint - SUPPLEMENTARY_MIN;
+			Glyph[] page = surrogates[offset >>> 10];
+			return page == null ? null : page[offset & (SURROGATE_WIDTH - 1)];
 		}
 
 		/** Using the specified string, populates the glyphs and positions of the specified glyph run.
@@ -908,11 +902,12 @@ public class BitmapFont implements Disposable {
 			do {
 				char ch = str.charAt(start++);
 				if (ch == '\r') continue; // Ignore.
-				Glyph glyph = getGlyph(ch);
+				Glyph glyph;
+				if (Character.isHighSurrogate(ch) && start < end && Character.isLowSurrogate(str.charAt(start)))
+					glyph = getGlyph(Character.toCodePoint(ch, str.charAt(start++)));
+				else
+					glyph = getGlyph(ch);
 				if (glyph == null) {
-					if (Character.isHighSurrogate(ch)) {
-						continue;
-					}
 					if (missingGlyph == null) continue;
 					glyph = missingGlyph;
 				}
@@ -937,12 +932,12 @@ public class BitmapFont implements Disposable {
 		public int getWrapIndex (Array<Glyph> glyphs, int start) {
 			int i = start - 1;
 			Object[] glyphsItems = glyphs.items;
-			char ch = (char)((Glyph)glyphsItems[i]).id;
-			if (isWhitespace(ch)) return i;
-			if (isBreakChar(ch)) i--;
+			int ch = ((Glyph)glyphsItems[i]).id;
+			if (ch <= Character.MAX_VALUE && isWhitespace((char)ch)) return i;
+			if (ch <= Character.MAX_VALUE && isBreakChar((char)ch)) i--;
 			for (; i > 0; i--) {
-				ch = (char)((Glyph)glyphsItems[i]).id;
-				if (isWhitespace(ch) || isBreakChar(ch)) return i + 1;
+				ch = ((Glyph)glyphsItems[i]).id;
+				if (ch <= Character.MAX_VALUE && (isWhitespace((char)ch) || isBreakChar((char)ch))) return i + 1;
 			}
 			return 0;
 		}
