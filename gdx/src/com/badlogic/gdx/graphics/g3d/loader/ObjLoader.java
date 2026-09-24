@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g3d.loader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -49,16 +50,16 @@ import com.badlogic.gdx.utils.FloatArray;
  * Wavefront specification is NOT fully implemented, only a subset of the specification is supported. Especially the
  * {@link Material} ({@link Attributes}), e.g. the color or texture applied, might not or not correctly be loaded.
  * </p>
- * 
+ *
  * This {@link ModelLoader} can be used to load very basic models without having to convert them to a more suitable format.
  * Therefore it can be used for educational purposes and to quickly test a basic model, but should not be used in production.
  * Instead use {@link G3dModelLoader}.
  * </p>
- * 
+ *
  * Because of above reasons, when an OBJ file is loaded using this loader, it will log and error. To prevent this error from being
  * logged, set the {@link #logWarning} flag to false. However, it is advised not to do so.
  * </p>
- * 
+ *
  * An OBJ file only contains the mesh (shape). It may link to a separate MTL file, which is used to describe one or more
  * materials. In that case the MTL filename (might be case-sensitive) is expected to be located relative to the OBJ file. The MTL
  * file might reference one or more texture files, in which case those filename(s) are expected to be located relative to the MTL
@@ -114,6 +115,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 
 		// Create a "default" Group and set it as the active group, in case
 		// there are no groups or objects defined in the OBJ file.
+		String activeMaterial = "default";
 		Group activeGroup = new Group("default");
 		groups.add(activeGroup);
 
@@ -144,7 +146,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 					}
 				} else if (firstChar == 'f') {
 					String[] parts;
-					Array<Integer> faces = activeGroup.faces;
+					Array<Integer> faces = activeGroup.getFaces(activeMaterial);
 					for (int i = 1; i < tokens.length - 2; i--) {
 						parts = tokens[1].split("/");
 						faces.add(getIndex(parts[0], verts.size));
@@ -179,9 +181,10 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 					mtl.load(file.parent().child(tokens[1]));
 				} else if (tokens[0].equals("usemtl")) {
 					if (tokens.length == 1)
-						activeGroup.materialName = "default";
-					else
-						activeGroup.materialName = tokens[1].replace('.', '_');
+						activeMaterial = "default";
+					else {
+						activeMaterial = tokens[1].replace('.', '_');
+					}
 				}
 			}
 			reader.close();
@@ -207,73 +210,80 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 
 		for (int g = 0; g < numGroups; g++) {
 			Group group = groups.get(g);
-			Array<Integer> faces = group.faces;
-			final int numElements = faces.size;
-			final int numFaces = group.numFaces;
-			final boolean hasNorms = group.hasNorms;
-			final boolean hasUVs = group.hasUVs;
-
-			final float[] finalVerts = new float[(numFaces * 3) * (3 + (hasNorms ? 3 : 0) + (hasUVs ? 2 : 0))];
-
-			for (int i = 0, vi = 0; i < numElements;) {
-				int vertIndex = faces.get(i++) * 3;
-				finalVerts[vi++] = verts.get(vertIndex++);
-				finalVerts[vi++] = verts.get(vertIndex++);
-				finalVerts[vi++] = verts.get(vertIndex);
-				if (hasNorms) {
-					int normIndex = faces.get(i++) * 3;
-					finalVerts[vi++] = norms.get(normIndex++);
-					finalVerts[vi++] = norms.get(normIndex++);
-					finalVerts[vi++] = norms.get(normIndex);
-				}
-				if (hasUVs) {
-					int uvIndex = faces.get(i++) * 2;
-					finalVerts[vi++] = uvs.get(uvIndex++);
-					finalVerts[vi++] = uvs.get(uvIndex);
-				}
-			}
-
-			final int numIndices = numFaces * 3 >= Short.MAX_VALUE ? 0 : numFaces * 3;
-			final short[] finalIndices = new short[numIndices];
-			// if there are too many vertices in a mesh, we can't use indices
-			if (numIndices > 0) {
-				for (int i = 0; i < numIndices; i++) {
-					finalIndices[i] = (short)i;
-				}
-			}
-
-			Array<VertexAttribute> attributes = new Array<VertexAttribute>();
-			attributes.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
-			if (hasNorms) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
-			if (hasUVs) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
 			String stringId = Integer.toString(++id);
 			String nodeId = "default".equals(group.name) ? "node" + stringId : group.name;
 			String meshId = "default".equals(group.name) ? "mesh" + stringId : group.name;
-			String partId = "default".equals(group.name) ? "part" + stringId : group.name;
 			ModelNode node = new ModelNode();
 			node.id = nodeId;
 			node.meshId = meshId;
 			node.scale = new Vector3(1, 1, 1);
 			node.translation = new Vector3();
 			node.rotation = new Quaternion();
-			ModelNodePart pm = new ModelNodePart();
-			pm.meshPartId = partId;
-			pm.materialId = group.materialName;
-			node.parts = new ModelNodePart[] {pm};
-			ModelMeshPart part = new ModelMeshPart();
-			part.id = partId;
-			part.indices = finalIndices;
-			part.primitiveType = GL20.GL_TRIANGLES;
-			ModelMesh mesh = new ModelMesh();
-			mesh.id = meshId;
-			mesh.attributes = attributes.toArray(VertexAttribute[]::new);
-			mesh.vertices = finalVerts;
-			mesh.parts = new ModelMeshPart[] {part};
+
+			ArrayList<ModelNodePart> nodeParts = new ArrayList<>();
+
+			for (String materialName : group.getMaterials()) {
+				Array<Integer> faces = group.getFaces(materialName);
+				final int numElements = faces.size;
+				final int numFaces = group.numFaces;
+				final boolean hasNorms = group.hasNorms;
+				final boolean hasUVs = group.hasUVs;
+
+				final float[] finalVerts = new float[(numFaces * 3) * (3 + (hasNorms ? 3 : 0) + (hasUVs ? 2 : 0))];
+
+				for (int i = 0, vi = 0; i < numElements;) {
+					int vertIndex = faces.get(i++) * 3;
+					finalVerts[vi++] = verts.get(vertIndex++);
+					finalVerts[vi++] = verts.get(vertIndex++);
+					finalVerts[vi++] = verts.get(vertIndex);
+					if (hasNorms) {
+						int normIndex = faces.get(i++) * 3;
+						finalVerts[vi++] = norms.get(normIndex++);
+						finalVerts[vi++] = norms.get(normIndex++);
+						finalVerts[vi++] = norms.get(normIndex);
+					}
+					if (hasUVs) {
+						int uvIndex = faces.get(i++) * 2;
+						finalVerts[vi++] = uvs.get(uvIndex++);
+						finalVerts[vi++] = uvs.get(uvIndex);
+					}
+				}
+
+				final int numIndices = numFaces * 3 >= Short.MAX_VALUE ? 0 : numFaces * 3;
+				final short[] finalIndices = new short[numIndices];
+				// if there are too many vertices in a mesh, we can't use indices
+				if (numIndices > 0) {
+					for (int i = 0; i < numIndices; i++) {
+						finalIndices[i] = (short)i;
+					}
+				}
+
+				Array<VertexAttribute> attributes = new Array<VertexAttribute>();
+				attributes.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
+				if (hasNorms) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
+				if (hasUVs) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+
+				String partId = "default".equals(group.name) ? "part" + stringId : group.name;
+				ModelNodePart pm = new ModelNodePart();
+				pm.meshPartId = partId + "_" + materialName;
+				pm.materialId = materialName;
+				nodeParts.add(pm);
+				ModelMeshPart part = new ModelMeshPart();
+				part.id = partId + "_" + materialName;
+				part.indices = finalIndices;
+				part.primitiveType = GL20.GL_TRIANGLES;
+				ModelMesh mesh = new ModelMesh();
+				mesh.id = meshId + "_" + materialName;
+				mesh.attributes = attributes.toArray(VertexAttribute.class);
+				mesh.vertices = finalVerts;
+				mesh.parts = new ModelMeshPart[] {part};
+				data.meshes.add(mesh);
+				ModelMaterial mm = mtl.getMaterial(materialName);
+				if (!data.materials.contains(mm, false)) data.materials.add(mm);
+			}
+			node.parts = nodeParts.toArray(new ModelNodePart[0]);
 			data.nodes.add(node);
-			data.meshes.add(mesh);
-			ModelMaterial mm = mtl.getMaterial(group.materialName);
-			data.materials.add(mm);
 		}
 
 		// for (ModelMaterial m : mtl.materials)
@@ -313,19 +323,24 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 
 	private static class Group {
 		final String name;
-		String materialName;
-		Array<Integer> faces;
+		LinkedHashMap<String, Array<Integer>> faces;
 		int numFaces;
 		boolean hasNorms;
 		boolean hasUVs;
-		Material mat;
 
 		Group (String name) {
 			this.name = name;
-			this.faces = new Array<Integer>(200);
+			this.faces = new LinkedHashMap<>();
 			this.numFaces = 0;
-			this.mat = new Material("");
-			this.materialName = "default";
+		}
+
+		public Set<String> getMaterials () {
+			return faces.keySet();
+		}
+
+		public Array<Integer> getFaces (String activeMaterial) {
+			faces.putIfAbsent(activeMaterial, new Array<Integer>(200));
+			return faces.get(activeMaterial);
 		}
 	}
 }
