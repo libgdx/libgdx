@@ -71,6 +71,7 @@ public class LwjglTestStarter extends JFrame {
 		if (test == null) {
 			return false;
 		}
+		GdxTests.resetContext();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 640;
 		config.height = 480;
