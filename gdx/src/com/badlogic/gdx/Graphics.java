@@ -318,6 +318,12 @@ public interface Graphics {
 	 * @param fps the targeted fps; default differs by platform */
 	public void setForegroundFPS (int fps);
 
+	/** Sets the target framerate for the application when using continuous rendering. Might not work on all platforms. Is not
+	 * generally advised to be used on mobile platforms.
+	 *
+	 * @param fps the targeted fps; default differs by platform */
+	public void setBackgroundFPS (int fps);
+
 	/** @return the format of the color, depth and stencil buffer in a {@link BufferFormat} instance */
 	BufferFormat getBufferFormat ();
 
