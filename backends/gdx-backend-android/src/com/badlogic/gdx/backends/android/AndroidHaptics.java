@@ -71,7 +71,7 @@ public class AndroidHaptics {
 
 	@SuppressLint("MissingPermission")
 	public void vibrate (Input.VibrationType vibrationType) {
-		if (hapticsSupport) {
+		if (vibratorSupport) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 				int vibrationEffect;
 				switch (vibrationType) {
