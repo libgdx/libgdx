@@ -153,6 +153,7 @@ public class GdxTests {
 		CpuSpriteBatchTest.class,
 		CullTest.class,
 		CursorTest.class,
+		DecalAlphaTest.class,
 		DecalTest.class,
 		DefaultTextureBinderTest.class,
 		DelaunayTriangulatorTest.class,
