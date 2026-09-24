@@ -83,7 +83,7 @@ public class LwjglTestStarter extends JFrame {
 				config.gles30ContextMinorVersion = 3;
 			}
 			ShaderProgram.prependVertexCode = "#version 140\n#define varying out\n#define attribute in\n";
-			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define textureCube texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
 		} else {
 			config.useGL30 = false;
 			ShaderProgram.prependVertexCode = "";
