@@ -16,8 +16,10 @@
 
 package com.badlogic.gdx.tests.gles2;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -54,6 +56,8 @@ public class GlTexImage2D extends GdxTest {
 	FloatBuffer pixmapVerticesData = BufferUtils.newFloatBuffer(8);
 	FloatBuffer uvData = BufferUtils.newFloatBuffer(8);
 	ByteBuffer textureColorData = BufferUtils.newByteBuffer(12);
+	IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
+	int vaoHandle = -1;
 
 	@Override
 	public void create () {
@@ -115,6 +119,11 @@ public class GlTexImage2D extends GdxTest {
 
 	private void reload () {
 
+		// from GL30 onwards you need to create a VAO explicitly to work with VBO's
+		if (Gdx.gl30 != null) {
+			createVAO();
+		}
+
 		/* common */
 		Gdx.gl20.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
 
@@ -144,6 +153,9 @@ public class GlTexImage2D extends GdxTest {
 
 		/* set shader */
 		shader = new ShaderProgram(vertexShader, fragmentShader);
+		if (!shader.isCompiled()) {
+			Gdx.app.error("Shader compile", shader.getLog());
+		}
 		shader.bind();
 
 		/* set vertices */
@@ -170,14 +182,22 @@ public class GlTexImage2D extends GdxTest {
 		Gdx.gl20.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
 	}
 
-	@Override
-	public void pause () {
-		dispose();
+	private void createVAO () {
+		((Buffer)tmpHandle).clear();
+		Gdx.gl30.glGenVertexArrays(1, tmpHandle);
+		vaoHandle = tmpHandle.get();
+		Gdx.gl30.glBindVertexArray(vaoHandle); // bind vao
 	}
 
-	@Override
-	public void resume () {
-		reload();
+	private void deleteVAO () {
+		if (vaoHandle != -1) {
+			Gdx.gl30.glBindVertexArray(0); // unbind vao
+			((Buffer)tmpHandle).clear();
+			tmpHandle.put(vaoHandle);
+			((Buffer)tmpHandle).flip();
+			Gdx.gl30.glDeleteVertexArrays(1, tmpHandle);
+			vaoHandle = -1;
+		}
 	}
 
 	@Override
@@ -191,6 +211,8 @@ public class GlTexImage2D extends GdxTest {
 
 		Gdx.gl20.glDeleteTexture(texture);
 		Gdx.gl20.glDeleteTexture(pixmapTexture);
+
+		deleteVAO();
 
 		shader.dispose();
 		pixmapCheck.dispose();
