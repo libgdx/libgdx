@@ -459,6 +459,24 @@ public class BitmapFont implements Disposable {
 		 * file, it needs to be set manually depending on how the glyphs are rendered on the backing textures. */
 		public float cursorX;
 
+		/*
+		 * Here we keep backup values for those attributes that get modified in setScale() method. We need it due to a bug described
+		 * here: https://github.com/libgdx/libgdx/issues/7100. We use them with undoScale() method.
+		 */
+		public float backupScaleX;
+		public float backupScaleY;
+		public float backupLineHeight;
+		public float backupSpaceXadvance;
+		public float backupXHeight;
+		public float backupCapHeight;
+		public float backupAscent;
+		public float backupDescent;
+		public float backupDown;
+		public float backupPadLeft;
+		public float backupPadRight;
+		public float backupPadTop;
+		public float backupPadBottom;
+
 		public final Glyph[][] glyphs = new Glyph[PAGES][];
 		/** The glyph to display for characters not in the font. May be null. */
 		public Glyph missingGlyph;
@@ -918,6 +936,22 @@ public class BitmapFont implements Disposable {
 		public void setScale (float scaleX, float scaleY) {
 			if (scaleX == 0) throw new IllegalArgumentException("scaleX cannot be 0.");
 			if (scaleY == 0) throw new IllegalArgumentException("scaleY cannot be 0.");
+
+			// backup current values before scaling (we'll need them with the undoScale() method):
+			backupScaleX = this.scaleX;
+			backupScaleY = this.scaleY;
+			backupLineHeight = lineHeight;
+			backupSpaceXadvance = spaceXadvance;
+			backupXHeight = xHeight;
+			backupCapHeight = capHeight;
+			backupAscent = ascent;
+			backupDescent = descent;
+			backupDown = down;
+			backupPadLeft = padLeft;
+			backupPadRight = padRight;
+			backupPadTop = padTop;
+			backupPadBottom = padBottom;
+
 			float x = scaleX / this.scaleX;
 			float y = scaleY / this.scaleY;
 			lineHeight *= y;
@@ -947,6 +981,26 @@ public class BitmapFont implements Disposable {
 		 * @throws IllegalArgumentException if the resulting scale is zero. */
 		public void scale (float amount) {
 			setScale(scaleX + amount, scaleY + amount);
+		}
+
+		/** Undo last {@link #setScale(float, float)} operation. We need this to solve problem with limited float precision
+		 * calculations which can cause some undesirable behaviour in certain widgets, as described here:
+		 * <a href="https://github.com/libgdx/libgdx/issues/7100">https://github.com/libgdx/libgdx/issues/7100</a> */
+		public void undoScale () {
+			scaleX = backupScaleX;
+			scaleY = backupScaleY;
+
+			lineHeight = backupLineHeight;
+			spaceXadvance = backupSpaceXadvance;
+			xHeight = backupXHeight;
+			capHeight = backupCapHeight;
+			ascent = backupAscent;
+			descent = backupDescent;
+			down = backupDown;
+			padLeft = backupPadLeft;
+			padRight = backupPadRight;
+			padTop = backupPadTop;
+			padBottom = backupPadBottom;
 		}
 
 		public String toString () {

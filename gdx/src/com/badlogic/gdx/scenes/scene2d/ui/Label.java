@@ -142,13 +142,11 @@ public class Label extends Widget implements Styleable<Label.LabelStyle> {
 
 	private void scaleAndComputePrefSize () {
 		BitmapFont font = cache.getFont();
-		float oldScaleX = font.getScaleX();
-		float oldScaleY = font.getScaleY();
 		if (fontScaleChanged) font.getData().setScale(fontScaleX, fontScaleY);
 
 		computePrefSize(Label.prefSizeLayout);
 
-		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
+		if (fontScaleChanged) font.getData().undoScale();
 	}
 
 	protected void computePrefSize (GlyphLayout layout) {
@@ -168,8 +166,6 @@ public class Label extends Widget implements Styleable<Label.LabelStyle> {
 
 	public void layout () {
 		BitmapFont font = cache.getFont();
-		float oldScaleX = font.getScaleX();
-		float oldScaleY = font.getScaleY();
 		if (fontScaleChanged) font.getData().setScale(fontScaleX, fontScaleY);
 
 		boolean wrap = this.wrap && ellipsis == null;
@@ -224,7 +220,7 @@ public class Label extends Widget implements Styleable<Label.LabelStyle> {
 		layout.setText(font, text, 0, text.size, Color.WHITE, textWidth, lineAlign, wrap, justify, ellipsis);
 		cache.setText(layout, x, y);
 
-		if (fontScaleChanged) font.getData().setScale(oldScaleX, oldScaleY);
+		if (fontScaleChanged) font.getData().undoScale();
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
