@@ -35,7 +35,7 @@ public class IOSSceneDelegate extends UIWindowSceneDelegateAdapter {
 				// Unrecoverable, kill process
 				System.exit(0);
 			} else {
-				uiWindowScene = (UIWindowScene) scene;
+				uiWindowScene = (UIWindowScene)scene;
 				IOSApplication app = (IOSApplication)Gdx.app;
 				app.handleSceneConnection(uiWindowScene);
 				if (userLauncher != null) {
