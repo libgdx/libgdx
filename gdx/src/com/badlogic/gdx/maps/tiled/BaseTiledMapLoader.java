@@ -337,12 +337,12 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 	}
 
 	// Object references are only known after the whole map is parsed, so fetch them at the end of [loadTiledMap]
-	protected void loadObjectPropertyOfList(Array<Object> list, int id) {
+	protected void loadObjectPropertyOfList (Array<Object> list, int id) {
 		final int index = list.size;
 		list.add(null);
 		runOnEndOfLoadTiled.add(new Runnable() {
 			@Override
-			public void run() {
+			public void run () {
 				list.set(index, idToObject.get(id));
 			}
 		});
