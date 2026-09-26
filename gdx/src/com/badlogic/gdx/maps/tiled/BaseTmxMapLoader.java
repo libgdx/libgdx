@@ -46,8 +46,8 @@ import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectIntMap;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.StreamUtils;
@@ -723,16 +723,8 @@ public abstract class BaseTmxMapLoader<P extends BaseTiledMapLoader.Parameters> 
 				loadClassProperties(className, classProperties, item.getChildByName("properties"));
 				list.add(classProperties);
 			} else if ("object".equals(type)) {
-				// Object references are only known after the whole map is parsed, so fetch them at the end of [loadTiledMap]
 				final int id = Integer.parseInt(item.get("value"));
-				final int index = list.size;
-				list.add(null);
-				runOnEndOfLoadTiled.add(new Runnable() {
-					@Override
-					public void run () {
-						list.set(index, idToObject.get(id));
-					}
-				});
+				loadObjectPropertyOfList(list, id);
 			} else {
 				list.add(castProperty(name, item.get("value"), type));
 			}

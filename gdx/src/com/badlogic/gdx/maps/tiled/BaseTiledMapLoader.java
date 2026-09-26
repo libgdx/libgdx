@@ -327,21 +327,25 @@ public abstract class BaseTiledMapLoader<P extends BaseTiledMapLoader.Parameters
 				loadJsonClassProperties(className, classProperties, item.get("value"));
 				list.add(classProperties);
 			} else if ("object".equals(type)) {
-				// Object references are only known after the whole map is parsed, so fetch them at the end of [loadTiledMap]
 				final int id = Integer.parseInt(item.getString("value"));
-				final int index = list.size;
-				list.add(null);
-				runOnEndOfLoadTiled.add(new Runnable() {
-					@Override
-					public void run () {
-						list.set(index, idToObject.get(id));
-					}
-				});
+				loadObjectPropertyOfList(list, id);
 			} else {
 				list.add(castProperty(name, item.getString("value"), type));
 			}
 		}
 		return list;
+	}
+
+	// Object references are only known after the whole map is parsed, so fetch them at the end of [loadTiledMap]
+	protected void loadObjectPropertyOfList(Array<Object> list, int id) {
+		final int index = list.size;
+		list.add(null);
+		runOnEndOfLoadTiled.add(new Runnable() {
+			@Override
+			public void run() {
+				list.set(index, idToObject.get(id));
+			}
+		});
 	}
 
 	/** Converts Tiled's color format #AARRGGBB to a libGDX appropriate #RRGGBBAA The Tiled Map Editor uses the color format
