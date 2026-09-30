@@ -57,6 +57,11 @@ public class IOSApplication implements Application {
 		}
 
 		@Override
+		public void willTerminate (UIApplication application) {
+			app.willTerminate(application);
+		}
+
+		@Override
 		public UISceneConfiguration getConfigurationForConnectingSceneSession (UIApplication application,
 			UISceneSession connectingSceneSession, UISceneConnectionOptions options) {
 			// Exit callback if it comes from screen mirroring initialization (see https://developer.apple.com/forums/thread/815376)
@@ -72,11 +77,6 @@ public class IOSApplication implements Application {
 			UISceneConfiguration config = new UISceneConfiguration(null, connectingSceneSession.getRole());
 			config.setDelegateClass(IOSSceneDelegate.class);
 			return config;
-		}
-
-		@Override
-		public void willTerminate (UIApplication application) {
-			app.willTerminate(application);
 		}
 
 		public void willConnect (UIScene scene, UISceneSession session, UISceneConnectionOptions connectionOptions) {
