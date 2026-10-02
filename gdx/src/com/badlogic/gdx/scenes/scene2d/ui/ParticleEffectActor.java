@@ -104,7 +104,7 @@ public class ParticleEffectActor extends Actor implements Disposable {
 	}
 
 	public void cancel () {
-		isRunning = true;
+		isRunning = false;
 	}
 
 	public void allowCompletion () {
