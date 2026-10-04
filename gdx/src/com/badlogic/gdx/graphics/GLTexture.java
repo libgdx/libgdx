@@ -218,16 +218,11 @@ public abstract class GLTexture implements Disposable {
 	/** @return The maximum supported anisotropic filtering level supported by the device. */
 	public static float getMaxAnisotropicFilterLevel () {
 		if (maxAnisotropicFilterLevel > 0) return maxAnisotropicFilterLevel;
-		if (
-				Gdx.graphics.supportsExtension("GL_EXT_texture_filter_anisotropic")
-				|| (
-						Gdx.app.getType() == Application.ApplicationType.WebGL && (
-								Gdx.graphics.supportsExtension("EXT_texture_filter_anisotropic")
-								|| Gdx.graphics.supportsExtension("MOZ_EXT_texture_filter_anisotropic")
-								|| Gdx.graphics.supportsExtension("WEBKIT_EXT_texture_filter_anisotropic")
-								)
-						)
-		) {
+		if (Gdx.graphics.supportsExtension("GL_EXT_texture_filter_anisotropic")
+			|| (Gdx.app.getType() == Application.ApplicationType.WebGL
+				&& (Gdx.graphics.supportsExtension("EXT_texture_filter_anisotropic")
+					|| Gdx.graphics.supportsExtension("MOZ_EXT_texture_filter_anisotropic")
+					|| Gdx.graphics.supportsExtension("WEBKIT_EXT_texture_filter_anisotropic")))) {
 
 			FloatBuffer buffer = BufferUtils.newFloatBuffer(16);
 			((Buffer)buffer).position(0);
