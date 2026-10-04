@@ -607,6 +607,16 @@ public class WebGLRenderingContext extends JavaScriptObject {
 		this.compileShader(shader);
 	}-*/;
 
+	public final native void compressedTexImage2D (int target, int level, int internalformat, int width, int height, int border,
+		ArrayBufferView data) /*-{
+		this.compressedTexImage2D(target, level, internalformat, width, height, border, data);
+	}-*/;
+
+	public final native void compressedTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height,
+		int format, ArrayBufferView data) /*-{
+		this.compressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, data);
+	}-*/;
+
 	public final native void copyTexImage2D (int target, int level, int internalformat, int x, int y, int width, int height,
 		int border) /*-{
 		this.copyTexImage2D(target, level, internalformat, x, y, width, height,

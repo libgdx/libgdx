@@ -1349,4 +1349,14 @@ public class PolygonSpriteBatch implements PolygonBatch {
 	public boolean isDrawing () {
 		return drawing;
 	}
+
+	/** @return The max number of vertices in a single batch, which a single draw can't exceed. */
+	public int getMaxVertices () {
+		return vertices.length / VERTEX_SIZE;
+	}
+
+	/** @return The max number of triangles in a single batch, which a single draw can't exceed. */
+	public int getMaxTriangles () {
+		return triangles.length / 3;
+	}
 }

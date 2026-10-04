@@ -337,9 +337,8 @@ public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
 		Monitor[] monitors = getMonitors();
 		Monitor result = monitors[0];
 
-		GLFW.glfwGetWindowPos(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
-		int windowX = tmpBuffer.get(0);
-		int windowY = tmpBuffer2.get(0);
+		int windowX = window.getPositionX();
+		int windowY = window.getPositionY();
 		GLFW.glfwGetWindowSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
 		int windowWidth = tmpBuffer.get(0);
 		int windowHeight = tmpBuffer2.get(0);

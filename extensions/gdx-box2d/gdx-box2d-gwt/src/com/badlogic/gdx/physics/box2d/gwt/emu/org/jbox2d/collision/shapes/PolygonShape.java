@@ -117,7 +117,7 @@ public class PolygonShape extends Shape {
 			Vec2 v = verts[i];
 			boolean unique = true;
 			for (int j = 0; j < tempCount; ++j) {
-				if (MathUtils.distanceSquared(v, ps[j]) < 0.5f * Settings.linearSlop) {
+				if (MathUtils.distanceSquared(v, ps[j]) < ((0.5f * Settings.linearSlop) * (0.5f * Settings.linearSlop))) {
 					unique = false;
 					break;
 				}

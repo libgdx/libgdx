@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.gwt.preloader;
 
+import com.badlogic.gdx.utils.ObjectSet;
+
 public class DefaultAssetFilter implements AssetFilter {
 	private String extension (String file) {
 		String name = file;
@@ -47,19 +49,33 @@ public class DefaultAssetFilter implements AssetFilter {
 		return AssetType.Binary;
 	}
 
+	// @off
+
+	/** File extensions to be processed as image tags.
+	 * KTX is supported but don't add it here! */
+	private static final ObjectSet<String> IMAGE_EXTENSIONS = ObjectSet.with(
+		"bmp", "gif", "jpg", "jpeg", "jpe", "jfif", "png", "apng",
+		"avif", "cur", "ico", "jxl", "svg", "svgz", "webp",
+		"heif", "heifs", "heic", "heics", "avci", "avcs", "hif", "pdf", "tiff", "tif"
+	);
 	private boolean isImage (String extension) {
-		return extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png") || extension.equals("bmp")
-			|| extension.equals("gif");
+		return IMAGE_EXTENSIONS.contains(extension);
 	}
 
+	private static final ObjectSet<String> TEXT_EXTENSIONS = ObjectSet.with(
+		"json", "xml", "txt", "glsl", "fnt", "pack", "obj", "atlas", "g3dj"
+	);
 	private boolean isText (String extension) {
-		return extension.equals("json") || extension.equals("xml") || extension.equals("txt") || extension.equals("glsl")
-			|| extension.equals("fnt") || extension.equals("pack") || extension.equals("obj") || extension.equals("atlas")
-			|| extension.equals("g3dj");
+		return TEXT_EXTENSIONS.contains(extension);
 	}
 
+	/** Somewhat common audio file extensions. */
+	private static final ObjectSet<String> AUDIO_EXTENSIONS = ObjectSet.with(
+		"mp3", "ogg", "wav", "wave", "m4a", "aac", "flac", "oga", "opus", "weba", "webm", // widely supported
+		"caf", "aif", "aiff", "m4b", "m4r" // Apple stuff
+	);
 	private boolean isAudio (String extension) {
-		return extension.equals("mp3") || extension.equals("ogg") || extension.equals("wav");
+		return AUDIO_EXTENSIONS.contains(extension);
 	}
 
 	@Override
