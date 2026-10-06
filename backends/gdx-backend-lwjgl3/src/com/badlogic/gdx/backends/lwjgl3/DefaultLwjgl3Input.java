@@ -16,7 +16,9 @@
 
 package com.badlogic.gdx.backends.lwjgl3;
 
+import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
+import com.badlogic.gdx.input.NoOpHaptics;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCharCallback;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
@@ -34,6 +36,7 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 	final Lwjgl3Window window;
 	private InputProcessor inputProcessor;
 	final InputEventQueue eventQueue = new InputEventQueue();
+	private Haptics haptics = new NoOpHaptics();
 
 	int mouseX, mouseY;
 	int mousePressed;
@@ -676,19 +679,8 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 	}
 
 	@Override
-	public void vibrate (int milliseconds) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
+	public Haptics getHaptics () {
+		return haptics;
 	}
 
 	@Override
