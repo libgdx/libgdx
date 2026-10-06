@@ -37,15 +37,14 @@ public class AndroidHaptics implements Haptics {
 	private boolean fallback;
 
 	public AndroidHaptics (Context context, boolean fallback) {
+		this(getVibratorFromContext(context), fallback);
+	}
+
+	public AndroidHaptics (Vibrator vibrator, boolean fallback) {
+		this.vibrator = vibrator;
 		this.fallback = fallback;
 		vibratorSupport = false;
 		hapticsSupport = false;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-			VibratorManager vibratorManager = (VibratorManager)context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
-			vibrator = vibratorManager.getDefaultVibrator();
-		} else {
-			vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
-		}
 		if (vibrator != null && vibrator.hasVibrator()) {
 			vibratorSupport = true;
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -59,6 +58,17 @@ public class AndroidHaptics implements Haptics {
 						.setUsage(AudioAttributes.USAGE_GAME).build();
 			}
 		}
+	}
+
+	private static Vibrator getVibratorFromContext (Context context) {
+		final Vibrator vibrator;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			VibratorManager vibratorManager = (VibratorManager)context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+			vibrator = vibratorManager.getDefaultVibrator();
+		} else {
+			vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+		}
+		return vibrator;
 	}
 
 	@SuppressLint("MissingPermission")
@@ -96,6 +106,14 @@ public class AndroidHaptics implements Haptics {
 				else
 					vibrator.vibrate(VibrationEffect.createPredefined(vibrationEffect), audioAttributes);
 			}
+		}
+	}
+
+	@SuppressLint("MissingPermission")
+	@Override
+	public void cancel () {
+		if (vibrator != null) {
+			vibrator.cancel();
 		}
 	}
 

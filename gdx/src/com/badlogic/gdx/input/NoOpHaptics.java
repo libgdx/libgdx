@@ -16,6 +16,10 @@ public class NoOpHaptics implements Haptics {
 	}
 
 	@Override
+	public void cancel () {
+	}
+
+	@Override
 	public boolean isHapticsSupported () {
 		return false;
 	}

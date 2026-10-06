@@ -32,6 +32,9 @@ public interface Haptics {
 	 * @param impactType the type of vibration */
 	void impact (ImpactType impactType);
 
+	/** Cancels all current vibration effects **/
+	void cancel ();
+
 	boolean isHapticsSupported ();
 
 	boolean isVibratorSupported ();

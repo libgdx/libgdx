@@ -75,6 +75,16 @@ public class IOSHaptics implements Haptics {
 		}
 	}
 
+	public IOSHaptics (CHHapticEngine hapticEngine, boolean fallback) {
+		if (hapticEngine == null) {
+			throw new NullPointerException("hapticEngine must not be null.");
+		}
+		this.fallback = fallback;
+		vibratorSupport = true;
+		hapticsSupport = true;
+		this.hapticEngine = hapticEngine;
+	}
+
 	@Override
 	public void vibrate (int milliseconds) {
 		if (hapticsSupport) {
@@ -143,6 +153,11 @@ public class IOSHaptics implements Haptics {
 			UIImpactFeedbackGenerator uiImpactFeedbackGenerator = new UIImpactFeedbackGenerator(uiImpactFeedbackStyle);
 			uiImpactFeedbackGenerator.impactOccurred();
 		}
+	}
+
+	@Override
+	public void cancel () {
+		// Not supported
 	}
 
 	@Override
