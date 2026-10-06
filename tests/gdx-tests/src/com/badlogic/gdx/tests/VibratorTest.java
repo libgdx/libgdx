@@ -55,7 +55,7 @@ public class VibratorTest extends GdxTest {
 		fallbackCheckbox.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
-				haptics.setFallbackEnabled(!fallbackCheckbox.isChecked());
+				haptics.setFallbackEnabled(fallbackCheckbox.isChecked());
 			}
 		});
 		final Button button = getButton("Vibrate");

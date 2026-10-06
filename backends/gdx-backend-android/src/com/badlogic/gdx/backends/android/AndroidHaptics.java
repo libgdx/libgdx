@@ -37,6 +37,7 @@ public class AndroidHaptics implements Haptics {
 	private boolean fallback;
 
 	public AndroidHaptics (Context context, boolean fallback) {
+		this.fallback = fallback;
 		vibratorSupport = false;
 		hapticsSupport = false;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
