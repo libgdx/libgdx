@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,18 +14,27 @@
  * limitations under the License.
  ******************************************************************************/
 
-if (JavaVersion.current().isJava9Compatible()) {
-	compileJava {
-		options.release = versions.java
+package com.badlogic.gdx.backends.sdl3;
+
+import com.badlogic.gdx.utils.Clipboard;
+import org.lwjgl.sdl.SDLClipboard;
+
+/** Clipboard implementation for desktop that uses the system clipboard via SDL.
+ * @author mzechner */
+public class Lwjgl3Clipboard implements Clipboard {
+	@Override
+	public boolean hasContents () {
+		String contents = getContents();
+		return contents != null && !contents.isEmpty();
+	}
+
+	@Override
+	public String getContents () {
+		return SDLClipboard.SDL_GetClipboardText();
+	}
+
+	@Override
+	public void setContents (String content) {
+		SDLClipboard.SDL_SetClipboardText(content);
 	}
 }
-sourceCompatibility = versions.java
-targetCompatibility = versions.java
-
-dependencies {
-	api libraries.lwjgl3
-	api libraries.lwjgl3GLFW
-	api gdxnatives.desktop
-}
-
-

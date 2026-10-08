@@ -1,0 +1,578 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
+package com.badlogic.gdx.backends.sdl3;
+
+import java.nio.IntBuffer;
+
+import com.badlogic.gdx.AbstractGraphics;
+import com.badlogic.gdx.Application;
+
+import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import org.lwjgl.BufferUtils;
+
+import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Cursor.SystemCursor;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GL31;
+import com.badlogic.gdx.graphics.GL32;
+import com.badlogic.gdx.graphics.glutils.GLVersion;
+import com.badlogic.gdx.graphics.glutils.HdpiMode;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.Disposable;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.sdl.*;
+import org.lwjgl.system.MemoryStack;
+
+public class Lwjgl3Graphics extends AbstractGraphics implements Disposable {
+	final Lwjgl3Window window;
+	GL20 gl20;
+	private GL30 gl30;
+	private GL31 gl31;
+	private GL32 gl32;
+	private GLVersion glVersion;
+	private volatile int backBufferWidth;
+	private volatile int backBufferHeight;
+	private volatile int logicalWidth;
+	private volatile int logicalHeight;
+	private volatile boolean isContinuous = true;
+	private BufferFormat bufferFormat;
+	private long lastFrameTime = -1;
+	private float deltaTime;
+	private boolean resetDeltaTime = false;
+	private long frameId;
+	private long frameCounterStart = 0;
+	private int frames;
+	private int fps;
+	private int windowPosXBeforeFullscreen;
+	private int windowPosYBeforeFullscreen;
+	private int windowWidthBeforeFullscreen;
+	private int windowHeightBeforeFullscreen;
+	private DisplayMode displayModeBeforeFullscreen = null;
+
+	IntBuffer tmpBuffer = BufferUtils.createIntBuffer(1);
+	IntBuffer tmpBuffer2 = BufferUtils.createIntBuffer(1);
+
+	public void resizeCallback (long windowHandle) {
+		SDLVideo.SDL_SyncWindow(windowHandle);
+		updateFramebufferInfo();
+		if (!window.isListenerInitialized()) {
+			return;
+		}
+		window.makeCurrent();
+		gl20.glViewport(0, 0, backBufferWidth, backBufferHeight);
+		window.getListener().resize(getWidth(), getHeight());
+		update();
+		window.getListener().render();
+		SDLVideo.SDL_GL_SwapWindow(windowHandle);
+	}
+
+	public Lwjgl3Graphics (Lwjgl3Window window) {
+		this.window = window;
+		if (window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL32) {
+			this.gl20 = this.gl30 = this.gl31 = this.gl32 = new Lwjgl3GL32();
+		} else if (window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL31) {
+			this.gl20 = this.gl30 = this.gl31 = new Lwjgl3GL31();
+		} else if (window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL30) {
+			this.gl20 = this.gl30 = new Lwjgl3GL30();
+		} else {
+			try {
+				this.gl20 = window.getConfig().glEmulation == Lwjgl3ApplicationConfiguration.GLEmulation.GL20 ? new Lwjgl3GL20()
+					: (GL20)Class.forName("com.badlogic.gdx.backends.lwjgl3.angle.Lwjgl3GLES20").newInstance();
+			} catch (Throwable t) {
+				throw new GdxRuntimeException("Couldn't instantiate GLES20.", t);
+			}
+			this.gl30 = null;
+		}
+		updateFramebufferInfo();
+		initiateGL();
+	}
+
+	private void initiateGL () {
+		String versionString = gl20.glGetString(GL11.GL_VERSION);
+		String vendorString = gl20.glGetString(GL11.GL_VENDOR);
+		String rendererString = gl20.glGetString(GL11.GL_RENDERER);
+		glVersion = new GLVersion(Application.ApplicationType.Desktop, versionString, vendorString, rendererString);
+		if (supportsCubeMapSeamless()) {
+			enableCubeMapSeamless(true);
+		}
+	}
+
+	/** @return whether cubemap seamless feature is supported. */
+	public boolean supportsCubeMapSeamless () {
+		return glVersion.isVersionEqualToOrHigher(3, 2) || supportsExtension("GL_ARB_seamless_cube_map");
+	}
+
+	/** Enable or disable cubemap seamless feature. Default is true if supported. Should only be called if this feature is
+	 * supported. (see {@link #supportsCubeMapSeamless()})
+	 * @param enable */
+	public void enableCubeMapSeamless (boolean enable) {
+		if (enable) {
+			gl20.glEnable(org.lwjgl.opengl.GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		} else {
+			gl20.glDisable(org.lwjgl.opengl.GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		}
+	}
+
+	public Lwjgl3Window getWindow () {
+		return window;
+	}
+
+	void updateFramebufferInfo () {
+		SDLVideo.SDL_GetWindowSizeInPixels(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
+		this.backBufferWidth = tmpBuffer.get(0);
+		this.backBufferHeight = tmpBuffer2.get(0);
+		SDLVideo.SDL_GetWindowSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
+		Lwjgl3Graphics.this.logicalWidth = tmpBuffer.get(0);
+		Lwjgl3Graphics.this.logicalHeight = tmpBuffer2.get(0);
+		Lwjgl3ApplicationConfiguration config = window.getConfig();
+		bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples,
+			false);
+	}
+
+	void update () {
+		long time = System.nanoTime();
+		if (lastFrameTime == -1 || lastFrameTime > time) lastFrameTime = time;
+		if (resetDeltaTime) {
+			resetDeltaTime = false;
+			deltaTime = 0;
+		} else {
+			deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		}
+		lastFrameTime = time;
+
+		if (time - frameCounterStart >= 1000000000) {
+			fps = frames;
+			frames = 0;
+			frameCounterStart = time;
+		}
+		frames++;
+		frameId++;
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	@Override
+	public boolean isGL31Available () {
+		return gl31 != null;
+	}
+
+	@Override
+	public boolean isGL32Available () {
+		return gl32 != null;
+	}
+
+	@Override
+	public GL20 getGL20 () {
+		return gl20;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
+	}
+
+	@Override
+	public GL31 getGL31 () {
+		return gl31;
+	}
+
+	@Override
+	public GL32 getGL32 () {
+		return gl32;
+	}
+
+	@Override
+	public void setGL20 (GL20 gl20) {
+		this.gl20 = gl20;
+	}
+
+	@Override
+	public void setGL30 (GL30 gl30) {
+		this.gl30 = gl30;
+	}
+
+	@Override
+	public void setGL31 (GL31 gl31) {
+		this.gl31 = gl31;
+	}
+
+	@Override
+	public void setGL32 (GL32 gl32) {
+		this.gl32 = gl32;
+	}
+
+	@Override
+	public int getWidth () {
+		if (window.getConfig().hdpiMode == HdpiMode.Pixels) {
+			return backBufferWidth;
+		} else {
+			return logicalWidth;
+		}
+	}
+
+	@Override
+	public int getHeight () {
+		if (window.getConfig().hdpiMode == HdpiMode.Pixels) {
+			return backBufferHeight;
+		} else {
+			return logicalHeight;
+		}
+	}
+
+	@Override
+	public int getBackBufferWidth () {
+		return backBufferWidth;
+	}
+
+	@Override
+	public int getBackBufferHeight () {
+		return backBufferHeight;
+	}
+
+	public int getLogicalWidth () {
+		return logicalWidth;
+	}
+
+	public int getLogicalHeight () {
+		return logicalHeight;
+	}
+
+	@Override
+	public long getFrameId () {
+		return frameId;
+	}
+
+	@Override
+	public float getDeltaTime () {
+		return deltaTime;
+	}
+
+	public void resetDeltaTime () {
+		resetDeltaTime = true;
+	}
+
+	@Override
+	public int getFramesPerSecond () {
+		return fps;
+	}
+
+	@Override
+	public GraphicsType getType () {
+		return GraphicsType.LWJGL3;
+	}
+
+	@Override
+	public GLVersion getGLVersion () {
+		return glVersion;
+	}
+
+	@Override
+	public float getPpiX () {
+		return getPpcX() * 2.54f;
+	}
+
+	@Override
+	public float getPpiY () {
+		return getPpcY() * 2.54f;
+	}
+
+	@Override
+	public float getPpcX () {
+		Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			SDL_Rect rect = SDL_Rect.malloc(stack);
+			SDLVideo.SDL_GetDisplayBounds(monitor.monitorHandle, rect);
+
+			int sizeY = rect.w();
+			DisplayMode mode = getDisplayMode();
+			return mode.height / (float)sizeY * 10;
+		}
+	}
+
+	@Override
+	public float getPpcY () {
+		Lwjgl3Monitor monitor = (Lwjgl3Monitor)getMonitor();
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			SDL_Rect rect = SDL_Rect.malloc(stack);
+			SDLVideo.SDL_GetDisplayBounds(monitor.monitorHandle, rect);
+
+			int sizeY = rect.h();
+			DisplayMode mode = getDisplayMode();
+			return mode.height / (float)sizeY * 10;
+		}
+	}
+
+	@Override
+	public boolean supportsDisplayModeChange () {
+		return true;
+	}
+
+	@Override
+	public Monitor getPrimaryMonitor () {
+		return Lwjgl3ApplicationConfiguration.toLwjgl3Monitor(SDLVideo.SDL_GetPrimaryDisplay());
+	}
+
+	@Override
+	public Monitor getMonitor () {
+		Monitor[] monitors = getMonitors();
+		Monitor result = monitors[0];
+
+		int windowX = window.getPositionX();
+		int windowY = window.getPositionY();
+		SDLVideo.SDL_GetWindowSize(window.getWindowHandle(), tmpBuffer, tmpBuffer2);
+		int windowWidth = tmpBuffer.get(0);
+		int windowHeight = tmpBuffer2.get(0);
+		int overlap;
+		int bestOverlap = 0;
+
+		for (Monitor monitor : monitors) {
+			DisplayMode mode = getDisplayMode(monitor);
+
+			overlap = Math.max(0,
+				Math.min(windowX + windowWidth, monitor.virtualX + mode.width) - Math.max(windowX, monitor.virtualX))
+				* Math.max(0, Math.min(windowY + windowHeight, monitor.virtualY + mode.height) - Math.max(windowY, monitor.virtualY));
+
+			if (bestOverlap < overlap) {
+				bestOverlap = overlap;
+				result = monitor;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public Monitor[] getMonitors () {
+		IntBuffer sdlDisplays = SDLVideo.SDL_GetDisplays();
+		Monitor[] monitors = new Monitor[sdlDisplays.limit()];
+		for (int i = 0; i < sdlDisplays.limit(); i++) {
+			monitors[i] = Lwjgl3ApplicationConfiguration.toLwjgl3Monitor(sdlDisplays.get(i));
+		}
+		return monitors;
+	}
+
+	@Override
+	public DisplayMode[] getDisplayModes () {
+		return Lwjgl3ApplicationConfiguration.getDisplayModes(getMonitor());
+	}
+
+	@Override
+	public DisplayMode[] getDisplayModes (Monitor monitor) {
+		return Lwjgl3ApplicationConfiguration.getDisplayModes(monitor);
+	}
+
+	@Override
+	public DisplayMode getDisplayMode () {
+		return Lwjgl3ApplicationConfiguration.getDisplayMode(getMonitor());
+	}
+
+	@Override
+	public DisplayMode getDisplayMode (Monitor monitor) {
+		return Lwjgl3ApplicationConfiguration.getDisplayMode(monitor);
+	}
+
+	@Override
+	public int getSafeInsetLeft () {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetTop () {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetBottom () {
+		return 0;
+	}
+
+	@Override
+	public int getSafeInsetRight () {
+		return 0;
+	}
+
+	@Override
+	public boolean setFullscreenMode (DisplayMode displayMode) {
+		window.getInput().resetPollingStates();
+		Lwjgl3DisplayMode newMode = (Lwjgl3DisplayMode)displayMode;
+		if (!isFullscreen()) {
+			storeCurrentWindowPositionAndDisplayMode();
+		}
+		SDLVideo.SDL_SetWindowFullscreen(window.getWindowHandle(), true);
+		SDLVideo.SDL_SetWindowFullscreenMode(window.getWindowHandle(), newMode.displayMode);
+		updateFramebufferInfo();
+		setVSync(window.getConfig().vSyncEnabled);
+
+		return true;
+	}
+
+	private void storeCurrentWindowPositionAndDisplayMode () {
+		windowPosXBeforeFullscreen = window.getPositionX();
+		windowPosYBeforeFullscreen = window.getPositionY();
+		windowWidthBeforeFullscreen = logicalWidth;
+		windowHeightBeforeFullscreen = logicalHeight;
+		displayModeBeforeFullscreen = getDisplayMode();
+	}
+
+	@Override
+	public boolean setWindowedMode (int width, int height) {
+		window.getInput().resetPollingStates();
+		boolean notFullscreen = !isFullscreen();
+		SDLVideo.SDL_SetWindowFullscreen(window.getWindowHandle(), false);
+		if (notFullscreen) {
+			GridPoint2 newPos = null;
+			boolean centerWindow = false;
+			if (width != logicalWidth || height != logicalHeight) {
+				centerWindow = true; // recenter the window since its size changed
+				newPos = Lwjgl3ApplicationConfiguration.calculateCenteredWindowPosition((Lwjgl3Monitor)getMonitor(), width, height);
+			}
+			SDLVideo.SDL_SetWindowSize(window.getWindowHandle(), width, height);
+			if (centerWindow) {
+				window.setPosition(newPos.x, newPos.y); // on macOS the centering has to happen _after_ the new window size was set
+			}
+		} else { // if we were in fullscreen mode, we should consider restoring a previous display mode
+			if (displayModeBeforeFullscreen == null) {
+				storeCurrentWindowPositionAndDisplayMode();
+			}
+			if (width != windowWidthBeforeFullscreen || height != windowHeightBeforeFullscreen) { // center the window since its size
+				// changed
+				GridPoint2 newPos = Lwjgl3ApplicationConfiguration.calculateCenteredWindowPosition((Lwjgl3Monitor)getMonitor(), width,
+					height);
+				SDLVideo.SDL_SetWindowPosition(window.getWindowHandle(), newPos.x, newPos.y);
+			} else { // restore previous position
+				SDLVideo.SDL_SetWindowPosition(window.getWindowHandle(), windowPosXBeforeFullscreen, windowPosYBeforeFullscreen);
+			}
+		}
+		updateFramebufferInfo();
+		return true;
+	}
+
+	@Override
+	public void setTitle (String title) {
+		if (title == null) {
+			title = "";
+		}
+		SDLVideo.SDL_SetWindowTitle(window.getWindowHandle(), title);
+	}
+
+	@Override
+	public void setUndecorated (boolean undecorated) {
+		getWindow().getConfig().setDecorated(!undecorated);
+		SDLVideo.SDL_SetWindowBordered(window.getWindowHandle(), !undecorated);
+	}
+
+	@Override
+	public void setResizable (boolean resizable) {
+		getWindow().getConfig().setResizable(resizable);
+		SDLVideo.SDL_SetWindowResizable(window.getWindowHandle(), resizable);
+	}
+
+	@Override
+	public void setVSync (boolean vsync) {
+		getWindow().getConfig().vSyncEnabled = vsync;
+		SDLVideo.SDL_GL_SetSwapInterval(vsync ? 1 : 0);
+	}
+
+	/** Sets the target framerate for the application, when using continuous rendering. Must be positive. The cpu sleeps as needed.
+	 * Use 0 to never sleep. If there are multiple windows, the value for the first window created is used for all. Default is 0.
+	 *
+	 * @param fps fps */
+	@Override
+	public void setForegroundFPS (int fps) {
+		getWindow().getConfig().foregroundFPS = fps;
+	}
+
+	@Override
+	public BufferFormat getBufferFormat () {
+		return bufferFormat;
+	}
+
+	@Override
+	public boolean supportsExtension (String extension) {
+		return SDLVideo.SDL_GL_ExtensionSupported(extension);
+	}
+
+	@Override
+	public void setContinuousRendering (boolean isContinuous) {
+		this.isContinuous = isContinuous;
+	}
+
+	@Override
+	public boolean isContinuousRendering () {
+		return isContinuous;
+	}
+
+	@Override
+	public void requestRendering () {
+		window.requestRendering();
+	}
+
+	@Override
+	public boolean isFullscreen () {
+		return (SDLVideo.SDL_GetWindowFlags(window.getWindowHandle()) & SDLVideo.SDL_WINDOW_FULLSCREEN) != 0;
+	}
+
+	@Override
+	public Cursor newCursor (Pixmap pixmap, int xHotspot, int yHotspot) {
+		return new Lwjgl3Cursor(getWindow(), pixmap, xHotspot, yHotspot);
+	}
+
+	@Override
+	public void setCursor (Cursor cursor) {
+		getWindow().currentCursor = ((Lwjgl3Cursor)cursor).sdlCursor;
+	}
+
+	@Override
+	public void setSystemCursor (SystemCursor systemCursor) {
+		Lwjgl3Cursor.setSystemCursor(getWindow(), systemCursor);
+	}
+
+	@Override
+	public void dispose () {
+	}
+
+	public static class Lwjgl3DisplayMode extends DisplayMode {
+		final SDL_DisplayMode displayMode;
+
+		Lwjgl3DisplayMode (SDL_DisplayMode displayMode) {
+			super(displayMode.w(), displayMode.h(), (int)displayMode.refresh_rate(),
+				SDLPixels.SDL_BITSPERPIXEL(displayMode.format()));
+			this.displayMode = displayMode;
+		}
+
+		public int getMonitor () {
+			return displayMode.displayID();
+		}
+	}
+
+	public static class Lwjgl3Monitor extends Monitor {
+		final int monitorHandle;
+
+		Lwjgl3Monitor (int monitor, int virtualX, int virtualY, String name) {
+			super(virtualX, virtualY, name);
+			this.monitorHandle = monitor;
+		}
+
+		public int getMonitorHandle () {
+			return monitorHandle;
+		}
+	}
+}

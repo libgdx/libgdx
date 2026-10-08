@@ -24,7 +24,7 @@ targetCompatibility = versions.java
 
 dependencies {
 	api libraries.lwjgl3
-	api libraries.lwjgl3GLFW
+	api libraries.lwjgl3SDL3
 	api gdxnatives.desktop
 }
 
