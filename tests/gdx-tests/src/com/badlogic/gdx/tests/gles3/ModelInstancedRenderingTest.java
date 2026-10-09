@@ -85,6 +85,9 @@ public class ModelInstancedRenderingTest extends GdxTest {
 
 			@Override
 			public void init () {
+				String ovs = ShaderProgram.prependVertexCode;
+				String ofs = ShaderProgram.prependFragmentCode;
+
 				ShaderProgram.prependVertexCode = "#version 300 es\n";
 				ShaderProgram.prependFragmentCode = "#version 300 es\n";
 				program = new ShaderProgram(Gdx.files.internal("data/shaders/instanced-rendering.vert"),
@@ -93,6 +96,9 @@ public class ModelInstancedRenderingTest extends GdxTest {
 					throw new GdxRuntimeException("Shader compile error: " + program.getLog());
 				}
 				init(program, renderable);
+
+				ShaderProgram.prependVertexCode = ovs;
+				ShaderProgram.prependFragmentCode = ofs;
 			}
 
 			@Override
