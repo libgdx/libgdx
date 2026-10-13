@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.utils.Array;
 
@@ -104,6 +105,23 @@ public class TexturePanel extends ImagePanel {
 		selectedRegions.addAll(unselectedRegions);
 		unselectedRegions.clear();
 		repaint();
+	}
+
+	public void select (Array<RegionInfluencer.AspectTextureRegion> regions) {
+		clearSelection();
+
+		for (int i = 0; i < regions.size; ++i) {
+			RegionInfluencer.AspectTextureRegion atr = regions.get(i);
+
+			for (int j = 0; j < unselectedRegions.size; ++j) {
+				TextureRegion tr = unselectedRegions.get(j);
+
+				if (tr.getU() == atr.u && tr.getV() == atr.v && tr.getU2() == atr.u2 && tr.getV2() == atr.v2) {
+					select(tr);
+					--j;
+				}
+			}
+		}
 	}
 
 	@Override

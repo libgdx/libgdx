@@ -52,7 +52,7 @@ public class RegionInfluencerPanel extends InfluencerPanel<RegionInfluencer> imp
 				if (atlas != null)
 					regionPickerPanel.setAtlas(atlas, atlasFilename);
 				else
-					regionPickerPanel.setTexture(editor.getTexture());
+					regionPickerPanel.setTexture(editor.getTexture(), value);
 
 				regionPickerPanel.revalidate();
 				regionPickerPanel.repaint();
