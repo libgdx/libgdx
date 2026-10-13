@@ -57,11 +57,43 @@ public class Lwjgl3TestStarter {
 		config.setWindowedMode(640, 480);
 
 		if (options.gl30 || options.gl31 || options.gl32) {
-			ShaderProgram.prependVertexCode = "#version 140\n#define varying out\n#define attribute in\n";
-			ShaderProgram.prependFragmentCode = "#version 140\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+			String prependVertexCode = "";
+			String prependFragmentCode = "";
+
+			if (options.angle) {
+				if (options.gl30) {
+					prependVertexCode += "#version 300 es\n";
+					prependFragmentCode += "#version 300 es\n";
+				}
+
+				prependVertexCode += "precision mediump float;\n";
+				prependFragmentCode += "precision mediump float;\n";
+			} else {
+				prependVertexCode = "#version 140\n";
+				prependFragmentCode = "#version 140\n";
+			}
+
+			prependVertexCode += "#define varying out\n#define attribute in\n";
+			prependFragmentCode += "#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nout vec4 fragColor;\n";
+
+			ShaderProgram.prependVertexCode = prependVertexCode;
+			ShaderProgram.prependFragmentCode = prependFragmentCode;
 		}
 
-		if (options.gl32) {
+		if (options.angle) {
+			if (options.gl30) {
+				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES30, 0, 0);
+			} else {
+				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 0, 0);
+			}
+
+			// Use CPU sync if ANGLE is enabled on macOS, otherwise the framerate gets halfed
+			// by each new open window.
+			if (SharedLibraryLoader.os == Os.MacOsX) {
+				config.useVsync(false);
+				config.setForegroundFPS(60);
+			}
+		} else if (options.gl32) {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL32, 4, 6);
 		} else if (options.gl31) {
 			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL31, 4, 5);
@@ -70,14 +102,6 @@ public class Lwjgl3TestStarter {
 				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 3, 2);
 			} else {
 				config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.GL30, 4, 3);
-			}
-		} else if (options.angle) {
-			config.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 0, 0);
-			// Use CPU sync if ANGLE is enabled on macOS, otherwise the framerate gets halfed
-			// by each new open window.
-			if (SharedLibraryLoader.os == Os.MacOsX) {
-				config.useVsync(false);
-				config.setForegroundFPS(60);
 			}
 		}
 
@@ -100,6 +124,7 @@ public class Lwjgl3TestStarter {
 		public void create () {
 			System.out.println("OpenGL renderer: " + Gdx.graphics.getGLVersion().getRendererString());
 			System.out.println("OpenGL vendor: " + Gdx.graphics.getGLVersion().getVendorString());
+			System.out.println("OpenGL version: " + Gdx.graphics.getGLVersion().getVersionString());
 
 			final Preferences prefs = Gdx.app.getPreferences("lwjgl3-tests");
 
