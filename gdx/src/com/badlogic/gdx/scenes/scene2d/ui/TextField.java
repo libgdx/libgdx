@@ -224,15 +224,39 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 		this.autocompleteOptions = autocompleteOptions;
 	}
 
+	/** A list of possible strings that are valid to autocomplete Currently only has an effect on mobile with
+	 * {@link NativeOnscreenKeyboard} */
+	public String[] getAutocompleteOptions () {
+		return autocompleteOptions;
+	}
+
 	/** Which {@link OnscreenKeyboardType} to use. Mainly used for mobile, will also be referenced for password masking */
-	public void setKeyboardType (Input.OnscreenKeyboardType keyboardType) {
+	public void setKeyboardType (OnscreenKeyboardType keyboardType) {
 		this.keyboardType = keyboardType;
 	}
 
-	/** Whether if auto correction is provided by the system, it should be surpressed Will be considered true, if
+	/** Which {@link OnscreenKeyboardType} to use. Mainly used for mobile, will also be referenced for password masking. `Default`
+	 * will be promoted to `Password` if `isPasswordMode` is true */
+	public OnscreenKeyboardType getResolvedKeyboardType () {
+		// If we are in password mode, assume that the user want to show password keyboard
+		return isPasswordMode() && keyboardType == OnscreenKeyboardType.Default ? OnscreenKeyboardType.Password : keyboardType;
+	}
+
+	/** Whether if auto correction is provided by the system, it should be surpressed. Will be considered true, if
 	 * {@link OnscreenKeyboardType} is `Password` */
 	public void setPreventAutoCorrection (boolean preventAutoCorrection) {
 		this.preventAutoCorrection = preventAutoCorrection;
+	}
+
+	/** Whether if auto correction is provided by the system, it should be suppressed. Will be considered true, if
+	 * {@link TextField#getResolvedKeyboardType()} is `Password` */
+	public boolean shouldPreventAutoCorrection () {
+		return preventAutoCorrection || getResolvedKeyboardType() == OnscreenKeyboardType.Password;
+	}
+
+	/** Whether the TextField does write enters to the text. */
+	public boolean isWriteEnters () {
+		return writeEnters;
 	}
 
 	/** When false, text set by {@link #setText(String)} may contain characters not in the font, a space will be displayed instead.
@@ -922,7 +946,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	 * @author mzechner */
 	static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
 		public void show (TextField textField) {
-			Gdx.input.setOnscreenKeyboardVisible(true);
+			Gdx.input.setOnscreenKeyboardVisible(true, textField.getResolvedKeyboardType());
 		}
 
 		public void close () {
@@ -934,6 +958,36 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 	 * use with care! This is mutually exclusive with using the {@link DefaultOnscreenKeyboard} or
 	 * {@link Input#setOnscreenKeyboardVisible(boolean)} API */
 	static public class NativeOnscreenKeyboard implements OnscreenKeyboard {
+
+		public interface WidgetAdvance {
+			/** Defines the way a widget should advance if a confirmative action was done by the user. This usually means advancing
+			 * to the next keyboard focusable widget.
+			 * @return true, if the new widget requested itself a native onscreen keyboard. Caution, returning "true" but not calling
+			 *         {@link Input#openTextInputField(NativeInputConfiguration)} or returning "false" but calling
+			 *         `{@link Input#openTextInputField(NativeInputConfiguration)} will lead to undefined behavior. */
+			boolean advance (TextField textField);
+		}
+
+		private static final WidgetAdvance DEFAULT_WIDGET_ADVANCE = textField -> {
+			// Do we want to somehow dismuss keyboard focus?
+			TextField focused = textField.next(false);
+			if (focused != null) {
+				focused.getOnscreenKeyboard().show(focused);
+				return true;
+			}
+
+			return false;
+		};
+
+		private final WidgetAdvance widgetAdvance;
+
+		public NativeOnscreenKeyboard () {
+			this(DEFAULT_WIDGET_ADVANCE);
+		}
+
+		public NativeOnscreenKeyboard (WidgetAdvance onConfirmAdvance) {
+			this.widgetAdvance = onConfirmAdvance;
+		}
 
 		public void close () {
 			Gdx.input.closeTextInputField(false);
@@ -951,23 +1005,25 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 			openNativeInputField(textField);
 		}
 
-		private void openNativeInputField (TextField textField) {
+		protected NativeInputConfiguration getNativeInputConfiguration (TextField textField) {
 			NativeInputConfiguration configuration = new NativeInputConfiguration();
-			// If we are in password mode, assume that the user want to show password keyboard
-			OnscreenKeyboardType resolvedType = textField.passwordMode && textField.keyboardType == OnscreenKeyboardType.Default
-				? OnscreenKeyboardType.Password
-				: textField.keyboardType;
 
-			configuration.setType(resolvedType).setMaskInput(textField.passwordMode).setShowUnmaskButton(textField.passwordMode)
-				.setMaxLength(textField.maxLength <= 0 ? -1 : textField.maxLength).setMultiLine(textField.writeEnters)
-				.setPreventCorrection(textField.preventAutoCorrection || resolvedType == OnscreenKeyboardType.Password)
-				.setPlaceholder(textField.messageText == null ? "" : textField.messageText)
-				.setAutoComplete(textField.autocompleteOptions);
+			//@off
+			configuration
+					.setType(textField.getResolvedKeyboardType())
+					.setMaskInput(textField.isPasswordMode())
+					.setShowUnmaskButton(textField.isPasswordMode())
+					.setMaxLength(textField.getMaxLength() <= 0 ? -1 : textField.getMaxLength())
+					.setMultiLine(textField.isWriteEnters())
+					.setPreventCorrection(textField.shouldPreventAutoCorrection())
+					.setPlaceholder(textField.getMessageText() == null ? "" : textField.getMessageText())
+					.setAutoComplete(textField.getAutocompleteOptions());
+			//@on
 
-			if (textField.filter != null) {
+			if (textField.getTextFieldFilter() != null) {
 				configuration.setValidator(toCheck -> {
 					for (int i = 0; i < toCheck.length(); i++) {
-						if (!textField.filter.acceptChar(textField, toCheck.charAt(i))) return false;
+						if (!textField.getTextFieldFilter().acceptChar(textField, toCheck.charAt(i))) return false;
 					}
 					return true;
 				});
@@ -975,12 +1031,7 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 
 			configuration.setCloseCallback(confirmativeAction -> {
 				if (confirmativeAction) {
-					// Do we want to somehow dismuss keyboard focus?
-					TextField focused = textField.next(false);
-					if (focused != null) {
-						focused.getOnscreenKeyboard().show(focused);
-						return true;
-					}
+					return widgetAdvance.advance(textField);
 				}
 
 				return false;
@@ -1004,11 +1055,6 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 
 				@Override
 				public void writeResults (String text, int selectionStart, int selectionEnd) {
-					if (textField.preventAutoCorrection) {
-						text = text.trim();
-						selectionStart = Math.min(selectionStart, text.length());
-						selectionEnd = Math.min(selectionEnd, text.length());
-					}
 					textField.setText(text);
 					if (selectionStart == selectionEnd) {
 						textField.setCursorPosition(selectionEnd);
@@ -1018,7 +1064,11 @@ public class TextField extends Widget implements Disableable, Styleable<TextFiel
 				}
 			});
 
-			Gdx.input.openTextInputField(configuration);
+			return configuration;
+		}
+
+		protected void openNativeInputField (TextField textField) {
+			Gdx.input.openTextInputField(getNativeInputConfiguration(textField));
 		}
 	}
 
