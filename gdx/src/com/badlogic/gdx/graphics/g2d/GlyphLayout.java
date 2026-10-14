@@ -408,7 +408,7 @@ public class GlyphLayout implements Poolable {
 		}
 
 		run.glyphs.addAll(truncateRun.glyphs);
-		this.glyphCount += truncate.length();
+		this.glyphCount += truncateRun.glyphs.size;
 
 		glyphRunPool.free(truncateRun);
 	}
@@ -423,13 +423,17 @@ public class GlyphLayout implements Poolable {
 
 		// Skip whitespace before the wrap index.
 		int firstEnd = wrapIndex;
-		for (; firstEnd > 0; firstEnd--)
-			if (!fontData.isWhitespace((char)glyphs2.get(firstEnd - 1).id)) break;
+		for (; firstEnd > 0; firstEnd--) {
+			int codePoint = glyphs2.get(firstEnd - 1).id;
+			if (codePoint > Character.MAX_VALUE || !fontData.isWhitespace((char)codePoint)) break;
+		}
 
 		// Skip whitespace after the wrap index.
 		int secondStart = wrapIndex;
-		for (; secondStart < glyphCount; secondStart++)
-			if (!fontData.isWhitespace((char)glyphs2.get(secondStart).id)) break;
+		for (; secondStart < glyphCount; secondStart++) {
+			int codePoint = glyphs2.get(secondStart).id;
+			if (codePoint > Character.MAX_VALUE || !fontData.isWhitespace((char)codePoint)) break;
+		}
 
 		// Copy wrapped glyphs and xadvances to second run.
 		// The second run will contain the remaining glyph data, so swap instances rather than copying.
