@@ -34,7 +34,7 @@ public class GwtTestStarter extends GwtApplication {
 
 		if (config.useGL30) {
 			ShaderProgram.prependVertexCode = "#version 300 es\n#define varying out\n#define attribute in\n";
-			ShaderProgram.prependFragmentCode = "#version 300 es\n#define varying in\n#define texture2D texture\n#define gl_FragColor fragColor\nprecision mediump float;\nout vec4 fragColor;\n";
+			ShaderProgram.prependFragmentCode = "#version 300 es\n#define varying in\n#define texture2D texture\n#define textureCube texture\n#define gl_FragColor fragColor\nprecision mediump float;\nout vec4 fragColor;\n";
 		}
 
 		// config.openURLInNewWindow = true;
