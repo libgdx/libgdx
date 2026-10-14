@@ -426,6 +426,7 @@ public class SelectBox<T> extends Widget implements Disableable, Styleable<Selec
 		final List<T> list;
 		private InputListener hideListener;
 		private Actor previousScrollFocus;
+		boolean resetSelectionOnExit = false;
 
 		public SelectBoxScrollPane (final SelectBox<T> selectBox) {
 			super(null, selectBox.style.scrollStyle);
@@ -458,7 +459,7 @@ public class SelectBox<T> extends Widget implements Disableable, Styleable<Selec
 
 			addListener(new InputListener() {
 				public void exit (InputEvent event, float x, float y, int pointer, @Null Actor toActor) {
-					if (toActor == null || !isAscendantOf(toActor)) {
+					if ((toActor == null || !isAscendantOf(toActor)) && resetSelectionOnExit) {
 						T selected = selectBox.getSelected();
 						if (selected != null) list.selection.set(selected);
 					}
@@ -488,6 +489,10 @@ public class SelectBox<T> extends Widget implements Disableable, Styleable<Selec
 					return false;
 				}
 			};
+		}
+
+		public void setResetSelectionOnExit (boolean resetSelectionOnExit) {
+			this.resetSelectionOnExit = resetSelectionOnExit;
 		}
 
 		/** Allows a subclass to customize the select box list. The default implementation returns a list that delegates
