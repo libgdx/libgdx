@@ -48,6 +48,8 @@ public interface GL31 extends GL30 {
 	public static final int GL_TEXTURE_BLUE_SIZE = 0x805E;
 	public static final int GL_TEXTURE_ALPHA_SIZE = 0x805F;
 	public static final int GL_TEXTURE_DEPTH = 0x8071;
+	public static final int GL_MULTISAMPLE_EXT = 0x809D;
+	public static final int GL_SAMPLE_ALPHA_TO_ONE_EXT = 0x809F;
 	public static final int GL_PROGRAM_SEPARABLE = 0x8258;
 	public static final int GL_ACTIVE_PROGRAM = 0x8259;
 	public static final int GL_PROGRAM_PIPELINE_BINDING = 0x825A;
