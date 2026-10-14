@@ -16,18 +16,14 @@
 
 package com.badlogic.gdx.backends.lwjgl3.angle;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.io.*;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Random;
 import java.util.UUID;
 import java.util.zip.CRC32;
-
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ANGLELoader {
 	static public boolean isWindows = System.getProperty("os.name").contains("Windows");
@@ -51,6 +47,14 @@ public class ANGLELoader {
 			} catch (Throwable ignored) {
 			}
 		}
+	}
+
+	/** Checks if the current jar/code location is inside an macOS app bundle
+	 *
+	 * @return True if app bundle */
+	static boolean isAppBundlePath () {
+		URL jarSource = ANGLELoader.class.getProtectionDomain().getCodeSource().getLocation();
+		return jarSource.getPath().matches(".*/[^/]+\\.app/.*");
 	}
 
 	static String randomUUID () {
@@ -105,6 +109,7 @@ public class ANGLELoader {
 	}
 
 	/** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds.
+	 *
 	 * @return null if a writable path could not be found. */
 	private static File getExtractedFile (String dirName, String fileName) {
 		// Temp directory with username in path.
@@ -175,29 +180,9 @@ public class ANGLELoader {
 	}
 
 	public static boolean isCompatible () {
-		String osDir = "";
-		String arch = isARM ? (is64Bit ? "arm64" : "arm32") : (is64Bit ? "x64" : "x86");
-		String ext = "";
-		if (isWindows) {
-			osDir = "windows";
-			ext = ".dll";
-		}
-		if (isLinux) {
-			osDir = "linux";
-			ext = ".so";
-		}
-		if (isMac) {
-			osDir = "macos";
-			ext = ".dylib";
-		}
-
-		String dir = osDir + "/" + arch + "/angle";
-
-		String eglSource = dir + "/libEGL" + ext;
-		String glesSource = dir + "/libGLESv2" + ext;
-
-		return ANGLELoader.class.getClassLoader().getResource(eglSource) != null
-			&& ANGLELoader.class.getClassLoader().getResource(glesSource) != null;
+		Libs sources = getSourcePaths();
+		return ANGLELoader.class.getClassLoader().getResource(sources.egl) != null
+			&& ANGLELoader.class.getClassLoader().getResource(sources.gles) != null;
 	}
 
 	private static InputStream readFile (String path) {
@@ -207,6 +192,46 @@ public class ANGLELoader {
 	}
 
 	public static void load () {
+		Libs sources = getSourcePaths();
+		String crc = crc(readFile(sources.egl)) + crc(readFile(sources.gles));
+		egl = getExtractedFile(crc, new File(sources.egl).getName());
+		gles = getExtractedFile(crc, new File(sources.gles).getName());
+
+		if (!isMac) {
+			extractFile(sources.egl, egl);
+			System.load(egl.getAbsolutePath());
+			extractFile(sources.gles, gles);
+			System.load(gles.getAbsolutePath());
+		} else {
+			// On macOS, we can't preload the shared libraries. calling dlopen("path1/lib.dylib")
+			// then calling dlopen("lib.dylib") will not return the dylib loaded in the first dlopen()
+			// call, but instead perform the dlopen library search algorithm anew. Since the dylibs
+			// we extract are not in any paths dlopen knows about, GLFW fails to load them.
+			// Instead, we need to copy the shared libraries to the current working directory (which
+			// we can't temporarily change in pure Java either...). The dylibs will get deleted
+			// in postGlfwInit() once the first window has been created, and GLFW has loaded the dylibs.
+
+			// Note: This only works if the app is NOT executed via an app bundle, since extracting the files
+			// into the app bundle breaks the signature and osx won't run the app anymore at all.
+			// Therefore, if you want to use angle with an app bundle, be sure to include the dylibs
+			// manually since we won't extract them here.
+			if (isAppBundlePath()) {
+				// Running inside an app bundle - do nothing
+				return;
+			}
+
+			lastWorkingDir = new File(".");
+			extractFile(sources.egl, new File(lastWorkingDir, egl.getName()));
+			extractFile(sources.gles, new File(lastWorkingDir, gles.getName()));
+		}
+	}
+
+	public static void postGlfwInit () {
+		new File(lastWorkingDir, egl.getName()).delete();
+		new File(lastWorkingDir, gles.getName()).delete();
+	}
+
+	private static Libs getSourcePaths () {
 		String osDir = "";
 		String arch = isARM ? (is64Bit ? "arm64" : "arm32") : (is64Bit ? "x64" : "x86");
 		String ext = "";
@@ -227,31 +252,16 @@ public class ANGLELoader {
 
 		String eglSource = dir + "/libEGL" + ext;
 		String glesSource = dir + "/libGLESv2" + ext;
-		String crc = crc(readFile(eglSource)) + crc(readFile(glesSource));
-		egl = getExtractedFile(crc, new File(eglSource).getName());
-		gles = getExtractedFile(crc, new File(glesSource).getName());
-
-		if (!isMac) {
-			extractFile(eglSource, egl);
-			System.load(egl.getAbsolutePath());
-			extractFile(glesSource, gles);
-			System.load(gles.getAbsolutePath());
-		} else {
-			// On macOS, we can't preload the shared libraries. calling dlopen("path1/lib.dylib")
-			// then calling dlopen("lib.dylib") will not return the dylib loaded in the first dlopen()
-			// call, but instead perform the dlopen library search algorithm anew. Since the dylibs
-			// we extract are not in any paths dlopen knows about, GLFW fails to load them.
-			// Instead, we need to copy the shared libraries to the current working directory (which
-			// we can't temporarily change in pure Java either...). The dylibs will get deleted
-			// in postGlfwInit() once the first window has been created, and GLFW has loaded the dylibs.
-			lastWorkingDir = new File(".");
-			extractFile(eglSource, new File(lastWorkingDir, egl.getName()));
-			extractFile(glesSource, new File(lastWorkingDir, gles.getName()));
-		}
+		return new Libs(eglSource, glesSource);
 	}
 
-	public static void postGlfwInit () {
-		new File(lastWorkingDir, egl.getName()).delete();
-		new File(lastWorkingDir, gles.getName()).delete();
+	private static class Libs {
+		final String egl;
+		final String gles;
+
+		Libs (String egl, String gles) {
+			this.egl = egl;
+			this.gles = gles;
+		}
 	}
 }
