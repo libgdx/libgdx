@@ -2,6 +2,8 @@
 package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.math.Intersector.SplitTriangle;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Sphere;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -232,6 +234,29 @@ public class IntersectorTest {
 	}
 
 	@Test
+	public void testIntersectSphereBounds () {
+		// Sphere inside box
+		Sphere sphere = new Sphere(new Vector3(5, 5, 5), 1);
+		BoundingBox bounds = new BoundingBox(new Vector3(0, 0, 0), new Vector3(10, 10, 10));
+
+		assertTrue(Intersector.intersectSphereBounds(sphere, bounds));
+
+		// Sphere outside box
+		sphere = new Sphere(new Vector3(20, 20, 20), 1);
+
+		assertFalse(Intersector.intersectSphereBounds(sphere, bounds));
+
+		// Sphere touches box's edge
+		sphere = new Sphere(new Vector3(10, 5, 5), 5);
+
+		assertTrue(Intersector.intersectSphereBounds(sphere, bounds));
+
+		// Sphere's center on box's edge
+		sphere = new Sphere(new Vector3(0, 5, 5), 1);
+
+		assertTrue(Intersector.intersectSphereBounds(sphere, bounds));
+	}
+
 	public void testIntersectPolygonsWithVertexLyingOnEdge () {
 		Polygon p1 = new Polygon(new float[] {1, -1, 2, -1, 2, -2, 1, -2});
 		Polygon p2 = new Polygon(new float[] {0.5f, -1.5f, 1.5f, -1.5f, 1.5f, -2.5f});
