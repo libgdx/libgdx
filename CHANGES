@@ -13,6 +13,7 @@
 - LWJGL3: Update to 3.4.3
 - GWT: Add support for KTX1 files. Note that there is no built-in fallback if an unsupported compressed texture format is loaded; use Gdx.graphics.supportsExtension().
 - GWT: Expanded the DefaultAssetFilter image types. Now WebP and AVIF (and more) can be used out-of-the-box, subject to browser compatibility.
+- PolygonSpriteBatch: use IndexBufferObject instead of IndexBufferObjectSubData on GL30.
 
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805
