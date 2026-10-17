@@ -264,6 +264,17 @@ public class TextureAtlas implements Disposable {
 			load(packFile, imagesDir, flip);
 		}
 
+		/** Resolves a page image file name from the atlas text, rejecting any name that would escape imagesDir via a ".."
+		 * path segment. Atlas files are frequently distributed as standalone third-party content (asset packs), so the page
+		 * name is untrusted input, not something this loader should resolve outside its own images directory. */
+		private static FileHandle resolvePageImageFile (FileHandle imagesDir, String name) {
+			for (String part : name.replace('\\', '/').split("/")) {
+				if (part.equals(".."))
+					throw new GdxRuntimeException("Invalid atlas page image name (must not contain '..'): " + name);
+			}
+			return imagesDir.child(name);
+		}
+
 		public void load (FileHandle packFile, FileHandle imagesDir, boolean flip) {
 			final String[] entry = new String[5];
 
@@ -382,7 +393,7 @@ public class TextureAtlas implements Disposable {
 					} else if (page == null) {
 						page = new Page();
 						page.name = line;
-						page.textureFile = imagesDir.child(line);
+						page.textureFile = resolvePageImageFile(imagesDir, line);
 						while (true) {
 							if (readEntry(entry, line = reader.readLine()) == 0) break;
 							Field field = pageFields.get(entry[0]);
