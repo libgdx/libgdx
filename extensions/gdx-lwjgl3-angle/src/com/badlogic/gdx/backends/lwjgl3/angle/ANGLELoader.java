@@ -192,8 +192,7 @@ public class ANGLELoader {
 	}
 
 	public static void load () {
-		if(isMac && isAppBundlePath())
-		{
+		if (isMac && isAppBundlePath()) {
 			return; // See comment below why this we return here
 		}
 
