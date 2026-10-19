@@ -192,6 +192,11 @@ public class ANGLELoader {
 	}
 
 	public static void load () {
+		if(isMac && isAppBundlePath())
+		{
+			return; // See comment below why this we return here
+		}
+
 		Libs sources = getSourcePaths();
 		String crc = crc(readFile(sources.egl)) + crc(readFile(sources.gles));
 		egl = getExtractedFile(crc, new File(sources.egl).getName());
@@ -215,10 +220,6 @@ public class ANGLELoader {
 			// into the app bundle breaks the signature and osx won't run the app anymore at all.
 			// Therefore, if you want to use angle with an app bundle, be sure to include the dylibs
 			// manually since we won't extract them here.
-			if (isAppBundlePath()) {
-				// Running inside an app bundle - do nothing
-				return;
-			}
 
 			lastWorkingDir = new File(".");
 			extractFile(sources.egl, new File(lastWorkingDir, egl.getName()));
