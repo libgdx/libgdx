@@ -227,6 +227,8 @@ public class ANGLELoader {
 	}
 
 	public static void postGlfwInit () {
+		if(egl == null)
+			return; // MacOS App bundle
 		new File(lastWorkingDir, egl.getName()).delete();
 		new File(lastWorkingDir, gles.getName()).delete();
 	}
