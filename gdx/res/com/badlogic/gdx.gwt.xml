@@ -446,6 +446,7 @@
 		<include name="utils/IntMap.java"/>
 		<include name="utils/IntSet.java"/>
 		<include name="utils/Json.java"/>
+		<include name="utils/JsonMatcher.java"/>
 		<include name="utils/JsonReader.java"/>
 		<include name="utils/JsonValue.java"/>
 		<include name="utils/JsonWriter.java"/>
