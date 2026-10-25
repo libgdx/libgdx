@@ -492,7 +492,6 @@
 		<include name="utils/Sort.java"/>
 		<include name="utils/SortedIntList.java"/>
 		<include name="utils/StreamUtils.java"/>
-		<include name="utils/StringBuilder.java"/>
 		<include name="utils/TextFormatter.java"/> <!-- Emulated: MessageFormat -->
 		<include name="utils/Timer.java"/> <!-- Emulated: Threading -->
 		<include name="utils/TimeUtils.java"/> <!-- Emulated: nanoTime() -->
