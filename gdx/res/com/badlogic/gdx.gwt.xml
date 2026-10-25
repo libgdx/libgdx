@@ -446,6 +446,7 @@
 		<include name="utils/IntMap.java"/>
 		<include name="utils/IntSet.java"/>
 		<include name="utils/Json.java"/>
+		<include name="utils/JsonMatcher.java"/>
 		<include name="utils/JsonReader.java"/>
 		<include name="utils/JsonValue.java"/>
 		<include name="utils/JsonWriter.java"/>
@@ -466,6 +467,7 @@
 		<include name="utils/ObjectSet.java"/>
 		<include name="utils/OrderedMap.java"/>
 		<include name="utils/OrderedSet.java"/>
+		<include name="utils/PatternParser.java"/>
 		<exclude name="utils/PauseableThread.java"/> <!-- Reason: Threading -->
 		<include name="utils/PerformanceCounter.java"/>
 		<include name="utils/PerformanceCounters.java"/>
@@ -490,7 +492,6 @@
 		<include name="utils/Sort.java"/>
 		<include name="utils/SortedIntList.java"/>
 		<include name="utils/StreamUtils.java"/>
-		<include name="utils/StringBuilder.java"/>
 		<include name="utils/TextFormatter.java"/> <!-- Emulated: MessageFormat -->
 		<include name="utils/Timer.java"/> <!-- Emulated: Threading -->
 		<include name="utils/TimeUtils.java"/> <!-- Emulated: nanoTime() -->
