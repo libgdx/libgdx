@@ -155,6 +155,7 @@ public class IOSUIViewController extends MGLKViewController {
 				app.listener.resize(newBounds.width, newBounds.height);
 			}
 		}
+		if (app.viewControllerListener != null) app.viewControllerListener.viewDidLayoutSubviews(needsLayoutUpdate);
 	}
 
 	@Override
