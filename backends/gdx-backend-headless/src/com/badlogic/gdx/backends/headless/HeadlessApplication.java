@@ -70,6 +70,7 @@ public class HeadlessApplication implements Application {
 		// they are only implemented as mock objects
 		this.graphics = new MockGraphics();
 		this.graphics.setForegroundFPS(config.updatesPerSecond);
+		this.graphics.setBackgroundFPS(config.updatesPerSecond);
 		this.audio = new MockAudio();
 		this.input = new MockInput();
 
