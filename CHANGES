@@ -1,4 +1,5 @@
 [1.14.3]
+- [BREAKING CHANGE] Android: Made AsynchronousAndroidAudio the default Android Audio backend for better performance. To check for error when playing use the new Sound#hasFailed() instead of checking for "-1" return values (see #7836).
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 13.0.
 - [BREAKING CHANGE] iOS: Migrated to UIKit scene-based life cycle. (see #7823)
 - API Addition: Added Sprite#getPackedWidth/getPackedHeight, and fixed ParticleEmitter/AtlasSprite positioning offsets when using whitespace-stripped TextureAtlas regions.
