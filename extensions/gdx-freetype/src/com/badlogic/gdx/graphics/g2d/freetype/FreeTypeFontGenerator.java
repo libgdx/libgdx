@@ -43,6 +43,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType.GlyphSlot;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Library;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.SizeMetrics;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Stroker;
+import com.badlogic.gdx.math.Affine2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -302,7 +303,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		data.flipped = parameter.flip;
 		data.ascent = FreeType.toInt(fontMetrics.getAscender());
 		data.descent = FreeType.toInt(fontMetrics.getDescender());
-		data.lineHeight = FreeType.toInt(fontMetrics.getHeight());
+		data.lineHeight = (int)(FreeType.toInt(fontMetrics.getHeight()) * parameter.transform.m11);
 		float baseLine = data.ascent;
 
 		// if bitmapped
@@ -489,6 +490,9 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		GlyphSlot slot = face.getGlyph();
 		FreeType.Glyph mainGlyph = slot.getGlyph();
+		if (parameter.transform != null) {
+			face.setTransform(parameter.transform);
+		}
 		try {
 			mainGlyph.toBitmap(parameter.mono ? FreeType.FT_RENDER_MODE_MONO : FreeType.FT_RENDER_MODE_NORMAL);
 		} catch (GdxRuntimeException e) {
@@ -586,7 +590,8 @@ public class FreeTypeFontGenerator implements Disposable {
 			glyph.yoffset = -mainGlyph.getTop() + (int)baseLine;
 		else
 			glyph.yoffset = -(glyph.height - mainGlyph.getTop()) - (int)baseLine;
-		glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance()) + (int)parameter.borderWidth + parameter.spaceX;
+		glyph.xadvance = (int)(FreeType.toInt(metrics.getHoriAdvance()) * parameter.transform.m00) + (int)parameter.borderWidth
+			+ parameter.spaceX;
 
 		if (bitmapped) {
 			mainPixmap.setColor(Color.CLEAR);
@@ -801,5 +806,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		 * modified after creating a font. If a PixmapPacker is not specified, the font glyph page textures will use
 		 * {@link FreeTypeFontGenerator#getMaxTextureSize()}. */
 		public boolean incremental;
+		/** Glyph transformation */
+		public Affine2 transform = new Affine2();
 	}
 }
