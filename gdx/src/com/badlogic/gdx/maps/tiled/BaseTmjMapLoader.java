@@ -651,7 +651,7 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 			final String name = property.getString("name", null);
 			String value = property.getString("value", null);
 			String type = property.getString("type", null);
-			if (value == null && !"class".equals(type)) {
+			if (value == null && !"class".equals(type) && !"list".equals(type)) {
 				value = property.asString();
 			}
 			switch (type) {
@@ -666,6 +666,9 @@ public abstract class BaseTmjMapLoader<P extends BaseTiledMapLoader.Parameters> 
 				// the actual properties of a 'class' property are stored as a new properties tag
 				properties.put(name, classProperties);
 				loadJsonClassProperties(className, classProperties, property.get("value"));
+				break;
+			case "list":
+				loadListProperty(properties, name, property.get("value"));
 				break;
 			default:
 				loadBasicProperty(properties, name, value, type);
