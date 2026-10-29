@@ -58,7 +58,7 @@ public class IOSGraphics extends AbstractGraphics {
 	GL20 gl20;
 	GL30 gl30;
 	IOSScreenBounds screenBounds;
-	int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
+	IOSInsets insets;
 	long lastFrameTime;
 	float deltaTime;
 	long framesStart;
@@ -205,6 +205,8 @@ public class IOSGraphics extends AbstractGraphics {
 		String vendorString = gl20.glGetString(GL20.GL_VENDOR);
 		String rendererString = gl20.glGetString(GL20.GL_RENDERER);
 		glVersion = new GLVersion(Application.ApplicationType.iOS, versionString, vendorString, rendererString);
+
+		insets = new IOSInsets(0, 0, 0, 0);
 
 		appPaused = false;
 	}
@@ -478,43 +480,51 @@ public class IOSGraphics extends AbstractGraphics {
 		return getDisplayMode();
 	}
 
-	protected void updateSafeInsets () {
-		safeInsetTop = 0;
-		safeInsetLeft = 0;
-		safeInsetRight = 0;
-		safeInsetBottom = 0;
+	public static class IOSInsets {
+		public final int top, left, right, bottom;
 
-		UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
-		safeInsetTop = (int)edgeInsets.getTop();
-		safeInsetLeft = (int)edgeInsets.getLeft();
-		safeInsetRight = (int)edgeInsets.getRight();
-		safeInsetBottom = (int)edgeInsets.getBottom();
-		if (config.hdpiMode == HdpiMode.Pixels) {
-			safeInsetTop *= app.pixelsPerPoint;
-			safeInsetLeft *= app.pixelsPerPoint;
-			safeInsetRight *= app.pixelsPerPoint;
-			safeInsetBottom *= app.pixelsPerPoint;
+		public IOSInsets (int top, int left, int right, int bottom) {
+			this.top = top;
+			this.left = left;
+			this.right = right;
+			this.bottom = bottom;
 		}
+
+		@Override
+		public boolean equals (Object o) {
+			if (!(o instanceof IOSInsets)) return false;
+			IOSInsets iosInsets = (IOSInsets)o;
+			return top == iosInsets.top && left == iosInsets.left && right == iosInsets.right && bottom == iosInsets.bottom;
+		}
+	}
+
+	protected IOSInsets updateSafeInsets () {
+		UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
+		float scale = (config.hdpiMode == HdpiMode.Pixels) ? app.pixelsPerPoint : 1.0f;
+
+		insets = new IOSInsets((int)(edgeInsets.getTop() * scale), (int)(edgeInsets.getLeft() * scale),
+			(int)(edgeInsets.getRight() * scale), (int)(edgeInsets.getBottom() * scale));
+		return insets;
 	}
 
 	@Override
 	public int getSafeInsetLeft () {
-		return safeInsetLeft;
+		return insets.left;
 	}
 
 	@Override
 	public int getSafeInsetTop () {
-		return safeInsetTop;
+		return insets.top;
 	}
 
 	@Override
 	public int getSafeInsetBottom () {
-		return safeInsetBottom;
+		return insets.bottom;
 	}
 
 	@Override
 	public int getSafeInsetRight () {
-		return safeInsetRight;
+		return insets.right;
 	}
 
 	@Override
