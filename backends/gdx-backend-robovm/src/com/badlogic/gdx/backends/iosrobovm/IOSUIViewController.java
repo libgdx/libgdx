@@ -160,6 +160,7 @@ public class IOSUIViewController extends GLKViewController {
 				app.listener.resize(newBounds.width, newBounds.height);
 			}
 		}
+		if (app.viewControllerListener != null) app.viewControllerListener.viewDidLayoutSubviews(needsLayoutUpdate);
 	}
 
 	@Override
