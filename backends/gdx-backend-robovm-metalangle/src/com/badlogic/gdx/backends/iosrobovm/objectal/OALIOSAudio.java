@@ -66,7 +66,11 @@ public class OALIOSAudio implements IOSAudio {
 	}
 
 	@Override
-	public void didBecomeActive () {
+	public void pause () {
+	}
+
+	@Override
+	public void resume () {
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/g/objectal-for-iphone/c/ubRWltp_i1Q
 		forceEndInterruption();
@@ -83,10 +87,6 @@ public class OALIOSAudio implements IOSAudio {
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
 		forceEndInterruption();
-	}
-
-	@Override
-	public void willResignActive () {
 	}
 
 	@Override
