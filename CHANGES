@@ -16,6 +16,7 @@
 - GWT: glGetIntegerv supports GL_SCISSOR_BOX, GL_RENDERBUFFER_BINDING, GL_TEXTURE_BINDING_2D, and GL_TEXTURE_BINDING_CUBE_MAP, and glGetFloatv supports GL_COLOR_CLEAR_VALUE and GL_BLEND_COLOR.
 - GWT: Expanded the DefaultAssetFilter image types. Now WebP and AVIF (and more) can be used out-of-the-box, subject to browser compatibility.
 - PolygonSpriteBatch: use IndexBufferObject instead of IndexBufferObjectSubData on GL30.
+- API Addition: LWJGL3: Added Lwjgl3ApplicationConfiguration#setScaleFramebuffer(boolean) to control the GLFW_SCALE_FRAMEBUFFER hint.
 
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805
