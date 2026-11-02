@@ -71,6 +71,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 
 	int idleFPS = 60;
 	int foregroundFPS = 0;
+	int backgroundFPS = -1;
 
 	boolean pauseWhenMinimized = true;
 	boolean pauseWhenLostFocus = false;
@@ -109,6 +110,7 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 		scaleFramebuffer = config.scaleFramebuffer;
 		idleFPS = config.idleFPS;
 		foregroundFPS = config.foregroundFPS;
+		backgroundFPS = config.backgroundFPS;
 		pauseWhenMinimized = config.pauseWhenMinimized;
 		pauseWhenLostFocus = config.pauseWhenLostFocus;
 		preferencesDirectory = config.preferencesDirectory;
@@ -238,6 +240,12 @@ public class Lwjgl3ApplicationConfiguration extends Lwjgl3WindowConfiguration {
 	 * 0. */
 	public void setForegroundFPS (int fps) {
 		this.foregroundFPS = fps;
+	}
+
+	/** Sets the target framerate for the application. The CPU sleeps as needed. Must be positive. Use 0 to never sleep. Default is
+	 * 0. */
+	public void setBackgroundFPS (int fps) {
+		this.backgroundFPS = fps;
 	}
 
 	/** Sets whether to pause the application {@link ApplicationListener#pause()} and fire
