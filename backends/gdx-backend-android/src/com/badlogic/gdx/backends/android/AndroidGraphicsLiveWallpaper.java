@@ -57,7 +57,7 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 		if (!checkGL20()) throw new GdxRuntimeException("libGDX requires OpenGL ES 2.0");
 
 		EGLConfigChooser configChooser = getEglConfigChooser();
-		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy) {
+		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy, GLES.GLES20) {
 			@Override
 			public SurfaceHolder getHolder () {
 				return getSurfaceHolder();

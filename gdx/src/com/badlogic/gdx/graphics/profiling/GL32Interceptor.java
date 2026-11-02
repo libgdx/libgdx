@@ -63,7 +63,6 @@ public class GL32Interceptor extends GL31Interceptor implements GL32 {
 		calls++;
 		gl32.glDebugMessageCallback(callsback);
 		check();
-		check();
 	}
 
 	public int glGetDebugMessageLog (int count, IntBuffer sources, IntBuffer types, IntBuffer ids, IntBuffer severities,
