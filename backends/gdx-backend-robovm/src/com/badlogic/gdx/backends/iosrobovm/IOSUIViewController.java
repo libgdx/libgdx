@@ -136,19 +136,31 @@ public class IOSUIViewController extends GLKViewController {
 		// get the view size and update graphics
 		final IOSScreenBounds oldBounds = graphics.screenBounds;
 		final IOSScreenBounds newBounds = app.computeBounds();
+		final IOSGraphics.IOSInsets oldInsets = graphics.insets;
+		final IOSGraphics.IOSInsets newInsets = graphics.updateSafeInsets();
 		graphics.screenBounds = newBounds;
-		// Layout may happen without bounds changing, don't trigger resize in that case
-		if (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height) {
+		graphics.insets = newInsets;
+
+		boolean sizeChanged = (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height);
+		boolean backBufferChanged = (newBounds.backBufferWidth != oldBounds.backBufferWidth
+			|| newBounds.backBufferHeight != oldBounds.backBufferHeight);
+		boolean insetsChanged = !newInsets.equals(oldInsets);
+		boolean needsLayoutUpdate = sizeChanged || backBufferChanged || insetsChanged;
+
+		// Subviews layout may happen without bounds or insets changing, don't trigger resize in that case
+		if (needsLayoutUpdate) {
 			graphics.makeCurrent();
-			graphics.updateSafeInsets();
-			graphics.gl20.glViewport(0, 0, newBounds.backBufferWidth, newBounds.backBufferHeight);
+			// No need to resize viewport if only insets have changed
+			if (sizeChanged || backBufferChanged) {
+				graphics.gl20.glViewport(0, 0, newBounds.backBufferWidth, newBounds.backBufferHeight);
+			}
 			if (graphics.config.hdpiMode == HdpiMode.Pixels) {
 				app.listener.resize(newBounds.backBufferWidth, newBounds.backBufferHeight);
 			} else {
 				app.listener.resize(newBounds.width, newBounds.height);
 			}
 		}
-
+		if (app.viewControllerListener != null) app.viewControllerListener.viewDidLayoutSubviews(needsLayoutUpdate);
 	}
 
 	@Override
