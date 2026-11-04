@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="2" height="2" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="8">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="2" height="2" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="12">
  <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32" tilecount="256" columns="16">
   <image source="../tiled/tiles.png" width="512" height="512"/>
   <tile id="0" type="testClass">
@@ -70,5 +70,42 @@
   </object>
   <object id="6" name="Tile Object Nested (defaults only)" type="testClassNested" x="34.2024" y="34.047" width="8.23968" height="9.84615"/>
   <object id="7" name="Tile Object No Class" type="NonExistingClass" x="48.5053" y="33.7879" width="9.63887" height="9.22429"/>
+  <object id="8" name="Simple List Object" x="34.3385" y="46.2304" width="4.72262" height="4.38122">
+   <properties>
+    <property name="someList" type="list">
+     <item type="bool" value="true"/>
+     <item type="color" value="#ffff0000"/>
+     <item type="float" value="4.2"/>
+     <item type="file" value="tiled-prop-test.tiled-project"/>
+     <item type="int" value="42"/>
+     <item type="object" value="1"/>
+     <item value="someText"/>
+     <item type="int" propertytype="enumNum" value="1"/>
+     <item type="int" propertytype="enumNumMulti" value="2"/>
+     <item propertytype="enumStr" value="STR2"/>
+     <item propertytype="enumStrMulti" value="STR2"/>
+     <item type="class" propertytype="testClass"/>
+    </property>
+   </properties>
+  </object>
+  <object id="9" name="Empty List Object" x="34.3262" y="52.6844" width="4.72262" height="4.38122">
+   <properties>
+    <property name="aList" type="list"/>
+   </properties>
+  </object>
+  <object id="10" name="Class Nested List Object (defaults only)" type="testClassList" x="34.2637" y="58.4344" width="4.72262" height="4.38122"/>
+  <object id="11" name="Class Nested List Object (overrides)" type="testClassList" x="40.8262" y="55.9969" width="4.72262" height="4.38122">
+   <properties>
+    <property name="classList" type="list">
+     <item type="int" value="5"/>
+     <item type="int" value="2"/>
+     <item type="list"/>
+     <item type="list">
+      <item value="some"/>
+      <item value="text"/>
+     </item>
+    </property>
+   </properties>
+  </object>
  </objectgroup>
 </map>

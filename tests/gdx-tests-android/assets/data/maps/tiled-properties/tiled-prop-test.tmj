@@ -24,6 +24,7 @@
                  "height":0,
                  "id":1,
                  "name":"Test Object",
+                 "opacity":1,
                  "properties":[
                         {
                          "name":"objBool",
@@ -136,6 +137,7 @@
                  "height":32,
                  "id":3,
                  "name":"Tile Object",
+                 "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -149,6 +151,7 @@
                  "height":32,
                  "id":4,
                  "name":"Tile Object Nested",
+                 "opacity":1,
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -160,6 +163,7 @@
                  "height":12,
                  "id":5,
                  "name":"Test Object 2",
+                 "opacity":1,
                  "properties":[
                         {
                          "name":"classInt",
@@ -178,6 +182,7 @@
                  "height":9.22428765182186,
                  "id":6,
                  "name":"Tile Object Nested (defaults only)",
+                 "opacity":1,
                  "rotation":0,
                  "type":"testClassNested",
                  "visible":true,
@@ -189,12 +194,167 @@
                  "height":9.22429,
                  "id":7,
                  "name":"Tile Object No Class",
+                 "opacity":1,
                  "rotation":0,
                  "type":"NonExistingClass",
                  "visible":true,
                  "width":9.63887,
                  "x":47.1578929352227,
                  "y":34.7206485222672
+                },
+            
+                {
+                 "height":4.38122332859175,
+                 "id":8,
+                 "name":"Simple List Object",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"someList",
+                         "type":"list",
+                         "value":[
+                                {
+                                 "type":"bool",
+                                 "value":true
+                                }, 
+                                {
+                                 "type":"color",
+                                 "value":"#ffff0000"
+                                },
+                            
+                                {
+                                 "type":"float",
+                                 "value":4.2
+                                }, 
+                                {
+                                 "type":"file",
+                                 "value":"tiled-prop-test.tiled-project"
+                                },
+                            
+                                {
+                                 "type":"int",
+                                 "value":42
+                                }, 
+                                {
+                                 "type":"object",
+                                 "value":1
+                                },
+                            
+                                {
+                                 "type":"string",
+                                 "value":"someText"
+                                }, 
+                                {
+                                 "propertytype":"enumNum",
+                                 "type":"int",
+                                 "value":1
+                                },
+                            
+                                {
+                                 "propertytype":"enumNumMulti",
+                                 "type":"int",
+                                 "value":2
+                                }, 
+                                {
+                                 "propertytype":"enumStr",
+                                 "type":"string",
+                                 "value":"STR2"
+                                },
+                            
+                                {
+                                 "propertytype":"enumStrMulti",
+                                 "type":"string",
+                                 "value":"STR2"
+                                }, 
+                                {
+                                 "propertytype":"testClass",
+                                 "type":"class",
+                                 "value":
+                                    {
+
+                                    }
+                                }]
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":4.7226173541963,
+                 "x":34.1963015647226,
+                 "y":46.9416785206259
+                }, 
+                {
+                 "height":4.38122,
+                 "id":9,
+                 "name":"Empty List Object",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"aList",
+                         "type":"list",
+                         "value":[]
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":4.72262,
+                 "x":34.3954467567568,
+                 "y":52.9445251351351
+                },
+            
+                {
+                 "height":4.38122,
+                 "id":10,
+                 "name":"Class Nested List Object (defaults only)",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"testClassList",
+                 "visible":true,
+                 "width":4.72262,
+                 "x":34.275960170697,
+                 "y":58.7083926031295
+                }, 
+                {
+                 "height":4.38122,
+                 "id":11,
+                 "name":"Class Nested List Object (overrides)",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"classList",
+                         "type":"list",
+                         "value":[
+                                {
+                                 "type":"int",
+                                 "value":5
+                                }, 
+                                {
+                                 "type":"int",
+                                 "value":2
+                                },
+                            
+                                {
+                                 "type":"list",
+                                 "value":[]
+                                }, 
+                                {
+                                 "type":"list",
+                                 "value":[
+                                        {
+                                         "type":"string",
+                                         "value":"some"
+                                        }, 
+                                        {
+                                         "type":"string",
+                                         "value":"text"
+                                        }]
+                                }]
+                        }],
+                 "rotation":0,
+                 "type":"testClassList",
+                 "visible":true,
+                 "width":4.72262,
+                 "x":40.1934566145092,
+                 "y":55.8634423897582
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -203,10 +363,10 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":8,
+ "nextobjectid":12,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.2",
+ "tiledversion":"1.12.2",
  "tileheight":32,
  "tilesets":[
         {
