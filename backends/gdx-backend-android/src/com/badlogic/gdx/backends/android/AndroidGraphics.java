@@ -134,7 +134,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		view.setRenderer(this);
 		view.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
 			@NonNull
-            @Override
+			@Override
 			public WindowInsets onApplyWindowInsets (@NonNull View v, @NonNull WindowInsets windowInsets) {
 				updateSafeAreaInsets(windowInsets);
 				app.postRunnable(new Runnable() {
