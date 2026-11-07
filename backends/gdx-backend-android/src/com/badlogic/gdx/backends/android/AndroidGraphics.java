@@ -67,7 +67,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	final GLSurfaceView20 view;
 	int width;
 	int height;
-	AndroidInsets insets = AndroidInsets.NONE;
+	volatile AndroidInsets insets = AndroidInsets.NONE;
 	AndroidApplicationBase app;
 	GL20 gl20;
 	GL30 gl30;
