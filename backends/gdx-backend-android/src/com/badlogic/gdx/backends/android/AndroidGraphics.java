@@ -67,7 +67,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	final GLSurfaceView20 view;
 	int width;
 	int height;
-	volatile int safeInsetLeft, safeInsetTop, safeInsetBottom, safeInsetRight;
+	AndroidInsets insets = AndroidInsets.NONE;
 	AndroidApplicationBase app;
 	GL20 gl20;
 	GL30 gl30;
@@ -136,15 +136,18 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 			@NonNull
 			@Override
 			public WindowInsets onApplyWindowInsets (@NonNull View v, @NonNull WindowInsets windowInsets) {
-				updateSafeAreaInsets(windowInsets);
-				app.postRunnable(new Runnable() {
-					@Override
-					public void run () {
-						if (app.getApplicationListener() != null) {
-							app.getApplicationListener().resize(width, height);
+				AndroidInsets oldInsets = insets;
+				insets = getSafeAreaInsets(windowInsets);
+				if (!insets.equals(oldInsets)) {
+					app.postRunnable(new Runnable() {
+						@Override
+						public void run () {
+							if (app.getApplicationListener() != null) {
+								app.getApplicationListener().resize(width, height);
+							}
 						}
-					}
-				});
+					});
+				}
 				return v.onApplyWindowInsets(windowInsets);
 			}
 		});
@@ -342,7 +345,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		setupGL(gl);
 		logConfig(config);
 		updatePpi();
-		updateSafeAreaInsets(null);
+		insets = getSafeAreaInsets(null);
 
 		Mesh.invalidateAllMeshes(app);
 		Texture.invalidateAllTextures(app);
@@ -684,60 +687,53 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	}
 
 	@TargetApi(Build.VERSION_CODES.P)
-	protected void updateSafeAreaInsets (WindowInsets windowInsets) {
-		safeInsetLeft = 0;
-		safeInsetTop = 0;
-		safeInsetRight = 0;
-		safeInsetBottom = 0;
+	protected AndroidInsets getSafeAreaInsets (WindowInsets windowInsets) {
 
-		try {
-			if (windowInsets == null) {
+		AndroidInsets androidInsets = AndroidInsets.NONE;
+		if (windowInsets == null) {
+			try {
 				View decorView = app.getApplicationWindow().getDecorView();
 				windowInsets = decorView.getRootWindowInsets();
-				if (windowInsets == null) return;
+			} // Some Application implementations (such as Live Wallpapers) do not implement Application#getApplicationWindow()
+			catch (UnsupportedOperationException e) {
+				Gdx.app.log("AndroidGraphics", "Unable to get safe area insets");
 			}
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-				// API 30+ unified insets (System bars + Display cutouts)
-				android.graphics.Insets insets = windowInsets
-					.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
-				safeInsetLeft = insets.left;
-				safeInsetTop = insets.top;
-				safeInsetRight = insets.right;
-				safeInsetBottom = insets.bottom;
-			} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-				// API 28–29 fallback for display cutouts
-				android.view.DisplayCutout cutout = windowInsets.getDisplayCutout();
-				if (cutout != null) {
-					safeInsetLeft = cutout.getSafeInsetLeft();
-					safeInsetTop = cutout.getSafeInsetTop();
-					safeInsetRight = cutout.getSafeInsetRight();
-					safeInsetBottom = cutout.getSafeInsetBottom();
-				}
-			}
-		} // Some Application implementations (such as Live Wallpapers) do not implement Application#getApplicationWindow()
-		catch (UnsupportedOperationException e) {
-			Gdx.app.log("AndroidGraphics", "Unable to get safe area insets");
+			if (windowInsets == null) return androidInsets;
 		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			// API 30+ unified insets (System bars + Display cutouts)
+			android.graphics.Insets insets = windowInsets
+				.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+			androidInsets = new AndroidInsets(insets.top, insets.left, insets.right, insets.bottom);
+		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+			// API 28–29 fallback for display cutouts
+			android.view.DisplayCutout cutout = windowInsets.getDisplayCutout();
+			if (cutout != null) {
+				androidInsets = new AndroidInsets(cutout.getSafeInsetTop(), cutout.getSafeInsetLeft(), cutout.getSafeInsetRight(),
+					cutout.getSafeInsetBottom());
+			}
+		}
+		return androidInsets;
 	}
 
 	@Override
 	public int getSafeInsetLeft () {
-		return safeInsetLeft;
+		return insets.left;
 	}
 
 	@Override
 	public int getSafeInsetTop () {
-		return safeInsetTop;
+		return insets.top;
 	}
 
 	@Override
 	public int getSafeInsetBottom () {
-		return safeInsetBottom;
+		return insets.bottom;
 	}
 
 	@Override
 	public int getSafeInsetRight () {
-		return safeInsetRight;
+		return insets.right;
 	}
 
 	@Override
@@ -848,6 +844,26 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	private class AndroidMonitor extends Monitor {
 		public AndroidMonitor (int virtualX, int virtualY, String name) {
 			super(virtualX, virtualY, name);
+		}
+	}
+
+	protected static class AndroidInsets {
+
+		public static final AndroidInsets NONE = new AndroidInsets(0, 0, 0, 0);
+		public final int top, left, right, bottom;
+
+		public AndroidInsets (int top, int left, int right, int bottom) {
+			this.top = top;
+			this.left = left;
+			this.right = right;
+			this.bottom = bottom;
+		}
+
+		@Override
+		public boolean equals (Object o) {
+			if (!(o instanceof AndroidInsets)) return false;
+			AndroidInsets iosInsets = (AndroidInsets)o;
+			return top == iosInsets.top && left == iosInsets.left && right == iosInsets.right && bottom == iosInsets.bottom;
 		}
 	}
 }
