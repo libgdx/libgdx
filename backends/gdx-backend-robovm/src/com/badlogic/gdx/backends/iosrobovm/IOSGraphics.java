@@ -480,7 +480,7 @@ public class IOSGraphics extends AbstractGraphics {
 		return getDisplayMode();
 	}
 
-	public static class IOSInsets {
+	protected static class IOSInsets {
 		public final int top, left, right, bottom;
 
 		public IOSInsets (IOSGraphics.IOSInsets insets) {
