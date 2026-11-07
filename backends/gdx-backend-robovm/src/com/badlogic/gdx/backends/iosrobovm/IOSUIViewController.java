@@ -136,15 +136,14 @@ public class IOSUIViewController extends GLKViewController {
 		// get the view size and update graphics
 		final IOSScreenBounds oldBounds = graphics.screenBounds;
 		final IOSScreenBounds newBounds = app.computeBounds();
-		final IOSGraphics.IOSInsets oldInsets = graphics.insets;
-		final IOSGraphics.IOSInsets newInsets = graphics.updateSafeInsets();
+		final IOSGraphics.IOSInsets oldInsets = new IOSGraphics.IOSInsets(graphics.insets);
+		graphics.updateSafeInsets();
 		graphics.screenBounds = newBounds;
-		graphics.insets = newInsets;
 
 		boolean sizeChanged = (newBounds.width != oldBounds.width || newBounds.height != oldBounds.height);
 		boolean backBufferChanged = (newBounds.backBufferWidth != oldBounds.backBufferWidth
 			|| newBounds.backBufferHeight != oldBounds.backBufferHeight);
-		boolean insetsChanged = !newInsets.equals(oldInsets);
+		boolean insetsChanged = !graphics.insets.equals(oldInsets);
 		boolean needsLayoutUpdate = sizeChanged || backBufferChanged || insetsChanged;
 
 		// Subviews layout may happen without bounds or insets changing, don't trigger resize in that case

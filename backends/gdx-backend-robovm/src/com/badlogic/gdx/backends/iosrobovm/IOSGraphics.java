@@ -483,6 +483,13 @@ public class IOSGraphics extends AbstractGraphics {
 	public static class IOSInsets {
 		public final int top, left, right, bottom;
 
+		public IOSInsets (IOSGraphics.IOSInsets insets) {
+			this.top = insets.top;
+			this.left = insets.left;
+			this.right = insets.right;
+			this.bottom = insets.bottom;
+		}
+
 		public IOSInsets (int top, int left, int right, int bottom) {
 			this.top = top;
 			this.left = left;
@@ -498,13 +505,12 @@ public class IOSGraphics extends AbstractGraphics {
 		}
 	}
 
-	protected IOSInsets updateSafeInsets () {
+	protected void updateSafeInsets () {
 		UIEdgeInsets edgeInsets = viewController.getView().getSafeAreaInsets();
 		float scale = (config.hdpiMode == HdpiMode.Pixels) ? app.pixelsPerPoint : 1.0f;
 
 		insets = new IOSInsets((int)(edgeInsets.getTop() * scale), (int)(edgeInsets.getLeft() * scale),
 			(int)(edgeInsets.getRight() * scale), (int)(edgeInsets.getBottom() * scale));
-		return insets;
 	}
 
 	@Override
