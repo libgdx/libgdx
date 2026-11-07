@@ -862,8 +862,9 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		@Override
 		public boolean equals (Object o) {
 			if (!(o instanceof AndroidInsets)) return false;
-			AndroidInsets iosInsets = (AndroidInsets)o;
-			return top == iosInsets.top && left == iosInsets.left && right == iosInsets.right && bottom == iosInsets.bottom;
+			AndroidInsets androidInsets = (AndroidInsets)o;
+			return top == androidInsets.top && left == androidInsets.left && right == androidInsets.right
+				&& bottom == androidInsets.bottom;
 		}
 	}
 }
