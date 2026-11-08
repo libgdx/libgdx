@@ -209,6 +209,7 @@ public class RemoteInput implements Runnable, Input {
 	InputProcessor processor = null;
 	private final int port;
 	public final String[] ips;
+	Haptics haptics = new NoOpHaptics();
 
 	public RemoteInput () {
 		this(DEFAULT_PORT);
@@ -481,19 +482,8 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public void vibrate (int milliseconds) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
+	public Haptics getHaptics () {
+		return haptics;
 	}
 
 	@Override
