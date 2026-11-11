@@ -637,8 +637,16 @@ public class GwtGL20 implements GL20 {
 	@Override
 	public void glGetFloatv (int pname, FloatBuffer params) {
 		if (pname == GL20.GL_DEPTH_CLEAR_VALUE || pname == GL20.GL_LINE_WIDTH || pname == GL20.GL_POLYGON_OFFSET_FACTOR
-			|| pname == GL20.GL_POLYGON_OFFSET_UNITS || pname == GL20.GL_SAMPLE_COVERAGE_VALUE) {
+			|| pname == GL20.GL_POLYGON_OFFSET_UNITS || pname == GL20.GL_SAMPLE_COVERAGE_VALUE
+			|| pname == GL20.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT) {
 			params.put(0, gl.getParameterf(pname));
+			params.flip();
+		} else if (pname == GL20.GL_COLOR_CLEAR_VALUE || pname == GL20.GL_BLEND_COLOR) {
+			Float32Array array = gl.getParameterv(pname);
+			params.put(0, array.get(0));
+			params.put(1, array.get(1));
+			params.put(2, array.get(2));
+			params.put(3, array.get(3));
 			params.flip();
 		} else
 			throw new GdxRuntimeException("glGetFloat not supported by GWT WebGL backend");
@@ -690,7 +698,7 @@ public class GwtGL20 implements GL20 {
 			|| pname == GL20.GL_STENCIL_WRITEMASK || pname == GL20.GL_SUBPIXEL_BITS || pname == GL20.GL_UNPACK_ALIGNMENT) {
 			params.put(0, gl.getParameteri(pname));
 			params.flip();
-		} else if (pname == GL20.GL_VIEWPORT) {
+		} else if (pname == GL20.GL_VIEWPORT || pname == GL20.GL_SCISSOR_BOX) {
 			Int32Array array = gl.getParameterv(pname);
 			params.put(0, array.get(0));
 			params.put(1, array.get(1));
@@ -704,6 +712,14 @@ public class GwtGL20 implements GL20 {
 			} else {
 				params.put(frameBuffers.getKey(fbo));
 			}
+			params.flip();
+		} else if (pname == GL20.GL_RENDERBUFFER_BINDING) {
+			WebGLRenderbuffer renderbuffer = gl.getParametero(pname);
+			params.put(renderbuffer == null ? 0 : renderBuffers.getKey(renderbuffer));
+			params.flip();
+		} else if (pname == GL20.GL_TEXTURE_BINDING_2D || pname == GL20.GL_TEXTURE_BINDING_CUBE_MAP) {
+			WebGLTexture texture = gl.getParametero(pname);
+			params.put(texture == null ? 0 : textures.getKey(texture));
 			params.flip();
 		} else
 			throw new GdxRuntimeException("glGetInteger not supported by GWT WebGL backend");

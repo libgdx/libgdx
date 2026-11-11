@@ -1,16 +1,25 @@
 [1.14.3]
 - [BREAKING CHANGE] iOS: Increased min supported iOS version to 13.0.
 - [BREAKING CHANGE] iOS: Migrated to UIKit scene-based life cycle. (see #7823)
+- API Addition: Added Sprite#getPackedWidth/getPackedHeight, and fixed ParticleEmitter/AtlasSprite positioning offsets when using whitespace-stripped TextureAtlas regions.
 - API Addition: add() with 5-8 parameters for arrays.
 - API Addition: Json#getUsePrototypes(), so a Json.Serializable can restore the setting it changed.
+- API Addition: PolygonSpriteBatch#getMaxVertices() and getMaxTriangles().
 - API Removal: Removed LwjglApplet (Java applets are obsolete). ApplicationType.Applet is deprecated.
 - API Fix: Box2D PolygonShape now uses same welding threshold on GWT as other platforms.
+- API Fix: ParticleEffectActor#cancel() now correctly stops the particle effect rather than starting it (see #7869)
 - iOS: Made iOS Preferences flush() implementation atomic (see #7833)
 - API Addition: Added LWJGL3 ANGLE (GL)ES 3.0 support
+- Added additional HTTP status code constants.
+- TexturePacker now warns if duplicatePadding is true and paddingX or paddingY is less than 2. Padding is the whole gap between two adjacent images, so half of it is duplicated on each side and a padding of 1 duplicates nothing at all.
 - iOS: Update to MobiVM 2.3.26
 - LWJGL3: Update to 3.4.3
 - GWT: Add support for KTX1 files. Note that there is no built-in fallback if an unsupported compressed texture format is loaded; use Gdx.graphics.supportsExtension().
+- GWT: Added JsonMatcher and PatternParser to the GWT module.
+- GWT: glGetIntegerv supports GL_SCISSOR_BOX, GL_RENDERBUFFER_BINDING, GL_TEXTURE_BINDING_2D, and GL_TEXTURE_BINDING_CUBE_MAP, and glGetFloatv supports GL_COLOR_CLEAR_VALUE and GL_BLEND_COLOR.
 - GWT: Expanded the DefaultAssetFilter image types. Now WebP and AVIF (and more) can be used out-of-the-box, subject to browser compatibility.
+- PolygonSpriteBatch: use IndexBufferObject instead of IndexBufferObjectSubData on GL30.
+- API Addition: LWJGL3: Added Lwjgl3ApplicationConfiguration#setScaleFramebuffer(boolean) to control the GLFW_SCALE_FRAMEBUFFER hint.
 
 [1.14.2]
 - [BREAKING CHANGE] Revert InputMultiplexer and set addAll return types that were breaking changes in 1.14.1. #7805

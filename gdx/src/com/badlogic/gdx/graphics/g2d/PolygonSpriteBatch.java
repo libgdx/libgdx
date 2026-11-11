@@ -126,14 +126,14 @@ public class PolygonSpriteBatch implements PolygonBatch {
 		if (maxVertices > 32767)
 			throw new IllegalArgumentException("Can't have more than 32767 vertices per batch: " + maxVertices);
 
-		Mesh.VertexDataType vertexDataType = Mesh.VertexDataType.VertexArray;
-		if (Gdx.gl30 != null) {
-			vertexDataType = VertexDataType.VertexBufferObjectWithVAO;
-		}
-		mesh = new Mesh(vertexDataType, false, maxVertices, maxTriangles * 3,
+		VertexAttribute[] attributes = { //
 			new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
 			new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
-			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0")};
+		if (Gdx.gl30 != null)
+			mesh = new Mesh(false, maxVertices, maxTriangles * 3, attributes);
+		else
+			mesh = new Mesh(VertexDataType.VertexArray, false, maxVertices, maxTriangles * 3, attributes);
 
 		vertices = new float[maxVertices * VERTEX_SIZE];
 		triangles = new short[maxTriangles * 3];
@@ -1348,5 +1348,15 @@ public class PolygonSpriteBatch implements PolygonBatch {
 	@Override
 	public boolean isDrawing () {
 		return drawing;
+	}
+
+	/** @return The max number of vertices in a single batch, which a single draw can't exceed. */
+	public int getMaxVertices () {
+		return vertices.length / VERTEX_SIZE;
+	}
+
+	/** @return The max number of triangles in a single batch, which a single draw can't exceed. */
+	public int getMaxTriangles () {
+		return triangles.length / 3;
 	}
 }
