@@ -14,7 +14,7 @@
 - iOS: Added IOSViewControllerListener#viewDidLayoutSubviews().
 - Added additional HTTP status code constants.
 - TexturePacker now warns if duplicatePadding is true and paddingX or paddingY is less than 2. Padding is the whole gap between two adjacent images, so half of it is duplicated on each side and a padding of 1 duplicates nothing at all.
-- iOS: Update to MobiVM 2.3.26
+- iOS: Update to MobiVM 3.0.1
 - LWJGL3: Update to 3.4.3
 - GWT: Add support for KTX1 files. Note that there is no built-in fallback if an unsupported compressed texture format is loaded; use Gdx.graphics.supportsExtension().
 - GWT: Added JsonMatcher and PatternParser to the GWT module.
