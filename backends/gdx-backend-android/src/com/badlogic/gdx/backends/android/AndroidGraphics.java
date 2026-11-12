@@ -152,8 +152,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 	}
 
 	protected void updatePpi () {
-		DisplayMetrics metrics = new DisplayMetrics();
-		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		DisplayMetrics metrics = app.getContext().getResources().getDisplayMetrics();
 
 		ppiX = metrics.xdpi;
 		ppiY = metrics.ydpi;
@@ -337,13 +336,7 @@ public class AndroidGraphics extends AbstractGraphics implements Renderer {
 		FrameBuffer.invalidateAllFrameBuffers(app);
 
 		logManagedCachesStatus();
-
-		Display display = app.getWindowManager().getDefaultDisplay();
-		this.width = display.getWidth();
-		this.height = display.getHeight();
 		this.lastFrameTime = System.nanoTime();
-
-		gl.glViewport(0, 0, this.width, this.height);
 	}
 
 	protected void logConfig (EGLConfig config) {
