@@ -26,6 +26,9 @@ package com.badlogic.gdx.backends.iosrobovm;
 public interface IOSViewControllerListener {
 
 	/** Called when the {@link IOSApplication} root ViewController has appeared */
-	public void viewDidAppear (boolean animated);
+	void viewDidAppear (boolean animated);
 
+	/** Called when the {@link IOSApplication} root ViewController subviews are layout.
+	 * @param needsLayoutUpdate Indicates if the view size or insets have changed from last call */
+	void viewDidLayoutSubviews (boolean needsLayoutUpdate);
 }

@@ -9,6 +9,8 @@
 - API Fix: Box2D PolygonShape now uses same welding threshold on GWT as other platforms.
 - API Fix: ParticleEffectActor#cancel() now correctly stops the particle effect rather than starting it (see #7869)
 - iOS: Made iOS Preferences flush() implementation atomic (see #7833)
+- iOS: Fixed resize() not being called in some cases after insets changes (see #7880)
+- iOS: Added IOSViewControllerListener#viewDidLayoutSubviews().
 - Added additional HTTP status code constants.
 - TexturePacker now warns if duplicatePadding is true and paddingX or paddingY is less than 2. Padding is the whole gap between two adjacent images, so half of it is duplicated on each side and a padding of 1 duplicates nothing at all.
 - iOS: Update to MobiVM 2.3.26
