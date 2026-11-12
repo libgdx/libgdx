@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.OrientedBoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.math.collision.Sphere;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 
@@ -346,6 +347,38 @@ public final class Intersector {
 		}
 
 		return v2a.len2() <= circle.radius * circle.radius;
+	}
+
+	/** Checks if a sphere intersects with a bounding box.
+	 *
+	 * @param sphere the sphere to check for intersection
+	 * @param bounds the bounding box to check for intersection
+	 * @return true if the sphere intersects the bounding box, false otherwise */
+	public static boolean intersectSphereBounds (Sphere sphere, BoundingBox bounds) {
+		float dmin = 0;
+
+		Vector3 boundsMin = bounds.getMin(v0);
+		Vector3 boundsMax = bounds.getMax(v1);
+
+		if (sphere.center.x < boundsMin.x) {
+			dmin += (float)Math.pow(sphere.center.x - boundsMin.x, 2);
+		} else if (sphere.center.x > boundsMax.x) {
+			dmin += (float)Math.pow(sphere.center.x - boundsMax.x, 2);
+		}
+
+		if (sphere.center.y < boundsMin.y) {
+			dmin += (float)Math.pow(sphere.center.y - boundsMin.y, 2);
+		} else if (sphere.center.y > boundsMax.y) {
+			dmin += (float)Math.pow(sphere.center.y - boundsMax.y, 2);
+		}
+
+		if (sphere.center.z < boundsMin.z) {
+			dmin += (float)Math.pow(sphere.center.z - boundsMin.z, 2);
+		} else if (sphere.center.z > boundsMax.z) {
+			dmin += (float)Math.pow(sphere.center.z - boundsMax.z, 2);
+		}
+
+		return dmin <= Math.pow(sphere.radius, 2);
 	}
 
 	/** Returns whether the given {@link Frustum} intersects a {@link BoundingBox}.
