@@ -83,7 +83,10 @@ jnigen {
 	}
 
 
-	//        addWindows(x64, ARM, MSVC)
+	addWindows(x64, ARM, MSVC) {
+		// Keep the ARM64 compatibility workaround outside the vendored Bullet sources.
+		cppFlags += ["/FIbtWindowsArm64.h"]
+	}
 	addWindows(x32, x86)
 	addWindows(x64, x86)
 
