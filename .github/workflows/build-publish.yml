@@ -96,7 +96,7 @@ jobs:
 
       - name: Build Android natives
         run: |
-          ./gradlew jniGen jnigenBuildAllAndroid 
+          ./gradlew jniGen jnigenBuildAllAndroid
 
       - name: Pack artifacts
         run: |
@@ -111,17 +111,8 @@ jobs:
 
 
   natives-mac:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
-      - name: Setup Xcode SDK
-        run: |
-          # See https://github.com/actions/virtual-environments/issues/2557
-          sudo mv /Library/Developer/CommandLineTools/SDKs/* /tmp
-          sudo mv /Applications/Xcode.app /Applications/Xcode.app.bak
-          sudo mv /Applications/Xcode_15.4.0.app /Applications/Xcode.app
-          sudo xcode-select -switch /Applications/Xcode.app
-          /usr/bin/xcodebuild -version
-
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -133,18 +124,25 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: Initialize jnigen
         run: ./gradlew jnigen
       - name: Build natives
         run: |
+          /usr/bin/xcodebuild -version
           ./gradlew jnigenBuildAllIOS jnigenBuildAllMacOsX
           ./backends/gdx-backend-robovm/build-objectal.sh
 
       - name: Pack artifacts
         run: |
+          # Needed starting with Xcode 15 to run multiple instances of the same app
+          find . -name "*.dylib" | grep "libs" | while read dylib; do
+            codesign -s - -f "$dylib"
+          done
           find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*.xcframework" | grep "libs" > native-files-list
-          zip natives-mac -@ < native-files-list
+          zip -r natives-mac -@ < native-files-list
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -158,7 +156,7 @@ jobs:
       - name: Add VCVarsall To path
         shell: pwsh
         run: |
-          echo "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "C:\Program Files\Microsoft Visual Studio\18\Enterprise\VC\Auxiliary\Build" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
 
       - uses: actions/checkout@v4
@@ -195,7 +193,7 @@ jobs:
 
 
   package:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [natives-android, natives-linux, natives-mac, natives-windows-cross, natives-windows-msvc]
     env:
       ORG_GRADLE_PROJECT_MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -214,6 +212,9 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: Download Artifacts from linux
         if: success() && needs.natives-linux.result == 'success'
@@ -261,6 +262,9 @@ jobs:
       - name: Package All
         run: ./gradlew jnigenPackageAll
 
+      - name: Build and test Java code
+        run: ./gradlew build
+
       - name: Snapshot build deploy
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository_owner == 'libgdx'
         run: |
@@ -292,7 +296,7 @@ jobs:
 
       - name: Pack natives
         run: |
-          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*-natives.jar" -o -name "*.xcframework" | grep "libs" > native-files-list
+          find .  -name "*.a" -o -name "*.dll" -o -name "*.dylib" -o -name "*.so" -o -name "*-natives.jar" -o -name "*-natives-*.jar" -o -name "*.xcframework" | grep "libs" > native-files-list
           zip -r natives -@ < native-files-list
 
       - name: Upload artifacts
