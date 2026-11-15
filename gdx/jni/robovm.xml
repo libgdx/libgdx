@@ -1,0 +1,9 @@
+<config>
+    <frameworkPaths>
+        <path>libs</path>
+    </frameworkPaths>
+    <frameworks>
+        <framework>gdx</framework>
+        <framework>ObjectAL</framework>
+    </frameworks>
+</config>

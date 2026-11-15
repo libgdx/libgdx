@@ -137,7 +137,31 @@ jnigen {
 		]
 	}
 	robovm {
-		extraXCFramework("../../libs/ios32/ObjectAL.xcframework")
+		manualFile file("jni/robovm.xml")
+	}
+}
+
+//Temp hack for jnigen, 3.1.2 seems to have issue with clobbering the JAR with extraXCFrameowrk
+tasks.matching {
+	it.name in [
+		"jnigenPackageAll",
+		"jnigenPackageAllIOS"
+	]
+}.configureEach {
+	inputs.dir("libs/ios32/ObjectAL.xcframework")
+	inputs.dir("${jnigen.libsDir}/gdx.xcframework")
+	doLast {
+		def nativeJar = file("${jnigen.libsDir}/gdx-natives-ios.jar")
+		def mergedJar = new File(temporaryDir, nativeJar.name)
+		ant.zip(destfile: mergedJar) {
+			zipfileset(dir: file(jnigen.libsDir), includes: "gdx.xcframework/**", prefix: "META-INF/robovm/ios/libs")
+			zipfileset(dir: file("libs/ios32"), includes: "ObjectAL.xcframework/**", prefix: "META-INF/robovm/ios/libs")
+			zipfileset(file: file("jni/robovm.xml"), prefix: "META-INF/robovm/ios")
+		}
+		copy {
+			from mergedJar
+			into nativeJar.parentFile
+		}
 	}
 }
 
