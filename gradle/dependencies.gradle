@@ -156,5 +156,5 @@ libraries.junit = [
 ]
 
 gdxnatives.desktop = [
-        files("gdx/libs/gdx-natives.jar")
+        files("gdx/build/jnigen/libs/gdx-natives-desktop.jar").builtBy(":gdx:jnigenPackageAllDesktop")
 ]
