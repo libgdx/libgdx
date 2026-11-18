@@ -84,7 +84,7 @@ tasks.register('extractMetalANGLEKit', Copy) {
 	into 'res/META-INF/robovm/ios/libs/'
 }
 
-tasks.register('jnigenBuildIOS') {
+tasks.register('jnigenBuildAllIOS') {
 	dependsOn extractMetalANGLEKit
 }
 
@@ -96,7 +96,7 @@ tasks.register('jnigen') {
 }
 
 if(OperatingSystem.current() == OperatingSystem.MAC_OS) {
-	jnigenBuild.dependsOn jnigenBuildIOS
+	jnigenBuild.dependsOn jnigenBuildAllIOS
 }
 
 processResources.duplicatesStrategy = DuplicatesStrategy.EXCLUDE
