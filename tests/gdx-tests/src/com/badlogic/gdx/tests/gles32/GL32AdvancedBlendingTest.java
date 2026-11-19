@@ -53,6 +53,7 @@ public class GL32AdvancedBlendingTest extends GdxTest {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		batch = new SpriteBatch();
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, 1, 1);
+		batch.setBlendFunction(-1, -1);
 	}
 
 	@Override
@@ -75,7 +76,7 @@ public class GL32AdvancedBlendingTest extends GdxTest {
 		batch.flush();
 
 		Gdx.gl.glBlendEquation(modes[mode]);
-		batch.draw(texture, 0, 0, .5f, .5f);
+		batch.draw(texture, 0, 0, 0.5f, 0.5f);
 
 		batch.end();
 
