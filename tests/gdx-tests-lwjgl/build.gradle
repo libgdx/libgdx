@@ -22,11 +22,7 @@ sourceSets.main.resources.srcDirs = ["../gdx-tests-android/assets"]
 dependencies {
 	implementation project(":tests:gdx-tests")
 	implementation project(":backends:gdx-backend-lwjgl")
-
-	implementation project(path: ":gdx", configuration: "archives")
-	implementation project(path: ":extensions:gdx-box2d-parent:gdx-box2d", configuration: "archives")
-	implementation project(path: ":extensions:gdx-bullet", configuration: "archives")
-	implementation project(path: ":extensions:gdx-freetype", configuration: "archives")
+	implementation testnatives.desktop
 }
 
 tasks.register('launchTestsLwjgl', JavaExec) {
