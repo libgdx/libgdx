@@ -579,20 +579,39 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @return This vector for chaining. */
 	public Vector3 slerp (final Vector3 target, float alpha) {
 		final float dot = dot(target);
-		// If the inputs are too close for comfort, simply linearly interpolate.
-		if (dot > 0.9995 || dot < -0.9995) return lerp(target, alpha);
+		// If the inputs are too close for comfort, simply linearly interpolate. Nearly opposite vectors can't be lerped, as
+		// that passes through (or near) the zero vector halfway, so they rotate below instead.
+		if (dot > 0.9995) return lerp(target, alpha);
 
 		// theta0 = angle between input vectors
-		final float theta0 = (float)Math.acos(dot);
+		final float theta0 = (float)Math.acos(Math.max(-1f, dot));
 		// theta = angle between this vector and result
 		final float theta = theta0 * alpha;
 
 		final float st = (float)Math.sin(theta);
-		final float tx = target.x - x * dot;
-		final float ty = target.y - y * dot;
-		final float tz = target.z - z * dot;
-		final float l2 = tx * tx + ty * ty + tz * tz;
-		final float dl = st * ((l2 < 0.0001f) ? 1f : 1f / (float)Math.sqrt(l2));
+		float tx = target.x - x * dot;
+		float ty = target.y - y * dot;
+		float tz = target.z - z * dot;
+		float l2 = tx * tx + ty * ty + tz * tz;
+		if (dot < 0 && l2 < 1e-10f) {
+			// Exactly opposite: there is no unique plane to rotate in, so use any axis perpendicular to this vector.
+			final float ax = Math.abs(x), ay = Math.abs(y), az = Math.abs(z);
+			if (ax <= ay && ax <= az) {
+				tx = 0;
+				ty = z;
+				tz = -y;
+			} else if (ay <= az) {
+				tx = -z;
+				ty = 0;
+				tz = x;
+			} else {
+				tx = y;
+				ty = -x;
+				tz = 0;
+			}
+			l2 = tx * tx + ty * ty + tz * tz;
+		}
+		final float dl = st * ((l2 < 0.0001f && dot >= 0) ? 1f : 1f / (float)Math.sqrt(l2));
 
 		return scl((float)Math.cos(theta)).add(tx * dl, ty * dl, tz * dl).nor();
 	}
