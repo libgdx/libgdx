@@ -2,11 +2,67 @@
 package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.math.Intersector.SplitTriangle;
+import com.badlogic.gdx.math.collision.Ray;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
 public class IntersectorTest {
+
+	@Test
+	public void testIntersectRayTriangleDegenerate () {
+		Ray ray = new Ray(new Vector3(10, 20, 30), new Vector3(0, -1, 0));
+		Vector3 intersection = new Vector3(1, 2, 3);
+		assertFalse(Intersector.intersectRayTriangle(ray, new Vector3(100, 200, 300), new Vector3(400, 500, 600),
+			new Vector3(400, 500, 600), intersection));
+		assertEquals(new Vector3(1, 2, 3), intersection);
+		assertFalse(Intersector.intersectRayTriangle(ray, Vector3.Zero, Vector3.Zero, Vector3.Zero, null));
+		assertFalse(Intersector.intersectRayTriangle(ray, new Vector3(100, 200, 300), new Vector3(200, 300, 400),
+			new Vector3(300, 400, 500), null));
+	}
+
+	@Test
+	public void testIntersectRayTrianglesWithDegenerateTriangle () {
+		Ray ray = new Ray(Vector3.Zero, Vector3.Z);
+		float[] triangles = {100, 200, 300, 400, 500, 600, 400, 500, 600, -1, -1, 5, 1, -1, 5, 0, 1, 5};
+		Vector3 intersection = new Vector3();
+		Vector3 expected = new Vector3(0, 0, 5);
+		assertTrue(Intersector.intersectRayTriangles(ray, triangles, intersection));
+		assertEquals(expected, intersection);
+		assertTrue(Intersector.intersectRayTriangles(ray, triangles, new short[] {0, 1, 2, 3, 4, 5}, 3, intersection));
+		assertEquals(expected, intersection);
+		assertTrue(Intersector.intersectRayTriangles(ray, Arrays.asList(new Vector3(100, 200, 300), new Vector3(400, 500, 600),
+			new Vector3(400, 500, 600), new Vector3(-1, -1, 5), new Vector3(1, -1, 5), new Vector3(0, 1, 5)), intersection));
+		assertEquals(expected, intersection);
+		assertFalse(Intersector.intersectRayTriangles(ray, Arrays.copyOf(triangles, 9), null));
+	}
+
+	@Test
+	public void testIntersectRayTriangleNonDegenerate () {
+		Vector3 t1 = new Vector3(-1, -1, 5);
+		Vector3 t2 = new Vector3(1, -1, 5);
+		Vector3 t3 = new Vector3(0, 1, 5);
+		Ray ray = new Ray(Vector3.Zero, Vector3.Z);
+		Vector3 intersection = new Vector3();
+		assertTrue(Intersector.intersectRayTriangle(ray, t1, t2, t3, intersection));
+		assertEquals(new Vector3(0, 0, 5), intersection);
+		assertTrue(Intersector.intersectRayTriangle(ray, t1, t3, t2, null));
+		ray.origin.set(0, 0, 6);
+		assertFalse(Intersector.intersectRayTriangle(ray, t1, t2, t3, null));
+		ray.set(new Vector3(0, 0, 5), Vector3.X);
+		assertTrue(Intersector.intersectRayTriangle(ray, t1, t2, t3, intersection));
+		assertEquals(ray.origin, intersection);
+		ray.origin.set(2, 0, 5);
+		assertFalse(Intersector.intersectRayTriangle(ray, t1, t2, t3, null));
+		ray.origin.set(0.25f, 0.0000000025f, 0);
+		assertTrue(Intersector.intersectRayTriangle(ray, Vector3.Zero, Vector3.X, new Vector3(0, 0.00000001f, 0), null));
+		ray.origin.set(1, 1, 0);
+		assertTrue(
+			Intersector.intersectRayTriangle(ray, Vector3.Zero, new Vector3(1e10f, 0, 0), new Vector3(0, 1e10f, 0), intersection));
+		assertEquals(ray.origin, intersection);
+	}
 
 	/** Compares two triangles for equality. Triangles must have the same winding, but may begin with different vertex. Values are
 	 * epsilon compared, with default tolerance. Triangles are assumed to be valid triangles - no duplicate vertices. */
