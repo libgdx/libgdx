@@ -41,4 +41,17 @@ public class Vector3Test {
 		assertEquals(angle / 2, (float)Math.toDegrees(Math.acos(half.dot(end))), 0.01f);
 		assertTrue(new Vector3(start).slerp(end, 1f).epsilonEquals(end, 1e-5f));
 	}
+
+	@Test
+	public void testSlerpCloseVectorsKeepsUnitLength () {
+		Vector3 start = new Vector3(1, 0, 0);
+		Vector3 end = new Vector3(1, 0.0283f, 0).nor(); // dot is about 0.9996, so this takes the lerp path
+		assertTrue(start.dot(end) > 0.9995f);
+		assertEquals(1f, new Vector3(start).slerp(end, 0.5f).len(), 1e-6f);
+		// Many small steps must not shrink the vector.
+		Vector3 v = new Vector3(start);
+		for (int i = 0; i < 1000; i++)
+			v.slerp(end, 0.01f);
+		assertEquals(1f, v.len(), 1e-5f);
+	}
 }

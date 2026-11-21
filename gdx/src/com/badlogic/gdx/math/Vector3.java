@@ -581,7 +581,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		final float dot = dot(target);
 		// If the inputs are too close for comfort, simply linearly interpolate. Nearly opposite vectors can't be lerped, as
 		// that passes through (or near) the zero vector halfway, so they rotate below instead.
-		if (dot > 0.9995) return lerp(target, alpha);
+		if (dot > 0.9995) return lerp(target, alpha).nor();
 
 		// theta0 = angle between input vectors
 		final float theta0 = (float)Math.acos(Math.max(-1f, dot));
