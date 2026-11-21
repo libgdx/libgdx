@@ -2,11 +2,61 @@
 package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.math.Intersector.SplitTriangle;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class IntersectorTest {
+
+	@Test
+	public void testIntersectRayBoundsFastFlatBoxes () {
+		BoundingBox[] boxes = {new BoundingBox(new Vector3(3, 3, 0), new Vector3(4, 4, 0)),
+			new BoundingBox(new Vector3(0, 3, 3), new Vector3(0, 4, 4)),
+			new BoundingBox(new Vector3(3, 0, 3), new Vector3(4, 0, 4))};
+		Vector3[] directions = {new Vector3(1, 1, 0), new Vector3(0, 1, 1), new Vector3(1, 0, 1)};
+		Vector3[] negativeZeroDirections = {new Vector3(1, 1, -0.0f), new Vector3(-0.0f, 1, 1), new Vector3(1, -0.0f, 1)};
+		Vector3[] outsideOrigins = {new Vector3(0, 0, 1), new Vector3(1, 0, 0), new Vector3(0, 1, 0)};
+		for (int i = 0; i < boxes.length; i++) {
+			assertRayBoundsIntersection(true, new Ray(Vector3.Zero, directions[i]), boxes[i]);
+			assertRayBoundsIntersection(true, new Ray(Vector3.Zero, negativeZeroDirections[i]), boxes[i]);
+			assertRayBoundsIntersection(false, new Ray(outsideOrigins[i], directions[i]), boxes[i]);
+			assertRayBoundsIntersection(false, new Ray(Vector3.Zero, new Vector3(directions[i]).scl(-1)), boxes[i]);
+		}
+	}
+
+	@Test
+	public void testIntersectRayBoundsFastParallelToFaces () {
+		BoundingBox box = new BoundingBox(Vector3.Zero, new Vector3(1, 1, 1));
+		assertRayBoundsIntersection(true, new Ray(new Vector3(-1, 0, 0.5f), Vector3.X), box);
+		assertRayBoundsIntersection(true, new Ray(new Vector3(-1, 1, 0.5f), Vector3.X), box);
+		assertRayBoundsIntersection(true, new Ray(new Vector3(-1, 0, 0), Vector3.X), box);
+		assertRayBoundsIntersection(true, new Ray(new Vector3(0, -1, 0), Vector3.Y), box);
+		assertRayBoundsIntersection(true, new Ray(new Vector3(0, 0, -1), Vector3.Z), box);
+		assertRayBoundsIntersection(false, new Ray(new Vector3(-1, -0.00000001f, 0.5f), Vector3.X), box);
+		assertRayBoundsIntersection(false, new Ray(new Vector3(-1, 2, 0.5f), Vector3.X), box);
+	}
+
+	@Test
+	public void testIntersectRayBoundsFastOtherDimensions () {
+		Ray ray = new Ray(Vector3.Zero, Vector3.Z);
+		assertRayBoundsIntersection(true, ray, new BoundingBox(new Vector3(0, 0, 3), new Vector3(0, 0, 4)));
+		assertRayBoundsIntersection(true, ray, new BoundingBox(new Vector3(0, 0, 3), new Vector3(0, 0, 3)));
+		assertRayBoundsIntersection(false, ray, new BoundingBox(new Vector3(1, 0, 3), new Vector3(1, 0, 3)));
+		assertRayBoundsIntersection(true, ray, new BoundingBox(new Vector3(-1, -1, -1), new Vector3(1, 1, 1)));
+		assertRayBoundsIntersection(true, new Ray(Vector3.Zero, new Vector3(1, 1, 1)),
+			new BoundingBox(new Vector3(3, 3, 3), new Vector3(4, 4, 4)));
+		assertRayBoundsIntersection(true, new Ray(new Vector3(-1, 0, 0.5f), new Vector3(0.0000001f, 1, 0)),
+			new BoundingBox(new Vector3(0, 10000000, 0), new Vector3(1, 20000000, 1)));
+	}
+
+	private void assertRayBoundsIntersection (boolean expected, Ray ray, BoundingBox box) {
+		assertEquals(expected, Intersector.intersectRayBounds(ray, box, null));
+		assertEquals(expected, Intersector.intersectRayBoundsFast(ray, box));
+		assertEquals(expected,
+			Intersector.intersectRayBoundsFast(ray, box.getCenter(new Vector3()), box.getDimensions(new Vector3())));
+	}
 
 	/** Compares two triangles for equality. Triangles must have the same winding, but may begin with different vertex. Values are
 	 * epsilon compared, with default tolerance. Triangles are assumed to be valid triangles - no duplicate vertices. */
