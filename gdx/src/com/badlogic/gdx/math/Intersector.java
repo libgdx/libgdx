@@ -492,6 +492,7 @@ public final class Intersector {
 		Vector3 pvec = v2.set(ray.direction).crs(edge2);
 		float det = edge1.dot(pvec);
 		if (MathUtils.isZero(det)) {
+			if (edge1.crs(edge2).isZero()) return false;
 			p.set(t1, t2, t3);
 			if (p.testPoint(ray.origin) == PlaneSide.OnPlane && Intersector.isPointInTriangle(ray.origin, t1, t2, t3)) {
 				if (intersection != null) intersection.set(ray.origin);
