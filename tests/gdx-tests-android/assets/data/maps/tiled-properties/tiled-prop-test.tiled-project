@@ -147,6 +147,58 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
+            "id": 9,
+            "members": [
+                {
+                    "name": "classList",
+                    "type": "list",
+                    "value": [
+                        {
+                            "type": "int",
+                            "value": 4
+                        },
+                        {
+                            "type": "int",
+                            "value": 2
+                        },
+                        {
+                            "type": "list",
+                            "value": [
+                            ]
+                        },
+                        {
+                            "type": "list",
+                            "value": [
+                                {
+                                    "type": "string",
+                                    "value": "some"
+                                },
+                                {
+                                    "type": "string",
+                                    "value": "str"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "name": "testClassList",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
             "id": 7,
             "members": [
                 {
