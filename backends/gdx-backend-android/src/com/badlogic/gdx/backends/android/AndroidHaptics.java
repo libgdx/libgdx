@@ -24,26 +24,27 @@ import android.os.VibrationAttributes;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.math.MathUtils;
 
-public class AndroidHaptics {
+public class AndroidHaptics implements Haptics {
 
 	private final Vibrator vibrator;
 	private AudioAttributes audioAttributes;
 	private VibrationAttributes vibrationAttributes;
 	private boolean vibratorSupport;
 	private boolean hapticsSupport;
+	private boolean fallback;
 
-	public AndroidHaptics (Context context) {
+	public AndroidHaptics (Context context, boolean fallback) {
+		this(getVibratorFromContext(context), fallback);
+	}
+
+	public AndroidHaptics (Vibrator vibrator, boolean fallback) {
+		this.vibrator = vibrator;
+		this.fallback = fallback;
 		vibratorSupport = false;
 		hapticsSupport = false;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-			VibratorManager vibratorManager = (VibratorManager)context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
-			vibrator = vibratorManager.getDefaultVibrator();
-		} else {
-			vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
-		}
 		if (vibrator != null && vibrator.hasVibrator()) {
 			vibratorSupport = true;
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -59,7 +60,19 @@ public class AndroidHaptics {
 		}
 	}
 
+	private static Vibrator getVibratorFromContext (Context context) {
+		final Vibrator vibrator;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			VibratorManager vibratorManager = (VibratorManager)context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+			vibrator = vibratorManager.getDefaultVibrator();
+		} else {
+			vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+		}
+		return vibrator;
+	}
+
 	@SuppressLint("MissingPermission")
+	@Override
 	public void vibrate (int milliseconds) {
 		if (vibratorSupport) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -70,11 +83,12 @@ public class AndroidHaptics {
 	}
 
 	@SuppressLint("MissingPermission")
-	public void vibrate (Input.VibrationType vibrationType) {
+	@Override
+	public void impact (ImpactType impactType) {
 		if (hapticsSupport) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 				int vibrationEffect;
-				switch (vibrationType) {
+				switch (impactType) {
 				case LIGHT:
 					vibrationEffect = VibrationEffect.EFFECT_TICK;
 					break;
@@ -85,7 +99,7 @@ public class AndroidHaptics {
 					vibrationEffect = VibrationEffect.EFFECT_HEAVY_CLICK;
 					break;
 				default:
-					throw new IllegalArgumentException("Unknown VibrationType " + vibrationType);
+					throw new IllegalArgumentException("Unknown ImpactType " + impactType);
 				}
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
 					vibrator.vibrate(VibrationEffect.createPredefined(vibrationEffect), vibrationAttributes);
@@ -96,7 +110,16 @@ public class AndroidHaptics {
 	}
 
 	@SuppressLint("MissingPermission")
-	public void vibrate (int milliseconds, int intensity, boolean fallback) {
+	@Override
+	public void cancel () {
+		if (vibrator != null) {
+			vibrator.cancel();
+		}
+	}
+
+	@SuppressLint("MissingPermission")
+	@Override
+	public void vibrate (int milliseconds, int intensity) {
 		if (hapticsSupport) {
 			intensity = MathUtils.clamp(intensity, 0, 255);
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -104,11 +127,29 @@ public class AndroidHaptics {
 		} else if (fallback) vibrate(milliseconds);
 	}
 
-	public boolean hasVibratorAvailable () {
+	@Override
+	public boolean isVibratorSupported () {
 		return vibratorSupport;
 	}
 
-	public boolean hasHapticsSupport () {
+	@Override
+	public boolean isHapticsSupported () {
 		return hapticsSupport;
+	}
+
+	@Override
+	public boolean isFallbackEnabled () {
+		return fallback;
+	}
+
+	@Override
+	public void setFallbackEnabled (boolean fallback) {
+		this.fallback = fallback;
+	}
+
+	/** Returns the underlying Android {@link Vibrator} instance.
+	 * @return The Vibrator instance, or null if the device has no vibrator or missing VIBRATE permission. */
+	public Vibrator getVibrator () {
+		return vibrator;
 	}
 }
