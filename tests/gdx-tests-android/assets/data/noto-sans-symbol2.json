@@ -1,0 +1,17 @@
+{
+BitmapFont: { noto-sans-symbol2: { file: noto-sans-symbol2.fnt } },
+Color: {
+	green: { a: 1, b: 0, g: 1, r: 0 },
+	white: { a: 1, b: 1, g: 1, r: 1 },
+	red: { a: 1, b: 0, g: 0, r: 1 },
+	black: { a: 1, b: 0, g: 0, r: 0 },
+	gray: { a: 1, b: 0.8, g: 0.8, r: 0.8 },
+},
+LabelStyle: {
+	default: { font: noto-sans-symbol2, fontColor: white }
+},
+WindowStyle: {
+	default: { titleFont: noto-sans-symbol2, titleFontColor: white },
+	dialog: { parent: default }
+},
+}

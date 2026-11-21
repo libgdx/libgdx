@@ -19,9 +19,11 @@ dependencies {
 	api project(":extensions:gdx-freetype")
 	api project(":backends:gdx-backend-headless")
 	api testnatives.desktop
+	testImplementation libraries.junit
 }
 
 sourceSets.main.resources.srcDirs = ["assets"]
+sourceSets.test.java.srcDirs = ["test"]
 
 ext {
 	particles3DMainClass = "com.badlogic.gdx.tools.flame.FlameMain"
