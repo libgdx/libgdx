@@ -70,7 +70,7 @@ public class VibratorTest extends GdxTest {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				int randomLength = MathUtils.random(10, 200);
-				int randomAmplitude = MathUtils.random(0, 255);
+				int randomAmplitude = MathUtils.random(1, 255);
 				haptics.vibrate(randomLength, randomAmplitude);
 				Gdx.app.log("VibratorTest", "Length: " + randomLength + "ms, Amplitude: " + randomAmplitude);
 			}

@@ -121,7 +121,7 @@ public class AndroidHaptics implements Haptics {
 	@Override
 	public void vibrate (int milliseconds, int intensity) {
 		if (hapticsSupport) {
-			intensity = MathUtils.clamp(intensity, 0, 255);
+			intensity = MathUtils.clamp(intensity, 1, 255);
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
 				vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, intensity));
 		} else if (fallback) vibrate(milliseconds);
