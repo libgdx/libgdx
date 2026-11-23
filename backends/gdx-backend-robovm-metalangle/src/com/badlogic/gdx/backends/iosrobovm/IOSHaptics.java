@@ -34,7 +34,7 @@ public class IOSHaptics implements Haptics {
 
 	public IOSHaptics (boolean useHaptics, boolean fallback) {
 		this.fallback = fallback;
-		vibratorSupport = useHaptics && UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Phone;
+		vibratorSupport = UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Phone;
 		hapticsSupport = useHaptics && CHHapticEngine.capabilitiesForHardware().supportsHaptics();
 		if (hapticsSupport) {
 			try {
@@ -91,7 +91,7 @@ public class IOSHaptics implements Haptics {
 			} catch (NSErrorException e) {
 				Gdx.app.error("IOSHaptics", "Error creating haptics pattern or player. " + e.getMessage());
 			}
-		} else if (fallback) {
+		} else if (vibratorSupport && fallback) {
 			AudioServices.playSystemSound(4095);
 		}
 	}

@@ -16,46 +16,68 @@
 
 package com.badlogic.gdx.input;
 
+/** Provides vibration and haptic feedback. Obtain an instance through {@link com.badlogic.gdx.Input#getHaptics()}, or install a
+ * custom implementation (e.g. for a gamepad) with {@link com.badlogic.gdx.Input#setHaptics(Haptics)}.
+ * <p>
+ * Each effect needs certain device capabilities. {@link #isHapticsSupported()} tells whether the device supports the full effect,
+ * and {@link #isVibratorSupported()} tells whether it can only vibrate. If an effect isn't supported, it does nothing unless
+ * fallback is enabled (see {@link #setFallbackEnabled(boolean)}). In that case a simpler effect is played that ignores the
+ * unsupported parameters, such as amplitude or duration. Which effects can fall back depends on the platform and is noted on each
+ * method.
+ * <p>
+ * Platform notes:
+ * <ul>
+ * <li>Android: requires <code>&lt;uses-permission android:name="android.permission.VIBRATE" /&gt;</code> in the manifest. Haptics
+ * support means a vibrator with amplitude control (API 29+).</li>
+ * <li>iOS: set <code>useHaptics = true</code> in the application configuration to use Core Haptics. Haptics support means a
+ * device with Core Haptics and <code>useHaptics</code> enabled. Vibrator support means an iPhone. The only fallback effect is the
+ * default system vibration, which has a fixed duration.</li>
+ * <li>Other backends: all methods do nothing and both support queries return false.</li>
+ * </ul>
+ */
 public interface Haptics {
 
+	/** Predefined impact effects. Their exact duration and strength are defined by the platform and device manufacturer. */
 	enum ImpactType {
 		LIGHT, MEDIUM, HEAVY;
 	}
 
-	/** Generates a simple haptic effect of a given duration or a vibration effect on devices without haptic capabilities. Note
-	 * that on Android backend you'll need the permission
-	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
-	 * On iOS backend you'll need to set <code>useHaptics = true</code> for devices with haptics capabilities to use them.
-	 *
-	 * @param milliseconds the number of milliseconds to vibrate. */
+	/** Vibrates for the given duration at the device's default strength.
+	 * <ul>
+	 * <li>Android: needs only a vibrator, so fallback never applies.</li>
+	 * <li>iOS: needs haptics support. Without it, on a device with a vibrator and with fallback enabled, plays the default system
+	 * vibration and ignores <code>milliseconds</code>.</li>
+	 * </ul>
+	 * @param milliseconds the duration of the vibration */
 	void vibrate (int milliseconds);
 
-	/** Generates a simple haptic effect of a given duration and amplitude. Note that on Android backend you'll need the permission
-	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
-	 * On iOS backend you'll need to set <code>useHaptics = true</code> for devices with haptics capabilities to use them.
-	 *
-	 * @param milliseconds the duration of the haptics effect
-	 * @param amplitude the amplitude/strength of the haptics effect. Valid values in the range [0, 255]. **/
+	/** Vibrates for the given duration at the given strength. Needs haptics support on all platforms. Without it, and with
+	 * fallback enabled, behaves like {@link #vibrate(int)} and ignores <code>amplitude</code>.
+	 * @param milliseconds the duration of the vibration
+	 * @param amplitude the strength of the vibration, in the range [1, 255]. Values outside the range are clamped. */
 	void vibrate (int milliseconds, int amplitude);
 
-	/** Generates a simple impact haptic effect of a type. ImpactTypes are length/amplitude haptic effect presets that depend on
-	 * each device and are defined by manufacturers. Should give most consistent results across devices and OSs. Note that on
-	 * Android backend you'll need the permission <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in
-	 * your manifest file in order for this to work. On iOS backend you'll need to set <code>useHaptics = true</code> for devices
-	 * with haptics capabilities to use them.
-	 *
-	 * @param impactType the type of vibration */
+	/** Plays a predefined impact effect. This gives the most consistent results across devices and platforms. Needs haptics
+	 * support. Fallback never applies, so it does nothing on devices without haptics support.
+	 * @param impactType the type of impact */
 	void impact (ImpactType impactType);
 
-	/** Cancels all current vibration effects **/
+	/** Stops any vibration or haptic effect in progress. Not supported on iOS, where effects always play to completion. */
 	void cancel ();
 
+	/** @return whether the device supports haptic effects with controllable strength. If false, only {@link #vibrate(int)} may
+	 *         work. See the platform notes in the class documentation. */
 	boolean isHapticsSupported ();
 
+	/** @return whether the device has a vibrator. */
 	boolean isVibratorSupported ();
 
+	/** @return whether unsupported effects fall back to a simpler vibration. See {@link #setFallbackEnabled(boolean)}. */
 	boolean isFallbackEnabled ();
 
+	/** Sets whether effects the device can't fully play should fall back to a simpler vibration instead of doing nothing. Each
+	 * method documents when its fallback applies. The initial value comes from <code>hapticsFallback</code> in the application
+	 * configuration.
+	 * @param enabled true to enable fallback */
 	void setFallbackEnabled (boolean enabled);
-
 }
