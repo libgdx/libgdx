@@ -70,7 +70,6 @@ import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightObserver;
 import com.badlogic.gdx.backends.android.keyboardheight.KeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.keyboardheight.StandardKeyboardHeightProvider;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.input.NativeInputConfiguration.NativeInputCloseCallback;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -152,7 +151,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	final Application app;
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
-	protected final AndroidHaptics haptics;
 	private boolean compassAvailable = false;
 	private boolean rotationVectorAvailable = false;
 	boolean keyboardAvailable;
@@ -1041,11 +1039,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	@Override
-	public Haptics getHaptics () {
-		return haptics;
-	}
-
-	@Override
 	public boolean justTouched () {
 		return justTouched;
 	}
@@ -1215,8 +1208,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
-		if (peripheral == Peripheral.Vibrator) return haptics.isVibratorSupported();
-		if (peripheral == Peripheral.HapticFeedback) return haptics.isHapticsSupported();
+		if (peripheral == Peripheral.Vibrator) return getHaptics().isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return getHaptics().isHapticsSupported();
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		if (peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
 		if (peripheral == Peripheral.Pressure) return true;

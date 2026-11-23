@@ -857,6 +857,14 @@ public interface Input {
 		return NoOpHaptics.INSTANCE;
 	}
 
+	/** Replaces the {@link Haptics} implementation returned by {@link #getHaptics()}, e.g. to route haptic effects to an external
+	 * device such as a gamepad. The current instance can be retrieved first and wrapped to keep it as a fallback.
+	 * @param haptics the new instance, or null to disable haptics
+	 * @throws UnsupportedOperationException if this Input does not support custom haptics */
+	public default void setHaptics (@Null Haptics haptics) {
+		throw new UnsupportedOperationException();
+	}
+
 	/** The azimuth is the angle of the device's orientation around the z-axis. The positive z-axis points towards the earths
 	 * center.
 	 * 

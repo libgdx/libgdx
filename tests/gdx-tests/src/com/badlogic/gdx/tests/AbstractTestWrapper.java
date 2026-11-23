@@ -322,6 +322,11 @@ public abstract class AbstractTestWrapper extends GdxTest {
 		}
 
 		@Override
+		public void setHaptics (Haptics haptics) {
+			input.setHaptics(haptics);
+		}
+
+		@Override
 		public float getAzimuth () {
 			return input.getAzimuth();
 		}

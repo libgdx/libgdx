@@ -1,7 +1,10 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.input.Haptics;
+import com.badlogic.gdx.input.NoOpHaptics;
 import com.badlogic.gdx.utils.IntSet;
+import com.badlogic.gdx.utils.Null;
 
 public abstract class AbstractInput implements Input {
 	protected final boolean[] pressedKeys;
@@ -9,10 +12,21 @@ public abstract class AbstractInput implements Input {
 	private final IntSet keysToCatch = new IntSet();
 	protected int pressedKeyCount;
 	protected boolean keyJustPressed;
+	protected Haptics haptics = NoOpHaptics.INSTANCE;
 
 	public AbstractInput () {
 		pressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
 		justPressedKeys = new boolean[Keys.MAX_KEYCODE + 1];
+	}
+
+	@Override
+	public Haptics getHaptics () {
+		return haptics;
+	}
+
+	@Override
+	public void setHaptics (@Null Haptics haptics) {
+		this.haptics = haptics != null ? haptics : NoOpHaptics.INSTANCE;
 	}
 
 	@Override
