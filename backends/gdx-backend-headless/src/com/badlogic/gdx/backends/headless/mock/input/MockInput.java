@@ -19,15 +19,11 @@ package com.badlogic.gdx.backends.headless.mock.input;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
-import com.badlogic.gdx.input.NoOpHaptics;
 
 /** The headless backend does its best to mock elements. This is intended to make code-sharing between server and client as simple
  * as possible. */
 public class MockInput implements Input {
-
-	private Haptics haptics = new NoOpHaptics();
 
 	@Override
 	public float getAccelerometerX () {
@@ -182,11 +178,6 @@ public class MockInput implements Input {
 	@Override
 	public void setKeyboardHeightObserver (KeyboardHeightObserver observer) {
 
-	}
-
-	@Override
-	public Haptics getHaptics () {
-		return haptics;
 	}
 
 	@Override

@@ -21,9 +21,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputEventQueue;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
-import com.badlogic.gdx.input.NoOpHaptics;
 import com.badlogic.gdx.utils.IntSet;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -57,7 +55,6 @@ final public class DefaultLwjglInput extends AbstractInput implements LwjglInput
 	boolean justTouched;
 	final IntSet pressedButtons = new IntSet();
 	InputProcessor processor;
-	Haptics haptics = new NoOpHaptics();
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
 	float deltaTime;
@@ -639,11 +636,6 @@ final public class DefaultLwjglInput extends AbstractInput implements LwjglInput
 	@Override
 	public InputProcessor getInputProcessor () {
 		return this.processor;
-	}
-
-	@Override
-	public Haptics getHaptics () {
-		return haptics;
 	}
 
 	@Override

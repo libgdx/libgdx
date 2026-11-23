@@ -19,6 +19,7 @@ package com.badlogic.gdx;
 import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.input.NativeInputConfiguration.NativeInputCloseCallback;
+import com.badlogic.gdx.input.NoOpHaptics;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectIntMap;
 
@@ -850,8 +851,11 @@ public interface Input {
 		Default, NumberPad, PhonePad, Email, Password, URI
 	}
 
-	/** @return Haptics instance */
-	public Haptics getHaptics ();
+	/** @return the {@link Haptics} instance for this input. Defaults to {@link NoOpHaptics#INSTANCE} on platforms without haptics
+	 *         support. */
+	public default Haptics getHaptics () {
+		return NoOpHaptics.INSTANCE;
+	}
 
 	/** The azimuth is the angle of the device's orientation around the z-axis. The positive z-axis points towards the earths
 	 * center.

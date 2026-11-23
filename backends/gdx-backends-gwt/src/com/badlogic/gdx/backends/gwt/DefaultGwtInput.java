@@ -21,9 +21,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
-import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
-import com.badlogic.gdx.input.NoOpHaptics;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.IntSet.IntSetIterator;
@@ -55,12 +53,10 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	boolean hasFocus = true;
 	GwtAccelerometer accelerometer;
 	GwtGyroscope gyroscope;
-	private Haptics haptics;
 
 	public DefaultGwtInput (CanvasElement canvas, GwtApplicationConfiguration config) {
 		this.canvas = canvas;
 		this.config = config;
-		this.haptics = new NoOpHaptics();
 		if (config.useAccelerometer && GwtFeaturePolicy.allowsFeature(GwtAccelerometer.PERMISSION)) {
 			if (GwtApplication.agentInfo().isFirefox()) {
 				setupAccelerometer();
@@ -329,11 +325,6 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	@Override
 	public void setKeyboardHeightObserver (KeyboardHeightObserver observer) {
 
-	}
-
-	@Override
-	public Haptics getHaptics () {
-		return haptics;
 	}
 
 	@Override

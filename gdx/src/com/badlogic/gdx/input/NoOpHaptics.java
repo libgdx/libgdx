@@ -1,7 +1,10 @@
 
 package com.badlogic.gdx.input;
 
+/** A {@link Haptics} implementation that does nothing, used on platforms without haptics support. */
 public class NoOpHaptics implements Haptics {
+
+	public static final NoOpHaptics INSTANCE = new NoOpHaptics();
 
 	@Override
 	public void vibrate (int milliseconds) {

@@ -209,7 +209,6 @@ public class RemoteInput implements Runnable, Input {
 	InputProcessor processor = null;
 	private final int port;
 	public final String[] ips;
-	Haptics haptics = new NoOpHaptics();
 
 	public RemoteInput () {
 		this(DEFAULT_PORT);
@@ -479,11 +478,6 @@ public class RemoteInput implements Runnable, Input {
 	@Override
 	public void setKeyboardHeightObserver (KeyboardHeightObserver observer) {
 
-	}
-
-	@Override
-	public Haptics getHaptics () {
-		return haptics;
 	}
 
 	@Override
