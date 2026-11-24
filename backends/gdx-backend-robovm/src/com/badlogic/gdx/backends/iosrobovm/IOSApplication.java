@@ -275,7 +275,7 @@ public class IOSApplication implements Application {
 
 	final void didBecomeActive (UIScene uiScene) {
 		Gdx.app.debug("IOSApplication", "resumed");
-		audio.didBecomeActive();
+		audio.resume();
 		graphics.makeCurrent();
 		graphics.resume();
 	}
@@ -286,7 +286,7 @@ public class IOSApplication implements Application {
 
 	final void willResignActive (UIScene uiScene) {
 		Gdx.app.debug("IOSApplication", "paused");
-		audio.willResignActive();
+		audio.pause();
 		graphics.makeCurrent();
 		graphics.pause();
 		Gdx.gl.glFinish();
