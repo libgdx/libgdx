@@ -112,7 +112,7 @@ public class AndroidHaptics implements Haptics {
 	@SuppressLint("MissingPermission")
 	@Override
 	public void cancel () {
-		if (vibrator != null) {
+		if (vibratorSupport) {
 			vibrator.cancel();
 		}
 	}
