@@ -247,6 +247,8 @@ public class MockInput implements Input {
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
+		if (peripheral == Peripheral.Vibrator) return getHaptics().isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return getHaptics().isHapticsSupported();
 		return false;
 	}
 

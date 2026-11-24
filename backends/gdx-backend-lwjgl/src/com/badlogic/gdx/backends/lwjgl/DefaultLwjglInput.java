@@ -687,7 +687,10 @@ final public class DefaultLwjglInput extends AbstractInput implements LwjglInput
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
-		return peripheral == Peripheral.HardwareKeyboard;
+		if (peripheral == Peripheral.HardwareKeyboard) return true;
+		if (peripheral == Peripheral.Vibrator) return getHaptics().isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return getHaptics().isHapticsSupported();
+		return false;
 	}
 
 	@Override

@@ -371,7 +371,8 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
 		if (peripheral == Peripheral.OnscreenKeyboard) return GwtApplication.isMobileDevice();
-		if (peripheral == Peripheral.Vibrator) return false;
+		if (peripheral == Peripheral.Vibrator) return getHaptics().isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return getHaptics().isHapticsSupported();
 		return false;
 	}
 
