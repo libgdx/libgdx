@@ -23,17 +23,7 @@ configure([
 		afterEvaluate {
 			publishing {
 				publications {
-					mavenJava(MavenPublication) {
-						//Most normal java projects
-						if(components.findByName("java") != null)
-							from components.java
-
-						//Android
-						if(components.findByName("release") != null) {
-							from components.release
-						}
-
-
+					withType(MavenPublication) {
 						pom {
 							name = POM_NAME
 							if(!POM_DESCRIPTION.isEmpty())
@@ -59,50 +49,13 @@ configure([
 							}
 						}
 					}
-					//Libgdx natives all follow the "$name-platform" artifact structure.
-					if(project.tasks.findByName('jnigen')) {
-						mavenPlatform(MavenPublication) {
-							artifactId = artifactId + "-platform"
-							if(project.tasks.findByName('jnigenJarNativesDesktop'))
-								artifact jnigenJarNativesDesktop { }
+					register("mavenJava", MavenPublication) {
+						if(components.findByName("java") != null)
+							from components.java
 
-							[
-								'arm64-v8a',
-								'armeabi-v7a',
-								'x86_64',
-								'x86'
-							].each { id ->
-								if(project.tasks.findByName("jnigenJarNativesAndroid${id}"))
-									artifact "jnigenJarNativesAndroid${id}" { }
-							}
-
-							if(project.tasks.findByName('jnigenJarNativesIOS'))
-								artifact jnigenJarNativesIOS { }
-
-							pom {
-								name = POM_NAME + " Native Libraries"
-								if(!POM_DESCRIPTION.isEmpty())
-									description = POM_DESCRIPTION
-								url = POM_URL
-								licenses {
-									license {
-										name = POM_LICENCE_NAME
-										url = POM_LICENCE_URL
-										distribution = POM_LICENCE_DIST
-									}
-								}
-								developers {
-									developer {
-										id = "libGDX Developers"
-										url = "https://github.com/libgdx/libgdx/graphs/contributors"
-									}
-								}
-								scm {
-									connection = POM_SCM_CONNECTION
-									developerConnection = POM_SCM_DEV_CONNECTION
-									url = POM_SCM_URL
-								}
-							}
+						//Android
+						if(components.findByName("release") != null) {
+							from components.release
 						}
 					}
 				}
@@ -124,12 +77,10 @@ configure([
 				}
 			}
 
+			def publishing = extensions.getByType(PublishingExtension)
 			signing {
 				useGpgCmd()
-				sign publishing.publications.mavenJava
-
-				if(project.tasks.findByName('jnigen'))
-					sign publishing.publications.mavenPlatform
+				sign publishing.publications
 			}
 
 			//Simply using "required" in signing block doesn't work because taskGraph isn't ready yet.

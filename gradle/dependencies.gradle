@@ -22,7 +22,7 @@ ext {
 }
 
 versions.java = project.hasProperty("javaVersion") ? Integer.parseInt(project.getProperty("javaVersion")) : 8
-versions.robovm = "2.3.26"
+versions.robovm = "3.0.1"
 versions.gwt = "2.11.0"
 versions.gwtPlugin = "1.1.29"
 versions.jsinteropAnnotations = "2.0.2"
@@ -60,6 +60,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows-x86",
+        "org.lwjgl:lwjgl:${versions.lwjgl3}:natives-windows-arm64",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-linux-arm32",
@@ -69,6 +70,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows-x86",
+        "org.lwjgl:lwjgl-glfw:${versions.lwjgl3}:natives-windows-arm64",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-linux-arm32",
@@ -78,6 +80,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows-x86",
+        "org.lwjgl:lwjgl-jemalloc:${versions.lwjgl3}:natives-windows-arm64",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-linux-arm32",
@@ -87,6 +90,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows-x86",
+        "org.lwjgl:lwjgl-openal:${versions.lwjgl3}:natives-windows-arm64",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-linux-arm32",
@@ -96,6 +100,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows-x86",
+        "org.lwjgl:lwjgl-opengl:${versions.lwjgl3}:natives-windows-arm64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-linux-arm32",
@@ -105,6 +110,7 @@ libraries.lwjgl3 = [
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows-x86",
+        "org.lwjgl:lwjgl-stb:${versions.lwjgl3}:natives-windows-arm64",
         "com.badlogicgames.jlayer:jlayer:${versions.jlayer}",
         "org.jcraft:jorbis:${versions.jorbis}"
 ]
@@ -119,6 +125,7 @@ libraries.lwjgl3GLES = [
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-macos-arm64",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-windows",
         "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-windows-x86",
+        "org.lwjgl:lwjgl-opengles:${versions.lwjgl3}:natives-windows-arm64",
         "org.lwjgl:lwjgl-egl:${versions.lwjgl3}",
 ]
 
@@ -149,13 +156,12 @@ libraries.junit = [
         "junit:junit:${versions.junit}"
 ]
 
-testnatives.desktop = [
-        files("gdx/libs/gdx-natives.jar"),
-        files("extensions/gdx-box2d/gdx-box2d/libs/gdx-box2d-natives.jar"),
-        files("extensions/gdx-bullet/libs/gdx-bullet-natives.jar"),
-        files("extensions/gdx-freetype/libs/gdx-freetype-natives.jar")
+gdxnatives.desktop = [
+        files("gdx/build/jnigen/libs/gdx-natives-desktop.jar").builtBy(":gdx:jnigenPackageAllDesktop")
 ]
 
-gdxnatives.desktop = [
-        files("gdx/libs/gdx-natives.jar")
+testnatives.desktop = gdxnatives.desktop + [
+        files("extensions/gdx-box2d/gdx-box2d/build/jnigen/libs/gdx-box2d-natives-desktop.jar").builtBy(":extensions:gdx-box2d-parent:gdx-box2d:jnigenPackageAllDesktop"),
+        files("extensions/gdx-bullet/build/jnigen/libs/gdx-bullet-natives-desktop.jar").builtBy(":extensions:gdx-bullet:jnigenPackageAllDesktop"),
+        files("extensions/gdx-freetype/build/jnigen/libs/gdx-freetype-natives-desktop.jar").builtBy(":extensions:gdx-freetype:jnigenPackageAllDesktop")
 ]

@@ -1,2 +1,4 @@
 /CHANGES merge=union
 /CONTRIBUTORS merge=union
+*.gradle text eol=lf
+*.java text eol=lf

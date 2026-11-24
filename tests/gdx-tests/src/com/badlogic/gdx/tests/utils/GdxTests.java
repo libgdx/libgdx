@@ -261,6 +261,7 @@ public class GdxTests {
 		ReflectionCorrectnessTest.class,
 		RotationTest.class,
 		RunnablePostTest.class,
+		SafeAreaInsetsTest.class,
 		Scene2dTest.class,
 		ScrollPane2Test.class,
 		ScrollPaneScrollBarsTest.class,
