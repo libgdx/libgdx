@@ -731,21 +731,14 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 				if (isCatchKey(code)) {
 					e.preventDefault();
 				}
-				if (code == Keys.BACKSPACE) {
+				if (!pressedKeys[code]) {
+					pressedKeySet.add(code);
+					pressedKeyCount++;
+					pressedKeys[code] = true;
+					keyJustPressed = true;
+					justPressedKeys[code] = true;
 					if (processor != null) {
 						processor.keyDown(code);
-						processor.keyTyped('\b');
-					}
-				} else {
-					if (!pressedKeys[code]) {
-						pressedKeySet.add(code);
-						pressedKeyCount++;
-						pressedKeys[code] = true;
-						keyJustPressed = true;
-						justPressedKeys[code] = true;
-						if (processor != null) {
-							processor.keyDown(code);
-						}
 					}
 				}
 			}
@@ -756,7 +749,7 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 				// usually, browsers don't send a keypress event for tab, so we emulate it in
 				// keyup event. Just in case this changes in the future, we sort this out here
 				// to avoid sending the event twice.
-				if (c != '\t') {
+				if (c != '\t' && c != '\b') {
 					if (processor != null) processor.keyTyped(c);
 				}
 			}
@@ -771,6 +764,9 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 					// js does not raise keypress event for tab, so emulate this here for
 					// platform-independant behaviour
 					processor.keyTyped('\t');
+				}
+				if (processor != null && code == Keys.BACKSPACE) {
+					processor.keyTyped('\b');
 				}
 				if (pressedKeys[code]) {
 					pressedKeySet.remove(code);
