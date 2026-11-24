@@ -326,12 +326,12 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 	@Override
 	public void setCursorCatched (boolean catched) {
 		GLFW.glfwSetInputMode(window.getWindowHandle(), GLFW.GLFW_CURSOR,
-			catched ? GLFW.GLFW_CURSOR_DISABLED : GLFW.GLFW_CURSOR_NORMAL);
+			catched ? GLFW.GLFW_CURSOR_CAPTURED : GLFW.GLFW_CURSOR_NORMAL);
 	}
 
 	@Override
 	public boolean isCursorCatched () {
-		return GLFW.glfwGetInputMode(window.getWindowHandle(), GLFW.GLFW_CURSOR) == GLFW.GLFW_CURSOR_DISABLED;
+		return GLFW.glfwGetInputMode(window.getWindowHandle(), GLFW.GLFW_CURSOR) == GLFW.GLFW_CURSOR_CAPTURED;
 	}
 
 	@Override
