@@ -23,8 +23,10 @@ if (JavaVersion.current().isJava9Compatible()) {
 		options.release = versions.java
 	}
 }
-sourceCompatibility = versions.java
-targetCompatibility = versions.java
+java {
+	sourceCompatibility = versions.java
+	targetCompatibility = versions.java
+}
 
 sourceSets.main.java.srcDirs = ["src"]
 sourceSets.main.resources.srcDirs = ["res"]
@@ -40,33 +42,46 @@ jar {
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-task regenerateIOSHeader {
+tasks.register("generateIOSHeaders", JavaExec) {
 	def robovmProject = project(":backends:gdx-backend-robovm")
-	dependsOn robovmProject.sourceSets.main.runtimeClasspath
-	doLast {
-		[IOSGLES20: "iosgl20.h", IOSGLES30: "iosgl30.h"].each {input, output ->
-			def tempDir = File.createTempDir()
-			exec {
-				workingDir robovmProject.file("src")
-				commandLine "javac"
-				args "-h", tempDir, "-cp", robovmProject.sourceSets.main.runtimeClasspath.files.collect { it.absolutePath }.join(File.pathSeparator),
-				"com/badlogic/gdx/backends/iosrobovm/${input}.java"
-			}
-			copy {
-				from tempDir
-				into "jni/iosgl"
-				rename ".*GLES([0-9]*)\\.h", "iosgl\$1.h"
-			}
-		}
+	def robovmClasspath = robovmProject.sourceSets.main.runtimeClasspath
+	def glesSources = ["IOSGLES20", "IOSGLES30"].collect {
+		robovmProject.file("src/com/badlogic/gdx/backends/iosrobovm/${it}.java")
 	}
+	def headersDir = layout.buildDirectory.dir("iosgl-headers")
+	def classesDir = temporaryDir
+
+	inputs.files(robovmClasspath).withPropertyName("robovmClasspath")
+	inputs.files(glesSources).withPropertyName("glesSources")
+	outputs.dir(headersDir).withPropertyName("headersDir")
+
+	mainClass = "com.sun.tools.javac.Main"
+	argumentProviders.add({
+		[
+			"-h",
+			headersDir.get().asFile.absolutePath,
+			"-d",
+			classesDir.absolutePath,
+			"-cp",
+			robovmClasspath.asPath
+		] + glesSources.collect { it.absolutePath }
+	} as CommandLineArgumentProvider)
+}
+
+tasks.register("regenerateIOSHeader", Copy) {
+	from generateIOSHeaders
+	include "*IOSGLES*.h"
+	into "jni/iosgl"
+	rename ".*GLES([0-9]*)\\.h", "iosgl\$1.h"
 }
 
 task validateIOSHeader {
 	dependsOn regenerateIOSHeader
+	def iosglDir = file("jni/iosgl")
 	doLast {
 		for (name in ["iosgl20", "iosgl30"]) {
-			def headerContent = file("jni/iosgl/${name}.h").readLines()
-			def cppContent = file("jni/iosgl/${name}.cpp").readLines()
+			def headerContent = new File(iosglDir, "${name}.h").readLines()
+			def cppContent = new File(iosglDir, "${name}.cpp").readLines()
 			for (headerLine in headerContent) {
 				if (headerLine.startsWith("JNIEXPORT")) {
 					if (!cppContent.contains(headerLine)) {

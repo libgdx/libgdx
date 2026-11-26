@@ -22,8 +22,10 @@ subprojects {
 			options.release = versions.java
 		}
 	}
-	sourceCompatibility = versions.java
-	targetCompatibility = versions.java
+	java {
+		sourceCompatibility = versions.java
+		targetCompatibility = versions.java
+	}
 
 	sourceSets.main.java.srcDirs = ["src"]
 	sourceSets.main.resources.srcDirs = ["res"]

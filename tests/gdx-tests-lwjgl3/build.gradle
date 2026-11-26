@@ -24,8 +24,10 @@ if (JavaVersion.current().isJava9Compatible()) {
 		options.release = versions.java
 	}
 }
-sourceCompatibility = versions.java
-targetCompatibility = versions.java
+java {
+	sourceCompatibility = versions.java
+	targetCompatibility = versions.java
+}
 
 dependencies {
 	implementation project(":tests:gdx-tests")
