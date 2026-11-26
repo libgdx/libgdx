@@ -16,27 +16,11 @@
 
 buildscript {
 	dependencies {
-		classpath "org.docstr:gwt-gradle-plugin:${versions.gwtPlugin}"
-		classpath "org.gretty:gretty:${versions.gretty}"
+		classpath "org.docstr.gwt:org.docstr.gwt.gradle.plugin:${versions.gwtPlugin}"
 	}
 }
 
-configurations.all {
-	// gwt-dev pulls in apache-jsp (Tomcat), but we don't need it and it messes with gretty
-	exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
-}
-
-apply plugin: 'gwt'
-apply plugin: 'war'
-apply plugin: 'org.gretty'
-
-import org.docstr.gradle.plugins.gwt.GwtSuperDev
-import org.akhikhl.gretty.AppBeforeIntegrationTestTask
-
-gretty.httpPort = 8080
-gretty.resourceBase = project.buildDir.path + "/gwt/draftOut"
-gretty.contextPath = "/"
-gretty.portPropertiesFileName = "TEMP_PORTS.properties"
+apply plugin: "org.docstr.gwt"
 
 dependencies {
 	implementation project(":tests:gdx-tests")
@@ -46,90 +30,65 @@ dependencies {
 }
 
 gwt {
-	gwtVersion='2.11.0' // Should match the gwt version used for building the gwt backend
-	maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
-	minHeapSize="1G"
+	gwtVersion = versions.gwt // Should match the gwt version used for building the gwt backend
+	maxHeapSize = "1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
+	minHeapSize = "1G"
 
-	src = files(file("src/")) // Needs to be in front of "modules" below.
-	modules 'com.badlogic.gdx.tests.gwt.GdxTestsGwt'
-	devModules 'com.badlogic.gdx.tests.gwt.GdxTestsGwt'
+	modules = [
+		"com.badlogic.gdx.tests.gwt.GdxTestsGwt"
+	]
 
-	compiler.strict = true
-	compiler.disableCastChecking = true
-}
+	// The GWT compiler needs the Java sources (and .gwt.xml modules) of the libGDX projects, not just their jars.
+	// gdx-box2d only contributes its resources: its Java sources are replaced by gdx-box2d-gwt.
+	gwtSourceDirs.from(
+			project(":gdx").files("src", "res"),
+			project(":backends:gdx-backend-gwt").files("src", "res"),
+			project(":extensions:gdx-box2d-parent:gdx-box2d").files("res"),
+			project(":extensions:gdx-box2d-parent:gdx-box2d-gwt").files("src", "res"),
+			project(":tests:gdx-tests").files("src", "res"))
 
-tasks.register('startHttpServer') {
-	dependsOn draftCompileGwt
+	compiler {
+		strict = true
+	}
 
-	doFirst {
-		copy {
-			from "webapp"
-			into gretty.resourceBase
-		}
-
-		copy {
-			from "war"
-			into gretty.resourceBase
-		}
+	devMode {
+		// Serve the tests from the same directory the asset preloader writes to (see gdx.assetpath in GdxTestsGwt.gwt.xml)
+		war = file("war")
+		port = 8080
 	}
 }
 
-task beforeRun(type: AppBeforeIntegrationTestTask, dependsOn: startHttpServer) {
-	// The next line allows ports to be reused instead of
-	// needing a process to be manually terminated.
-	file("build/TEMP_PORTS.properties").delete()
-	// Somewhat of a hack; uses Gretty's support for wrapping a task in
-	// a start and then stop of a Jetty server that serves files while
-	// also running the SuperDev code server.
-	integrationTestTask 'superDev'
-
-	interactive false
-}
-
-tasks.register('superDev', GwtSuperDev) {
-	dependsOn startHttpServer
-	doFirst {
-		gwt.modules = gwt.devModules
+// Resets war/ to the webapp template before dev mode serves it. Leftovers there (e.g. WEB-INF/lib jars from older
+// builds) would be loaded by the dev mode web server and can break it. Keeps the assets copied by the preloader.
+tasks.register("prepareDevWar", Sync) {
+	from "webapp"
+	into "war"
+	preserve {
+		include "assets/**"
 	}
 }
 
-tasks.register('dist') {
-	dependsOn clean, compileGwt
-	doLast {
-		file("build/dist").mkdirs()
-		copy {
-			from "build/gwt/out"
-			into "build/dist"
-		}
-		copy {
-			from "webapp"
-			into "build/dist"
-		}
-		copy {
-			from "war"
-			into "build/dist"
-		}
-	}
+tasks.named("gwtDevMode") {
+	dependsOn "prepareDevWar"
 }
 
-
-tasks.register('addSource') {
-	doLast {
-		sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.allJava.srcDirs)
-		sourceSets.main.compileClasspath += files(project(':tests:gdx-tests').sourceSets.main.resources.srcDirs)
-		sourceSets.main.compileClasspath += files(project(':backends:gdx-backend-gwt').sourceSets.main.allJava.srcDirs)
-		sourceSets.main.compileClasspath += files(project(':backends:gdx-backend-gwt').sourceSets.main.resources.srcDirs)
-		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d').sourceSets.main.resources.srcDirs)
-		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d-gwt').sourceSets.main.allJava.srcDirs)
-		sourceSets.main.compileClasspath += files(project(':extensions:gdx-box2d-parent:gdx-box2d-gwt').sourceSets.main.resources.srcDirs)
-		sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.allJava.srcDirs)
-		sourceSets.main.compileClasspath += files(project(':gdx').sourceSets.main.resources.srcDirs)
-		sourceSets.main.compileClasspath += files(sourceSets.main.resources.srcDirs)
-	}
+tasks.register("superDev") {
+	group = "LibGDX"
+	description = "Runs the GWT tests in Super Dev Mode on http://localhost:8080"
+	dependsOn "gwtDevMode"
 }
 
-tasks.compileGwt.dependsOn(addSource)
-tasks.draftCompileGwt.dependsOn(addSource)
+tasks.register("dist", Sync) {
+	group = "LibGDX"
+	description = "Compiles the GWT tests into a deployable site in build/dist"
+	from tasks.named("gwtCompile").flatMap { it.war }
+	from "webapp"
+	// Only the assets copied by the preloader, not dev mode leftovers
+	from("war") {
+		include "assets/**"
+	}
+	into layout.buildDirectory.dir("dist")
+}
 
 eclipse {
 	classpath {
