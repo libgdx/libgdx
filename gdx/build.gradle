@@ -42,30 +42,16 @@ jar {
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-tasks.register("generateIOSHeaders", JavaExec) {
+tasks.register("generateIOSHeaders", JavaCompile) {
 	def robovmProject = project(":backends:gdx-backend-robovm")
-	def robovmClasspath = robovmProject.sourceSets.main.runtimeClasspath
-	def glesSources = ["IOSGLES20", "IOSGLES30"].collect {
+	source(["IOSGLES20", "IOSGLES30"].collect {
 		robovmProject.file("src/com/badlogic/gdx/backends/iosrobovm/${it}.java")
-	}
-	def headersDir = layout.buildDirectory.dir("iosgl-headers")
-	def classesDir = temporaryDir
+	})
 
-	inputs.files(robovmClasspath).withPropertyName("robovmClasspath")
-	inputs.files(glesSources).withPropertyName("glesSources")
-	outputs.dir(headersDir).withPropertyName("headersDir")
+	classpath = robovmProject.sourceSets.main.runtimeClasspath
 
-	mainClass = "com.sun.tools.javac.Main"
-	argumentProviders.add({
-		[
-			"-h",
-			headersDir.get().asFile.absolutePath,
-			"-d",
-			classesDir.absolutePath,
-			"-cp",
-			robovmClasspath.asPath
-		] + glesSources.collect { it.absolutePath }
-	} as CommandLineArgumentProvider)
+	destinationDirectory.set(layout.buildDirectory.dir("iosgl-classes"))
+	options.headerOutputDirectory.set(layout.buildDirectory.dir("iosgl-headers"))
 }
 
 tasks.register("regenerateIOSHeader", Copy) {
@@ -101,13 +87,16 @@ task validateIOSHeader {
 	}
 }
 
+tasks.named("check") {
+	dependsOn tasks.named("validateIOSHeader")
+}
+
 dependencies {
 	testImplementation libraries.junit
 	api "com.badlogicgames.jnigen:jnigen-loader:3.1.3"
 }
 
 test {
-	dependsOn("validateIOSHeader")
 	testLogging {
 		events "passed", "skipped", "failed", "standardOut", "standardError"
 	}
@@ -154,6 +143,10 @@ jnigen {
 	robovm {
 		extraXCFramework("../../libs/ios32/ObjectAL.xcframework")
 	}
+}
+
+tasks.named("jnigenBuildAllIOS") {
+	dependsOn tasks.named("regenerateIOSHeader")
 }
 
 artifacts {
