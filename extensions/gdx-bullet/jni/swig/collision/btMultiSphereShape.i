@@ -19,11 +19,13 @@
 			yField = jenv->GetFieldID(sc, "y", "F");
 			zField = jenv->GetFieldID(sc, "z", "F");
 			jenv->DeleteLocalRef(sc);
+			jenv->DeleteLocalRef(vec);
 		}
 		
 		for (int i = 0; i < len; i++) {
 			jobject vec = jenv->GetObjectArrayElement(source, i);
 			result[i].setValue(jenv->GetFloatField(vec, xField), jenv->GetFloatField(vec, yField), jenv->GetFloatField(vec, zField));
+			jenv->DeleteLocalRef(vec);
 		}
 		return result;
 	}
