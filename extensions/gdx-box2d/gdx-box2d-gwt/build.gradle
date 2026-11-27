@@ -20,7 +20,7 @@ dependencies {
 }
 
 configurations.all {
-	// gwt-dev pulls in apache-jsp (Tomcat), but we don't need it and it messes with gretty
+	// gwt-dev pulls in apache-jsp (JSP support for GWT dev mode's web server), which isn't needed to build this module
 	exclude group: 'org.eclipse.jetty', module: 'apache-jsp'
 }
 
