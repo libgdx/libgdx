@@ -19,7 +19,10 @@ package com.badlogic.gdx.backends.headless.mock.input;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
+import com.badlogic.gdx.input.NoOpHaptics;
+import com.badlogic.gdx.utils.Null;
 
 /** The headless backend does its best to mock elements. This is intended to make code-sharing between server and client as simple
  * as possible. */
@@ -180,21 +183,16 @@ public class MockInput implements Input {
 
 	}
 
-	@Override
-	public void vibrate (int milliseconds) {
+	private Haptics haptics = NoOpHaptics.INSTANCE;
 
+	@Override
+	public Haptics getHaptics () {
+		return haptics;
 	}
 
 	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
+	public void setHaptics (@Null Haptics haptics) {
+		this.haptics = haptics != null ? haptics : NoOpHaptics.INSTANCE;
 	}
 
 	@Override
@@ -249,6 +247,8 @@ public class MockInput implements Input {
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
+		if (peripheral == Peripheral.Vibrator) return getHaptics().isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return getHaptics().isHapticsSupported();
 		return false;
 	}
 

@@ -119,8 +119,6 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 
 	InputProcessor inputProcessor = null;
 
-	private IOSHaptics haptics;
-
 	// CMMotionManager motionManager;
 	protected UIAccelerometerDelegate accelerometerDelegate;
 
@@ -174,7 +172,7 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	protected void setupHaptics () {
-		haptics = new IOSHaptics(config.useHaptics);
+		haptics = new IOSHaptics(config.useHaptics, config.hapticsFallback);
 	}
 
 	protected void setupPressure () {
@@ -832,26 +830,6 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	}
 
 	@Override
-	public void vibrate (int milliseconds) {
-		haptics.vibrate(milliseconds, true);
-	}
-
-	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-		haptics.vibrate(milliseconds, fallback);
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-		haptics.vibrate(milliseconds, amplitude, fallback);
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
-		haptics.vibrate(vibrationType);
-	}
-
-	@Override
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
 	}
@@ -870,8 +848,8 @@ public class DefaultIOSInput extends AbstractInput implements IOSInput {
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer && config.useAccelerometer) return true;
 		if (peripheral == Peripheral.MultitouchScreen) return true;
-		if (peripheral == Peripheral.Vibrator) return haptics.isVibratorSupported();
-		if (peripheral == Peripheral.HapticFeedback) return haptics.isHapticsSupported();
+		if (peripheral == Peripheral.Vibrator) return getHaptics().isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return getHaptics().isHapticsSupported();
 		if (peripheral == Peripheral.Compass) return compassSupported;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		if (peripheral == Peripheral.Pressure) return pressureSupported;

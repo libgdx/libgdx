@@ -639,7 +639,10 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
-		return peripheral == Peripheral.HardwareKeyboard;
+		if (peripheral == Peripheral.HardwareKeyboard) return true;
+		if (peripheral == Peripheral.Vibrator) return getHaptics().isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return getHaptics().isHapticsSupported();
+		return false;
 	}
 
 	@Override
@@ -673,22 +676,6 @@ public class DefaultLwjgl3Input extends AbstractInput implements Lwjgl3Input {
 	@Override
 	public void setKeyboardHeightObserver (KeyboardHeightObserver observer) {
 
-	}
-
-	@Override
-	public void vibrate (int milliseconds) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
 	}
 
 	@Override

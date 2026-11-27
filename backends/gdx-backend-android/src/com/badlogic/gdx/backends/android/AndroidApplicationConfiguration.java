@@ -101,6 +101,10 @@ public class AndroidApplicationConfiguration {
 	/** set this to true to render under the display cutout. Use the Graphics::getSafeInsetXX to get the safe render space */
 	public boolean renderUnderCutout = false;
 
+	/** Whether haptic effects the device can't fully play should fall back to a simpler vibration instead of doing nothing,
+	 * default false. See {@link com.badlogic.gdx.input.Haptics#setFallbackEnabled(boolean)}. */
+	public boolean hapticsFallback = false;
+
 	/** The loader used to load native libraries. Override this to use a different loading strategy. */
 	public GdxNativeLoader nativeLoader = new GdxNativeLoader() {
 		@Override

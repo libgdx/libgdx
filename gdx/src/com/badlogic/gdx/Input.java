@@ -16,8 +16,10 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.input.Haptics;
 import com.badlogic.gdx.input.NativeInputConfiguration;
 import com.badlogic.gdx.input.NativeInputConfiguration.NativeInputCloseCallback;
+import com.badlogic.gdx.input.NoOpHaptics;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ObjectIntMap;
 
@@ -849,45 +851,18 @@ public interface Input {
 		Default, NumberPad, PhonePad, Email, Password, URI
 	}
 
-	/** Generates a simple haptic effect of a given duration or a vibration effect on devices without haptic capabilities. Note
-	 * that on Android backend you'll need the permission
-	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
-	 * On iOS backend you'll need to set <code>useHaptics = true</code> for devices with haptics capabilities to use them.
-	 * 
-	 * @param milliseconds the number of milliseconds to vibrate. */
-	public void vibrate (int milliseconds);
+	/** @return the {@link Haptics} instance for this input. Defaults to {@link NoOpHaptics#INSTANCE} on platforms without haptics
+	 *         support. */
+	public default Haptics getHaptics () {
+		return NoOpHaptics.INSTANCE;
+	}
 
-	/** Generates a simple haptic effect of a given duration and default amplitude. Note that on Android backend you'll need the
-	 * permission <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for
-	 * this to work. On iOS backend you'll need to set <code>useHaptics = true</code> for devices with haptics capabilities to use
-	 * them.
-	 *
-	 * @param milliseconds the duration of the haptics effect
-	 * @param fallback whether to use non-haptic vibrator on devices without haptics capabilities (or haptics disabled). Fallback
-	 *           non-haptic vibrations may ignore length parameter in some backends. */
-	public void vibrate (int milliseconds, boolean fallback);
-
-	/** Generates a simple haptic effect of a given duration and amplitude. Note that on Android backend you'll need the permission
-	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
-	 * On iOS backend you'll need to set <code>useHaptics = true</code> for devices with haptics capabilities to use them.
-	 *
-	 * @param milliseconds the duration of the haptics effect
-	 * @param amplitude the amplitude/strength of the haptics effect. Valid values in the range [0, 255].
-	 * @param fallback whether to use non-haptic vibrator on devices without haptics capabilities (or haptics disabled). Fallback
-	 *           non-haptic vibrations may ignore length and/or amplitude parameters in some backends. */
-	public void vibrate (int milliseconds, int amplitude, boolean fallback);
-
-	/** Generates a simple haptic effect of a type. VibrationTypes are length/amplitude haptic effect presets that depend on each
-	 * device and are defined by manufacturers. Should give most consistent results across devices and OSs. Note that on Android
-	 * backend you'll need the permission <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your
-	 * manifest file in order for this to work. On iOS backend you'll need to set <code>useHaptics = true</code> for devices with
-	 * haptics capabilities to use them.
-	 *
-	 * @param vibrationType the type of vibration */
-	public void vibrate (VibrationType vibrationType);
-
-	public enum VibrationType {
-		LIGHT, MEDIUM, HEAVY;
+	/** Replaces the {@link Haptics} implementation returned by {@link #getHaptics()}, e.g. to route haptic effects to an external
+	 * device such as a gamepad. The current instance can be retrieved first and wrapped to keep it as a fallback.
+	 * @param haptics the new instance, or null to disable haptics
+	 * @throws UnsupportedOperationException if this Input does not support custom haptics */
+	public default void setHaptics (@Null Haptics haptics) {
+		throw new UnsupportedOperationException();
 	}
 
 	/** The azimuth is the angle of the device's orientation around the z-axis. The positive z-axis points towards the earths

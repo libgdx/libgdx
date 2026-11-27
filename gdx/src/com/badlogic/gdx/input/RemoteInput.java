@@ -481,22 +481,6 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override
-	public void vibrate (int milliseconds) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
-	}
-
-	@Override
 	public float getAzimuth () {
 		return compass[0];
 	}

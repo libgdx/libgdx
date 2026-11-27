@@ -328,22 +328,6 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 	}
 
 	@Override
-	public void vibrate (int milliseconds) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
-	}
-
-	@Override
 	public float getAzimuth () {
 		return 0;
 	}
@@ -387,7 +371,8 @@ public class DefaultGwtInput extends AbstractInput implements GwtInput {
 		if (peripheral == Peripheral.HardwareKeyboard) return !GwtApplication.isMobileDevice();
 		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
 		if (peripheral == Peripheral.OnscreenKeyboard) return GwtApplication.isMobileDevice();
-		if (peripheral == Peripheral.Vibrator) return false;
+		if (peripheral == Peripheral.Vibrator) return getHaptics().isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return getHaptics().isHapticsSupported();
 		return false;
 	}
 

@@ -860,22 +860,6 @@ public class LwjglAWTInput extends AbstractInput implements MouseMotionListener,
 	}
 
 	@Override
-	public void vibrate (int milliseconds) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
-	}
-
-	@Override
 	public boolean justTouched () {
 		return justTouched;
 	}
@@ -909,6 +893,8 @@ public class LwjglAWTInput extends AbstractInput implements MouseMotionListener,
 	@Override
 	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.HardwareKeyboard) return true;
+		if (peripheral == Peripheral.Vibrator) return getHaptics().isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return getHaptics().isHapticsSupported();
 		return false;
 	}
 

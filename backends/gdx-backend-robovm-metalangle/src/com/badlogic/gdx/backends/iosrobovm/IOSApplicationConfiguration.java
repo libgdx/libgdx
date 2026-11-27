@@ -55,6 +55,10 @@ public class IOSApplicationConfiguration {
 	/** whether to use the haptics engine, default false. * */
 	public boolean useHaptics = false;
 
+	/** Whether haptic effects the device can't fully play should fall back to a simpler vibration instead of doing nothing,
+	 * default false. See {@link com.badlogic.gdx.input.Haptics#setFallbackEnabled(boolean)}. */
+	public boolean hapticsFallback = false;
+
 	/** whether or not to allow background music from iPod * */
 	public boolean allowIpod = true;
 

@@ -151,7 +151,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	final Application app;
 	final Context context;
 	protected final AndroidTouchHandler touchHandler;
-	protected final AndroidHaptics haptics;
 	private boolean compassAvailable = false;
 	private boolean rotationVectorAvailable = false;
 	boolean keyboardAvailable;
@@ -198,7 +197,7 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		touchHandler = new AndroidTouchHandler();
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
-		haptics = new AndroidHaptics(context);
+		haptics = new AndroidHaptics(context, config.hapticsFallback);
 
 		if (Build.VERSION.SDK_INT >= 33 && context instanceof Activity) {
 			this.predictiveBackHandler = new PredictiveBackHandler();
@@ -1040,26 +1039,6 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 	}
 
 	@Override
-	public void vibrate (int milliseconds) {
-		haptics.vibrate(milliseconds);
-	}
-
-	@Override
-	public void vibrate (int milliseconds, boolean fallback) {
-		haptics.vibrate(milliseconds);
-	}
-
-	@Override
-	public void vibrate (int milliseconds, int amplitude, boolean fallback) {
-		haptics.vibrate(milliseconds, amplitude, fallback);
-	}
-
-	@Override
-	public void vibrate (VibrationType vibrationType) {
-		haptics.vibrate(vibrationType);
-	}
-
-	@Override
 	public boolean justTouched () {
 		return justTouched;
 	}
@@ -1229,8 +1208,8 @@ public class DefaultAndroidInput extends AbstractInput implements AndroidInput, 
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if (peripheral == Peripheral.OnscreenKeyboard) return true;
-		if (peripheral == Peripheral.Vibrator) return haptics.hasVibratorAvailable();
-		if (peripheral == Peripheral.HapticFeedback) return haptics.hasHapticsSupport();
+		if (peripheral == Peripheral.Vibrator) return getHaptics().isVibratorSupported();
+		if (peripheral == Peripheral.HapticFeedback) return getHaptics().isHapticsSupported();
 		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		if (peripheral == Peripheral.RotationVector) return rotationVectorAvailable;
 		if (peripheral == Peripheral.Pressure) return true;
