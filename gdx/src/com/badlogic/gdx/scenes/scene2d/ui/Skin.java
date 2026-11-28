@@ -557,24 +557,38 @@ public class Skin implements Disposable {
 				if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
 				if (!fontFile.exists()) throw new SerializationException("Font file not found: " + fontFile);
 
-				// Use a region with the same name as the font, else use a PNG file in the same directory as the FNT file.
 				String regionName = fontFile.nameWithoutExtension();
 				try {
+					BitmapFontData data = new BitmapFontData(fontFile, flip);
+					String[] imagePaths = data.getImagePaths();
 					BitmapFont font;
 					Array<TextureRegion> regions = skin.getRegions(regionName);
-					if (regions != null)
-						font = new BitmapFont(new BitmapFontData(fontFile, flip), regions, true);
-					else {
-						TextureRegion region = skin.optional(regionName, TextureRegion.class);
-						if (region != null)
-							font = new BitmapFont(fontFile, region, flip);
-						else {
-							FileHandle imageFile = fontFile.parent().child(regionName + ".png");
-							if (imageFile.exists())
-								font = new BitmapFont(fontFile, imageFile, flip);
-							else
-								font = new BitmapFont(fontFile, flip);
+					if (imagePaths.length > 1 && (regions == null || regions.size < imagePaths.length)) {
+						int pathStart = fontFile.path().lastIndexOf('/') + 1;
+						regions = new Array<>(imagePaths.length);
+						for (String imagePath : imagePaths) {
+							String pageName = imagePath.substring(pathStart);
+							int dot = pageName.lastIndexOf('.');
+							if (dot > pageName.lastIndexOf('/')) pageName = pageName.substring(0, dot);
+							TextureRegion page = skin.optional(pageName, TextureRegion.class);
+							if (page == null) {
+								regions.clear(); // Load all pages from the font's image files.
+								break;
+							}
+							regions.add(page);
 						}
+					}
+					if (regions != null)
+						font = new BitmapFont(data, regions, true);
+					else {
+						// Use a region with the same name as the font, else use a PNG file in the same directory as the FNT file.
+						TextureRegion region = skin.optional(regionName, TextureRegion.class);
+						FileHandle imageFile = fontFile.parent().child(regionName + ".png");
+						if (region == null && imageFile.exists()) {
+							font = new BitmapFont(data, new TextureRegion(new Texture(imageFile)), true);
+							font.setOwnsTexture(true);
+						} else
+							font = new BitmapFont(data, region, true);
 					}
 					font.getData().markupEnabled = markupEnabled;
 					font.setUseIntegerPositions(useIntegerPositions);
